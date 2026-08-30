@@ -1,0 +1,108 @@
+:root {
+  color-scheme: light;
+  --viz-bg: #ededf0;
+  --viz-canvas: #f5f5f7;
+  --viz-surface: #ffffff;
+  --viz-surface-2: #fafafb;
+  --viz-surface-3: #f2f2f4;
+  --viz-ink: #1d1d1f;
+  --viz-ink-soft: #3f3f44;
+  --viz-muted: #6e6e73;
+  --viz-line: #d9d9de;
+  --viz-line-soft: #ececef;
+  --viz-accent: #006fd6;
+  --viz-on-accent: #ffffff;
+  --viz-accent-soft: rgba(10, 132, 255, 0.14);
+  --viz-good: #1f754e;
+  --viz-good-bg: #edf8f1;
+  --viz-warn: #8a5500;
+  --viz-warn-bg: #fff6e7;
+  --viz-bad: #b9443f;
+  --viz-bad-bg: #fff0ef;
+  --viz-overlay: rgba(24, 24, 26, 0.96);
+  --viz-modal-backdrop: rgba(0, 0, 0, 0.18);
+  --viz-grid: rgba(0, 0, 0, 0.028);
+  --viz-shadow-1: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --viz-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --viz-shadow-3: 0 18px 55px rgba(0, 0, 0, 0.10);
+  --viz-shadow-drag: 0 18px 38px rgba(0, 0, 0, 0.16);
+  --viz-shadow-component: 0 1px 1px rgba(0, 0, 0, 0.025);
+  --viz-shadow-dialog: 0 30px 80px rgba(0, 0, 0, 0.18);
+  --viz-shadow-canvas-inset: inset 0 0 0 1px color-mix(in srgb, var(--viz-surface) 60%, transparent);
+  --viz-shadow-selected: var(--viz-focus-ring), var(--viz-shadow-2);
+  --viz-shadow-grouped: inset 0 0 0 1px var(--viz-accent-soft);
+  --viz-shadow-timeline-active: 0 0 0 4px var(--viz-accent-soft);
+  --viz-r-1: 7px;
+  --viz-r-2: 9px;
+  --viz-r-3: 12px;
+  --viz-r-4: 16px;
+  --viz-r-5: 18px;
+  --viz-r-canvas: 24px;
+  --viz-r-pill: 999px;
+  --viz-r-risk: 0 var(--viz-r-2) var(--viz-r-2) 0;
+  --viz-s-1: 4px;
+  --viz-s-2: 6px;
+  --viz-s-3: 8px;
+  --viz-s-4: 10px;
+  --viz-s-5: 12px;
+  --viz-s-6: 14px;
+  --viz-s-7: 16px;
+  --viz-s-8: 18px;
+  --viz-s-9: 24px;
+  --viz-type-chrome: 11px;
+  --viz-type-data: 12px;
+  --viz-type-body: 13px;
+  --viz-type-brand: 14px;
+  --viz-type-input: 15px;
+  --viz-type-title: 17px;
+  --viz-type-hero: 24px;
+  --viz-type-metric: 54px;
+  --viz-type-metric-compact: 42px;
+  --viz-line-tight: 1.08;
+  --viz-line-normal: 1.4;
+  --viz-target-desktop: 32px;
+  --viz-target-touch: 44px;
+  --viz-focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.28);
+  --viz-motion-fast: 120ms;
+  --viz-motion-medium: 220ms;
+  --viz-motion-reveal: 450ms;
+  --viz-ease: cubic-bezier(.2, .8, .2, 1);
+  --viz-peer-gap: 14px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --viz-bg: #17171a;
+  --viz-canvas: #202024;
+  --viz-surface: #29292e;
+  --viz-surface-2: #232327;
+  --viz-surface-3: #34343a;
+  --viz-ink: #f5f5f7;
+  --viz-ink-soft: #dedee3;
+  --viz-muted: #a8a8af;
+  --viz-accent: #4da3ff;
+  --viz-on-accent: #111113;
+  --viz-accent-soft: rgba(77, 163, 255, 0.16);
+  --viz-good: #7bd6aa;
+  --viz-good-bg: #173a2c;
+  --viz-warn: #f3c06b;
+  --viz-warn-bg: #3b2b12;
+  --viz-bad: #ff8a82;
+  --viz-bad-bg: #44201e;
+  --viz-line: #44444b;
+  --viz-line-soft: #34343a;
+  --viz-grid: rgba(255, 255, 255, 0.04);
+  --viz-shadow-1: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --viz-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --viz-shadow-3: 0 18px 55px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="corporate"] {
+  --viz-accent: #1b66c9;
+  --viz-on-accent: #ffffff;
+  --viz-accent-soft: rgba(27, 102, 201, 0.14);
+  --viz-good: #2b7952;
+  --viz-warn: #946000;
+}
+
+/* TOKEN DEFINITIONS END */

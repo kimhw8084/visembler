@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "company-ui"
+version = "3.0.0a1"
+description = "Company-grade NiceGUI application framework with platform-neutral Linux-first live reference and certification laboratory"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "nicegui==3.15.0",
+]
+
+[project.scripts]
+company-ui = "company_ui.cli:main"
+company-ui-govern = "company_ui.governance.cli:main"
+company-ui-release-sync = "company_ui.governance.release_sync:main"
+company-ui-source-certify = "company_ui.governance.source_evidence:main"
+company-ui-validate = "company_ui.validate:main"
+company-ui-ai-init = "company_ui.ai_init:main"
+company-ui-certify = "company_ui.certification.cli:main"
+company-ui-cert-app = "company_ui.certification.apps:run_certification_app"
+company-ui-gallery = "company_ui.certification.apps:run_component_gallery"
+company-ui-sbom = "company_ui.supply_chain:main"
+company-ui-gold-certify = "company_ui.certification.gold_cli:main"
+company-ui-live-lab = "company_ui.certification.live_lab_cli:main"
+company-ui-live-preflight = "company_ui.certification.live_preflight:main"
+company-ui-live-certify = "company_ui.certification.live_certify:main"
+company-ui-live-approve-baseline = "company_ui.certification.live_baseline:main"
+company-ui-runtime-contract = "company_ui.certification.nicegui_runtime_contract:main"
+company-ui-runtime-smoke = "company_ui.certification.runtime_smoke:main"
+company-ui-mac-lab = "company_ui.certification.mac_lab_cli:main"
+company-ui-mac-preflight = "company_ui.certification.mac_preflight:main"
+company-ui-mac-certify = "company_ui.certification.mac_certify:main"
+company-ui-mac-approve-baseline = "company_ui.certification.mac_baseline:main"
+
+[project.optional-dependencies]
+live-cert = [
+  "playwright==1.62.0",
+  "Pillow==12.3.0",
+]
+mac-cert = [
+  "playwright==1.62.0",
+  "Pillow==12.3.0",
+]
+test = [
+  "pytest>=8,<9",
+  "pytest-asyncio>=0.25,<1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
+
+[tool.setuptools.packages.find]
+include = ["company_ui*"]
+
+[tool.setuptools.package-data]
+"company_ui.visual" = ["icons/**/*.svg", "illustrations/**/*.svg", "dataviz/**/*.svg", "manifest/*.json"]
+"company_ui.runtime" = ["compatibility.json"]
+"company_ui.ai" = ["construction_manifest.json", "framework_catalog.json", "guides/*.md"]
+
+"company_ui.certification" = ["certification_manifest.json"]
+"company_ui" = ["release_authority.json"]
+"company_ui.products.visualizer" = ["assets/*", "contracts/*", "vendor/production_core/**/*"]

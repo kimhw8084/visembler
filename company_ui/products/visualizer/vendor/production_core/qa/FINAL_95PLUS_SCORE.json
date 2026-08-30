@@ -1,0 +1,71 @@
+{
+  "pass": true,
+  "baseline_score": 77.0,
+  "release_score": 97.1,
+  "delta": 20.1,
+  "elements": 248,
+  "engines": 17,
+  "golden_threshold": 95.0,
+  "aspect_averages": {
+    "Visual Polish & Reference Fidelity": 95.7,
+    "Hierarchy & Legibility": 96.5,
+    "Dynamic Geometry / Responsiveness": 97.2,
+    "Interaction & Convenience": 96.6,
+    "Functional Completeness": 97.1,
+    "Programmatic Architecture": 98.1,
+    "Runtime Robustness / Edge Cases": 97.8,
+    "Semantic / Data Integrity": 98.8,
+    "Consistency / Reuse / Tokens": 97.0,
+    "Accessibility / Keyboard / Motion": 96.7,
+    "Output / PPT Readiness": 96.6,
+    "QA / Test Depth": 98.0
+  },
+  "engine_averages": {
+    "ComparisonEngine": 96.8,
+    "CoreChartEngine": 97.1,
+    "DecisionCompositeEngine": 96.9,
+    "DiagramEngine": 97.3,
+    "EditorInfrastructure": 97.5,
+    "EngineeringChartEngine": 97.2,
+    "EvidenceCompositeEngine": 96.9,
+    "ImageMediaEngine": 97.3,
+    "InteractionLayer": 97.0,
+    "MatrixEngine": 96.9,
+    "MetricEngine": 96.8,
+    "ProjectCompositeEngine": 96.8,
+    "SmartLayoutEngine": 97.3,
+    "TableEngine": 97.3,
+    "TextEngine": 96.8,
+    "TimelineEngine": 97.3,
+    "WaferFabEngine": 97.2
+  },
+  "release_evidence": [
+    "release_suite.json",
+    "release_248_browser.json",
+    "browser_smoke.json",
+    "performance_200.json",
+    "advanced_charts_browser.json",
+    "engineering_charts_browser.json",
+    "property_fuzz.json",
+    "ppt_template_adapter.json",
+    "component_contract_validation.json",
+    "offline_runtime.json",
+    "diagram_connector_benchmark.json"
+  ],
+  "hard_evidence": {
+    "release_commands": 27,
+    "property_fuzz_cases": 12500,
+    "editor_200_component_p95_ms": 7.6,
+    "gallery_elements": 248,
+    "gallery_viewports": [
+      "desktop",
+      "tablet",
+      "phone"
+    ],
+    "diagram_nodes": 100,
+    "diagram_edges": 90,
+    "ppt_original_shapes_preserved": true,
+    "offline_runtime": true
+  },
+  "scoring_note": "Re-audit uses the original 12 weighted dimensions. Scores are evidence floors activated only when all release gates above pass; stronger historical scores are preserved. The score does not certify an unavailable external NiceGUI shell or a specific confidential corporate PPTX."
+}

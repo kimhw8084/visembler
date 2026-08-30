@@ -1,0 +1,366 @@
+{
+  "audit": "Visualizer Production Gate Audit",
+  "scope": "live 15_PRODUCTION_CORE against the authoritative 30 zero-error gates",
+  "baseline_248_audit_average": 77.0,
+  "baseline_note": "The original 248-element 77.0 audit remains the authoritative element-level baseline. This live gate audit does not fabricate a new 248 score before every element is re-rendered/retested.",
+  "release_ready": false,
+  "summary": {
+    "PARTIAL": 19,
+    "PASS": 7,
+    "OPEN": 3,
+    "BLOCKED_EXTERNAL": 1
+  },
+  "production_core_suite_pass": true,
+  "connector_frozen_sha256_identical": true,
+  "external_inputs_missing": [
+    "Golden NiceGUI package",
+    "Sanitized corporate PPTX/output profile"
+  ],
+  "gates": [
+    {
+      "id": "ZG-01",
+      "title": "Runtime",
+      "status": "PARTIAL",
+      "reason": "Production-core suite is green (15/15 commands) with zero editor/chart browser console errors, but legacy/canonical engines are not yet all consolidated into that suite.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/full_suite.json",
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/qa/advanced_charts_browser.json",
+        "15_PRODUCTION_CORE/qa/engineering_charts_browser.json"
+      ],
+      "next_action": "Consolidate remaining timeline/diagram/image/wafer/PPT/NiceGUI surfaces into the same zero-console suite."
+    },
+    {
+      "id": "ZG-02",
+      "title": "Geometry",
+      "status": "PARTIAL",
+      "reason": "Current editor Smart hull, overlap, bounds, zoom and contextual-control geometry pass, but all 248 renderer/layout combinations are not yet exercised.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/qa/production_editor_smoke.png"
+      ],
+      "next_action": "Add geometry/property baselines for every canonical renderer and content-density extreme."
+    },
+    {
+      "id": "ZG-03",
+      "title": "Typography",
+      "status": "PARTIAL",
+      "reason": "Production core enforces an 11px visible-text floor and compact narrative adaptation; full 248-element clipping/wrap/output-profile coverage remains.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/app/tokens.css",
+        "15_PRODUCTION_CORE/app/editor.mjs"
+      ],
+      "next_action": "Run all 248 contracts across XS\u2013XL, long labels, localization-like expansion and PPT-safe profiles."
+    },
+    {
+      "id": "ZG-04",
+      "title": "Tokens",
+      "status": "PARTIAL",
+      "reason": "Static P0 token lint passes and theme semantic colors are tokenized; remaining canonical wave renderers still need consolidation/token purge.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/static_p0_lint.json",
+        "15_PRODUCTION_CORE/app/tokens.css"
+      ],
+      "next_action": "Port remaining engine renderers through production token layer and reject presentation literals in CI."
+    },
+    {
+      "id": "ZG-05",
+      "title": "Accessibility",
+      "status": "PARTIAL",
+      "reason": "Current editor controls have names, keyboard paths, focus styling, target floors, reduced-motion handling and measured theme contrast. Full 248 interactive inventory is not yet rendered/tested.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/app/editor.css"
+      ],
+      "next_action": "Generate interactive accessibility fixtures for all Tier-4/interactive contracts and add screen-reader state assertions."
+    },
+    {
+      "id": "ZG-06",
+      "title": "Pointer lifecycle",
+      "status": "PARTIAL",
+      "reason": "Production editor drag/resize recovery handles pointercancel/capture loss without stuck state; remaining specialized interactive engines are not yet integrated.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/core/editor_store.mjs",
+        "15_PRODUCTION_CORE/app/editor.mjs"
+      ],
+      "next_action": "Apply the same pointer-session primitive to timeline/image/diagram specialized interactions and fuzz cancel/lost-capture sequences."
+    },
+    {
+      "id": "ZG-07",
+      "title": "Responsive observation",
+      "status": "PARTIAL",
+      "reason": "Editor has ResizeObserver and 60\u2013140% zoom invariance; advanced and engineering charts have XS\u2013XL rendering. Remaining engines need live ResizeObserver integration.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/qa/advanced_charts_browser.json",
+        "15_PRODUCTION_CORE/qa/engineering_charts_browser.json"
+      ],
+      "next_action": "Wire remaining engines to container observation and add resize storms/content mutation tests."
+    },
+    {
+      "id": "ZG-08",
+      "title": "Semantic truth",
+      "status": "PARTIAL",
+      "reason": "Statistics, pivot and graph cores block invalid inputs and preserve typed/raw semantics, but a universal AI/data eligibility state-machine gate is not yet connected to all 248 elements.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/statistics_engine.mjs",
+        "15_PRODUCTION_CORE/core/table_pivot_engine.mjs",
+        "15_PRODUCTION_CORE/core/graph_semantics_engine.mjs"
+      ],
+      "next_action": "Build centralized data-eligibility/truth preflight and require every renderer/AI composition path to consume it."
+    },
+    {
+      "id": "ZG-09",
+      "title": "Serialization",
+      "status": "PASS",
+      "reason": "Canonical editor model round-trips deterministically; stable semantic IDs and exact history round-trip are regression tested.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/editor_store.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Keep serialization tests mandatory as new component-specific canonical fields are introduced."
+    },
+    {
+      "id": "ZG-10",
+      "title": "Revision safety",
+      "status": "PASS",
+      "reason": "Every production editor mutation uses revision-checked commands and stale base_revision commits are rejected.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/editor_store.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Require future NiceGUI/Python bridge commits to carry the same base_revision contract."
+    },
+    {
+      "id": "ZG-11",
+      "title": "Undo/Redo",
+      "status": "PASS",
+      "reason": "100 mixed atomic edits, grouped membership restoration, exact undo and redo are covered by the production store suite.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/editor_store.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Extend command types only through inverse-tested operations/transactions."
+    },
+    {
+      "id": "ZG-12",
+      "title": "Connectors",
+      "status": "PASS",
+      "reason": "Golden Connector v5 preserved byte-identically (yes) and authoritative Wave 06/07/09/10 QA records zero route/edge-node failures.",
+      "evidence": [
+        "06_CONNECTOR_GEOMETRY_SYSTEM/GOLDEN_CONNECTOR_ENGINE_V5.js",
+        "15_PRODUCTION_CORE/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js",
+        "06_CONNECTOR_GEOMETRY_SYSTEM/GOLDEN_CONNECTOR_V5_QA.json"
+      ],
+      "next_action": "Keep v5 frozen; add production-core replay fixture when DiagramEngine is consolidated."
+    },
+    {
+      "id": "ZG-13",
+      "title": "Charts",
+      "status": "PARTIAL",
+      "reason": "12 advanced chart variants and 13 engineering variants have deterministic typed plans, invalid-input blocking and XS\u2013XL browser rendering; the older basic CoreChartEngine family still needs one production renderer boundary.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/advanced_charts_browser.json",
+        "15_PRODUCTION_CORE/qa/engineering_charts_browser.json",
+        "15_PRODUCTION_CORE/core/advanced_chart_engine.mjs",
+        "15_PRODUCTION_CORE/core/engineering_chart_engine.mjs"
+      ],
+      "next_action": "Consolidate Wave 04 basic charts with production render-plan/data-reconciliation gates and remove alias-only remnants."
+    },
+    {
+      "id": "ZG-14",
+      "title": "Statistics",
+      "status": "PASS",
+      "reason": "Numerical backend matches NumPy/SciPy/statsmodels reference fixtures for distributions, regression, DOE, SPC, capability, CUSUM/EWMA and transforms with invalid-input blocking.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/statistics_engine.mjs",
+        "15_PRODUCTION_CORE/tests/statistics_engine.test.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Add additional corporate reference datasets when available; keep tolerances explicit."
+    },
+    {
+      "id": "ZG-15",
+      "title": "Tables",
+      "status": "PARTIAL",
+      "reason": "Production pivot core preserves typed keys, subtotals/grand totals and deterministic expand/collapse; 1,500 seeded rows reconcile across 423 cells to pandas and 100k-row stress passes. Sort/filter UI and full TableEngine renderer are not yet consolidated.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/table_pivot_engine.mjs",
+        "15_PRODUCTION_CORE/tests/table_pivot_reference.test.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Implement typed sort/filter pipeline, virtualized accessible grid renderer and keyboard navigation on the same core."
+    },
+    {
+      "id": "ZG-16",
+      "title": "Timelines",
+      "status": "PARTIAL",
+      "reason": "Production timeline semantic core now enforces explicit ISO dates or declared durations, FS/SS/FF/SF dependency types and integer lag, dependency acyclicity, schedule consistency, milestone duration and sequence-only no-date semantics. The visual TimelineEngine renderer/editor integration remains to be consolidated.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/timeline_semantics_engine.mjs",
+        "15_PRODUCTION_CORE/tests/timeline_semantics_engine.test.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Wire all timeline variants to prepareTimeline() before layout, then add calendar-specific and XS\u2013XL visual regression."
+    },
+    {
+      "id": "ZG-17",
+      "title": "Diagrams",
+      "status": "PARTIAL",
+      "reason": "New graph semantics engine validates DAG/tree/network/flow/state-machine rules before layout; invalid cycles/roots/unknown nodes/nondeterministic transitions block. Sankey now consumes the shared gate, but full DiagramEngine authoring/layout is not yet consolidated.",
+      "evidence": [
+        "15_PRODUCTION_CORE/core/graph_semantics_engine.mjs",
+        "15_PRODUCTION_CORE/tests/graph_semantics_engine.test.mjs",
+        "15_PRODUCTION_CORE/core/advanced_chart_engine.mjs"
+      ],
+      "next_action": "Wire all diagram variants to validateGraph() before Golden Connector/layout and add 100-node visual/performance regression."
+    },
+    {
+      "id": "ZG-18",
+      "title": "Images",
+      "status": "OPEN",
+      "reason": "No production asset-relative crop/anchor/annotation model or untrusted SVG/image ingestion policy has been completed.",
+      "evidence": [
+        "13_DEEP_AUDIT_248_ELEMENTS/IMPROVEMENT_BACKLOG.json"
+      ],
+      "next_action": "Implement asset-relative transform model, crop/zoom invariance tests, and conservative SVG/image sanitization policy."
+    },
+    {
+      "id": "ZG-19",
+      "title": "Wafer/Fab",
+      "status": "OPEN",
+      "reason": "Production coordinate-registration and missing-vs-zero validation for wafer/fab comparisons is not yet implemented.",
+      "evidence": [
+        "13_DEEP_AUDIT_248_ELEMENTS/IMPROVEMENT_BACKLOG.json"
+      ],
+      "next_action": "Implement wafer coordinate convention/registration validator before any derived comparison renderer."
+    },
+    {
+      "id": "ZG-20",
+      "title": "PPT",
+      "status": "OPEN",
+      "reason": "Web Rich\u2192PPT Safe mappings are not yet implemented for every shipped component. Exact corporate profile certification additionally requires the external sanitized PPTX/output profile.",
+      "evidence": [
+        "15_PRODUCTION_CORE/contracts/component_contracts.json"
+      ],
+      "next_action": "Implement native/editable mappings by engine now; certify typography/theme/profile fidelity when corporate sample arrives."
+    },
+    {
+      "id": "ZG-21",
+      "title": "Themes",
+      "status": "PARTIAL",
+      "reason": "Light/dark/corporate production tokens now pass measured 4.5:1 small-text contrast and 3:1 accent/canvas non-text contrast in editor smoke; full renderer/theme screenshot matrix remains.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/app/tokens.css"
+      ],
+      "next_action": "Run all canonical engine visual baselines in all three themes and detect semantic-color drift/orphans."
+    },
+    {
+      "id": "ZG-22",
+      "title": "Performance",
+      "status": "PARTIAL",
+      "reason": "200-component retained-DOM budget passes (p95 15.50 ms, heap growth 0.043 MB); 100k-row pivot and 100-node semantic validation pass. A 100-node rendered DiagramEngine benchmark is still missing.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/performance_200.json",
+        "15_PRODUCTION_CORE/tests/table_pivot_engine.test.mjs",
+        "15_PRODUCTION_CORE/tests/graph_semantics_engine.test.mjs"
+      ],
+      "next_action": "Add retained 100-node diagram route/layout/render benchmark and CI budgets for large accessible table rendering."
+    },
+    {
+      "id": "ZG-23",
+      "title": "Visual regression",
+      "status": "PARTIAL",
+      "reason": "Advanced and engineering chart families have XS\u2013XL screenshot baselines and editor smoke screenshot exists; all Tier-4 elements/themes/content-density extremes are not yet covered.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/advanced_charts_browser.json",
+        "15_PRODUCTION_CORE/qa/engineering_charts_browser.json",
+        "15_PRODUCTION_CORE/qa/production_editor_smoke.png"
+      ],
+      "next_action": "Build deterministic screenshot matrix keyed by engine \u00d7 variant \u00d7 size \u00d7 theme \u00d7 density with pixel/structural thresholds."
+    },
+    {
+      "id": "ZG-24",
+      "title": "Property fuzz",
+      "status": "PARTIAL",
+      "reason": "Deterministic 10,000-case corpus passes (seed 1511506142) and previously exposed a virtualization-tail bug that was fixed; remaining timeline/image/wafer/PPT/bridge engines are not yet in the corpus.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/property_fuzz.json",
+        "15_PRODUCTION_CORE/tests/property_fuzz.test.mjs"
+      ],
+      "next_action": "Extend generators to every new semantic engine and persist any failing seed as a permanent regression fixture."
+    },
+    {
+      "id": "ZG-25",
+      "title": "No external runtime dependency",
+      "status": "PASS",
+      "reason": "Production core uses local modules/assets/system fonts and browser tests run from bundled local content without CDN/internet runtime dependencies.",
+      "evidence": [
+        "15_PRODUCTION_CORE/app/index.html",
+        "15_PRODUCTION_CORE/app/editor.mjs",
+        "15_PRODUCTION_CORE/qa/full_suite.json"
+      ],
+      "next_action": "Keep dependency policy build-blocking; vendor only approved local assets if future libraries are introduced."
+    },
+    {
+      "id": "ZG-26",
+      "title": "NiceGUI boundary",
+      "status": "BLOCKED_EXTERNAL",
+      "reason": "The semantic-commit contract is defined, but the actual Golden NiceGUI package is not present, so final one-process/one-port bridge integration cannot be certified.",
+      "evidence": [
+        "14_CANONICAL_PRODUCTION_SOURCE_AUTHORITY/CANONICAL_SOURCE_AUTHORITY.json"
+      ],
+      "next_action": "Implement a renderer-side semantic commit adapter now, then integrate/certify against the supplied Golden NiceGUI shell without Python pointer-frame traffic."
+    },
+    {
+      "id": "ZG-27",
+      "title": "Focus continuity",
+      "status": "PASS",
+      "reason": "Unrelated model updates preserve active inspector focus and retained-DOM rendering avoids destructive canvas rebuilds.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/app/editor.mjs"
+      ],
+      "next_action": "Add IME/composition and multi-control focus fixtures as specialized editors are integrated."
+    },
+    {
+      "id": "ZG-28",
+      "title": "Security",
+      "status": "PARTIAL",
+      "reason": "Current production text/chart rendering escapes dynamic text and does not allow arbitrary AI HTML/CSS, but untrusted SVG/image sanitation/import policy is still missing.",
+      "evidence": [
+        "15_PRODUCTION_CORE/app/editor.mjs",
+        "15_PRODUCTION_CORE/core/advanced_chart_engine.mjs",
+        "15_PRODUCTION_CORE/core/engineering_chart_engine.mjs"
+      ],
+      "next_action": "Add centralized escaping/sanitization utilities and strict SVG/image importer allowlist before ImageMediaEngine integration."
+    },
+    {
+      "id": "ZG-29",
+      "title": "Preflight",
+      "status": "PARTIAL",
+      "reason": "Editor geometry and several numerical/chart/graph invalid conditions block or warn before output, but there is not yet a universal 248-contract export preflight aggregator.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/browser_smoke.json",
+        "15_PRODUCTION_CORE/contracts/component_contracts.json",
+        "15_PRODUCTION_CORE/core/graph_semantics_engine.mjs"
+      ],
+      "next_action": "Build one preflight aggregator that evaluates every active component contract, semantic engine and output-profile mapping before export."
+    },
+    {
+      "id": "ZG-30",
+      "title": "Determinism",
+      "status": "PARTIAL",
+      "reason": "Editor serialization, advanced/engineering SVG render plans, pivot fingerprints and graph fingerprints are deterministic under tested inputs; remaining canonical engines and output mappings need renderer-version traceability.",
+      "evidence": [
+        "15_PRODUCTION_CORE/qa/full_suite.json",
+        "15_PRODUCTION_CORE/core/table_pivot_engine.mjs",
+        "15_PRODUCTION_CORE/core/graph_semantics_engine.mjs"
+      ],
+      "next_action": "Add renderer/version IDs to every plan/export artifact and deterministic fixtures for remaining engines."
+    }
+  ]
+}

@@ -1,0 +1,847 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Visualizer 95+ Approval Preview</title><style>:root {
+  color-scheme: light;
+  --viz-bg: #ededf0;
+  --viz-canvas: #f5f5f7;
+  --viz-surface: #ffffff;
+  --viz-surface-2: #fafafb;
+  --viz-surface-3: #f2f2f4;
+  --viz-ink: #1d1d1f;
+  --viz-ink-soft: #3f3f44;
+  --viz-muted: #6e6e73;
+  --viz-line: #d9d9de;
+  --viz-line-soft: #ececef;
+  --viz-accent: #006fd6;
+  --viz-on-accent: #ffffff;
+  --viz-accent-soft: rgba(10, 132, 255, 0.14);
+  --viz-good: #1f754e;
+  --viz-good-bg: #edf8f1;
+  --viz-warn: #8a5500;
+  --viz-warn-bg: #fff6e7;
+  --viz-bad: #b9443f;
+  --viz-bad-bg: #fff0ef;
+  --viz-overlay: rgba(24, 24, 26, 0.96);
+  --viz-modal-backdrop: rgba(0, 0, 0, 0.18);
+  --viz-grid: rgba(0, 0, 0, 0.028);
+  --viz-shadow-1: 0 1px 4px rgba(0, 0, 0, 0.08);
+  --viz-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --viz-shadow-3: 0 18px 55px rgba(0, 0, 0, 0.10);
+  --viz-shadow-drag: 0 18px 38px rgba(0, 0, 0, 0.16);
+  --viz-shadow-component: 0 1px 1px rgba(0, 0, 0, 0.025);
+  --viz-shadow-dialog: 0 30px 80px rgba(0, 0, 0, 0.18);
+  --viz-shadow-canvas-inset: inset 0 0 0 1px color-mix(in srgb, var(--viz-surface) 60%, transparent);
+  --viz-shadow-selected: var(--viz-focus-ring), var(--viz-shadow-2);
+  --viz-shadow-grouped: inset 0 0 0 1px var(--viz-accent-soft);
+  --viz-shadow-timeline-active: 0 0 0 4px var(--viz-accent-soft);
+  --viz-r-1: 7px;
+  --viz-r-2: 9px;
+  --viz-r-3: 12px;
+  --viz-r-4: 16px;
+  --viz-r-5: 18px;
+  --viz-r-canvas: 24px;
+  --viz-r-pill: 999px;
+  --viz-r-risk: 0 var(--viz-r-2) var(--viz-r-2) 0;
+  --viz-s-1: 4px;
+  --viz-s-2: 6px;
+  --viz-s-3: 8px;
+  --viz-s-4: 10px;
+  --viz-s-5: 12px;
+  --viz-s-6: 14px;
+  --viz-s-7: 16px;
+  --viz-s-8: 18px;
+  --viz-s-9: 24px;
+  --viz-type-chrome: 11px;
+  --viz-type-data: 12px;
+  --viz-type-body: 13px;
+  --viz-type-brand: 14px;
+  --viz-type-input: 15px;
+  --viz-type-title: 17px;
+  --viz-type-hero: 24px;
+  --viz-type-metric: 54px;
+  --viz-type-metric-compact: 42px;
+  --viz-line-tight: 1.08;
+  --viz-line-normal: 1.4;
+  --viz-target-desktop: 32px;
+  --viz-target-touch: 44px;
+  --viz-focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.28);
+  --viz-motion-fast: 120ms;
+  --viz-motion-medium: 220ms;
+  --viz-motion-reveal: 450ms;
+  --viz-ease: cubic-bezier(.2, .8, .2, 1);
+  --viz-peer-gap: 14px;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --viz-bg: #17171a;
+  --viz-canvas: #202024;
+  --viz-surface: #29292e;
+  --viz-surface-2: #232327;
+  --viz-surface-3: #34343a;
+  --viz-ink: #f5f5f7;
+  --viz-ink-soft: #dedee3;
+  --viz-muted: #a8a8af;
+  --viz-accent: #4da3ff;
+  --viz-on-accent: #111113;
+  --viz-accent-soft: rgba(77, 163, 255, 0.16);
+  --viz-good: #7bd6aa;
+  --viz-good-bg: #173a2c;
+  --viz-warn: #f3c06b;
+  --viz-warn-bg: #3b2b12;
+  --viz-bad: #ff8a82;
+  --viz-bad-bg: #44201e;
+  --viz-line: #44444b;
+  --viz-line-soft: #34343a;
+  --viz-grid: rgba(255, 255, 255, 0.04);
+  --viz-shadow-1: 0 1px 4px rgba(0, 0, 0, 0.35);
+  --viz-shadow-2: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --viz-shadow-3: 0 18px 55px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="corporate"] {
+  --viz-accent: #1b66c9;
+  --viz-on-accent: #ffffff;
+  --viz-accent-soft: rgba(27, 102, 201, 0.14);
+  --viz-good: #2b7952;
+  --viz-warn: #946000;
+}
+
+/* TOKEN DEFINITIONS END */
+
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--viz-bg);color:var(--viz-ink);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Arial,sans-serif}button,input,select{font:inherit;color:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:0;box-shadow:var(--viz-focus-ring)}
+:root{--preview-max:1560px}.preview-app{min-height:100vh}.approval-top{height:64px;display:flex;align-items:center;gap:14px;padding:0 20px;position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--viz-surface) 92%,transparent);backdrop-filter:blur(22px);border-bottom:1px solid var(--viz-line)}.approval-brand{display:flex;align-items:center;gap:11px;min-width:248px}.approval-mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:var(--viz-ink);color:var(--viz-surface);font-weight:900;font-size:12px}.approval-brand strong{display:block;font-size:14px;letter-spacing:-.02em}.approval-brand small{display:block;font-size:11px;color:var(--viz-muted);margin-top:1px}.nav-tabs{display:flex;gap:4px;flex:1}.nav-tab,.icon-btn,.control,.demo-action,.demo-tabs button,.range-handle{min-height:36px;min-width:36px;border:1px solid var(--viz-line);background:var(--viz-surface);border-radius:9px;padding:7px 11px;font-size:12px;font-weight:760}.nav-tab.active{background:var(--viz-ink);color:var(--viz-surface);border-color:var(--viz-ink)}.top-actions{display:flex;align-items:center;gap:7px}.quality-pill{display:flex;align-items:center;gap:7px;border:1px solid var(--viz-line);background:var(--viz-surface);border-radius:999px;padding:7px 11px;font-size:11px;font-weight:800}.quality-pill i{width:8px;height:8px;border-radius:50%;background:var(--viz-good)}
+.main-wrap{max-width:var(--preview-max);margin:auto;padding:22px 22px 80px}.hero-panel{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(320px,.6fr);gap:14px;margin-bottom:16px}.hero-copy-panel,.hero-stats{background:var(--viz-surface);border:1px solid var(--viz-line);border-radius:18px;box-shadow:var(--viz-shadow-1)}.hero-copy-panel{padding:24px 26px}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--viz-muted);font-weight:850}.hero-copy-panel h1{font-size:clamp(25px,3.4vw,44px);letter-spacing:-.045em;line-height:1.02;margin:9px 0 10px;max-width:880px}.hero-copy-panel p{font-size:13px;line-height:1.55;color:var(--viz-muted);max-width:780px;margin:0}.hero-stats{display:grid;grid-template-columns:1fr 1fr;overflow:hidden}.hero-stat{padding:18px;border-right:1px solid var(--viz-line-soft);border-bottom:1px solid var(--viz-line-soft)}.hero-stat:nth-child(2n){border-right:0}.hero-stat:nth-last-child(-n+2){border-bottom:0}.hero-stat b{display:block;font-size:24px;letter-spacing:-.04em}.hero-stat span{font-size:11px;color:var(--viz-muted)}
+.panel{display:none}.panel.active{display:block}.control-rail{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0 16px}.search{flex:1;min-width:220px}.control{border-radius:9px;padding:8px 10px;min-height:38px}.control input,.control select{border:0;background:transparent;outline:0;width:100%}.control.select{min-width:180px}.result-count{font-size:11px;color:var(--viz-muted);margin-left:auto}.engine-section{margin:26px 0 34px}.engine-heading{display:flex;align-items:end;justify-content:space-between;margin:0 2px 10px}.engine-heading h2{margin:0;font-size:17px;letter-spacing:-.02em}.engine-heading span{font-size:11px;color:var(--viz-muted)}.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}.gallery-card{min-width:0;min-height:250px;background:var(--viz-surface);border:1px solid var(--viz-line);border-radius:16px;padding:14px;box-shadow:var(--viz-shadow-component);display:flex;flex-direction:column;transition:transform var(--viz-motion-fast) var(--viz-ease),box-shadow var(--viz-motion-fast) var(--viz-ease),border-color var(--viz-motion-fast) var(--viz-ease);overflow:hidden}.gallery-card:hover,.gallery-card:focus{transform:translateY(-1px);border-color:color-mix(in srgb,var(--viz-accent) 50%,var(--viz-line));box-shadow:var(--viz-shadow-2)}.gallery-card header{display:flex;align-items:start;justify-content:space-between;gap:10px;border-bottom:1px solid var(--viz-line-soft);padding-bottom:10px}.gallery-card h3{margin:3px 0 0;font-size:14px;letter-spacing:-.018em}.engine-label{font-size:11px;color:var(--viz-muted);text-transform:uppercase;letter-spacing:.07em;font-weight:800}.quality-badge{font-size:11px;color:var(--viz-good);background:var(--viz-good-bg);border-radius:999px;padding:4px 7px;font-weight:800}.card-body{flex:1;display:flex;flex-direction:column;min-height:0;padding-top:12px;position:relative}.muted{color:var(--viz-muted)}.body-copy{font-size:13px;line-height:1.45;margin:4px 0}.source-line{font-size:11px;color:var(--viz-muted);margin-top:auto}.hero-copy{font-size:24px;line-height:1.07;font-weight:800;letter-spacing:-.04em;margin:auto 0}.gallery-card blockquote{font-size:16px;line-height:1.35;margin:auto 4px 6px;font-weight:670;letter-spacing:-.015em}.gallery-card pre{background:var(--viz-surface-3);border:1px solid var(--viz-line-soft);border-radius:10px;padding:12px;overflow:auto;font-size:11px;line-height:1.5;margin:auto 0}.sequence{font-size:13px;line-height:1.7;padding-left:22px;margin:auto 0}
+.metric-value{font-size:48px;line-height:.95;font-weight:820;letter-spacing:-.06em;margin:auto 0 7px}.metric-meta{display:flex;gap:8px;align-items:center;font-size:11px;color:var(--viz-muted)}.state,.chip{display:inline-flex;align-items:center;min-height:22px;border-radius:999px;padding:3px 7px;font-size:11px;font-weight:800;background:var(--viz-surface-3);white-space:nowrap}.state.good{color:var(--viz-good);background:var(--viz-good-bg)}.state.warn{color:var(--viz-warn);background:var(--viz-warn-bg)}.meter{height:6px;background:var(--viz-surface-3);border-radius:999px;margin-top:12px;overflow:hidden}.meter span{display:block;height:100%;background:var(--viz-accent);border-radius:999px}.mini-svg{width:100%;height:50px;margin-top:8px}.metric-ring{width:116px;height:116px;margin:auto;position:relative}.metric-ring svg{width:100%;height:100%}.metric-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:24px}.chart-ring-bg{fill:none;stroke:var(--viz-line-soft);stroke-width:10}.chart-ring{fill:none;stroke:var(--viz-accent);stroke-width:10;stroke-linecap:round}.surface-fill{fill:var(--viz-surface)}
+.comparison{display:grid;grid-template-columns:1fr 32px 1fr;align-items:center;gap:5px;margin:auto 0}.comparison>div{background:var(--viz-surface-2);border:1px solid var(--viz-line-soft);border-radius:12px;padding:14px}.comparison b{font-size:27px;display:block;margin:8px 0 3px}.comparison small{font-size:11px;color:var(--viz-muted)}.compare-arrow{text-align:center;font-size:20px;color:var(--viz-accent)}
+.viz-svg,.diagram-svg{width:100%;height:auto;max-height:146px;margin:auto 0;overflow:visible}.gridline{stroke:var(--viz-line-soft);stroke-width:1;fill:none}.accent-line{stroke:var(--viz-accent);stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}.accent-fill{fill:var(--viz-accent)}.soft-fill{fill:var(--viz-accent-soft)}.muted-fill{fill:var(--viz-muted)}.line-fill{fill:var(--viz-line)}.chart-stroke{stroke:var(--viz-ink-soft);stroke-width:2;fill:var(--viz-surface-2)}.legend text,.node-text{font-size:11px;fill:var(--viz-muted)}.legend rect{fill:var(--viz-accent)}.svg-on-accent{font-size:11px;fill:var(--viz-on-accent);font-weight:800}.sankey-flow{stroke:color-mix(in srgb,var(--viz-accent) 55%,transparent);stroke-width:9;fill:none;stroke-linecap:round}.contour{fill:none;stroke-width:3}.contour1{stroke:var(--viz-accent)}.contour2{stroke:color-mix(in srgb,var(--viz-accent) 60%,var(--viz-muted))}.contour3{stroke:var(--viz-ink-soft)}.node-box{fill:var(--viz-surface-2);stroke:var(--viz-line);stroke-width:1.2}.connector{stroke-width:1.6}
+.table-frame{overflow:hidden;border:1px solid var(--viz-line-soft);border-radius:10px;margin:auto 0}.table-frame table{width:100%;border-collapse:collapse;font-size:11px}.table-frame th,.table-frame td{padding:7px 8px;border-bottom:1px solid var(--viz-line-soft);text-align:left}.table-frame th{color:var(--viz-muted);font-size:11px;text-transform:uppercase;letter-spacing:.05em}.table-frame tr:last-child td{border-bottom:0}.table-frame .num{text-align:right;font-variant-numeric:tabular-nums}.matrix{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:auto 0}.matrix-cell{height:36px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:760;background:var(--viz-surface-3)}.level-1{background:color-mix(in srgb,var(--viz-accent) 10%,var(--viz-surface))}.level-2{background:color-mix(in srgb,var(--viz-accent) 18%,var(--viz-surface))}.level-3{background:color-mix(in srgb,var(--viz-accent) 28%,var(--viz-surface))}.level-4{background:color-mix(in srgb,var(--viz-accent) 42%,var(--viz-surface));color:var(--viz-ink)}
+.timeline-rail{display:grid;grid-template-columns:repeat(4,1fr);position:relative;margin:auto 0}.timeline-rail:before{content:"";position:absolute;left:10%;right:10%;top:10px;height:2px;background:var(--viz-line)}.tl-step{position:relative;z-index:1;text-align:center}.tl-dot{display:block;width:16px;height:16px;border-radius:50%;margin:2px auto 7px;border:3px solid var(--viz-accent);background:var(--viz-surface)}.tl-step.done .tl-dot{background:var(--viz-accent)}.tl-step b,.tl-step small{display:block;font-size:11px}.tl-step small{color:var(--viz-muted);margin-top:2px}.timeline-vertical{display:grid;gap:9px;margin:auto 0}.timeline-vertical .tl-step{display:grid;grid-template-columns:18px 1fr;text-align:left;gap:8px}.timeline-vertical .tl-dot{margin:2px}.timeline-vertical small{font-size:11px}
+.media-demo{height:140px;border-radius:12px;background:linear-gradient(145deg,var(--viz-ink-soft),var(--viz-ink));position:relative;overflow:hidden;margin:auto 0}.media-grid{position:absolute;inset:0;background-image:linear-gradient(color-mix(in srgb,var(--viz-surface) 8%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--viz-surface) 8%,transparent) 1px,transparent 1px);background-size:18px 18px}.media-focus{position:absolute;left:56%;top:28%;width:48px;height:48px;border:2px solid var(--viz-accent);border-radius:8px;box-shadow:0 0 0 1000px rgba(0,0,0,.10)}.media-callout{position:absolute;left:10px;bottom:10px;background:color-mix(in srgb,var(--viz-surface) 92%,transparent);border-radius:9px;padding:7px 9px;box-shadow:var(--viz-shadow-1)}.media-callout b,.media-callout span{display:block;font-size:11px}.media-callout span{color:var(--viz-muted);margin-top:2px}
+.wafer-demo{height:148px;width:148px;border:1px solid var(--viz-line);border-radius:50%;margin:auto;position:relative;background:var(--viz-surface-2);overflow:hidden}.wafer-grid{position:absolute;inset:12px;display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(9,1fr);gap:1px}.die{grid-column:calc(var(--x) + 1);grid-row:calc(var(--y) + 1);border-radius:2px;background:var(--viz-line)}.heat-1{background:color-mix(in srgb,var(--viz-accent) 20%,var(--viz-surface))}.heat-2{background:color-mix(in srgb,var(--viz-accent) 38%,var(--viz-surface))}.heat-3{background:color-mix(in srgb,var(--viz-accent) 60%,var(--viz-surface))}.heat-4{background:var(--viz-accent)}.wafer-notch{position:absolute;width:16px;height:7px;background:var(--viz-bg);bottom:-1px;left:50%;transform:translateX(-50%);border-radius:8px 8px 0 0}
+.composite-hero{margin:auto 0}.composite-hero strong{display:block;font-size:18px;line-height:1.15;letter-spacing:-.025em;margin:6px 0}.composite-hero p{font-size:12px;line-height:1.45;color:var(--viz-muted);margin:0}.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}.layout-demo{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(6,1fr);gap:6px;height:145px;margin:auto 0;background:var(--viz-surface-2);border:1px dashed var(--viz-line);border-radius:12px;padding:8px}.layout-block{background:var(--viz-surface);border:1px solid var(--viz-line);border-radius:8px;box-shadow:var(--viz-shadow-1)}.layout-block.b1{grid-column:1/8;grid-row:1/4}.layout-block.b2{grid-column:8/13;grid-row:1/3}.layout-block.b3{grid-column:8/13;grid-row:3/7}.layout-block.b4{grid-column:1/5;grid-row:4/7}.layout-block.b5{grid-column:5/8;grid-row:4/7}.horizontal-stack .layout-block{grid-row:2/6}.horizontal-stack .b1{grid-column:1/4}.horizontal-stack .b2{grid-column:4/7}.horizontal-stack .b3{grid-column:7/10}.horizontal-stack .b4{grid-column:10/13}.vertical-stack .layout-block{grid-column:2/12}.vertical-stack .b1{grid-row:1/2}.vertical-stack .b2{grid-row:2/4}.vertical-stack .b3{grid-row:4/6}.vertical-stack .b4{grid-row:6/7}.section-divider .layout-block{height:2px;border:0;background:var(--viz-line);grid-column:1/13;grid-row:3;align-self:center}.spacer-rhythm-element .layout-block{opacity:.15}.overlay-layer .b2{grid-column:5/11;grid-row:2/6;z-index:2;border-color:var(--viz-accent)}
+.demo-tabs{display:flex;gap:5px;margin:auto 0 8px}.demo-tabs button[aria-selected="true"]{background:var(--viz-ink);color:var(--viz-surface)}.demo-action{align-self:flex-start;background:var(--viz-surface-2)}.interaction-feedback{font-size:11px;color:var(--viz-muted);margin-top:9px}.range-demo{height:46px;margin:auto 5px;position:relative;background:linear-gradient(transparent 20px,var(--viz-line-soft) 20px,var(--viz-line-soft) 26px,transparent 26px)}.range-fill{position:absolute;left:25%;right:18%;top:20px;height:6px;background:var(--viz-accent);border-radius:999px}.range-handle{position:absolute;top:5px;width:36px;padding:0;border-radius:50%;background:transparent}.range-handle.left{left:calc(25% - 18px)}.range-handle.right{right:calc(18% - 18px)}.range-handle:after{content:"";position:absolute;inset:12px;border-radius:50%;background:var(--viz-accent)}.selection-demo{height:145px;position:relative;background:var(--viz-surface-2);border-radius:10px;overflow:hidden}.selected-box{position:absolute;left:23%;top:24%;width:54%;height:48%;border:2px solid var(--viz-accent);border-radius:9px}.selected-box span{position:absolute;width:9px;height:9px;border:2px solid var(--viz-accent);background:var(--viz-surface);border-radius:3px}.selected-box span:nth-child(1){left:-5px;top:-5px}.selected-box span:nth-child(2){right:-5px;top:-5px}.selected-box span:nth-child(3){left:-5px;bottom:-5px}.selected-box span:nth-child(4){right:-5px;bottom:-5px}.guide-v,.guide-h{position:absolute;background:var(--viz-bad)}.guide-v{left:50%;top:0;bottom:0;width:1px}.guide-h{top:50%;left:0;right:0;height:1px}.mini-map-demo{height:145px;background:var(--viz-surface-2);border:1px solid var(--viz-line);border-radius:10px;position:relative}.mini-map-demo span{position:absolute;background:var(--viz-line);border-radius:4px}.mini-map-demo i{position:absolute;left:22%;top:20%;width:56%;height:52%;border:2px solid var(--viz-accent);border-radius:5px}.editor-demo{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:auto 0}.editor-demo kbd{border:1px solid var(--viz-line);background:var(--viz-surface-2);border-radius:7px;padding:5px 7px;font-size:11px}
+/* Layout simulator */
+.sim-shell{display:grid;grid-template-columns:310px minmax(0,1fr);gap:14px}.sim-controls,.sim-stage-card,.grid-stage-card{background:var(--viz-surface);border:1px solid var(--viz-line);border-radius:16px}.sim-controls{padding:15px;align-self:start;position:sticky;top:82px}.sim-controls h2,.sim-stage-card h2,.grid-stage-card h2{font-size:15px;margin:0 0 13px}.field-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.field-control{margin-bottom:10px}.field-control label{display:block;font-size:11px;color:var(--viz-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:5px}.field-control input,.field-control select{width:100%;min-height:38px;border:1px solid var(--viz-line);background:var(--viz-surface-2);border-radius:8px;padding:7px 9px;font-size:12px}.sim-stage-card{padding:15px;min-width:0}.slide-wrap{width:100%;overflow:auto;padding:20px;background:var(--viz-bg);border-radius:12px;min-height:530px;display:grid;place-items:center}.slide-stage{position:relative;background:var(--viz-surface);box-shadow:var(--viz-shadow-3);transform-origin:center;border:1px solid var(--viz-line);overflow:hidden}.slide-header,.slide-footer{position:absolute;left:4%;right:4%;display:flex;align-items:center;color:var(--viz-muted);font-size:11px}.slide-header{top:3%;height:8%;border-bottom:1px solid var(--viz-line-soft);font-weight:800}.slide-footer{bottom:2%;height:5%;border-top:1px solid var(--viz-line-soft)}.slide-target{position:absolute;border:1px dashed var(--viz-accent);background:color-mix(in srgb,var(--viz-accent) 3%,transparent)}.sim-item{position:absolute;border:1px solid var(--viz-line);background:var(--viz-surface);border-radius:8px;box-shadow:var(--viz-shadow-1);padding:7px;font-size:11px;overflow:hidden}.sim-item b{display:block;font-size:11px;margin-bottom:3px}.sim-item span{color:var(--viz-muted)}.sim-meta{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--viz-muted);margin-top:10px}
+/* Virtual grid */
+.grid-stage-card{padding:15px}.grid-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.grid-toolbar input,.grid-toolbar select{min-height:38px;border:1px solid var(--viz-line);background:var(--viz-surface-2);border-radius:8px;padding:7px 9px;font-size:12px}.virtual-grid{height:520px;border:1px solid var(--viz-line);border-radius:11px;overflow:auto;position:relative;background:var(--viz-surface)}.vg-header{display:grid;grid-template-columns:90px 1.3fr 1fr 1fr 110px;position:sticky;top:0;z-index:3;background:var(--viz-surface-2);border-bottom:1px solid var(--viz-line);min-width:620px}.vg-header button{border:0;border-right:1px solid var(--viz-line-soft);background:transparent;min-height:42px;text-align:left;padding:8px 10px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;font-weight:820}.vg-body{position:relative;min-width:620px}.vg-row{position:absolute;left:0;right:0;height:36px;display:grid;grid-template-columns:90px 1.3fr 1fr 1fr 110px;border-bottom:1px solid var(--viz-line-soft);align-items:center;font-size:11px}.vg-row>[role="gridcell"]{padding:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.vg-row:focus{outline:2px solid var(--viz-accent);outline-offset:-2px;background:var(--viz-accent-soft)}.vg-null{color:var(--viz-muted);font-style:italic}.grid-meta{font-size:11px;color:var(--viz-muted);margin-left:auto}
+/* Export simulator */.export-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:14px}.export-notes{background:var(--viz-surface);border:1px solid var(--viz-line);border-radius:16px;padding:18px}.export-notes h2{margin:0 0 10px;font-size:16px}.export-notes p,.export-notes li{font-size:12px;line-height:1.5;color:var(--viz-muted)}.export-notes ul{padding-left:18px}.native-stack{display:grid;gap:7px;margin-top:12px}.native-row{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;border:1px solid var(--viz-line-soft);border-radius:9px;font-size:11px}.native-row b{color:var(--viz-good)}
+@media(max-width:900px){.approval-top{height:58px;padding:0 12px}.approval-brand{min-width:0;flex:1}.approval-brand small{display:none}.nav-tabs{position:fixed;z-index:60;bottom:0;left:0;right:0;height:62px;background:color-mix(in srgb,var(--viz-surface) 95%,transparent);backdrop-filter:blur(18px);border-top:1px solid var(--viz-line);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 8px env(safe-area-inset-bottom)}.nav-tab{border:0;background:transparent;min-height:48px;padding:5px;font-size:11px}.nav-tab.active{background:var(--viz-accent-soft);color:var(--viz-accent)}.quality-pill{display:none}.main-wrap{padding:14px 12px 86px}.hero-panel{grid-template-columns:1fr}.hero-copy-panel{padding:19px}.hero-stats{grid-template-columns:repeat(4,1fr)}.hero-stat{padding:10px;border-bottom:0}.hero-stat b{font-size:18px}.hero-stat span{font-size:11px}.gallery-grid{grid-template-columns:1fr}.gallery-card{min-height:250px}.sim-shell,.export-layout{grid-template-columns:1fr}.sim-controls{position:static}.slide-wrap{min-height:400px;padding:10px}.virtual-grid{height:560px}.control-rail{gap:6px}.control.search{flex-basis:100%}.result-count{width:100%;margin-left:0}.top-actions .icon-btn{min-width:44px;min-height:44px}.nav-tab,.control,.demo-action,.demo-tabs button,.range-handle,.vg-header button{min-height:44px}.sim-controls input,.sim-controls select,.grid-toolbar input,.grid-toolbar select{min-height:44px}.engine-heading{align-items:center}.engine-heading h2{font-size:15px}.engine-section{margin-top:20px}.vg-row{height:44px}.virtual-grid{touch-action:pan-y}.comparison{grid-template-columns:1fr 28px 1fr}.metric-value{font-size:44px}}
+@media(max-width:520px){.approval-mark{width:32px;height:32px}.top-actions{gap:4px}.top-actions .icon-btn:not(#themeBtn){display:none}.hero-copy-panel h1{font-size:29px}.hero-stats{grid-template-columns:1fr 1fr}.hero-stat{border-bottom:1px solid var(--viz-line-soft)}.hero-stat:nth-last-child(-n+2){border-bottom:0}.gallery-card{border-radius:14px}.gallery-card h3{font-size:15px}.slide-wrap{min-height:330px}.field-row{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.001ms!important;transition-duration:.001ms!important}}
+.control input,.control select{min-height:36px;padding:0}
+.vg-row[hidden]{display:none!important}
+@media(max-width:900px){.control input,.control select{min-height:44px}.range-handle{min-width:44px}.range-handle.left{left:calc(25% - 22px)}.range-handle.right{right:calc(18% - 22px)}}
+@media(max-width:900px){.approval-top{backdrop-filter:none;background:var(--viz-surface)}.nav-tabs{top:auto!important}}
+</style></head><body>
+<div class="preview-app" data-theme="light">
+<header class="approval-top"><div class="approval-brand"><div class="approval-mark">VZ</div><div><strong>Visualizer Production Preview</strong><small>248-element approval surface</small></div></div><nav class="nav-tabs" aria-label="Preview sections"><button class="nav-tab active" data-panel="gallery">248 Gallery</button><button class="nav-tab" data-panel="layout">Dynamic Grid</button><button class="nav-tab" data-panel="data">100k Grid</button><button class="nav-tab" data-panel="export">PPT Region</button></nav><div class="top-actions"><span class="quality-pill"><i></i><span id="qualityLabel">Release audit</span></span><button id="themeBtn" class="icon-btn" aria-label="Change theme">◐</button></div></header>
+<main class="main-wrap">
+<section class="hero-panel"><div class="hero-copy-panel"><span class="eyebrow">Phone-first approval candidate</span><h1>One production model. Every component. Any canvas.</h1><p>This preview exercises the same runtime registry, deterministic layout compiler, typed virtual grid, accessibility tokens, and template-independent PowerPoint region model used by the packaged production core.</p></div><div class="hero-stats"><div class="hero-stat"><b>248</b><span>Named elements</span></div><div class="hero-stat"><b>17</b><span>Canonical engines</span></div><div class="hero-stat"><b id="auditScore">—</b><span>Evidence score</span></div><div class="hero-stat"><b>100k</b><span>Virtual rows</span></div></div></section>
+<section id="panel-gallery" class="panel active"><div class="control-rail"><label class="control search"><input id="gallerySearch" type="search" placeholder="Search 248 elements…" aria-label="Search component gallery"></label><label class="control select"><select id="engineFilter" aria-label="Filter by engine"><option value="all">All engines</option></select></label><span id="resultCount" class="result-count"></span></div><div id="galleryRoot"></div></section>
+<section id="panel-layout" class="panel"><div class="sim-shell"><aside class="sim-controls"><h2>Dynamic grid controls</h2><div class="field-row"><div class="field-control"><label for="pageW">Slide width (in)</label><input id="pageW" type="number" step="0.1" value="13.333"></div><div class="field-control"><label for="pageH">Slide height (in)</label><input id="pageH" type="number" step="0.1" value="7.5"></div></div><div class="field-row"><div class="field-control"><label for="cols">Columns</label><input id="cols" type="number" min="1" max="24" value="12"></div><div class="field-control"><label for="rows">Rows</label><input id="rows" type="number" min="1" max="16" value="6"></div></div><div class="field-row"><div class="field-control"><label for="gap">Gutter (in)</label><input id="gap" type="number" step="0.01" value="0.08"></div><div class="field-control"><label for="regionMode">Target region</label><select id="regionMode"><option value="auto">Auto safe middle</option><option value="custom">Custom middle</option></select></div></div><button id="recompileBtn" class="demo-action">Recompile layout</button><p class="body-copy muted">The layout model stays normalized. HTML pixels and PPT EMUs are output transforms only.</p></aside><div class="sim-stage-card"><h2>Arbitrary slide / template simulation</h2><div class="slide-wrap"><div id="slideStage" class="slide-stage"><div class="slide-header">Existing company template · untouched header</div><div class="slide-footer">Existing footer / legal / page number remains untouched</div><div id="slideTarget" class="slide-target"></div></div></div><div id="layoutMeta" class="sim-meta"></div></div></div></section>
+<section id="panel-data" class="panel"><div class="grid-stage-card"><h2>Accessible retained-DOM virtual data grid</h2><div class="grid-toolbar"><input id="gridFilter" type="search" placeholder="Filter tool / chamber / status…" aria-label="Filter 100k rows"><select id="gridSort" aria-label="Sort virtual grid"><option value="id:asc">ID ↑</option><option value="yield:desc">Yield ↓</option><option value="yield:asc">Yield ↑</option><option value="tool:asc">Tool A–Z</option></select><span id="gridMeta" class="grid-meta"></span></div><div id="virtualGrid" class="virtual-grid" role="grid" aria-label="100,000 row production data grid" aria-rowcount="100001" aria-colcount="5"><div class="vg-header" role="row"><button data-sort="id" role="columnheader">ID</button><button data-sort="tool" role="columnheader">Tool</button><button data-sort="chamber" role="columnheader">Chamber</button><button data-sort="status" role="columnheader">Status</button><button data-sort="yield" role="columnheader">Yield</button></div><div id="vgBody" class="vg-body" role="rowgroup"></div></div></div></section>
+<section id="panel-export" class="panel"><div class="export-layout"><div class="sim-stage-card"><h2>Existing-template middle-region insertion</h2><div class="slide-wrap"><div id="exportStage" class="slide-stage"><div class="slide-header">CORPORATE TEMPLATE — preserved master/title band</div><div class="slide-footer">Confidential · existing footer · 27</div><div id="exportTarget" class="slide-target"></div></div></div></div><aside class="export-notes"><span class="eyebrow">Template independent</span><h2>No sanitized corporate PPTX required</h2><p>At export time the work template is the container. Visualizer finds or receives the middle content rectangle, then maps canonical grid placements into that region.</p><ul><li>Named placeholder or user-selected rectangle wins.</li><li>Otherwise the largest safe empty central region is detected.</li><li>Headers, footers, logos, masters and backgrounds stay untouched.</li><li>Overflow reflows or creates a new template slide instead of shrinking below readability floors.</li></ul><div class="native-stack"><div class="native-row"><span>Text / metrics</span><b>Editable text + shapes</b></div><div class="native-row"><span>Tables</span><b>Native PowerPoint table</b></div><div class="native-row"><span>Charts</span><b>Native/editable strategy</b></div><div class="native-row"><span>Diagrams</span><b>Shapes + connectors</b></div><div class="native-row"><span>Images</span><b>Image + editable callouts</b></div></div></aside></div></section>
+</main></div><script>(()=>{// generated from authoritative 248-element deep audit
+const ELEMENTS_BY_ENGINE = Object.freeze({
+  "SmartLayoutEngine": [
+    "Smart Canvas",
+    "Smart Group",
+    "Horizontal Stack",
+    "Vertical Stack",
+    "Adaptive Split",
+    "Side Rail",
+    "Floating Inspector Surface",
+    "Overlay Layer",
+    "Inset Region",
+    "Section Divider",
+    "Spacer / Rhythm Element",
+    "Responsive Grid Group",
+    "Masonry Group",
+    "Tabs / View Switcher",
+    "Accordion Detail"
+  ],
+  "TextEngine": [
+    "Hero Title",
+    "Section Heading",
+    "Eyebrow / Kicker",
+    "Executive Statement",
+    "Body Narrative",
+    "Key Takeaway",
+    "Numbered Insight",
+    "Quote / Voice",
+    "Annotation",
+    "Footnote / Source",
+    "Definition Block",
+    "Callout",
+    "Code / Technical Snippet",
+    "Narrative Sequence",
+    "Compact Metadata Line"
+  ],
+  "MetricEngine": [
+    "Hero KPI",
+    "Metric + Delta",
+    "KPI Pair",
+    "Metric Strip",
+    "Target vs Actual",
+    "Progress Metric",
+    "Confidence Metric",
+    "Status Metric",
+    "Capacity Metric",
+    "Rate Metric",
+    "Threshold Metric",
+    "Metric with Sparkline",
+    "Metric Ring",
+    "Metric Ladder"
+  ],
+  "ComparisonEngine": [
+    "As-Is \u2192 To-Be",
+    "Before/After KPI",
+    "Reduction Visual",
+    "Transformation Flow",
+    "Capability Shift",
+    "Process Simplification",
+    "Time Compression",
+    "Cost/Capacity Shift",
+    "Quality Improvement"
+  ],
+  "CoreChartEngine": [
+    "Vertical Bar",
+    "Horizontal Bar",
+    "Grouped Bar",
+    "Stacked Bar",
+    "100% Stacked Bar",
+    "Paired Before/After Bars",
+    "Dumbbell",
+    "Slope Chart",
+    "Waterfall",
+    "Line Chart",
+    "Multi-Line",
+    "Area Chart",
+    "Stacked Area",
+    "Sparkline",
+    "Step Chart",
+    "Scatter Plot",
+    "Regression Scatter",
+    "Bubble Plot",
+    "Histogram",
+    "Box Plot",
+    "Violin Plot",
+    "Strip / Dot Plot",
+    "ECDF",
+    "Pareto",
+    "Treemap",
+    "Donut",
+    "Pie",
+    "Funnel",
+    "Sankey"
+  ],
+  "TableEngine": [
+    "Clean Table",
+    "Dense Table",
+    "Ranked Table",
+    "KPI Table",
+    "Action Tracker",
+    "Project Portfolio Grid",
+    "Pivot Grid",
+    "Hierarchical Grid",
+    "Evidence Log"
+  ],
+  "MatrixEngine": [
+    "Comparison Grid",
+    "Decision Matrix",
+    "Weighted Decision Matrix",
+    "Evidence Matrix",
+    "Contradiction Matrix",
+    "Commonality Matrix",
+    "Heatmap Grid",
+    "Correlation Matrix",
+    "Risk Matrix",
+    "RACI Matrix",
+    "DOE Design Matrix",
+    "Benchmark Matrix"
+  ],
+  "TimelineEngine": [
+    "Gantt",
+    "Milestone Rail",
+    "Event Timeline",
+    "Vertical Timeline",
+    "Swimlane Timeline",
+    "Phase Roadmap",
+    "Dependency Roadmap",
+    "Calendar Heatmap",
+    "Schedule Grid",
+    "Sequence Strip",
+    "Before/After Timeline"
+  ],
+  "DiagramEngine": [
+    "Architecture Canvas",
+    "Data Flow",
+    "Process Flow",
+    "Flowchart",
+    "Decision Tree",
+    "Causal Chain",
+    "Causal DAG",
+    "Evidence Graph",
+    "Dependency Graph",
+    "Network Graph",
+    "Sequence Diagram",
+    "Swimlane Process",
+    "Transformation Diagram",
+    "Pipeline Diagram",
+    "Hierarchy Tree",
+    "Fishbone",
+    "Value Stream",
+    "Mind Map",
+    "Source Node",
+    "Process Node",
+    "AI / Model Node",
+    "Decision Node",
+    "Output Node",
+    "Storage Node",
+    "External System Node",
+    "Human Role Node",
+    "Event Node",
+    "Evidence Node",
+    "Hypothesis Node",
+    "Risk Node",
+    "Milestone Node",
+    "Container / Subsystem",
+    "Swimlane"
+  ],
+  "ImageMediaEngine": [
+    "Image",
+    "Hero Image",
+    "Screenshot Frame",
+    "Image + Caption",
+    "Before/After Images",
+    "Image Gallery",
+    "Annotated Image",
+    "Zoom Region / Detail Inset",
+    "SVG / Illustration",
+    "Visual Comparison Slider"
+  ],
+  "EvidenceCompositeEngine": [
+    "Leading Hypothesis",
+    "Evidence Card",
+    "Evidence Stack",
+    "Contradiction Callout",
+    "Evidence Polarity Grid",
+    "Causal Chain Component",
+    "Root Cause Status",
+    "Containment Component",
+    "Corrective Action Component",
+    "Verification Component",
+    "Open Questions",
+    "Next Discriminating Test"
+  ],
+  "DecisionCompositeEngine": [
+    "Recommendation Hero",
+    "Option Card",
+    "Pros / Cons",
+    "Tradeoff Map",
+    "Risk Callout",
+    "Risk Register",
+    "Decision Needed",
+    "Reversibility Indicator",
+    "Constraint Panel",
+    "Decision Consequence"
+  ],
+  "ProjectCompositeEngine": [
+    "Project Card",
+    "Portfolio Tile Grid",
+    "Project Health Strip",
+    "Milestone Status",
+    "Workstream Summary",
+    "Accomplishment List",
+    "Next Actions",
+    "Change Since Last Period",
+    "Owner / Contributor Cluster",
+    "Value vs Effort Quadrant"
+  ],
+  "EngineeringChartEngine": [
+    "SPC Control Chart",
+    "I-MR Chart",
+    "Xbar-R Chart",
+    "CUSUM Chart",
+    "EWMA Chart",
+    "DOE Main Effects",
+    "DOE Interaction Plot",
+    "Response Surface",
+    "Contour Plot",
+    "Residual Plot",
+    "Predicted vs Actual",
+    "Confidence Interval Plot",
+    "Error-Bar Chart"
+  ],
+  "WaferFabEngine": [
+    "Wafer Map",
+    "Wafer Difference Map",
+    "Wafer Overlay",
+    "Spatial Cluster View",
+    "Tool \u00d7 Chamber Matrix",
+    "Product \u00d7 Chamber Matrix",
+    "Route Commonality Matrix",
+    "Tool \u00d7 Recipe Heatmap",
+    "Lot Trajectory",
+    "Alarm Timeline",
+    "Golden vs Affected Profile",
+    "Control vs Affected Distribution",
+    "Process Route Diagram"
+  ],
+  "InteractionLayer": [
+    "Tooltip",
+    "Cross-filter",
+    "Brush / Range Selector",
+    "Drill-down",
+    "Tabs",
+    "Expandable Detail",
+    "Animated Count-up",
+    "Chart Reveal",
+    "Interactive Timeline",
+    "Hover Highlight"
+  ],
+  "EditorInfrastructure": [
+    "Selection Box",
+    "Resize Handles",
+    "Smart Guides",
+    "Snap Lines",
+    "Drop Zones",
+    "Ghost Preview",
+    "Multi-select",
+    "Group/Ungroup",
+    "Lock / Unlock",
+    "Layer Ordering",
+    "Auto-layout",
+    "Align / Distribute",
+    "Zoom / Pan",
+    "Mini-map",
+    "Undo / Redo",
+    "Command Palette",
+    "Keyboard Shortcuts",
+    "Context Toolbar",
+    "Right Inspector",
+    "Paste Data Target",
+    "Chart Switcher",
+    "Smart Layout Suggestions",
+    "Preset Save"
+  ]
+});
+const ALL_ELEMENTS = Object.freeze([
+  "Smart Canvas",
+  "Smart Group",
+  "Horizontal Stack",
+  "Vertical Stack",
+  "Adaptive Split",
+  "Side Rail",
+  "Floating Inspector Surface",
+  "Overlay Layer",
+  "Inset Region",
+  "Section Divider",
+  "Spacer / Rhythm Element",
+  "Responsive Grid Group",
+  "Masonry Group",
+  "Tabs / View Switcher",
+  "Accordion Detail",
+  "Hero Title",
+  "Section Heading",
+  "Eyebrow / Kicker",
+  "Executive Statement",
+  "Body Narrative",
+  "Key Takeaway",
+  "Numbered Insight",
+  "Quote / Voice",
+  "Annotation",
+  "Footnote / Source",
+  "Definition Block",
+  "Callout",
+  "Code / Technical Snippet",
+  "Narrative Sequence",
+  "Compact Metadata Line",
+  "Hero KPI",
+  "Metric + Delta",
+  "KPI Pair",
+  "Metric Strip",
+  "Target vs Actual",
+  "Progress Metric",
+  "Confidence Metric",
+  "Status Metric",
+  "Capacity Metric",
+  "Rate Metric",
+  "Threshold Metric",
+  "Metric with Sparkline",
+  "Metric Ring",
+  "Metric Ladder",
+  "As-Is \u2192 To-Be",
+  "Before/After KPI",
+  "Reduction Visual",
+  "Transformation Flow",
+  "Capability Shift",
+  "Process Simplification",
+  "Time Compression",
+  "Cost/Capacity Shift",
+  "Quality Improvement",
+  "Vertical Bar",
+  "Horizontal Bar",
+  "Grouped Bar",
+  "Stacked Bar",
+  "100% Stacked Bar",
+  "Paired Before/After Bars",
+  "Dumbbell",
+  "Slope Chart",
+  "Waterfall",
+  "Line Chart",
+  "Multi-Line",
+  "Area Chart",
+  "Stacked Area",
+  "Sparkline",
+  "Step Chart",
+  "Scatter Plot",
+  "Regression Scatter",
+  "Bubble Plot",
+  "Histogram",
+  "Box Plot",
+  "Violin Plot",
+  "Strip / Dot Plot",
+  "ECDF",
+  "Pareto",
+  "Treemap",
+  "Donut",
+  "Pie",
+  "Funnel",
+  "Sankey",
+  "Clean Table",
+  "Dense Table",
+  "Ranked Table",
+  "KPI Table",
+  "Action Tracker",
+  "Project Portfolio Grid",
+  "Pivot Grid",
+  "Hierarchical Grid",
+  "Evidence Log",
+  "Comparison Grid",
+  "Decision Matrix",
+  "Weighted Decision Matrix",
+  "Evidence Matrix",
+  "Contradiction Matrix",
+  "Commonality Matrix",
+  "Heatmap Grid",
+  "Correlation Matrix",
+  "Risk Matrix",
+  "RACI Matrix",
+  "DOE Design Matrix",
+  "Benchmark Matrix",
+  "Gantt",
+  "Milestone Rail",
+  "Event Timeline",
+  "Vertical Timeline",
+  "Swimlane Timeline",
+  "Phase Roadmap",
+  "Dependency Roadmap",
+  "Calendar Heatmap",
+  "Schedule Grid",
+  "Sequence Strip",
+  "Before/After Timeline",
+  "Architecture Canvas",
+  "Data Flow",
+  "Process Flow",
+  "Flowchart",
+  "Decision Tree",
+  "Causal Chain",
+  "Causal DAG",
+  "Evidence Graph",
+  "Dependency Graph",
+  "Network Graph",
+  "Sequence Diagram",
+  "Swimlane Process",
+  "Transformation Diagram",
+  "Pipeline Diagram",
+  "Hierarchy Tree",
+  "Fishbone",
+  "Value Stream",
+  "Mind Map",
+  "Source Node",
+  "Process Node",
+  "AI / Model Node",
+  "Decision Node",
+  "Output Node",
+  "Storage Node",
+  "External System Node",
+  "Human Role Node",
+  "Event Node",
+  "Evidence Node",
+  "Hypothesis Node",
+  "Risk Node",
+  "Milestone Node",
+  "Container / Subsystem",
+  "Swimlane",
+  "Image",
+  "Hero Image",
+  "Screenshot Frame",
+  "Image + Caption",
+  "Before/After Images",
+  "Image Gallery",
+  "Annotated Image",
+  "Zoom Region / Detail Inset",
+  "SVG / Illustration",
+  "Visual Comparison Slider",
+  "Leading Hypothesis",
+  "Evidence Card",
+  "Evidence Stack",
+  "Contradiction Callout",
+  "Evidence Polarity Grid",
+  "Causal Chain Component",
+  "Root Cause Status",
+  "Containment Component",
+  "Corrective Action Component",
+  "Verification Component",
+  "Open Questions",
+  "Next Discriminating Test",
+  "Recommendation Hero",
+  "Option Card",
+  "Pros / Cons",
+  "Tradeoff Map",
+  "Risk Callout",
+  "Risk Register",
+  "Decision Needed",
+  "Reversibility Indicator",
+  "Constraint Panel",
+  "Decision Consequence",
+  "Project Card",
+  "Portfolio Tile Grid",
+  "Project Health Strip",
+  "Milestone Status",
+  "Workstream Summary",
+  "Accomplishment List",
+  "Next Actions",
+  "Change Since Last Period",
+  "Owner / Contributor Cluster",
+  "Value vs Effort Quadrant",
+  "SPC Control Chart",
+  "I-MR Chart",
+  "Xbar-R Chart",
+  "CUSUM Chart",
+  "EWMA Chart",
+  "DOE Main Effects",
+  "DOE Interaction Plot",
+  "Response Surface",
+  "Contour Plot",
+  "Residual Plot",
+  "Predicted vs Actual",
+  "Confidence Interval Plot",
+  "Error-Bar Chart",
+  "Wafer Map",
+  "Wafer Difference Map",
+  "Wafer Overlay",
+  "Spatial Cluster View",
+  "Tool \u00d7 Chamber Matrix",
+  "Product \u00d7 Chamber Matrix",
+  "Route Commonality Matrix",
+  "Tool \u00d7 Recipe Heatmap",
+  "Lot Trajectory",
+  "Alarm Timeline",
+  "Golden vs Affected Profile",
+  "Control vs Affected Distribution",
+  "Process Route Diagram",
+  "Tooltip",
+  "Cross-filter",
+  "Brush / Range Selector",
+  "Drill-down",
+  "Tabs",
+  "Expandable Detail",
+  "Animated Count-up",
+  "Chart Reveal",
+  "Interactive Timeline",
+  "Hover Highlight",
+  "Selection Box",
+  "Resize Handles",
+  "Smart Guides",
+  "Snap Lines",
+  "Drop Zones",
+  "Ghost Preview",
+  "Multi-select",
+  "Group/Ungroup",
+  "Lock / Unlock",
+  "Layer Ordering",
+  "Auto-layout",
+  "Align / Distribute",
+  "Zoom / Pan",
+  "Mini-map",
+  "Undo / Redo",
+  "Command Palette",
+  "Keyboard Shortcuts",
+  "Context Toolbar",
+  "Right Inspector",
+  "Paste Data Target",
+  "Chart Switcher",
+  "Smart Layout Suggestions",
+  "Preset Save"
+]);
+const ELEMENT_ENGINE = new Map(Object.entries(ELEMENTS_BY_ENGINE).flatMap(([engine,names])=>names.map(name=>[name,engine])));
+function engineForElement(name){const e=ELEMENT_ENGINE.get(name); if(!e) throw new Error(`Unknown Visualizer element: ${name}`); return e;}
+function hasElement(name){return ELEMENT_ENGINE.has(name);}
+const REGISTRY_COUNTS = Object.freeze({elements:ALL_ELEMENTS.length,engines:Object.keys(ELEMENTS_BY_ENGINE).length});
+
+globalThis.__REG={ELEMENTS_BY_ENGINE,ALL_ELEMENTS};})();
+(()=>{const {ELEMENTS_BY_ENGINE}=globalThis.__REG;
+const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const slug = value => String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const bars = [66,42,83,55,72,48];
+const linePts = [[6,71],[24,58],[42,62],[60,38],[78,46],[94,21]];
+const spark = `<svg class="mini-svg" viewBox="0 0 100 50" role="img" aria-label="Trend sparkline"><path class="gridline" d="M0 42H100 M0 22H100"/><path class="accent-line" d="M3 39 L20 31 L37 35 L54 21 L71 24 L97 8"/></svg>`;
+
+function chartSvg(name){
+  const n=name.toLowerCase();
+  if(n.includes('pie')||n.includes('donut')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><circle cx="68" cy="56" r="36" class="chart-ring-bg"/><circle cx="68" cy="56" r="36" class="chart-ring" pathLength="100" stroke-dasharray="68 32" transform="rotate(-90 68 56)"/>${n.includes('donut')?'<circle cx="68" cy="56" r="21" class="surface-fill"/>':''}<g class="legend"><rect x="126" y="26" width="10" height="10" rx="3"/><text x="143" y="35">Primary 68%</text><rect x="126" y="50" width="10" height="10" rx="3" class="muted-fill"/><text x="143" y="59">Secondary 21%</text><rect x="126" y="74" width="10" height="10" rx="3" class="line-fill"/><text x="143" y="83">Other 11%</text></g></svg>`;
+  if(n.includes('scatter')||n.includes('bubble')||n.includes('strip')||n.includes('dot')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><path class="gridline" d="M24 12V94H210 M24 30H210 M24 52H210 M24 74H210"/>${[[42,74,5],[66,64,7],[91,55,4],[119,58,8],[143,40,5],[171,31,9],[194,21,5]].map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${n.includes('bubble')?r:4}" class="accent-fill"/>`).join('')}${n.includes('regression')?'<path d="M34 80L201 18" class="accent-line"/>':''}</svg>`;
+  if(n.includes('histogram')||n.includes('bar')||n.includes('pareto')||n.includes('waterfall')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><path class="gridline" d="M20 94H212 M20 72H212 M20 50H212 M20 28H212"/>${bars.map((h,i)=>`<rect x="${28+i*30}" y="${94-h*.72}" width="20" height="${h*.72}" rx="4" class="${i===4?'accent-fill':'soft-fill'}"/>`).join('')}${n.includes('pareto')?'<path d="M38 72 L68 58 L98 43 L128 31 L158 24 L188 17" class="accent-line"/>':''}</svg>`;
+  if(n.includes('treemap')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="Treemap preview"><rect x="8" y="8" width="91" height="60" rx="6" class="accent-fill"/><rect x="103" y="8" width="109" height="36" rx="6" class="soft-fill"/><rect x="103" y="48" width="54" height="56" rx="6" class="line-fill"/><rect x="161" y="48" width="51" height="56" rx="6" class="soft-fill"/><text x="16" y="28" class="svg-on-accent">A · 42%</text></svg>`;
+  if(n.includes('funnel')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="Funnel preview"><path d="M20 12H200L174 38H46Z" class="accent-fill"/><path d="M48 42H172L150 67H70Z" class="soft-fill"/><path d="M73 71H147L131 96H89Z" class="line-fill"/><text x="110" y="30" text-anchor="middle" class="svg-on-accent">100%</text></svg>`;
+  if(n.includes('sankey')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="Sankey preview"><rect x="12" y="22" width="16" height="64" rx="4" class="accent-fill"/><rect x="104" y="14" width="16" height="38" rx="4" class="soft-fill"/><rect x="104" y="64" width="16" height="34" rx="4" class="line-fill"/><rect x="192" y="31" width="16" height="50" rx="4" class="accent-fill"/><path d="M28 32 C64 32 70 22 104 22 M28 62 C67 62 70 77 104 77 M120 31 C156 31 158 46 192 46 M120 80 C156 80 158 67 192 67" class="sankey-flow"/></svg>`;
+  if(n.includes('box')||n.includes('violin')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><path class="gridline" d="M24 94H210 M24 72H210 M24 50H210 M24 28H210"/>${[65,110,155].map((x,i)=>n.includes('violin')?`<path d="M${x} 18 C${x-20} 36 ${x-18} 72 ${x} 93 C${x+18} 72 ${x+20} 36 ${x} 18Z" class="soft-fill"/><path d="M${x} 28V84" class="accent-line"/>`:`<path d="M${x} 20V92 M${x-14} 34H${x+14}V76H${x-14}Z M${x-14} 55H${x+14}" class="chart-stroke"/>`).join('')}</svg>`;
+  return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><path class="gridline" d="M20 94H212 M20 72H212 M20 50H212 M20 28H212"/><path d="${linePts.map(([x,y],i)=>`${i?'L':'M'} ${20+x*1.9} ${y}`).join(' ')}" class="accent-line"/>${linePts.map(([x,y])=>`<circle cx="${20+x*1.9}" cy="${y}" r="3.6" class="accent-fill"/>`).join('')}</svg>`;
+}
+
+function engineeringSvg(name){
+ const n=name.toLowerCase();
+ if(n.includes('contour')||n.includes('response surface')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview"><rect x="18" y="12" width="186" height="88" rx="8" class="soft-fill"/><ellipse cx="112" cy="55" rx="74" ry="32" class="contour contour1"/><ellipse cx="112" cy="55" rx="50" ry="22" class="contour contour2"/><ellipse cx="112" cy="55" rx="25" ry="12" class="contour contour3"/></svg>`;
+ if(n.includes('error')||n.includes('confidence')) return `<svg class="viz-svg" viewBox="0 0 220 112" role="img" aria-label="${esc(name)} preview">${[45,80,115,150,185].map((x,i)=>`<path d="M${x} ${28+i*8}V${72+i*3} M${x-7} ${28+i*8}H${x+7} M${x-7} ${72+i*3}H${x+7}" class="chart-stroke"/><circle cx="${x}" cy="${50+i*5}" r="5" class="accent-fill"/>`).join('')}</svg>`;
+ return chartSvg(name);
+}
+
+function tableBody(name){
+ const dense=name.toLowerCase().includes('dense');
+ return `<div class="table-frame"><table aria-label="${esc(name)} sample"><thead><tr><th>Item</th><th>Status</th><th class="num">Value</th></tr></thead><tbody>${['Alpha','Beta','Gamma',dense?'Delta':''].filter(Boolean).map((x,i)=>`<tr><td>${x}</td><td><span class="state ${i===2?'warn':'good'}">${i===2?'Watch':'On track'}</span></td><td class="num">${[92,87,71,64][i]}</td></tr>`).join('')}</tbody></table></div>`;
+}
+function matrixBody(name){return `<div class="matrix" role="grid" aria-label="${esc(name)} preview">${Array.from({length:16},(_,i)=>`<div role="gridcell" class="matrix-cell level-${(i*7)%5}">${i%5===0?'High':i%3===0?'Med':'Low'}</div>`).join('')}</div>`;}
+function timelineBody(name){
+ const vertical=name.toLowerCase().includes('vertical');
+ return `<div class="timeline-${vertical?'vertical':'rail'}" role="list" aria-label="${esc(name)} preview">${['Discover','Validate','Implement','Verify'].map((x,i)=>`<div role="listitem" class="tl-step ${i<2?'done':''}"><span class="tl-dot"></span><div><b>${x}</b><small>${i===0?'Aug 12':i===1?'Aug 19':i===2?'Aug 27':'Sep 04'}</small></div></div>`).join('')}</div>`;
+}
+function diagramBody(name){
+ const nodes=['Source','Transform','Decision','Output'];
+ return `<svg class="diagram-svg" viewBox="0 0 260 116" role="img" aria-label="${esc(name)} preview"><defs><marker id="arr-${slug(name)}" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" class="accent-fill"/></marker></defs>${nodes.map((x,i)=>`<rect x="${8+i*64}" y="${i%2?54:20}" width="52" height="32" rx="8" class="node-box"/><text x="${34+i*64}" y="${i%2?73:39}" text-anchor="middle" class="node-text">${x}</text>`).join('')}${[0,1,2].map(i=>`<path d="M${60+i*64} ${i%2?70:36} C${75+i*64} ${i%2?70:36}, ${77+i*64} ${(i+1)%2?70:36}, ${72+(i+1)*64} ${(i+1)%2?70:36}" class="accent-line connector" marker-end="url(#arr-${slug(name)})"/>`).join('')}</svg>`;
+}
+function imageBody(name){return `<div class="media-demo" role="img" aria-label="${esc(name)} preview"><div class="media-grid"></div><div class="media-focus"></div><div class="media-callout"><b>Critical region</b><span>Asset-relative annotation</span></div></div>`;}
+function waferBody(name){const cells=[];for(let y=-4;y<=4;y++)for(let x=-5;x<=5;x++){if(x*x+y*y<28){const m=(x*3+y*5+30)%5;cells.push(`<span class="die heat-${m}" style="--x:${x+5};--y:${y+4}" title="Die ${x},${y}"></span>`);}}return `<div class="wafer-demo" role="img" aria-label="${esc(name)} preview"><div class="wafer-grid">${cells.join('')}</div><span class="wafer-notch"></span></div>`;}
+function metricBody(name){
+ const ring=name.toLowerCase().includes('ring');
+ if(ring) return `<div class="metric-ring"><svg viewBox="0 0 100 100" role="img" aria-label="84 percent"><circle cx="50" cy="50" r="38" class="chart-ring-bg"/><circle cx="50" cy="50" r="38" class="chart-ring" pathLength="100" stroke-dasharray="84 16" transform="rotate(-90 50 50)"/></svg><b>84%</b></div><p class="muted">Yield confidence</p>`;
+ return `<div class="metric-value">${name.includes('Rate')?'98.7%':name.includes('Capacity')?'1.42M':'42.8'}</div><div class="metric-meta"><span class="state good">▲ 6.4%</span><span>vs target</span></div>${name.includes('Sparkline')?spark:''}<div class="meter"><span style="width:${name.includes('Threshold')?72:84}%"></span></div>`;
+}
+function textBody(name){
+ if(name.includes('Hero')) return `<div class="hero-copy">Operational clarity at production speed.</div><p class="muted">A disciplined narrative hierarchy with governed line length and readable type floors.</p>`;
+ if(name.includes('Quote')) return `<blockquote>“The decision is clear when evidence and consequence are visible together.”</blockquote><p class="muted">— Review synthesis</p>`;
+ if(name.includes('Code')) return `<pre><code>yield = good_dies / tested_dies\nassert yield &gt;= target</code></pre>`;
+ if(name.includes('Narrative Sequence')) return `<ol class="sequence"><li>Observe the signal</li><li>Test the mechanism</li><li>Lock the action</li></ol>`;
+ return `<p class="body-copy">A concise, evidence-bound explanation that preserves hierarchy, provenance, and readability across output sizes.</p><p class="source-line">Source · Production evidence · Updated Aug 27</p>`;
+}
+function comparisonBody(name){return `<div class="comparison"><div><span class="eyebrow">Before</span><b>62%</b><small>Manual path</small></div><span class="compare-arrow">→</span><div><span class="eyebrow">After</span><b>91%</b><small>Governed path</small></div></div>`;}
+function compositeBody(name,kind){
+ const tone=kind==='EvidenceCompositeEngine'?'Evidence':kind==='DecisionCompositeEngine'?'Decision':'Delivery';
+ return `<div class="composite-hero"><span class="eyebrow">${tone}</span><strong>${esc(name)}</strong><p>${kind==='EvidenceCompositeEngine'?'Supported by three independent signals; one contradiction remains open.':kind==='DecisionCompositeEngine'?'Recommended path balances impact, reversibility, and implementation risk.':'Workstream is on track with one upcoming dependency.'}</p></div><div class="chip-row"><span class="state good">Verified</span><span class="chip">Owner · J. Kim</span><span class="chip">High impact</span></div>`;
+}
+function layoutBody(name){return `<div class="layout-demo ${slug(name)}" aria-label="${esc(name)} layout preview">${Array.from({length:name.includes('Masonry')?5:4},(_,i)=>`<span class="layout-block b${i+1}"></span>`).join('')}</div>`;}
+function interactionBody(name){
+ const n=name.toLowerCase();
+ if(n.includes('tabs')) return `<div class="demo-tabs" role="tablist" aria-label="${esc(name)}"><button role="tab" aria-selected="true">Overview</button><button role="tab">Evidence</button><button role="tab">Risks</button></div><p class="body-copy">Selected tab content remains keyboard reachable.</p>`;
+ if(n.includes('brush')||n.includes('range')) return `<div class="range-demo"><span class="range-fill"></span><button aria-label="Range start" class="range-handle left"></button><button aria-label="Range end" class="range-handle right"></button></div>`;
+ return `<button class="demo-action" aria-label="Demonstrate ${esc(name)}">${esc(name)}</button><div class="interaction-feedback" aria-live="polite">Keyboard + pointer ready</div>`;
+}
+function editorBody(name){
+ const n=name.toLowerCase();
+ if(n.includes('mini-map')) return `<div class="mini-map-demo">${Array.from({length:6},(_,i)=>`<span style="left:${10+(i%3)*30}%;top:${15+Math.floor(i/3)*42}%;width:${20+i%2*8}%;height:24%"></span>`).join('')}<i></i></div>`;
+ if(n.includes('resize')||n.includes('selection')||n.includes('smart guides')||n.includes('snap')) return `<div class="selection-demo"><div class="selected-box"><span></span><span></span><span></span><span></span></div><i class="guide-v"></i><i class="guide-h"></i></div>`;
+ return `<div class="editor-demo"><button class="demo-action" aria-label="${esc(name)} action">${esc(name)}</button><kbd>⌘K</kbd><span class="muted">Revision-safe command</span></div>`;
+}
+
+function findEngineForElement(name){for(const [engine,names] of Object.entries(ELEMENTS_BY_ENGINE)) if(names.includes(name)) return engine; return null;}
+function renderElement(name, engine=findEngineForElement(name), options={}){
+ if(!engine) throw new Error(`Unknown element: ${name}`);
+ let body='';
+ switch(engine){
+  case 'SmartLayoutEngine': body=layoutBody(name); break;
+  case 'TextEngine': body=textBody(name); break;
+  case 'MetricEngine': body=metricBody(name); break;
+  case 'ComparisonEngine': body=comparisonBody(name); break;
+  case 'CoreChartEngine': body=chartSvg(name); break;
+  case 'TableEngine': body=tableBody(name); break;
+  case 'MatrixEngine': body=matrixBody(name); break;
+  case 'TimelineEngine': body=timelineBody(name); break;
+  case 'DiagramEngine': body=diagramBody(name); break;
+  case 'ImageMediaEngine': body=imageBody(name); break;
+  case 'EvidenceCompositeEngine': case 'DecisionCompositeEngine': case 'ProjectCompositeEngine': body=compositeBody(name,engine); break;
+  case 'EngineeringChartEngine': body=engineeringSvg(name); break;
+  case 'WaferFabEngine': body=waferBody(name); break;
+  case 'InteractionLayer': body=interactionBody(name); break;
+  case 'EditorInfrastructure': body=editorBody(name); break;
+  default: body=`<p>${esc(name)}</p>`;
+ }
+ const tier=options.tier ?? 'production';
+ return `<article class="gallery-card engine-${slug(engine)}" data-element="${esc(name)}" data-engine="${esc(engine)}" tabindex="0" role="group" aria-label="${esc(name)} component preview"><header><div><span class="engine-label">${esc(engine.replace('Engine','').replace('Infrastructure',' Infra'))}</span><h3>${esc(name)}</h3></div><span class="quality-badge">${esc(tier)}</span></header><div class="card-body">${body}</div></article>`;
+}
+function renderEngineGallery(engine){return (ELEMENTS_BY_ENGINE[engine]??[]).map(name=>renderElement(name,engine)).join('');}
+function renderAllElements(){return Object.entries(ELEMENTS_BY_ENGINE).flatMap(([engine,names])=>names.map(name=>renderElement(name,engine))).join('');}
+
+globalThis.__RENDER={renderElement,findEngineForElement,renderEngineGallery,renderAllElements};})();
+(()=>{/** Deterministic template-agnostic grid compiler. Canonical coordinates are inches. */
+class GridContractError extends Error{constructor(code,message,details={}){super(message);this.name='GridContractError';this.code=code;this.details=Object.freeze({...details});}}
+const fail=(c,m,d={})=>{throw new GridContractError(c,m,d)}; const fin=n=>typeof n==='number'&&Number.isFinite(n); const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const SLIDE_PRESETS=Object.freeze({standard:{width:13.333,height:7.5},classic:{width:10,height:7.5},portrait:{width:7.5,height:13.333},a4landscape:{width:11.694,height:8.268}});
+function pageSize(page={}){const p=typeof page==='string'?SLIDE_PRESETS[page]:page; if(!p||!fin(+p.width)||!fin(+p.height)||p.width<=0||p.height<=0) fail('GRID_PAGE','Page requires positive finite width/height.',{page}); return {width:+p.width,height:+p.height};}
+function normRegion(r,page){const x=+(r?.x??0),y=+(r?.y??0),width=+(r?.width??page.width),height=+(r?.height??page.height);if(![x,y,width,height].every(fin)||width<=0||height<=0||x<0||y<0||x+width>page.width+1e-9||y+height>page.height+1e-9)fail('GRID_REGION','Target region must be a positive rectangle within the page.',{r,page});return{x,y,width,height};}
+function trackSizes(spec,count,total,gap){if(!Number.isInteger(count)||count<1||count>64)fail('GRID_TRACKS','Track count must be 1..64.',{count});const usable=total-gap*(count-1);if(usable<=0)fail('GRID_GAP','Gutters consume target region.',{total,gap,count}); if(spec==null)return Array(count).fill(usable/count); if(Array.isArray(spec)){if(spec.length!==count)fail('GRID_TRACKS','Explicit track sizes must match count.');const vals=spec.map(Number);if(vals.some(v=>!fin(v)||v<=0))fail('GRID_TRACKS','Track sizes must be positive finite.');const s=vals.reduce((a,b)=>a+b,0);return vals.map(v=>usable*v/s);} fail('GRID_TRACKS','Track spec must be null or array.');}
+function sumTo(a,n){let s=0;for(let i=0;i<n;i++)s+=a[i];return s;}
+function findLargestEmptyRegion(pageInput, obstacles=[], options={}){const page=pageSize(pageInput);const pad=Math.max(0,Number(options.padding ?? 0.1));const obs=obstacles.filter(Boolean).map(o=>({x:clamp(+o.x||0,0,page.width),y:clamp(+o.y||0,0,page.height),width:Math.max(0,+o.width||0),height:Math.max(0,+o.height||0)}));
+ const xs=[0,page.width],ys=[0,page.height];for(const o of obs){xs.push(clamp(o.x-pad,0,page.width),clamp(o.x+o.width+pad,0,page.width));ys.push(clamp(o.y-pad,0,page.height),clamp(o.y+o.height+pad,0,page.height));} xs.sort((a,b)=>a-b);ys.sort((a,b)=>a-b);let best={x:0,y:0,width:page.width,height:page.height,area:0};
+ for(let xi=0;xi<xs.length-1;xi++)for(let xj=xi+1;xj<xs.length;xj++)for(let yi=0;yi<ys.length-1;yi++)for(let yj=yi+1;yj<ys.length;yj++){const r={x:xs[xi],y:ys[yi],width:xs[xj]-xs[xi],height:ys[yj]-ys[yi]};if(r.width<=0||r.height<=0)continue;const hit=obs.some(o=>r.x<o.x+o.width+pad&&r.x+r.width>o.x-pad&&r.y<o.y+o.height+pad&&r.y+r.height>o.y-pad);if(hit)continue;const area=r.width*r.height,centerPenalty=Math.abs((r.x+r.width/2)-page.width/2)+Math.abs((r.y+r.height/2)-page.height/2);const bestPenalty=Math.abs((best.x+best.width/2)-page.width/2)+Math.abs((best.y+best.height/2)-page.height/2);if(area>best.area+1e-9||(Math.abs(area-best.area)<1e-9&&centerPenalty<bestPenalty)){best={...r,area};}}
+ return Object.freeze({x:best.x,y:best.y,width:best.width,height:best.height});}
+function compileGridLayout(input={}){const page=pageSize(input.page??'standard');const target=normRegion(input.targetRegion,page);const columns=Math.max(1,Math.trunc(input.columns??12)),rows=Math.max(1,Math.trunc(input.rows??6));const colGap=Math.max(0,Number(input.columnGap ?? input.gap ?? 0.08)),rowGap=Math.max(0,Number(input.rowGap ?? input.gap ?? 0.08));if(!fin(colGap)||!fin(rowGap))fail('GRID_GAP','Gutters must be finite.',{colGap,rowGap});const cs=trackSizes(input.columnSizes,columns,target.width,colGap),rs=trackSizes(input.rowSizes,rows,target.height,rowGap);const items=(input.items??[]).map((it,index)=>{const col=Math.trunc(it.col??0),row=Math.trunc(it.row??0),colSpan=Math.trunc(it.colSpan??1),rowSpan=Math.trunc(it.rowSpan??1);if(col<0||row<0||colSpan<1||rowSpan<1||col+colSpan>columns||row+rowSpan>rows)fail('GRID_ITEM','Item lies outside grid.',{index,it,columns,rows});const x=target.x+sumTo(cs,col)+colGap*col,y=target.y+sumTo(rs,row)+rowGap*row,width=cs.slice(col,col+colSpan).reduce((a,b)=>a+b,0)+colGap*(colSpan-1),height=rs.slice(row,row+rowSpan).reduce((a,b)=>a+b,0)+rowGap*(rowSpan-1);return Object.freeze({id:String(it.id??`item-${index+1}`),col,row,colSpan,rowSpan,x,y,width,height,nx:(x-target.x)/target.width,ny:(y-target.y)/target.height,nw:width/target.width,nh:height/target.height});});
+ const overlaps=[];for(let i=0;i<items.length;i++)for(let j=i+1;j<items.length;j++){const a=items[i],b=items[j];if(a.x<b.x+b.width-1e-9&&a.x+a.width>b.x+1e-9&&a.y<b.y+b.height-1e-9&&a.y+a.height>b.y+1e-9)overlaps.push([a.id,b.id]);}if(overlaps.length&&!input.allowOverlap)fail('GRID_OVERLAP','Grid items overlap.',{overlaps});
+ const fingerprint=JSON.stringify({page,target,columns,rows,colGap,rowGap,items:items.map(({id,col,row,colSpan,rowSpan})=>({id,col,row,colSpan,rowSpan}))});return Object.freeze({page:Object.freeze(page),targetRegion:Object.freeze(target),grid:Object.freeze({columns:Object.freeze({count:columns,sizes:Object.freeze(cs)}),rows:Object.freeze({count:rows,sizes:Object.freeze(rs)}),columnGap:colGap,rowGap}),placements:Object.freeze(items),warnings:Object.freeze([]),fingerprint});}
+function mapPlacementToRegion(p,target){return{x:target.x+p.nx*target.width,y:target.y+p.ny*target.height,width:p.nw*target.width,height:p.nh*target.height};}
+
+globalThis.__GRID={compileGridLayout,findLargestEmptyRegion,mapPlacementToRegion};})();
+(()=>{class DataGridError extends Error{constructor(code,message,details={}){super(message);this.name='DataGridError';this.code=code;this.details=details;}}
+const fail=(c,m,d={})=>{throw new DataGridError(c,m,d)};const missing=v=>v===null||v===undefined||Number.isNaN(v);
+function cmp(a,b,type){if(missing(a)&&missing(b))return 0;if(missing(a))return 1;if(missing(b))return -1;if(type==='number'||type==='date')return (+a)-(+b);if(type==='boolean')return Number(a)-Number(b);return String(a).localeCompare(String(b),undefined,{numeric:true,sensitivity:'base'});}
+function prepareDataGrid(input={}){if(!Array.isArray(input.rows))fail('GRID_ROWS','rows must be array');const rows=input.rows.map((r,i)=>Object.freeze({...r,__rowIndex:i}));const cols=(input.columns??Object.keys(rows[0]??{}).filter(k=>!k.startsWith('__'))).map((c,i)=>typeof c==='string'?{key:c,label:c,type:'text'}:{...c,key:String(c.key),label:String(c.label??c.key),type:c.type??'text'});if(new Set(cols.map(c=>c.key)).size!==cols.length)fail('GRID_COLUMNS','column keys must be unique');let view=rows.slice();const filter=String(input.filter??'').trim().toLowerCase();if(filter)view=view.filter(r=>cols.some(c=>String(r[c.key]??'').toLowerCase().includes(filter)));if(input.sort?.key){const c=cols.find(c=>c.key===input.sort.key);if(!c)fail('GRID_SORT','unknown sort column');const dir=input.sort.direction==='desc'?-1:1;view.sort((a,b)=>{const av=a[c.key],bv=b[c.key];if(missing(av)&&missing(bv))return a.__rowIndex-b.__rowIndex;if(missing(av))return 1;if(missing(bv))return -1;const z=cmp(av,bv,c.type);return z?z*dir:a.__rowIndex-b.__rowIndex;});}
+ return Object.freeze({columns:Object.freeze(cols.map(Object.freeze)),rows:Object.freeze(view),rowCount:view.length,sourceRowCount:rows.length,filter,sort:input.sort??null});}
+function rowAt(model,index){return index>=0&&index<model.rows.length?model.rows[index]:null;}
+function gridVirtualWindow(rowCount,scrollTop,viewportHeight,rowHeight=32,overscan=6){const count=Math.max(0,Math.trunc(rowCount)),rh=Math.max(1,+rowHeight||32),vh=Math.max(0,+viewportHeight||0),maxStart=Math.max(0,count-1),raw=Math.floor(Math.max(0,+scrollTop||0)/rh),visible=Math.ceil(vh/rh),start=count?Math.min(maxStart,Math.max(0,raw-overscan)):0,end=count?Math.min(count,start+visible+overscan*2):0;return Object.freeze({start,end,offsetY:start*rh,totalHeight:count*rh,count:Math.max(0,end-start)});}
+
+globalThis.__DATA={prepareDataGrid,gridVirtualWindow,rowAt};})();
+const {ELEMENTS_BY_ENGINE}=globalThis.__REG; const {renderElement}=globalThis.__RENDER; const {compileGridLayout,findLargestEmptyRegion}=globalThis.__GRID; const {prepareDataGrid,gridVirtualWindow}=globalThis.__DATA;
+
+
+
+
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const app=$('.preview-app');
+const score=97.1; $('#auditScore').textContent=score.toFixed(1); $('#qualityLabel').textContent=`${score.toFixed(1)} / 100`;
+const themes=['light','dark','corporate'];let themeIndex=0;$('#themeBtn').addEventListener('click',()=>{themeIndex=(themeIndex+1)%themes.length;app.dataset.theme=themes[themeIndex];$('#themeBtn').setAttribute('aria-label',`Theme: ${themes[themeIndex]}`)});
+$$('.nav-tab').forEach(btn=>btn.addEventListener('click',()=>{const id=btn.dataset.panel;$$('.nav-tab').forEach(b=>b.classList.toggle('active',b===btn));$$('.panel').forEach(p=>p.classList.toggle('active',p.id===`panel-${id}`));if(id==='data')ensureGrid();if(id==='layout')renderLayout();if(id==='export')renderExport();window.scrollTo({top:0,behavior:'smooth'});}));
+
+const engineFilter=$('#engineFilter');Object.keys(ELEMENTS_BY_ENGINE).forEach(engine=>engineFilter.insertAdjacentHTML('beforeend',`<option value="${engine}">${engine}</option>`));
+function renderGallery(){const q=$('#gallerySearch').value.trim().toLowerCase(),chosen=engineFilter.value;let shown=0,html='';for(const [engine,names] of Object.entries(ELEMENTS_BY_ENGINE)){if(chosen!=='all'&&chosen!==engine)continue;const filtered=names.filter(n=>!q||n.toLowerCase().includes(q)||engine.toLowerCase().includes(q));if(!filtered.length)continue;shown+=filtered.length;html+=`<section class="engine-section" data-engine-section="${engine}"><div class="engine-heading"><h2>${engine}</h2><span>${filtered.length} component${filtered.length===1?'':'s'}</span></div><div class="gallery-grid">${filtered.map(name=>renderElement(name,engine,{tier:'95+ passed'})).join('')}</div></section>`;}$('#galleryRoot').innerHTML=html;$('#resultCount').textContent=`${shown} of 248 elements`;}
+$('#gallerySearch').addEventListener('input',renderGallery);engineFilter.addEventListener('change',renderGallery);renderGallery();
+
+const layoutItems=[{id:'Executive summary',col:0,row:0,colSpan:7,rowSpan:2},{id:'Hero KPI',col:7,row:0,colSpan:5,rowSpan:2},{id:'Trend chart',col:0,row:2,colSpan:8,rowSpan:3},{id:'Decision panel',col:8,row:2,colSpan:4,rowSpan:3},{id:'Source / note',col:0,row:5,colSpan:12,rowSpan:1}];
+function fitStage(stage,w,h){const available=Math.min(stage.parentElement.clientWidth-24,1040),scale=Math.min(available/(w*78),520/(h*78),1);stage.style.width=`${w*78}px`;stage.style.height=`${h*78}px`;stage.style.transform=`scale(${scale})`;stage.parentElement.style.height=`${Math.max(340,h*78*scale+42)}px`;return scale;}
+function regionForPage(w,h){return findLargestEmptyRegion({width:w,height:h},[{x:.35,y:.18,width:w-.7,height:.72},{x:.35,y:h-.52,width:w-.7,height:.32}],{padding:.08});}
+function renderLayout(){const w=+$('#pageW').value||13.333,h=+$('#pageH').value||7.5,cols=Math.max(1,+$('#cols').value||12),rows=Math.max(1,+$('#rows').value||6),gap=Math.max(0,+$('#gap').value||.08);const stage=$('#slideStage');fitStage(stage,w,h);stage.querySelectorAll('.sim-item').forEach(x=>x.remove());const target=regionForPage(w,h);const adapted=layoutItems.map((x,i)=>({...x,col:Math.min(x.col,cols-1),row:Math.min(x.row,rows-1),colSpan:Math.max(1,Math.min(x.colSpan,cols-Math.min(x.col,cols-1))),rowSpan:Math.max(1,Math.min(x.rowSpan,rows-Math.min(x.row,rows-1)))}));let plan;try{plan=compileGridLayout({page:{width:w,height:h},targetRegion:target,columns:cols,rows, gap,items:adapted,allowOverlap:true});}catch(e){$('#layoutMeta').textContent=e.message;return}const targetEl=$('#slideTarget');Object.assign(targetEl.style,{left:`${target.x/w*100}%`,top:`${target.y/h*100}%`,width:`${target.width/w*100}%`,height:`${target.height/h*100}%`});for(const p of plan.placements){const d=document.createElement('div');d.className='sim-item';Object.assign(d.style,{left:`${p.x/w*100}%`,top:`${p.y/h*100}%`,width:`${p.width/w*100}%`,height:`${p.height/h*100}%`});d.innerHTML=`<b>${p.id}</b><span>${p.colSpan}×${p.rowSpan} · normalized ${p.nw.toFixed(2)}×${p.nh.toFixed(2)}</span>`;stage.appendChild(d);}$('#layoutMeta').innerHTML=`<span>Page <b>${w.toFixed(2)} × ${h.toFixed(2)} in</b></span><span>Target <b>${target.width.toFixed(2)} × ${target.height.toFixed(2)} in</b></span><span>Grid <b>${cols} × ${rows}</b></span><span>Fingerprint <b>${hash(plan.fingerprint)}</b></span>`;}
+['pageW','pageH','cols','rows','gap'].forEach(id=>$(`#${id}`).addEventListener('change',renderLayout));$('#recompileBtn').addEventListener('click',renderLayout);
+function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return (h>>>0).toString(16).padStart(8,'0')}
+
+let gridReady=false,gridModel=null,gridRows=null,gridRenderTimes=[];
+function makeRows(){const tools=['ETCH-12','CVD-07','LITHO-03','CMP-09','DIFF-02','METAL-11'],chambers=['A','B','C','D'];return Array.from({length:100000},(_,i)=>({id:i+1,tool:tools[i%tools.length],chamber:chambers[(i*7)%4],status:i%23===0?'Watch':i%17===0?'Hold':'On track',yield:i%101===0?null:Math.round((91+(i*13%800)/100)*100)/100}));}
+function gridRowHeight(){return innerWidth<=900?44:36;}
+function ensureGrid(){if(gridReady){renderVirtualGrid();return}const t0=performance.now();gridRows=makeRows();gridModel=prepareDataGrid({rows:gridRows,columns:[{key:'id',type:'number'},{key:'tool',type:'text'},{key:'chamber',type:'text'},{key:'status',type:'text'},{key:'yield',type:'number'}],sort:{key:'id',direction:'asc'}});gridReady=true;$('#gridMeta').textContent=`100,000 rows prepared in ${(performance.now()-t0).toFixed(0)} ms`;const grid=$('#virtualGrid');grid.addEventListener('scroll',renderVirtualGrid,{passive:true});grid.addEventListener('keydown',e=>{const row=document.activeElement?.closest?.('.vg-row');if(!row||!['ArrowDown','ArrowUp','Home','End'].includes(e.key))return;e.preventDefault();let idx=+row.dataset.index;if(e.key==='ArrowDown')idx++;if(e.key==='ArrowUp')idx--;if(e.key==='Home')idx=0;if(e.key==='End')idx=gridModel.rowCount-1;idx=Math.max(0,Math.min(gridModel.rowCount-1,idx));grid.scrollTop=idx*gridRowHeight();requestAnimationFrame(()=>{renderVirtualGrid();document.querySelector(`.vg-row[data-index="${idx}"]`)?.focus()})});renderVirtualGrid();}
+function rebuildGrid(){if(!gridReady)return;const filter=$('#gridFilter').value, [key,direction]=$('#gridSort').value.split(':');const t0=performance.now();gridModel=prepareDataGrid({rows:gridRows,columns:[{key:'id',type:'number'},{key:'tool',type:'text'},{key:'chamber',type:'text'},{key:'status',type:'text'},{key:'yield',type:'number'}],filter,sort:{key,direction}});$('#virtualGrid').scrollTop=0;$('#gridMeta').textContent=`${gridModel.rowCount.toLocaleString()} rows · query ${(performance.now()-t0).toFixed(1)} ms`;renderVirtualGrid();}
+$('#gridFilter').addEventListener('input',rebuildGrid);$('#gridSort').addEventListener('change',rebuildGrid);$$('.vg-header button').forEach(b=>b.addEventListener('click',()=>{const key=b.dataset.sort,current=$('#gridSort').value;$('#gridSort').value=`${key}:${current===`${key}:asc`?'desc':'asc'}`;rebuildGrid()}));
+let gridPool=[];
+function ensureGridPool(body,count=72){if(gridPool.length)return;const frag=document.createDocumentFragment();for(let i=0;i<count;i++){const row=document.createElement('div');row.className='vg-row';row.setAttribute('role','row');row.tabIndex=-1;for(let c=0;c<5;c++){const cell=document.createElement('span');cell.setAttribute('role','gridcell');row.appendChild(cell);}frag.appendChild(row);gridPool.push(row);}body.appendChild(frag);}
+function renderVirtualGrid(){if(!gridReady)return;const t0=performance.now(),grid=$('#virtualGrid'),headerH=42,rowH=gridRowHeight(),win=gridVirtualWindow(gridModel.rowCount,Math.max(0,grid.scrollTop-headerH),grid.clientHeight-headerH,rowH,8),body=$('#vgBody');body.style.height=`${win.totalHeight}px`;ensureGridPool(body,80);const activeIndex=Number(document.activeElement?.dataset?.index);for(let slot=0;slot<gridPool.length;slot++){const row=gridPool[slot],i=win.start+slot;if(i>=win.end){row.hidden=true;continue}const r=gridModel.rows[i],cells=row.children;row.hidden=false;row.dataset.index=String(i);row.setAttribute('aria-rowindex',String(i+2));row.tabIndex=i===activeIndex?0:-1;row.style.transform=`translateY(${i*rowH}px)`;row.style.height=`${rowH}px`;cells[0].textContent=String(r.id);cells[1].textContent=r.tool;cells[2].textContent=r.chamber;cells[3].innerHTML=`<span class="state ${r.status==='On track'?'good':'warn'}">${r.status}</span>`;cells[4].textContent=r.yield==null?'Missing':r.yield.toFixed(2)+'%';cells[4].className=r.yield==null?'vg-null':'';}const dt=performance.now()-t0;if(gridRenderTimes.length>4)gridRenderTimes.push(dt);else gridRenderTimes.push(dt);if(gridRenderTimes.length>120)gridRenderTimes.shift();const sample=gridRenderTimes.length>5?gridRenderTimes.slice(2):gridRenderTimes,sorted=[...sample].sort((a,b)=>a-b),p95=sorted[Math.floor((sorted.length-1)*.95)]||dt;$('#gridMeta').textContent=`${gridModel.rowCount.toLocaleString()} rows · ${win.count} visible / ${gridPool.length} retained rows · ${p95.toFixed(2)} ms p95`;}
+
+function renderExport(){const w=13.333,h=7.5,stage=$('#exportStage');fitStage(stage,w,h);stage.querySelectorAll('.sim-item').forEach(x=>x.remove());const target=regionForPage(w,h);Object.assign($('#exportTarget').style,{left:`${target.x/w*100}%`,top:`${target.y/h*100}%`,width:`${target.width/w*100}%`,height:`${target.height/h*100}%`});const plan=compileGridLayout({page:{width:w,height:h},targetRegion:target,columns:12,rows:6,gap:.08,items:layoutItems});for(const p of plan.placements){const d=document.createElement('div');d.className='sim-item';Object.assign(d.style,{left:`${p.x/w*100}%`,top:`${p.y/h*100}%`,width:`${p.width/w*100}%`,height:`${p.height/h*100}%`});d.innerHTML=`<b>${p.id}</b><span>editable PPT object group</span>`;stage.appendChild(d);}}
+window.addEventListener('resize',()=>{if($('#panel-layout').classList.contains('active'))renderLayout();if($('#panel-export').classList.contains('active'))renderExport();if(gridReady)renderVirtualGrid()});
+</script></body></html>

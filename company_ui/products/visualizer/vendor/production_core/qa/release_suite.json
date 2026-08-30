@@ -1,0 +1,1050 @@
+{
+  "pass": true,
+  "suite": "Visualizer 95+ Production Release",
+  "commands_planned": 27,
+  "commands_ran": 27,
+  "elapsed_ms": 8643.97,
+  "results": [
+    {
+      "name": "advanced_chart_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 192.58,
+      "payload": {
+        "pass": true,
+        "charts": 12,
+        "sizes": 5,
+        "renderCases": 60,
+        "deterministic": true,
+        "invalidInputBlocking": true
+      }
+    },
+    {
+      "name": "core_chart_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 167.81,
+      "payload": {
+        "pass": true,
+        "types": 29,
+        "deterministic": true,
+        "typedEligibility": true,
+        "invalidInputBlocking": true
+      }
+    },
+    {
+      "name": "editor_store",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 184.95,
+      "payload": {
+        "pass": true,
+        "commands": 100,
+        "revision": 303,
+        "deterministic": true,
+        "atomic": true,
+        "frozenModel": true,
+        "groupedUndoExact": true
+      }
+    },
+    {
+      "name": "engineering_chart_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 196.6,
+      "payload": {
+        "pass": true,
+        "types": 13,
+        "renderCases": 39,
+        "deterministic": true,
+        "invalidInputBlocking": true
+      }
+    },
+    {
+      "name": "graph_semantics_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 1005.83,
+      "payload": {
+        "pass": true,
+        "kinds": 5,
+        "deterministic": true,
+        "invalidGraphBlocking": true,
+        "hundredNodeIterations": 1000,
+        "elapsedMs": 815.936,
+        "fingerprint": "g1-f1b18dfb"
+      }
+    },
+    {
+      "name": "grid_layout_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 262.23,
+      "payload": {
+        "pass": true,
+        "deterministic": true,
+        "arbitraryPages": 2500,
+        "safeMiddleRegion": {
+          "x": 0,
+          "y": 0.96,
+          "width": 13.333,
+          "height": 6
+        },
+        "normalizedMapping": true
+      }
+    },
+    {
+      "name": "data_grid_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 492.05,
+      "payload": {
+        "pass": true,
+        "zeroVsMissing": true,
+        "missingLastAscDesc": true,
+        "rows": 100000,
+        "buildMs": 157.12,
+        "virtual10kMs": 8.37,
+        "maxVisibleWindow": 31
+      }
+    },
+    {
+      "name": "image_media_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 181.24,
+      "payload": {
+        "pass": true,
+        "roundTrips": 3000,
+        "maxError": 1.1102230246251565e-16,
+        "svgSanitized": true,
+        "pixelPolicy": true
+      }
+    },
+    {
+      "name": "wafer_fab_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 155.67,
+      "payload": {
+        "pass": true,
+        "registration": true,
+        "zeroVsMissing": true,
+        "unitMismatchBlocking": true,
+        "provenance": true
+      }
+    },
+    {
+      "name": "statistics_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 189.35,
+      "payload": {
+        "pass": true,
+        "reference": "NumPy/SciPy/statsmodels",
+        "distribution": true,
+        "regression": true,
+        "doe": true,
+        "spc": true,
+        "transforms": true,
+        "invalidInputBlocking": true
+      }
+    },
+    {
+      "name": "table_pivot_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 1536.32,
+      "payload": {
+        "pass": true,
+        "typedAggregation": true,
+        "rowSubtotals": true,
+        "columnSubtotals": true,
+        "grandTotals": true,
+        "expandCollapse": true,
+        "deterministicFingerprint": true,
+        "invalidInputBlocking": true,
+        "stress": {
+          "rows": 100000,
+          "buildMs": 1047.4,
+          "visibleRows": 49,
+          "virtual10kMs": 7.28
+        }
+      }
+    },
+    {
+      "name": "table_pivot_reference",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 252.61,
+      "payload": {
+        "pass": true,
+        "oracle": "pandas 2.2.3",
+        "seed": 4172026,
+        "sourceRows": 1500,
+        "checkedCells": 423
+      }
+    },
+    {
+      "name": "timeline_semantics_engine",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 172.89,
+      "payload": {
+        "pass": true,
+        "modes": 2,
+        "dependencyTypes": 4,
+        "noInventedDates": true,
+        "deterministic": true,
+        "invalidScheduleBlocking": true,
+        "fingerprint": "t1-8e00565e"
+      }
+    },
+    {
+      "name": "universal_renderer",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 156.16,
+      "payload": {
+        "pass": true,
+        "elements": 248,
+        "engines": 17,
+        "interactive": 33,
+        "allNamed": true,
+        "ariaNamed": true,
+        "noInvalidNumbers": true
+      }
+    },
+    {
+      "name": "ppt_mapping_catalog",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 177.89,
+      "payload": {
+        "pass": true,
+        "contracts": 248,
+        "exportable": 225,
+        "editorOnly": 23,
+        "strategies": {
+          "editable_grouped_shapes": 56,
+          "editable_text_box": 15,
+          "editable_text_and_shapes": 14,
+          "native_chart_when_supported_else_editable_shapes": 42,
+          "editable_table": 9,
+          "editable_table_and_shapes": 12,
+          "editable_timeline_shapes": 11,
+          "editable_shapes_and_connectors": 33,
+          "native_image_plus_editable_annotations": 10,
+          "editable_shapes_plus_native_image_boundary": 13,
+          "flatten_selected_state_only": 10,
+          "not_exported_editor_only": 23
+        },
+        "noWholeReportRaster": true
+      }
+    },
+    {
+      "name": "property_fuzz",
+      "pass": true,
+      "source": "executed",
+      "elapsed_ms": 3318.13,
+      "payload": {
+        "pass": true,
+        "seed": 1511506142,
+        "totalCases": 12500,
+        "statsCases": 3500,
+        "pivotCases": 3000,
+        "editorCases": 1500,
+        "chartCases": 2000,
+        "gridCases": 625,
+        "imageCases": 625,
+        "waferCases": 625,
+        "timelineCases": 625,
+        "invalidCases": 220,
+        "elapsedMs": 3152.24
+      }
+    },
+    {
+      "name": "static_p0_lint",
+      "pass": true,
+      "source": "static_p0_lint.json",
+      "payload": {
+        "pass": true,
+        "errors": [],
+        "checks": {
+          "semantic_type_tokens": true,
+          "presentation_token_lint": true,
+          "accessibility_primitives": true,
+          "pointer_lifecycle": true,
+          "resize_observer": true,
+          "retained_canvas_scaffold": true
+        }
+      }
+    },
+    {
+      "name": "component_contracts",
+      "pass": true,
+      "source": "component_contract_validation.json",
+      "payload": {
+        "pass": true,
+        "contracts": 248,
+        "runtimeRegistry": 248,
+        "engines": 17,
+        "errors": []
+      }
+    },
+    {
+      "name": "offline_runtime",
+      "pass": true,
+      "source": "offline_runtime.json",
+      "payload": {
+        "pass": true,
+        "external_urls": [],
+        "cdn_references": [],
+        "local_module_preview": true,
+        "runtime_node_required": false
+      }
+    },
+    {
+      "name": "ppt_template_adapter",
+      "pass": true,
+      "source": "ppt_template_adapter.json",
+      "payload": {
+        "pass": true,
+        "originalShapesPreserved": true,
+        "target": {
+          "x": 0,
+          "y": 0.96,
+          "width": 13.333,
+          "height": 6.0
+        },
+        "added": 5,
+        "withinTarget": true,
+        "noCorporateOverlap": true,
+        "editableObjects": {
+          "chart": true,
+          "table": true,
+          "shapes": true
+        },
+        "output": "/mnt/data/visualizer95/15_PRODUCTION_CORE/qa/ppt_middle_region_proof.pptx"
+      }
+    },
+    {
+      "name": "browser_smoke",
+      "pass": true,
+      "source": "browser_smoke.json",
+      "payload": {
+        "pass": true,
+        "console_errors": [],
+        "checks": {
+          "initial_components": true,
+          "self_test": true,
+          "all_buttons_named": true,
+          "svg_controls_named": true,
+          "desktop_target_floor": true,
+          "chart_hit_targets": true,
+          "font_floor": true,
+          "keyboard_nudge": true,
+          "undo_redo_exact": true,
+          "revision_advanced": true,
+          "context_toolbar_nonoverlap": true,
+          "group_atomic": true,
+          "group_undo": true,
+          "chart_keyboard_filter": true,
+          "focus_not_destroyed_by_store_commit": true,
+          "pointercancel_recovery": true,
+          "resize_observer": true,
+          "theme_tokens": true,
+          "zoom_60_140": true,
+          "zoom_canonical_invariant": true,
+          "smart_hull": true
+        },
+        "target_report": {
+          "count": 60,
+          "small": [],
+          "chart": [
+            {
+              "w": 31.997802734375,
+              "h": 31.997772216796875
+            },
+            {
+              "w": 31.997802734375,
+              "h": 31.997802734375
+            },
+            {
+              "w": 31.997772216796875,
+              "h": 31.997802734375
+            },
+            {
+              "w": 31.997802734375,
+              "h": 31.997833251953125
+            },
+            {
+              "w": 31.997802734375,
+              "h": 31.997802734375
+            },
+            {
+              "w": 31.997802734375,
+              "h": 31.997802734375
+            },
+            {
+              "w": 31.997802734375,
+              "h": 31.997802734375
+            }
+          ]
+        },
+        "min_visible_font_px": 11,
+        "context_placement": {
+          "selectedArea": 0,
+          "peerArea": 0,
+          "placement": "above"
+        },
+        "themes": {
+          "light": {
+            "ink_bg": 14.403918857037985,
+            "muted_surface2": 4.8617186883166275,
+            "soft_surface": 10.469501924222353,
+            "on_accent": 4.947248544934918,
+            "good": 5.197720947766066,
+            "warn": 5.795235249396804,
+            "bad": 4.786701274740712,
+            "accent_canvas": 4.543585730155495
+          },
+          "dark": {
+            "ink_bg": 16.42936660531366,
+            "muted_surface2": 6.624826949147377,
+            "soft_surface": 10.795735113203797,
+            "on_accent": 7.183680919305389,
+            "good": 7.175865305042367,
+            "warn": 8.156550480642094,
+            "bad": 6.260265458389069,
+            "accent_canvas": 6.183582902266867
+          },
+          "corporate": {
+            "ink_bg": 14.403918857037985,
+            "muted_surface2": 4.8617186883166275,
+            "soft_surface": 10.469501924222353,
+            "on_accent": 5.540078471867569,
+            "good": 4.873850062487915,
+            "warn": 4.981326440044424,
+            "bad": 4.786701274740712,
+            "accent_canvas": 5.088044649483098
+          }
+        },
+        "zoom_results": {
+          "0.6": {
+            "actual": 0.6,
+            "small": 0,
+            "preflight": {
+              "coverage": 95,
+              "overlaps": 0,
+              "out": 0,
+              "min": 0,
+              "warnings": []
+            }
+          },
+          "1.0": {
+            "actual": 1,
+            "small": 0,
+            "preflight": {
+              "coverage": 95,
+              "overlaps": 0,
+              "out": 0,
+              "min": 0,
+              "warnings": []
+            }
+          },
+          "1.4": {
+            "actual": 1.4,
+            "small": 0,
+            "preflight": {
+              "coverage": 95,
+              "overlaps": 0,
+              "out": 0,
+              "min": 0,
+              "warnings": []
+            }
+          }
+        },
+        "final_revision": 12
+      }
+    },
+    {
+      "name": "performance_200",
+      "pass": true,
+      "source": "performance_200.json",
+      "payload": {
+        "pass": true,
+        "budget": {
+          "p95_ms": 16.7,
+          "max_heap_growth_mb": 4.0
+        },
+        "console_errors": [],
+        "component_count": 200,
+        "timing": {
+          "frames": 360,
+          "mean_ms": 3.5977777777782953,
+          "median_ms": 2.800000000745058,
+          "p95_ms": 7.599999999627471,
+          "p99_ms": 12.5,
+          "max_ms": 42.200000000186265,
+          "under_16_7_pct": 99.16666666666667
+        },
+        "heap_before_mb": 1.7204780578613281,
+        "heap_after_mb": 1.8096694946289062,
+        "heap_growth_mb": 0.08919143676757812,
+        "focus_preserved": true,
+        "dom_count_stable": true
+      }
+    },
+    {
+      "name": "advanced_charts_browser",
+      "pass": true,
+      "source": "advanced_charts_browser.json",
+      "payload": {
+        "pass": true,
+        "console_errors": [],
+        "sizes": {
+          "xs": {
+            "width": 330,
+            "height": 230,
+            "count": 12,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "advanced_charts_xs.png"
+          },
+          "s": {
+            "width": 440,
+            "height": 280,
+            "count": 12,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "advanced_charts_s.png"
+          },
+          "m": {
+            "width": 600,
+            "height": 350,
+            "count": 12,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "advanced_charts_m.png"
+          },
+          "l": {
+            "width": 760,
+            "height": 430,
+            "count": 12,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "advanced_charts_l.png"
+          },
+          "xl": {
+            "width": 980,
+            "height": 540,
+            "count": 12,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "advanced_charts_xl.png"
+          }
+        }
+      }
+    },
+    {
+      "name": "engineering_charts_browser",
+      "pass": true,
+      "source": "engineering_charts_browser.json",
+      "payload": {
+        "pass": true,
+        "console_errors": [],
+        "sizes": {
+          "xs": {
+            "width": 330,
+            "height": 230,
+            "count": 13,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "engineering_charts_xs.png"
+          },
+          "s": {
+            "width": 440,
+            "height": 280,
+            "count": 13,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "engineering_charts_s.png"
+          },
+          "m": {
+            "width": 600,
+            "height": 350,
+            "count": 13,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "engineering_charts_m.png"
+          },
+          "l": {
+            "width": 760,
+            "height": 430,
+            "count": 13,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "engineering_charts_l.png"
+          },
+          "xl": {
+            "width": 980,
+            "height": 540,
+            "count": 13,
+            "bad": 0,
+            "wrong": 0,
+            "titles": 0,
+            "console_errors": [],
+            "screenshot": "engineering_charts_xl.png"
+          }
+        }
+      }
+    },
+    {
+      "name": "approval_preview_browser",
+      "pass": true,
+      "source": "approval_preview_browser.json",
+      "payload": {
+        "pass": true,
+        "checks": {
+          "desktop_248_cards": true,
+          "desktop_17_engines": true,
+          "desktop_no_horizontal_overflow": true,
+          "desktop_font_floor": true,
+          "desktop_controls_named": true,
+          "desktop_control_targets": true,
+          "desktop_search": true,
+          "desktop_engine_filter": true,
+          "desktop_theme": true,
+          "desktop_dynamic_grid": true,
+          "desktop_arbitrary_canvas": true,
+          "desktop_100k_grid": true,
+          "desktop_retained_grid": true,
+          "desktop_typed_filter": true,
+          "desktop_keyboard_grid": true,
+          "desktop_ppt_middle_region": true,
+          "phone_248_cards": true,
+          "phone_17_engines": true,
+          "phone_no_horizontal_overflow": true,
+          "phone_font_floor": true,
+          "phone_controls_named": true,
+          "phone_control_targets": true,
+          "phone_search": true,
+          "phone_engine_filter": true,
+          "phone_theme": true,
+          "phone_dynamic_grid": true,
+          "phone_arbitrary_canvas": true,
+          "phone_100k_grid": true,
+          "phone_retained_grid": true,
+          "phone_typed_filter": true,
+          "phone_keyboard_grid": true,
+          "phone_ppt_middle_region": true
+        },
+        "console_errors": [],
+        "viewports": {
+          "desktop": {
+            "cards": 248,
+            "engines": 17,
+            "geometry": {
+              "horizontalOverflow": 0,
+              "minFont": 11,
+              "docWidth": 1440,
+              "vw": 1440
+            },
+            "controls": 38,
+            "visibleVirtualRows": 30,
+            "retainedVirtualRows": 80,
+            "gridMeta": "100,000 rows \u00b7 30 visible / 80 retained rows \u00b7 2.50 ms p95",
+            "browserActionP95Ms": 79.55
+          },
+          "phone": {
+            "cards": 248,
+            "engines": 17,
+            "geometry": {
+              "horizontalOverflow": 0,
+              "minFont": 11,
+              "docWidth": 390,
+              "vw": 390
+            },
+            "controls": 38,
+            "visibleVirtualRows": 28,
+            "retainedVirtualRows": 80,
+            "gridMeta": "100,000 rows \u00b7 28 visible / 80 retained rows \u00b7 4.00 ms p95",
+            "browserActionP95Ms": 65.8
+          }
+        }
+      }
+    },
+    {
+      "name": "release_248_browser",
+      "pass": true,
+      "source": "release_248_browser.json",
+      "payload": {
+        "pass": true,
+        "viewports": {
+          "desktop": {
+            "base": {
+              "cards": 248,
+              "engines": 17,
+              "minFont": 11,
+              "unlabeledSvg": 0,
+              "badNames": 0,
+              "badTargets": 0,
+              "cardProblems": [],
+              "cardProblemCount": 0,
+              "duplicateIds": [],
+              "horizontalCount": 0,
+              "docWidth": 1440,
+              "vw": 1440,
+              "controlCount": 31,
+              "reduced": [
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                }
+              ]
+            },
+            "themes": {
+              "light": {
+                "cards": 248,
+                "w": 1440,
+                "vw": 1440
+              },
+              "dark": {
+                "cards": 248,
+                "w": 1440,
+                "vw": 1440
+              },
+              "corporate": {
+                "cards": 248,
+                "w": 1440,
+                "vw": 1440
+              }
+            },
+            "controls": 286,
+            "virtual": {
+              "retained": 80,
+              "visible": 30,
+              "meta": "100,000 rows \u00b7 30 visible / 80 retained rows \u00b7 11.30 ms p95"
+            },
+            "focusables": 31
+          },
+          "tablet": {
+            "base": {
+              "cards": 248,
+              "engines": 17,
+              "minFont": 11,
+              "unlabeledSvg": 0,
+              "badNames": 0,
+              "badTargets": 0,
+              "cardProblems": [],
+              "cardProblemCount": 0,
+              "duplicateIds": [],
+              "horizontalCount": 0,
+              "docWidth": 900,
+              "vw": 900,
+              "controlCount": 31,
+              "reduced": [
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                }
+              ]
+            },
+            "themes": {
+              "light": {
+                "cards": 248,
+                "w": 900,
+                "vw": 900
+              },
+              "dark": {
+                "cards": 248,
+                "w": 900,
+                "vw": 900
+              },
+              "corporate": {
+                "cards": 248,
+                "w": 900,
+                "vw": 900
+              }
+            },
+            "controls": 286,
+            "virtual": {
+              "retained": 80,
+              "visible": 28,
+              "meta": "100,000 rows \u00b7 28 visible / 80 retained rows \u00b7 24.10 ms p95"
+            },
+            "focusables": 31
+          },
+          "phone": {
+            "base": {
+              "cards": 248,
+              "engines": 17,
+              "minFont": 11,
+              "unlabeledSvg": 0,
+              "badNames": 0,
+              "badTargets": 0,
+              "cardProblems": [],
+              "cardProblemCount": 0,
+              "duplicateIds": [],
+              "horizontalCount": 0,
+              "docWidth": 390,
+              "vw": 390,
+              "controlCount": 31,
+              "reduced": [
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                },
+                {
+                  "t": "1e-06s",
+                  "a": "1e-06s"
+                }
+              ]
+            },
+            "themes": {
+              "light": {
+                "cards": 248,
+                "w": 390,
+                "vw": 390
+              },
+              "dark": {
+                "cards": 248,
+                "w": 390,
+                "vw": 390
+              },
+              "corporate": {
+                "cards": 248,
+                "w": 390,
+                "vw": 390
+              }
+            },
+            "controls": 286,
+            "virtual": {
+              "retained": 80,
+              "visible": 28,
+              "meta": "100,000 rows \u00b7 28 visible / 80 retained rows \u00b7 11.40 ms p95"
+            },
+            "focusables": 31
+          }
+        },
+        "checks": {
+          "desktop_248": true,
+          "desktop_font_floor": true,
+          "desktop_aria": true,
+          "desktop_targets": true,
+          "desktop_containment": true,
+          "desktop_unique_ids": true,
+          "desktop_reduced_motion": true,
+          "desktop_themes": true,
+          "desktop_long_labels": true,
+          "desktop_keyboard_focus": true,
+          "desktop_grid_profiles": true,
+          "desktop_100k_grid": true,
+          "desktop_ppt_region": true,
+          "tablet_248": true,
+          "tablet_font_floor": true,
+          "tablet_aria": true,
+          "tablet_targets": true,
+          "tablet_containment": true,
+          "tablet_unique_ids": true,
+          "tablet_reduced_motion": true,
+          "tablet_themes": true,
+          "tablet_long_labels": true,
+          "tablet_keyboard_focus": true,
+          "tablet_grid_profiles": true,
+          "tablet_100k_grid": true,
+          "tablet_ppt_region": true,
+          "phone_248": true,
+          "phone_font_floor": true,
+          "phone_aria": true,
+          "phone_targets": true,
+          "phone_containment": true,
+          "phone_unique_ids": true,
+          "phone_reduced_motion": true,
+          "phone_themes": true,
+          "phone_long_labels": true,
+          "phone_keyboard_focus": true,
+          "phone_grid_profiles": true,
+          "phone_100k_grid": true,
+          "phone_ppt_region": true
+        },
+        "console_errors": []
+      }
+    },
+    {
+      "name": "diagram_connector_benchmark",
+      "pass": true,
+      "source": "diagram_connector_benchmark.json",
+      "payload": {
+        "pass": true,
+        "connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+        "authority_identical": true,
+        "nodes": 100,
+        "edges": 90,
+        "budget": {
+          "full_reroute_p95_ms": 150.0
+        },
+        "route_result": {
+          "failed": 0,
+          "hits": 0,
+          "arrows": 90
+        },
+        "timing": {
+          "runs": 30,
+          "mean_ms": 59.99000000000621,
+          "median_ms": 52.75,
+          "p95_ms": 116.19999999925494,
+          "max_ms": 140.20000000018626
+        },
+        "console_errors": []
+      }
+    }
+  ]
+}

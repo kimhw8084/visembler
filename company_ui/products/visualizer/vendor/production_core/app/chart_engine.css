@@ -1,0 +1,17 @@
+@import url('./tokens.css');
+.viz-advanced-chart { width: 100%; height: 100%; display: block; overflow: visible; font-family: var(--viz-font-ui); background: var(--viz-surface); }
+.viz-grid { stroke: var(--viz-line-soft); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.viz-axis-strong { stroke: var(--viz-ink-soft); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.viz-line { fill: none; stroke: var(--viz-accent); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.viz-area { fill: var(--viz-accent-soft); stroke: var(--viz-accent); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.viz-mark, .viz-bubble, .viz-sankey-node { stroke: var(--viz-surface); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.viz-series-0 { fill: var(--viz-accent); stroke: var(--viz-accent); }
+.viz-series-1 { fill: var(--viz-good); stroke: var(--viz-good); }
+.viz-series-2 { fill: var(--viz-warn); stroke: var(--viz-warn); }
+.viz-bubble { fill-opacity: .62; }
+.viz-box { fill: var(--viz-accent-soft); stroke: var(--viz-accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.viz-label { fill: var(--viz-muted); font-size: var(--viz-type-chrome); font-weight: 700; }
+.viz-label-invert { fill: var(--viz-surface); }
+.viz-sankey-link { fill: none; stroke-opacity: .36; vector-effect: non-scaling-stroke; }
+/* Line semantics must win over generic series fill. */
+.viz-line.viz-series-0, .viz-line.viz-series-1, .viz-line.viz-series-2 { fill: none; }

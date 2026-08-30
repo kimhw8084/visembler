@@ -1,0 +1,128 @@
+<div class="cui-visualizer-root" data-editor-ready="false" data-library="open" data-inspector="open">
+  <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit preview</button>
+  <div class="app">
+    <header class="topbar" aria-label="Visembler toolbar">
+      <div class="toolbar" role="toolbar" aria-label="Editor actions">
+        <div class="toolgroup" aria-label="History">
+          <button class="tb icon" id="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
+          <button class="tb icon" id="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+        </div>
+        <div class="tool-separator" aria-hidden="true"></div>
+        <div class="toolgroup" aria-label="Arrange">
+          <button class="tb" id="auto" title="Recompose the report using Smart mode constraints">Reflow</button>
+          <button class="tb" id="group">Group</button>
+          <button class="tb" id="ungroup">Ungroup</button>
+        </div>
+        <div class="tool-separator" aria-hidden="true"></div>
+        <div class="toolgroup" aria-label="Layer and lock">
+          <button class="tb" id="lock">Lock</button>
+          <button class="tb" id="back">Back</button>
+          <button class="tb" id="front">Front</button>
+        </div>
+        <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
+        <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
+      </div>
+      <div class="rightbar" aria-label="Report actions">
+        <button class="tb" id="debugBtn" aria-haspopup="dialog" title="Open developer console">Developer console</button>
+        <button class="tb" id="preflightBtn">Validate</button>
+        <button class="tb" id="previewBtn">Preview</button>
+        <button class="tb accent" id="saveBtn">Save</button>
+        <button class="tb" id="exportBtn" aria-haspopup="dialog">Export ▾</button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="left" id="libraryPane" aria-label="Authoring library">
+        <div class="pane-title library-pane-title"><span>Library</span><span class="pane-hint">Drag or click</span></div>
+        <div class="library-tabs" role="tablist" aria-label="Library views">
+          <button id="elementsTab" class="library-tab active" role="tab" aria-selected="true" data-library-tab="elements">Elements</button>
+          <button id="presetsTab" class="library-tab" role="tab" aria-selected="false" data-library-tab="presets">Presets</button>
+        </div>
+        <div id="elementsView" class="library-view active" role="tabpanel" aria-labelledby="elementsTab">
+          <div class="section quick-section">
+            <div class="section-heading"><span>Quick add</span><small>Common building blocks</small></div>
+            <div class="palette">
+              <button class="pal pal-metric" data-type="metric"><span class="pal-visual"><i>42.8</i><em>+6.4%</em></span><b>Metric</b><small>Hero KPI</small></button>
+              <button class="pal pal-chart" data-type="chart"><span class="pal-visual"><i class="spark"></i></span><b>Chart</b><small>Line chart</small></button>
+              <button class="pal pal-text" data-type="text"><span class="pal-visual"><i class="lines"></i></span><b>Narrative</b><small>Key takeaway</small></button>
+              <button class="pal pal-table" data-type="table"><span class="pal-visual"><i class="grid"></i></span><b>Table</b><small>Editable grid</small></button>
+              <button class="pal pal-timeline" data-type="timeline"><span class="pal-visual"><i class="timeline-preview"></i></span><b>Timeline</b><small>Milestones</small></button>
+              <button class="pal pal-image" data-type="image"><span class="pal-visual"><i class="image-preview"></i></span><b>Image</b><small>Paste / upload</small></button>
+              <button class="pal pal-diagram" data-type="diagram"><span class="pal-visual"><i class="diagram-preview"></i></span><b>Diagram</b><small>Process flow</small></button>
+              <button class="pal pal-risk" data-type="risk"><span class="pal-visual"><i class="risk-preview">!</i></span><b>Decision</b><small>Risk callout</small></button>
+            </div>
+          </div>
+          <div class="library-sticky-controls">
+            <div class="library-filters">
+              <input class="library-search" id="componentSearch" type="search" placeholder="Search 248 elements" aria-label="Search elements">
+              <select class="library-search" id="engineFilter" aria-label="Filter by family"><option value="">All families</option></select>
+            </div>
+          </div>
+          <div class="section catalog-section">
+            <div id="librarySections" class="library-sections"></div>
+            <div id="fullLibrary" class="full-library"></div>
+            <button class="tb full-width" id="libraryMore">Show more</button>
+          </div>
+        </div>
+        <div id="presetsView" class="library-view" role="tabpanel" aria-labelledby="presetsTab" hidden>
+          <div class="section preset-section">
+            <div class="section-heading"><span>Presets</span><small>Built-in and personal</small></div>
+            <button class="tb full-width preset-primary" id="presetSave">Save as preset…</button>
+            <div class="preset-subheading">Built-in</div>
+            <div id="builtinPresetList"></div>
+            <div class="preset-subheading">Personal</div>
+            <div id="presetList"></div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="work">
+        <div class="subbar">
+          <div class="modebar">
+            <div class="seg" role="group" aria-label="Canvas editing mode">
+              <button data-mode="smart" class="active" aria-pressed="true" title="Automatic composition with equal 14px outer and peer spacing"><span class="mode-dot">✦</span>Smart</button>
+              <button data-mode="guided" aria-pressed="false" title="Manual placement with 14px grid, margin, alignment and equal-gap snapping"><span class="mode-dot">⊞</span>Guided</button>
+              <button data-mode="free" aria-pressed="false" title="Exact manual geometry with no snapping"><span class="mode-dot">↗</span>Free</button>
+            </div>
+            <span class="statusline mode-description"><span id="modeHelp">Auto composition · 14px safe frame + peer gap</span></span>
+          </div>
+          <div class="sub-actions">
+            <button class="tb icon" id="zoomOut" aria-label="Zoom out">−</button>
+            <span class="zoom-status" id="zoomStatus" aria-live="polite">88%</span>
+            <button class="tb icon" id="zoomIn" aria-label="Zoom in">+</button>
+            <button class="tb" id="zoomFit">Fit</button>
+            <button class="tb" id="miniToggle" aria-pressed="true">Map</button>
+          </div>
+        </div>
+        <div class="viewport" id="viewport">
+          <div class="scene-frame" id="sceneFrame"><div class="scene" id="scene"><div class="canvas-hull smart" id="hull" role="region" aria-label="Report canvas"></div></div></div>
+          <div class="minimap" id="minimap" aria-hidden="true"></div>
+        </div>
+        <div class="bottom">
+          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus">0 selected</span><span id="saveStatus">Saved</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.3.5</span></div>
+          <div class="preflight"><button type="button" id="preflightStatus" class="preflight-status-button good">Ready to export</button></div>
+        </div>
+      </main>
+
+      <aside class="right" id="inspectorPane" aria-label="Inspector">
+        <div class="pane-title"><span>Inspector</span><button class="mini-btn pane-close" id="inspectorClose" aria-label="Collapse inspector">×</button></div>
+        <div id="inspector"></div>
+      </aside>
+      <button class="inspector-toggle" id="inspectorToggle" aria-label="Open inspector" title="Open inspector">Inspector</button>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="qaHidden" class="sr-only" aria-hidden="true"></div>
+
+  <div class="modal" id="cmdModal" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
+    <div class="dialog"><div class="dialog-head"><b id="cmdTitle">Command Palette</b><button class="tb" data-close>Esc</button></div><input class="cmd-input" id="cmdInput" aria-controls="cmdList" placeholder="Type a command…"><div id="cmdList" role="listbox" aria-label="Commands"></div></div>
+  </div>
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="dialog"><div class="dialog-head"><b id="modalTitle">Preflight</b><button class="tb" data-close>Close</button></div><div id="modalBody"></div></div>
+  </div>
+  <div class="modal" id="debugModal" role="dialog" aria-modal="true" aria-labelledby="debugTitle">
+    <div class="dialog debug-dialog"><div class="dialog-head"><div><b id="debugTitle">Developer console</b><span id="debugSummary"></span></div><button class="tb" data-close>Close</button></div><div id="debugBody"></div></div>
+  </div>
+</div>

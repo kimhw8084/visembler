@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Visualizer Production Core · P0 Hardened Editor</title>
+  <link rel="stylesheet" href="./editor.css">
+</head>
+<body>
+  <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit Preview</button>
+  <div class="app">
+    <header class="topbar" aria-label="Visualizer toolbar">
+      <div class="brand"><div class="brandmark" aria-hidden="true">V</div><div><b>Visualizer</b><span>Production Core · P0 hardening</span></div></div>
+      <div class="top-sep" aria-hidden="true"></div>
+      <div class="toolbar" role="toolbar" aria-label="Editor actions">
+        <button class="tb icon" id="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
+        <button class="tb icon" id="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+        <button class="tb" id="auto">Auto-layout</button><button class="tb" id="group">Group</button><button class="tb" id="ungroup">Ungroup</button>
+        <button class="tb" id="lock">Lock</button><button class="tb" id="back">Send back</button><button class="tb" id="front">Bring front</button>
+        <button class="tb" id="commandBtn" aria-haspopup="dialog">⌘K Commands</button>
+      </div>
+      <div class="rightbar"><button class="tb" id="preflightBtn">Preflight</button><button class="tb" id="previewBtn">Preview</button><button class="tb accent" id="exportBtn">Export model</button></div>
+    </header>
+    <div class="shell">
+      <aside class="left" aria-label="Component library">
+        <div class="pane-title"><span>Add</span><span>drag or click</span></div>
+        <div class="section"><label>Components</label><div class="palette">
+          <button class="pal" data-type="metric"><span class="pi">KPI</span><b>Metric</b><small>hero / strip</small></button>
+          <button class="pal" data-type="chart"><span class="pi">XY</span><b>Chart</b><small>paste-first</small></button>
+          <button class="pal" data-type="text"><span class="pi">TXT</span><b>Narrative</b><small>editorial</small></button>
+          <button class="pal" data-type="table"><span class="pi">TBL</span><b>Table</b><small>evidence/data</small></button>
+          <button class="pal" data-type="tabs"><span class="pi">TAB</span><b>Tabs</b><small>rich detail</small></button>
+          <button class="pal" data-type="timeline"><span class="pi">TME</span><b>Timeline</b><small>interactive</small></button>
+          <button class="pal" data-type="image"><span class="pi">IMG</span><b>Image</b><small>focal media</small></button>
+          <button class="pal" data-type="diagram"><span class="pi">DIA</span><b>Diagram</b><small>semantic flow</small></button>
+          <button class="pal" data-type="risk"><span class="pi">RSK</span><b>Risk</b><small>decision</small></button>
+        </div></div>
+        <div class="section"><label>Personal presets</label><div id="presetList"></div><button class="tb full-width" id="presetSave">Save current as preset</button></div>
+        <div class="section"><label>Keyboard</label><div class="keyboard-help">⌘/Ctrl+K Commands<br>⌘/Ctrl+Z Undo · Ctrl+Y Redo<br>Shift+Click Multi-select · G Group<br>L Lock · Delete Remove<br>Space+Drag Pan · Arrow keys Nudge</div></div>
+      </aside>
+      <main class="work">
+        <div class="subbar">
+          <div class="modebar"><div class="seg" role="group" aria-label="Canvas editing mode"><button data-mode="smart" class="active" aria-pressed="true">Smart</button><button data-mode="guided" aria-pressed="false">Guided</button><button data-mode="free" aria-pressed="false">Free</button></div><span class="statusline"><b id="hullStatus">100% hull</b><span>Gap 14px</span></span></div>
+          <div class="sub-actions"><button class="tb icon" id="zoomOut" aria-label="Zoom out">−</button><span class="zoom-status" id="zoomStatus" aria-live="polite">88%</span><button class="tb icon" id="zoomIn" aria-label="Zoom in">+</button><button class="tb" id="zoomFit">Fit</button><button class="tb" id="miniToggle" aria-pressed="true">Mini-map</button></div>
+        </div>
+        <div class="viewport" id="viewport"><div class="scene" id="scene"><div class="canvas-hull smart" id="hull" role="region" aria-label="Report canvas"></div></div></div>
+        <div class="bottom"><div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus">0 selected</span><span>rev <b id="revStatus">1</b></span></div><div class="preflight"><span>Golden Connector <b class="good">v5 frozen</b></span><span>Smart Hull <b id="preflightStatus" class="good">Preflight clean</b></span></div></div>
+      </main>
+      <aside class="right" aria-label="Inspector"><div class="pane-title"><span>Inspector</span><span>properties</span></div><div id="inspector"></div></aside>
+    </div>
+  </div>
+  <div class="minimap" id="minimap" aria-hidden="true"></div>
+  <div class="tooltip" id="tooltip" role="tooltip"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div id="qaHidden" class="sr-only" aria-hidden="true"></div>
+
+  <div class="modal" id="cmdModal" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
+    <div class="dialog"><div class="dialog-head"><b id="cmdTitle">Command Palette</b><button class="tb" data-close>Esc</button></div><input class="cmd-input" id="cmdInput" aria-controls="cmdList" placeholder="Type a command…"><div id="cmdList" role="listbox" aria-label="Commands"></div></div>
+  </div>
+  <div class="modal" id="genericModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="dialog"><div class="dialog-head"><b id="modalTitle">Preflight</b><button class="tb" data-close>Close</button></div><div id="modalBody"></div></div>
+  </div>
+  <script type="module" src="./editor.mjs"></script>
+</body>
+</html>

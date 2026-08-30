@@ -1,0 +1,191 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "visualizer.component-contract.schema.json",
+  "title": "Visualizer Golden Component Contract",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "element",
+    "category",
+    "canonical_engine",
+    "wave",
+    "status",
+    "relationship",
+    "maturity_tier",
+    "golden_target",
+    "zero_error_acceptance",
+    "semantic_data",
+    "geometry",
+    "variants",
+    "typography",
+    "accessibility",
+    "states",
+    "serialization",
+    "data_binding",
+    "ppt",
+    "security",
+    "qa"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": 1
+    },
+    "element": {
+      "type": "string",
+      "minLength": 1
+    },
+    "category": {
+      "type": "string",
+      "minLength": 1
+    },
+    "canonical_engine": {
+      "type": "string",
+      "enum": [
+        "ComparisonEngine",
+        "CoreChartEngine",
+        "DecisionCompositeEngine",
+        "DiagramEngine",
+        "EditorInfrastructure",
+        "EngineeringChartEngine",
+        "EvidenceCompositeEngine",
+        "ImageMediaEngine",
+        "InteractionLayer",
+        "MatrixEngine",
+        "MetricEngine",
+        "ProjectCompositeEngine",
+        "SmartLayoutEngine",
+        "TableEngine",
+        "TextEngine",
+        "TimelineEngine",
+        "WaferFabEngine"
+      ]
+    },
+    "wave": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 11
+    },
+    "status": {
+      "type": "string",
+      "minLength": 1
+    },
+    "relationship": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maturity_tier": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "golden_target": {
+      "type": "string",
+      "minLength": 20
+    },
+    "zero_error_acceptance": {
+      "type": "string",
+      "minLength": 20
+    },
+    "semantic_data": {
+      "type": "object",
+      "required": [
+        "required_domain_data",
+        "truth_policy",
+        "eligibility_policy"
+      ]
+    },
+    "geometry": {
+      "type": "object",
+      "required": [
+        "min",
+        "preferred",
+        "max",
+        "responsive_policy"
+      ]
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "typography": {
+      "type": "object",
+      "required": [
+        "chrome_min_px",
+        "data_min_px",
+        "body_min_px",
+        "explanatory_min_px",
+        "scale_test"
+      ]
+    },
+    "accessibility": {
+      "type": "object",
+      "required": [
+        "role",
+        "keyboard_path_required",
+        "visible_focus_required",
+        "accessible_name_required",
+        "target_policy",
+        "reduced_motion_required"
+      ]
+    },
+    "states": {
+      "type": "object",
+      "required": [
+        "empty",
+        "loading",
+        "error",
+        "stale",
+        "unauthorized"
+      ]
+    },
+    "serialization": {
+      "type": "object",
+      "required": [
+        "semantic_id_required",
+        "deterministic",
+        "browser_geometry_leakage",
+        "revision_safe_mutations"
+      ]
+    },
+    "data_binding": {
+      "type": "object",
+      "required": [
+        "typed",
+        "raw_values_preserved",
+        "provenance_required",
+        "invalid_state_preflight"
+      ]
+    },
+    "ppt": {
+      "type": "object",
+      "required": [
+        "mapping",
+        "editable_preference",
+        "smallest_boundary_flattening",
+        "safe_area_required"
+      ]
+    },
+    "security": {
+      "type": "object",
+      "required": [
+        "escape_untrusted_text",
+        "sanitize_svg_html",
+        "ai_injection_forbidden"
+      ]
+    },
+    "qa": {
+      "type": "object",
+      "required": [
+        "golden_target",
+        "zero_error_acceptance",
+        "visual_regression",
+        "property_fuzz",
+        "serialization_roundtrip"
+      ]
+    }
+  },
+  "additionalProperties": true
+}
