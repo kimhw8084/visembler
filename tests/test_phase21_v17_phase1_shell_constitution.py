@@ -11,10 +11,10 @@ def test_production_requirements_are_company_index_runtime_only():
     cert = (ROOT / 'requirements-certification.txt').read_text(encoding='utf-8')
     assert 'nicegui==3.15.0' in runtime
     assert 'playwright' not in runtime.lower()
-    assert 'pillow' not in runtime.lower()
+    assert 'Pillow==12.3.0' in runtime and 'python-pptx==1.0.2' in runtime
     assert '-r requirements.txt' in cert
     assert 'playwright==1.62.0' in cert
-    assert 'Pillow==12.3.0' in cert
+    assert 'Pillow' not in cert
 
 
 def test_linux_setup_is_requirements_first_and_has_no_public_or_extra_fallback():

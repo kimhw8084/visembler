@@ -72,8 +72,11 @@ def test_visembler_branding_is_consistent_while_compatibility_identifiers_remain
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     toolbar = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
+    css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     assert "AppShell('Visembler'" in page
-    assert "PageHeader('Visembler'" in page
+    assert 'cui-visualizer-workspace' in page
+    assert 'cui-visualizer-workspace { height:calc(100dvh - var(--cui-shell-header-height) - 24px)' in css
+    assert '.cui-visualizer-host > * { display:block; flex:1 1 0; min-height:0; height:100%; }' in css
     assert "NavItem('visualizer','Visembler','/visualizer'" in page
     assert 'aria-label="Visembler toolbar"' in toolbar
     assert "a.download='visembler_report_model.json'" in editor

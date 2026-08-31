@@ -1,0 +1,147 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  production-install-and-startup:
+    name: Production install and Visembler startup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install --no-cache-dir .
+      - name: Production import smoke
+        run: |
+          python - <<'PY'
+          import importlib
+          from importlib.metadata import version
+          for distribution, expected, module in (
+              ('nicegui', '3.15.0', 'nicegui'),
+              ('Pillow', '12.3.0', 'PIL'),
+              ('python-pptx', '1.0.2', 'pptx'),
+          ):
+              assert version(distribution) == expected, (distribution, version(distribution))
+              importlib.import_module(module)
+          for module in (
+              'company_ui.products.visualizer.cli',
+              'company_ui.products.visualizer.files',
+              'company_ui.products.visualizer.ppt_service',
+              'company_ui.products.visualizer.page',
+          ):
+              importlib.import_module(module)
+          PY
+      - name: Visembler startup smoke
+        run: |
+          export COMPANY_UI_ENVIRONMENT=test
+          export COMPANY_UI_VISUALIZER_DATA_DIR="${RUNNER_TEMP}/visembler-data"
+          export COMPANY_UI_STORAGE_SECRET="ci-visembler-storage-secret-0123456789"
+          export COMPANY_UI_HOST=127.0.0.1
+          export COMPANY_UI_PORT=8123
+          python - <<'PY'
+          import os
+          from company_ui.products.visualizer.cli import build_application
+          _, environment, repository = build_application(os.environ)
+          assert repository.list()
+          assert environment['COMPANY_UI_ENVIRONMENT'] == 'test'
+          PY
+
+  tests:
+    name: Python regression suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e '.[test]'
+      - run: python -m pytest
+
+  authoring-modules:
+    name: Node authoring contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: python -m pip install -e '.[test]'
+      - run: node --version
+      - run: python -m pytest tests/test_visualizer_authoring_p0.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_performance.py
+
+  integrity:
+    name: Dependency, frozen-file, and package integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - name: Runtime declaration drift
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tomllib
+          root = Path('.')
+          requirements = [line.strip() for line in (root / 'requirements.txt').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')]
+          dependencies = tomllib.loads((root / 'pyproject.toml').read_text())['project']['dependencies']
+          assert requirements == dependencies, (requirements, dependencies)
+          test_requirements = (root / 'requirements-test.txt').read_text()
+          assert '-r requirements.txt' in test_requirements
+          PY
+      - name: Golden Connector hash
+        run: |
+          test "$(sha256sum company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js | awk '{print $1}')" = "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e"
+      - name: Build wheel
+        run: python -m pip wheel --no-deps --wheel-dir dist .
+      - name: Verify Visembler package content
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          wheel = next(Path('dist').glob('company_ui-*.whl'))
+          with ZipFile(wheel) as archive:
+              names = set(archive.namelist())
+          required = {
+              'company_ui/products/visualizer/assets/integrated_editor.mjs',
+              'company_ui/products/visualizer/assets/integrated_editor.html',
+              'company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json',
+              'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js',
+          }
+          missing = required - names
+          assert not missing, missing
+          PY
+
+  browser-smoke:
+    name: Lightweight browser smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e '.[live-cert]'
+      - run: python -m playwright install --with-deps chromium
+      - run: VIZ_BROWSER_SMOKE_OUTPUT_DIR="${RUNNER_TEMP}/visembler-browser-smoke" python company_ui/products/visualizer/vendor/production_core/tests/browser_smoke.py

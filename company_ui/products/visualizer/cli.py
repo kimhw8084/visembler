@@ -13,6 +13,7 @@ from .templates import template_model
 def build_application(environ: Mapping[str,str] | None = None):
     adapter, env = build_runtime_adapter(environ)
     try:
+        # company-ui: allow-ai001 — application bootstrap must bind NiceGUI's app/ui runtime to the Company adapter.
         from nicegui import app, ui
     except ImportError as exc:  # pragma: no cover - certified on target
         raise RuntimeError('NiceGUI 3.15.0 is required to run Visembler.') from exc

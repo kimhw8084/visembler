@@ -150,6 +150,6 @@ def test_performance_lab_exposes_real_10k_100k_progress_and_timing():
 
 def test_sbom_uses_live_certification_dependency_contract():
     from company_ui.supply_chain import LIVE_CERT_DEPENDENCIES, build_spdx_sbom
-    assert LIVE_CERT_DEPENDENCIES == {'playwright':'1.62.0','Pillow':'12.3.0'}
+    assert LIVE_CERT_DEPENDENCIES == {'playwright':'1.62.0'}
     packages={p['name']:p['versionInfo'] for p in build_spdx_sbom()['packages']}
-    assert packages['nicegui']=='3.15.0' and packages['playwright']=='1.62.0' and packages['Pillow']=='12.3.0'
+    assert packages['nicegui']=='3.15.0' and packages['playwright']=='1.62.0' and packages['Pillow']=='12.3.0' and packages['python-pptx']=='1.0.2'

@@ -25,7 +25,7 @@ def test_phase17_identity_and_cli_contract():
     assert 'nicegui==3.15.0' in text
     for command in ('company-ui-mac-lab', 'company-ui-mac-preflight', 'company-ui-mac-certify', 'company-ui-mac-approve-baseline'):
         assert command in text
-    assert 'mac-cert = [' in text and 'playwright' in text and 'Pillow' in text
+    assert 'mac-cert = [' in text and 'playwright' in text
 
 
 def test_live_lab_has_unique_22_routes_and_all_ten_patterns():

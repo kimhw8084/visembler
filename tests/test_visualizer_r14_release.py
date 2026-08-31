@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import io
 import json
+import tomllib
+from importlib.metadata import version
 from pathlib import Path
 
 import pytest
@@ -64,7 +67,7 @@ def test_r14_report_chrome_is_explicit_and_destructive_action_is_named():
     assert "label='Report title'" in page and "label='Reports'" in page
     assert "ui.button('New report'" in page
     assert "ui.button('Import…'" in page
-    assert "ui.button('Delete report'" in page and 'color=negative' in page
+    assert "ui.button('Move to trash'" in page and 'color=negative' in page
     assert "Clean up empty reports" in page
 
 
@@ -80,21 +83,32 @@ def test_r14_golden_connector_is_byte_identical():
 
 
 def test_r14_visualizer_runtime_dependencies_are_declared_by_the_release_package():
-    requirements=(ROOT.parent/'requirements.txt').read_text(encoding='utf-8').splitlines()
-    expected=['nicegui==3.15.0','python-pptx==1.0.2','Pillow==12.3.0']
-    assert requirements==expected
+    requirements=[line.strip() for line in (ROOT/'requirements.txt').read_text(encoding='utf-8').splitlines() if line.strip() and not line.lstrip().startswith('#')]
+    assert requirements==['nicegui==3.15.0','Pillow==12.3.0','python-pptx==1.0.2']
+    project=tomllib.loads((ROOT/'pyproject.toml').read_text(encoding='utf-8'))['project']
+    assert project['dependencies']==requirements
     test_requirements=(ROOT/'requirements-test.txt').read_text(encoding='utf-8')
-    assert 'python-pptx==1.0.2' in test_requirements and 'Pillow==12.3.0' in test_requirements
+    assert '-r requirements.txt' in test_requirements
+    assert 'python-pptx' not in test_requirements and 'Pillow' not in test_requirements
+
+
+def test_r14_production_dependency_import_contract():
+    for package, expected, module in [('nicegui','3.15.0','nicegui'),('Pillow','12.3.0','PIL'),('python-pptx','1.0.2','pptx')]:
+        assert version(package)==expected
+        assert importlib.import_module(module)
+    for module in ('company_ui.products.visualizer.cli','company_ui.products.visualizer.files','company_ui.products.visualizer.ppt_service'):
+        assert importlib.import_module(module)
 
 
 def _descriptions(prs: Presentation) -> list[str]:
     out=[]
-    for shape in prs.slides[0].shapes:
-        try:
-            nodes=shape._element.xpath('.//p:cNvPr')
-            if nodes: out.append(nodes[0].get('descr') or '')
-        except Exception:
-            pass
+    for slide in prs.slides:
+        for shape in slide.shapes:
+            try:
+                nodes=shape._element.xpath('.//p:cNvPr')
+                if nodes: out.append(nodes[0].get('descr') or '')
+            except Exception:
+                pass
     return out
 
 
@@ -138,7 +152,8 @@ def test_r14_sequence_only_timeline_does_not_invent_dates_in_ppt():
     assert '202' not in texts
 
 
-def test_r14_ppt_export_fails_closed_instead_of_silently_truncating_dense_report():
+def test_r14_ppt_export_paginates_dense_reports_without_truncation():
     items=[{'id':f'm{i}','element':'Hero KPI','engine':'MetricEngine','title':f'M{i}','value':i} for i in range(13)]
-    with pytest.raises(ValueError,match='at most 12'):
-        export_pptx(_pptx(),{'items':items})
+    prs=Presentation(io.BytesIO(export_pptx(_pptx(),{'items':items})))
+    assert len(prs.slides)==2
+    assert sum(1 for description in _descriptions(prs) if description.startswith('VisualizerSemantic:'))==13

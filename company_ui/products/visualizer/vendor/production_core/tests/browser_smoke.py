@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import json, re, sys
+import json, os, re, sys
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 PROD=Path(__file__).resolve().parents[1]
+QA=Path(os.environ.get('VIZ_BROWSER_SMOKE_OUTPUT_DIR', PROD/'qa'))
+QA.mkdir(parents=True,exist_ok=True)
 
 def bundle_html():
     html=(PROD/'app/index.html').read_text()
@@ -18,7 +20,7 @@ def bundle_html():
 
 report={'pass':False,'console_errors':[],'checks':{}}
 with sync_playwright() as p:
-    browser=p.chromium.launch(headless=True, executable_path='/usr/bin/chromium')
+    browser=p.chromium.launch(headless=True)
     page=browser.new_page(viewport={'width':1440,'height':1000})
     page.on('console', lambda m: report['console_errors'].append(f'console {m.type}: {m.text}') if m.type=='error' else None)
     page.on('pageerror', lambda e: report['console_errors'].append(f'pageerror: {e}'))
@@ -158,11 +160,11 @@ with sync_playwright() as p:
     pf=page.evaluate('window.__VIZ_PROD__.preflight()')
     report['checks']['smart_hull']=pf['coverage']==100 and pf['overlaps']==0 and pf['out']==0
 
-    page.screenshot(path=str(PROD/'qa/production_editor_smoke.png'), full_page=True)
+    page.screenshot(path=str(QA/'production_editor_smoke.png'), full_page=True)
     report['final_revision']=int(page.locator('#revStatus').inner_text())
     browser.close()
 
 report['pass']=not report['console_errors'] and all(report['checks'].values())
-(PROD/'qa/browser_smoke.json').write_text(json.dumps(report,indent=2)+'\n')
+(QA/'browser_smoke.json').write_text(json.dumps(report,indent=2)+'\n')
 print(json.dumps(report,indent=2))
 sys.exit(0 if report['pass'] else 1)

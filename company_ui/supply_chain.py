@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Any
 from company_ui.version import FRAMEWORK_VERSION, NICEGUI_VERSION
 
-RUNTIME_DEPENDENCIES = {'nicegui': NICEGUI_VERSION}
-CERTIFICATION_DEPENDENCIES = {'playwright': '1.62.0', 'Pillow': '12.3.0'}
+RUNTIME_DEPENDENCIES = {'nicegui': NICEGUI_VERSION, 'Pillow': '12.3.0', 'python-pptx': '1.0.2'}
+CERTIFICATION_DEPENDENCIES = {'playwright': '1.62.0'}
 # Backward-compatible public alias; these remain optional certification-only dependencies.
 LIVE_CERT_DEPENDENCIES = CERTIFICATION_DEPENDENCIES
 

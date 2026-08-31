@@ -68,6 +68,7 @@
           <div class="section preset-section">
             <div class="section-heading"><span>Presets</span><small>Built-in and personal</small></div>
             <button class="tb full-width preset-primary" id="presetSave">Save as preset…</button>
+            <input class="library-search" id="presetSearch" type="search" placeholder="Search saved presets" aria-label="Search saved presets">
             <div class="preset-subheading">Built-in</div>
             <div id="builtinPresetList"></div>
             <div class="preset-subheading">Personal</div>
@@ -99,7 +100,7 @@
           <div class="minimap" id="minimap" aria-hidden="true"></div>
         </div>
         <div class="bottom">
-          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus">0 selected</span><span id="saveStatus">Saved</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.3.5</span></div>
+          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.18</span><span id="saveStatus">Saved automatically</span></div>
           <div class="preflight"><button type="button" id="preflightStatus" class="preflight-status-button good">Ready to export</button></div>
         </div>
       </main>
@@ -117,7 +118,7 @@
   <div id="qaHidden" class="sr-only" aria-hidden="true"></div>
 
   <div class="modal" id="cmdModal" role="dialog" aria-modal="true" aria-labelledby="cmdTitle">
-    <div class="dialog"><div class="dialog-head"><b id="cmdTitle">Command Palette</b><button class="tb" data-close>Esc</button></div><input class="cmd-input" id="cmdInput" aria-controls="cmdList" placeholder="Type a command…"><div id="cmdList" role="listbox" aria-label="Commands"></div></div>
+    <div class="dialog"><div class="dialog-head"><b id="cmdTitle">Command Palette</b><button class="tb" data-close>Esc</button></div><input class="cmd-input" id="cmdInput" role="combobox" aria-expanded="false" aria-controls="cmdList" aria-autocomplete="list" placeholder="Type a command…"><div id="cmdList" role="listbox" aria-label="Commands"></div></div>
   </div>
   <div class="modal" id="genericModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="dialog"><div class="dialog-head"><b id="modalTitle">Preflight</b><button class="tb" data-close>Close</button></div><div id="modalBody"></div></div>

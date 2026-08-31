@@ -15,10 +15,10 @@ def test_v17_final_identity_and_company_index_runtime_requirements():
     assert bool(FRAMEWORK_VERSION) and FRAMEWORK_VERSION == __import__('company_ui.version', fromlist=['RELEASE_AUTHORITY']).RELEASE_AUTHORITY['framework_version']
     assert NICEGUI_VERSION == '3.15.0'
     runtime = [line.strip() for line in (ROOT/'requirements.txt').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')]
-    assert runtime == ['nicegui==3.15.0']
+    assert runtime == ['nicegui==3.15.0','Pillow==12.3.0','python-pptx==1.0.2']
     cert = (ROOT/'requirements-certification.txt').read_text()
     assert '-r requirements.txt' in cert
-    assert 'playwright==1.62.0' in cert and 'Pillow==12.3.0' in cert
+    assert 'playwright==1.62.0' in cert and 'Pillow' not in cert
 
 
 def test_setup_is_company_index_only_and_requires_runtime_proof_before_success():
@@ -59,13 +59,13 @@ def test_final_certification_manifest_declares_v17_release_gates():
 
 
 def test_sbom_separates_production_and_certification_dependencies():
-    assert RUNTIME_DEPENDENCIES == {'nicegui':'3.15.0'}
-    assert CERTIFICATION_DEPENDENCIES == {'playwright':'1.62.0','Pillow':'12.3.0'}
+    assert RUNTIME_DEPENDENCIES == {'nicegui':'3.15.0','Pillow':'12.3.0','python-pptx':'1.0.2'}
+    assert CERTIFICATION_DEPENDENCIES == {'playwright':'1.62.0'}
     sbom=build_spdx_sbom()
     rels=sbom['relationships']
     assert any(r['relationshipType']=='DEPENDS_ON' and r['relatedSpdxElement']=='SPDXRef-Package-nicegui' for r in rels)
     optional=[r for r in rels if r['relationshipType']=='OPTIONAL_DEPENDENCY_OF']
-    assert len(optional)==2
+    assert len(optional)==1
 
 
 def test_final_release_guide_is_embedded_for_ai_seed():

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import base64
+import binascii
 import importlib.util
 import io
 import json
@@ -8,9 +10,12 @@ from typing import Any, Mapping, Sequence
 
 from pptx import Presentation
 from pptx.chart.data import ChartData
+from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.util import Inches, Pt
+from PIL import Image
 
-from .files import validate_pptx_bytes
+from .files import validate_image_bytes, validate_pptx_bytes
+from .domain import MODEL_MAX_BYTES, VisualizerContractError, canonical_model, stable_json
 
 _VENDOR_ADAPTER = Path(__file__).with_name('vendor') / 'production_core' / 'tools' / 'ppt_template_adapter.py'
 _MAX_ITEMS_PER_SLIDE = 12
@@ -24,10 +29,14 @@ def _adapter():
 
 def _kind(entry: Mapping[str, Any]) -> str:
     engine=str(entry.get('engine') or '')
+    if engine=='ImageMediaEngine': return 'image'
     if engine in {'CoreChartEngine','EngineeringChartEngine'}: return 'chart'
     if engine in {'TableEngine','MatrixEngine'}: return 'table'
     if engine in {'MetricEngine','ComparisonEngine'}: return 'kpi'
-    return 'text'
+    if engine=='DiagramEngine': return 'diagram'
+    if engine=='TimelineEngine': return 'timeline'
+    if engine in {'TextEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'}: return 'text'
+    return 'fallback'
 
 
 def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -81,8 +90,13 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
 def _plan(model: Mapping[str, Any]) -> dict[str, Any]:
     report_items=list(model.get('items') or [])
     if not report_items: return _adapter().default_plan()
-    if len(report_items)>_MAX_ITEMS_PER_SLIDE:
-        raise ValueError(f'PowerPoint export supports at most {_MAX_ITEMS_PER_SLIDE} report elements in one editable content region; split the report or reduce the export selection')
+    positioned=[entry for entry in report_items if all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h')) and entry['w']>0 and entry['h']>0]
+    if len(positioned)==len(report_items):
+        canvas_w=max(1200.0,max(float(entry['x'])+float(entry['w']) for entry in report_items))
+        canvas_h=max(675.0,max(float(entry['y'])+float(entry['h']) for entry in report_items))
+        return {'items':[{'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
+                          'nx':max(0.0,min(1.0,float(entry['x'])/canvas_w)),'ny':max(0.0,min(1.0,float(entry['y'])/canvas_h)),
+                          'nw':max(.001,min(1.0,float(entry['w'])/canvas_w)),'nh':max(.001,min(1.0,float(entry['h'])/canvas_h))} for entry in report_items]}
     cols=1 if len(report_items)==1 else 2 if len(report_items)<=8 else 3
     rows=max(1,(len(report_items)+cols-1)//cols)
     gap_x=.025 if cols>1 else 0.0; gap_y=.035 if rows>1 else 0.0
@@ -93,6 +107,21 @@ def _plan(model: Mapping[str, Any]) -> dict[str, Any]:
         items.append({'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
                       'nx':col*(cell_w+gap_x),'ny':row*(cell_h+gap_y),'nw':cell_w,'nh':cell_h})
     return {'items':items}
+
+
+def _export_pages(entries: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
+    """Split deterministically, honoring optional integer page/page_index and page_break metadata."""
+    explicit=any(isinstance(entry.get('page_index',entry.get('page')) ,int) for entry in entries)
+    if explicit:
+        grouped: dict[int,list[dict[str, Any]]]={}
+        for entry in entries: grouped.setdefault(int(entry.get('page_index',entry.get('page',0))),[]).append(entry)
+        return [grouped[index] for index in sorted(grouped)]
+    ordered=sorted(entries,key=lambda entry:(int(entry.get('order',0)),str(entry.get('id',''))))
+    pages: list[list[dict[str, Any]]]=[[]]
+    for entry in ordered:
+        if pages[-1] and (entry.get('page_break') is True or len(pages[-1])>=_MAX_ITEMS_PER_SLIDE): pages.append([])
+        pages[-1].append(entry)
+    return [page for page in pages if page]
 
 
 def _display(value: Any) -> str:
@@ -155,6 +184,47 @@ def _set_semantic_metadata(shape: Any, entry: Mapping[str, Any]) -> None:
         pass
 
 
+def _set_report_metadata(slide: Any, model: Mapping[str, Any]) -> None:
+    """Store bounded model context without changing the visible slide composition."""
+    shape=slide.shapes.add_textbox(0,0,1,1)
+    shape.name='VIZ::SemanticReport'
+    nodes=shape._element.xpath('.//p:cNvPr')
+    if nodes: nodes[0].set('descr','VisualizerSemanticReport:'+stable_json(model))
+
+
+def _replace_image(slide: Any, shape: Any, entry: Mapping[str, Any], title: str, asset_data_url: Any=None) -> Any:
+    src=entry.get('src') or (asset_data_url(entry['asset_id']) if asset_data_url and entry.get('asset_id') else None)
+    if not isinstance(src,str) or not src.startswith('data:image/') or ';base64,' not in src:
+        return shape
+    _,encoded=src.split(',',1)
+    raw=base64.b64decode(encoded,validate=True)
+    image=Image.open(io.BytesIO(raw)); image.load()
+    payload=io.BytesIO()
+    image.convert('RGBA' if image.mode=='RGBA' else 'RGB').save(payload,format='PNG')
+    left,top,width,height=shape.left,shape.top,shape.width,shape.height
+    shape._element.getparent().remove(shape._element)
+    picture=slide.shapes.add_picture(io.BytesIO(payload.getvalue()),left,top,width,height)
+    picture.name=f'VIZ::{title} image'
+    return picture
+
+
+def _replace_diagram(slide: Any, shape: Any, entry: Mapping[str, Any], title: str) -> Any:
+    nodes=[str(node) for node in entry.get('nodes') or []]
+    if not nodes: return shape
+    left,top,width,height=shape.left,shape.top,shape.width,shape.height
+    shape._element.getparent().remove(shape._element)
+    gap=Inches(.08); node_width=max(Inches(.55),(width-gap*(len(nodes)-1))//len(nodes)); node_height=max(Inches(.35),height//3)
+    created={}
+    for index,label in enumerate(nodes):
+        node=slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,left+index*(node_width+gap),top+(height-node_height)//2,node_width,node_height)
+        node.name=f'VIZ::{title}::{label}'; node.text_frame.text=label; created[label]=node
+    for edge in entry.get('edges') or []:
+        if not isinstance(edge,Sequence) or isinstance(edge,(str,bytes)) or len(edge)<2: continue
+        source,target=created.get(str(edge[0])),created.get(str(edge[1]))
+        if source is not None and target is not None: slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,source.left+source.width,source.top+source.height//2,target.left,target.top+target.height//2)
+    return next(iter(created.values()))
+
+
 def _fill_text_shape(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if not getattr(shape,'has_text_frame',False): return
     tf=shape.text_frame; tf.clear(); p=tf.paragraphs[0]; p.text=title; p.font.bold=True; p.font.size=Pt(13)
@@ -196,24 +266,92 @@ def _replace_table(slide: Any, shape: Any, entry: Mapping[str, Any], title: str)
     return new_shape
 
 
-def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, Any]], plan: Mapping[str, Any]) -> None:
+def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, Any]], plan: Mapping[str, Any], asset_data_url: Any=None) -> None:
     created=[slide.shapes[i] for i in range(before_count,len(slide.shapes))]
     # adapter emits one top-level shape per plan item; replacement tables are processed from the correlated originals.
     if len(created)<len(entries): raise RuntimeError('frozen PowerPoint adapter created fewer shapes than planned')
     for index,(entry,item) in enumerate(zip(entries,plan['items'])):
         shape=created[index];kind=item['kind'];title=item['title']
-        if kind=='kpi': _fill_kpi(shape,entry,title)
+        if kind=='image': shape=_replace_image(slide,shape,entry,title,asset_data_url)
+        elif kind=='diagram': shape=_replace_diagram(slide,shape,entry,title)
+        elif kind=='timeline': _fill_text_shape(shape,entry,title)
+        elif kind=='kpi': _fill_kpi(shape,entry,title)
         elif kind=='chart': _fill_chart(shape,entry,title)
         elif kind=='table': shape=_replace_table(slide,shape,entry,title)
+        elif kind=='fallback': _fill_text_shape(shape,{**entry,'detail':f'Controlled fallback · {entry.get("element") or "specialized visual"} remains semantic metadata; recreate this visual natively in Visembler.'},title)
         else: _fill_text_shape(shape,entry,title)
         _set_semantic_metadata(shape,entry)
 
 
-def export_pptx(template_bytes: bytes, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT') -> bytes:
+def export_pptx(template_bytes: bytes, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None) -> bytes:
     validate_pptx_bytes(template_bytes)
     prs=Presentation(io.BytesIO(template_bytes))
     if slide_index < 0 or slide_index >= len(prs.slides): raise ValueError('PPT slide index is out of range')
-    entries=bound_export_items(model); export_model={**model,'items':entries}; plan=_plan(export_model); slide=prs.slides[slide_index]; before_count=len(slide.shapes)
-    adapter=_adapter(); adapter.insert(prs,slide_index=slide_index,placeholder=placeholder,plan=plan)
-    if entries: _apply_semantics(slide,before_count,entries,plan)
+    try: semantic_model=canonical_model(model)
+    except VisualizerContractError: semantic_model=None
+    if semantic_model is not None and asset_data_url:
+        semantic_model=json.loads(stable_json(semantic_model))
+        for entry in semantic_model['items']:
+            if entry.get('engine')=='ImageMediaEngine' and entry.get('asset_id'):
+                entry['src']=asset_data_url(entry['asset_id']); entry.pop('asset_id',None)
+    entries=bound_export_items(semantic_model or model); adapter=_adapter()
+    for page_index,page_entries in enumerate(_export_pages(entries)):
+        slide=prs.slides[slide_index] if page_index==0 else prs.slides.add_slide(prs.slide_layouts[6]); target_slide_index=slide_index if page_index==0 else len(prs.slides)-1
+        plan=_plan({**model,'items':page_entries}); before_count=len(slide.shapes)
+        adapter.insert(prs,slide_index=target_slide_index,placeholder=placeholder if page_index==0 else None,plan=plan)
+        _apply_semantics(slide,before_count,page_entries,plan,asset_data_url)
+        if page_index==0 and semantic_model is not None: _set_report_metadata(slide,semantic_model)
     output=io.BytesIO(); prs.save(output); payload=output.getvalue(); validate_pptx_bytes(payload); return payload
+
+
+def import_visembler_pptx(payload: bytes) -> dict[str, Any] | None:
+    """Rebuild a report only from exact exported metadata; never infer from ordinary shapes."""
+    validate_pptx_bytes(payload)
+    prs=Presentation(io.BytesIO(payload)); items=[]; seen=set(); report_context=None
+    for slide in prs.slides:
+        for shape in slide.shapes:
+            descriptions=[]
+            try: descriptions=[node.get('descr') for node in shape._element.xpath('.//p:cNvPr')]
+            except Exception: descriptions=[]
+            for description in descriptions:
+                if isinstance(description,str) and description.startswith('VisualizerSemanticReport:'):
+                    if report_context is not None: raise VisualizerContractError('semantic PowerPoint contains multiple report payloads')
+                    encoded=description.removeprefix('VisualizerSemanticReport:')
+                    if len(encoded.encode('utf-8'))>MODEL_MAX_BYTES: raise VisualizerContractError('semantic PowerPoint payload exceeds model limit')
+                    try: report_context=json.loads(encoded,parse_constant=lambda _value: (_ for _ in ()).throw(ValueError('non-finite value')))
+                    except (json.JSONDecodeError,ValueError) as exc: raise VisualizerContractError('malformed Visembler report payload') from exc
+                    if not isinstance(report_context,Mapping): raise VisualizerContractError('semantic Visembler report payload must be an object')
+                    continue
+                if not isinstance(description,str) or not description.startswith('VisualizerSemantic:'): continue
+                encoded=description.removeprefix('VisualizerSemantic:')
+                if len(encoded.encode('utf-8'))>MODEL_MAX_BYTES: raise VisualizerContractError('semantic PowerPoint payload exceeds model limit')
+                try: entry=json.loads(encoded,parse_constant=lambda _value: (_ for _ in ()).throw(ValueError('non-finite value')))
+                except (json.JSONDecodeError,ValueError) as exc: raise VisualizerContractError('malformed VisualizerSemantic payload') from exc
+                if not isinstance(entry,Mapping): raise VisualizerContractError('semantic PowerPoint payload must be an object')
+                entry=dict(entry); entry_id=str(entry.get('id') or '')
+                if not entry_id or entry_id in seen: raise VisualizerContractError('semantic PowerPoint contains duplicate or missing element ids')
+                # Older geometry-less exports can still recover a deterministic canvas position.
+                if not all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h')):
+                    entry.update({'x':shape.left/prs.slide_width*1200,'y':shape.top/prs.slide_height*675,'w':shape.width/prs.slide_width*1200,'h':shape.height/prs.slide_height*675})
+                seen.add(entry_id);items.append(entry)
+    if not items:
+        if report_context is not None: raise VisualizerContractError('semantic Visembler report is missing element payloads')
+        return None
+    for entry in items:
+        if entry.get('engine')!='ImageMediaEngine' or not entry.get('src'): continue
+        src=entry.get('src')
+        if not isinstance(src,str) or ';base64,' not in src: raise VisualizerContractError('semantic PowerPoint image must be an embedded PNG, JPEG, or WebP')
+        prefix,encoded=src.split(',',1)
+        if prefix not in {'data:image/png;base64','data:image/jpeg;base64','data:image/webp;base64'}: raise VisualizerContractError('semantic PowerPoint image format is unsupported')
+        try: validate_image_bytes(base64.b64decode(encoded,validate=True))
+        except (ValueError,binascii.Error,VisualizerContractError) as exc: raise VisualizerContractError('semantic PowerPoint image is invalid') from exc
+    # Element metadata preserves the bound export projection, not its source dataset.
+    # Drop dangling links so imported elements stay canonical and immediately editable.
+    for entry in items:
+        if entry.pop('dataset_id',None) is not None: entry.pop('mapping',None)
+    next_ids=[int(str(item['id'])[1:])+1 for item in items if str(item['id']).startswith('c') and str(item['id'])[1:].isdigit()]
+    model=canonical_model({'items':items,'nextId':max([1,*next_ids])}) if report_context is None else canonical_model(report_context)
+    if report_context is not None and {str(item.get('id')) for item in model['items']} != seen:
+        raise VisualizerContractError('semantic Visembler report element payloads do not match report context')
+    if len(stable_json(model).encode('utf-8'))>MODEL_MAX_BYTES: raise VisualizerContractError('semantic PowerPoint report exceeds model limit')
+    return model
