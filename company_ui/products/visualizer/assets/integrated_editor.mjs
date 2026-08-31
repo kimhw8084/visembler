@@ -17,16 +17,17 @@ const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const storage = { get(key) { try { return localStorage.getItem(key); } catch { return null; } }, set(key, value) { try { localStorage.setItem(key, value); return true; } catch { return false; } }, remove(key) { try { localStorage.removeItem(key); } catch { /* unavailable */ } } };
 function storageJson(key, fallback) { try { const raw=storage.get(key); return raw==null?fallback:JSON.parse(raw); } catch { storage.remove(key); return fallback; } }
-const BASE_CANVAS_H = 675;
+const BASE_CANVAS_H = 900;
 const MAX_CANVAS_H = 4800;
-const SCENE = { w: 1300, h: 820 };
-const CANVAS = { x: 50, y: 55, w: 1200, h: BASE_CANVAS_H, gap: 14 };
+const DEFAULT_CANVAS_SIZE = Object.freeze({ width: 1600, height: BASE_CANVAS_H });
+const SCENE = { w: 1640, h: 960 };
+const CANVAS = { x: 20, y: 30, w: 1600, h: BASE_CANVAS_H, gap: 14 };
 const BRIDGE_VERSION = 1;
 const MAX_BRIDGE_BYTES = 2_000_000;
 const MAX_MODEL_BYTES = 1_500_000;
 const MAX_IMAGE_BYTES = 750_000;
 const OFF_THREAD_INTAKE_BYTES = 250_000;
-const AUTHORING_VERSION = 'v0.4.18';
+const AUTHORING_VERSION = 'v0.4.25';
 const bootstrap = window.__CUI_VISUALIZER_BOOTSTRAP__ || {};
 let activeRoot = null;
 let eventAbort = null;
@@ -96,11 +97,29 @@ const initialItems = [
   { id: 'c5', type: 'tabs', title: 'Investigation Summary', weight: 1.05, order: 4, tab: 'Summary', expanded: false, locked: false, z: 5 },
   { id: 'c6', type: 'timeline', title: 'Validation Path', weight: 1.35, order: 5, tm: 2, locked: false, z: 6 },
 ];
+const LEGACY_ELEMENT_IDENTITY=Object.freeze({
+  metric:['MetricEngine','Hero KPI'],chart:['CoreChartEngine','Line Chart'],text:['TextEngine','Key Takeaway'],table:['TableEngine','Clean Table'],tabs:['InteractionLayer','Tabs + Expandable Detail'],timeline:['TimelineEngine','Interactive Timeline'],image:['ImageMediaEngine','Image'],diagram:['DiagramEngine','Process Flow'],risk:['DecisionCompositeEngine','Decision Needed'],
+});
+function migrateLegacyItems(source) {
+  if(!source||typeof source!=='object'||!Array.isArray(source.items))return source;
+  const value=structuredClone(source);
+  value.items=value.items.map(entry=>{
+    if(!entry||entry.engine||!LEGACY_ELEMENT_IDENTITY[entry.type])return entry;
+    const [engine,element]=LEGACY_ELEMENT_IDENTITY[entry.type];
+    const patch={...entry,engine,element,showTitle:entry.showTitle===true||entry.show_title===true};
+    if(engine==='TextEngine'&&patch.text==null&&patch.body==null)patch.text='Summarize the key finding, why it matters, and the next decision.';
+    if(engine==='TimelineEngine'&&!Array.isArray(patch.milestones))patch.milestones=timelineStarter();
+    if(engine==='TableEngine'&&!patch.customTable)patch.customTable={headers:['Evidence','Polarity','Confidence'],rows:[]};
+    if(engine==='DecisionCompositeEngine'&&patch.statement==null)patch.statement='Decision required';
+    return patch;
+  });
+  return value;
+}
 
-let store = new EditorStore(parseCanonical(bootstrap.model || {
+let store = new EditorStore(parseCanonical(migrateLegacyItems(bootstrap.model || {
   schema_version: 1,
-  items: structuredClone(initialItems), groups: {}, mode: 'smart', layoutPreset: 'editorial', crossFilter: null, nextId: 20,
-}), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
+  items: structuredClone(initialItems), groups: {}, mode: 'smart', layoutPreset: 'editorial', crossFilter: null, canvas: DEFAULT_CANVAS_SIZE, nextId: 20,
+})), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
 
 const ui = {
   zoom: 1,
@@ -108,7 +127,7 @@ const ui = {
   lasso: null,
   space: false,
   snap: true,
-  showMini: true,
+  showMini: false,
   preview: false,
   autoFit: true,
   previewPatches: new Map(),
@@ -124,6 +143,7 @@ const ui = {
   contextBoundsCache: null,
   lastPreflight: null,
   inspectorOpen: true,
+  libraryOpen: false,
   libraryLimit: 60,
   pendingCommits: new Map(),
   recovery: null,
@@ -150,6 +170,14 @@ const ui = {
 
 function model() { return store.model; }
 function item(id) { return model().items.find((entry) => entry.id === id); }
+function canvasSize() {
+  const value=model().canvas||DEFAULT_CANVAS_SIZE;
+  return {width:clamp(Math.round(Number(value.width)||DEFAULT_CANVAS_SIZE.width),640,3840),height:clamp(Math.round(Number(value.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H)};
+}
+function syncCanvasSpec() {
+  const size=canvasSize();
+  CANVAS.w=size.width; CANVAS.h=size.height; SCENE.w=CANVAS.w+40; SCENE.h=CANVAS.h+60;
+}
 function esc(value) { return String(value ?? '').replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])); }
 function overlap(a, b, p = 0) { return !(a.x + a.w + p <= b.x || b.x + b.w + p <= a.x || a.y + a.h + p <= b.y || b.y + b.h + p <= a.y); }
 function intersectionArea(a, b) {
@@ -253,8 +281,12 @@ function effectiveWeight(entry) {
   const base={compact:.72,standard:1,prominent:1.35,hero:1.8}[emphasis]||1;
   const raw=Number.isFinite(+entry.weight)?+entry.weight:1;
   const advanced=clamp(raw,.45,3.4);
-  const preset=model().layoutPreset==='executive'?(entry.engine==='MetricEngine'||entry.engine==='DecisionCompositeEngine'||entry.engine==='TextEngine'?1.18:.96):model().layoutPreset==='technical'?(['TableEngine','DiagramEngine','TimelineEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry.engine)?1.18:.92):1;
-  return base*Math.sqrt(advanced)*preset;
+  const preset=model().layoutPreset;
+  const priority={
+    executive:['MetricEngine','ComparisonEngine','DecisionCompositeEngine','TextEngine'],technical:['TableEngine','DiagramEngine','TimelineEngine','EngineeringChartEngine','WaferFabEngine'],scorecard:['MetricEngine','ComparisonEngine','EngineeringChartEngine'],narrative:['TextEngine','ImageMediaEngine','TimelineEngine','EvidenceCompositeEngine'],review:['MetricEngine','CoreChartEngine','TableEngine'],investigation:['TextEngine','EvidenceCompositeEngine','DiagramEngine','TimelineEngine'],manufacturing:['WaferFabEngine','EngineeringChartEngine','MatrixEngine'],roadmap:['TimelineEngine','ProjectCompositeEngine','DecisionCompositeEngine'],comparison:['ComparisonEngine','MetricEngine','CoreChartEngine'],showcase:['ProjectCompositeEngine','MetricEngine','DecisionCompositeEngine','EvidenceCompositeEngine','ImageMediaEngine'],
+  }[preset];
+  const presetWeight=priority?(priority.includes(entry.engine)?1.18:.92):1;
+  return base*Math.sqrt(advanced)*presetWeight;
 }
 function allocateRowWidths(row, innerW, gap) {
   const available=Math.max(1,innerW-gap*(row.length-1));
@@ -270,20 +302,33 @@ function allocateRowWidths(row, innerW, gap) {
 }
 function semanticSmartLayout(items=viewItems()) {
   const ordered=[...items].sort((a,b)=>a.order-b.order);
-  if(!ordered.length){CANVAS.h=BASE_CANVAS_H;SCENE.h=820;return {rects:[],height:CANVAS.h,conflict:null};}
+  if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
   const g=CANVAS.gap,innerW=CANVAS.w-2*g;
   const rows=[];let row=[];let minUsed=0;
   for(const entry of ordered){const policy=semanticPolicy(entry);const need=(row.length?g:0)+policy.minW;if(row.length&&minUsed+need>innerW){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
   if(row.length)rows.push(row);
   const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});return {members,widths,height:Math.max(...desired)};});
   const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height,0)+g*Math.max(0,rowSpecs.length-1)+2*g;
-  let targetH=Math.max(BASE_CANVAS_H,Math.ceil(baseNeeded));
+  const targetH=CANVAS.h;
   let conflict=null;
-  if(targetH>MAX_CANVAS_H){conflict=`Smart layout requires ${targetH}px document height, above the governed ${MAX_CANVAS_H}px limit.`;targetH=MAX_CANVAS_H;}
-  if(baseNeeded<BASE_CANVAS_H&&rowSpecs.length){let extra=BASE_CANVAS_H-baseNeeded;for(const r of rowSpecs){if(extra<=0)break;const cap=Math.max(0,r.height*.22);const add=Math.min(cap,extra/rowSpecs.length);r.height+=add;extra-=add;}}
-  CANVAS.h=targetH;SCENE.h=CANVAS.h+145;
+  const usableH=targetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  if(baseNeeded>targetH) {
+    const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
+    const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
+    if(minimumTotal<=usableH) {
+      let remaining=usableH-minimumTotal;
+      const flexible=desired.map((height,index)=>Math.max(0,height-minimum[index]));
+      const flexibleTotal=flexible.reduce((sum,height)=>sum+height,0)||1;
+      rowSpecs.forEach((spec,index)=>{spec.height=minimum[index]+remaining*flexible[index]/flexibleTotal;});
+    } else {
+      const scale=usableH/Math.max(1,minimumTotal);
+      rowSpecs.forEach((spec,index)=>{spec.height=Math.max(1,minimum[index]*scale);});
+      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${targetH}px page. Increase Page size for their preferred space.`;
+    }
+  }
+  if(baseNeeded<targetH&&rowSpecs.length){const extra=targetH-baseNeeded;for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length;}
   const rects=[];let y=g;
-  for(const spec of rowSpecs){let x=g;for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i];const h=Math.max(policy.minH,spec.height);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
+  for(const spec of rowSpecs){let x=g;for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i];const h=spec.height;rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>CANVAS.h-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(CANVAS.h-g))<.2;}
   return {rects,height:CANVAS.h,conflict};
 }
@@ -359,7 +404,7 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   if(reportChanged&&!preserveLocal){retainLocalRecovery('Report switched before save confirmation');ui.recovery=null;ui.persistenceFailure=null;}
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
-  store=new EditorStore(parseCanonical(payload.model),{revision:payload.revision});
+  store=new EditorStore(parseCanonical(migrateLegacyItems(payload.model)),{revision:payload.revision});
   bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
 }
 function opPreconditionsMatch(current,before,op) {
@@ -435,13 +480,14 @@ function chartMarkup(entry, r) {
   const bx1 = left + plotW * bs[0] / Math.max(1, D.length - 1);
   const bx2 = left + plotW * bs[1] / Math.max(1, D.length - 1);
   const drill = entry.drill != null ? `<div class="chart-drill"><b>${esc(D[entry.drill][0])}</b> · ${D[entry.drill][1]} min. Drill-down is interactive on web and flattens to the selected state for PPT.</div>` : '';
-  return `<div class="kicker">Chart · cross-filter + brush + drill</div><div class="row-between"><div><div class="ctitle">${esc(entry.title)}</div><div class="csub">Click mark to filter evidence · double-click for drill-down</div></div><button class="mini-btn reveal" data-action="reveal" aria-pressed="${entry.revealed ? 'true' : 'false'}">${entry.revealed ? 'Hide' : 'Reveal'}</button></div><p class="sr-only" id="${summaryId}">${chartSummary}</p><div class="chart-wrap"><svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-chart="${entry.id}" aria-label="${esc(entry.title)} chart" aria-describedby="${summaryId}">${[0, .5, 1].map((t) => `<line x1="${left}" y1="${top + plotH * t}" x2="${left + plotW}" y2="${top + plotH * t}" class="chart-grid"></line>`).join('')}${marks}<rect x="${left}" y="${H - 13}" width="${plotW}" height="5" rx="3" class="brush-track"></rect><rect x="${bx1}" y="${H - 16}" width="${Math.max(3, bx2 - bx1)}" height="11" rx="4" class="brush-window"></rect><rect aria-hidden="true" x="${bx1 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-start"></rect><rect aria-hidden="true" x="${bx2 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-end"></rect></svg><div class="chart-hit-layer">${hitButtons}<button type="button" role="slider" aria-label="Brush start" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[0]}" class="brush-handle" data-brush="start" style="left:${bx1 / W * 100}%"></button><button type="button" role="slider" aria-label="Brush end" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[1]}" class="brush-handle" data-brush="end" style="left:${bx2 / W * 100}%"></button></div></div><div class="chart-footer"><span>Brush: ${esc(D[bs[0]][0])} → ${esc(D[bs[1]][0])}</span><span>${entry.cross != null ? `Filter: ${esc(D[entry.cross][0])}` : 'No cross-filter'}</span></div>${drill}`;
+  return `<div class="kicker">Chart · cross-filter + brush + drill</div><div class="row-between"><div>${componentTitleMarkup(entry)}<div class="csub">Click mark to filter evidence · double-click for drill-down</div></div><button class="mini-btn reveal" data-action="reveal" aria-pressed="${entry.revealed ? 'true' : 'false'}">${entry.revealed ? 'Hide' : 'Reveal'}</button></div><p class="sr-only" id="${summaryId}">${chartSummary}</p><div class="chart-wrap"><svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-chart="${entry.id}" aria-label="${esc(entry.title)} chart" aria-describedby="${summaryId}">${[0, .5, 1].map((t) => `<line x1="${left}" y1="${top + plotH * t}" x2="${left + plotW}" y2="${top + plotH * t}" class="chart-grid"></line>`).join('')}${marks}<rect x="${left}" y="${H - 13}" width="${plotW}" height="5" rx="3" class="brush-track"></rect><rect x="${bx1}" y="${H - 16}" width="${Math.max(3, bx2 - bx1)}" height="11" rx="4" class="brush-window"></rect><rect aria-hidden="true" x="${bx1 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-start"></rect><rect aria-hidden="true" x="${bx2 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-end"></rect></svg><div class="chart-hit-layer">${hitButtons}<button type="button" role="slider" aria-label="Brush start" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[0]}" class="brush-handle" data-brush="start" style="left:${bx1 / W * 100}%"></button><button type="button" role="slider" aria-label="Brush end" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[1]}" class="brush-handle" data-brush="end" style="left:${bx2 / W * 100}%"></button></div></div><div class="chart-footer"><span>Brush: ${esc(D[bs[0]][0])} → ${esc(D[bs[1]][0])}</span><span>${entry.cross != null ? `Filter: ${esc(D[entry.cross][0])}` : 'No cross-filter'}</span></div>${drill}`;
 }
+function componentTitleMarkup(entry) { return entry.showTitle===true||entry.show_title===true?`<div class="ctitle" data-direct="title" title="Double-click to edit title">${esc(entry.title)}</div>`:''; }
 function textMarkup(entry, r = {}) {
   const compact = Number(r.w) < 220 || Number(r.h) < 245;
   const full = 'Evidence is prepared deterministically before reasoning—not discovered by the model on demand.';
   const statement = compact ? 'Evidence is prepared before reasoning.' : full;
-  const foot = compact ? 'Deterministic · source-backed' : `${esc(entry.title)} · source-backed narrative`;
+  const foot = compact ? 'Deterministic · source-backed' : 'Source-backed narrative';
   return `<div class="kicker">Executive statement</div><div class="text-hero ${compact ? 'compact' : ''}" title="${esc(full)}">${esc(statement)}</div><div class="text-foot">${foot}</div>`;
 }
 const evidenceRows = [['Collect', 'FDC pressure excursion', 'Support', 'High'], ['Normalize', 'Control population clean', 'Support', 'High'], ['Reason', 'Recipe unchanged', 'Contradict', 'High'], ['Verify', 'Spatial signature match', 'Support', 'Medium'], ['Close', 'Containment verified', 'Support', 'High']];
@@ -456,11 +502,12 @@ function tableMarkup(entry) {
 }
 function tabsMarkup(entry) {
   const copy = { Summary: 'Leading hypothesis remains Chamber A after contradiction-aware evidence review.', Evidence: '4 supporting observations · 1 meaningful contradiction · controls remain essential.', Next: 'Run targeted chamber verification before upgrading the root-cause status.' };
-  return `<div class="kicker">Tabs + expandable detail</div><div class="ctitle">${esc(entry.title)}</div><div class="tabbar" role="tablist" aria-label="Investigation views">${Object.keys(copy).map((key) => `<button role="tab" aria-selected="${entry.tab === key ? 'true' : 'false'}" data-tab="${key}" class="${entry.tab === key ? 'active' : ''}">${key}</button>`).join('')}</div><div class="tab-copy" role="tabpanel">${copy[entry.tab] || copy.Summary}</div><button class="mini-btn expand align-start" data-action="expand" aria-expanded="${entry.expanded ? 'true' : 'false'}">${entry.expanded ? 'Collapse' : 'Expand'} evidence</button>${entry.expanded ? '<div class="metric-detail">Expanded detail remains inside the component boundary; Smart mode reallocates visual mass instead of overflowing.</div>' : ''}`;
+  return `<div class="kicker">Tabs + expandable detail</div>${componentTitleMarkup(entry)}<div class="tabbar" role="tablist" aria-label="Investigation views">${Object.keys(copy).map((key) => `<button role="tab" aria-selected="${entry.tab === key ? 'true' : 'false'}" data-tab="${key}" class="${entry.tab === key ? 'active' : ''}">${key}</button>`).join('')}</div><div class="tab-copy" role="tabpanel">${copy[entry.tab] || copy.Summary}</div><button class="mini-btn expand align-start" data-action="expand" aria-expanded="${entry.expanded ? 'true' : 'false'}">${entry.expanded ? 'Collapse' : 'Expand'} evidence</button>${entry.expanded ? '<div class="metric-detail">Expanded detail remains inside the component boundary; Smart mode reallocates visual mass instead of overflowing.</div>' : ''}`;
 }
 function timelineMarkup(entry) {
   const milestones = [['Schema', 'Aug 18'], ['Data', 'Aug 31'], ['Reason', 'Sep 08'], ['Pilot', 'Sep 16'], ['Prod', 'Sep 26']];
-  return `<div class="kicker">Interactive timeline</div><div class="ctitle">${esc(entry.title)}</div><div class="timeline" role="group" aria-label="Timeline milestones">${milestones.map((m, k) => `<button class="tm ${k < entry.tm ? 'done' : ''} ${k === entry.tm ? 'active' : ''}" data-tm="${k}" aria-pressed="${k === entry.tm ? 'true' : 'false'}"><i aria-hidden="true"></i><b>${m[0]}</b><span>${m[1]}</span></button>`).join('')}</div><div class="csub">Selected: <b>${milestones[entry.tm][0]}</b> · activate a milestone to inspect its state.</div>`;
+  const selected=Number.isInteger(entry.tm)&&entry.tm>=0&&entry.tm<milestones.length?entry.tm:0;
+  return `<div class="kicker">Interactive timeline</div>${componentTitleMarkup(entry)}<div class="timeline" role="group" aria-label="Timeline milestones">${milestones.map((m, k) => `<button class="tm ${k < selected ? 'done' : ''} ${k === selected ? 'active' : ''}" data-tm="${k}" aria-pressed="${k === selected ? 'true' : 'false'}"><i aria-hidden="true"></i><b>${m[0]}</b><span>${m[1]}</span></button>`).join('')}</div><div class="csub">Selected: <b>${milestones[selected][0]}</b> · activate a milestone to inspect its state.</div>`;
 }
 function imageMarkup(entry) { return `<div class="kicker">Image / media</div><div class="ctitle">${esc(entry.title)}</div><div class="image-art" role="img" aria-label="Spatial signature engineering visual"><div class="image-cap">Spatial signature · focal crop</div></div>`; }
 function diagramMarkup(entry) { return `<div class="kicker">Diagram</div><div class="ctitle">${esc(entry.title)}</div><div class="diagram-mini" aria-label="Source to Normalize to Reason flow"><div class="dnode"><b>Source</b><span>FDC / SPC</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Normalize</b><span>Evidence model</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Reason</b><span>Grounded AI</span></div></div><div class="csub">Connections are routed automatically and stay editable.</div>`; }
@@ -530,12 +577,13 @@ function contentSignature(entry, r) {
 }
 function syncCanvasDimensions() {
   if (!activeRoot) return;
+  syncCanvasSpec();
   activeRoot.style.setProperty('--viz-canvas-height', `${Math.ceil(CANVAS.h)}px`);
   activeRoot.style.setProperty('--viz-scene-height', `${Math.ceil(SCENE.h)}px`);
   const frame=$('#sceneFrame'); const scene=$('#scene'); const hull=$('#hull');
   if(frame){frame.style.width=`${(SCENE.w*ui.zoom).toFixed(2)}px`;frame.style.height=`${(SCENE.h*ui.zoom).toFixed(2)}px`;}
-  if(scene)scene.style.height=`${Math.ceil(SCENE.h)}px`;
-  if(hull)hull.style.height=`${Math.ceil(CANVAS.h)}px`;
+  if(scene){scene.style.width=`${Math.ceil(SCENE.w)}px`;scene.style.height=`${Math.ceil(SCENE.h)}px`;}
+  if(hull){hull.style.width=`${Math.ceil(CANVAS.w)}px`;hull.style.height=`${Math.ceil(CANVAS.h)}px`;}
 }
 function nodeOverflow(node) {
   if (!node) return { x:0, y:0 };
@@ -547,7 +595,7 @@ function nodeOverflow(node) {
   return {x,y};
 }
 function measureSmartContentRequirements(rm) {
-  if(model().mode!=='smart') return false;
+  if(model().mode!=='smart'||ui.smartLayoutConflict) return false;
   let changed=false;
   for(const entry of model().items) {
     const r=rm.get(entry.id); const node=ui.componentNodes.get(entry.id); if(!r||!node)continue;
@@ -569,6 +617,7 @@ function positionMinimap() {
 }
 function reconcileCanvas({ content = true } = {}) {
   ensureCanvasScaffold();
+  syncCanvasSpec();
   const hull = $('#hull');
   hull.className = `canvas-hull ${model().mode}`;
   const layer = $('#componentLayer');
@@ -595,6 +644,7 @@ function reconcileCanvas({ content = true } = {}) {
     node.classList.toggle('selected', ui.selected.has(entry.id));
     node.classList.toggle('locked', !!entry.locked);
     node.classList.toggle('grouped', !!entry.groupId);
+    node.dataset.contentDensity=entry.contentDensity==='fill'?'fill':'fit';
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
@@ -955,13 +1005,15 @@ function renderInspector() {
     const titleSection=inspectorSection('Identity',`<div class="field"><label for="iTitle">Title</label><input id="iTitle" value="${esc(entry.title)}"><label class="toggle-field"><input id="iShowTitle" type="checkbox" ${entry.showTitle===true||entry.show_title===true?'checked':''}> <span>Show title on canvas</span></label><label for="iTextAlign">Content alignment</label><select id="iTextAlign"><option value="left" ${(entry.textAlign||entry.text_align||'left')==='left'?'selected':''}>Left</option><option value="center" ${(entry.textAlign||entry.text_align)==='center'?'selected':''}>Center</option><option value="right" ${(entry.textAlign||entry.text_align)==='right'?'selected':''}>Right</option></select><small>Titles are optional. Alignment applies to text and data labels inside this element.</small></div>`);
     const contentSection=inspectorSection(semanticSectionName(entry.engine||''),semanticInspectorMarkup(entry));
     const emphasis=defaultEmphasis(entry);
-    const layoutBody=model().mode==='smart'?`<div class="field"><label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div><small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field"><label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div><div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
+    const density=`<label for="iContentDensity">Vertical space</label><select id="iContentDensity"><option value="fit" ${(entry.contentDensity||'fit')==='fit'?'selected':''}>Fit content</option><option value="fill" ${entry.contentDensity==='fill'?'selected':''}>Fill component</option></select><small>Fit content avoids decorative top and bottom space. Use Fill only when the component needs a balanced card treatment.</small>`;
+    const layoutBody=model().mode==='smart'?`<div class="field"><label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field"><label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
     const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>PowerPoint</span><b>Editable region</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>PowerPoint</span><b>Semantic export eligible</b></div>');
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
     p.innerHTML=identity+titleSection+contentSection+dataDockMarkup(entry)+containerSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
     $('#iTitle').addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Rename component',[{op:'item.patch',id:entry.id,patch:{title:e.target.value}}]));
     $('#iShowTitle')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Toggle canvas title',[{op:'item.patch',id:entry.id,patch:{showTitle:e.target.checked}}]));
     $('#iTextAlign')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content alignment',[{op:'item.patch',id:entry.id,patch:{textAlign:e.target.value}}]));
+    $('#iContentDensity')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content density',[{op:'item.patch',id:entry.id,patch:{contentDensity:e.target.value}}]));
     bindSemanticInspector(entry);
     bindDataDock(entry);
     $$('[data-emphasis]',p).forEach((button)=>button.addEventListener('click',()=>entry.locked?toast('Unlock the component before editing'):commitOps('Set visual emphasis',[{op:'item.patch',id:entry.id,patch:{emphasis:button.dataset.emphasis}}])));
@@ -976,7 +1028,9 @@ function renderInspector() {
 }
 function renderCanvasInspector(p) {
   const pf = preflight();
-  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}${inspectorSection('Smart layout',`<div class="suggestion"><b>Editorial Bento</b><p>Balanced narrative and analytical hierarchy.</p><button class="tb" data-suggestion="editorial">Apply</button></div><div class="suggestion"><b>Executive</b><p>Promote KPI, takeaway, comparison and decision.</p><button class="tb" data-suggestion="executive">Apply</button></div><div class="suggestion"><b>Technical</b><p>Promote diagram, table, timeline and engineering evidence.</p><button class="tb" data-suggestion="technical">Apply</button></div>`)}`;
+  const size=canvasSize();
+  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row"><span>Page size</span><b>${size.width} × ${size.height}</b></div><button class="tb full-width" id="inspectorPageSize">Change page size</button><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}${inspectorSection('Smart layouts',builtInPresets.map(layout=>`<div class="suggestion"><b>${esc(layout.name)}</b><p>${esc(layout.description)}</p><button class="tb" data-suggestion="${layout.id}">Apply</button></div>`).join(''))}`;
+  $('#inspectorPageSize')?.addEventListener('click',openPageSize);
 }
 
 function renderAll() {
@@ -1000,7 +1054,7 @@ function syncModeButtons() {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
-  const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition · 14px safe frame + peer gap':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
+  const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition within the fixed page':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
 }
 function commandEligibility() {
   const entries=[...ui.selected].map(item).filter(Boolean);
@@ -1191,7 +1245,7 @@ function startResize(e,id,el){const entry=item(id);if(entry.locked)return toast(
 
 function startLasso(e) {
   ui.selected.clear(); const p = logicalPoint(e); const box = $('#lasso'); box.style.display = 'block'; ui.lasso = { start: p };
-  beginPointerSession($('#hull'), e, {
+  beginPointerSession($('#viewport'), e, {
     move(ev) {
       const q = logicalPoint(ev); const x = Math.min(p.x, q.x); const y = Math.min(p.y, q.y); const w = Math.abs(q.x - p.x); const h = Math.abs(q.y - p.y);
       Object.assign(box.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
@@ -1343,11 +1397,33 @@ function setMode(nextMode) {
 }
 function applySuggestion(preset) {
   const ops = [{ op: 'model.patch', patch: { layoutPreset: preset, mode: 'smart' } }];
-  const orderMap = preset === 'executive' ? ['metric', 'text', 'chart', 'timeline', 'tabs', 'table', 'image', 'diagram', 'risk'] : preset === 'technical' ? ['diagram', 'chart', 'table', 'timeline', 'metric', 'tabs', 'text', 'image', 'risk'] : null;
+  const orderMap = LAYOUT_ORDER[preset] || LAYOUT_ORDER.editorial;
   if (orderMap) [...model().items].sort((a, b) => orderMap.indexOf(a.type) - orderMap.indexOf(b.type)).forEach((entry, k) => { if (entry.order !== k) ops.push({ op: 'item.patch', id: entry.id, patch: { order: k } }); });
   commitOps('Apply layout suggestion', ops, { announce: `${preset[0].toUpperCase() + preset.slice(1)} composition applied` });
 }
 function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const ops = [{ op: 'model.patch', patch: { mode: 'smart' } }, ...normalizeOrderOps()]; commitOps('Reflow report', ops, { announce: 'Smart composition reflowed' }); }
+function openLayoutGallery() {
+  $('#modalTitle').textContent='Report layouts';
+  $('#modalBody').innerHTML=`<div class="modal-form"><b>Choose a composition</b><span>Layouts preserve your components and data. They reorder the story and use Smart mode to compose it within the fixed page size.</span><div class="layout-gallery">${builtInPresets.map(layout=>`<button type="button" class="suggestion" data-layout-choice="${layout.id}"><b>${esc(layout.name)}</b><span>${esc(layout.description)}</span></button>`).join('')}</div></div>`;
+  $$('[data-layout-choice]',$('#modalBody')).forEach(button=>button.addEventListener('click',()=>{applySuggestion(button.dataset.layoutChoice);closeModals();}));openModal($('#genericModal'));
+}
+function setCanvasSize(width, height) {
+  width=Math.round(Number(width)); height=Math.round(Number(height));
+  if(!Number.isInteger(width)||!Number.isInteger(height)||width<640||width>3840||height<360||height>MAX_CANVAS_H)return toast('Page size must be 640–3840px wide and 360–4800px high');
+  const previous=canvasSize(); if(previous.width===width&&previous.height===height)return toast('Page size is unchanged');
+  const ops=[{op:'model.patch',patch:{canvas:{width,height}}}];
+  if(model().mode!=='smart') {
+    const sx=width/previous.width,sy=height/previous.height;
+    for(const entry of model().items){const r=rectMap().get(entry.id),policy=semanticPolicy(entry);if(!r)continue;const w=clamp(Math.max(policy.minW,Math.round(r.w*sx)),policy.minW,width-2*CANVAS.gap),h=clamp(Math.max(policy.minH,Math.round(r.h*sy)),policy.minH,height-2*CANVAS.gap);ops.push({op:'item.patch',id:entry.id,patch:{x:clamp(Math.round(r.x*sx),CANVAS.gap,width-CANVAS.gap-w),y:clamp(Math.round(r.y*sy),CANVAS.gap,height-CANVAS.gap-h),w,h}});}
+  }
+  commitOps('Set page size',ops,{announce:`Page size set to ${width} × ${height}`});
+}
+function openPageSize() {
+  const size=canvasSize();
+  $('#modalTitle').textContent='Page size';
+  $('#modalBody').innerHTML=`<form class="modal-form" id="pageSizeForm"><b>Absolute report page</b><span>The page stays this size until you change it. Smart layout fits within it; Guided and Free scale existing geometry only when you apply a new size.</span><div class="field-grid"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><div class="r-actions"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Presentation</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply page size</button></div></form>`;
+  const form=$('#pageSizeForm');$$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});$('[data-close]',form).addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#pageWidth'));
+}
 function duplicateOne(id) {
   const source = item(id); const copy = structuredClone(source); const nextId = `c${model().nextId}`; copy.id = nextId; copy.order = model().items.length; copy.z = (source.z || 1) + 1; copy.title = `${source.title} copy`; copy.groupId = null;
   if (model().mode !== 'smart') { copy.x = clamp(source.x + 24, 0, CANVAS.w - source.w); copy.y = clamp(source.y + 24, 0, CANVAS.h - source.h); }
@@ -1454,8 +1530,33 @@ function setZoom(z, renderMini = true) {
   scene.style.transform=`scale(${ui.zoom})`; scene.style.setProperty('--viz-interaction-scale',String(ui.zoom<1?1/ui.zoom:1)); frame.style.width=`${(SCENE.w*ui.zoom).toFixed(2)}px`; frame.style.height=`${(SCENE.h*ui.zoom).toFixed(2)}px`; const zs=$('#zoomStatus'); if(zs)zs.textContent=`${Math.round(ui.zoom*100)}%`; if(renderMini)renderMinimap(rectMap()); requestAnimationFrame(()=>{positionMinimap();if(ui.selected.size)renderContext(rectMap());});
 }
 function fitZoom() { const vp=$('#viewport'); if(!vp)return; const pad=36; const z=Math.min((vp.clientWidth-pad)/SCENE.w,(vp.clientHeight-pad)/SCENE.h,1.15); ui.autoFit=true; setZoom(z); requestAnimationFrame(()=>{vp.scrollLeft=Math.max(0,(vp.scrollWidth-vp.clientWidth)/2);vp.scrollTop=Math.max(0,(vp.scrollHeight-vp.clientHeight)/2);}); }
-function togglePreview() { ui.preview=!ui.preview; activeRoot?.classList.toggle('preview-mode',ui.preview); if(ui.preview)requestAnimationFrame(fitZoom); }
-const builtInPresets=Object.freeze([{id:'editorial',name:'Editorial Bento',description:'Balanced narrative and analytical hierarchy.'},{id:'executive',name:'Executive',description:'Promote KPI, takeaway, comparison and decision.'},{id:'technical',name:'Technical',description:'Promote diagram, table, timeline and engineering evidence.'}]);
+function togglePreview() { ui.preview=!ui.preview; activeRoot?.classList.toggle('preview-mode',ui.preview); requestAnimationFrame(fitZoom); }
+const LAYOUT_ORDER=Object.freeze({
+  editorial:['text','metric','chart','comparison','timeline','table','image','diagram','risk','matrix','evidence','decision','project','engineering','wafer'],
+  executive:['metric','comparison','text','decision','chart','table','timeline','risk','evidence','project','image','diagram','matrix','engineering','wafer'],
+  technical:['engineering','wafer','diagram','chart','table','matrix','timeline','metric','text','evidence','decision','project','image','risk','comparison'],
+  scorecard:['metric','comparison','engineering','chart','table','text','decision','timeline','matrix','wafer','diagram','evidence','project','image','risk'],
+  narrative:['text','image','timeline','evidence','chart','metric','comparison','decision','project','table','diagram','risk','matrix','engineering','wafer'],
+  review:['metric','chart','table','comparison','text','timeline','decision','risk','evidence','project','matrix','engineering','wafer','diagram','image'],
+  investigation:['text','evidence','diagram','timeline','engineering','wafer','table','decision','metric','chart','risk','comparison','matrix','project','image'],
+  manufacturing:['wafer','engineering','matrix','chart','table','metric','text','evidence','decision','timeline','diagram','comparison','risk','project','image'],
+  roadmap:['timeline','project','decision','text','metric','chart','table','evidence','diagram','comparison','risk','matrix','engineering','wafer','image'],
+  comparison:['comparison','metric','chart','table','text','decision','risk','timeline','matrix','engineering','wafer','evidence','project','diagram','image'],
+  showcase:['project','metric','decision','evidence','image','timeline','chart','table','comparison','text','diagram','matrix','engineering','wafer','risk'],
+});
+const builtInPresets=Object.freeze([
+  {id:'editorial',name:'Editorial Bento',description:'Balanced narrative and analytical hierarchy.'},
+  {id:'executive',name:'Executive Decision',description:'KPIs, recommendation, decision, then evidence.'},
+  {id:'technical',name:'Technical Review',description:'Analysis, structure, data and timeline first.'},
+  {id:'scorecard',name:'Operations Scorecard',description:'Metrics and comparisons lead an operational review.'},
+  {id:'narrative',name:'Narrative Brief',description:'Statement, media, milestones and supporting evidence.'},
+  {id:'review',name:'Data Review',description:'Metrics, trend and table form a fast review loop.'},
+  {id:'investigation',name:'Investigation / RCA',description:'Problem, evidence, causal flow and corrective action.'},
+  {id:'manufacturing',name:'Fab Analysis',description:'Wafer, SPC, process matrix and manufacturing evidence.'},
+  {id:'roadmap',name:'Program Roadmap',description:'Timeline, project state and decisions lead the story.'},
+  {id:'comparison',name:'Before / After',description:'Comparisons and KPI changes lead the report.'},
+  {id:'showcase',name:'Project Showcase',description:'A focused project story with outcome, decision, proof, and delivery plan.'},
+]);
 function normalizedPersonalPresets(raw) { const result=[]; for(const value of Array.isArray(raw)?raw:[]){try{if(!value||typeof value!=='object')continue;const name=String(value.name||'').trim().slice(0,80);const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));if(!name||modelBytes(modelValue)>MAX_MODEL_BYTES)continue;result.push({id:String(value.id||localCommitId('preset')),name,model:modelValue});if(result.length>=50)break;}catch{/* isolate corrupt preset */}} return result.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})||a.id.localeCompare(b.id)); }
 function schedulePresetListRender(){if(presetRenderFrame)cancelAnimationFrame(presetRenderFrame);presetRenderFrame=requestAnimationFrame(()=>{presetRenderFrame=0;renderPresetList();});}
 function persistPersonalPresets(){personalPresets=normalizedPersonalPresets(personalPresets);storage.set('viz-prod-presets-cache',JSON.stringify(personalPresets));dispatchSemantic('preset.preferences_save_requested',{presets:personalPresets});schedulePresetListRender();}
@@ -1475,8 +1576,18 @@ function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.par
 function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;persistPendingState();updateSaveUi();dispatchSemantic('report.commit',failed);return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
 function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
 function exportModel(){showPreflight();const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
+function downloadBlob(blob,name){const link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
+async function exportCanvasImage(format){
+  const hull=$('#hull');if(!hull)return;const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h)));
+  const clone=hull.cloneNode(true);clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
+  const css=[...document.styleSheets].flatMap(sheet=>{try{return [...sheet.cssRules].map(rule=>rule.cssText);}catch{return [];}}).join('\n').replaceAll(':scope','.cui-visualizer-root');
+  const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(CANVAS.w*scale)}" height="${Math.round(CANVAS.h*scale)}" viewBox="0 0 ${CANVAS.w} ${CANVAS.h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" class="cui-visualizer-root"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+  if(format==='svg'){downloadBlob(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}),'visembler_report.svg');toast('SVG exported');return;}
+  const source=URL.createObjectURL(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}));
+  try{const image=await new Promise((resolve,reject)=>{const node=new Image();node.onload=()=>resolve(node);node.onerror=reject;node.src=source;});const canvas=document.createElement('canvas');canvas.width=Math.round(CANVAS.w*scale);canvas.height=Math.round(CANVAS.h*scale);const context=canvas.getContext('2d');context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);const mime=format==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.98));if(!blob)throw new Error('The browser could not encode this image');downloadBlob(blob,`visembler_report.${format==='jpeg'?'jpg':'png'}`);toast(`${format==='jpeg'?'JPEG':'PNG'} exported at ${Math.round(scale)}× resolution`);}catch(error){debugEvent('error','Image export failed',error?.message||error);toast('Image export failed; try SVG or PowerPoint');}finally{URL.revokeObjectURL(source);}
+}
 function openExportMenu(){
-  const pf=preflight();$('#modalTitle').textContent='Export';$('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportPptAction">PowerPoint</button><button type="button" class="tb full-width" id="exportJsonAction">Report JSON</button><small>PowerPoint keeps supported report objects editable and uses the configured template content region.</small></div>`;$('#exportPptAction').onclick=()=>{closeModals();exportPpt();};$('#exportJsonAction').onclick=()=>{closeModals();exportModel();};openModal($('#genericModal'));
+  const pf=preflight();$('#modalTitle').textContent='Export';$('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportPptAction">PowerPoint</button><button type="button" class="tb full-width" id="exportPngAction">PNG · high resolution</button><button type="button" class="tb full-width" id="exportJpegAction">JPEG · high resolution</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button><button type="button" class="tb full-width" id="exportJsonAction">Report JSON</button><small>Exports only authored report elements. PNG and JPEG use up to 4× resolution; PowerPoint keeps supported objects editable and an imported template is optional.</small></div>`;$('#exportPptAction').onclick=()=>{closeModals();exportPpt();};$('#exportPngAction').onclick=()=>{closeModals();exportCanvasImage('png');};$('#exportJpegAction').onclick=()=>{closeModals();exportCanvasImage('jpeg');};$('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};$('#exportJsonAction').onclick=()=>{closeModals();exportModel();};openModal($('#genericModal'));
 }
 function openHelp(){
   $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock / unlock selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
@@ -1500,7 +1611,8 @@ async function copyDeveloperPayload(kind) {
 }
 function openDeveloperConsole() { renderDeveloperConsole(); openModal($('#debugModal')); }
 function setLibraryTab(tab){ui.libraryTab=tab==='presets'?'presets':'elements';$$('[data-library-tab]').forEach((button)=>{const active=button.dataset.libraryTab===ui.libraryTab;button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');});const ev=$('#elementsView'),pv=$('#presetsView');if(ev)ev.hidden=ui.libraryTab!=='elements';if(pv)pv.hidden=ui.libraryTab!=='presets';if(ui.libraryTab==='presets')renderPresetList();}
-function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
+function setLibrary(open){ui.libraryOpen=!!open;activeRoot?.setAttribute('data-library',ui.libraryOpen?'open':'closed');const button=$('#libraryToggle');if(button){button.setAttribute('aria-pressed',ui.libraryOpen?'true':'false');button.textContent=ui.libraryOpen?'Hide library':'Library';}storage.set('viz-library-open',ui.libraryOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
+function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const button=$('#inspectorToggle');if(button){button.setAttribute('aria-pressed',ui.inspectorOpen?'true':'false');button.textContent=ui.inspectorOpen?'Hide inspector':'Inspector';}storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
 
 const commands = [
   ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
@@ -1619,11 +1731,12 @@ function keyboardResizeSelected(event) {
 }
 function wireGlobal(signal) {
   const on=(node,event,handler,options={})=>node?.addEventListener(event,handler,{...options,signal});
-  on($('#debugBtn'),'click',openDeveloperConsole);
+  on($('#pageSizeBtn'),'click',openPageSize); on($('#layoutBtn'),'click',openLayoutGallery);
+  on(window,'company_ui:open-developer-console',openDeveloperConsole);
   on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
-  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#commandBtn'),'click',openPalette);on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
+  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
   on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',fitZoom); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());});
-  on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#inspectorToggle'),'click',()=>setInspector(true));
+  on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen));
   $$('.pal').forEach((p)=>{p.draggable=true;on(p,'click',()=>addComponent(p.dataset.type));on(p,'dragstart',(e)=>{e.dataTransfer.setData('application/x-viz-type',p.dataset.type);e.dataTransfer.effectAllowed='copy';});});
   $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();});
   on($('#componentSearch'),'input',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#engineFilter'),'change',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#libraryMore'),'click',()=>{ui.libraryLimit+=60;renderLibrary();});
@@ -1634,7 +1747,7 @@ function wireGlobal(signal) {
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-top')align('top');else if(value==='align-center')align('center');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();});
-  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);
+  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on($('#viewport'),'pointerdown',(event)=>{if(event.button===0&&!hull.contains(event.target)&&!event.target.closest('.minimap'))startLasso(event);});on(hull,'keydown',onHullKeyDown);
   on(hull,'dragover',(e)=>{e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
@@ -1666,7 +1779,7 @@ function init(root=$('.cui-visualizer-root')) {
   if (root===activeRoot && root.dataset.editorReady==='true') return true;
   eventAbort?.abort(); cancelPointerSession('rebind'); window.__VIZ_RESIZE_OBSERVER__?.disconnect?.(); activeRoot=root; eventAbort=new AbortController();
   activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
-  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); requestAnimationFrame(fitZoom);
+  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')==='1'); requestAnimationFrame(fitZoom);
   activeRoot.dataset.editorReady='true';
   window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>document.documentElement.setAttribute('data-theme',theme),cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;

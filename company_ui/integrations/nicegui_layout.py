@@ -133,6 +133,7 @@ class ShellConfig:
     on_support: Callable[[], None] | None = None
     on_feedback: Callable[[], None] | None = None
     on_docs: Callable[[], None] | None = None
+    on_developer_console: Callable[[], None] | None = None
 
 
 class AppShell(AbstractContextManager):
@@ -149,10 +150,10 @@ class AppShell(AbstractContextManager):
                  on_settings: Callable[[], None] | None = None, on_about: Callable[[], None] | None = None,
                  on_logout: Callable[[], None] | None = None, owner: str | None = None,
                  on_support: Callable[[], None] | None = None, on_feedback: Callable[[], None] | None = None,
-                 on_docs: Callable[[], None] | None = None):
+                 on_docs: Callable[[], None] | None = None, on_developer_console: Callable[[], None] | None = None):
         self.config = ShellConfig(title, navigation, active_route, sidebar, environment, on_navigate, subtitle,
                                   greeting, user_name, user_initials, on_settings, on_about, on_logout,
-                                  owner, on_support, on_feedback, on_docs)
+                                  owner, on_support, on_feedback, on_docs, on_developer_console)
         self.header = None; self.sidebar = None; self.mobile_drawer = None; self.main = None
 
     async def _navigate(self, route: str) -> None:
@@ -201,9 +202,12 @@ class AppShell(AbstractContextManager):
                 # Mobile navigation exists only when desktop navigation no longer fits,
                 # and lives with actions rather than beside the application title.
                 if self.config.navigation:
-                    mobile = ui.button().props('flat round dense aria-label="Open navigation" title="Navigation"').classes('cui-shell-mobile-menu cui-icon-button')
-                    mobile.on('click', js_handler="() => { document.documentElement.dataset.mobileNav='open'; }")
+                    mobile = ui.button(on_click=self._toggle_mobile).props('flat round dense aria-label="Open navigation" title="Navigation"').classes('cui-shell-mobile-menu cui-icon-button')
                     with mobile: _icon(ui, 'menu', label='Navigation')
+                if self.config.on_developer_console:
+                    developer = ui.button(on_click=self.config.on_developer_console).props('flat dense no-caps aria-label="Open developer console" title="Open developer console"').classes('cui-shell-developer-console')
+                    with developer: _icon(ui, 'terminal', label='Developer console', size='xs')
+                    ui.label('Developer console').classes('cui-shell-developer-console__label')
                 if self.config.environment: EnvironmentBadge(self.config.environment)
                 if self.config.on_settings or self.config.on_about:
                     _ApplicationMenu(

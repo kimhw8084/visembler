@@ -1,4 +1,4 @@
-<div class="cui-visualizer-root" data-editor-ready="false" data-library="open" data-inspector="open">
+<div class="cui-visualizer-root" data-editor-ready="false" data-library="closed" data-inspector="open">
   <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit preview</button>
   <div class="app">
     <header class="topbar" aria-label="Visembler toolbar">
@@ -10,6 +10,7 @@
         <div class="tool-separator" aria-hidden="true"></div>
         <div class="toolgroup" aria-label="Arrange">
           <button class="tb" id="auto" title="Recompose the report using Smart mode constraints">Reflow</button>
+          <button class="tb" id="layoutBtn" aria-haspopup="dialog" title="Choose a report layout">Layouts</button>
           <button class="tb" id="group">Group</button>
           <button class="tb" id="ungroup">Ungroup</button>
         </div>
@@ -20,10 +21,12 @@
           <button class="tb" id="front">Front</button>
         </div>
         <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
+        <button class="tb" id="libraryToggle" aria-pressed="false" title="Show or hide the element library">Library</button>
+        <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
+        <button class="tb" id="historyBtn" title="Open report history, checkpoints, restore, and duplicate">History</button>
         <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
       </div>
       <div class="rightbar" aria-label="Report actions">
-        <button class="tb" id="debugBtn" aria-haspopup="dialog" title="Open developer console">Developer console</button>
         <button class="tb" id="preflightBtn">Validate</button>
         <button class="tb" id="previewBtn">Preview</button>
         <button class="tb accent" id="saveBtn">Save</button>
@@ -85,14 +88,15 @@
               <button data-mode="guided" aria-pressed="false" title="Manual placement with 14px grid, margin, alignment and equal-gap snapping"><span class="mode-dot">⊞</span>Guided</button>
               <button data-mode="free" aria-pressed="false" title="Exact manual geometry with no snapping"><span class="mode-dot">↗</span>Free</button>
             </div>
-            <span class="statusline mode-description"><span id="modeHelp">Auto composition · 14px safe frame + peer gap</span></span>
+            <span class="statusline mode-description"><span id="modeHelp">Auto composition within the fixed page</span></span>
           </div>
           <div class="sub-actions">
+            <button class="tb" id="pageSizeBtn" title="Set the fixed report page size">Page size</button>
             <button class="tb icon" id="zoomOut" aria-label="Zoom out">−</button>
             <span class="zoom-status" id="zoomStatus" aria-live="polite">88%</span>
             <button class="tb icon" id="zoomIn" aria-label="Zoom in">+</button>
             <button class="tb" id="zoomFit">Fit</button>
-            <button class="tb" id="miniToggle" aria-pressed="true">Map</button>
+            <button class="tb" id="miniToggle" aria-pressed="false">Map</button>
           </div>
         </div>
         <div class="viewport" id="viewport">
@@ -100,7 +104,7 @@
           <div class="minimap" id="minimap" aria-hidden="true"></div>
         </div>
         <div class="bottom">
-          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.18</span><span id="saveStatus">Saved automatically</span></div>
+          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.25</span><span id="saveStatus">Saved automatically</span></div>
           <div class="preflight"><button type="button" id="preflightStatus" class="preflight-status-button good">Ready to export</button></div>
         </div>
       </main>
@@ -109,7 +113,6 @@
         <div class="pane-title"><span>Inspector</span><button class="mini-btn pane-close" id="inspectorClose" aria-label="Collapse inspector">×</button></div>
         <div id="inspector"></div>
       </aside>
-      <button class="inspector-toggle" id="inspectorToggle" aria-label="Open inspector" title="Open inspector">Inspector</button>
     </div>
   </div>
 

@@ -13,6 +13,7 @@ from typing import Any, Mapping
 from company_ui.integrations.nicegui_components import FileUpload
 from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
+from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
 
 from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
@@ -31,7 +32,7 @@ MAX_PRESETS = 50
 MAX_PRESET_BYTES = 1_500_000
 _ALLOWED_EVENTS = {
     'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested',
-    'ppt.export_requested','dataset.binding_requested',
+    'ppt.export_requested','dataset.binding_requested','report.history_requested',
 }
 NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),)),))
 
@@ -199,6 +200,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 if kind=='report.save_requested':
                     latest=repository.get(current.report_id); await send('application.notification',{'level':'success','message':f'Saved · revision {latest.revision}'})
                     return
+                if kind=='report.history_requested':
+                    await open_history()
+                    return
                 if kind=='preset.preferences_requested':
                     raw=preferences.load().filter_views.get(PRESET_KEY,{})
                     presets=_normalize_presets(raw.get('presets',[])) if isinstance(raw,Mapping) else []
@@ -208,7 +212,6 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     preferences.save_filter_view(PRESET_KEY,{'presets':presets})
                     await send('preset.preferences_result',{'presets':presets,'saved':True}); return
                 if kind=='ppt.export_requested':
-                    if not ppt_template['content']: raise VisualizerContractError('Load a PowerPoint template before exporting')
                     latest=repository.get(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=repository.assets.data_url)
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
@@ -319,7 +322,10 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 ppt_template.update(name=name,content=content); ppt_status.text=f'Export template · {name}'; ppt_status.update(); notifications.success('PowerPoint template loaded for export')
             except Exception as exc: notifications.error(f'PowerPoint rejected: {exc}')
 
-        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',environment=None,subtitle='Visual report authoring',owner='Visembler'):
+        async def open_developer_console() -> None:
+            await ui.run_javascript("window.dispatchEvent(new Event('company_ui:open-developer-console'))")
+
+        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler',on_developer_console=open_developer_console):
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             new_dialog=ui.dialog()
             with new_dialog:
@@ -418,7 +424,6 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see isolated editor host above.
                     ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('History',on_click=open_history).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
                     ui.button('Import…',on_click=import_dialog.open).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.

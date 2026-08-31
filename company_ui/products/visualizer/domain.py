@@ -13,6 +13,11 @@ MODEL_MAX_BYTES = 1_500_000
 BRIDGE_MAX_BYTES = 2_000_000
 IMAGE_EMBED_MAX_BYTES = 750_000
 ALLOWED_MODES = {'smart', 'guided', 'free'}
+DEFAULT_CANVAS = {'width': 1600, 'height': 900}
+MIN_CANVAS_WIDTH = 640
+MAX_CANVAS_WIDTH = 3840
+MIN_CANVAS_HEIGHT = 360
+MAX_CANVAS_HEIGHT = 4800
 
 class VisualizerError(RuntimeError): pass
 class VisualizerContractError(VisualizerError): pass
@@ -48,11 +53,27 @@ def canonical_model(value: Mapping[str, Any] | None = None) -> dict[str, Any]:
     mode=src.get('mode') if src.get('mode') in ALLOWED_MODES else 'guided'
     next_id=src.get('nextId') if isinstance(src.get('nextId'), int) and src.get('nextId') > 0 else _infer_next_id(items)
     datasets=src.get('datasets') if isinstance(src.get('datasets'), list) else []
-    model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':json.loads(json.dumps(datasets)),'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'nextId':next_id}
+    canvas=_canonical_canvas(src.get('canvas'))
+    model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':json.loads(json.dumps(datasets)),'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'canvas':canvas,'nextId':next_id}
     validate_model(model)
     encoded=stable_json(model).encode('utf-8')
     if len(encoded) > MODEL_MAX_BYTES: raise VisualizerContractError(f'report model exceeds {MODEL_MAX_BYTES} bytes')
     return model
+
+
+def _canonical_canvas(value: Any) -> dict[str, int]:
+    source=value if isinstance(value, Mapping) else {}
+    width=source.get('width', DEFAULT_CANVAS['width'])
+    height=source.get('height', DEFAULT_CANVAS['height'])
+    if isinstance(width, bool) or isinstance(height, bool):
+        raise VisualizerContractError('canvas dimensions must be whole numbers')
+    try:
+        width=int(width); height=int(height)
+    except (TypeError, ValueError) as exc:
+        raise VisualizerContractError('canvas dimensions must be whole numbers') from exc
+    if not MIN_CANVAS_WIDTH <= width <= MAX_CANVAS_WIDTH or not MIN_CANVAS_HEIGHT <= height <= MAX_CANVAS_HEIGHT:
+        raise VisualizerContractError(f'canvas must be {MIN_CANVAS_WIDTH}-{MAX_CANVAS_WIDTH}px wide and {MIN_CANVAS_HEIGHT}-{MAX_CANVAS_HEIGHT}px high')
+    return {'width':width,'height':height}
 
 
 def _infer_next_id(items: list[Any]) -> int:
@@ -65,12 +86,13 @@ def _infer_next_id(items: list[Any]) -> int:
 
 
 def validate_model(model: Mapping[str, Any]) -> None:
-    required=('schema_version','authoring_schema','datasets','items','groups','mode','layoutPreset','crossFilter','nextId')
+    required=('schema_version','authoring_schema','datasets','items','groups','mode','layoutPreset','crossFilter','canvas','nextId')
     for key in required:
         if key not in model: raise VisualizerContractError(f'missing model field: {key}')
     if model['schema_version'] != SCHEMA_VERSION: raise VisualizerContractError(f'unsupported schema_version {model["schema_version"]!r}')
     if model['mode'] not in ALLOWED_MODES: raise VisualizerContractError(f'unsupported mode {model["mode"]!r}')
     if model['authoring_schema'] != AUTHORING_SCHEMA: raise VisualizerContractError(f'unsupported authoring_schema {model["authoring_schema"]!r}')
+    if model['canvas'] != _canonical_canvas(model['canvas']): raise VisualizerContractError('invalid canvas dimensions')
     if not isinstance(model['items'], list) or not isinstance(model['groups'], Mapping) or not isinstance(model['datasets'], list): raise VisualizerContractError('invalid items/groups/datasets')
     if not isinstance(model['nextId'], int) or model['nextId'] < 1: raise VisualizerContractError('nextId must be positive integer')
     dataset_ids=set()

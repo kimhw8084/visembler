@@ -283,9 +283,14 @@ def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, A
         _set_semantic_metadata(shape,entry)
 
 
-def export_pptx(template_bytes: bytes, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None) -> bytes:
-    validate_pptx_bytes(template_bytes)
-    prs=Presentation(io.BytesIO(template_bytes))
+def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None) -> bytes:
+    """Export the authored report into an optional template or a clean blank deck."""
+    if template_bytes is None:
+        prs=Presentation()
+        prs.slides.add_slide(prs.slide_layouts[6])
+    else:
+        validate_pptx_bytes(template_bytes)
+        prs=Presentation(io.BytesIO(template_bytes))
     if slide_index < 0 or slide_index >= len(prs.slides): raise ValueError('PPT slide index is out of range')
     try: semantic_model=canonical_model(model)
     except VisualizerContractError: semantic_model=None

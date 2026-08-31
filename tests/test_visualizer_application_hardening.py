@@ -251,6 +251,13 @@ def test_editable_ppt_round_trip_remains_openable_and_adds_native_shapes():
     assert semantic.left < after.slide_width/2
 
 
+def test_ppt_export_without_an_uploaded_template_creates_an_openable_blank_deck():
+    model=canonical_model({'items':[{'id':'t1','type':'text','engine':'TextEngine','order':0,'title':'Finding','text':'Export without setup','x':0,'y':0,'w':600,'h':180}],'nextId':2})
+    output=export_pptx(None,model)
+    validate_pptx_bytes(output)
+    assert len(Presentation(io.BytesIO(output)).slides)==1
+
+
 def test_ppt_export_paginates_deterministically_and_keeps_mixed_semantics():
     template=_pptx()
     items=[]

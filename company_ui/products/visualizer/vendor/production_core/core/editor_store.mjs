@@ -1,5 +1,6 @@
-const MODEL_KEYS = ['schema_version', 'authoring_schema', 'datasets', 'items', 'groups', 'mode', 'layoutPreset', 'crossFilter', 'nextId'];
+const MODEL_KEYS = ['schema_version', 'authoring_schema', 'datasets', 'items', 'groups', 'mode', 'layoutPreset', 'crossFilter', 'canvas', 'nextId'];
 const ALLOWED_MODES = new Set(['smart', 'guided', 'free']);
+const DEFAULT_CANVAS = Object.freeze({ width: 1600, height: 900 });
 
 export class RevisionConflictError extends Error {
   constructor(expected, received) {
@@ -57,10 +58,21 @@ export function canonicalModel(input = {}) {
     mode: ALLOWED_MODES.has(input.mode) ? input.mode : 'smart',
     layoutPreset: typeof input.layoutPreset === 'string' ? input.layoutPreset : 'editorial',
     crossFilter: input.crossFilter ?? null,
+    canvas: canonicalCanvas(input.canvas),
     nextId: Number.isInteger(input.nextId) ? input.nextId : inferNextId(items),
   };
   validateModel(model);
   return model;
+}
+
+function canonicalCanvas(value) {
+  const source = isPlainObject(value) ? value : {};
+  const width = Number(source.width ?? DEFAULT_CANVAS.width);
+  const height = Number(source.height ?? DEFAULT_CANVAS.height);
+  if (!Number.isInteger(width) || !Number.isInteger(height) || width < 640 || width > 3840 || height < 360 || height > 4800) {
+    throw new CommandValidationError('Canvas must be 640-3840px wide and 360-4800px high.');
+  }
+  return { width, height };
 }
 
 function inferNextId(items) {
@@ -86,6 +98,7 @@ export function validateModel(model) {
   }
   if (!isPlainObject(model.groups)) throw new CommandValidationError('groups must be an object.');
   if (!ALLOWED_MODES.has(model.mode)) throw new CommandValidationError(`Unsupported mode: ${model.mode}`);
+  canonicalCanvas(model.canvas);
   if (!Number.isInteger(model.nextId) || model.nextId < 1) throw new CommandValidationError('nextId must be a positive integer.');
 
   const ids = new Set();
@@ -210,7 +223,7 @@ function applyOp(model, op) {
 
   if (op.op === 'model.patch') {
     if (!isPlainObject(op.patch)) throw new CommandValidationError('model.patch requires patch object.');
-    const allowed = new Set(['mode', 'layoutPreset', 'crossFilter', 'nextId', 'datasets', 'authoring_schema']);
+    const allowed = new Set(['mode', 'layoutPreset', 'crossFilter', 'canvas', 'nextId', 'datasets', 'authoring_schema']);
     const before = {};
     for (const [key, value] of Object.entries(op.patch)) {
       if (!allowed.has(key)) throw new CommandValidationError(`model.patch cannot modify ${key}`);
