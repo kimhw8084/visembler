@@ -3,8 +3,8 @@ import {
   RevisionConflictError,
   parseCanonical,
   serializeCanonical,
-} from '../vendor/production_core/core/editor_store.mjs';
-import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs';
+} from '../vendor/production_core/core/editor_store.mjs?v=v0.4.26';
+import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
 import { renderIntegratedElement } from './element_renderer.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, candidateForView, inferMappings, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
@@ -27,7 +27,7 @@ const MAX_BRIDGE_BYTES = 2_000_000;
 const MAX_MODEL_BYTES = 1_500_000;
 const MAX_IMAGE_BYTES = 750_000;
 const OFF_THREAD_INTAKE_BYTES = 250_000;
-const AUTHORING_VERSION = 'v0.4.25';
+const AUTHORING_VERSION = 'v0.4.26';
 const bootstrap = window.__CUI_VISUALIZER_BOOTSTRAP__ || {};
 let activeRoot = null;
 let eventAbort = null;
@@ -143,7 +143,7 @@ const ui = {
   contextBoundsCache: null,
   lastPreflight: null,
   inspectorOpen: true,
-  libraryOpen: false,
+  libraryOpen: true,
   libraryLimit: 60,
   pendingCommits: new Map(),
   recovery: null,
@@ -345,9 +345,18 @@ function rectMap() { return new Map(currentRects().map((r) => [r.id, r])); }
 function committedRectMap() { return new Map(committedRects().map((r)=>[r.id,r])); }
 
 function localCommitId(prefix='commit', revision=store.revision) { return `${prefix}-${revision}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`; }
+function updateDebugBadge() {
+  const badge=$('#debugBadge'); if(!badge)return;
+  const errors=ui.debugLog.filter(entry=>entry.level==='error').length;
+  const count=ui.debugLog.length;
+  badge.textContent=String(Math.min(count,99));
+  badge.setAttribute('aria-label',`${count} developer event${count===1?'':'s'}${errors?` · ${errors} error${errors===1?'':'s'}`:''}`);
+  badge.dataset.level=errors?'error':count?'active':'idle';
+}
 function debugEvent(level, event, detail = '') {
   ui.debugLog.unshift({id:++ui.debugSequence,time:new Date().toLocaleTimeString(),level,event,detail:String(detail||'').slice(0,600)});
   if (ui.debugLog.length > 200) ui.debugLog.length=200;
+  updateDebugBadge();
   if ($('#debugModal')?.classList.contains('show')) renderDeveloperConsole();
 }
 function dispatchSemantic(type, payload={}) {
@@ -1244,16 +1253,18 @@ function snapResizeRect(entry,raw,handle){if(model().mode!=='guided'||!ui.snap)r
 function startResize(e,id,el){const entry=item(id);if(entry.locked)return toast('Locked component');e.preventDefault();e.stopPropagation();const handle=el.dataset.resize||'se',p=logicalPoint(e),base=committedRectMap().get(id),start={x:base.x,y:base.y,w:base.w,h:base.h,weight:entry.weight};const previewAt=(ev)=>{const q=logicalPoint(ev),delta={x:q.x-p.x,y:q.y-p.y};if(model().mode==='smart')ui.previewPatches.set(id,{weight:clamp(start.weight+(delta.x+delta.y)/240,.45,3.4)});else{const policy=semanticPolicy(entry),inset=model().mode==='guided'?CANVAS.gap:0;let raw=resizeRect(start,handle,delta,{minW:policy.minW,minH:policy.minH,canvas:CANVAS,inset,shift:ev.shiftKey,alt:ev.altKey});raw=snapResizeRect(entry,raw,handle);if(model().mode==='guided')showGuides(raw);ui.previewPatches.set(id,{x:raw.x,y:raw.y,w:raw.w,h:raw.h});}renderGeometryOnly();};beginPointerSession(el,e,{move:previewAt,end(ev){previewAt(ev);hideGuides('resize-end');if(model().mode==='guided'&&hasSelectedOverlap()){ui.previewPatches.clear();renderGeometryOnly();toast('Guided mode blocked resize overlap');return;}const patch=ui.previewPatches.get(id);ui.previewPatches.clear();if(patch)commitOps('Resize component',[{op:'item.patch',id,patch}]);else renderGeometryOnly();},cancel(){ui.previewPatches.clear();renderGeometryOnly();toast('Resize cancelled');}});}
 
 function startLasso(e) {
-  ui.selected.clear(); const p = logicalPoint(e); const box = $('#lasso'); box.style.display = 'block'; ui.lasso = { start: p };
-  beginPointerSession($('#viewport'), e, {
-    move(ev) {
-      const q = logicalPoint(ev); const x = Math.min(p.x, q.x); const y = Math.min(p.y, q.y); const w = Math.abs(q.x - p.x); const h = Math.abs(q.y - p.y);
-      Object.assign(box.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
-      const L = { x, y, w, h }; ui.selected = new Set(currentRects().filter((r) => overlap(L, r, 0)).map((r) => r.id));
-      $$('.component').forEach((n) => { n.classList.toggle('selected', ui.selected.has(n.dataset.id)); n.setAttribute('aria-selected', ui.selected.has(n.dataset.id) ? 'true' : 'false'); });
+  e.preventDefault(); e.stopPropagation();
+  ui.selected.clear(); const p=logicalPoint(e); const box=$('#lasso');
+  box.classList.add('active'); Object.assign(box.style,{left:`${p.x}px`,top:`${p.y}px`,width:'0px',height:'0px'}); ui.lasso={start:p};
+  beginPointerSession($('#viewport'),e,{
+    move(ev){
+      const q=logicalPoint(ev),x=Math.min(p.x,q.x),y=Math.min(p.y,q.y),w=Math.abs(q.x-p.x),h=Math.abs(q.y-p.y);
+      Object.assign(box.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`});
+      const L={x,y,w,h}; ui.selected=new Set(currentRects().filter((r)=>overlap(L,r,0)).map((r)=>r.id));
+      $$('.component').forEach((n)=>{n.classList.toggle('selected',ui.selected.has(n.dataset.id));n.setAttribute('aria-selected',ui.selected.has(n.dataset.id)?'true':'false');});
     },
-    end() { box.style.display = 'none'; ui.lasso = null; reconcileCanvas({ content: false }); renderInspector(); },
-    cancel() { box.style.display = 'none'; ui.lasso = null; ui.selected.clear(); reconcileCanvas({ content: false }); renderInspector(); },
+    end(){box.classList.remove('active');ui.lasso=null;reconcileCanvas({content:false});renderInspector();},
+    cancel(){box.classList.remove('active');ui.lasso=null;ui.selected.clear();reconcileCanvas({content:false});renderInspector();},
   });
 }
 function startPan(e) {
@@ -1396,17 +1407,20 @@ function setMode(nextMode) {
   performModeSwitch(nextMode);
 }
 function applySuggestion(preset) {
-  const ops = [{ op: 'model.patch', patch: { layoutPreset: preset, mode: 'smart' } }];
-  const orderMap = LAYOUT_ORDER[preset] || LAYOUT_ORDER.editorial;
-  if (orderMap) [...model().items].sort((a, b) => orderMap.indexOf(a.type) - orderMap.indexOf(b.type)).forEach((entry, k) => { if (entry.order !== k) ops.push({ op: 'item.patch', id: entry.id, patch: { order: k } }); });
-  commitOps('Apply layout suggestion', ops, { announce: `${preset[0].toUpperCase() + preset.slice(1)} composition applied` });
+  const next=parseCanonical(store.serialize());
+  next.layoutPreset=preset;
+  next.mode='smart';
+  const orderMap=LAYOUT_ORDER[preset]||LAYOUT_ORDER.editorial;
+  if(orderMap){
+    const ranked=[...next.items].sort((a,b)=>orderMap.indexOf(a.type)-orderMap.indexOf(b.type));
+    const orderById=new Map(ranked.map((entry,index)=>[entry.id,index]));
+    next.items=next.items.map(entry=>({...entry,order:orderById.get(entry.id)??entry.order}));
+  }
+  const accepted=commitOps('Apply built-in preset',[{op:'model.replace',value:next}],{announce:`${preset[0].toUpperCase()+preset.slice(1)} composition applied`});
+  if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);}
+  return accepted;
 }
 function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const ops = [{ op: 'model.patch', patch: { mode: 'smart' } }, ...normalizeOrderOps()]; commitOps('Reflow report', ops, { announce: 'Smart composition reflowed' }); }
-function openLayoutGallery() {
-  $('#modalTitle').textContent='Report layouts';
-  $('#modalBody').innerHTML=`<div class="modal-form"><b>Choose a composition</b><span>Layouts preserve your components and data. They reorder the story and use Smart mode to compose it within the fixed page size.</span><div class="layout-gallery">${builtInPresets.map(layout=>`<button type="button" class="suggestion" data-layout-choice="${layout.id}"><b>${esc(layout.name)}</b><span>${esc(layout.description)}</span></button>`).join('')}</div></div>`;
-  $$('[data-layout-choice]',$('#modalBody')).forEach(button=>button.addEventListener('click',()=>{applySuggestion(button.dataset.layoutChoice);closeModals();}));openModal($('#genericModal'));
-}
 function setCanvasSize(width, height) {
   width=Math.round(Number(width)); height=Math.round(Number(height));
   if(!Number.isInteger(width)||!Number.isInteger(height)||width<640||width>3840||height<360||height>MAX_CANVAS_H)return toast('Page size must be 640–3840px wide and 360–4800px high');
@@ -1419,10 +1433,15 @@ function setCanvasSize(width, height) {
   commitOps('Set page size',ops,{announce:`Page size set to ${width} × ${height}`});
 }
 function openPageSize() {
-  const size=canvasSize();
+  const size=canvasSize(),modal=$('#genericModal');
+  modal.classList.add('page-size-modal');
   $('#modalTitle').textContent='Page size';
-  $('#modalBody').innerHTML=`<form class="modal-form" id="pageSizeForm"><b>Absolute report page</b><span>The page stays this size until you change it. Smart layout fits within it; Guided and Free scale existing geometry only when you apply a new size.</span><div class="field-grid"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><div class="r-actions"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Presentation</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply page size</button></div></form>`;
-  const form=$('#pageSizeForm');$$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});$('[data-close]',form).addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#pageWidth'));
+  $('#modalBody').innerHTML=`<form class="modal-form page-size-form" id="pageSizeForm"><div class="page-size-presets" role="group" aria-label="Page size presets"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Wide</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="page-size-dimensions"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><small>Smart fits within the fixed page. Guided and Free scale existing geometry when the size changes.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply</button></div></form>`;
+  const form=$('#pageSizeForm');
+  $$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));
+  form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});
+  $('[data-close]',form).addEventListener('click',closeModals,{once:true});
+  openModal(modal,$('#pageWidth'));
 }
 function duplicateOne(id) {
   const source = item(id); const copy = structuredClone(source); const nextId = `c${model().nextId}`; copy.id = nextId; copy.order = model().items.length; copy.z = (source.z || 1) + 1; copy.title = `${source.title} copy`; copy.groupId = null;
@@ -1575,19 +1594,58 @@ function deletePreset(index){if(!personalPresets[index])return;personalPresets.s
 function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});}
 function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;persistPendingState();updateSaveUi();dispatchSemantic('report.commit',failed);return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
 function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
-function exportModel(){showPreflight();const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
+function exportModel(){const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
 function downloadBlob(blob,name){const link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
-async function exportCanvasImage(format){
-  const hull=$('#hull');if(!hull)return;const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h)));
-  const clone=hull.cloneNode(true);clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
+function exportSvgMarkup(scale=1){
+  const hull=$('#hull'); if(!hull)throw new Error('Report canvas is unavailable');
+  const clone=hull.cloneNode(true);
+  clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;
+  clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
   const css=[...document.styleSheets].flatMap(sheet=>{try{return [...sheet.cssRules].map(rule=>rule.cssText);}catch{return [];}}).join('\n').replaceAll(':scope','.cui-visualizer-root');
-  const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(CANVAS.w*scale)}" height="${Math.round(CANVAS.h*scale)}" viewBox="0 0 ${CANVAS.w} ${CANVAS.h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" class="cui-visualizer-root"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  svg.setAttribute('width',String(Math.round(CANVAS.w*scale)));
+  svg.setAttribute('height',String(Math.round(CANVAS.h*scale)));
+  svg.setAttribute('viewBox',`0 0 ${CANVAS.w} ${CANVAS.h}`);
+  const foreign=document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+  foreign.setAttribute('width','100%'); foreign.setAttribute('height','100%');
+  const wrapper=document.createElementNS('http://www.w3.org/1999/xhtml','div');
+  wrapper.setAttribute('class','cui-visualizer-root');
+  const style=document.createElementNS('http://www.w3.org/1999/xhtml','style');
+  style.textContent=css;
+  wrapper.append(style,clone); foreign.append(wrapper); svg.append(foreign);
+  return new XMLSerializer().serializeToString(svg);
+}
+async function exportCanvasImage(format){
+  const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h))),markup=exportSvgMarkup(scale);
   if(format==='svg'){downloadBlob(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}),'visembler_report.svg');toast('SVG exported');return;}
   const source=URL.createObjectURL(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}));
-  try{const image=await new Promise((resolve,reject)=>{const node=new Image();node.onload=()=>resolve(node);node.onerror=reject;node.src=source;});const canvas=document.createElement('canvas');canvas.width=Math.round(CANVAS.w*scale);canvas.height=Math.round(CANVAS.h*scale);const context=canvas.getContext('2d');context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);const mime=format==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.98));if(!blob)throw new Error('The browser could not encode this image');downloadBlob(blob,`visembler_report.${format==='jpeg'?'jpg':'png'}`);toast(`${format==='jpeg'?'JPEG':'PNG'} exported at ${Math.round(scale)}× resolution`);}catch(error){debugEvent('error','Image export failed',error?.message||error);toast('Image export failed; try SVG or PowerPoint');}finally{URL.revokeObjectURL(source);}
+  try{
+    const image=await new Promise((resolve,reject)=>{const node=new Image();node.onload=()=>resolve(node);node.onerror=()=>reject(new Error('The browser could not decode the report SVG'));node.src=source;});
+    const canvas=document.createElement('canvas');canvas.width=Math.round(CANVAS.w*scale);canvas.height=Math.round(CANVAS.h*scale);
+    const context=canvas.getContext('2d');if(!context)throw new Error('Canvas export context is unavailable');
+    context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);
+    const mime=format==='jpeg'?'image/jpeg':'image/png';
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.98));
+    if(!blob)throw new Error('The browser could not encode this image');
+    downloadBlob(blob,`visembler_report.${format==='jpeg'?'jpg':'png'}`);
+    toast(`${format==='jpeg'?'JPEG':'PNG'} exported at ${Math.round(scale)}× resolution`);
+  }catch(error){debugEvent('error','Image export failed',error?.message||error);toast('Image export failed; try SVG or Report JSON');}
+  finally{URL.revokeObjectURL(source);}
+}
+async function copyReportJson(){
+  const text=store.exportEnvelope(2);
+  try{await navigator.clipboard.writeText(text);toast('Report JSON copied');}
+  catch(error){debugEvent('warn','Clipboard unavailable',error?.message||error);toast('Clipboard permission is unavailable; use Download Report JSON');}
 }
 function openExportMenu(){
-  const pf=preflight();$('#modalTitle').textContent='Export';$('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportPptAction">PowerPoint</button><button type="button" class="tb full-width" id="exportPngAction">PNG · high resolution</button><button type="button" class="tb full-width" id="exportJpegAction">JPEG · high resolution</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button><button type="button" class="tb full-width" id="exportJsonAction">Report JSON</button><small>Exports only authored report elements. PNG and JPEG use up to 4× resolution; PowerPoint keeps supported objects editable and an imported template is optional.</small></div>`;$('#exportPptAction').onclick=()=>{closeModals();exportPpt();};$('#exportPngAction').onclick=()=>{closeModals();exportCanvasImage('png');};$('#exportJpegAction').onclick=()=>{closeModals();exportCanvasImage('jpeg');};$('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};$('#exportJsonAction').onclick=()=>{closeModals();exportModel();};openModal($('#genericModal'));
+  const pf=preflight();
+  $('#modalTitle').textContent='Export';
+  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportJsonAction">Download Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button><small>Report JSON is the canonical portable editable format. SVG is the supported visual export for this release.</small></div>`;
+  $('#exportJsonAction').onclick=()=>{closeModals();exportModel();};
+  $('#exportCopyJsonAction').onclick=async()=>{closeModals();await copyReportJson();};
+  $('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};
+  openModal($('#genericModal'));
 }
 function openHelp(){
   $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock / unlock selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
@@ -1625,7 +1683,7 @@ function renderCommands(query = '') {
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }
 function executeCommandIndex(index) { commands[index]?.[2](); closeModals(); }
 function openModal(modal, focusTarget = null) { ui.modalReturnFocus = document.activeElement; modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
-function closeModals() { $$('.modal.show').forEach((m) => m.classList.remove('show')); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
+function closeModals() { $$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
 function trapModalFocus(e) {
   const modal = e.target.closest('.modal.show'); if (!modal || e.key !== 'Tab') return;
   const nodes = $$('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', modal).filter((n) => n.offsetParent !== null); if (!nodes.length) return;
@@ -1731,9 +1789,9 @@ function keyboardResizeSelected(event) {
 }
 function wireGlobal(signal) {
   const on=(node,event,handler,options={})=>node?.addEventListener(event,handler,{...options,signal});
-  on($('#pageSizeBtn'),'click',openPageSize); on($('#layoutBtn'),'click',openLayoutGallery);
-  on(window,'company_ui:open-developer-console',openDeveloperConsole);
-  on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
+  on($('#pageSizeBtn'),'click',openPageSize);
+  on($('#debugBtn'),'click',openDeveloperConsole); on(window,'company_ui:open-developer-console',openDeveloperConsole);
+  on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];updateDebugBadge();return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
   $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
   on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',fitZoom); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());});
   on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen));
@@ -1747,7 +1805,7 @@ function wireGlobal(signal) {
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-top')align('top');else if(value==='align-center')align('center');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();});
-  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on($('#viewport'),'pointerdown',(event)=>{if(event.button===0&&!hull.contains(event.target)&&!event.target.closest('.minimap'))startLasso(event);});on(hull,'keydown',onHullKeyDown);
+  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);
   on(hull,'dragover',(e)=>{e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
@@ -1779,9 +1837,9 @@ function init(root=$('.cui-visualizer-root')) {
   if (root===activeRoot && root.dataset.editorReady==='true') return true;
   eventAbort?.abort(); cancelPointerSession('rebind'); window.__VIZ_RESIZE_OBSERVER__?.disconnect?.(); activeRoot=root; eventAbort=new AbortController();
   activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
-  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')==='1'); requestAnimationFrame(fitZoom);
+  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')!=='0'); updateDebugBadge(); requestAnimationFrame(fitZoom);
   activeRoot.dataset.editorReady='true';
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>document.documentElement.setAttribute('data-theme',theme),cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect};
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>document.documentElement.setAttribute('data-theme',theme),cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}

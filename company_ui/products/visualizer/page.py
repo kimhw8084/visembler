@@ -39,8 +39,12 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    for name in ('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','element_renderer.mjs','integrated_editor.mjs'):
-        h.update(name.encode()); h.update((ASSETS/name).read_bytes())
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','element_renderer.mjs','integrated_editor.mjs')
+    paths=[ASSETS/name for name in asset_names]
+    paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
+    for path in paths:
+        h.update(path.relative_to(PRODUCT).as_posix().encode())
+        h.update(path.read_bytes())
     return h.hexdigest()[:16]
 
 
@@ -146,7 +150,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
     app._company_ui_visualizer_registered=True
     build=_asset_build()
     app.add_static_files(f'{STATIC_ROUTE}/assets',str(ASSETS),follow_symlink=False,max_cache_age=0)
-    app.add_static_files(f'{STATIC_ROUTE}/vendor/production_core',str(VENDOR),follow_symlink=False,max_cache_age=3600)
+    app.add_static_files(f'{STATIC_ROUTE}/vendor/production_core',str(VENDOR),follow_symlink=False,max_cache_age=0)
 
     from fastapi.responses import RedirectResponse
     @app.get('/',include_in_schema=False)
@@ -319,7 +323,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 if restored is not None:
                     record=repository.create(f'import-{uuid.uuid4().hex}',title=Path(name).stem[:160] or 'Imported Visembler report',model=restored,metadata={'imported_from':name,'semantic_pptx':True})
                     import_dialog.close(); await activate(record,notice='Visembler PowerPoint restored as an editable report'); return
-                ppt_template.update(name=name,content=content); ppt_status.text=f'Export template · {name}'; ppt_status.update(); notifications.success('PowerPoint template loaded for export')
+                ppt_template.update(name=name,content=content); notifications.success('PowerPoint template loaded for export')
             except Exception as exc: notifications.error(f'PowerPoint rejected: {exc}')
 
         async def open_developer_console() -> None:
@@ -399,13 +403,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.label('Import').classes('cui-dialog-title')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Import a Visembler-exported PowerPoint as an editable report, or load any ordinary PowerPoint as an export template.').classes('cui-field-description')
+                    ui.label('Import a Visembler report from its canonical JSON file.').classes('cui-field-description')
                     # company-ui: allow-ai004 — upload controls require an isolated layout host for both validated upload adapters.
                     with ui.column().classes('w-full gap-3'):
                         FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_report)
-                        FileUpload(label='Visembler report PPTX or export template',accept=('.pptx',),max_file_size_mb=100,on_upload=upload_ppt)
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ppt_status=ui.label('Export template · not loaded').classes('cui-field-description')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Done',on_click=import_dialog.close).props('flat no-caps')
 

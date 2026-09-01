@@ -23,10 +23,11 @@ def test_r13_normal_authoring_surface_does_not_expose_release_jargon():
     assert '248 elements' in html
     assert 'Connections are routed automatically and stay editable.' in js
 
-def test_r13_visual_certification_tools_are_release_assets():
-    tools=ROOT.parent/'tools'
-    for name in ('r13_visual_layout_matrix.py','r13_catalog_render_audit.py','r13_element_capabilities.py'):
-        assert (tools/name).is_file(), name
+def test_r13_browser_smoke_is_a_repository_local_release_asset():
+    smoke=PRODUCT/'vendor/production_core/tests/browser_smoke.py'
+    workflow=(ROOT/'.github/workflows/quality.yml').read_text()
+    assert smoke.is_file()
+    assert 'company_ui/products/visualizer/vendor/production_core/tests/browser_smoke.py' in workflow
 
 def test_r13_editor_uses_integration_renderer_and_direct_editing():
     js=(PRODUCT/'assets/integrated_editor.mjs').read_text()

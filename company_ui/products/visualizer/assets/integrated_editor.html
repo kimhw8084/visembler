@@ -1,4 +1,4 @@
-<div class="cui-visualizer-root" data-editor-ready="false" data-library="closed" data-inspector="open">
+<div class="cui-visualizer-root" data-editor-ready="false" data-library="open" data-inspector="open">
   <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit preview</button>
   <div class="app">
     <header class="topbar" aria-label="Visembler toolbar">
@@ -10,7 +10,6 @@
         <div class="tool-separator" aria-hidden="true"></div>
         <div class="toolgroup" aria-label="Arrange">
           <button class="tb" id="auto" title="Recompose the report using Smart mode constraints">Reflow</button>
-          <button class="tb" id="layoutBtn" aria-haspopup="dialog" title="Choose a report layout">Layouts</button>
           <button class="tb" id="group">Group</button>
           <button class="tb" id="ungroup">Ungroup</button>
         </div>
@@ -21,9 +20,10 @@
           <button class="tb" id="front">Front</button>
         </div>
         <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
-        <button class="tb" id="libraryToggle" aria-pressed="false" title="Show or hide the element library">Library</button>
+        <button class="tb" id="libraryToggle" aria-pressed="true" title="Show or hide the element library">Hide library</button>
         <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
         <button class="tb" id="historyBtn" title="Open report history, checkpoints, restore, and duplicate">History</button>
+        <button class="tb debug-trigger" id="debugBtn" aria-label="Open Developer Console" title="Developer Console"><span class="debug-glyph" aria-hidden="true">&lt;/&gt;</span><span class="debug-label">Dev</span><span class="debug-badge" id="debugBadge" aria-label="0 developer events">0</span></button>
         <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
       </div>
       <div class="rightbar" aria-label="Report actions">
@@ -104,7 +104,7 @@
           <div class="minimap" id="minimap" aria-hidden="true"></div>
         </div>
         <div class="bottom">
-          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.25</span><span id="saveStatus">Saved automatically</span></div>
+          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.26</span><span id="saveStatus">Saved automatically</span></div>
           <div class="preflight"><button type="button" id="preflightStatus" class="preflight-status-button good">Ready to export</button></div>
         </div>
       </main>

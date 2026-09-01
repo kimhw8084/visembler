@@ -1,40 +1,49 @@
 from pathlib import Path
 
-SOURCE = Path(__file__).resolve().parents[1]
-ROOT = SOURCE.parent
+ROOT = Path(__file__).resolve().parents[1]
+PRODUCT = ROOT / 'company_ui' / 'products' / 'visualizer'
+QUALITY_WORKFLOW = ROOT / '.github' / 'workflows' / 'quality.yml'
 
 
-def test_root_setup_dispatches_to_visualizer_product_installers():
-    text = (ROOT / 'setup.sh').read_text(encoding='utf-8')
-    assert 'Darwin) exec "$ROOT/setup_mac.sh"' in text
-    assert 'Linux) exec "$ROOT/setup_linux.sh"' in text
-    assert 'Visembler' in text
-    assert 'production setup' in text
+def test_visualizer_product_has_canonical_in_repo_application_bootstrap():
+    text = (PRODUCT / 'cli.py').read_text(encoding='utf-8')
+    for token in (
+        'def build_application',
+        'build_runtime_adapter',
+        'ReportRepository',
+        'register_visualizer',
+    ):
+        assert token in text
 
 
-def test_macos_product_setup_uses_exact_app_smoke_not_framework_lab_smoke():
-    text = (ROOT / 'setup_mac.sh').read_text(encoding='utf-8')
-    assert 'live_app_http_smoke.py' in text
-    assert 'verify_nicegui315_runtime.py' in text
-    assert 'company-ui" runtime-smoke' not in text
-    assert 'run_lab.sh' not in text
+def test_visualizer_main_runs_through_the_resolved_runtime_adapter():
+    text = (PRODUCT / 'cli.py').read_text(encoding='utf-8')
+    assert 'adapter, env, _ = build_application(environ)' in text
+    assert 'adapter.run(environ=env)' in text
+    assert "if __name__ == '__main__':" in text
 
 
-def test_linux_product_setup_uses_exact_app_smoke():
-    text = (ROOT / 'setup_linux.sh').read_text(encoding='utf-8')
-    assert 'live_app_http_smoke.py' in text
-    assert 'verify_nicegui315_runtime.py' in text
+def test_quality_gate_installs_the_production_package_before_startup_smoke():
+    text = QUALITY_WORKFLOW.read_text(encoding='utf-8')
+    assert 'python -m pip install --no-cache-dir .' in text
+    assert 'Production import smoke' in text
+    assert "'company_ui.products.visualizer.cli'," in text
+
+
+def test_quality_gate_smokes_the_exact_visembler_application():
+    text = QUALITY_WORKFLOW.read_text(encoding='utf-8')
+    assert 'Visembler startup smoke' in text
+    assert 'from company_ui.products.visualizer.cli import build_application' in text
+    assert '_, environment, repository = build_application(os.environ)' in text
+    assert 'assert repository.list()' in text
+    assert "assert environment['COMPANY_UI_ENVIRONMENT'] == 'test'" in text
+    assert 'company-ui-runtime-smoke' not in text
 
 
 def test_intentional_framework_runtime_smoke_shutdown_uses_sigterm():
-    text = (SOURCE / 'company_ui/certification/runtime_smoke.py').read_text(encoding='utf-8')
+    text = (ROOT / 'company_ui/certification/runtime_smoke.py').read_text(encoding='utf-8')
     start = text.index('def _stop_process')
     end = text.index('\n\ndef run_runtime_smoke', start)
     block = text[start:end]
     assert 'signal.SIGTERM' in block
     assert 'signal.SIGINT' not in block
-
-
-def test_run_script_points_to_canonical_setup():
-    text = (ROOT / 'run_visualizer.sh').read_text(encoding='utf-8')
-    assert 'Run ./setup.sh first.' in text

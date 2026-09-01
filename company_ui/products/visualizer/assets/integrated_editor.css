@@ -876,7 +876,7 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-reportbar .q-field__native,.cui-visualizer-reportbar .q-field__input { font-size:13px!important; font-weight:650; }
 .cui-visualizer-reportbar .q-btn { min-height:38px!important; font-size:12px!important; border-radius:8px!important; }
 .cui-visualizer-host { display:flex; flex:1 1 0; min-height:0; overflow:hidden; }
-.cui-app-sidebar .cui-sidebar-owner::after { content:"v0.4.25"; display:block; margin-top:4px; color:#7b828d; font-size:11px; font-variant-numeric:tabular-nums; }
+.cui-app-sidebar .cui-sidebar-owner::after { content:"v0.4.26"; display:block; margin-top:4px; color:#7b828d; font-size:11px; font-variant-numeric:tabular-nums; }
 .minimap { display:none; }
 .field input[type="checkbox"],.integrated-element-content input[type="checkbox"] { width:16px!important; min-width:16px!important; height:16px!important; min-height:16px!important; padding:0!important; vertical-align:middle; }
 .component.selected::before { display:none!important; }
@@ -1207,6 +1207,30 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-root .tabs-live,.cui-visualizer-root .tabbar { flex-wrap:wrap!important; align-content:flex-start; }
 .cui-visualizer-root .tabs-live>*,.cui-visualizer-root .tabbar>button { flex:1 1 auto; }
 @media (pointer: coarse) {
-  .cui-visualizer-root .component.selected .resize-h { width:44px!important; height:44px!important; }
+  .cui-visualizer-root .component.selected .resize-h { width:44px!important; min-width:44px!important; height:44px!important; min-height:44px!important; }
   .cui-visualizer-root .component.selected .resize-h--n { top:-22px!important; }.cui-visualizer-root .component.selected .resize-h--ne { top:-22px!important; right:-22px!important; }.cui-visualizer-root .component.selected .resize-h--e { right:-22px!important; }.cui-visualizer-root .component.selected .resize-h--se { right:-22px!important; bottom:-22px!important; }.cui-visualizer-root .component.selected .resize-h--s { bottom:-22px!important; }.cui-visualizer-root .component.selected .resize-h--sw { left:-22px!important; bottom:-22px!important; }.cui-visualizer-root .component.selected .resize-h--w { left:-22px!important; }.cui-visualizer-root .component.selected .resize-h--nw { left:-22px!important; top:-22px!important; }
+}
+
+/* WAVE1_TRUST_SHELL_V1
+   Production trust/shell affordances. Keep selectors rooted to the isolated
+   visualizer host so this layer cannot leak into Company UI surfaces. */
+.cui-visualizer-root .topbar{position:sticky;top:0;z-index:120;}
+.cui-visualizer-root .debug-trigger{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.cui-visualizer-root .debug-glyph{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10px;font-weight:850;letter-spacing:-.08em;}
+.cui-visualizer-root .debug-label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;}
+.cui-visualizer-root .debug-badge{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border-radius:999px;background:var(--viz-surface-3);color:var(--viz-muted);font-size:9px;font-variant-numeric:tabular-nums;line-height:1;}
+.cui-visualizer-root .debug-badge[data-level="active"]{background:var(--viz-accent-soft);color:var(--viz-accent);}
+.cui-visualizer-root .debug-badge[data-level="error"]{background:var(--viz-bad-bg);color:var(--viz-bad);}
+.cui-visualizer-root .debug-dialog .dialog-head{position:sticky;top:0;z-index:2;background:var(--viz-surface);}
+.cui-visualizer-root .lasso.active{display:block!important;visibility:visible!important;opacity:1!important;}
+.cui-visualizer-root .modal.page-size-modal .dialog{width:min(420px,calc(100vw - 32px));}
+.cui-visualizer-root .page-size-form{gap:10px;}
+.cui-visualizer-root .page-size-presets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+.cui-visualizer-root .page-size-presets .tb{margin:0;width:100%;}
+.cui-visualizer-root .page-size-dimensions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.cui-visualizer-root .page-size-dimensions label{min-width:0;}
+.cui-visualizer-root .page-size-dimensions input{width:100%;min-width:0;}
+@media (max-width:640px){
+  .cui-visualizer-root .debug-label{display:none;}
+  .cui-visualizer-root .page-size-dimensions{grid-template-columns:1fr;}
 }

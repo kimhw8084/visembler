@@ -64,9 +64,9 @@ def test_r15_developer_console_exposes_live_events_and_safe_copy_actions():
     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
-    assert 'id="debugBtn"' not in html and 'id="debugModal"' in html
+    assert 'id="debugBtn"' in html and 'id="debugBadge"' in html and 'id="debugModal"' in html
     assert 'on_developer_console=open_developer_console' in page
-    for token in ('debugEvent(', 'renderDeveloperConsole', 'copyDeveloperPayload', 'Window error', 'Unhandled rejection', 'data-debug-action'):
+    for token in ('debugEvent(', 'updateDebugBadge(', 'renderDeveloperConsole', 'copyDeveloperPayload', 'Window error', 'Unhandled rejection', 'data-debug-action'):
         assert token in editor
 
 
@@ -79,7 +79,9 @@ def test_r19_layouts_and_page_size_are_authored_not_implicitly_resized():
     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     assert "const targetH=CANVAS.h" in editor
-    assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" in html and 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' in editor
+    assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" not in html
+    assert 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' not in editor
+    assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
     assert editor.count("{id:'") >= 10 and 'const LAYOUT_ORDER=Object.freeze' in editor
     assert 'component[data-content-density="fit"]' in css
     assert 'width:8px; height:8px' in css and 'component.selected::before { inset:0!important' in css
@@ -110,10 +112,10 @@ def test_r23_smart_layout_uses_its_compacted_row_height_and_authoring_panes_are_
     assert 'Math.max(policy.minH,spec.height)' not in editor
     assert 'show or hide the element library' in shell.lower()
     assert 'id="historyBtn"' in shell
-    assert 'data-library="closed"' in shell
+    assert 'data-library="open"' in shell and 'data-inspector="open"' in shell
     assert '.cui-visualizer-root.preview-mode' in css
-    assert 'content:"v0.4.25"' in css
-    assert 'id="libraryToggle"' in shell and 'id="inspectorToggle"' in shell
+    assert "const AUTHORING_VERSION = 'v0.4.26';" in editor and '>v0.4.26</span>' in shell
+    assert 'id="libraryToggle"' in shell and 'aria-pressed="true"' in shell and 'id="inspectorToggle"' in shell
 
 
 def test_r25_smart_layout_fills_the_fixed_page_and_table_preview_is_not_capped_at_five_rows():
@@ -123,7 +125,10 @@ def test_r25_smart_layout_fills_the_fixed_page_and_table_preview_is_not_capped_a
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
 
     assert 'for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length' in editor
-    assert "beginPointerSession($('#viewport'), e" in editor
+    assert "beginPointerSession($('#viewport')" in editor
+    assert "box.classList.add('active')" in editor
+    assert ".lasso.active{display:block!important" in css
+    assert "&&!hull.contains(event.target)" not in editor
     assert "id:'showcase'" in editor
     assert '(bound.rows||[]).slice(0,5)' not in renderer
     assert '.minimap { display:none; }' in css
