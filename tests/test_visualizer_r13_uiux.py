@@ -20,7 +20,9 @@ def test_r13_normal_authoring_surface_does_not_expose_release_jargon():
     js=(PRODUCT/'assets/integrated_editor.mjs').read_text()
     assert '248 production elements' not in html
     assert 'Golden Connector v5 remains the routing authority.' not in js
-    assert '248 elements' in html
+    assert '248 elements' not in html
+    assert 'Search production elements' in html
+    assert 'Production elements' in js
     assert 'Connections are routed automatically and stay editable.' in js
 
 def test_r13_browser_smoke_is_a_repository_local_release_asset():

@@ -39,7 +39,7 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','element_renderer.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -96,17 +96,48 @@ def _validate_model_images(model: Mapping[str, Any]) -> None:
         validate_image_bytes(payload)
 
 
+def _normalize_section_preset_payload(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, Mapping):
+        raise VisualizerContractError('section preset payload must be an object')
+    if raw.get('kind') != 'composition':
+        raise VisualizerContractError('section preset payload must be a composition')
+    items = raw.get('items')
+    groups = raw.get('groups', [])
+    datasets = raw.get('datasets', [])
+    if not isinstance(items, list) or len(items) < 2 or not all(isinstance(item, Mapping) for item in items):
+        raise VisualizerContractError('section preset requires at least two elements')
+    if not isinstance(groups, list) or not all(isinstance(group, Mapping) for group in groups):
+        raise VisualizerContractError('section preset groups must be a list of objects')
+    if not isinstance(datasets, list) or not all(isinstance(dataset, Mapping) for dataset in datasets):
+        raise VisualizerContractError('section preset datasets must be a list of objects')
+
+    # Deterministic JSON-only clone preserving 0, "0", null, and "" exactly.
+    payload = json.loads(stable_json(raw))
+    payload['kind'] = 'composition'
+    _validate_model_images({'items': payload['items']})
+    return payload
+
+
 def _normalize_presets(raw: Any) -> list[dict[str, Any]]:
     if not isinstance(raw,list): raise VisualizerContractError('presets must be a list')
     result=[]; total=0
     for entry in raw[:MAX_PRESETS]:
         if not isinstance(entry,Mapping): continue
         name=' '.join(str(entry.get('name') or '').replace('\x00','').split())[:80]
-        model=entry.get('model')
-        if not name or not isinstance(model,Mapping): continue
-        try: canonical=canonical_model(model); _validate_model_images(canonical)
-        except Exception: continue
-        preset={'id':str(entry.get('id') or uuid.uuid4().hex)[:160],'name':name,'model':canonical}
+        if not name: continue
+        preset_id=str(entry.get('id') or uuid.uuid4().hex)[:160]
+        try:
+            if entry.get('kind') == 'section':
+                payload=_normalize_section_preset_payload(entry.get('payload'))
+                preset={'id':preset_id,'name':name,'kind':'section','payload':payload}
+            else:
+                model=entry.get('model')
+                if not isinstance(model,Mapping): continue
+                canonical=canonical_model(model); _validate_model_images(canonical)
+                # Preserve the legacy server shape for whole-report presets.
+                preset={'id':preset_id,'name':name,'model':canonical}
+        except Exception:
+            continue
         total += len(stable_json(preset).encode('utf-8'))
         if total > MAX_PRESET_BYTES: break
         result.append(preset)
@@ -329,6 +360,37 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         async def open_developer_console() -> None:
             await ui.run_javascript("window.dispatchEvent(new Event('company_ui:open-developer-console'))")
 
+        async def open_manage_reports() -> None:
+            active_count=len(repository.list())
+            trash_count=len(repository.list_trash())
+            manage_current.set_text(f'Current · {current.title}')
+            manage_counts.set_text(f'{active_count} active report{"s" if active_count!=1 else ""} · {trash_count} in trash')
+            manage_dialog.open()
+
+        async def manage_duplicate() -> None:
+            manage_dialog.close()
+            await duplicate_current()
+
+        async def manage_history() -> None:
+            manage_dialog.close()
+            await open_history()
+
+        def manage_import() -> None:
+            manage_dialog.close()
+            import_dialog.open()
+
+        def manage_trash() -> None:
+            manage_dialog.close()
+            delete_dialog.open()
+
+        async def manage_restore() -> None:
+            manage_dialog.close()
+            await open_restore()
+
+        def manage_cleanup() -> None:
+            manage_dialog.close()
+            clean_dialog.open()
+
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler',on_developer_console=open_developer_console):
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             new_dialog=ui.dialog()
@@ -411,29 +473,44 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Done',on_click=import_dialog.close).props('flat no-caps')
 
+            # company-ui: allow-ai005 — report lifecycle manager remains inside the isolated authoring host.
+            manage_dialog=ui.dialog()
+            with manage_dialog:
+                # company-ui: allow-ai005 — see isolated authoring host above.
+                with ui.card().classes('cui-dialog-card'):
+                    # company-ui: allow-ai005 — see isolated authoring host above.
+                    ui.label('Manage reports').classes('cui-dialog-title')
+                    manage_current=ui.label('').classes('cui-field-description')
+                    manage_counts=ui.label('').classes('cui-field-description')
+                    # company-ui: allow-ai005 — primary reuse action.
+                    ui.button('Duplicate current report',on_click=manage_duplicate).props('unelevated no-caps')
+                    # company-ui: allow-ai005 — existing history workflow.
+                    ui.button('Report history',on_click=manage_history).props('flat no-caps')
+                    # company-ui: allow-ai005 — existing canonical JSON import workflow.
+                    ui.button('Import…',on_click=manage_import).props('flat no-caps')
+                    # company-ui: allow-ai005 — restore remains reversible.
+                    ui.button('Restore trashed report…',on_click=manage_restore).props('flat no-caps')
+                    # company-ui: allow-ai005 — cleanup only removes empty legacy Untitled reports.
+                    ui.button('Clean up empty reports',on_click=manage_cleanup).props('flat no-caps')
+                    # company-ui: allow-ai005 — destructive action remains confirmation-gated.
+                    ui.button('Move current to trash…',on_click=manage_trash).props('outline no-caps color=negative')
+                    # company-ui: allow-ai005 — dismiss manager.
+                    ui.button('Close',on_click=manage_dialog.close).props('flat no-caps')
+
             # company-ui: allow-ai004 — the editor is an isolated application-owned canvas host.
             with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full'):
                 # company-ui: allow-ai005 — the report-control strip is part of the isolated editor host.
                 with ui.element('section').classes('cui-visualizer-reportbar w-full').props('aria-label="Report controls"'):
-                    # company-ui: allow-ai005 — see isolated editor host above.
+                    # company-ui: allow-ai005 — report title is the primary identity control.
                     report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space').classes('cui-visualizer-report-select')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    report_filter=ui.input(label='Find report',on_change=refresh_reports,placeholder='Search reports').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-filter')
-                    # company-ui: allow-ai005 — see isolated editor host above.
+                    # company-ui: allow-ai005 — searchable report switcher replaces a separate filter field.
+                    report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space use-input input-debounce=0').classes('cui-visualizer-report-select')
+                    # company-ui: allow-ai005 — frequent creation remains one click away.
                     ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
-                    # company-ui: allow-ai005 — see isolated editor host above.
+                    # company-ui: allow-ai005 — report reuse remains a primary action.
                     ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Import…',on_click=import_dialog.open).props('flat no-caps')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Clean up empty reports',on_click=clean_dialog.open).props('flat no-caps')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Trash',on_click=delete_dialog.open).props('outline no-caps color=negative')
-                    # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Restore…',on_click=open_restore).props('flat no-caps')
+                    # company-ui: allow-ai005 — secondary lifecycle actions are consolidated.
+                    ui.button('Manage',on_click=open_manage_reports).props('flat no-caps')
                 # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
                 host=ui.element('div').classes('cui-visualizer-host w-full').props('aria-label="Visembler report editor"')
                 host.on('visualizer_bridge',handle_semantic,args=['detail'])

@@ -31,7 +31,9 @@ def test_editor_persistence_uses_one_pending_pipeline_and_retains_conflict_recov
     assert 'function syncAccepted(accepted)' in editor
     assert 'function persistPendingState()' in editor
     assert 'function reapplyLocalRecovery()' in editor
-    assert "if(!dispatchSemantic('report.commit',payload))" in editor
+    assert "function dispatchNextPendingCommit()" in editor
+    assert "if(ui.saveInFlight||ui.persistenceFailure||ui.recovery)return false;" in editor
+    assert "if(!dispatchSemantic('report.commit',next))" in editor
     assert "dispatchSemantic('report.commit',{report_id:" not in editor
     assert "syncAccepted({id:localCommitId('undo'" in editor
     assert "syncAccepted({id:localCommitId('redo'" in editor
@@ -48,7 +50,9 @@ def test_personal_preset_list_exposes_every_server_supported_preset() -> None:
     assert 'personalPresets.slice(0,20)' not in editor
     assert "id=\"presetSearch\"" in html
     assert "result.sort((a,b)=>a.name.localeCompare" in editor
-    assert "p.model.items.length" in editor
+    assert "personalPresetSummary(p)" in editor
+    assert "p.kind==='section'?'Insert':'Apply'" in editor
+    assert "data-preset-kind" in editor
 
 
 def test_data_dock_and_unbound_tables_preserve_large_range_editing_contracts() -> None:

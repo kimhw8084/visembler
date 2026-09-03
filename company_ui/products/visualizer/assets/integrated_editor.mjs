@@ -5,12 +5,20 @@ import {
   serializeCanonical,
 } from '../vendor/production_core/core/editor_store.mjs?v=v0.4.26';
 import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
+import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, productionEntries } from './production_library.mjs';
 import { renderIntegratedElement } from './element_renderer.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, candidateForView, inferMappings, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
+import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
 import { contractFor } from './authoring_contracts.mjs';
+import { parseAuthoringScalar, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
+import { duplicateSelectionPlan } from './authoring_selection.mjs';
+import { matchSizePatches } from './authoring_arrange.mjs';
+import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
+import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
+import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -144,8 +152,9 @@ const ui = {
   lastPreflight: null,
   inspectorOpen: true,
   libraryOpen: true,
-  libraryLimit: 60,
+  libraryLimit: 48,
   pendingCommits: new Map(),
+  saveInFlight: null,
   recovery: null,
   persistenceFailure: null,
   intrinsicOverrides: new Map(),
@@ -389,17 +398,28 @@ function updateSaveUi() {
   setSaveStatus('Saved automatically','good');if(button){button.textContent='Autosaved';button.disabled=true;button.title='Every edit is saved automatically';}
 }
 function setSaveStatus(text, tone='good') { const node=$('#saveStatus'); if(!node)return; node.textContent=text; node.dataset.tone=tone; }
+function dispatchNextPendingCommit() {
+  if(ui.saveInFlight||ui.persistenceFailure||ui.recovery)return false;
+  const queued=[...ui.pendingCommits.values()].sort((a,b)=>(Number(a.base_revision)||0)-(Number(b.base_revision)||0)||String(a.commit_id||'').localeCompare(String(b.commit_id||'')));
+  const next=queued[0]; if(!next){updateSaveUi();return false;}
+  ui.saveInFlight=next.commit_id; persistPendingState(); updateSaveUi();
+  if(!dispatchSemantic('report.commit',next)){
+    ui.saveInFlight=null;
+    ui.persistenceFailure={message:'Save transport is unavailable',commit_id:next.commit_id};
+    persistPendingState(); updateSaveUi(); return false;
+  }
+  return true;
+}
 function syncAccepted(accepted) {
   const payload={report_id:String(bootstrap.report_id||'default'),base_revision:accepted.base_revision,commit_id:accepted.id,model:parseCanonical(accepted.canonical_after),fingerprint:null};
   ui.pendingCommits.set(accepted.id,{...payload,ops:structuredClone(accepted.payload?.ops||[]),label:accepted.meta?.label||'Edit',canonical_before:accepted.canonical_before});
-  ui.persistenceFailure=null; persistPendingState(); updateSaveUi();
-  if(!dispatchSemantic('report.commit',payload)){ui.persistenceFailure={message:'Save transport is unavailable',commit_id:accepted.id};persistPendingState();updateSaveUi();}
+  ui.persistenceFailure=null; persistPendingState(); updateSaveUi(); dispatchNextPendingCommit();
 }
 function retainLocalRecovery(reason) {
   const pending=[...ui.pendingCommits.values()];
   if(!pending.length)return;
   ui.recovery={reason,pending,model:parseCanonical(store.serialize()),created_at:Date.now()};
-  ui.pendingCommits.clear(); persistPendingState();
+  ui.saveInFlight=null; ui.pendingCommits.clear(); persistPendingState();
 }
 function restorePersistedRecovery(payload) {
   try {
@@ -414,7 +434,7 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
   store=new EditorStore(parseCanonical(migrateLegacyItems(payload.model)),{revision:payload.revision});
-  bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
+  bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.saveInFlight=null; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
 }
 function opPreconditionsMatch(current,before,op) {
   const itemById=value=>new Map((value.items||[]).map(entry=>[entry.id,entry])); const currentItems=itemById(current),beforeItems=itemById(before);
@@ -430,20 +450,21 @@ function reapplyLocalRecovery() {
   for(const transaction of recovery.pending||[]){const before=parseCanonical(transaction.canonical_before||recovery.model);if(!transaction.ops?.every(op=>opPreconditionsMatch(probe.model,before,op)))return toast('Local edits overlap newer report changes; recovery draft is retained for review');try{probe.commit(probe.command(transaction.ops,transaction.label||'Recovered edit','recovery-probe'));ops.push(...transaction.ops);}catch{return toast('Local edits cannot be reapplied safely; recovery draft is retained');}}
   if(!ops.length)return false;const savedRecovery=ui.recovery;ui.recovery=null;const accepted=commitOps('Reapply retained local edits',ops,{announce:'Local edits reapplied'});if(accepted){ui.recovery={...savedRecovery,reapplying:true,reapply_commit_id:accepted.id};persistPendingState();updateSaveUi();}else{ui.recovery=savedRecovery;persistPendingState();updateSaveUi();}return !!accepted;
 }
-window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{};debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();return;}if(m.type==='report.conflict'){replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,recovery:!!ui.recovery};}};
+window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{};debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
 
 function commitOps(label, ops, { announce = null, render = true } = {}) {
   let next;
   try { next=prospectiveModel(ops,label); } catch(err) { debugEvent('error',`Rejected edit: ${label}`,err?.stack||err); toast(String(err.message||err)); return null; }
   if (modelBytes(next)>MAX_MODEL_BYTES) { toast('This edit would make the report too large; nothing was changed'); return null; }
+  if (sameValue(next, model())) { debugEvent('action',`Skipped no-op: ${label}`,'No canonical model change'); return null; }
   const accepted=store.commit(store.command(ops,label,localCommitId('commit',store.revision))); debugEvent('action',label,`${ops.length} operation${ops.length===1?'':'s'} · revision ${accepted.base_revision} → ${store.revision}`);
-  pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('commit'); if(render)renderAll(); if(announce)toast(announce); syncAccepted(accepted); return accepted;
+  pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('commit'); syncAccepted(accepted); if(render)renderAll(); if(announce)toast(announce); return accepted;
 }
 function undo() {
-  if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); renderAll(); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); toast('Undid last edit');
+  if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); renderAll(); toast('Undid last edit');
 }
 function redo() {
-  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); renderAll(); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); toast('Redid last edit');
+  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); renderAll(); toast('Redid last edit');
 }
 function pruneSelection() {
   const ids = new Set(model().items.map((entry) => entry.id));
@@ -790,45 +811,41 @@ function renderMinimap(rm) {
   }
 }
 
-function parseTypedCell(raw) {
-  const text=String(raw ?? '').trim();
-  if (text==='') return null;
-  const normalized=text.replace(/,/g,'');
-  if (/^[-+]?\d*\.?\d+(?:e[-+]?\d+)?$/i.test(normalized)) {
-    const value=Number(normalized); return Number.isFinite(value) ? value : text;
-  }
-  return text;
-}
+function parseTypedCell(raw) { return parseAuthoringScalar(raw); }
 function parseCellForField(raw, field) {
-  const text=String(raw ?? ''); if(text.trim()==='')return null;
-  if(['string','categorical','identifier','date','datetime','boolean'].includes(field?.type))return text;
-  return parseTypedCell(text);
-}
-function parseDelimitedLine(line, delimiter) {
-  const out=[]; let cell=''; let quoted=false;
-  for (let i=0;i<line.length;i+=1) {
-    const ch=line[i];
-    if (ch==='"') { if (quoted && line[i+1]==='"') { cell+='"'; i+=1; } else quoted=!quoted; continue; }
-    if (ch===delimiter && !quoted) { out.push(cell); cell=''; continue; }
-    cell+=ch;
+  const quoted=arguments[2]===true;
+  const text=String(raw ?? '');
+  if(quoted)return text;
+  if(text.trim()==='')return null;
+  if(['string','categorical','identifier','date','datetime','boolean'].includes(field?.type)){
+    const trimmed=text.trim();
+    if(trimmed==='""'||(trimmed.startsWith('"')&&trimmed.endsWith('"')))return parseAuthoringScalar(trimmed);
+    return text;
   }
-  out.push(cell); return out.map((value)=>value.trim());
+  return parseAuthoringScalar(text,{type:field?.type||'unknown'});
 }
+
 function parseGridText(text) {
   return parseUniversalGridText(text).rows;
 }
-function parsePairs(text) { return parseGridText(text).filter((row)=>row.some((v)=>v!=='')).map((row)=>[String(row[0]??'').trim(),parseTypedCell(row[1])]); }
-function pairsText(entry) { return (entry.data||entry.observations||[]).map((row)=>Array.isArray(row)?`${row[0]??''}\t${row[1]??''}`:`${row.label??''}\t${row.value??''}`).join('\n'); }
-function parseTable(text) { return parseGridText(text).map((row)=>row.map(parseTypedCell)); }
+function parsePairs(text) { return parseAuthoringGrid(text).rows.filter((row)=>row.some((value)=>value!==null&&value!=='')).map((row)=>[String(row[0]??'').trim(),row[1]??null]); }
+function pairsText(entry) { return (entry.data||entry.observations||[]).map((row)=>formatAuthoringRow(Array.isArray(row)?row:[row.label??'',row.value??null])).join('\n'); }
+function parseTable(text) { return parseAuthoringGrid(text).rows; }
 function tableText(entry) {
-  if (entry.customTable) return [entry.customTable.headers||[],...(entry.customTable.rows||[])].map((row)=>row.map((v)=>v??'').join('\t')).join('\n');
-  return (entry.rows||[]).map((row)=>Array.isArray(row)?row.map((v)=>v??'').join('\t'):Object.values(row).map((v)=>v??'').join('\t')).join('\n');
+  if (entry.customTable) return [entry.customTable.headers||[],...(entry.customTable.rows||[])].map((row)=>formatAuthoringRow(row)).join('\n');
+  return (entry.rows||[]).map((row)=>formatAuthoringRow(Array.isArray(row)?row:Object.values(row))).join('\n');
 }
-function matrixText(entry) { return (entry.matrix||[]).map((row)=>row.map((v)=>v??'').join('\t')).join('\n'); }
+function matrixText(entry) { return (entry.matrix||[]).map((row)=>formatAuthoringRow(row)).join('\n'); }
 function timelineText(entry) { return (entry.milestones||[]).map((m)=>`${m.label??''}|${m.date??''}`).join('\n'); }
 function parseTimeline(text) { return String(text||'').split(/\r?\n/).filter((line)=>line.trim()).map((line)=>{const pos=line.indexOf('|');const label=(pos<0?line:line.slice(0,pos)).trim();const raw=pos<0?'':line.slice(pos+1).trim();return {label,date:raw||null};}); }
-function observationsText(entry, fields=['label','value']) { return (entry.observations||[]).map((row)=>fields.map((f)=>row?.[f]??'').join('\t')).join('\n'); }
-function parseObservations(text, fields=['label','value']) { return parseGridText(text).filter((row)=>row.some((v)=>v!=='')).map((row)=>Object.fromEntries(fields.map((field,index)=>[field,index===fields.length-1?parseTypedCell(row[index]):parseTypedCell(row[index])]))); }
+function observationsText(entry, fields=['label','value']) { return (entry.observations||[]).map((row)=>formatAuthoringRow(fields.map((field)=>row?.[field]??null))).join('\n'); }
+function parseObservations(text, fields=['label','value']) { return parseAuthoringGrid(text).rows.filter((row)=>row.some((value)=>value!==null&&value!=='')).map((row)=>Object.fromEntries(fields.map((field,index)=>[field,row[index]??null]))); }
+
+function metricFormatMarkup(entry){
+  const style=entry.value_format||'auto';
+  const decimals=Number.isInteger(Number(entry.decimals))?Math.max(0,Math.min(6,Number(entry.decimals))):1;
+  return `<div class="field"><label>Number presentation</label><div class="field-grid"><select id="iValueFormat"><option value="auto" ${style==='auto'?'selected':''}>Auto</option><option value="number" ${style==='number'?'selected':''}>Number</option><option value="percent" ${style==='percent'?'selected':''}>Percent</option><option value="currency" ${style==='currency'?'selected':''}>Currency</option><option value="compact" ${style==='compact'?'selected':''}>Compact</option></select><input id="iDecimals" type="number" min="0" max="6" step="1" value="${decimals}" aria-label="Decimal places"></div><input id="iCurrencySymbol" value="${esc(entry.currency_symbol||'$')}" maxlength="4" placeholder="Currency symbol" ${style==='currency'?'':'disabled'}><small>Formatting changes presentation only; the stored metric value remains typed and unchanged.</small></div>`;
+}
 function metricInspectorMarkup(entry){
   const name=String(entry.element||'').toLowerCase();
   if(name.includes('ladder'))return `<div class="field"><label for="iLevels">Levels / steps · label + value</label><textarea id="iLevels" rows="7">${esc((entry.levels||[['P90',52],['Median',42.8],['P10',31]]).map((row)=>Array.isArray(row)?row.join('\t'):`${row.label??''}\t${row.value??''}`).join('\n'))}</textarea><div class="field-grid"><select id="iOrientation"><option value="vertical" ${entry.orientation==='vertical'?'selected':''}>Vertical</option><option value="horizontal" ${entry.orientation==='horizontal'?'selected':''}>Horizontal</option></select><input id="iValue" placeholder="Current position" value="${esc(entry.value??'')}"></div><small>Each step remains semantic and editable.</small></div>`;
@@ -844,7 +861,7 @@ function metricInspectorMarkup(entry){
 }
 function tableInspectorMarkup(entry){
   const headers=entry.customTable?.headers||['Field','Value'];const rows=entry.customTable?.rows||entry.rows||[];const cols=Math.max(1,headers.length,...rows.map((r)=>Array.isArray(r)?r.length:0));
-  return `<div class="field"><label>Data grid</label><input id="tableFind" class="data-dock-find" type="search" value="${esc(ui.tableFilter)}" placeholder="Find in table" aria-label="Find in table"><div id="tableEditorGrid" class="data-dock-grid" role="grid" aria-label="Editable table"></div><div class="data-actions"><button type="button" data-table-action="add-row">Add row</button><button type="button" data-table-action="add-column">Add column</button><button type="button" data-table-action="delete-row">Delete last row</button><button type="button" data-table-action="delete-column">Delete last column</button><button type="button" data-table-action="paste">Paste rows</button></div><small>Virtualized rows · Tab/Shift+Tab navigates all rows. Ctrl/Cmd+C copies a range; Delete clears it.</small></div>`;
+  return `<div class="field"><label>Data grid</label><input id="tableFind" class="data-dock-find" type="search" value="${esc(ui.tableFilter)}" placeholder="Find in table" aria-label="Find in table"><div id="tableEditorGrid" class="data-dock-grid" role="grid" aria-label="Editable table"></div><div class="data-actions"><button type="button" data-table-action="add-row">Add row</button><button type="button" data-table-action="add-column">Add column</button><button type="button" data-table-action="delete-row">Delete last row</button><button type="button" data-table-action="delete-column">Delete last column</button><button type="button" data-table-action="paste">Paste rows</button></div><small>Virtualized rows · Tab/Shift+Tab navigates all rows. Ctrl/Cmd+A selects all · Ctrl/Cmd+C copies a range · Delete clears it.</small></div>`;
 }
 function paddedTable(entry){const headers=[...(entry.customTable?.headers||['Field','Value'])];const rows=(entry.customTable?.rows||entry.rows||[]).map((row)=>Array.isArray(row)?[...row]:Object.values(row));const cols=Math.max(1,headers.length,...rows.map((row)=>row.length));while(headers.length<cols)headers.push(`Column ${headers.length+1}`);rows.forEach((row)=>{while(row.length<cols)row.push(null);});return {headers,rows};}
 function renderVirtualCustomTable(entry) {
@@ -853,7 +870,7 @@ function renderVirtualCustomTable(entry) {
   host.innerHTML=`<table><thead><tr>${grid.headers.map((header,index)=>`<th><input data-table-header="${index}" value="${esc(header)}" aria-label="Column ${index+1} header"></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=grid.headers.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;}),visible=grid.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.tableFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.tableFilter.toLowerCase())));
   spacer.style.height=`${visible.length*rowHeight}px`;const selected=(row,column)=>{const range=ui.tableRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.tableCell=`${record.index}:${column}`;input.value=record.row[column]??'';input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.tableCell=`${record.index}:${column}`;input.value=formatAuthoringScalar(record.row[column]);input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
 }
 function selectedDataset(entry) { return entry?.dataset_id ? model().datasets.find((dataset)=>dataset.id===entry.dataset_id) : null; }
 function dataDockMarkup(entry) {
@@ -868,7 +885,7 @@ function dataDockMarkup(entry) {
   const warnings=(dataset.warnings||[]).slice(0,4), intakeWarnings=warnings.length?`<details class="data-intake-warnings"><summary>${warnings.length} intake warning${warnings.length===1?'':'s'}</summary><ul>${warnings.map(warning=>`<li>${esc(warning.message||warning.code||'Review imported data.')}</li>`).join('')}</ul><button type="button" data-review-mapping>Review field mapping</button></details>`:'', inferredFields=`<small class="data-inferred-fields">Inferred fields: ${fields.map(field=>`${esc(field.name)} · ${esc(field.type)}`).join(' · ')||'none'}</small>`, performanceNote=dataset.rows.length>PERFORMANCE_LIMITS.largeRows?`<small class="data-inferred-fields">Large-data mode: the Data Dock keeps all source rows virtualized; canvas previews are deterministically sampled.</small>`:'';
   const views=['bar','line','scatter','table','engineering','wafer','diagram'];
   const transformTypes=['filter','sort','group','aggregate','unpivot','pivot','derive','bin','rank','cumulative','normalize','date_extract'];
-  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · rev ${dataset.revision}</span></div>${inferredFields}${performanceNote}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+C copies a selected range; Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div><div class="data-transform"><select data-transform-type>${transformTypes.map(type=>`<option value="${type}">${type.replace('_',' ')}</option>`).join('')}</select><select data-transform-field>${fields.map(field=>`<option value="${esc(field.id)}">${esc(field.name)}</option>`).join('')}</select><input data-transform-value placeholder="Value / parameter" aria-label="Transform value or parameter"><button type="button" data-transform-action="apply">Apply</button><button type="button" data-transform-action="clear">Clear</button></div>`);
+  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · rev ${dataset.revision}</span></div>${inferredFields}${performanceNote}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+A selects all · Ctrl/Cmd+C copies a selected range · Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div><div class="data-transform"><select data-transform-type>${transformTypes.map(type=>`<option value="${type}">${type.replace('_',' ')}</option>`).join('')}</select><select data-transform-field>${fields.map(field=>`<option value="${esc(field.id)}">${esc(field.name)}</option>`).join('')}</select><input data-transform-value placeholder="Value / parameter" aria-label="Transform value or parameter"><button type="button" data-transform-action="apply">Apply</button><button type="button" data-transform-action="clear">Clear</button></div>`);
 }
 function renderVirtualDataDock(entry, dataset) {
   const host=$('#dataDockGrid');if(!host)return;const rowHeight=31,poolSize=24,fields=dataset.fields||[];
@@ -877,7 +894,7 @@ function renderVirtualDataDock(entry, dataset) {
   host.innerHTML=`<table><thead><tr>${fields.map((field,index)=>`<th><input draggable="true" data-dataset-field="${index}" data-field-id="${esc(field.id)}" value="${esc(field.name)}" aria-label="Rename ${esc(field.name)}"><select data-dataset-type="${index}" aria-label="${esc(field.name)} type">${fieldTypes.map(type=>`<option value="${type}" ${field.type===type?'selected':''}>${type}</option>`).join('')}</select></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=fields.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;});const visible=dataset.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.dataDockFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.dataDockFilter.toLowerCase())));spacer.style.height=`${visible.length*rowHeight}px`;
   const selected=(row,column)=>{const range=ui.dataDockRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.datasetCell=`${record.index}:${column}`;input.value=record.row[column]??'';input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.datasetCell=`${record.index}:${column}`;input.value=formatAuthoringScalar(record.row[column]);input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
 }
 function commitDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}) {
   const datasets=model().datasets.map(dataset=>dataset.id===nextDataset.id?nextDataset:dataset);
@@ -897,8 +914,8 @@ function bindDataDock(entry) {
   $('[data-review-mapping]')?.addEventListener('click',()=>$('.mapping-chips select')?.focus());
   $('#dataDockGrid')?.addEventListener('change',event=>{const target=event.target;if(target.matches('[data-dataset-field]'))return update('Rename dataset field',next=>{next.fields[+target.dataset.datasetField].name=target.value.trim()||`Column ${+target.dataset.datasetField+1}`;});if(target.matches('[data-dataset-type]'))return update('Override field type',next=>{next.fields[+target.dataset.datasetType].type=target.value;});if(target.matches('[data-dataset-cell]')){const [row,column]=target.dataset.datasetCell.split(':').map(Number);update('Edit dataset cell',next=>{next.rows[row]=[...next.rows[row]];next.rows[row][column]=parseCellForField(target.value,next.fields[column]);});}});
   $('#dataDockGrid')?.addEventListener('focusin',event=>{const target=event.target;if(target.matches('[data-dataset-cell]')){ui.dataDockCell=target.dataset.datasetCell;if(ui.dataDockRange?.focus!==ui.dataDockCell)ui.dataDockRange={anchor:ui.dataDockCell,focus:ui.dataDockCell};}});
-  $('#dataDockGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const [row,column]=target.dataset.datasetCell.split(':').map(Number),host=$('#dataDockGrid'),visible=host.__dockVisible||[];const range=ui.dataDockRange||{anchor:target.dataset.datasetCell,focus:target.dataset.datasetCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const text=dataset.rows.slice(loRow,hiRow+1).map(record=>record.slice(loColumn,hiColumn+1).map(value=>value??'').join('\t')).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected data cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();return update('Clear dataset range',next=>{for(let r=loRow;r<=hiRow;r+=1){next.rows[r]=[...next.rows[r]];for(let c=loColumn;c<=hiColumn;c+=1)next.rows[r][c]=null;}});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,dataset.fields.length-1)),next=`${nextRow}:${nextColumn}`;ui.dataDockRange=event.shiftKey?{anchor:ui.dataDockRange?.anchor||target.dataset.datasetCell,focus:next}:{anchor:next,focus:next};host.__dockScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__dockPaint();requestAnimationFrame(()=>host.querySelector(`[data-dataset-cell="${next}"]`)?.focus());});
-  $('#dataDockGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;const rows=parseGridText(text);if(!rows.length)return;event.preventDefault();const [startRow,startColumn]=target.dataset.datasetCell.split(':').map(Number);update('Paste dataset cells',next=>{next.rows=next.rows.map(row=>[...row]);const width=Math.max(...rows.map(row=>row.length),0);while(next.fields.length<startColumn+width){const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows.forEach(row=>row.push(null));}rows.forEach((row,rowOffset)=>{const rowIndex=startRow+rowOffset;while(next.rows.length<=rowIndex)next.rows.push(Array(next.fields.length).fill(null));row.forEach((value,columnOffset)=>{const columnIndex=startColumn+columnOffset;next.rows[rowIndex][columnIndex]=parseCellForField(value,next.fields[columnIndex]);});});});});
+  $('#dataDockGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const [row,column]=target.dataset.datasetCell.split(':').map(Number),host=$('#dataDockGrid'),visible=host.__dockVisible||[];const range=ui.dataDockRange||{anchor:target.dataset.datasetCell,focus:target.dataset.datasetCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='a'){event.preventDefault();const lastRow=Math.max(0,dataset.rows.length-1),lastColumn=Math.max(0,dataset.fields.length-1);ui.dataDockRange={anchor:'0:0',focus:`${lastRow}:${lastColumn}`};host.__dockPaint();host.querySelector(`[data-dataset-cell="${target.dataset.datasetCell}"]`)?.focus();toast('Select all dataset cells');return;}if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const text=dataset.rows.slice(loRow,hiRow+1).map(record=>formatAuthoringRow(record.slice(loColumn,hiColumn+1))).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected data cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();return update('Clear dataset range',next=>{for(let r=loRow;r<=hiRow;r+=1){next.rows[r]=[...next.rows[r]];for(let c=loColumn;c<=hiColumn;c+=1)next.rows[r][c]=null;}});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,dataset.fields.length-1)),next=`${nextRow}:${nextColumn}`;ui.dataDockRange=event.shiftKey?{anchor:ui.dataDockRange?.anchor||target.dataset.datasetCell,focus:next}:{anchor:next,focus:next};host.__dockScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__dockPaint();requestAnimationFrame(()=>host.querySelector(`[data-dataset-cell="${next}"]`)?.focus());});
+  $('#dataDockGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;const parsed=parseDelimitedText(text),rows=parsed.rows;if(!rows.length)return;event.preventDefault();const [startRow,startColumn]=target.dataset.datasetCell.split(':').map(Number);update('Paste dataset cells',next=>{next.rows=next.rows.map(row=>[...row]);const width=Math.max(...rows.map(row=>row.length),0);while(next.fields.length<startColumn+width){const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows.forEach(row=>row.push(null));}rows.forEach((row,rowOffset)=>{const rowIndex=startRow+rowOffset;while(next.rows.length<=rowIndex)next.rows.push(Array(next.fields.length).fill(null));row.forEach((value,columnOffset)=>{const columnIndex=startColumn+columnOffset;next.rows[rowIndex][columnIndex]=parseCellForField(value,next.fields[columnIndex],Boolean(parsed.quoted_rows[rowOffset]?.[columnOffset]));});});});});
   $$('[data-dataset-role]').forEach(select=>select.addEventListener('change',event=>{const role=event.target.dataset.datasetRole,mapping={...(entry.mapping||{})};if(event.target.value)mapping[role]=event.target.value;else delete mapping[role];const validation=contractFor(viewContractForEntry(entry)).validate(mapping,dataset.fields);if(validation.incompatible.includes(role)){event.target.value=entry.mapping?.[role]||'';return toast(`Choose a compatible field for ${role}.`);}update(`Map ${role}`,()=>{},mapping);}));
   $$('[data-role-drop]').forEach(zone=>{zone.addEventListener('dragover',event=>{event.preventDefault();zone.classList.add('drag-over');});zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));zone.addEventListener('drop',event=>{event.preventDefault();zone.classList.remove('drag-over');const fieldId=event.dataTransfer?.getData('application/x-visembler-field');if(!fieldId)return;const role=zone.dataset.roleDrop,mapping={...(entry.mapping||{}),[role]:fieldId},validation=contractFor(viewContractForEntry(entry)).validate(mapping,dataset.fields);if(validation.incompatible.includes(role))return toast(`Choose a compatible field for ${role}.`);update(`Map ${role}`,()=>{},mapping);});});
   $('#dataDockGrid')?.addEventListener('dragstart',event=>{const field=event.target.closest('[data-field-id]');if(field)event.dataTransfer?.setData('application/x-visembler-field',field.dataset.fieldId);});
@@ -916,17 +933,17 @@ function bindDataDock(entry) {
 function semanticInspectorMarkup(entry) {
   const engine=entry.engine||'';
   if (engine==='TextEngine') return `<div class="field"><label for="iText">Narrative</label><textarea id="iText" rows="7">${esc(entry.text||entry.body||'')}</textarea></div>`;
-  if (engine==='MetricEngine') return metricInspectorMarkup(entry);
+  if (engine==='MetricEngine') return metricInspectorMarkup(entry)+metricFormatMarkup(entry);
   if (engine==='ComparisonEngine') return `<div class="field"><label>Comparison</label><div class="inline2"><input id="iBefore" placeholder="Before" value="${esc(entry.before??'')}"><input id="iAfter" placeholder="After" value="${esc(entry.after??'')}"></div></div>`;
-  if (engine==='CoreChartEngine') {const behaviors=entry.behaviors||{};return `<div class="field"><label for="iData">Chart data · label + value</label><textarea id="iData" rows="8" spellcheck="false">${esc(pairsText(entry))}</textarea><div class="data-actions"><button type="button" data-chart-action="sample">Restore useful sample</button><button type="button" data-chart-action="clear">Clear values</button></div><small>Paste TSV/CSV. Blank numeric cells remain missing; the starter data is safe to overwrite.</small></div><div class="field"><label>Attached behaviors</label><div class="behavior-options"><label><input type="checkbox" data-chart-behavior="tooltip" ${behaviors.tooltip!==false?'checked':''}> Tooltip</label><label><input type="checkbox" data-chart-behavior="cross_filter" ${behaviors.cross_filter!==false?'checked':''}> Cross-filter</label><label><input type="checkbox" data-chart-behavior="drill" ${behaviors.drill!==false?'checked':''}> Drill</label></div><small>Click a mark to filter; double-click it to drill when enabled.</small></div>`;}
+  if (engine==='CoreChartEngine') {const behaviors=entry.behaviors||{},sortMode=entry.sort_mode||'input',missingPolicy=entry.missing_policy||'gap';return `<div class="field"><label for="iData">Chart data · label + value</label><textarea id="iData" rows="8" spellcheck="false">${esc(pairsText(entry))}</textarea><div class="data-actions"><button type="button" data-chart-action="sample">Restore useful sample</button><button type="button" data-chart-action="clear">Clear values</button></div><small>Paste TSV/CSV. Numeric 0 remains zero; text "0" remains text; blank stays missing.</small></div><div class="field"><label>Data presentation</label><div class="field-grid"><select id="iChartSort"><option value="input" ${sortMode==='input'?'selected':''}>Input order</option><option value="label-asc" ${sortMode==='label-asc'?'selected':''}>Label A→Z</option><option value="value-desc" ${sortMode==='value-desc'?'selected':''}>Value high→low</option><option value="value-asc" ${sortMode==='value-asc'?'selected':''}>Value low→high</option></select><select id="iChartMissing"><option value="gap" ${missingPolicy==='gap'?'selected':''}>Missing as gap</option><option value="drop" ${missingPolicy==='drop'?'selected':''}>Drop missing rows</option><option value="zero" ${missingPolicy==='zero'?'selected':''}>Missing as zero</option></select></div><small>Sorting and missing-value policy affect rendering only; pasted source values remain unchanged.</small></div><div class="field"><label>Attached behaviors</label><div class="behavior-options"><label><input type="checkbox" data-chart-behavior="tooltip" ${behaviors.tooltip!==false?'checked':''}> Tooltip</label><label><input type="checkbox" data-chart-behavior="cross_filter" ${behaviors.cross_filter!==false?'checked':''}> Cross-filter</label><label><input type="checkbox" data-chart-behavior="drill" ${behaviors.drill!==false?'checked':''}> Drill</label></div><small>Click a mark to filter; double-click it to drill when enabled.</small></div>`;}
   if (engine==='TableEngine') return tableInspectorMarkup(entry);
   if (engine==='MatrixEngine') return `<div class="field"><label for="iMatrix">Matrix data</label><textarea id="iMatrix" rows="9" spellcheck="false">${esc(matrixText(entry))}</textarea></div>`;
   if (engine==='TimelineEngine') return `<div class="field"><label for="iTimeline">Events · Label|Date</label><textarea id="iTimeline" rows="8">${esc(timelineText(entry))}</textarea><div class="data-actions"><button type="button" data-timeline-action="add">Add event</button><button type="button" data-timeline-action="sequence">Sequence only</button><button type="button" data-timeline-action="sample">Restore sample</button></div><small>Blank dates remain null; sequence-only timelines never invent dates.</small></div>`;
   if (engine==='DiagramEngine') return `<div class="field"><label for="iNodes">Nodes · one per line</label><textarea id="iNodes" rows="5">${esc((entry.nodes||[]).join('\n'))}</textarea><div class="data-actions"><button type="button" data-diagram-action="add-node">Add node</button><button type="button" data-diagram-action="add-connected">Add connected node</button><button type="button" data-diagram-action="sample">Restore sample</button></div></div><div class="field"><label for="iEdges">Edges · A -&gt; B</label><textarea id="iEdges" rows="5">${esc((entry.edges||[]).map((edge)=>`${edge[0]} -> ${edge[1]}`).join('\n'))}</textarea><div class="field-grid"><select id="iDirection"><option value="right" ${entry.direction==='right'?'selected':''}>Left → right</option><option value="down" ${entry.direction==='down'?'selected':''}>Top → bottom</option></select><input id="iEdgeLabel" placeholder="Default edge label" value="${esc(entry.edge_label||'')}"></div><small>Connections are routed automatically, remain editable, and can be extended from the last node.</small></div>`;
   if (engine==='ImageMediaEngine') return `<div class="field"><label for="iImageFile">Image</label><input id="iImageFile" type="file" accept="image/png,image/jpeg,image/webp"><div class="data-actions"><button type="button" data-image-action="paste">Paste image</button><button type="button" data-image-action="replace">Replace</button></div><small>Choose a file or paste with Ctrl/Cmd+V. Embedded image limit: ${Math.round(MAX_IMAGE_BYTES/1000)} KB.</small></div><div class="field"><label>Presentation</label><div class="field-grid"><select id="iImageFit"><option value="fit" ${entry.fit==='fit'?'selected':''}>Fit</option><option value="fill" ${entry.fit==='fill'?'selected':''}>Fill</option></select><input id="iFocal" value="${esc(entry.focal||'50% 50%')}" placeholder="Focal position"></div></div><div class="field"><label for="iAlt">Alt text</label><input id="iAlt" value="${esc(entry.alt||'')}"></div><div class="field"><label for="iCaption">Caption</label><textarea id="iCaption" rows="3">${esc(entry.caption||'')}</textarea></div>`;
   if (['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) return `<div class="field"><label for="iStatement">Statement</label><textarea id="iStatement" rows="4">${esc(entry.statement||'')}</textarea></div><div class="field"><label for="iDetail">Detail</label><textarea id="iDetail" rows="5">${esc(entry.detail||'')}</textarea></div><div class="field"><label for="iStatus">Status</label><input id="iStatus" value="${esc(entry.status||'Draft')}"></div>`;
-  if (engine==='EngineeringChartEngine') return `<div class="field"><label for="iObservations">Observations · label + measurement</label><textarea id="iObservations" rows="8">${esc(observationsText(entry))}</textarea></div><div class="field"><label>Analysis role</label><input id="iRole" value="${esc(entry.role||'measurement')}"><div class="inline2"><input id="iLcl" placeholder="Control LCL" value="${esc(entry.lower_limit??entry.lcl??'')}"><input id="iUcl" placeholder="Control UCL" value="${esc(entry.upper_limit??entry.ucl??'')}"></div><div class="inline2"><input id="iLsl" placeholder="Specification LSL" value="${esc(entry.specification_low??'')}"><input id="iUsl" placeholder="Specification USL" value="${esc(entry.specification_high??'')}"></div><small>Control limits describe process behavior; specification limits describe requirements.</small></div>`;
-  if (engine==='WaferFabEngine') return `<div class="field"><label for="iObservations">Wafer observations · X + Y + Value</label><textarea id="iObservations" rows="8">${esc(observationsText(entry,['x','y','value']))}</textarea></div><div class="field"><label>Process identity</label><div class="inline2"><input id="iTool" placeholder="Tool" value="${esc(entry.tool||'')}"><input id="iChamber" placeholder="Chamber" value="${esc(entry.chamber||'')}"></div><div class="inline2"><input id="iLot" placeholder="Lot" value="${esc(entry.lot||'')}"><input id="iRoute" placeholder="Route" value="${esc(entry.route||'')}"></div></div>`;
+  if (engine==='EngineeringChartEngine') return `<div class="field"><label for="iObservations">Observations · label + measurement</label><textarea id="iObservations" rows="8">${esc(observationsText(entry))}</textarea><div class="data-actions"><button type="button" data-engineering-action="add">Add observation</button><button type="button" data-engineering-action="sample">Restore sample</button><button type="button" data-engineering-action="clear">Clear</button></div><small>Paste label + numeric measurement rows. Text "0" remains text and is not treated as a measurement.</small></div><div class="field"><label>Analysis role & limits</label><input id="iRole" value="${esc(entry.role||'measurement')}"><div class="inline2"><input id="iLcl" placeholder="Control LCL" value="${esc(entry.lower_limit??entry.lcl??'')}"><input id="iUcl" placeholder="Control UCL" value="${esc(entry.upper_limit??entry.ucl??'')}"></div><div class="inline2"><input id="iLsl" placeholder="Specification LSL" value="${esc(entry.specification_low??'')}"><input id="iUsl" placeholder="Specification USL" value="${esc(entry.specification_high??'')}"></div><div class="data-actions"><button type="button" data-engineering-action="clear-limits">Clear limits</button></div><small>Control limits describe process behavior; specification limits describe requirements. They remain independent.</small></div>`;
+  if (engine==='WaferFabEngine') return `<div class="field"><label for="iObservations">Wafer observations · X + Y + Value</label><textarea id="iObservations" rows="8">${esc(observationsText(entry,['x','y','value']))}</textarea><div class="data-actions"><button type="button" data-wafer-action="add">Add die</button><button type="button" data-wafer-action="sample">Restore sample</button><button type="button" data-wafer-action="clear">Clear</button></div><small>Only numeric Value cells drive wafer heat. Text "0" stays text; blank stays missing.</small></div><div class="field"><label>Wafer & process identity</label><div class="inline2"><input id="iWaferId" placeholder="Wafer ID" value="${esc(entry.wafer_id||'')}"><input id="iLot" placeholder="Lot" value="${esc(entry.lot||'')}"></div><div class="inline2"><input id="iTool" placeholder="Tool" value="${esc(entry.tool||'')}"><input id="iChamber" placeholder="Chamber" value="${esc(entry.chamber||'')}"></div><div class="inline2"><input id="iRecipe" placeholder="Recipe" value="${esc(entry.recipe||'')}"><input id="iProcess" placeholder="Process step" value="${esc(entry.process||'')}"></div><div class="inline2"><input id="iBin" placeholder="Bin" value="${esc(entry.bin||'')}"><input id="iRoute" placeholder="Route" value="${esc(entry.route||'')}"></div></div>`;
   if (engine==='SmartLayoutEngine') return `<div class="field"><label for="iConfiguration">Layout configuration</label><textarea id="iConfiguration" rows="5">${esc(entry.configuration||'14px governed composition')}</textarea></div>`;
   if (engine==='InteractionLayer') return `<div class="field"><label for="iBehavior">Interaction behavior</label><textarea id="iBehavior" rows="5">${esc(entry.behavior||'select → filter → inspect')}</textarea></div>`;
   if (engine==='EditorInfrastructure') return `<div class="field"><label for="iConfiguration">Editor configuration</label><textarea id="iConfiguration" rows="5">${esc(entry.configuration||'Editor-only infrastructure')}</textarea></div>`;
@@ -941,6 +958,11 @@ async function validatedImageDataUrl(file) {
 function bindSemanticInspector(entry) {
   const patch=(label,value)=>{ if (entry.locked) return toast('Unlock the component before editing'); return commitOps(label,[{op:'item.patch',id:entry.id,patch:value}]); };
   if(entry.engine==='TableEngine')renderVirtualCustomTable(entry);
+  $('#iValueFormat')?.addEventListener('change',(e)=>patch('Edit metric value format',{value_format:e.target.value}));
+  $('#iDecimals')?.addEventListener('change',(e)=>patch('Edit metric decimals',{decimals:Math.max(0,Math.min(6,Math.round(Number(e.target.value)||0)))}));
+  $('#iCurrencySymbol')?.addEventListener('change',(e)=>patch('Edit metric currency symbol',{currency_symbol:e.target.value||'$'}));
+  $('#iChartSort')?.addEventListener('change',(e)=>patch('Edit chart sort',{sort_mode:e.target.value}));
+  $('#iChartMissing')?.addEventListener('change',(e)=>patch('Edit chart missing-value policy',{missing_policy:e.target.value}));
   $('#iText')?.addEventListener('change',(e)=>patch('Edit narrative',{text:e.target.value,body:e.target.value}));
   $('#iValue')?.addEventListener('change',(e)=>patch('Edit metric',{value:parseTypedCell(e.target.value)})); $('#iUnit')?.addEventListener('change',(e)=>patch('Edit metric unit',{unit:e.target.value})); $('#iDelta')?.addEventListener('change',(e)=>patch('Edit metric delta',{delta:parseTypedCell(e.target.value)})); $('#iTarget')?.addEventListener('change',(e)=>patch('Edit metric target',{target:parseTypedCell(e.target.value)}));
   for(const [id,key] of [['iMax','max'],['iConfidence','confidence'],['iCurrent','current'],['iCapacity','capacity'],['iNumerator','numerator'],['iDenominator','denominator'],['iWarning','warning'],['iCritical','critical'],['iActual','actual'],['iVariance','variance']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:parseTypedCell(e.target.value),...(key==='actual'?{value:parseTypedCell(e.target.value)}:{})}));
@@ -958,8 +980,8 @@ function bindSemanticInspector(entry) {
   $$('[data-table-header]').forEach((input)=>input.addEventListener('change',(e)=>{const grid=tableSnapshot();grid.headers[+e.target.dataset.tableHeader]=e.target.value;patch('Rename table header',{customTable:grid,rows:grid.rows});}));
   $$('[data-table-cell]').forEach((input)=>input.addEventListener('change',(e)=>{const [r,c]=e.target.dataset.tableCell.split(':').map(Number);const grid=tableSnapshot();while(grid.rows.length<=r)grid.rows.push(Array(grid.headers.length).fill(null));while(grid.rows[r].length<grid.headers.length)grid.rows[r].push(null);grid.rows[r][c]=parseTypedCell(e.target.value);patch('Edit table cell',{customTable:grid,rows:grid.rows});}));
   $('#tableEditorGrid')?.addEventListener('focusin',event=>{const target=event.target;if(target.matches('[data-table-cell]')){if(ui.tableRange?.focus!==target.dataset.tableCell)ui.tableRange={anchor:target.dataset.tableCell,focus:target.dataset.tableCell};}});
-  $('#tableEditorGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const [row,column]=target.dataset.tableCell.split(':').map(Number),host=$('#tableEditorGrid'),visible=host.__tableVisible||[],range=ui.tableRange||{anchor:target.dataset.tableCell,focus:target.dataset.tableCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const grid=tableSnapshot(),text=grid.rows.slice(loRow,hiRow+1).map(record=>record.slice(loColumn,hiColumn+1).map(value=>value??'').join('\t')).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected table cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();const grid=tableSnapshot();for(let r=loRow;r<=hiRow;r+=1)for(let c=loColumn;c<=hiColumn;c+=1)grid.rows[r][c]=null;return patch('Clear table range',{customTable:grid,rows:grid.rows});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,tableSnapshot().headers.length-1)),next=`${nextRow}:${nextColumn}`;ui.tableRange=event.shiftKey?{anchor:ui.tableRange?.anchor||target.dataset.tableCell,focus:next}:{anchor:next,focus:next};host.__tableScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__tablePaint();requestAnimationFrame(()=>host.querySelector(`[data-table-cell="${next}"]`)?.focus());});
-  $('#tableEditorGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;event.preventDefault();const parsed=parseGridText(text),[startRow,startColumn]=target.dataset.tableCell.split(':').map(Number),grid=tableSnapshot(),width=Math.max(...parsed.map(row=>row.length),0);while(grid.headers.length<startColumn+width){grid.headers.push(`Column ${grid.headers.length+1}`);grid.rows.forEach(row=>row.push(null));}parsed.forEach((row,rowOffset)=>{const index=startRow+rowOffset;while(grid.rows.length<=index)grid.rows.push(Array(grid.headers.length).fill(null));row.forEach((value,columnOffset)=>{grid.rows[index][startColumn+columnOffset]=parseTypedCell(value);});});patch('Paste table range',{customTable:grid,rows:grid.rows});});
+  $('#tableEditorGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const [row,column]=target.dataset.tableCell.split(':').map(Number),host=$('#tableEditorGrid'),visible=host.__tableVisible||[],range=ui.tableRange||{anchor:target.dataset.tableCell,focus:target.dataset.tableCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='a'){event.preventDefault();const grid=tableSnapshot();const lastRow=Math.max(0,grid.rows.length-1),lastColumn=Math.max(0,grid.headers.length-1);ui.tableRange={anchor:'0:0',focus:`${lastRow}:${lastColumn}`};host.__tablePaint();host.querySelector(`[data-table-cell="${target.dataset.tableCell}"]`)?.focus();toast('Select all table cells');return;}if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const grid=tableSnapshot(),text=grid.rows.slice(loRow,hiRow+1).map(record=>formatAuthoringRow(record.slice(loColumn,hiColumn+1))).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected table cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();const grid=tableSnapshot();for(let r=loRow;r<=hiRow;r+=1)for(let c=loColumn;c<=hiColumn;c+=1)grid.rows[r][c]=null;return patch('Clear table range',{customTable:grid,rows:grid.rows});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,tableSnapshot().headers.length-1)),next=`${nextRow}:${nextColumn}`;ui.tableRange=event.shiftKey?{anchor:ui.tableRange?.anchor||target.dataset.tableCell,focus:next}:{anchor:next,focus:next};host.__tableScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__tablePaint();requestAnimationFrame(()=>host.querySelector(`[data-table-cell="${next}"]`)?.focus());});
+  $('#tableEditorGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;event.preventDefault();const parsed=parseAuthoringGrid(text).rows,[startRow,startColumn]=target.dataset.tableCell.split(':').map(Number),grid=tableSnapshot(),width=Math.max(...parsed.map(row=>row.length),0);while(grid.headers.length<startColumn+width){grid.headers.push(`Column ${grid.headers.length+1}`);grid.rows.forEach(row=>row.push(null));}parsed.forEach((row,rowOffset)=>{const index=startRow+rowOffset;while(grid.rows.length<=index)grid.rows.push(Array(grid.headers.length).fill(null));row.forEach((value,columnOffset)=>{grid.rows[index][startColumn+columnOffset]=value;});});patch('Paste table range',{customTable:grid,rows:grid.rows});});
   $$('[data-table-action]').forEach((button)=>button.addEventListener('click',async()=>{
     const grid=tableSnapshot();
     if(button.dataset.tableAction==='add-row'){
@@ -985,17 +1007,57 @@ function bindSemanticInspector(entry) {
   $('[data-timeline-action="add"]')?.addEventListener('click',()=>patch('Add timeline event',{milestones:[...(entry.milestones||[]),{label:`Event ${(entry.milestones||[]).length+1}`,date:null}]}));
   $('[data-timeline-action="sequence"]')?.addEventListener('click',()=>patch('Use sequence-only timeline',{milestones:(entry.milestones||[]).map((m)=>({...m,date:null}))}));
   $('[data-timeline-action="sample"]')?.addEventListener('click',()=>patch('Restore timeline sample',{milestones:timelineStarter()}));
-  $('#iNodes')?.addEventListener('change',(e)=>patch('Edit diagram nodes',{nodes:String(e.target.value).split(/\r?\n/).map((x)=>x.trim()).filter(Boolean)})); $('#iEdges')?.addEventListener('change',(e)=>patch('Edit diagram edges',{edges:String(e.target.value).split(/\r?\n/).map((line)=>line.split(/\s*->\s*/)).filter((edge)=>edge.length===2&&edge[0]&&edge[1])}));
+  $('#iNodes')?.addEventListener('change',(e)=>{const nodes=parseDiagramNodes(e.target.value),edges=reconcileDiagramEdges(entry.nodes||[],nodes,entry.edges||[]);patch('Edit diagram nodes',{nodes,edges});});
+  $('#iEdges')?.addEventListener('change',(e)=>{const edges=parseDiagramEdges(e.target.value),validation=validateDiagramEdges(entry.nodes||[],edges);if(!validation.valid)return toast(`Unknown diagram node: ${validation.unknown.join(', ')}`);patch('Edit diagram edges',{edges});});
   $('[data-diagram-action="add-node"]')?.addEventListener('click',()=>patch('Add diagram node',{nodes:[...(entry.nodes||[]),`Node ${(entry.nodes||[]).length+1}`]}));
   $('[data-diagram-action="add-connected"]')?.addEventListener('click',()=>{const nodes=entry.nodes?.length?[...entry.nodes]:['Source'];const next=`Node ${nodes.length+1}`;patch('Add connected diagram node',{nodes:[...nodes,next],edges:[...(entry.edges||[]),[nodes.at(-1),next]]});});
   $('[data-diagram-action="sample"]')?.addEventListener('click',()=>patch('Restore diagram sample',diagramStarter()));
   $('#iImageFile')?.addEventListener('change',async(e)=>{try{const file=e.target.files?.[0];if(file)patch('Set image',{src:await validatedImageDataUrl(file)});}catch(err){toast(String(err.message||err));}}); $('#iAlt')?.addEventListener('change',(e)=>patch('Edit image alt text',{alt:e.target.value})); $('#iCaption')?.addEventListener('change',(e)=>patch('Edit image caption',{caption:e.target.value})); $('#iFocal')?.addEventListener('change',(e)=>patch('Edit image focal point',{focal:e.target.value||'50% 50%'}));
   $('[data-image-action="replace"]')?.addEventListener('click',()=>$('#iImageFile')?.click());$('[data-image-action="paste"]')?.addEventListener('click',()=>toast('Paste an image with Ctrl/Cmd+V while this image is selected'));
   $('#iStatement')?.addEventListener('change',(e)=>patch('Edit statement',{statement:e.target.value})); $('#iDetail')?.addEventListener('change',(e)=>patch('Edit detail',{detail:e.target.value})); $('#iStatus')?.addEventListener('change',(e)=>patch('Edit status',{status:e.target.value}));
-  $('#iObservations')?.addEventListener('change',(e)=>patch('Edit observations',{observations:parseObservations(e.target.value,entry.engine==='WaferFabEngine'?['x','y','value']:['label','value'])})); $('#iRole')?.addEventListener('change',(e)=>patch('Edit statistical role',{role:e.target.value})); $('#iLcl')?.addEventListener('change',(e)=>patch('Edit lower control limit',{lower_limit:parseTypedCell(e.target.value),lcl:parseTypedCell(e.target.value)})); $('#iUcl')?.addEventListener('change',(e)=>patch('Edit upper control limit',{upper_limit:parseTypedCell(e.target.value),ucl:parseTypedCell(e.target.value)})); $('#iLsl')?.addEventListener('change',(e)=>patch('Edit lower specification limit',{specification_low:parseTypedCell(e.target.value)})); $('#iUsl')?.addEventListener('change',(e)=>patch('Edit upper specification limit',{specification_high:parseTypedCell(e.target.value)}));
-  for (const [id,key] of [['iTool','tool'],['iChamber','chamber'],['iLot','lot'],['iRoute','route'],['iBehavior','behavior'],['iConfiguration','configuration']]) $('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:e.target.value}));
+  $('#iObservations')?.addEventListener('change',(e)=>patch('Edit observations',{observations:parseObservations(e.target.value,entry.engine==='WaferFabEngine'?['x','y','value']:['label','value'])}));
+  $('[data-engineering-action="add"]')?.addEventListener('click',()=>{const observations=[...(entry.observations||[])],last=observations.at(-1),label=String((Number(last?.label)||observations.length)+1);observations.push({label,value:null});patch('Add engineering observation',{observations});});
+  $('[data-engineering-action="sample"]')?.addEventListener('click',()=>patch('Restore engineering sample',{observations:[{label:'1',value:98.2},{label:'2',value:98.8},{label:'3',value:98.5},{label:'4',value:99.1},{label:'5',value:98.9}]}));
+  $('[data-engineering-action="clear"]')?.addEventListener('click',()=>patch('Clear engineering observations',{observations:[]}));
+  $('[data-engineering-action="clear-limits"]')?.addEventListener('click',()=>patch('Clear engineering limits',{lower_limit:null,upper_limit:null,lcl:null,ucl:null,specification_low:null,specification_high:null}));
+  $('[data-wafer-action="add"]')?.addEventListener('click',()=>{const observations=[...(entry.observations||[])];observations.push({x:0,y:0,value:null});patch('Add wafer observation',{observations});});
+  $('[data-wafer-action="sample"]')?.addEventListener('click',()=>patch('Restore wafer sample',{observations:[{x:1,y:1,value:98.4},{x:2,y:1,value:98.8},{x:3,y:2,value:97.9},{x:2,y:3,value:98.6}]}));
+  $('[data-wafer-action="clear"]')?.addEventListener('click',()=>patch('Clear wafer observations',{observations:[]}));
+ $('#iRole')?.addEventListener('change',(e)=>patch('Edit statistical role',{role:e.target.value})); $('#iLcl')?.addEventListener('change',(e)=>patch('Edit lower control limit',{lower_limit:parseTypedCell(e.target.value),lcl:parseTypedCell(e.target.value)})); $('#iUcl')?.addEventListener('change',(e)=>patch('Edit upper control limit',{upper_limit:parseTypedCell(e.target.value),ucl:parseTypedCell(e.target.value)})); $('#iLsl')?.addEventListener('change',(e)=>patch('Edit lower specification limit',{specification_low:parseTypedCell(e.target.value)})); $('#iUsl')?.addEventListener('change',(e)=>patch('Edit upper specification limit',{specification_high:parseTypedCell(e.target.value)}));
+  for (const [id,key] of [['iWaferId','wafer_id'],['iLot','lot'],['iTool','tool'],['iChamber','chamber'],['iRecipe','recipe'],['iProcess','process'],['iBin','bin'],['iRoute','route'],['iBehavior','behavior'],['iConfiguration','configuration']]) $('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:e.target.value}));
 }
 function inspectorSection(title, body) { return `<section class="inspector-section"><div class="inspector-section-title">${esc(title)}</div>${body}</section>`; }
+function reuseInspectorMarkup(entry) {
+  const dataset=selectedDataset(entry);
+  const hasMapping=!!dataset&&Object.keys(entry.mapping||{}).length>0;
+  const caps=reuseCapabilities({
+    selectionCount:1,
+    selectionLocked:!!entry.locked,
+    hasDataset:!!dataset,
+    hasMapping,
+    clipboard:ui.semanticClipboard,
+  });
+  const button=(label,action,enabled=true)=>`<button type="button" class="tb" data-reuse-action="${action}" ${enabled?'':'disabled'}>${label}</button>`;
+  return inspectorSection('Reuse',`<div class="field"><label>Copy from this element</label><div class="r-actions">${button('Visual','copy-visual',caps.copyVisual)}${button('Style','copy-style',caps.copyStyle)}${button('Data','copy-data',caps.copyData)}${button('Mapping','copy-mapping',caps.copyMapping)}</div><label>Use current clipboard</label><div class="r-actions">${button('Paste as new','paste-new',caps.pasteNew)}${button('Paste style','paste-style',caps.pasteStyle)}${button('Paste data','paste-data',caps.pasteData)}${button('Paste mapping','paste-mapping',caps.pasteMapping)}${button('Append data','append-data',caps.appendData)}</div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Unsupported actions stay unavailable instead of failing after a click.</small></div>`);
+}
+function bindReuseInspector(entry=null) {
+  $$('[data-reuse-action]',$('#inspector')).forEach(button=>button.addEventListener('click',()=>{
+    const action=button.dataset.reuseAction;
+    if(action==='copy-visual'){copySemanticSelection('visual_full');renderInspector();return;}
+    if(action==='copy-selection'){copySemanticSelection('visual_full');renderInspector();return;}
+    if(action==='copy-style'){copySemanticSelection('style');renderInspector();return;}
+    if(action==='copy-data'){copySemanticSelection('dataset_data');renderInspector();return;}
+    if(action==='copy-mapping'){copySemanticSelection('mapping');renderInspector();return;}
+    if(action==='cut-selection'){cutSemanticSelection();return;}
+    if(action==='save-section'){saveSelectionPreset();return;}
+    if(action==='paste-new'){pasteSemanticClipboard();return;}
+    if(!ui.semanticClipboard)return toast('Copy reusable content first');
+    if(action==='paste-style'){pasteSemanticPayload(ui.semanticClipboard,'style');return;}
+    if(action==='paste-data'){pasteSemanticPayload(ui.semanticClipboard,'data');return;}
+    if(action==='paste-mapping'){pasteSemanticPayload(ui.semanticClipboard,'mapping');return;}
+    if(action==='append-data'){pasteSemanticPayload(ui.semanticClipboard,'append-data');return;}
+  }));
+}
 function semanticSectionName(engine) {
   if (['CoreChartEngine','TableEngine','MatrixEngine','EngineeringChartEngine','WaferFabEngine'].includes(engine)) return 'Data';
   if (engine==='ImageMediaEngine') return 'Media';
@@ -1007,6 +1069,7 @@ function semanticSectionName(engine) {
 }
 function renderInspector() {
   const p = $('#inspector'); if (!p) return;
+  syncPresetSelectionAction();
   const ids = [...ui.selected];
   if (ids.length === 1) {
     const entry = item(ids[0]); const d=typeDefaults[entry.type]||typeDefaults.text; const policy=semanticPolicy(entry);const actualRect=rectMap().get(entry.id);
@@ -1017,21 +1080,27 @@ function renderInspector() {
     const density=`<label for="iContentDensity">Vertical space</label><select id="iContentDensity"><option value="fit" ${(entry.contentDensity||'fit')==='fit'?'selected':''}>Fit content</option><option value="fill" ${entry.contentDensity==='fill'?'selected':''}>Fill component</option></select><small>Fit content avoids decorative top and bottom space. Use Fill only when the component needs a balanced card treatment.</small>`;
     const layoutBody=model().mode==='smart'?`<div class="field"><label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field"><label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
     const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>PowerPoint</span><b>Editable region</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>PowerPoint</span><b>Semantic export eligible</b></div>');
+    const reuseSection=reuseInspectorMarkup(entry);
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
-    p.innerHTML=identity+titleSection+contentSection+dataDockMarkup(entry)+containerSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
+    const actionSection=inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>');
+    p.innerHTML=identity+actionSection+titleSection+contentSection+dataDockMarkup(entry)+containerSection+reuseSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
     $('#iTitle').addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Rename component',[{op:'item.patch',id:entry.id,patch:{title:e.target.value}}]));
     $('#iShowTitle')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Toggle canvas title',[{op:'item.patch',id:entry.id,patch:{showTitle:e.target.checked}}]));
     $('#iTextAlign')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content alignment',[{op:'item.patch',id:entry.id,patch:{textAlign:e.target.value}}]));
     $('#iContentDensity')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content density',[{op:'item.patch',id:entry.id,patch:{contentDensity:e.target.value}}]));
     bindSemanticInspector(entry);
     bindDataDock(entry);
+    bindReuseInspector(entry);
     $$('[data-emphasis]',p).forEach((button)=>button.addEventListener('click',()=>entry.locked?toast('Unlock the component before editing'):commitOps('Set visual emphasis',[{op:'item.patch',id:entry.id,patch:{emphasis:button.dataset.emphasis}}])));
     $('#iWeight')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set advanced layout weight',[{op:'item.patch',id:entry.id,patch:{weight:+e.target.value}}])); $('#iW')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set width',[{op:'item.patch',id:entry.id,patch:{w:Math.max(policy.minW,+e.target.value||entry.w)}}])); $('#iH')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set height',[{op:'item.patch',id:entry.id,patch:{h:Math.max(policy.minH,+e.target.value||entry.h)}}]));
     if (entry.locked) p.querySelectorAll('input,textarea,select').forEach((node)=>{node.disabled=true;});
     return;
   }
   if (ids.length > 1) {
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><div class="r-actions"><button class="tb" data-inspector="align-left">Align left</button><button class="tb" data-inspector="align-top">Align top</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}`; return;
+    const multiLocked=ids.some(id=>!!item(id)?.locked);
+    const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
+    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${reuseMulti}`; bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
@@ -1308,10 +1377,10 @@ function addLibraryElement(element, engine, pos = null) {
   ui.selected=new Set([id]); renderAll(); renderLibrary();
 }
 function libraryEntries() {
-  return Object.entries(ELEMENTS_BY_ENGINE).filter(([engine])=>!['EditorInfrastructure','InteractionLayer','SmartLayoutEngine'].includes(engine)).flatMap(([engine,elements])=>(Array.isArray(elements)?elements:[]).map((entry)=>({engine,element:typeof entry==='string'?entry:String(entry?.element||entry?.name||'')}))).filter((x)=>x.element);
+  return productionEntries();
 }
 function libraryDescription(entry) {
-  return ({SmartLayoutEngine:'Composition and layout',TextEngine:'Narrative and annotation',MetricEngine:'KPI and measurement',ComparisonEngine:'Before / after comparison',CoreChartEngine:'Analytical chart',TableEngine:'Editable data grid',MatrixEngine:'Matrix and heatmap',TimelineEngine:'Milestones and sequence',DiagramEngine:'Nodes and connectors',ImageMediaEngine:'Image and media',EvidenceCompositeEngine:'Evidence and provenance',DecisionCompositeEngine:'Decision and risk',ProjectCompositeEngine:'Project execution',EngineeringChartEngine:'Engineering analysis',WaferFabEngine:'Wafer / fab analysis',InteractionLayer:'Interactive behavior',EditorInfrastructure:'Editor workflow'})[entry.engine]||'Report element';
+  return entry.description || ({TextEngine:'Narrative and annotation',MetricEngine:'KPI and measurement',ComparisonEngine:'Before / after comparison',CoreChartEngine:'Analytical chart',TableEngine:'Editable data grid',TimelineEngine:'Milestones and sequence',DiagramEngine:'Nodes and connectors',ImageMediaEngine:'Image and media',EvidenceCompositeEngine:'Evidence and provenance',DecisionCompositeEngine:'Decision and risk',ProjectCompositeEngine:'Project execution',EngineeringChartEngine:'Engineering analysis',WaferFabEngine:'Wafer / fab analysis'})[entry.engine]||'Report element';
 }
 function libraryThumbMarkup(entry) {
   const name=entry.element.toLowerCase(); const engine=entry.engine;
@@ -1347,14 +1416,15 @@ function renderLibrary() {
   const sections=$('#librarySections');if(sections){
     const byKey=new Map(all.map((entry)=>[`${entry.engine}::${entry.element}`,entry]));
     const recent=ui.recentElements.map((key)=>byKey.get(key)).filter(Boolean).slice(0,4);const favorites=[...ui.favorites].map((key)=>byKey.get(key)).filter(Boolean).slice(0,4);
-    const recommended=['Hero KPI','Key Takeaway','Line Chart','Clean Table'].map((name)=>all.find((entry)=>entry.element===name)).filter(Boolean);
-    sections.innerHTML=[favorites.length?`<div class="library-section-title"><span>Favorites</span></div><div class="library-mini-list">${favorites.map(libraryItemMarkup).join('')}</div>`:'',recent.length?`<div class="library-section-title"><span>Recent</span></div><div class="library-mini-list">${recent.map(libraryItemMarkup).join('')}</div>`:'',!query&&!engine?`<div class="library-section-title"><span>Recommended</span></div><div class="library-mini-list">${recommended.map(libraryItemMarkup).join('')}</div><div class="library-section-title"><span>All elements</span><small>${all.length}</small></div>`:''].join('');
+    const recommended=PRODUCTION_RECOMMENDED.map((key)=>byKey.get(key)).filter(Boolean);
+    sections.innerHTML=[favorites.length?`<div class="library-section-title"><span>Favorites</span></div><div class="library-mini-list">${favorites.map(libraryItemMarkup).join('')}</div>`:'',recent.length?`<div class="library-section-title"><span>Recent</span></div><div class="library-mini-list">${recent.map(libraryItemMarkup).join('')}</div>`:'',!query&&!engine?`<div class="library-section-title"><span>Recommended</span><small>Proven starting points</small></div><div class="library-mini-list">${recommended.map(libraryItemMarkup).join('')}</div><div class="library-section-title"><span>Production elements</span><small>${all.length}</small></div>`:''].join('');
   }
   const more=$('#libraryMore'); if (more) { more.hidden=shown.length>=filtered.length; more.textContent=shown.length<filtered.length?`Show more · ${shown.length}/${filtered.length}`:`${filtered.length} shown`; }
 }
 
 function initializeLibrary() {
-  const select=$('#engineFilter'); if (select && !select.dataset.ready) { select.innerHTML='<option value="">All families</option>'+Object.keys(ELEMENTS_BY_ENGINE).map((engine)=>`<option value="${esc(engine)}">${esc(engine.replace(/Engine|Composite|Layer|Infrastructure/g,''))}</option>`).join(''); select.dataset.ready='true'; }
+  const select=$('#engineFilter'); if (select && !select.dataset.ready) { select.innerHTML='<option value="">All production families</option>'+Object.keys(PRODUCTION_LIBRARY).map((engine)=>`<option value="${esc(engine)}">${esc(engine.replace(/Engine|Composite|Layer|Infrastructure/g,''))}</option>`).join(''); select.dataset.ready='true'; }
+  const search=$('#componentSearch'); if(search)search.placeholder=`Search ${PRODUCTION_LIBRARY_COUNT} production elements`;
   renderLibrary();
 }
 function deleteSelected() {
@@ -1385,8 +1455,23 @@ function layer(delta) { if (!ui.selected.size) return; commitOps(delta > 0 ? 'Br
 function align(kind) {
   if (model().mode === 'smart') return toast('Align is automatic in Smart mode'); if (ui.selected.size < 2) return toast('Select 2+ components');
   const rm = rectMap(), inset=model().mode==='guided'?CANVAS.gap:0; const A = [...ui.selected].map((id) => ({ entry: item(id), r: rm.get(id) })).filter((x)=>x.entry&&x.r&&!x.entry.locked); if(A.length<2)return toast('Select 2+ unlocked components'); const u = rectUnion(A.map((x) => x.r)); const ops = [];
-  for (const x of A) { const patch = {}; if (kind === 'left') patch.x = u.x; if (kind === 'top') patch.y = u.y; if (kind === 'center') patch.x = u.x + (u.w - x.r.w) / 2; if (kind === 'middle') patch.y = u.y + (u.h - x.r.h) / 2; if(patch.x!=null)patch.x=clamp(patch.x,inset,CANVAS.w-inset-x.r.w);if(patch.y!=null)patch.y=clamp(patch.y,inset,CANVAS.h-inset-x.r.h);ops.push({ op: 'item.patch', id: x.entry.id, patch }); }
+  for (const x of A) { const patch = {}; if (kind === 'left') patch.x = u.x; if (kind === 'center') patch.x = u.x + (u.w - x.r.w) / 2; if (kind === 'right') patch.x = u.x + u.w - x.r.w; if (kind === 'top') patch.y = u.y; if (kind === 'middle') patch.y = u.y + (u.h - x.r.h) / 2; if (kind === 'bottom') patch.y = u.y + u.h - x.r.h; if(patch.x!=null)patch.x=clamp(patch.x,inset,CANVAS.w-inset-x.r.w);if(patch.y!=null)patch.y=clamp(patch.y,inset,CANVAS.h-inset-x.r.h);ops.push({ op: 'item.patch', id: x.entry.id, patch }); }
   if(model().mode==='guided'&&manualOpsOverlap(ops))return toast('Guided alignment would overlap another component'); commitOps(`Align ${kind}`, ops);
+}
+function matchSize(kind) {
+  if (model().mode === 'smart') return toast('Equal sizing is automatic in Smart mode');
+  if (ui.selected.size < 2) return toast('Select 2+ components');
+  const rm=rectMap(),entries=[...ui.selected].map((id)=>{
+    const entry=item(id),r=rm.get(id),policy=entry?semanticPolicy(entry):null;
+    return entry&&r&&!entry.locked?{id,entry,r,minW:policy.minW,minH:policy.minH}:null;
+  }).filter(Boolean);
+  if(entries.length<2)return toast('Select 2+ unlocked components');
+  const inset=model().mode==='guided'?CANVAS.gap:0;
+  const patches=matchSizePatches(entries,kind,{canvasWidth:CANVAS.w,canvasHeight:CANVAS.h,inset});
+  const ops=patches.map(({id,patch})=>({op:'item.patch',id,patch}));
+  if(!ops.length)return;
+  if(model().mode==='guided'&&manualOpsOverlap(ops))return toast('Guided equal sizing would overlap another component');
+  commitOps(`Match ${kind}`,ops,{announce:`Matched ${kind} to first selected element`});
 }
 function distribute(axis) {
   if (model().mode === 'smart') return toast('Distribution is automatic in Smart mode'); if (ui.selected.size < 3) return toast('Select 3+ components');
@@ -1443,18 +1528,72 @@ function openPageSize() {
   $('[data-close]',form).addEventListener('click',closeModals,{once:true});
   openModal(modal,$('#pageWidth'));
 }
+function selectAllComponents() {
+  const ids=model().items.map(entry=>entry.id);
+  if(!ids.length)return toast('No elements to select');
+  ui.selected=new Set(ids);
+  reconcileCanvas({content:false});
+  renderInspector();
+}
+function duplicateSelected() {
+  const ids=[...ui.selected].filter(id=>item(id));
+  if(!ids.length)return toast('Select at least one element to duplicate');
+  const size=canvasSize();
+  const plan=duplicateSelectionPlan(model(),ids,{
+    mode:model().mode,
+    canvasWidth:size.width,
+    canvasHeight:size.height,
+  });
+  if(!plan.ops.length)return;
+  const accepted=commitOps(
+    ids.length===1?'Duplicate component':'Duplicate selection',
+    plan.ops,
+    {announce:`Duplicated ${ids.length} element${ids.length===1?'':'s'}`},
+  );
+  if(!accepted)return;
+  ui.selected=new Set(plan.newIds);
+  renderAll();
+  return plan.newIds;
+}
 function duplicateOne(id) {
-  const source = item(id); const copy = structuredClone(source); const nextId = `c${model().nextId}`; copy.id = nextId; copy.order = model().items.length; copy.z = (source.z || 1) + 1; copy.title = `${source.title} copy`; copy.groupId = null;
-  if (model().mode !== 'smart') { copy.x = clamp(source.x + 24, 0, CANVAS.w - source.w); copy.y = clamp(source.y + 24, 0, CANVAS.h - source.h); }
-  commitOps('Duplicate component', [{ op: 'item.add', item: copy }, { op: 'model.patch', patch: { nextId: model().nextId + 1 } }]); ui.selected = new Set([nextId]); renderAll();
+  if(!item(id))return;
+  ui.selected=new Set([id]);
+  return duplicateSelected();
 }
 const CLIPBOARD_PREFIX='VISMBLER_P0:';
+function clipboardRects() {
+  return Object.fromEntries([...rectMap()].map(([id,r])=>[id,{x:r.x,y:r.y,w:r.w,h:r.h}]));
+}
+function writeSemanticClipboard(payload,message) {
+  ui.semanticClipboard=payload;
+  const encoded=CLIPBOARD_PREFIX+JSON.stringify(payload);
+  navigator.clipboard?.writeText?.(encoded).catch(()=>{});
+  if(message)toast(message);
+  return payload;
+}
 function copySemanticSelection(kind='visual_full') {
-  if(ui.selected.size!==1)return toast('Select one visual to copy'); const entry=item([...ui.selected][0]); if(!entry)return;
-  const dataset=selectedDataset(entry); const payload={version:1,kind,entry:structuredClone(entry),dataset:dataset?structuredClone(dataset):null}; ui.semanticClipboard=payload;
-  const encoded=CLIPBOARD_PREFIX+JSON.stringify(payload); navigator.clipboard?.writeText?.(encoded).catch(()=>{}); toast(kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`); return payload;
+  if(!ui.selected.size)return toast('Select at least one visual to copy');
+  if(ui.selected.size>1) {
+    if(kind!=='visual_full')return toast('Data, mapping, and style copy require one selected visual');
+    const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+    if(!payload)return false;
+    return writeSemanticClipboard(payload,`${payload.items.length} elements copied`);
+  }
+  const entry=item([...ui.selected][0]); if(!entry)return;
+  const dataset=selectedDataset(entry);
+  const payload={version:1,kind,entry:structuredClone(entry),dataset:dataset?structuredClone(dataset):null};
+  return writeSemanticClipboard(payload,kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`);
+}
+function pasteCompositionPayload(payload) {
+  const size=canvasSize(),inset=model().mode==='guided'?CANVAS.gap:0;
+  const plan=pasteCompositionPlan(model(),payload,{mode:model().mode,canvasWidth:size.width,canvasHeight:size.height,inset});
+  if(!plan.ops.length)return false;
+  const accepted=commitOps('Paste composition',plan.ops,{announce:`Pasted ${plan.newIds.length} elements`});
+  if(accepted){ui.selected=new Set(plan.newIds);renderAll();}
+  return !!accepted;
 }
 function pasteSemanticPayload(payload, mode='auto') {
+  if(payload?.kind==='composition')return pasteCompositionPayload(payload);
   if(!payload?.entry)return false; const source=payload.entry;
   if(mode==='append-data') {
     if(ui.selected.size!==1||!payload.dataset)return false;const target=item([...ui.selected][0]),existing=selectedDataset(target);if(!existing)return toast('Paste data first, then append matching rows');const appended=appendCompatibleDataset(existing,payload.dataset);if(!appended.ok)return toast(appended.reason);const accepted=commitDataset(target,'Append dataset data',appended.dataset,target.mapping||{});if(accepted)toast('Appended data');return !!accepted;
@@ -1469,6 +1608,19 @@ function pasteSemanticPayload(payload, mode='auto') {
   let datasets=model().datasets; if(payload.dataset&&mode==='independent'){const cloned={...structuredClone(payload.dataset),id:datasetId(),name:`${payload.dataset.name} copy`,revision:1};datasets=[...datasets,cloned];copy.dataset_id=cloned.id;}
   if(model().mode!=='smart'){copy.x=clamp((source.x||0)+24,0,CANVAS.w-(source.w||200));copy.y=clamp((source.y||0)+24,0,CANVAS.h-(source.h||140));}
   const ops=[{op:'item.add',item:copy},{op:'model.patch',patch:{nextId:model().nextId+1,...(datasets!==model().datasets?{datasets}:{})}}];const accepted=commitOps(mode==='independent'?'Paste independent visual':'Paste linked visual',ops,{announce:mode==='independent'?'Pasted independent visual':'Pasted linked visual'});if(accepted)ui.selected=new Set([nextId]);return !!accepted;
+}
+function cutSemanticSelection() {
+  if(!ui.selected.size)return toast('Select at least one element to cut');
+  const entries=[...ui.selected].map(item).filter(Boolean);
+  if(entries.some(entry=>entry.locked))return toast('Unlock selected components before cutting');
+  const payload=copySemanticSelection('visual_full');
+  if(!payload)return false;
+  deleteSelected();
+  return true;
+}
+function pasteSemanticClipboard() {
+  if(!ui.semanticClipboard)return toast('Clipboard is empty');
+  return pasteSemanticPayload(ui.semanticClipboard,'independent');
 }
 function semanticPayloadFromText(text) { if(!String(text||'').startsWith(CLIPBOARD_PREFIX))return null;try{return JSON.parse(String(text).slice(CLIPBOARD_PREFIX.length));}catch{return null;} }
 function showDropGhost(e) { const g = $('#dropGhost'); if (model().mode === 'smart') Object.assign(g.style, { display: 'block', left: '6px', top: `${CANVAS.h - 80}px`, width: `${CANVAS.w - 12}px`, height: '70px' }); else { const p = logicalPoint(e); Object.assign(g.style, { display: 'block', left: `${clamp(p.x - 90, 0, CANVAS.w - 180)}px`, top: `${clamp(p.y - 60, 0, CANVAS.h - 120)}px`, width: '180px', height: '120px' }); } }
@@ -1576,23 +1728,115 @@ const builtInPresets=Object.freeze([
   {id:'comparison',name:'Before / After',description:'Comparisons and KPI changes lead the report.'},
   {id:'showcase',name:'Project Showcase',description:'A focused project story with outcome, decision, proof, and delivery plan.'},
 ]);
-function normalizedPersonalPresets(raw) { const result=[]; for(const value of Array.isArray(raw)?raw:[]){try{if(!value||typeof value!=='object')continue;const name=String(value.name||'').trim().slice(0,80);const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));if(!name||modelBytes(modelValue)>MAX_MODEL_BYTES)continue;result.push({id:String(value.id||localCommitId('preset')),name,model:modelValue});if(result.length>=50)break;}catch{/* isolate corrupt preset */}} return result.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})||a.id.localeCompare(b.id)); }
+function normalizedPersonalPresets(raw) {
+  const result=[];
+  for(const value of Array.isArray(raw)?raw:[]) {
+    try {
+      if(!value||typeof value!=='object')continue;
+      const name=String(value.name||'').trim().slice(0,80);
+      if(!name)continue;
+      const id=String(value.id||localCommitId('preset'));
+      if(value.kind==='section') {
+        const payload=structuredClone(value.payload);
+        if(!payload||payload.kind!=='composition'||!Array.isArray(payload.items)||payload.items.length<2)continue;
+        if(new Blob([JSON.stringify(payload)]).size>MAX_MODEL_BYTES)continue;
+        result.push({id,name,kind:'section',payload});
+      } else {
+        const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));
+        if(modelBytes(modelValue)>MAX_MODEL_BYTES)continue;
+        result.push({id,name,kind:'report',model:modelValue});
+      }
+      if(result.length>=50)break;
+    } catch {/* isolate corrupt preset */}
+  }
+  return result.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})||a.id.localeCompare(b.id));
+}
 function schedulePresetListRender(){if(presetRenderFrame)cancelAnimationFrame(presetRenderFrame);presetRenderFrame=requestAnimationFrame(()=>{presetRenderFrame=0;renderPresetList();});}
 function persistPersonalPresets(){personalPresets=normalizedPersonalPresets(personalPresets);storage.set('viz-prod-presets-cache',JSON.stringify(personalPresets));dispatchSemantic('preset.preferences_save_requested',{presets:personalPresets});schedulePresetListRender();}
-function savePresetNamed(name){const cleaned=String(name||'').trim().slice(0,80);if(!cleaned)return toast('Preset name cannot be blank');personalPresets.unshift({id:localCommitId('preset'),name:cleaned,model:parseCanonical(store.serialize())});persistPersonalPresets();toast('Personal preset saved');}
+function savePresetNamed(name){
+  const cleaned=String(name||'').trim().slice(0,80);
+  if(!cleaned)return toast('Preset name cannot be blank');
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'report',model:parseCanonical(store.serialize())});
+  persistPersonalPresets();
+  toast('Personal preset saved');
+}
 function savePreset(){
-  $('#modalTitle').textContent='Save as preset';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly review layout"><small>Personal presets are editable. Built-in presets remain immutable.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save preset</button></div></form>';
+  $('#modalTitle').textContent='Save as preset';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly review layout"><small>Saves the complete current report. Personal presets are editable; built-in presets remain immutable.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save report preset</button></div></form>';
   const form=$('#presetSaveForm');form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#presetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');savePresetNamed(name);closeModals();});
   $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#presetSaveName'));
 }
-function renderPresetList(){const built=$('#builtinPresetList');if(built)built.innerHTML=builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy"><b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}">Apply</button></div>`).join('');const host=$('#presetList');if(!host)return;const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>!query||p.name.toLowerCase().includes(query));host.innerHTML=shown.length?shown.map((p)=>{const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=`${p.model.items.length} element${p.model.items.length===1?'':'s'} · ${p.model.mode}`;return `<div class="preset"><div class="preset-copy"><input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${summary}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">Apply</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;}).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save the current report when you have a reusable composition.'}</div>`;}
-function loadPreset(index){const saved=personalPresets[index];if(!saved)return;try{const next=parseCanonical(serializeCanonical(saved.model));const accepted=commitOps('Load preset',[{op:'model.replace',value:next}],{announce:'Preset loaded'});if(accepted)ui.selected.clear();}catch{toast('Preset is corrupt and was not loaded');}}
-function updatePreset(index){if(!personalPresets[index])return;personalPresets[index]={...personalPresets[index],model:parseCanonical(store.serialize())};persistPersonalPresets();toast('Preset updated');}
-function duplicatePreset(index){const source=personalPresets[index];if(!source)return;personalPresets.splice(index+1,0,{id:localCommitId('preset'),name:`${source.name} copy`.slice(0,80),model:parseCanonical(serializeCanonical(source.model))});persistPersonalPresets();toast('Preset duplicated');}
+function saveSelectionPresetNamed(name){
+  if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
+  const cleaned=String(name||'').trim().slice(0,80);
+  if(!cleaned)return toast('Preset name cannot be blank');
+  const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+  if(!payload)return toast('Select 2+ elements to save a section preset');
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'section',payload});
+  persistPersonalPresets();
+  toast('Section preset saved');
+}
+function saveSelectionPreset(){
+  if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
+  $('#modalTitle').textContent='Save selection as preset';
+  $('#modalBody').innerHTML='<form class="modal-form" id="sectionPresetSaveForm"><label for="sectionPresetSaveName"><b>Section preset name</b></label><input id="sectionPresetSaveName" maxlength="80" autocomplete="off" placeholder="Fab evidence block"><small>Stores only the selected composition. Applying it later inserts an independent copy into the current report.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save section preset</button></div></form>';
+  const form=$('#sectionPresetSaveForm');
+  form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#sectionPresetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');saveSelectionPresetNamed(name);closeModals();});
+  $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
+  openModal($('#genericModal'),$('#sectionPresetSaveName'));
+}
+function syncPresetSelectionAction() {
+  const button=$('#presetSaveSelection');
+  if(!button)return;
+  const count=ui.selected.size;
+  button.disabled=count<2;
+  button.textContent=count>=2?`Save selected section · ${count}…`:'Save selected section…';
+  button.title=count>=2?'Save the selected composition as an insertable Section preset':'Select 2+ elements to save a Section preset';
+}
+function renderPresetList(){
+  syncPresetSelectionAction();
+  const kind=String($('#presetKindFilter')?.value||'all');
+  const built=$('#builtinPresetList');
+  if(built)built.innerHTML=kind==='section'
+    ?'<div class="keyboard-help">Built-in presets are full-report layouts. Switch to All or Reports to use them.</div>'
+    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy"><b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}">Apply</button></div>`).join('');
+  const host=$('#presetList');if(!host)return;
+  const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>(kind==='all'||p.kind===kind)&&(!query||p.name.toLowerCase().includes(query)));
+  host.innerHTML=shown.length?shown.map((p)=>{
+    const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=personalPresetSummary(p),applyLabel=p.kind==='section'?'Insert':'Apply';
+    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy"><input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
+  }).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save a report preset or select 2+ elements and save a Section preset.'}</div>`;
+}
+function loadPreset(index){
+  const saved=personalPresets[index];if(!saved)return;
+  try{
+    if(saved.kind==='section')return pasteCompositionPayload(structuredClone(saved.payload));
+    const next=parseCanonical(serializeCanonical(saved.model));
+    const accepted=commitOps('Load preset',[{op:'model.replace',value:next}],{announce:'Preset loaded'});
+    if(accepted)ui.selected.clear();
+  }catch{toast('Preset is corrupt and was not loaded');}
+}
+function updatePreset(index){
+  if(!personalPresets[index])return;
+  if(personalPresets[index].kind==='section'){
+    if(ui.selected.size<2)return toast('Select 2+ elements to update this section preset');
+    const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+    if(!payload)return toast('Select 2+ elements to update this section preset');
+    personalPresets[index]={...personalPresets[index],payload};
+  }else{
+    personalPresets[index]={...personalPresets[index],kind:'report',model:parseCanonical(store.serialize())};
+  }
+  persistPersonalPresets();toast('Preset updated');
+}
+function duplicatePreset(index){
+  const source=personalPresets[index];if(!source)return;
+  const duplicate=clonePersonalPreset(source,{id:localCommitId('preset'),name:`${source.name} copy`.slice(0,80)});
+  personalPresets.splice(index+1,0,duplicate);
+  persistPersonalPresets();toast('Preset duplicated');
+}
 function renamePreset(index,name){if(!personalPresets[index])return;const cleaned=String(name||'').trim().slice(0,80);if(!cleaned){schedulePresetListRender();return toast('Preset name cannot be blank');}personalPresets[index]={...personalPresets[index],name:cleaned};persistPersonalPresets();}
 function deletePreset(index){if(!personalPresets[index])return;personalPresets.splice(index,1);persistPersonalPresets();toast('Preset deleted');}
 function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});}
-function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;persistPendingState();updateSaveUi();dispatchSemantic('report.commit',failed);return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
+function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;ui.saveInFlight=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
 function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
 function exportModel(){const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
 function downloadBlob(blob,name){const link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
@@ -1673,7 +1917,7 @@ function setLibrary(open){ui.libraryOpen=!!open;activeRoot?.setAttribute('data-l
 function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const button=$('#inspectorToggle');if(button){button.setAttribute('aria-pressed',ui.inspectorOpen?'true':'false');button.textContent=ui.inspectorOpen?'Hide inspector':'Inspector';}storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
 
 const commands = [
-  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
+  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width')], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height')], ['Match selected size', 'Match width and height to the first unlocked selection', () => matchSize('size')], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full')], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
 ];
 function renderCommands(query = '') {
   const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
@@ -1792,11 +2036,11 @@ function wireGlobal(signal) {
   on($('#pageSizeBtn'),'click',openPageSize);
   on($('#debugBtn'),'click',openDeveloperConsole); on(window,'company_ui:open-developer-console',openDeveloperConsole);
   on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];updateDebugBadge();return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
-  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
+  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#presetSaveSelection'),'click',saveSelectionPreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
   on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',fitZoom); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());});
   on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen));
   $$('.pal').forEach((p)=>{p.draggable=true;on(p,'click',()=>addComponent(p.dataset.type));on(p,'dragstart',(e)=>{e.dataTransfer.setData('application/x-viz-type',p.dataset.type);e.dataTransfer.effectAllowed='copy';});});
-  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();});
+  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();}); on($('#presetKindFilter'),'change',renderPresetList);
   on($('#componentSearch'),'input',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#engineFilter'),'change',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#libraryMore'),'click',()=>{ui.libraryLimit+=60;renderLibrary();});
   const libraryClick=(e)=>{const favorite=e.target.closest('[data-favorite]');if(favorite){e.preventDefault();e.stopPropagation();return toggleFavorite(favorite.dataset.favorite);}const block=e.target.closest('[data-element][data-engine]');if(block)addLibraryElement(block.dataset.element,block.dataset.engine);};
   const libraryDrag=(e)=>{const block=e.target.closest('[data-element][data-engine]');if(!block)return;e.dataTransfer.setData('application/x-viz-element',JSON.stringify({element:block.dataset.element,engine:block.dataset.engine}));e.dataTransfer.effectAllowed='copy';};
@@ -1804,13 +2048,13 @@ function wireGlobal(signal) {
   on($('#builtinPresetList'),'click',(e)=>{const button=e.target.closest('[data-built-preset]');if(button)applySuggestion(button.dataset.builtPreset);});
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
-  on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-top')align('top');else if(value==='align-center')align('center');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();});
+  on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
   const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);
   on(hull,'dragover',(e)=>{e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
   $$('[data-close]').forEach((button)=>on(button,'click',closeModals));$$('.modal').forEach((modal)=>on(modal,'click',(e)=>{if(e.target===modal)closeModals();}));on(document,'keydown',trapModalFocus);
-  on(window,'keydown',(e)=>{const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){const payload=ui.semanticClipboard;e.preventDefault();pasteSemanticPayload(payload,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
+  on(window,'keydown',(e)=>{const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
   on(window,'keyup',(e)=>{if(e.code==='Space')ui.space=false;});on(window,'blur',()=>{ui.space=false;cancelPointerSession('window-blur');});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
   on(window,'paste',async(e)=>{const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await pasteToSelection(text);}});

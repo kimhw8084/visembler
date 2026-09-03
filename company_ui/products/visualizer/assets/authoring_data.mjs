@@ -1,6 +1,7 @@
 // Deterministic, dependency-free data intake for the report authoring loop.
 import { contractFor } from './authoring_contracts.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
+import { parseDelimitedText, parseAuthoringScalar } from './authoring_values.mjs';
 const SEMANTIC_ALIASES = Object.freeze({
   lot_id:['lot','lot_id','lotid'], wafer_id:['wafer','wafer_id','waferid','slot'], tool:['tool','tool_id','eqp','equipment','equipment_id'], chamber:['chamber','chamber_id','module'], recipe:['recipe','recipe_id'], process:['step','operation','op','process','process_step'], product:['product','product_id','device'], die_x:['die_x','x','x_coord','wafer_x'], die_y:['die_y','y','y_coord','wafer_y'], bin:['bin','bin_code','die_bin'], value:['value','measure','measurement','result','yield','yield_pct','yield_percent'], specification_low:['lsl','spec_low','lower_spec','specification_low'], specification_high:['usl','spec_high','upper_spec','specification_high'], time:['timestamp','time','datetime','date_time','event_time','date'], source:['source','from'], target:['target','to'], weight:['weight','count','volume'], subgroup:['subgroup','group']
 });
@@ -11,34 +12,10 @@ const slug = value => String(value ?? '').trim().toLowerCase().replace(/[\s\-/.]
 const fieldId = (name, index) => `${slug(name).replace(/[^a-z0-9_]/g, '') || 'field'}_${index + 1}`;
 
 export function parseGridText(text, { limit = 100001 } = {}) {
-  const source=String(text ?? '').replace(/^\uFEFF/, '').replace(/\r\n?/g,'\n');
-  if (!source.trim()) return { rows:[], delimiter:null, warnings:[] };
-  const first=source.split('\n').find(line=>line.trim()) || '';
-  const counts=[['\t',(first.match(/\t/g)||[]).length],[',',(first.match(/,/g)||[]).length],[';',(first.match(/;/g)||[]).length]];
-  const delimiter=counts.sort((a,b)=>b[1]-a[1])[0][1] ? counts[0][0] : '\t';
-  const rows=[]; let row=[], cell='', quoted=false;
-  for(let i=0;i<source.length;i+=1) {
-    const ch=source[i];
-    if(ch==='"') { if(quoted && source[i+1]==='"') { cell+='"'; i+=1; } else quoted=!quoted; continue; }
-    if(ch===delimiter && !quoted) { row.push(cell); cell=''; continue; }
-    if(ch==='\n' && !quoted) { row.push(cell); rows.push(row); if(rows.length>=limit) return {rows,delimiter,warnings:[{code:'row_limit',message:`Only the first ${limit.toLocaleString()} rows were profiled.`}]}; row=[]; cell=''; continue; }
-    cell+=ch;
-  }
-  row.push(cell); rows.push(row);
-  if(rows.at(-1)?.every(value=>value==='')) rows.pop();
-  return { rows, delimiter, warnings: quoted ? [{code:'unclosed_quote',message:'Input ended inside a quoted value; the final value was retained.'}] : [] };
+  return parseDelimitedText(text, {limit});
 }
 
-function typed(value, type='unknown') {
-  const raw=String(value ?? '').trim();
-  if(raw==='') return null;
-  if(type==='boolean' && /^(true|false)$/i.test(raw)) return /^true$/i.test(raw);
-  const percentage=/^[-+]?(?:\d+\.?\d*|\.\d+)%$/.test(raw);
-  const currency=/^[\$€£¥]\s*[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(raw);
-  const normalized=raw.replace(/[,$€£¥%\s]/g,'');
-  if(['integer','number'].includes(type) && !idLike.test(raw) && numeric.test(normalized)) return percentage ? Number(normalized)/100 : Number(normalized);
-  return raw;
-}
+function typed(value, type='unknown', quoted=false) { return parseAuthoringScalar(value, {type,quoted}); }
 function profile(name, values, index) {
   const present=values.filter(value=>String(value ?? '').trim()!==''); const raw=present.map(value=>String(value).trim());
   const tags=Object.entries(SEMANTIC_ALIASES).filter(([, aliases])=>aliases.includes(slug(name))).map(([tag])=>tag);
@@ -62,10 +39,13 @@ export function intakeText(text) {
   const parsed=parseGridText(text); if(!parsed.rows.length)return {rows:[],fields:[],header:{present:false,confidence:0,source_row:null},warnings:parsed.warnings,candidate_mappings:[],recommendations:[]};
   const header=headerConfidence(parsed.rows), width=Math.max(...parsed.rows.map(row=>row.length));
   const names=header.present ? Array.from({length:width},(_,i)=>String(parsed.rows[0][i]||`Column ${i+1}`).trim()||`Column ${i+1}`) : Array.from({length:width},(_,i)=>`Column ${i+1}`);
-  const rawRows=(header.present?parsed.rows.slice(1):parsed.rows).map(row=>Array.from({length:width},(_,i)=>row[i]??''));
+  const rawSource=header.present?parsed.rows.slice(1):parsed.rows;
+  const quotedSource=header.present?(parsed.quoted_rows||[]).slice(1):(parsed.quoted_rows||[]);
+  const rawRows=rawSource.map(row=>Array.from({length:width},(_,i)=>row[i]??''));
+  const quotedRows=rawRows.map((row,rowIndex)=>Array.from({length:width},(_,i)=>Boolean(quotedSource[rowIndex]?.[i])));
   const profileRows=sampledRows(rawRows,PERFORMANCE_LIMITS.profileRows),fields=names.map((name,index)=>profile(name,profileRows.map(row=>row[index]),index));
   const warnings=[...parsed.warnings]; if(rawRows.length>profileRows.length)warnings.push({code:'profile_sampled',message:`Types were profiled from a deterministic ${profileRows.length.toLocaleString()}-row sample; all ${rawRows.length.toLocaleString()} rows were retained.`}); fields.forEach((field,index)=>{const rawValues=profileRows.map(row=>String(row[index]??'').trim()),values=rawValues.filter(Boolean),dateLike=values.filter(value=>!Number.isNaN(Date.parse(value))&&/[-:T/ ]/.test(value)),numericLike=values.filter(value=>numeric.test(value.replace(/[,$€£¥%\s]/g,'')));if((['date','datetime'].includes(field.type)||field.semantic_tags?.includes('time'))&&dateLike.length<values.length)rawValues.forEach((value,rowIndex)=>{if(value&&!dateLike.includes(value))warnings.push({code:'invalid_date',row:rowIndex+(header.present?2:1),field:field.id,message:`${field.name} contains an invalid date; the original text was retained.`});});if(numericLike.length&&numericLike.length<values.length)warnings.push({code:'mixed_type',field:field.id,message:`${field.name} contains mixed numeric and text values; values were retained as text.`});});
-  const rows=rawRows.map(row=>row.map((value,index)=>typed(value,fields[index]?.type))); const candidate_mappings=inferMappings(fields); const recommendations=recommendViews(fields,candidate_mappings);
+  const rows=rawRows.map((row,rowIndex)=>row.map((value,index)=>typed(value,fields[index]?.type,quotedRows[rowIndex]?.[index]))); const candidate_mappings=inferMappings(fields); const recommendations=recommendViews(fields,candidate_mappings);
   return {rows,fields,header,warnings,delimiter:parsed.delimiter,candidate_mappings,recommendations};
 }
 export function inferMappings(fields) {

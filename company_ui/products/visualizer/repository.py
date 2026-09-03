@@ -104,6 +104,7 @@ class ReportRepository:
                 self.assets.read_image(str(entry['asset_id'])); entry.pop('src',None); continue
             if entry.get('engine')!='ImageMediaEngine' or not isinstance(entry.get('src'),str): continue
             src=entry['src']
+            if src=='': continue
             if not src.startswith('data:') or ';base64,' not in src: raise VisualizerContractError(f'image {entry.get("id","?")} must use an embedded validated data URL or asset reference')
             header,encoded=src.split(',',1)
             if header not in {'data:image/png;base64','data:image/jpeg;base64','data:image/webp;base64'}: raise VisualizerContractError('only embedded PNG, JPEG, or WebP images are supported')

@@ -43,7 +43,7 @@
         </div>
         <div id="elementsView" class="library-view active" role="tabpanel" aria-labelledby="elementsTab">
           <div class="section quick-section">
-            <div class="section-heading"><span>Quick add</span><small>Common building blocks</small></div>
+            <div class="section-heading"><span>Quick add</span><small>Proven building blocks</small></div>
             <div class="palette">
               <button class="pal pal-metric" data-type="metric"><span class="pal-visual"><i>42.8</i><em>+6.4%</em></span><b>Metric</b><small>Hero KPI</small></button>
               <button class="pal pal-chart" data-type="chart"><span class="pal-visual"><i class="spark"></i></span><b>Chart</b><small>Line chart</small></button>
@@ -57,7 +57,7 @@
           </div>
           <div class="library-sticky-controls">
             <div class="library-filters">
-              <input class="library-search" id="componentSearch" type="search" placeholder="Search 248 elements" aria-label="Search elements">
+              <input class="library-search" id="componentSearch" type="search" placeholder="Search production elements" aria-label="Search elements">
               <select class="library-search" id="engineFilter" aria-label="Filter by family"><option value="">All families</option></select>
             </div>
           </div>
@@ -70,8 +70,14 @@
         <div id="presetsView" class="library-view" role="tabpanel" aria-labelledby="presetsTab" hidden>
           <div class="section preset-section">
             <div class="section-heading"><span>Presets</span><small>Built-in and personal</small></div>
-            <button class="tb full-width preset-primary" id="presetSave">Save as preset…</button>
+            <button class="tb full-width preset-primary" id="presetSave">Save report preset…</button>
+            <button class="tb full-width" id="presetSaveSelection" disabled>Save selected section…</button>
             <input class="library-search" id="presetSearch" type="search" placeholder="Search saved presets" aria-label="Search saved presets">
+            <select class="library-search" id="presetKindFilter" aria-label="Filter personal presets by type">
+              <option value="all">All personal presets</option>
+              <option value="section">Sections</option>
+              <option value="report">Reports</option>
+            </select>
             <div class="preset-subheading">Built-in</div>
             <div id="builtinPresetList"></div>
             <div class="preset-subheading">Personal</div>
