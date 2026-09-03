@@ -20,6 +20,7 @@ import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_cli
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
 import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
+import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1068,6 +1069,26 @@ function semanticSectionName(engine) {
   if (engine==='InteractionLayer') return 'Behavior';
   return 'Content';
 }
+function batchOption(value,label,state) {
+  return `<option value="${value}" ${!state.mixed&&String(state.value)===String(value)?'selected':''}>${label}</option>`;
+}
+function batchSelectMarkup(field,label,state,options) {
+  const mixed=state.mixed?'<option value="" selected disabled>Mixed — choose to apply</option>':'';
+  return `<label>${label}</label><select data-batch-field="${field}">${mixed}${options.map(([value,text])=>batchOption(value,text,state)).join('')}</select>`;
+}
+function batchSelectionMarkup(entries) {
+  const state=batchSelectionState(entries);
+  const unlocked=entries.filter(entry=>!entry.locked).length;
+  return inspectorSection('Batch format',`<div class="field"><small>${unlocked} unlocked of ${entries.length} selected · each change applies in one step.</small>${batchSelectMarkup('showTitle','Canvas title',state.showTitle,[['true','Show'],['false','Hide']])}${batchSelectMarkup('textAlign','Content alignment',state.textAlign,[['left','Left'],['center','Center'],['right','Right']])}${batchSelectMarkup('contentDensity','Vertical space',state.contentDensity,[['fit','Fit content'],['fill','Fill component']])}${batchSelectMarkup('emphasis','Visual emphasis',state.emphasis,[['compact','Compact'],['standard','Standard'],['prominent','Prominent'],['hero','Hero']])}<small>Only shared presentation properties are batch editable. Data, mappings, values, titles, geometry, and engineering identity are never changed here.</small></div>`);
+}
+function bindBatchSelection(entries) {
+  $$('[data-batch-field]',$('#inspector')).forEach(control=>control.addEventListener('change',event=>{
+    const field=event.target.dataset.batchField;
+    const plan=batchPatchPlan(entries,field,event.target.value);
+    if(!plan.length)return toast('No unlocked selected elements can accept this change');
+    commitOps(`Batch ${batchFieldLabel(field)}`,plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`Applied ${batchFieldLabel(field)} to ${plan.length} elements`});
+  }));
+}
 function renderInspector() {
   const p = $('#inspector'); if (!p) return;
   syncPresetSelectionAction();
@@ -1098,10 +1119,12 @@ function renderInspector() {
     return;
   }
   if (ids.length > 1) {
-    const multiLocked=ids.some(id=>!!item(id)?.locked);
+    const selectedEntries=ids.map(item).filter(Boolean);
+    const multiLocked=selectedEntries.some(entry=>!!entry.locked);
     const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
+    const batchMulti=batchSelectionMarkup(selectedEntries);
     const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle?'':'disabled'}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${reuseMulti}`; bindReuseInspector(null); return;
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
