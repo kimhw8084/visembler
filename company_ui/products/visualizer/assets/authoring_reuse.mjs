@@ -18,7 +18,7 @@ export function reuseCapabilities({
     copySelection:selectionCount>1,
     cut:selectionCount>0&&!selectionLocked,
     pasteNew:!!payload&&(clipboardEntry||clipboardComposition),
-    pasteStyle:selectionCount===1&&clipboardEntry,
+    pasteStyle:selectionCount>0&&(!!payload?.style||clipboardEntry),
     pasteData:selectionCount===1&&hasDataset&&clipboardDataset,
     pasteMapping:selectionCount===1&&hasDataset&&clipboardEntry,
     appendData:selectionCount===1&&hasDataset&&clipboardDataset,

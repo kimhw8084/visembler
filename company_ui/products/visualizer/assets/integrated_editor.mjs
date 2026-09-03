@@ -19,6 +19,7 @@ import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
+import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -1099,7 +1100,7 @@ function renderInspector() {
   if (ids.length > 1) {
     const multiLocked=ids.some(id=>!!item(id)?.locked);
     const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
-    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
+    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle?'':'disabled'}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
     p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${reuseMulti}`; bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
@@ -1581,9 +1582,16 @@ function copySemanticSelection(kind='visual_full') {
   }
   const entry=item([...ui.selected][0]); if(!entry)return;
   const dataset=selectedDataset(entry);
+  if(kind==='style') {
+    return writeSemanticClipboard(
+      {version:2,kind:'style',style:styleSnapshot(entry)},
+      'Style copied',
+    );
+  }
   const payload={version:1,kind,entry:structuredClone(entry),dataset:dataset?structuredClone(dataset):null};
   return writeSemanticClipboard(payload,kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`);
 }
+
 function pasteCompositionPayload(payload) {
   const size=canvasSize(),inset=model().mode==='guided'?CANVAS.gap:0;
   const plan=pasteCompositionPlan(model(),payload,{mode:model().mode,canvasWidth:size.width,canvasHeight:size.height,inset});
@@ -1594,6 +1602,21 @@ function pasteCompositionPayload(payload) {
 }
 function pasteSemanticPayload(payload, mode='auto') {
   if(payload?.kind==='composition')return pasteCompositionPayload(payload);
+  if(mode==='style' || payload?.kind==='style') {
+    if(ui.selected.size<1)return false;
+    const source=payload?.entry||null;
+    const snapshot=payload?.style||(source?styleSnapshot(source):null);
+    if(!snapshot)return false;
+    const targets=[...ui.selected].map(item).filter(Boolean);
+    const plan=stylePastePlan(targets,snapshot);
+    if(!plan.length)return toast('No unlocked selected elements can accept this style');
+    const ops=plan.map(({id,patch})=>({op:'item.patch',id,patch}));
+    return !!commitOps(
+      targets.length===1?'Paste style':'Paste style to selection',
+      ops,
+      {announce:`Applied style to ${plan.length} element${plan.length===1?'':'s'} · ${styleSummary(snapshot)}`},
+    );
+  }
   if(!payload?.entry)return false; const source=payload.entry;
   if(mode==='append-data') {
     if(ui.selected.size!==1||!payload.dataset)return false;const target=item([...ui.selected][0]),existing=selectedDataset(target);if(!existing)return toast('Paste data first, then append matching rows');const appended=appendCompatibleDataset(existing,payload.dataset);if(!appended.ok)return toast(appended.reason);const accepted=commitDataset(target,'Append dataset data',appended.dataset,target.mapping||{});if(accepted)toast('Appended data');return !!accepted;
@@ -1603,7 +1626,6 @@ function pasteSemanticPayload(payload, mode='auto') {
     return !!replaceDataset(target,'Paste dataset data',dataset,structuredClone(source.mapping||{}));
   }
   if(mode==='mapping' || payload.kind==='mapping') { if(ui.selected.size!==1)return false;const target=item([...ui.selected][0]),dataset=selectedDataset(target);if(!dataset)return false;const mapping=structuredClone(source.mapping||{}),validation=contractFor(viewContractForEntry(target)).validate(mapping,dataset.fields);if(!validation.valid)return toast(mappingProblem(validation));return !!commitOps('Paste mapping',[{op:'item.patch',id:target.id,patch:{mapping}}],{announce:'Pasted mapping'}); }
-  if(mode==='style' || payload.kind==='style') { if(ui.selected.size!==1)return false;const target=item([...ui.selected][0]);const style=['title','showTitle','textAlign','weight','emphasis','variant','unit'].reduce((out,key)=>{if(key in source)out[key]=source[key];return out;},{});return !!commitOps('Paste style',[{op:'item.patch',id:target.id,patch:style}],{announce:'Pasted style'}); }
   const copy=structuredClone(source),nextId=`c${model().nextId}`;copy.id=nextId;copy.order=model().items.length;copy.z=(source.z||0)+1;copy.groupId=null;copy.title=`${source.title} copy`;
   let datasets=model().datasets; if(payload.dataset&&mode==='independent'){const cloned={...structuredClone(payload.dataset),id:datasetId(),name:`${payload.dataset.name} copy`,revision:1};datasets=[...datasets,cloned];copy.dataset_id=cloned.id;}
   if(model().mode!=='smart'){copy.x=clamp((source.x||0)+24,0,CANVAS.w-(source.w||200));copy.y=clamp((source.y||0)+24,0,CANVAS.h-(source.h||140));}
@@ -1917,7 +1939,7 @@ function setLibrary(open){ui.libraryOpen=!!open;activeRoot?.setAttribute('data-l
 function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const button=$('#inspectorToggle');if(button){button.setAttribute('aria-pressed',ui.inspectorOpen?'true':'false');button.textContent=ui.inspectorOpen?'Hide inspector':'Inspector';}storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
 
 const commands = [
-  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width')], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height')], ['Match selected size', 'Match width and height to the first unlocked selection', () => matchSize('size')], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full')], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
+  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width')], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height')], ['Match selected size', 'Match width and height to the first unlocked selection', () => matchSize('size')], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full')], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first')], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
 ];
 function renderCommands(query = '') {
   const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
