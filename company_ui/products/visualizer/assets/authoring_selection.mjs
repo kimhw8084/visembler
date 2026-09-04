@@ -31,6 +31,46 @@ export function selectionLockPlan(entries, target) {
     .map(entry=>({id:entry.id,patch:{locked:target}}));
 }
 
+export function structuralSelectionState(model, selectedIds) {
+  const items=Array.isArray(model?.items)?model.items:[];
+  const groups=model?.groups&&typeof model.groups==='object'?model.groups:{};
+  const selected=new Set((selectedIds||[]).map(String));
+  const entries=items.filter(entry=>entry&&selected.has(String(entry.id)));
+  const lockedCount=entries.filter(entry=>!!entry.locked).length;
+  const unlockedCount=entries.length-lockedCount;
+  const groupedCount=entries.filter(entry=>!!entry.groupId).length;
+  const groupIds=[...new Set(entries.map(entry=>entry.groupId).filter(Boolean).map(String))];
+  const byId=new Map(items.map(entry=>[String(entry.id),entry]));
+  const blockedGroupIds=[];
+  const ungroupableGroupIds=[];
+  for(const gid of groupIds) {
+    const group=groups[gid];
+    if(!group)continue;
+    const members=(group.items||[]).map(id=>byId.get(String(id))).filter(Boolean);
+    if(members.some(entry=>!!entry.locked))blockedGroupIds.push(gid);
+    else ungroupableGroupIds.push(gid);
+  }
+  return {
+    selectedCount:entries.length,
+    lockedCount,
+    unlockedCount,
+    groupedCount,
+    groupable:entries.length>=2&&lockedCount===0&&groupedCount===0,
+    groupIds,
+    blockedGroupIds,
+    ungroupableGroupIds,
+  };
+}
+export function layerSelectionPlan(entries, delta) {
+  const step=Number(delta)||0;
+  return (entries||[])
+    .filter(entry=>entry&&!entry.locked)
+    .map(entry=>({
+      id:entry.id,
+      patch:{z:clamp((Number(entry.z)||1)+step,0,99)},
+    }));
+}
+
 export function duplicateSelectionPlan(model, selectedIds, {
   mode=model?.mode||'smart',
   canvasWidth=1600,

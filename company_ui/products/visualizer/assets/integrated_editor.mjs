@@ -14,7 +14,7 @@ import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDi
 import { contractFor } from './authoring_contracts.mjs';
 import { parseAuthoringScalar, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
-import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan } from './authoring_selection.mjs';
+import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
@@ -1174,12 +1174,14 @@ function syncModeButtons() {
 }
 function commandEligibility() {
   const entries=[...ui.selected].map(item).filter(Boolean);
-  const any=entries.length>0; const groupIds=new Set(entries.map((entry)=>entry.groupId).filter(Boolean));
-  const sameExistingGroup=entries.length>1&&groupIds.size===1&&entries.every((entry)=>entry.groupId);
+  const any=entries.length>0,structure=structuralSelectionState(model(),[...ui.selected]);
   return {
-    group: entries.length>=2&&!sameExistingGroup,
-    ungroup: entries.some((entry)=>!!entry.groupId),
-    lock:any, front:any, back:any, delete:entries.some((entry)=>!entry.locked),
+    group:structure.groupable,
+    ungroup:structure.groupIds.length>0&&structure.blockedGroupIds.length===0,
+    lock:any,
+    front:structure.unlockedCount>0,
+    back:structure.unlockedCount>0,
+    delete:entries.some(entry=>!entry.locked),
   };
 }
 function updateCommandEligibility() {
@@ -1486,8 +1488,14 @@ function toggleLock() {
   return setSelectionLocked(entries,state.unlocked>0);
 }
 function groupSelected() {
-  if (ui.selected.size < 2) return toast('Select 2+ components');
-  const gid = `g${store.revision}-${model().nextId}`; const ids = [...ui.selected]; const ops = [{ op: 'group.set', id: gid, value: { id: gid, items: ids, layout: { kind: 'free', gap: CANVAS.gap } } }, ...ids.map((id) => ({ op: 'item.patch', id, patch: { groupId: gid } }))]; commitOps('Group selection', ops, { announce: 'Group container created' });
+  const ids=[...ui.selected],state=structuralSelectionState(model(),ids);
+  if(ids.length<2)return toast('Select 2+ components');
+  if(state.lockedCount)return toast('Unlock selected components before grouping');
+  if(state.groupedCount)return toast('Ungroup selected components before creating a new group');
+  if(!state.groupable)return toast('Select 2+ ungrouped components');
+  const gid=`g${store.revision}-${model().nextId}`;
+  const ops=[{op:'group.set',id:gid,value:{id:gid,items:ids,layout:{kind:'free',gap:CANVAS.gap}}},...ids.map(id=>({op:'item.patch',id,patch:{groupId:gid}}))];
+  commitOps('Group selection',ops,{announce:`Grouped ${ids.length} elements`});
 }
 function setContainerLayout(kind) {
   const gids=new Set([...ui.selected].map(id=>item(id)?.groupId).filter(Boolean));if(!gids.size)return toast('Select a grouped element');const rm=rectMap(),ops=[];
@@ -1495,11 +1503,27 @@ function setContainerLayout(kind) {
   if(ops.length)commitOps(`Apply ${kind} container layout`,[{op:'model.patch',patch:{mode:'guided'}},...ops],{announce:`Applied ${kind} container layout`});
 }
 function ungroupSelected() {
-  const gids = new Set([...ui.selected].map((id) => item(id)?.groupId).filter(Boolean)); if (!gids.size) return toast('No selected group');
-  const ops = []; for (const gid of gids) { model().items.filter((entry) => entry.groupId === gid).forEach((entry) => ops.push({ op: 'item.patch', id: entry.id, patch: { groupId: null } })); ops.push({ op: 'group.delete', id: gid }); }
-  commitOps('Ungroup selection', ops, { announce: 'Ungrouped' });
+  const state=structuralSelectionState(model(),[...ui.selected]);
+  if(!state.groupIds.length)return toast('No selected group');
+  if(state.blockedGroupIds.length)return toast('Unlock group members before ungrouping');
+  const ops=[];
+  for (const gid of state.ungroupableGroupIds) {
+    model().items.filter(entry=>entry.groupId===gid).forEach(entry=>ops.push({op:'item.patch',id:entry.id,patch:{groupId:null}}));
+    ops.push({op:'group.delete',id:gid});
+  }
+  if(!ops.length)return toast('No eligible selected group');
+  commitOps('Ungroup selection',ops,{announce:`Ungrouped ${state.ungroupableGroupIds.length} group${state.ungroupableGroupIds.length===1?'':'s'}`});
 }
-function layer(delta) { if (!ui.selected.size) return; commitOps(delta > 0 ? 'Bring forward' : 'Send backward', [...ui.selected].map((id) => ({ op: 'item.patch', id, patch: { z: clamp((item(id).z || 1) + delta, 0, 99) } }))); }
+function layer(delta) {
+  if(!ui.selected.size)return;
+  const entries=[...ui.selected].map(item).filter(Boolean),plan=layerSelectionPlan(entries,delta);
+  if(!plan.length)return toast('Selected components are locked');
+  commitOps(
+    delta>0?'Bring forward':'Send backward',
+    plan.map(({id,patch})=>({op:'item.patch',id,patch})),
+    {announce:`${delta>0?'Brought forward':'Sent backward'} ${plan.length} unlocked element${plan.length===1?'':'s'}`},
+  );
+}
 function align(kind) {
   if (model().mode === 'smart') return toast('Align is automatic in Smart mode'); if (ui.selected.size < 2) return toast('Select 2+ components');
   const rm = rectMap(), inset=model().mode==='guided'?CANVAS.gap:0; const A = [...ui.selected].map((id) => ({ entry: item(id), r: rm.get(id) })).filter((x)=>x.entry&&x.r&&!x.entry.locked); if(A.length<2)return toast('Select 2+ unlocked components'); const u = rectUnion(A.map((x) => x.r)); const ops = [];
