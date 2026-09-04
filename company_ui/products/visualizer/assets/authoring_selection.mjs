@@ -8,6 +8,29 @@ function uniqueGroupId(groups, base) {
   }
   return candidate;
 }
+export function isAdditiveSelectionGesture(event) {
+  return !!(event?.shiftKey || event?.metaKey || event?.ctrlKey);
+}
+export function selectionLockState(entries) {
+  const valid=(entries||[]).filter(Boolean);
+  const locked=valid.filter(entry=>!!entry.locked).length;
+  const unlocked=valid.length-locked;
+  return {
+    count:valid.length,
+    locked,
+    unlocked,
+    mixed:locked>0&&unlocked>0,
+    allLocked:valid.length>0&&unlocked===0,
+    allUnlocked:valid.length>0&&locked===0,
+  };
+}
+export function selectionLockPlan(entries, target) {
+  target=!!target;
+  return (entries||[])
+    .filter(entry=>entry&&!!entry.locked!==target)
+    .map(entry=>({id:entry.id,patch:{locked:target}}));
+}
+
 export function duplicateSelectionPlan(model, selectedIds, {
   mode=model?.mode||'smart',
   canvasWidth=1600,

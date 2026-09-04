@@ -14,7 +14,7 @@ import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDi
 import { contractFor } from './authoring_contracts.mjs';
 import { parseAuthoringScalar, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
-import { duplicateSelectionPlan } from './authoring_selection.mjs';
+import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
@@ -1089,6 +1089,20 @@ function bindBatchSelection(entries) {
     commitOps(`Batch ${batchFieldLabel(field)}`,plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`Applied ${batchFieldLabel(field)} to ${plan.length} elements`});
   }));
 }
+function bindSelectionLockControls(entries) {
+  const state=selectionLockState(entries),host=$('#inspector');
+  const summary=document.createElement('small');
+  summary.className='selection-lock-summary';
+  summary.textContent=`${state.locked} locked · ${state.unlocked} unlocked`;
+  const buttons=$$('[data-selection-lock]',host);
+  if(buttons.length&& !host.querySelector('.selection-lock-summary'))buttons.at(-1).closest('.field')?.append(summary);
+  buttons.forEach(button=>{
+    const target=button.dataset.selectionLock==='true';
+    button.disabled=target?state.unlocked===0:state.locked===0;
+    button.title=target?'Lock every selected element':'Unlock every selected element';
+    button.addEventListener('click',()=>setSelectionLocked(entries,target));
+  });
+}
 function renderInspector() {
   const p = $('#inspector'); if (!p) return;
   syncPresetSelectionAction();
@@ -1124,7 +1138,7 @@ function renderInspector() {
     const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
     const batchMulti=batchSelectionMarkup(selectedEntries);
     const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle?'':'disabled'}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindReuseInspector(null); return;
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
@@ -1170,7 +1184,9 @@ function commandEligibility() {
 }
 function updateCommandEligibility() {
   const state=commandEligibility();
-  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#lock','lock'],['#front','front'],['#back','back']]){const node=$(selector);if(node)node.disabled=!state[key];}
+  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#front','front'],['#back','back']]){const node=$(selector);if(node)node.disabled=!state[key];}
+  const lockButton=$('#lock'),entries=[...ui.selected].map(item).filter(Boolean),lockState=selectionLockState(entries),willLock=lockState.unlocked>0;
+  if(lockButton){lockButton.disabled=!entries.length;lockButton.textContent=willLock?'Lock':'Unlock';lockButton.title=willLock?'Lock every selected element':'Unlock every selected element';}
 }
 function preflight() {
   const R = currentRects();
@@ -1458,8 +1474,16 @@ function deleteSelected() {
   const survivors = model().items.filter((entry) => !ids.includes(entry.id));
   ops.push(...normalizeOrderOps(survivors)); ui.selected.clear(); commitOps('Delete components', ops, { announce: `${ids.length} component${ids.length > 1 ? 's' : ''} deleted` });
 }
+function setSelectionLocked(entries,locked) {
+  const plan=selectionLockPlan(entries,locked);
+  if(!plan.length)return toast(locked?'Selection is already locked':'Selection is already unlocked');
+  return commitOps(locked?'Lock selection':'Unlock selection',plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`${plan.length} selected element${plan.length===1?'':'s'} ${locked?'locked':'unlocked'}`});
+}
 function toggleLock() {
-  if (!ui.selected.size) return; const want = [...ui.selected].some((id) => !item(id).locked); const ops = [...ui.selected].map((id) => ({ op: 'item.patch', id, patch: { locked: want } })); commitOps(want ? 'Lock selection' : 'Unlock selection', ops, { announce: want ? 'Selection locked' : 'Selection unlocked' });
+  const entries=[...ui.selected].map(item).filter(Boolean);
+  if(!entries.length)return;
+  const state=selectionLockState(entries);
+  return setSelectionLocked(entries,state.unlocked>0);
 }
 function groupSelected() {
   if (ui.selected.size < 2) return toast('Select 2+ components');
@@ -1937,7 +1961,7 @@ function openExportMenu(){
   openModal($('#genericModal'));
 }
 function openHelp(){
-  $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock / unlock selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
+  $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock all / unlock all selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
 }
 function developerSnapshot() {
   const pf=preflight(); const modelValue=parseCanonical(store.serialize());
@@ -2011,7 +2035,7 @@ function onHullClick(e) {
   }
   if (!comp) return;
   const id = comp.dataset.id;
-  if (e.shiftKey) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else if (!(ui.selected.size === 1 && ui.selected.has(id))) { ui.selected.clear(); ui.selected.add(id); }
+  if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else if (!(ui.selected.size === 1 && ui.selected.has(id))) { ui.selected.clear(); ui.selected.add(id); }
   reconcileCanvas({ content: false }); renderInspector(); comp.focus({ preventScroll: true });
 }
 function focusEditorField(selector) {
@@ -2061,7 +2085,7 @@ function onHullPointerDown(e) {
 function onHullKeyDown(e) {
   const point = e.target.closest('[data-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleChartPoint(item(point.closest('.component').dataset.id), +point.dataset.point); return; }
   const brush = e.target.closest('.brush-handle'); if (brush && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); setBrushByKeyboard(item(brush.closest('.component').dataset.id), brush.dataset.brush, e.key === 'ArrowLeft' ? -1 : 1); return; }
-  const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (e.shiftKey) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
+  const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
 }
 function keyboardResizeSelected(event) {
   if(model().mode==='smart'||!ui.selected.size)return false;
