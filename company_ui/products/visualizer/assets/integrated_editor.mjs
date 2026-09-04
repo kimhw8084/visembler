@@ -14,7 +14,7 @@ import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDi
 import { contractFor } from './authoring_contracts.mjs';
 import { parseAuthoringScalar, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
-import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, layerSelectionPlan } from './authoring_selection.mjs';
+import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
@@ -1078,8 +1078,7 @@ function batchSelectMarkup(field,label,state,options) {
 }
 function batchSelectionMarkup(entries) {
   const state=batchSelectionState(entries);
-  const unlocked=entries.filter(entry=>!entry.locked).length;
-  return inspectorSection('Batch format',`<div class="field"><small>${unlocked} unlocked of ${entries.length} selected · each change applies in one step.</small>${batchSelectMarkup('showTitle','Canvas title',state.showTitle,[['true','Show'],['false','Hide']])}${batchSelectMarkup('textAlign','Content alignment',state.textAlign,[['left','Left'],['center','Center'],['right','Right']])}${batchSelectMarkup('contentDensity','Vertical space',state.contentDensity,[['fit','Fit content'],['fill','Fill component']])}${batchSelectMarkup('emphasis','Visual emphasis',state.emphasis,[['compact','Compact'],['standard','Standard'],['prominent','Prominent'],['hero','Hero']])}<small>Only shared presentation properties are batch editable. Data, mappings, values, titles, geometry, and engineering identity are never changed here.</small></div>`);
+  return inspectorSection('Batch format',`<div class="field"><small>Locked members are skipped; each change applies in one step.</small>${batchSelectMarkup('showTitle','Canvas title',state.showTitle,[['true','Show'],['false','Hide']])}${batchSelectMarkup('textAlign','Content alignment',state.textAlign,[['left','Left'],['center','Center'],['right','Right']])}${batchSelectMarkup('contentDensity','Vertical space',state.contentDensity,[['fit','Fit content'],['fill','Fill component']])}${batchSelectMarkup('emphasis','Visual emphasis',state.emphasis,[['compact','Compact'],['standard','Standard'],['prominent','Prominent'],['hero','Hero']])}<small>Only shared presentation properties are batch editable. Data, mappings, values, titles, geometry, and engineering identity are never changed here.</small></div>`);
 }
 function bindBatchSelection(entries) {
   $$('[data-batch-field]',$('#inspector')).forEach(control=>control.addEventListener('change',event=>{
@@ -1088,6 +1087,16 @@ function bindBatchSelection(entries) {
     if(!plan.length)return toast('No unlocked selected elements can accept this change');
     commitOps(`Batch ${batchFieldLabel(field)}`,plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`Applied ${batchFieldLabel(field)} to ${plan.length} elements`});
   }));
+}
+const inspectorActionAttributes=Object.freeze({
+  'align-left':'data-inspector="align-left"','align-center':'data-inspector="align-center"','align-right':'data-inspector="align-right"',
+  'align-top':'data-inspector="align-top"','align-middle':'data-inspector="align-middle"','align-bottom':'data-inspector="align-bottom"',
+  'distribute-x':'data-inspector="distribute-x"','distribute-y':'data-inspector="distribute-y"',
+  'match-width':'data-inspector="match-width"','match-height':'data-inspector="match-height"','match-size':'data-inspector="match-size"',
+  group:'data-inspector="group"',ungroup:'data-inspector="ungroup"',delete:'data-inspector="delete"',
+});
+function eligibilityButton(label,action,state) {
+  return `<button type="button" class="tb" ${inspectorActionAttributes[action]} ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
 }
 function bindSelectionLockControls(entries) {
   const state=selectionLockState(entries),host=$('#inspector');
@@ -1134,11 +1143,14 @@ function renderInspector() {
   }
   if (ids.length > 1) {
     const selectedEntries=ids.map(item).filter(Boolean);
+    const eligibility=selectionActionEligibility(model(),ids,{hasClipboard:!!ui.semanticClipboard});
     const multiLocked=selectedEntries.some(entry=>!!entry.locked);
     const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
     const batchMulti=batchSelectionMarkup(selectedEntries);
-    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection">Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':'disabled'}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'}>Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle?'':'disabled'}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><label>Horizontal alignment</label><div class="r-actions"><button class="tb" data-inspector="align-left">Left</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="align-right">Right</button></div><label>Vertical alignment</label><div class="r-actions"><button class="tb" data-inspector="align-top">Top</button><button class="tb" data-inspector="align-middle">Middle</button><button class="tb" data-inspector="align-bottom">Bottom</button></div><label>Distribution</label><div class="r-actions"><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div><label>Equal size</label><div class="r-actions"><button class="tb" data-inspector="match-width">Width</button><button class="tb" data-inspector="match-height">Height</button><button class="tb" data-inspector="match-size">Both</button></div><small>First unlocked selected element is the size reference.</small></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>')}${inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button></div></div>')}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
+    const selectionSummary=`${eligibility.summary.count} selected · ${eligibility.summary.unlocked} unlocked · ${eligibility.summary.locked} locked${eligibility.summary.grouped?` · ${eligibility.summary.grouped} grouped`:''}`;
+    const arrangeButton=(label,action)=>eligibilityButton(label,action,eligibility.arrange);
+    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection" ${eligibility.reuse.copySelection.enabled?'':`disabled title="${esc(eligibility.reuse.copySelection.reason)}"`}>Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':`disabled title="${esc(eligibility.reuse.cut.reason)}"`}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'} title="${reuseCaps.pasteNew?'Paste copied visual or composition':'Clipboard empty'}">Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle&&eligibility.reuse.pasteStyle.enabled?'':`disabled title="${esc(eligibility.reuse.pasteStyle.reason)}"`}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${selectionSummary}</b></div>${inspectorSection('Arrange',`<div class="field"><label>Horizontal alignment</label><div class="r-actions">${arrangeButton('Left','align-left')}${arrangeButton('Center','align-center')}${arrangeButton('Right','align-right')}</div><label>Vertical alignment</label><div class="r-actions">${arrangeButton('Top','align-top')}${arrangeButton('Middle','align-middle')}${arrangeButton('Bottom','align-bottom')}</div><label>Distribution</label><div class="r-actions">${arrangeButton('Distribute H','distribute-x')}${arrangeButton('Distribute V','distribute-y')}</div><label>Equal size</label><div class="r-actions">${arrangeButton('Width','match-width')}${arrangeButton('Height','match-height')}${arrangeButton('Both','match-size')}</div><small>${eligibility.arrange.partial?'Locked members will be skipped. ':''}First unlocked selected element is the size reference.</small></div>`)}${inspectorSection('Structure',`<div class="field"><div class="r-actions">${eligibilityButton('Group','group',eligibility.group)}${eligibilityButton('Ungroup','ungroup',eligibility.ungroup)}<button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>`)}${inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${eligibilityButton('Delete','delete',eligibility.delete)}</div><small>${eligibility.delete.partial?'Delete skips locked members.':''}</small></div>`)}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
@@ -1173,22 +1185,22 @@ function syncModeButtons() {
   const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition within the fixed page':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
 }
 function commandEligibility() {
-  const entries=[...ui.selected].map(item).filter(Boolean);
-  const any=entries.length>0,structure=structuralSelectionState(model(),[...ui.selected]);
+  const structure=structuralSelectionState(model(),[...ui.selected]);
+  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
   return {
-    group:structure.groupable,
-    ungroup:structure.groupIds.length>0&&structure.blockedGroupIds.length===0,
-    lock:any,
-    front:structure.unlockedCount>0,
-    back:structure.unlockedCount>0,
-    delete:entries.some(entry=>!entry.locked),
+    group:structure.groupable&&state.group.enabled,
+    ungroup:structure.groupIds.length>0&&structure.blockedGroupIds.length===0&&state.ungroup.enabled,
+    lock:state.lock.enabled,
+    front:structure.unlockedCount>0&&state.front.enabled,
+    back:structure.unlockedCount>0&&state.back.enabled,
+    delete:state.delete.enabled,
   };
 }
 function updateCommandEligibility() {
-  const state=commandEligibility();
-  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#front','front'],['#back','back']]){const node=$(selector);if(node)node.disabled=!state[key];}
+  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
+  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#front','front'],['#back','back']]){const node=$(selector);if(node){node.disabled=!state[key].enabled;node.title=state[key].enabled?(state[key].partial?'Locked members will be skipped.':''):state[key].reason;}}
   const lockButton=$('#lock'),entries=[...ui.selected].map(item).filter(Boolean),lockState=selectionLockState(entries),willLock=lockState.unlocked>0;
-  if(lockButton){lockButton.disabled=!entries.length;lockButton.textContent=willLock?'Lock':'Unlock';lockButton.title=willLock?'Lock every selected element':'Unlock every selected element';}
+  if(lockButton){const action=willLock?state.lock:state.unlock;lockButton.disabled=!action.enabled;lockButton.textContent=willLock?'Lock':'Unlock';lockButton.title=willLock?'Lock every selected element':'Unlock every selected element';if(!action.enabled)lockButton.title=action.reason;else if(action.partial)lockButton.title='Locked members will be skipped.';}
 }
 function preflight() {
   const R = currentRects();
@@ -1470,7 +1482,9 @@ function initializeLibrary() {
   renderLibrary();
 }
 function deleteSelected() {
-  const ids = [...ui.selected].filter((id) => !item(id)?.locked); if (!ids.length) return toast('Nothing deletable selected');
+  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  if(!eligibility.delete.enabled)return toast(eligibility.delete.reason);
+  const ids = [...ui.selected].filter((id) => !item(id)?.locked);
   const ops = ids.map((id) => ({ op: 'item.remove', id }));
   for (const [gid, group] of Object.entries(model().groups)) if (group.items.some((id) => ids.includes(id))) ops.push({ op: 'group.set', id: gid, value: { ...group, items: group.items.filter((id) => !ids.includes(id)) } });
   const survivors = model().items.filter((entry) => !ids.includes(entry.id));
@@ -1485,14 +1499,14 @@ function toggleLock() {
   const entries=[...ui.selected].map(item).filter(Boolean);
   if(!entries.length)return;
   const state=selectionLockState(entries);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const action=state.unlocked>0?eligibility.lock:eligibility.unlock;
+  if(!action.enabled)return toast(action.reason);
   return setSelectionLocked(entries,state.unlocked>0);
 }
 function groupSelected() {
-  const ids=[...ui.selected],state=structuralSelectionState(model(),ids);
-  if(ids.length<2)return toast('Select 2+ components');
-  if(state.lockedCount)return toast('Unlock selected components before grouping');
-  if(state.groupedCount)return toast('Ungroup selected components before creating a new group');
-  if(!state.groupable)return toast('Select 2+ ungrouped components');
+  const ids=[...ui.selected],state=structuralSelectionState(model(),ids),eligibility=selectionActionEligibility(model(),ids);
+  if(!eligibility.group.enabled)return toast(state.lockedCount?'Unlock selected components before grouping':state.groupedCount?'Ungroup selected components before creating a new group':eligibility.group.reason);
   const gid=`g${store.revision}-${model().nextId}`;
   const ops=[{op:'group.set',id:gid,value:{id:gid,items:ids,layout:{kind:'free',gap:CANVAS.gap}}},...ids.map(id=>({op:'item.patch',id,patch:{groupId:gid}}))];
   commitOps('Group selection',ops,{announce:`Grouped ${ids.length} elements`});
@@ -1504,8 +1518,8 @@ function setContainerLayout(kind) {
 }
 function ungroupSelected() {
   const state=structuralSelectionState(model(),[...ui.selected]);
-  if(!state.groupIds.length)return toast('No selected group');
-  if(state.blockedGroupIds.length)return toast('Unlock group members before ungrouping');
+  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  if(!eligibility.ungroup.enabled)return toast(state.blockedGroupIds.length?'Unlock group members before ungrouping':eligibility.ungroup.reason);
   const ops=[];
   for (const gid of state.ungroupableGroupIds) {
     model().items.filter(entry=>entry.groupId===gid).forEach(entry=>ops.push({op:'item.patch',id:entry.id,patch:{groupId:null}}));
@@ -1515,7 +1529,9 @@ function ungroupSelected() {
   commitOps('Ungroup selection',ops,{announce:`Ungrouped ${state.ungroupableGroupIds.length} group${state.ungroupableGroupIds.length===1?'':'s'}`});
 }
 function layer(delta) {
-  if(!ui.selected.size)return;
+  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const action=delta>0?eligibility.front:eligibility.back;
+  if(!action.enabled)return toast(action.reason);
   const entries=[...ui.selected].map(item).filter(Boolean),plan=layerSelectionPlan(entries,delta);
   if(!plan.length)return toast('Selected components are locked');
   commitOps(
@@ -2010,15 +2026,20 @@ function setLibrary(open){ui.libraryOpen=!!open;activeRoot?.setAttribute('data-l
 function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const button=$('#inspectorToggle');if(button){button.setAttribute('aria-pressed',ui.inspectorOpen?'true':'false');button.textContent=ui.inspectorOpen?'Hide inspector':'Inspector';}storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
 
 const commands = [
-  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width')], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height')], ['Match selected size', 'Match width and height to the first unlocked selection', () => matchSize('size')], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full')], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first')], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
+  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected,'delete'], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width'),'arrange'], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height'),'arrange'], ['Match selected size', 'Make width and height match the first unlocked selection', () => matchSize('size'),'arrange'], ['Batch format', 'Open the multi-selection batch format controls', () => {setInspector(true);renderInspector();},'batch'], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full'),'reuse.copySelection'], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection,'reuse.cut'], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first'),'reuse.pasteStyle'], ['Group selection', 'Group selected components', groupSelected,'group'], ['Ungroup selection', 'Ungroup selected components', ungroupSelected,'ungroup'], ['Bring selection forward', 'Bring unlocked selected elements forward', () => layer(1),'front'], ['Send selection backward', 'Send unlocked selected elements backward', () => layer(-1),'back'], ['Lock selection', 'Lock unlocked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),true),'lock'], ['Unlock selection', 'Unlock locked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),false),'unlock'], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
 ];
+function commandActionState(key) {
+  if(!key)return {enabled:true,reason:''};
+  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
+  return key.split('.').reduce((value,part)=>value?.[part],state)||{enabled:false,reason:'Action unavailable'};
+}
 function renderCommands(query = '') {
   const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
-  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => `<div class="cmd ${k === ui.commandIndex ? 'active' : ''}" id="cmd-option-${index}" role="option" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" tabindex="-1"><div><b>${c[0]}</b><span>${c[1]}</span></div><span>↵</span></div>`).join('');
+  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => {const state=commandActionState(c[3]);return `<div class="cmd ${k === ui.commandIndex ? 'active' : ''} ${state.enabled?'':'disabled'}" id="cmd-option-${index}" role="option" aria-disabled="${state.enabled?'false':'true'}" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" title="${esc(state.enabled?'':state.reason)}" tabindex="-1"><div><b>${c[0]}</b><span>${c[1]}</span></div><span>↵</span></div>`;}).join('');
   const active=$('[aria-selected="true"]',$('#cmdList')); const input=$('#cmdInput'); if(active)input?.setAttribute('aria-activedescendant',active.id);else input?.removeAttribute('aria-activedescendant');
 }
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }
-function executeCommandIndex(index) { commands[index]?.[2](); closeModals(); }
+function executeCommandIndex(index) { const command=commands[index],state=commandActionState(command?.[3]);if(!state.enabled)return toast(state.reason);command?.[2](); closeModals(); }
 function openModal(modal, focusTarget = null) { ui.modalReturnFocus = document.activeElement; modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
 function closeModals() { $$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
 function trapModalFocus(e) {
