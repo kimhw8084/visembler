@@ -746,10 +746,12 @@ function renderContext(rm) {
   const u = rectUnion(rects);
   if (!u) return;
   const locked = [...ui.selected].some((id) => item(id)?.locked);
-  const eligibility=commandEligibility();
-  const contextSignature = `${[...ui.selected].sort().join(',')}|${locked ? 1 : 0}|${eligibility.group?1:0}|${eligibility.ungroup?1:0}`;
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  const lockAction=locked&&eligibility.summary.unlocked===0?eligibility.unlock:eligibility.lock;
+  const contextSignature = `${[...ui.selected].sort().join(',')}|${locked ? 1 : 0}|${lockAction.enabled?1:0}|${eligibility.delete.enabled?1:0}`;
   if (ui.contextSignature !== contextSignature) {
-    c.innerHTML = `<button data-ctx="lock" ${eligibility.lock?'':'disabled'}>${locked ? 'Unlock' : 'Lock'}</button><button data-ctx="group" ${eligibility.group?'':'disabled'}>Group</button><button data-ctx="ungroup" ${eligibility.ungroup?'':'disabled'}>Ungroup</button><button data-ctx="front" ${eligibility.front?'':'disabled'}>Front</button><button data-ctx="delete" ${eligibility.delete?'':'disabled'}>Delete</button>`;
+    const actionButton=(action,label,state)=>`<button data-ctx="${action}" aria-disabled="${state.enabled?'false':'true'}" ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
+    c.innerHTML = `${actionButton('lock',locked&&eligibility.summary.unlocked===0?'Unlock':'Lock',lockAction)}${actionButton('delete','Delete',eligibility.delete)}`;
     ui.contextSignature = contextSignature;
     ui.contextSize = null;
   }
@@ -1093,18 +1095,14 @@ const inspectorActionAttributes=Object.freeze({
   'align-top':'data-inspector="align-top"','align-middle':'data-inspector="align-middle"','align-bottom':'data-inspector="align-bottom"',
   'distribute-x':'data-inspector="distribute-x"','distribute-y':'data-inspector="distribute-y"',
   'match-width':'data-inspector="match-width"','match-height':'data-inspector="match-height"','match-size':'data-inspector="match-size"',
-  group:'data-inspector="group"',ungroup:'data-inspector="ungroup"',delete:'data-inspector="delete"',
+  group:'data-inspector="group"',ungroup:'data-inspector="ungroup"',delete:'data-inspector="delete"',lock:'data-inspector="lock"',
 });
 function eligibilityButton(label,action,state) {
-  return `<button type="button" class="tb" ${inspectorActionAttributes[action]} ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
+  return `<button type="button" class="tb" ${inspectorActionAttributes[action]} aria-disabled="${state.enabled?'false':'true'}" ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
 }
 function bindSelectionLockControls(entries) {
   const state=selectionLockState(entries),host=$('#inspector');
-  const summary=document.createElement('small');
-  summary.className='selection-lock-summary';
-  summary.textContent=`${state.locked} locked · ${state.unlocked} unlocked`;
   const buttons=$$('[data-selection-lock]',host);
-  if(buttons.length&& !host.querySelector('.selection-lock-summary'))buttons.at(-1).closest('.field')?.append(summary);
   buttons.forEach(button=>{
     const target=button.dataset.selectionLock==='true';
     button.disabled=target?state.unlocked===0:state.locked===0;
@@ -1118,6 +1116,8 @@ function renderInspector() {
   const ids = [...ui.selected];
   if (ids.length === 1) {
     const entry = item(ids[0]); const d=typeDefaults[entry.type]||typeDefaults.text; const policy=semanticPolicy(entry);const actualRect=rectMap().get(entry.id);
+    const eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
+    const lockAction=entry.locked?eligibility.unlock:eligibility.lock;
     const identity=`<div class="inspector-identity"><span>${esc((entry.engine||entry.type).replace(/Engine|Composite|Layer|Infrastructure/g,''))}</span><b>${esc(entry.element||entry.title)}</b></div>`;
     const titleSection=inspectorSection('Identity',`<div class="field"><label for="iTitle">Title</label><input id="iTitle" value="${esc(entry.title)}"><label class="toggle-field"><input id="iShowTitle" type="checkbox" ${entry.showTitle===true||entry.show_title===true?'checked':''}> <span>Show title on canvas</span></label><label for="iTextAlign">Content alignment</label><select id="iTextAlign"><option value="left" ${(entry.textAlign||entry.text_align||'left')==='left'?'selected':''}>Left</option><option value="center" ${(entry.textAlign||entry.text_align)==='center'?'selected':''}>Center</option><option value="right" ${(entry.textAlign||entry.text_align)==='right'?'selected':''}>Right</option></select><small>Titles are optional. Alignment applies to text and data labels inside this element.</small></div>`);
     const contentSection=inspectorSection(semanticSectionName(entry.engine||''),semanticInspectorMarkup(entry));
@@ -1127,7 +1127,8 @@ function renderInspector() {
     const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>SVG</span><b>Visual export ready</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>SVG</span><b>Visual export ready</b></div>');
     const reuseSection=reuseInspectorMarkup(entry);
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
-    const actionSection=inspectorSection('Actions','<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button><button class="tb" data-inspector="delete">Delete</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>');
+    const deleteButton=`<button type="button" class="tb" data-inspector="delete" aria-disabled="${eligibility.delete.enabled?'false':'true'}" ${eligibility.delete.enabled?'':`disabled title="${esc(eligibility.delete.reason)}"`}>Delete</button>`;
+    const actionSection=inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${deleteButton}${eligibilityButton(entry.locked?'Unlock':'Lock','lock',lockAction)}</div></div>`);
     p.innerHTML=identity+actionSection+titleSection+contentSection+dataDockMarkup(entry)+containerSection+reuseSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
     $('#iTitle').addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Rename component',[{op:'item.patch',id:entry.id,patch:{title:e.target.value}}]));
     $('#iShowTitle')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Toggle canvas title',[{op:'item.patch',id:entry.id,patch:{showTitle:e.target.checked}}]));
@@ -1150,7 +1151,8 @@ function renderInspector() {
     const selectionSummary=`${eligibility.summary.count} selected · ${eligibility.summary.unlocked} unlocked · ${eligibility.summary.locked} locked${eligibility.summary.grouped?` · ${eligibility.summary.grouped} grouped`:''}`;
     const arrangeButton=(label,action)=>eligibilityButton(label,action,eligibility.arrange);
     const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection" ${eligibility.reuse.copySelection.enabled?'':`disabled title="${esc(eligibility.reuse.copySelection.reason)}"`}>Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':`disabled title="${esc(eligibility.reuse.cut.reason)}"`}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'} title="${reuseCaps.pasteNew?'Paste copied visual or composition':'Clipboard empty'}">Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle&&eligibility.reuse.pasteStyle.enabled?'':`disabled title="${esc(eligibility.reuse.pasteStyle.reason)}"`}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${selectionSummary}</b></div>${inspectorSection('Arrange',`<div class="field"><label>Horizontal alignment</label><div class="r-actions">${arrangeButton('Left','align-left')}${arrangeButton('Center','align-center')}${arrangeButton('Right','align-right')}</div><label>Vertical alignment</label><div class="r-actions">${arrangeButton('Top','align-top')}${arrangeButton('Middle','align-middle')}${arrangeButton('Bottom','align-bottom')}</div><label>Distribution</label><div class="r-actions">${arrangeButton('Distribute H','distribute-x')}${arrangeButton('Distribute V','distribute-y')}</div><label>Equal size</label><div class="r-actions">${arrangeButton('Width','match-width')}${arrangeButton('Height','match-height')}${arrangeButton('Both','match-size')}</div><small>${eligibility.arrange.partial?'Locked members will be skipped. ':''}First unlocked selected element is the size reference.</small></div>`)}${inspectorSection('Structure',`<div class="field"><div class="r-actions">${eligibilityButton('Group','group',eligibility.group)}${eligibilityButton('Ungroup','ungroup',eligibility.ungroup)}<button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>`)}${inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${eligibilityButton('Delete','delete',eligibility.delete)}</div><small>${eligibility.delete.partial?'Delete skips locked members.':''}</small></div>`)}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
+    const arrangeHelp=model().mode==='smart'?'Smart mode owns arrangement and placement.':`${eligibility.arrange.partial?'Locked members will be skipped. ':''}First unlocked selected element is the size reference.`;
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${selectionSummary}</b></div>${inspectorSection('Arrange',`<div class="field"><label>Horizontal alignment</label><div class="r-actions">${arrangeButton('Left','align-left')}${arrangeButton('Center','align-center')}${arrangeButton('Right','align-right')}</div><label>Vertical alignment</label><div class="r-actions">${arrangeButton('Top','align-top')}${arrangeButton('Middle','align-middle')}${arrangeButton('Bottom','align-bottom')}</div><label>Distribution</label><div class="r-actions">${arrangeButton('Distribute H','distribute-x')}${arrangeButton('Distribute V','distribute-y')}</div><label>Equal size</label><div class="r-actions">${arrangeButton('Width','match-width')}${arrangeButton('Height','match-height')}${arrangeButton('Both','match-size')}</div><small>${arrangeHelp}</small></div>`)}${inspectorSection('Structure',`<div class="field"><div class="r-actions">${eligibilityButton('Group','group',eligibility.group)}${eligibilityButton('Ungroup','ungroup',eligibility.ungroup)}<button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>`)}${inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${eligibilityButton('Delete','delete',eligibility.delete)}</div><small>${eligibility.delete.partial?'Delete skips locked members.':''}</small></div>`)}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
@@ -2035,7 +2037,7 @@ function commandActionState(key) {
 }
 function renderCommands(query = '') {
   const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
-  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => {const state=commandActionState(c[3]);return `<div class="cmd ${k === ui.commandIndex ? 'active' : ''} ${state.enabled?'':'disabled'}" id="cmd-option-${index}" role="option" aria-disabled="${state.enabled?'false':'true'}" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" title="${esc(state.enabled?'':state.reason)}" tabindex="-1"><div><b>${c[0]}</b><span>${c[1]}</span></div><span>↵</span></div>`;}).join('');
+  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => {const state=commandActionState(c[3]);return `<div class="cmd ${k === ui.commandIndex ? 'active' : ''} ${state.enabled?'':'disabled'}" id="cmd-option-${index}" role="option" aria-disabled="${state.enabled?'false':'true'}" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" title="${esc(state.enabled?'':state.reason)}" tabindex="-1"><div class="cmd-copy"><b class="cmd-label">${c[0]}</b><span class="cmd-description">${c[1]}</span></div><span class="cmd-shortcut">↵</span></div>`;}).join('');
   const active=$('[aria-selected="true"]',$('#cmdList')); const input=$('#cmdInput'); if(active)input?.setAttribute('aria-activedescendant',active.id);else input?.removeAttribute('aria-activedescendant');
 }
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }

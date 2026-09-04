@@ -400,13 +400,15 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.label('New report').classes('cui-dialog-title'); ui.label('Start with a genuinely blank canvas or a governed editable template.').classes('cui-field-description')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Blank canvas',on_click=lambda: create_report('blank')).props('flat no-caps')
+                    with ui.button(on_click=lambda: create_report('blank')).props('flat no-caps').classes('cui-report-template'):
+                        ui.label('Blank canvas').classes('cui-report-template-title')
+                        ui.label('Start with an empty, editable report.').classes('cui-report-template-description')
                     for template_id,spec in REPORT_TEMPLATES.items():
                         async def _choose(_event=None, template_id=template_id): await create_report(template_id)
                         # company-ui: allow-ai005 — see dialog compatibility host above.
-                        with ui.button(on_click=_choose).props('flat no-caps').classes('w-full'):
+                        with ui.button(on_click=_choose).props('flat no-caps').classes('w-full cui-report-template'):
                             # company-ui: allow-ai005 — see dialog compatibility host above.
-                            ui.label(str(spec['name'])); ui.label(str(spec['description'])).classes('cui-field-description')
+                            ui.label(str(spec['name'])).classes('cui-report-template-title'); ui.label(str(spec['description'])).classes('cui-report-template-description')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Cancel',on_click=new_dialog.close).props('flat no-caps')
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
