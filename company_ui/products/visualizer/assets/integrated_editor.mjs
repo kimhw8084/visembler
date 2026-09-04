@@ -1143,7 +1143,7 @@ function renderInspector() {
   }
   if (ids.length > 1) {
     const selectedEntries=ids.map(item).filter(Boolean);
-    const eligibility=selectionActionEligibility(model(),ids,{hasClipboard:!!ui.semanticClipboard});
+    const eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
     const multiLocked=selectedEntries.some(entry=>!!entry.locked);
     const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
     const batchMulti=batchSelectionMarkup(selectedEntries);
@@ -1186,7 +1186,7 @@ function syncModeButtons() {
 }
 function commandEligibility() {
   const structure=structuralSelectionState(model(),[...ui.selected]);
-  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   return {
     group:structure.groupable&&state.group.enabled,
     ungroup:structure.groupIds.length>0&&structure.blockedGroupIds.length===0&&state.ungroup.enabled,
@@ -1197,7 +1197,7 @@ function commandEligibility() {
   };
 }
 function updateCommandEligibility() {
-  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#front','front'],['#back','back']]){const node=$(selector);if(node){node.disabled=!state[key].enabled;node.title=state[key].enabled?(state[key].partial?'Locked members will be skipped.':''):state[key].reason;}}
   const lockButton=$('#lock'),entries=[...ui.selected].map(item).filter(Boolean),lockState=selectionLockState(entries),willLock=lockState.unlocked>0;
   if(lockButton){const action=willLock?state.lock:state.unlock;lockButton.disabled=!action.enabled;lockButton.textContent=willLock?'Lock':'Unlock';lockButton.title=willLock?'Lock every selected element':'Unlock every selected element';if(!action.enabled)lockButton.title=action.reason;else if(action.partial)lockButton.title='Locked members will be skipped.';}
@@ -1482,7 +1482,7 @@ function initializeLibrary() {
   renderLibrary();
 }
 function deleteSelected() {
-  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   if(!eligibility.delete.enabled)return toast(eligibility.delete.reason);
   const ids = [...ui.selected].filter((id) => !item(id)?.locked);
   const ops = ids.map((id) => ({ op: 'item.remove', id }));
@@ -1499,13 +1499,13 @@ function toggleLock() {
   const entries=[...ui.selected].map(item).filter(Boolean);
   if(!entries.length)return;
   const state=selectionLockState(entries);
-  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   const action=state.unlocked>0?eligibility.lock:eligibility.unlock;
   if(!action.enabled)return toast(action.reason);
   return setSelectionLocked(entries,state.unlocked>0);
 }
 function groupSelected() {
-  const ids=[...ui.selected],state=structuralSelectionState(model(),ids),eligibility=selectionActionEligibility(model(),ids);
+  const ids=[...ui.selected],state=structuralSelectionState(model(),ids),eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
   if(!eligibility.group.enabled)return toast(state.lockedCount?'Unlock selected components before grouping':state.groupedCount?'Ungroup selected components before creating a new group':eligibility.group.reason);
   const gid=`g${store.revision}-${model().nextId}`;
   const ops=[{op:'group.set',id:gid,value:{id:gid,items:ids,layout:{kind:'free',gap:CANVAS.gap}}},...ids.map(id=>({op:'item.patch',id,patch:{groupId:gid}}))];
@@ -1518,7 +1518,7 @@ function setContainerLayout(kind) {
 }
 function ungroupSelected() {
   const state=structuralSelectionState(model(),[...ui.selected]);
-  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   if(!eligibility.ungroup.enabled)return toast(state.blockedGroupIds.length?'Unlock group members before ungrouping':eligibility.ungroup.reason);
   const ops=[];
   for (const gid of state.ungroupableGroupIds) {
@@ -1529,7 +1529,7 @@ function ungroupSelected() {
   commitOps('Ungroup selection',ops,{announce:`Ungrouped ${state.ungroupableGroupIds.length} group${state.ungroupableGroupIds.length===1?'':'s'}`});
 }
 function layer(delta) {
-  const eligibility=selectionActionEligibility(model(),[...ui.selected]);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   const action=delta>0?eligibility.front:eligibility.back;
   if(!action.enabled)return toast(action.reason);
   const entries=[...ui.selected].map(item).filter(Boolean),plan=layerSelectionPlan(entries,delta);
@@ -2030,7 +2030,7 @@ const commands = [
 ];
 function commandActionState(key) {
   if(!key)return {enabled:true,reason:''};
-  const state=selectionActionEligibility(model(),[...ui.selected],{hasClipboard:!!ui.semanticClipboard});
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   return key.split('.').reduce((value,part)=>value?.[part],state)||{enabled:false,reason:'Action unavailable'};
 }
 function renderCommands(query = '') {

@@ -33,18 +33,32 @@ const base={mode:'guided',groups:{},items:[{id:'a',locked:true,groupId:null},{id
 console.log(JSON.stringify({one:selectionActionEligibility(base,['c']),locked:selectionActionEligibility(base,['a']),grouped:selectionActionEligibility(base,['b','c'])}));
 """)
     assert result["one"]["group"]["reason"] == "Selection count insufficient"
+    assert result["one"]["batch"] == {"enabled": False, "reason": "Selection count insufficient", "partial": False}
     assert result["locked"]["delete"]["reason"] == "No eligible unlocked members"
     assert result["grouped"]["group"]["reason"] == "Existing group membership conflicts with Group"
 
 
-def test_wave11_editor_uses_shared_eligibility_for_toolbar_inspector_keyboard_and_palette() -> None:
-    editor = (ASSETS / "integrated_editor.mjs").read_text(encoding="utf-8")
-    assert "selectionActionEligibility(model(),ids" in editor
-    assert "selectionActionEligibility(model(),[...ui.selected]" in editor
-    assert "eligibilityButton('Group','group',eligibility.group)" in editor
-    assert "node.title=state[key].enabled" in editor
-    assert "if(!eligibility.group.enabled)return toast(" in editor
-    assert "if(!eligibility.delete.enabled)return toast(eligibility.delete.reason)" in editor
+def test_wave11_batch_style_and_copy_eligibility_are_selection_aware() -> None:
+    result = node_json(r"""
+import {selectionActionEligibility} from './company_ui/products/visualizer/assets/authoring_selection.mjs';
+const model={mode:'guided',groups:{},items:[{id:'a',locked:false},{id:'b',locked:true},{id:'c',locked:false},{id:'d',locked:true}]};
+const state=(ids,clipboardKind=null)=>selectionActionEligibility(model,ids,{clipboardKind});
+console.log(JSON.stringify({
+  empty:state([]), one:state(['a']), locked:state(['b','d']), mixed:state(['a','b']),
+  visual:state(['a'],'visual_full'), data:state(['a'],'dataset_data'), mapping:state(['a'],'mapping'), style:state(['a'],'style'),
+  copyOne:state(['a']).reuse.copySelection, copyMany:state(['a','c']).reuse.copySelection,
+}));
+""")
+    assert result["empty"]["batch"]["reason"] == "Selection count insufficient"
+    assert result["one"]["batch"]["reason"] == "Selection count insufficient"
+    assert result["locked"]["batch"]["reason"] == "No eligible unlocked members"
+    assert result["mixed"]["batch"] == {"enabled": True, "reason": "", "partial": True}
+    assert result["one"]["reuse"]["pasteStyle"]["reason"] == "Clipboard empty"
+    for kind in ("visual", "data", "mapping"):
+        assert result[kind]["reuse"]["pasteStyle"] == {"enabled": False, "reason": "Copy style from one element first", "partial": False}
+    assert result["style"]["reuse"]["pasteStyle"] == {"enabled": True, "reason": "", "partial": False}
+    assert result["copyOne"] == {"enabled": True, "reason": ""}
+    assert result["copyMany"] == {"enabled": True, "reason": ""}
 
 
 def test_wave11_partial_and_atomic_plans_remain_single_patch_only() -> None:

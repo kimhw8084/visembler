@@ -61,7 +61,7 @@ export function structuralSelectionState(model, selectedIds) {
     ungroupableGroupIds,
   };
 }
-export function selectionActionEligibility(model, selectedIds, {mode=model?.mode||'smart',hasClipboard=false}={}) {
+export function selectionActionEligibility(model, selectedIds, {mode=model?.mode||'smart',clipboardKind=null}={}) {
   const structure=structuralSelectionState(model,selectedIds);
   const noUnlocked='No eligible unlocked members';
   const atomicLocked='Locked members prevent an atomic structural action';
@@ -69,6 +69,8 @@ export function selectionActionEligibility(model, selectedIds, {mode=model?.mode
   const ungroupReason=!structure.groupIds.length?'Selection has no group membership':structure.blockedGroupIds.length?atomicLocked:'';
   const partialReason=structure.unlockedCount?'' : noUnlocked;
   const arrangeReason=mode==='smart'?'Arrange is automatic in Smart mode':structure.unlockedCount<2?(structure.unlockedCount? 'Selection count insufficient':noUnlocked):'';
+  const batchReason=structure.selectedCount<2?'Selection count insufficient':partialReason;
+  const pasteStyleReason=!clipboardKind?'Clipboard empty':clipboardKind!=='style'?'Copy style from one element first':partialReason;
   return {
     summary:{count:structure.selectedCount,unlocked:structure.unlockedCount,locked:structure.lockedCount,grouped:structure.groupedCount},
     group:{enabled:!groupReason,reason:groupReason,atomic:true},
@@ -79,8 +81,8 @@ export function selectionActionEligibility(model, selectedIds, {mode=model?.mode
     lock:{enabled:structure.unlockedCount>0,reason:structure.unlockedCount?'':noUnlocked,partial:structure.lockedCount>0},
     unlock:{enabled:structure.lockedCount>0,reason:structure.lockedCount?'':'No locked members'},
     arrange:{enabled:!arrangeReason,reason:arrangeReason,partial:structure.lockedCount>0},
-    batch:{enabled:!!structure.unlockedCount,reason:partialReason,partial:structure.lockedCount>0},
-    reuse:{copySelection:{enabled:structure.selectedCount>1,reason:structure.selectedCount>1?'':'Selection count insufficient'},cut:{enabled:structure.selectedCount>0&&structure.lockedCount===0,reason:!structure.selectedCount?'Selection count insufficient':structure.lockedCount?atomicLocked:''},pasteStyle:{enabled:!!hasClipboard&&!!structure.unlockedCount,reason:!hasClipboard?'Clipboard empty':partialReason,partial:structure.lockedCount>0}},
+    batch:{enabled:!batchReason,reason:batchReason,partial:structure.lockedCount>0},
+    reuse:{copySelection:{enabled:structure.selectedCount>0,reason:structure.selectedCount?'':'Selection count insufficient'},cut:{enabled:structure.selectedCount>0&&structure.lockedCount===0,reason:!structure.selectedCount?'Selection count insufficient':structure.lockedCount?atomicLocked:''},pasteStyle:{enabled:clipboardKind==='style'&&!!structure.unlockedCount,reason:pasteStyleReason,partial:structure.lockedCount>0}},
   };
 }
 export function layerSelectionPlan(entries, delta) {
