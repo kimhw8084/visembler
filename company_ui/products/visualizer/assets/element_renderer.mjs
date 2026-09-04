@@ -145,10 +145,10 @@ function image(entry){
   if(n.includes('annotated')) return shell(entry,`<div class="image-stage" style="${src}"><i style="left:64%;top:34%"></i><b style="left:48%;top:54%">Critical region</b></div>`,'Media');
   if(n.includes('zoom')||n.includes('detail inset')) return shell(entry,`<div class="image-stage" style="${src}"><i class="focus-box"></i><div class="detail-inset" style="${src}"></div></div>`,'Media');
   if(n.includes('slider')) return shell(entry,`<div class="image-slider"><div style="${src}"></div><div style="${src}"></div><i></i></div>`,'Media');
-  if(n==='screenshot frame') return shell(entry,`<div class="screenshot-frame-live"><header><i></i><i></i><i></i><span>Application</span></header><div style="${src}"><b>${entry.src?'':'Drop screenshot'}</b></div></div>`,'Media');
-  if(n.includes('image + caption')) return shell(entry,`<figure class="captioned-image-live"><div style="${src}">${entry.src?'':'Image'}</div><figcaption>${esc(entry.caption||'Add a concise caption')}</figcaption></figure>`,'Media');
+  if(n==='screenshot frame') return shell(entry,`<div class="screenshot-frame-live"><header><i></i><i></i><i></i><span>Application</span></header><div style="${src}"><b>${entry.src?'':'Add screenshot or mockup'}</b></div></div>`,'Media');
+  if(n.includes('image + caption')) return shell(entry,`<figure class="captioned-image-live"><div style="${src}" aria-label="${entry.src?'Image':'Add image for caption'}">${entry.src?'':'Add image'}</div><figcaption>${esc(entry.caption||'Caption: describe the image')}</figcaption></figure>`,'Media');
   if(n.includes('svg / illustration')) return shell(entry,`<div class="illustration-live"><svg viewBox="0 0 200 110"><circle cx="55" cy="55" r="25"/><rect x="108" y="31" width="48" height="48" rx="9"/><path d="M80 55H108"/></svg><span>Vector illustration</span></div>`,'Media');
-  return shell(entry,`<div class="image-stage ${n.includes('hero')?'hero-media':''}" style="${src}">${entry.src?'':`<span>Paste or upload image</span>`}</div>${entry.caption?`<p class="image-caption">${esc(entry.caption)}</p>`:''}`,'Media');
+  return shell(entry,`<div class="image-stage ${n.includes('hero')?'hero-media':''}" style="${src}"${entry.src?'':' aria-label="Add image"'}>${entry.src?'':`<span>Add image</span>`}</div>${entry.caption?`<p class="image-caption">${esc(entry.caption)}</p>`:''}`,'Media');
 }
 
 function composite(entry){
