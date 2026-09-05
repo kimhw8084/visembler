@@ -28,18 +28,43 @@ VENDOR = PRODUCT / 'vendor' / 'production_core'
 STATIC_ROUTE = '/_cui_visualizer'
 BRIDGE_VERSION = 1
 PRESET_KEY = 'visualizer.personal_presets'
+MAPPING_PRESET_KEY = 'visualizer.data_mapping_presets'
 MAX_PRESETS = 50
 MAX_PRESET_BYTES = 1_500_000
+MAX_MAPPING_PRESET_BYTES = 100_000
 _ALLOWED_EVENTS = {
-    'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested',
+    'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested','mapping.preferences_requested','mapping.preferences_save_requested',
     'ppt.export_requested','dataset.binding_requested','report.history_requested',
 }
+_MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer'}
+_MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
+
+def _normalized_mapping_field(value: Any) -> str:
+    import re
+    return re.sub(r'^_+|_+$','',re.sub(r'[^a-z0-9]+','_',str(value or '').strip().lower()))
+
+def _normalize_mapping_presets(raw: Any) -> list[dict[str,Any]]:
+    if not isinstance(raw,list): return []
+    output=[]
+    for value in raw[:MAX_PRESETS]:
+        if not isinstance(value,Mapping) or value.get('version',1)!=1: continue
+        ident=''.join(ch for ch in str(value.get('id','')) if ch.isalnum() or ch in '-_')[:96]
+        name=' '.join(str(value.get('name','')).split())[:80]
+        view=str(value.get('view','')).strip().lower(); schema=value.get('schema'); mapping=value.get('mapping')
+        if not ident or not name or view not in _MAPPING_VIEWS or not isinstance(schema,Mapping) or not isinstance(mapping,Mapping): continue
+        fields=sorted({_normalized_mapping_field(field) for field in schema.get('fields',[]) if _normalized_mapping_field(field)})
+        if not fields or len(fields)!=len(schema.get('fields',[])): continue
+        clean={role:_normalized_mapping_field(field) for role,field in mapping.items() if role in _MAPPING_ROLES and _normalized_mapping_field(field) in fields}
+        if not clean: continue
+        output.append({'version':1,'id':ident,'name':name,'schema':{'fields':fields,'signature':'|'.join(fields)},'view':'diagram' if view=='diagram_flow' else view,'mapping':clean})
+    encoded=stable_json(output).encode('utf-8')
+    return output if len(encoded)<=MAX_MAPPING_PRESET_BYTES else []
 NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),)),))
 
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -251,6 +276,14 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     presets=_normalize_presets(payload.get('presets'))
                     preferences.save_filter_view(PRESET_KEY,{'presets':presets})
                     await send('preset.preferences_result',{'presets':presets,'saved':True}); return
+                if kind=='mapping.preferences_requested':
+                    raw=preferences.load().filter_views.get(MAPPING_PRESET_KEY,{})
+                    presets=_normalize_mapping_presets(raw.get('presets',[])) if isinstance(raw,Mapping) else []
+                    await send('mapping.preferences_result',{'presets':presets}); return
+                if kind=='mapping.preferences_save_requested':
+                    presets=_normalize_mapping_presets(payload.get('presets'))
+                    preferences.save_filter_view(MAPPING_PRESET_KEY,{'presets':presets})
+                    await send('mapping.preferences_result',{'presets':presets,'saved':True}); return
                 if kind=='ppt.export_requested':
                     latest=repository.get(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=repository.assets.data_url)
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
