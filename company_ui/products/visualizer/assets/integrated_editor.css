@@ -1213,6 +1213,25 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-root .layout-gallery .suggestion span { display:block; margin-top:3px; color:var(--viz-muted); font-size:11px; line-height:1.35; }
 @media (max-width:640px) { .cui-visualizer-root .layout-gallery { grid-template-columns:1fr; } }
 .cui-visualizer-root .rightbar .inspector-toggle { display:none!important; position:static!important; min-height:32px!important; padding:0 9px!important; }
+.cui-visualizer-root .data-first-entry { width:100%; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; text-align:left; border-style:dashed; }
+.cui-visualizer-root .data-first-entry small { color:var(--viz-muted); font-size:11px; }
+.cui-visualizer-root .data-first-dialog { max-width:680px; }
+.cui-visualizer-root .data-first-paste { display:grid; gap:6px; font-weight:760; }
+.cui-visualizer-root .data-first-paste textarea { min-height:150px; resize:vertical; }
+.cui-visualizer-root .data-first-paste small,.cui-visualizer-root .data-first-summary span,.cui-visualizer-root .data-first-fields span,.cui-visualizer-root .data-first-recommendation span,.cui-visualizer-root .data-first-recommendation small,.cui-visualizer-root .data-first-destination small { color:var(--viz-muted); font-size:12px; line-height:1.35; }
+.cui-visualizer-root .data-first-summary { display:grid; gap:2px; padding:10px; border:1px solid var(--viz-line-soft); border-radius:8px; background:var(--viz-surface-2); }
+.cui-visualizer-root .data-first-fields { display:flex; flex-wrap:wrap; gap:6px; list-style:none; padding:0; margin:0; }
+.cui-visualizer-root .data-first-fields li { display:flex; gap:4px; padding:5px 7px; border:1px solid var(--viz-line-soft); border-radius:6px; font-size:11px; }
+.cui-visualizer-root .data-first-recommendations { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+.cui-visualizer-root .data-first-recommendation { display:grid; gap:3px; min-height:76px; padding:9px; text-align:left; border:1px solid var(--viz-line); border-radius:8px; background:var(--viz-surface); color:var(--viz-ink); }
+.cui-visualizer-root .data-first-recommendation.active { border-color:var(--viz-accent); box-shadow:0 0 0 2px var(--viz-accent-soft); }
+.cui-visualizer-root .data-first-mappings { display:grid; gap:7px; padding:10px; border:1px solid var(--viz-line-soft); border-radius:8px; }
+.cui-visualizer-root .data-first-mappings>div { display:flex; justify-content:space-between; gap:8px; align-items:center; }
+.cui-visualizer-root .data-first-mapping { display:grid; grid-template-columns:minmax(92px,.6fr) minmax(0,1fr); gap:8px; align-items:center; font-size:12px; text-transform:capitalize; }
+.cui-visualizer-root .data-first-status.error { color:var(--viz-bad); }
+.cui-visualizer-root .data-first-destination { display:grid; gap:6px; padding:10px; border-left:3px solid var(--viz-accent); background:var(--viz-surface-2); }
+.cui-visualizer-root .link-button { border:0; background:transparent; color:var(--viz-accent); padding:4px; font:inherit; font-size:12px; cursor:pointer; }
+@media (max-width:640px) { .cui-visualizer-root .data-first-recommendations { grid-template-columns:1fr; } .cui-visualizer-root .data-first-mapping { grid-template-columns:1fr; gap:3px; } .cui-visualizer-root .data-first-dialog { max-height:calc(100vh - 28px); overflow:auto; } }
 .cui-visualizer-root[data-inspector="closed"] .rightbar .inspector-toggle { display:inline-flex!important; align-items:center!important; }
 .cui-visualizer-root .integrated-element-content,.cui-visualizer-root .integrated-element-content .gallery-card,.cui-visualizer-root .integrated-element-content .card-body { min-width:0!important; }
 .cui-visualizer-root .integrated-element-content button { max-width:100%; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
