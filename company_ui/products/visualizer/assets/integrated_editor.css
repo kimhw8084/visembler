@@ -1272,6 +1272,7 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 }
 @media (max-width: 800px) {
   .cui-visualizer-root .shell,
+  .cui-visualizer-root[data-library="closed"] .shell,
   .cui-visualizer-root[data-library="closed"][data-inspector="closed"] .shell { grid-template-columns:minmax(0,1fr)!important; }
   .cui-visualizer-root .work { grid-column:1; width:100%; grid-template-rows:auto minmax(0,1fr) 36px; }
   .cui-visualizer-root .topbar { position:relative!important; z-index:200!important; }

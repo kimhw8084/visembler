@@ -72,3 +72,10 @@ def test_rc_normal_editor_markup_has_no_ppt_surface() -> None:
 def test_rc_frozen_connector_checksum_is_unchanged() -> None:
     connector = ROOT / "company_ui" / "products" / "visualizer" / "vendor" / "production_core" / "core" / "GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js"
     assert hashlib.sha256(connector.read_bytes()).hexdigest() == "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e"
+
+
+def test_rc_mobile_shell_overrides_library_closed_grid_state() -> None:
+    css = (ASSETS / "integrated_editor.css").read_text(encoding="utf-8")
+    mobile = css[css.index("@media (max-width: 800px)"):css.index("@media (max-width:400px)")]
+    assert '.cui-visualizer-root[data-library="closed"] .shell' in mobile
+    assert "grid-template-columns:minmax(0,1fr)!important" in mobile
