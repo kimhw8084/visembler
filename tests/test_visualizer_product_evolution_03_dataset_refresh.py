@@ -13,5 +13,5 @@ console.log(JSON.stringify({exact:refreshCompatibility(old.fields,old.fields),re
  assert out['exact']['kind']=='exact' and out['reordered']['kind']=='reordered' and out['changed']['kind']=='changed'
  assert out['plan']['valid'] and len(out['plan']['mappings'])==2 and out['one']['valid'] and len(out['one']['mappings'])==1
 def test_refresh_connector_unchanged_and_editor_has_shared_replace_guard():
- js=(ROOT/'company_ui/products/visualizer/assets/integrated_editor.mjs').read_text();assert 'function commitDatasetRefresh' in js and 'datasetConsumers(existing.id).length>1' in js
+ js=(ROOT/'company_ui/products/visualizer/assets/integrated_editor.mjs').read_text();assert 'function commitDatasetRefresh' in js and 'datasetConsumers(existing.id).length>1' in js and 'source_dataset_id:detached.id' in js and 'Schema changed · ${detail}' in js and "linked===1?'Refresh data'" in js
  p=ROOT/'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js';assert hashlib.sha256(p.read_bytes()).hexdigest()=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'
