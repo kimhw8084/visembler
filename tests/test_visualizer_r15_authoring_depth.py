@@ -65,7 +65,7 @@ def test_r15_developer_console_exposes_live_events_and_safe_copy_actions():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
     assert 'id="debugBtn"' in html and 'id="debugBadge"' in html and 'id="debugModal"' in html
-    assert 'on_developer_console=open_developer_console' in page
+    assert 'on_developer_console=' not in page
     for token in ('debugEvent(', 'updateDebugBadge(', 'renderDeveloperConsole', 'copyDeveloperPayload', 'Window error', 'Unhandled rejection', 'data-debug-action'):
         assert token in editor
 

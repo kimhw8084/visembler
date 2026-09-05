@@ -48,6 +48,11 @@ def _asset_build() -> str:
     return h.hexdigest()[:16]
 
 
+def _bootstrap_editor(ui: Any, bootstrap: Mapping[str, Any], build: str, module_url: str) -> None:
+    script=f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});'''
+    ui.run_javascript(script)
+
+
 def _payload(record, asset_url: Any=None) -> dict[str, Any]:
     model=record.model
     if asset_url:
@@ -357,9 +362,6 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 ppt_template.update(name=name,content=content); notifications.success('PowerPoint template loaded for export')
             except Exception as exc: notifications.error(f'PowerPoint rejected: {exc}')
 
-        async def open_developer_console() -> None:
-            await ui.run_javascript("window.dispatchEvent(new Event('company_ui:open-developer-console'))")
-
         async def open_manage_reports() -> None:
             active_count=len(repository.list())
             trash_count=len(repository.list_trash())
@@ -391,7 +393,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             manage_dialog.close()
             clean_dialog.open()
 
-        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler',on_developer_console=open_developer_console):
+        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler'):
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             new_dialog=ui.dialog()
             with new_dialog:
@@ -523,4 +525,4 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         module_url=f'{STATIC_ROUTE}/assets/integrated_editor.mjs?v={build}'
         ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
         bootstrap={'report_id':current.report_id,'revision':current.revision,'model':current.model,'asset_build':build}
-        await ui.run_javascript(f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});''')
+        _bootstrap_editor(ui,bootstrap,build,module_url)

@@ -16,9 +16,10 @@ def test_wave12_theme_has_one_effective_root_target() -> None:
 def test_wave12_responsive_panels_are_drawers_not_display_none() -> None:
     css = (ASSETS / "integrated_editor.css").read_text()
     assert '.cui-visualizer-root .right { display:block; position:absolute;' in css
-    assert '.cui-visualizer-root .left { display:block; position:absolute;' in css
-    assert '[data-inspector="closed"] .right { visibility:hidden; pointer-events:none; }' in css
-    assert '[data-library="closed"] .left { visibility:hidden; pointer-events:none; }' in css
+    assert '.cui-visualizer-root .left { grid-column:1; display:block; position:absolute;' in css
+    assert '[data-inspector="closed"] .right { display:none; visibility:hidden; pointer-events:none; }' in css
+    assert '[data-library="closed"] .left { display:none; visibility:hidden; pointer-events:none; }' in css
+    assert 'grid-template-columns:minmax(0,1fr)!important' in css
 
 
 def test_wave12_fit_can_go_below_manual_floor_without_changing_manual_zoom() -> None:
@@ -37,7 +38,7 @@ def test_wave12_normal_inspector_exposes_svg_not_powerpoint() -> None:
 def test_wave12_narrow_shell_keeps_controls_and_resize_target_available() -> None:
     css = (ASSETS / "integrated_editor.css").read_text()
     assert "#libraryToggle" in css and "#inspectorToggle" in css and "display:inline-flex!important" in css
-    assert ".seg button { min-width:76px;" in css
+    assert ".seg button { min-width:0; flex:1 1 0; }" in css
     assert "width:calc(28px * var(--viz-interaction-scale,1))!important" in css
     assert "width:calc(44px * var(--viz-interaction-scale,1))!important" in css
     assert ".resize-h::before { content:\"\"; width:8px; height:8px;" in css
