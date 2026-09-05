@@ -433,10 +433,14 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 # company-ui: allow-ai005 — see dialog compatibility host above.
                 with ui.card().classes('cui-dialog-card'):
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('New report').classes('cui-dialog-title'); ui.label('Start with a genuinely blank canvas or a governed editable template.').classes('cui-field-description')
+                    ui.label('New report').classes('cui-dialog-title')
+                    # company-ui: allow-ai005 — see dialog compatibility host above.
+                    ui.label('Start with a genuinely blank canvas or a governed editable template.').classes('cui-field-description')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     with ui.button(on_click=lambda: create_report('blank')).props('flat no-caps').classes('cui-report-template'):
+                        # company-ui: allow-ai005 — template-card label inside the compatibility host.
                         ui.label('Blank canvas').classes('cui-report-template-title')
+                        # company-ui: allow-ai005 — template-card description inside the compatibility host.
                         ui.label('Start with an empty, editable report.').classes('cui-report-template-description')
                     for template_id,spec in REPORT_TEMPLATES.items():
                         async def _choose(_event=None, template_id=template_id): await create_report(template_id)
@@ -517,7 +521,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 with ui.card().classes('cui-dialog-card'):
                     # company-ui: allow-ai005 — see isolated authoring host above.
                     ui.label('Manage reports').classes('cui-dialog-title')
+                    # company-ui: allow-ai005 — dynamic report identity in the isolated compatibility host.
                     manage_current=ui.label('').classes('cui-field-description')
+                    # company-ui: allow-ai005 — dynamic report counts in the isolated compatibility host.
                     manage_counts=ui.label('').classes('cui-field-description')
                     # company-ui: allow-ai005 — primary reuse action.
                     ui.button('Duplicate current report',on_click=manage_duplicate).props('unelevated no-caps')
