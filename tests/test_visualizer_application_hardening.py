@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import io
 import json
 import os
@@ -13,7 +14,7 @@ from pptx import Presentation
 from company_ui.products.visualizer.domain import RevisionConflictError, VisualizerContractError, canonical_model
 from company_ui.products.visualizer.files import validate_image_bytes, validate_pptx_bytes
 from company_ui.products.visualizer.ppt_service import export_pptx, import_visembler_pptx
-from company_ui.products.visualizer.page import MAX_PRESETS, _decode_bridge_event, _normalize_presets, _report_options, _validate_model_images
+from company_ui.products.visualizer.page import MAX_PRESETS, _decode_bridge_event, _normalize_presets, _read_upload, _report_options, _validate_model_images
 from company_ui.products.visualizer.repository import ReportRepository
 from company_ui.products.visualizer.runtime import application_environment, resolve_runtime
 from company_ui.products.visualizer.templates import REPORT_TEMPLATES, template_model
@@ -187,6 +188,54 @@ def test_repository_asset_corruption_and_ppt_export_recovery_are_explicit(tmp_pa
     repo.assets._path(record.model['items'][0]['asset_id']).write_bytes(b'corrupt')
     with pytest.raises(VisualizerContractError,match='corrupt'):
         repo.get('image')
+    assert not (tmp_path/'image.json').exists()
+    assert any((tmp_path/'_quarantine').glob('image.*.corrupt.json'))
+
+
+def test_repository_quarantines_report_when_filename_identity_is_corrupt(tmp_path: Path):
+    repo=ReportRepository(tmp_path)
+    record=repo.create('actual',model=template_model('blank'))
+    (tmp_path/'requested.json').write_text(json.dumps(record.to_dict()),encoding='utf-8')
+    with pytest.raises(VisualizerContractError,match='corrupt report quarantined: requested'):
+        repo.get('requested')
+    assert not (tmp_path/'requested.json').exists()
+    assert (tmp_path/'actual.json').exists()
+    assert any((tmp_path/'_quarantine').glob('requested.*.corrupt.json'))
+
+
+def test_repository_quarantines_trashed_report_when_filename_identity_is_corrupt(tmp_path: Path):
+    repo=ReportRepository(tmp_path)
+    record=repo.create('actual',model=template_model('blank'))
+    repo.trash_report('actual',expected_revision=record.revision)
+    path=tmp_path/'_trash'/'actual.json'
+    value=json.loads(path.read_text(encoding='utf-8')); value['report_id']='other'
+    path.write_text(json.dumps(value),encoding='utf-8')
+    with pytest.raises(VisualizerContractError,match='corrupt trashed report quarantined: actual'):
+        repo.restore('actual')
+    assert not path.exists()
+    assert not (tmp_path/'actual.json').exists()
+    assert any((tmp_path/'_quarantine').glob('actual.*.corrupt.json'))
+
+
+def test_oversized_upload_is_rejected_before_reading_file_content():
+    calls=[]
+
+    class OversizedFile:
+        name='oversize.json'
+
+        def size(self):
+            return 101
+
+        async def read(self):
+            calls.append('read')
+            return b'x'*101
+
+    class Event:
+        file=OversizedFile()
+
+    with pytest.raises(VisualizerContractError,match='upload exceeds 100 bytes'):
+        asyncio.run(_read_upload(Event(),max_bytes=100))
+    assert calls==[]
 
 
 def _pptx() -> bytes:

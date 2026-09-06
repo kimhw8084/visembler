@@ -178,6 +178,12 @@ async def _read_upload(event: Any, *, max_bytes: int) -> tuple[str, bytes]:
     file_obj=getattr(event,'file',None)
     name=str(getattr(file_obj,'name',None) or getattr(event,'name',None) or getattr(event,'filename',None) or 'upload')
     source=getattr(file_obj,'content',None) or getattr(event,'content',None) or file_obj
+    size=getattr(source,'size',None)
+    if callable(size):
+        try: reported=size()
+        except Exception: reported=None
+        if isinstance(reported,int) and not isinstance(reported,bool) and reported>max_bytes:
+            raise VisualizerContractError(f'upload exceeds {max_bytes} bytes')
     reader=getattr(source,'read',None)
     if reader is None: raise VisualizerContractError('upload content is unavailable')
     value=reader()
