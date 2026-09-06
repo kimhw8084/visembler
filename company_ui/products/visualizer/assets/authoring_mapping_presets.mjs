@@ -1,7 +1,7 @@
 import { contractFor } from './authoring_contracts.mjs';
 import { productionTargetForView } from './authoring_data.mjs';
 
-export const MAPPING_PRESET_ROLES=Object.freeze(['category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip']);
+export const MAPPING_PRESET_ROLES=Object.freeze(['category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','route','bin','label','size','color','tooltip']);
 export function normalizedFieldName(name) { return String(name??'').trim().toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,''); }
 export function mappingSchemaSignature(fields) { return [...new Set((fields||[]).map(field=>normalizedFieldName(typeof field==='string'?field:field?.name)).filter(Boolean))].sort().join('|'); }
 export function hasUniqueNormalizedFields(fields) { const names=(fields||[]).map(field=>normalizedFieldName(typeof field==='string'?field:field?.name)).filter(Boolean); return names.length===new Set(names).size&&names.length===(fields||[]).length; }
