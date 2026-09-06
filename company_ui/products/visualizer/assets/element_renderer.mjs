@@ -3,6 +3,7 @@ import { prepareEngineeringChart, renderEngineeringChartSvg } from '../vendor/pr
 import { prepareTimeline } from '../vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26';
 import { validateGraph } from '../vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26';
 import { formatMetricDisplay, metricDisplayUnit, prepareChartRows } from './authoring_format.mjs';
+import { renderChartStudioElement } from './authoring_chart_studio.mjs';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const slug=value=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -460,6 +461,7 @@ function infrastructure(entry){
 }
 
 export function renderIntegratedElement(entry){
+  if(entry?.chart_studio && ['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry.engine)) return renderChartStudioElement(entry);
   switch(entry.engine){
     case 'TextEngine': return text(entry);
     case 'CoreChartEngine': return chart(entry);

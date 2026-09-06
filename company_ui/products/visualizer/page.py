@@ -66,7 +66,7 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -313,6 +313,67 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             'asset_build':build,
         }
         script=f'''window.__CUI_DIAGRAM_STUDIO_BOOTSTRAP__={json.dumps(studio_bootstrap,ensure_ascii=False)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('#diagram-studio');if(root)root.dataset.studioReady='failed';}});'''
+        ui.run_javascript(script)
+
+    @ui.page('/visualizer/chart-studio')
+    async def visualizer_chart_studio_page():
+        """Dedicated local/offline chart authoring surface.
+
+        Chart Studio owns semantic chart editing in the browser.  The report
+        repository remains the only persistence boundary, so opening the
+        studio is read-only and an explicit Save chart creates one revision.
+        """
+        notifications=NiceGUIStateServices.notification_service()
+        request=ui.context.client.request
+        report_id=str(request.query_params.get('report') or '').strip()
+        element_id=str(request.query_params.get('element') or '').strip()
+        chart_engines={'CoreChartEngine','EngineeringChartEngine','WaferFabEngine'}
+        try:
+            current=repository.get(report_id)
+            entry=next(item for item in current.model.get('items',[]) if isinstance(item,Mapping) and str(item.get('id'))==element_id)
+            if entry.get('engine') not in chart_engines: raise VisualizerContractError('Chart Studio requires a chart, engineering chart, or Wafer Map element')
+            datasets=current.model.get('datasets',[])
+            dataset=next((item for item in datasets if isinstance(item,Mapping) and str(item.get('id'))==str(entry.get('dataset_id'))),{})
+            chart_model=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else {'chart_type':entry.get('element'),'mapping':entry.get('mapping',{}),'dataset':dataset,'data':entry.get('data',[]),'rows':entry.get('rows',[])}
+        except Exception as exc:
+            notifications.error(f'Unable to open Chart Studio: {exc}')
+            ui.navigate.to(f'/visualizer?report={quote(report_id,safe="")}')
+            return
+
+        async def handle_chart_event(event: Any) -> None:
+            nonlocal current
+            payload:Mapping[str,Any]={}
+            try:
+                message=_decode_bridge_event(event); kind=message['type']; payload=message['payload']
+                if kind!='report.commit': raise VisualizerContractError(f'unsupported Chart Studio event: {kind}')
+                if str(payload.get('report_id') or '')!=current.report_id: raise VisualizerContractError('chart commit targets a different report')
+                model_value=payload.get('model')
+                if not isinstance(model_value,Mapping): raise VisualizerContractError('chart commit model is required')
+                canonical=canonical_model(model_value); _validate_model_images(canonical)
+                current=repository.commit(current.report_id,base_revision=int(payload.get('base_revision')),model=canonical,commit_id=str(payload.get('commit_id') or ''))
+                await ui.run_javascript(f'window.CompanyUIChartStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.commit_result","payload":{"report_id":current.report_id,"revision":current.revision,"commit_id":str(payload.get("commit_id") or ""),"fingerprint":current.to_dict()["fingerprint"]}},ensure_ascii=False)})')
+            except RevisionConflictError:
+                latest=repository.get(current.report_id)
+                await ui.run_javascript(f'window.CompanyUIChartStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.error","payload":{"commit_id":str(payload.get("commit_id") or ""),"message":f"Report changed elsewhere at revision {latest.revision}; reopen Chart Studio."}},ensure_ascii=False)})')
+            except Exception as exc:
+                await ui.run_javascript(f'window.CompanyUIChartStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.error","payload":{"commit_id":str(payload.get("commit_id") or ""),"message":str(exc)[:400]}},ensure_ascii=False)})')
+
+        css_url=f'{STATIC_ROUTE}/assets/chart_studio.css?v={build}'
+        token_url=f'{STATIC_ROUTE}/assets/tokens.css?v={build}'
+        module_url=f'{STATIC_ROUTE}/assets/chart_studio.mjs?v={build}'
+        ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
+        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Chart Studio',owner='Visembler'):
+            with ui.column().classes('cui-page cui-page--full cui-chart-studio-page w-full'):
+                host=ui.element('div').classes('cui-chart-studio-host w-full').props('aria-label="Visembler Chart Studio"')
+                host.on('visualizer_bridge',handle_chart_event,args=['detail'])
+                with host: ui.html((ASSETS/'chart_studio.html').read_text(encoding='utf-8'),sanitize=False)
+        studio_bootstrap={
+            'report_id':current.report_id,'revision':current.revision,'title':current.title,
+            'element_id':element_id,'entry':json.loads(stable_json(entry)),'dataset':json.loads(stable_json(dataset or {})),
+            'chart_model':json.loads(stable_json(chart_model)),'report_model':json.loads(stable_json(current.model)),
+            'asset_build':build,
+        }
+        script=f'''window.__CUI_CHART_STUDIO_BOOTSTRAP__={json.dumps(studio_bootstrap,ensure_ascii=False)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('#chart-studio');if(root)root.dataset.studioReady='failed';}});'''
         ui.run_javascript(script)
 
     @ui.page('/visualizer/reports')

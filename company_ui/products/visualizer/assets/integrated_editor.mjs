@@ -603,7 +603,7 @@ function emptyStateMarkup(entry){
 function contentMarkup(entry, r) {
   const resolved=resolvedEntry(entry);
   if (resolved.element && resolved.engine) {
-    const studioAction=resolved.engine==='DiagramEngine'?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Diagram Studio">Edit Diagram</button>`:'';
+    const studioAction=resolved.engine==='DiagramEngine'?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Diagram Studio">Edit Diagram</button>`:['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(resolved.engine)?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-chart" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Chart Studio">Edit chart</button>`:'';
     return `<div class="integrated-element-content">${renderIntegratedElement(resolved)}</div>${studioAction}${emptyStateMarkup(resolved)}`;
   }
   if (entry.type === 'metric') return metricMarkup(entry);
@@ -2458,6 +2458,7 @@ function onHullClick(e) {
     if (interactive.dataset.ctx) { if(interactive.disabled)return;const a = interactive.dataset.ctx; if (a === 'lock') toggleLock(); else if (a === 'group') groupSelected(); else if(a==='ungroup')ungroupSelected();else if (a === 'front') layer(1); else deleteSelected(); return; }
     if (!comp) return; const entry = item(comp.dataset.id);
     if (interactive.dataset.action === 'edit-diagram' && entry?.engine === 'DiagramEngine') { location.assign(`/visualizer/diagram-studio?report=${encodeURIComponent(bootstrap.report_id||'')}&element=${encodeURIComponent(entry.id)}`); return; }
+    if (interactive.dataset.action === 'edit-chart' && ['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)) { location.assign(`/visualizer/chart-studio?report=${encodeURIComponent(bootstrap.report_id||'')}&element=${encodeURIComponent(entry.id)}`); return; }
     if(interactive.dataset.emptyAction){handleEmptyAction(entry,interactive.dataset.emptyAction);return;}
     if (interactive.dataset.action === 'detail') commitOps('Toggle metric detail', [{ op: 'item.patch', id: entry.id, patch: { detail: !entry.detail } }]);
     else if (interactive.dataset.action === 'reveal') commitOps('Toggle chart reveal', [{ op: 'item.patch', id: entry.id, patch: { revealed: !entry.revealed } }]);
