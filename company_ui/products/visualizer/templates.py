@@ -26,7 +26,7 @@ REPORT_TEMPLATES = {
             _item('c2','Line Chart','CoreChartEngine',1,data=[['Period 1',None],['Period 2',None],['Period 3',None]],brush=[0,2],revealed=True),
             _item('c3','Key Takeaway','TextEngine',2,text='Summarize what changed, why it matters, and what happens next.'),
             _item('c4','Before/After KPI','ComparisonEngine',3,before=None,after=None,unit=''),
-            _item('c5','Decision Needed','DecisionCompositeEngine',4,statement='Decision required',detail='Describe the recommendation and trade-offs.',status='Open'),
+            _item('c5','Risk Callout','DecisionCompositeEngine',4,statement='Decision required',detail='Describe the recommendation and trade-offs.',status='Open'),
         ]}),
     },
     'investigation-rca': {
@@ -34,17 +34,17 @@ REPORT_TEMPLATES = {
         'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':6,'items':[
             _item('c1','Executive Statement','TextEngine',0,text='Define the observed issue, affected scope, and impact.'),
             _item('c2','Evidence Card','EvidenceCompositeEngine',1,statement='Evidence item',detail='Record source, observation, and implication.',status='Observed'),
-            _item('c3','Fishbone','DiagramEngine',2,nodes=['Problem','Method','Machine','Material','Measurement','Environment'],edges=[]),
+            _item('c3','Process Flow','DiagramEngine',2,nodes=['Problem','Method','Machine','Material','Measurement','Environment'],edges=[]),
             _item('c4','Event Timeline','TimelineEngine',3,milestones=[{'label':'Observed','date':None},{'label':'Verified','date':None}]),
-            _item('c5','Corrective Action Component','EvidenceCompositeEngine',4,statement='Corrective action',detail='Owner · due date · verification',status='Planned'),
+            _item('c5','Evidence Card','EvidenceCompositeEngine',4,statement='Corrective action',detail='Owner · due date · verification',status='Planned'),
         ]}),
     },
     'operations-review': {
         'name':'Operations Review','description':'Operational scorecard, trend, action table, risk and project status.',
         'model': canonical_model({'mode':'smart','layoutPreset':'editorial','nextId':6,'items':[
-            _item('c1','Metric Strip','MetricEngine',0,metrics=[{'label':'Output','value':None},{'label':'Quality','value':None},{'label':'Cycle','value':None}]),
-            _item('c2','Multi-Line','CoreChartEngine',1,data=[['W1',None],['W2',None],['W3',None],['W4',None]],brush=[0,3],revealed=True),
-            _item('c3','Action Tracker','TableEngine',2,customTable={'headers':['Action','Owner','Due','Status'],'rows':[['','','','']]}),
+            _item('c1','Hero KPI','MetricEngine',0,value=None,unit='',delta=None,target=None,metrics=[{'label':'Output','value':None},{'label':'Quality','value':None},{'label':'Cycle','value':None}]),
+            _item('c2','Line Chart','CoreChartEngine',1,data=[['W1',None],['W2',None],['W3',None],['W4',None]],brush=[0,3],revealed=True),
+            _item('c3','Clean Table','TableEngine',2,customTable={'headers':['Action','Owner','Due','Status'],'rows':[['','','','']]}),
             _item('c4','Risk Callout','DecisionCompositeEngine',3,statement='Top risk',detail='Describe exposure and mitigation.',status='Monitor'),
             _item('c5','Project Card','ProjectCompositeEngine',4,statement='Priority workstream',detail='Owner · milestone · current risk',status='Active'),
         ]}),
@@ -54,8 +54,8 @@ REPORT_TEMPLATES = {
         'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':6,'items':[
             _item('c1','Wafer Map','WaferFabEngine',0,observations=[],tool='',chamber='',lot='',route=''),
             _item('c2','SPC Control Chart','EngineeringChartEngine',1,observations=[],role='measurement',lower_limit=None,upper_limit=None),
-            _item('c3','Tool × Chamber Matrix','WaferFabEngine',2,observations=[],tool='',chamber='',lot='',route=''),
-            _item('c4','Box Plot','CoreChartEngine',3,data=[['Group A',None],['Group B',None]],brush=[0,1],revealed=True),
+            _item('c3','Wafer Map','WaferFabEngine',2,observations=[],tool='',chamber='',lot='',route=''),
+            _item('c4','Vertical Bar','CoreChartEngine',3,data=[['Group A',None],['Group B',None]],brush=[0,1],revealed=True),
             _item('c5','Evidence Card','EvidenceCompositeEngine',4,statement='Engineering evidence',detail='Record provenance and interpretation.',status='Observed'),
         ]}),
     },
