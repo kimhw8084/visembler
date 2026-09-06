@@ -1,0 +1,71 @@
+<div id="diagram-studio" class="cui-diagram-studio" data-studio-ready="false" data-grid="on" data-snap="on">
+  <header class="ds-toolbar" aria-label="Diagram Studio toolbar">
+    <div class="ds-toolbar-leading">
+      <button class="ds-button ds-back" data-action="back" type="button">← Report</button>
+      <div class="ds-title-block"><span class="ds-eyebrow">Diagram Studio</span><b id="ds-report-title">Process diagram</b><small id="ds-save-status" aria-live="polite">Ready</small></div>
+    </div>
+    <div class="ds-toolbar-group" role="toolbar" aria-label="History and layout">
+      <button class="ds-button ds-icon" data-action="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
+      <button class="ds-button ds-icon" data-action="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+      <button class="ds-button" data-action="clean" type="button">Clean Diagram</button>
+      <button class="ds-button" data-action="layout-horizontal" type="button">Flow →</button>
+      <button class="ds-button" data-action="layout-vertical" type="button">Flow ↓</button>
+      <button class="ds-button" data-action="layout-tree" type="button">Tree</button>
+      <button class="ds-button" data-action="fit-width" type="button">Fit width</button>
+      <button class="ds-button" data-action="fit-page" type="button">Fit page</button>
+      <button class="ds-button" data-action="fit-selection" type="button">Fit selection</button>
+    </div>
+    <div class="ds-toolbar-group ds-toolbar-actions" role="toolbar" aria-label="Diagram document actions">
+      <button class="ds-button" data-action="toggle-grid" type="button" aria-pressed="true">Grid</button>
+      <button class="ds-button" data-action="toggle-snap" type="button" aria-pressed="true">Snap</button>
+      <button class="ds-button" data-action="preview" type="button">Preview</button>
+      <button class="ds-button" data-action="import-json" type="button">Import JSON</button>
+      <button class="ds-button" data-action="export-json" type="button">Export JSON</button>
+      <button class="ds-button" data-action="export-svg" type="button">Export SVG</button>
+      <button class="ds-button ds-primary" data-action="save" type="button">Save diagram</button>
+    </div>
+  </header>
+  <div class="ds-shell">
+    <aside class="ds-palette" aria-label="Diagram shape palette">
+      <div class="ds-pane-head"><div><span class="ds-eyebrow">Build</span><b>Shapes</b></div><span id="ds-selection-summary" aria-live="polite">0 selected</span></div>
+      <div id="ds-shape-palette" class="ds-shape-palette"></div>
+      <section class="ds-accelerators" aria-labelledby="ds-accelerators-title">
+        <div class="ds-section-title" id="ds-accelerators-title">Process accelerators</div>
+        <label class="ds-field"><span>Steps · one per line</span><textarea id="ds-process-input" rows="5" placeholder="Detect\nAnalyze\nVerify\nRelease"></textarea></label>
+        <button class="ds-button ds-wide" data-action="paste-process" type="button">Paste process steps</button>
+        <label class="ds-field"><span>Source &nbsp; Target &nbsp; Label</span><textarea id="ds-graph-input" rows="4" placeholder="Source\tTarget\tLabel"></textarea></label>
+        <button class="ds-button ds-wide" data-action="paste-graph" type="button">Paste source-target graph</button>
+        <button class="ds-button ds-wide" data-action="quick-branch" type="button">Quick branch</button>
+        <button class="ds-button ds-wide" data-action="insert-edge" type="button">Insert node on edge</button>
+      </section>
+      <section class="ds-accelerators" aria-labelledby="ds-reuse-title">
+        <div class="ds-section-title" id="ds-reuse-title">Reusable subflows</div>
+        <label class="ds-field"><span>Subflow name</span><input id="ds-subflow-name" value="Manufacturing subflow" aria-label="Subflow name"></label>
+        <button class="ds-button ds-wide" data-action="save-subflow" type="button">Save selection as subflow</button>
+        <div id="ds-subflow-list" class="ds-subflow-list"><small>No saved subflows yet.</small></div>
+      </section>
+      <div class="ds-palette-footer"><small>Click a shape to add it. Drag nodes to place them. Shift-click or drag a lasso to select multiple objects.</small></div>
+    </aside>
+    <main class="ds-main" aria-label="Diagram canvas">
+      <div class="ds-canvas-status"><span id="ds-diagram-summary">0 nodes · 0 connectors</span><span id="ds-layout-note">Ready</span></div>
+      <div id="ds-canvas-wrap" class="ds-canvas-wrap">
+        <svg id="ds-canvas" role="application" aria-label="Interactive diagram canvas" tabindex="0" xmlns="http://www.w3.org/2000/svg">
+          <defs><pattern id="ds-grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="currentColor" stroke-opacity=".08"/></pattern><marker id="ds-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z"/></marker><marker id="ds-arrow-open" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L9 5L1 9" fill="none"/></marker></defs>
+          <rect id="ds-canvas-bg" class="ds-canvas-bg" x="0" y="0" width="100%" height="100%"/>
+          <g id="ds-scene"></g><rect id="ds-lasso" class="ds-lasso" hidden/>
+        </svg>
+        <div id="ds-empty" class="ds-empty"><b>Start a process diagram</b><span>Add a shape, paste process steps, or paste a Source / Target / Label table.</span><div><button class="ds-button ds-primary" data-action="paste-process" type="button">Paste process steps</button><button class="ds-button" data-action="add-process" type="button">Add process</button></div></div>
+      </div>
+      <div id="ds-minimap" class="ds-minimap" aria-label="Diagram minimap"></div>
+      <div id="ds-preview-banner" class="ds-preview-banner" hidden><span>Reading preview</span><button class="ds-button" data-action="preview-close" type="button">Exit preview</button></div>
+    </main>
+    <aside class="ds-inspector" aria-label="Diagram inspector">
+      <div class="ds-pane-head"><div><span class="ds-eyebrow">Inspect</span><b>Selection</b></div><button class="ds-button ds-icon" data-action="clear-selection" aria-label="Clear selection">×</button></div>
+      <div id="ds-inspector-body" class="ds-inspector-body"><div class="ds-inspector-empty">Select a node or connector to edit its semantic and visual properties.</div></div>
+      <section class="ds-manager" aria-labelledby="ds-layers-title"><div class="ds-section-title" id="ds-layers-title">Layers <button class="ds-link" data-action="add-layer" type="button">+ Add</button></div><div id="ds-layer-list"></div></section>
+      <section class="ds-manager" aria-labelledby="ds-lanes-title"><div class="ds-section-title" id="ds-lanes-title">Swimlanes <span><button class="ds-link" data-action="flow-to-lanes" type="button">From flow</button> <button class="ds-link" data-action="add-lane" type="button">+ Add</button></span></div><div id="ds-lane-list"></div></section>
+      <section class="ds-manager"><div class="ds-section-title">Selection actions</div><div class="ds-action-grid"><button class="ds-button" data-action="group" type="button">Group</button><button class="ds-button" data-action="ungroup" type="button">Ungroup</button><button class="ds-button" data-action="align-left" type="button">Align left</button><button class="ds-button" data-action="align-center" type="button">Align center</button><button class="ds-button" data-action="align-right" type="button">Align right</button><button class="ds-button" data-action="align-top" type="button">Align top</button><button class="ds-button" data-action="align-middle" type="button">Align middle</button><button class="ds-button" data-action="distribute-h" type="button">Distribute H</button><button class="ds-button" data-action="distribute-v" type="button">Distribute V</button><button class="ds-button" data-action="equal-width" type="button">Equal width</button><button class="ds-button" data-action="equal-height" type="button">Equal height</button><button class="ds-button" data-action="equal-size" type="button">Equal size</button><button class="ds-button" data-action="duplicate" type="button">Duplicate</button><button class="ds-button" data-action="copy" type="button">Copy</button><button class="ds-button" data-action="paste" type="button">Paste</button></div></section>
+    </aside>
+  </div>
+  <input id="ds-import-json" type="file" accept="application/json,.json" hidden>
+</div>

@@ -580,7 +580,7 @@ function timelineMarkup(entry) {
   return `<div class="kicker">Interactive timeline</div>${componentTitleMarkup(entry)}<div class="timeline" role="group" aria-label="Timeline milestones">${milestones.map((m, k) => `<button class="tm ${k < selected ? 'done' : ''} ${k === selected ? 'active' : ''}" data-tm="${k}" aria-pressed="${k === selected ? 'true' : 'false'}"><i aria-hidden="true"></i><b>${m[0]}</b><span>${m[1]}</span></button>`).join('')}</div><div class="csub">Selected: <b>${milestones[selected][0]}</b> · activate a milestone to inspect its state.</div>`;
 }
 function imageMarkup(entry) { return `<div class="kicker">Image / media</div><div class="ctitle">${esc(entry.title)}</div><div class="image-art" role="img" aria-label="Spatial signature engineering visual"><div class="image-cap">Spatial signature · focal crop</div></div>`; }
-function diagramMarkup(entry) { return `<div class="kicker">Diagram</div><div class="ctitle">${esc(entry.title)}</div><div class="diagram-mini" aria-label="Source to Normalize to Reason flow"><div class="dnode"><b>Source</b><span>FDC / SPC</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Normalize</b><span>Evidence model</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Reason</b><span>Grounded AI</span></div></div><div class="csub">Connections are routed automatically and stay editable.</div>`; }
+function diagramMarkup(entry) { return `<div class="kicker">Diagram</div><div class="ctitle">${esc(entry.title)}</div><div class="diagram-mini" aria-label="Source to Normalize to Reason flow"><div class="dnode"><b>Source</b><span>FDC / SPC</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Normalize</b><span>Evidence model</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Reason</b><span>Grounded AI</span></div></div><div class="csub">Connections are routed automatically and stay editable.</div><button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(entry.title)} in Diagram Studio">Edit Diagram</button>`; }
 function riskMarkup(entry) { return `<div class="kicker">Decision / risk</div><div class="ctitle">${esc(entry.title)}</div><div class="text-hero compact">Proceed to production gate after control-population validation.</div><div class="riskbox"><b>Residual risk · Medium</b><span>Support coverage remains the gating constraint.</span></div>`; }
 function semanticallyEmpty(entry){
   if(entry.engine==='CoreChartEngine')return !(entry.data||[]).some((row)=>Array.isArray(row)&&row[1]!==null&&row[1]!==undefined&&row[1]!=='');
@@ -602,7 +602,10 @@ function emptyStateMarkup(entry){
 }
 function contentMarkup(entry, r) {
   const resolved=resolvedEntry(entry);
-  if (resolved.element && resolved.engine) return `<div class="integrated-element-content">${renderIntegratedElement(resolved)}</div>${emptyStateMarkup(resolved)}`;
+  if (resolved.element && resolved.engine) {
+    const studioAction=resolved.engine==='DiagramEngine'?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Diagram Studio">Edit Diagram</button>`:'';
+    return `<div class="integrated-element-content">${renderIntegratedElement(resolved)}</div>${studioAction}${emptyStateMarkup(resolved)}`;
+  }
   if (entry.type === 'metric') return metricMarkup(entry);
   if (entry.type === 'chart') return chartMarkup(entry, r);
   if (entry.type === 'text') return textMarkup(entry, r);
@@ -2331,7 +2334,7 @@ function exportSvgMarkup(scale=1,images=new Map()){
   clone.querySelectorAll('[style]').forEach(node=>node.setAttribute('style',inlineAssetUrls(node.getAttribute('style'),images)));
   clone.querySelectorAll('.selected,.locked,.grouped').forEach(node=>node.classList.remove('selected','locked','grouped'));
   clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;
-  clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
+  clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost,[data-editor-only]').forEach(node=>node.remove());
   const css='/* Visual properties are embedded per node; no host CSS is required. */';
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
@@ -2454,6 +2457,7 @@ function onHullClick(e) {
     e.stopPropagation();
     if (interactive.dataset.ctx) { if(interactive.disabled)return;const a = interactive.dataset.ctx; if (a === 'lock') toggleLock(); else if (a === 'group') groupSelected(); else if(a==='ungroup')ungroupSelected();else if (a === 'front') layer(1); else deleteSelected(); return; }
     if (!comp) return; const entry = item(comp.dataset.id);
+    if (interactive.dataset.action === 'edit-diagram' && entry?.engine === 'DiagramEngine') { location.assign(`/visualizer/diagram-studio?report=${encodeURIComponent(bootstrap.report_id||'')}&element=${encodeURIComponent(entry.id)}`); return; }
     if(interactive.dataset.emptyAction){handleEmptyAction(entry,interactive.dataset.emptyAction);return;}
     if (interactive.dataset.action === 'detail') commitOps('Toggle metric detail', [{ op: 'item.patch', id: entry.id, patch: { detail: !entry.detail } }]);
     else if (interactive.dataset.action === 'reveal') commitOps('Toggle chart reveal', [{ op: 'item.patch', id: entry.id, patch: { revealed: !entry.revealed } }]);

@@ -66,7 +66,7 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -257,6 +257,63 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
     async def _report_asset(asset_id: str):
         data=repository.assets.read_image(asset_id); mime=str(validate_image_bytes(data)['mime'])
         return Response(content=data,media_type=mime,headers={'Cache-Control':'private, max-age=3600'})
+
+    @ui.page('/visualizer/diagram-studio')
+    async def visualizer_diagram_studio_page():
+        """Dedicated structured diagram authoring surface.
+
+        The studio owns diagram interactions in the browser, while the report
+        repository remains the sole persistence boundary.  Opening this route
+        is read-only; only an explicit Save diagram command commits a report
+        revision and therefore appears in report history.
+        """
+        notifications=NiceGUIStateServices.notification_service()
+        request=ui.context.client.request
+        report_id=str(request.query_params.get('report') or '').strip()
+        element_id=str(request.query_params.get('element') or '').strip()
+        try:
+            current=repository.get(report_id)
+            entry=next(item for item in current.model.get('items',[]) if isinstance(item,Mapping) and str(item.get('id'))==element_id)
+            if entry.get('engine')!='DiagramEngine': raise VisualizerContractError('Diagram Studio requires a DiagramEngine report element')
+        except Exception as exc:
+            notifications.error(f'Unable to open Diagram Studio: {exc}')
+            ui.navigate.to(f'/visualizer?report={quote(report_id,safe="")}')
+            return
+
+        async def handle_studio_event(event: Any) -> None:
+            nonlocal current
+            payload:Mapping[str,Any]={}
+            try:
+                message=_decode_bridge_event(event); kind=message['type']; payload=message['payload']
+                if kind!='report.commit': raise VisualizerContractError(f'unsupported Diagram Studio event: {kind}')
+                if str(payload.get('report_id') or '')!=current.report_id: raise VisualizerContractError('diagram commit targets a different report')
+                model_value=payload.get('model')
+                if not isinstance(model_value,Mapping): raise VisualizerContractError('diagram commit model is required')
+                canonical=canonical_model(model_value); _validate_model_images(canonical)
+                current=repository.commit(current.report_id,base_revision=int(payload.get('base_revision')),model=canonical,commit_id=str(payload.get('commit_id') or ''))
+                await ui.run_javascript(f'window.CompanyUIDiagramStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.commit_result","payload":{"report_id":current.report_id,"revision":current.revision,"commit_id":str(payload.get("commit_id") or ""),"fingerprint":current.to_dict()["fingerprint"]}},ensure_ascii=False)})')
+            except RevisionConflictError:
+                latest=repository.get(current.report_id)
+                await ui.run_javascript(f'window.CompanyUIDiagramStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.error","payload":{"commit_id":str(payload.get("commit_id") or ""),"message":f"Report changed elsewhere at revision {latest.revision}; reopen Diagram Studio."}},ensure_ascii=False)})')
+            except Exception as exc:
+                await ui.run_javascript(f'window.CompanyUIDiagramStudio?.receive({json.dumps({"bridge_version":BRIDGE_VERSION,"type":"report.error","payload":{"commit_id":str(payload.get("commit_id") or ""),"message":str(exc)[:400]}},ensure_ascii=False)})')
+
+        css_url=f'{STATIC_ROUTE}/assets/diagram_studio.css?v={build}'
+        token_url=f'{STATIC_ROUTE}/assets/tokens.css?v={build}'
+        module_url=f'{STATIC_ROUTE}/assets/diagram_studio.mjs?v={build}'
+        ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
+        with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Diagram Studio',owner='Visembler'):
+            with ui.column().classes('cui-page cui-page--full cui-diagram-studio-page w-full'):
+                host=ui.element('div').classes('cui-diagram-studio-host w-full').props('aria-label="Visembler Diagram Studio"')
+                host.on('visualizer_bridge',handle_studio_event,args=['detail'])
+                with host: ui.html((ASSETS/'diagram_studio.html').read_text(encoding='utf-8'),sanitize=False)
+        studio_bootstrap={
+            'report_id':current.report_id,'revision':current.revision,'title':current.title,
+            'element_id':element_id,'entry':json.loads(stable_json(entry)),'model':json.loads(stable_json(current.model)),
+            'asset_build':build,
+        }
+        script=f'''window.__CUI_DIAGRAM_STUDIO_BOOTSTRAP__={json.dumps(studio_bootstrap,ensure_ascii=False)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('#diagram-studio');if(root)root.dataset.studioReady='failed';}});'''
+        ui.run_javascript(script)
 
     @ui.page('/visualizer/reports')
     async def visualizer_reports_page():
