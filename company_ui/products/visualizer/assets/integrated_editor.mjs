@@ -158,6 +158,7 @@ const ui = {
   snap: true,
   showMini: false,
   preview: false,
+  previewFit: 'page',
   autoFit: true,
   previewPatches: new Map(),
   kpiAnimate: new Set(['c1']),
@@ -310,7 +311,10 @@ function semanticPolicy(entry) {
   p.prefH=Math.min(p.maxH,Math.max(p.minH,p.prefH*(emphasis==='hero'?1.12:emphasis==='compact'?.9:1)));
   const measured=ui.intrinsicOverrides.get(entry.id);
   if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
-  return {...p,emphasis};
+  // This is the single source of truth for Smart/Guided defaults.  Keep the
+  // policy inspectable so renderers and acceptance probes can distinguish a
+  // useful solo card from a multi-card growth target.
+  return {...p,emphasis,contentFit:true,solo:{w:p.prefW,h:p.prefH},multi:{minW:p.minW,minH:p.minH,prefW:p.prefW,prefH:p.prefH,maxW:p.maxW,maxH:p.maxH}};
 }
 function effectiveWeight(entry) {
   const emphasis=defaultEmphasis(entry);
@@ -343,12 +347,16 @@ function semanticSmartLayout(items=viewItems()) {
   const rows=[];let row=[];let minUsed=0;
   for(const entry of ordered){const policy=semanticPolicy(entry);const need=(row.length?g:0)+policy.minW;if(row.length&&minUsed+need>innerW){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
   if(row.length)rows.push(row);
-  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});return {members,widths,height:Math.max(...desired)};});
+  const solo=ordered.length===1&&rows.length===1;
+  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});if(solo){const policy=members[0].policy;widths[0]=Math.min(innerW,Math.max(policy.minW,policy.prefW));}return {members,widths,height:Math.max(...desired)};});
   const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height,0)+g*Math.max(0,rowSpecs.length-1)+2*g;
+  // Multi-card reports retain the authored page height (targetH=CANVAS.h);
+  // a solo card uses its governed useful height so it does not become a blank page.
   const targetH=CANVAS.h;
+  const layoutTargetH=solo?baseNeeded:targetH;
   let conflict=null;
-  const usableH=targetH-2*g-g*Math.max(0,rowSpecs.length-1);
-  if(baseNeeded>targetH) {
+  const usableH=layoutTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  if(baseNeeded>layoutTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
     if(minimumTotal<=usableH) {
@@ -359,12 +367,12 @@ function semanticSmartLayout(items=viewItems()) {
     } else {
       const scale=usableH/Math.max(1,minimumTotal);
       rowSpecs.forEach((spec,index)=>{spec.height=Math.max(1,minimum[index]*scale);});
-      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${targetH}px page. Increase Page size for their preferred space.`;
+      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${layoutTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  if(baseNeeded<targetH&&rowSpecs.length){const extra=targetH-baseNeeded;for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length;}
-  const rects=[];let y=g;
-  for(const spec of rowSpecs){let x=g;for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i];const h=spec.height;rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
+  if(baseNeeded<layoutTargetH&&rowSpecs.length){const extra=layoutTargetH-baseNeeded;for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length;}
+  const rects=[];let y=solo?Math.max(g,(CANVAS.h-rowSpecs[0].height)/2):g;
+  for(const spec of rowSpecs){let x=solo?g+(innerW-spec.widths.reduce((sum,width)=>sum+width,0)-g*Math.max(0,spec.widths.length-1))/2:g;for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i];const h=spec.height;rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>CANVAS.h-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(CANVAS.h-g))<.2;}
   return {rects,height:CANVAS.h,conflict};
 }
@@ -712,6 +720,10 @@ function reconcileCanvas({ content = true } = {}) {
     node.classList.toggle('locked', !!entry.locked);
     node.classList.toggle('grouped', !!entry.groupId);
     node.dataset.contentDensity=entry.contentDensity==='fill'?'fill':'fit';
+    node.dataset.layoutGrowth=r.policy?.growth||'balanced';
+    node.dataset.contentFit=r.policy?.contentFit===false?'fixed':'responsive';
+    node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
+    node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
@@ -1542,10 +1554,19 @@ function smartOrderAt(q) {
   rs.sort((a, b) => Math.hypot(q.x - a.cx, q.y - a.cy) - Math.hypot(q.x - b.cx, q.y - b.cy));
   return item(rs[0]?.id);
 }
+function showGhostRects(rects, mode='placement') {
+  const g=$('#dropGhost'),u=rectUnion(rects||[]);if(!g||!u)return;
+  Object.assign(g.style,{display:'block',left:`${u.x}px`,top:`${u.y}px`,width:`${u.w}px`,height:`${u.h}px`});
+  g.dataset.placementMode=mode;
+  g.setAttribute('aria-label',`Proposed placement ${Math.round(u.x)}, ${Math.round(u.y)}, ${Math.round(u.w)} by ${Math.round(u.h)}`);
+}
 function showSmartReorderGhost(q, id) {
-  const target = smartOrderAt(q); const g = $('#dropGhost'); const r = rectMap().get(target?.id || id);
-  if (!r) return;
-  Object.assign(g.style, { display: 'block', left: `${r.x}px`, top: `${r.y}px`, width: `${r.w}px`, height: `${r.h}px` });
+  const target=smartOrderAt(q),ops=smartReorderOps(q,id),moving=new Set(selectedMovers(id).map(entry=>entry.id));
+  if(!target)return;
+  const patches=new Map(ops.map(op=>[op.id,op.patch]));
+  const previewItems=model().items.map(entry=>patches.has(entry.id)?{...entry,...patches.get(entry.id)}:entry);
+  const preview=semanticSmartLayout(previewItems).rects.filter(rect=>moving.has(rect.id));
+  showGhostRects(preview.length?preview:[rectMap().get(target.id)],'smart-reorder');
 }
 function smartReorderOps(q, id) {
   const target = smartOrderAt(q); if (!target) return [];
@@ -1559,7 +1580,7 @@ function smartReorderOps(q, id) {
 function startDrag(e, id, el) {
   if(e.button!==0)return;e.preventDefault();e.stopPropagation();if(!ui.selected.has(id)){ui.selected.clear();ui.selected.add(id);reconcileCanvas({content:false});renderInspector();}const movers=selectedMovers(id);if(!movers.length)return toast('Locked component');
   const rm=committedRectMap(),p=logicalPoint(e),orig=movers.map(m=>{const r=rm.get(m.id);return{id:m.id,x:r.x,y:r.y,w:r.w,h:r.h}});movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.add('dragging'));
-  const previewAt=(ev)=>{const q=logicalPoint(ev),dx=q.x-p.x,dy=q.y-p.y;if(model().mode==='smart'){showSmartReorderGhost(q,id);return;}let sx=dx,sy=dy,guide={gx:null,gy:null};if(model().mode==='guided'&&ui.snap){guide=snapDelta(orig,dx,dy,movers);sx=guide.dx;sy=guide.dy;}const inset=model().mode==='guided'?CANVAS.gap:0,bounded=clampMovementDelta(orig,sx,sy,CANVAS,inset);sx=bounded.dx;sy=bounded.dy;if(model().mode==='guided'&&ui.snap)showGuides(guide);orig.forEach(o=>ui.previewPatches.set(o.id,{x:o.x+sx,y:o.y+sy}));renderGeometryOnly();};
+  const previewAt=(ev)=>{const q=logicalPoint(ev),dx=q.x-p.x,dy=q.y-p.y;if(model().mode==='smart'){showSmartReorderGhost(q,id);return;}let sx=dx,sy=dy,guide={gx:null,gy:null};if(model().mode==='guided'&&ui.snap){guide=snapDelta(orig,dx,dy,movers);sx=guide.dx;sy=guide.dy;}const inset=model().mode==='guided'?CANVAS.gap:0,bounded=clampMovementDelta(orig,sx,sy,CANVAS,inset);sx=bounded.dx;sy=bounded.dy;if(model().mode==='guided'&&ui.snap)showGuides(guide);const proposed=orig.map(o=>{const patch={x:o.x+sx,y:o.y+sy};ui.previewPatches.set(o.id,patch);return {...o,...patch};});showGhostRects(proposed,'move');renderGeometryOnly();};
   beginPointerSession(el,e,{move:previewAt,end(ev){hideGuides();$('#dropGhost').style.display='none';movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.remove('dragging'));if(model().mode==='smart'){const ops=smartReorderOps(logicalPoint(ev),id);ui.previewPatches.clear();if(ops.length)commitOps('Reorder components',ops);else renderGeometryOnly();return;}previewAt(ev);if(model().mode==='guided'&&hasSelectedOverlap()){ui.previewPatches.clear();renderGeometryOnly();toast('Guided mode blocked an overlap');return;}const ops=[...ui.previewPatches.entries()].map(([entryId,patch])=>({op:'item.patch',id:entryId,patch}));ui.previewPatches.clear();if(ops.length)commitOps('Move components',ops);else renderGeometryOnly();},cancel(){hideGuides();$('#dropGhost').style.display='none';ui.previewPatches.clear();movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.remove('dragging'));renderGeometryOnly();toast('Move cancelled');}});
 }
 function snapResizeRect(entry,raw,handle){if(model().mode!=='guided'||!ui.snap)return {...raw,gx:null,gy:null};const rm=committedRectMap(),others=[...rm.entries()].filter(([id])=>id!==entry.id).map(([,r])=>r),left=raw.x,right=raw.x+raw.w,top=raw.y,bottom=raw.y+raw.h,x=guidedTargets('x',raw,others,new Set([entry.id])),y=guidedTargets('y',raw,others,new Set([entry.id])),sx=handle.includes('w')?nearestSnap(left,x.targets):handle.includes('e')?nearestSnap(right,x.targets):null,sy=handle.includes('n')?nearestSnap(top,y.targets):handle.includes('s')?nearestSnap(bottom,y.targets):null,next={...raw,gx:sx?.pos??null,gy:sy?.pos??null};if(sx){if(handle.includes('w')){next.w=right-sx.pos;next.x=sx.pos;}else next.w=sx.pos-left;}if(sy){if(handle.includes('n')){next.h=bottom-sy.pos;next.y=sy.pos;}else next.h=sy.pos-top;}return next;}
@@ -1792,7 +1813,7 @@ function applySuggestion(preset) {
     next.items=next.items.map(entry=>({...entry,order:orderById.get(entry.id)??entry.order}));
   }
   const accepted=commitOps('Apply built-in preset',[{op:'model.replace',value:next}],{announce:`${preset[0].toUpperCase()+preset.slice(1)} composition applied`});
-  if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);}
+  if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);renderPresetList();}
   return accepted;
 }
 function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const ops = [{ op: 'model.patch', patch: { mode: 'smart' } }, ...normalizeOrderOps()]; commitOps('Reflow report', ops, { announce: 'Smart composition reflowed' }); }
@@ -1934,7 +1955,24 @@ function pasteSemanticClipboard() {
   return pasteSemanticPayload(ui.semanticClipboard,'independent');
 }
 function semanticPayloadFromText(text) { if(!String(text||'').startsWith(CLIPBOARD_PREFIX))return null;try{return JSON.parse(String(text).slice(CLIPBOARD_PREFIX.length));}catch{return null;} }
-function showDropGhost(e) { const g = $('#dropGhost'); if (model().mode === 'smart') Object.assign(g.style, { display: 'block', left: '6px', top: `${CANVAS.h - 80}px`, width: `${CANVAS.w - 12}px`, height: '70px' }); else { const p = logicalPoint(e); Object.assign(g.style, { display: 'block', left: `${clamp(p.x - 90, 0, CANVAS.w - 180)}px`, top: `${clamp(p.y - 60, 0, CANVAS.h - 120)}px`, width: '180px', height: '120px' }); } }
+function draggedLibraryEntry(e) {
+  let element='',engine='',type='';
+  try { const encoded=e.dataTransfer?.getData('application/x-viz-element'); if(encoded){const value=JSON.parse(encoded);element=String(value.element||'');engine=String(value.engine||'');} } catch {}
+  type=e.dataTransfer?.getData('application/x-viz-type')||'';
+  if(!engine&&type&&quickCanonical[type]) [element,engine]=quickCanonical[type];
+  if(!engine)return null;
+  const mappedType=engineToType[engine]||type||'text',defaults=typeDefaults[mappedType]||typeDefaults.text;
+  return {id:'__drop__',type:mappedType,element:element||defaults.title,engine,title:element||defaults.title,order:model().items.length,weight:defaults.weight,locked:false,groupId:null,z:0,...starterContent(engine,element||defaults.title)};
+}
+function showDropGhost(e) {
+  const entry=draggedLibraryEntry(e);if(!entry)return;
+  const p=logicalPoint(e),previewEntry={...entry};
+  if(model().mode==='smart'){
+    const rect=semanticSmartLayout([...model().items,previewEntry]).rects.find(value=>value.id===entry.id);if(rect)showGhostRects([rect],'smart-insert');
+    return;
+  }
+  const rect=initialManualGeometry(previewEntry,p);if(rect)showGhostRects([rect],`${model().mode}-insert`);
+}
 
 function toggleChartPoint(entry, k) { const cross = entry.cross === k ? null : k; const crossFilter = cross == null ? null : chartData(entry)[cross][0]; commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]); }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
@@ -2112,8 +2150,8 @@ function setZoom(z, renderMini = true, minimum = 0.55) {
   ui.zoom=clamp(z,minimum,1.40); ui.contextSize=null; ui.contextBoundsCache=null; const scene=$('#scene'); const frame=$('#sceneFrame'); if (!scene || !frame) return;
   scene.style.transform=`scale(${ui.zoom})`; scene.style.setProperty('--viz-interaction-scale',String(ui.zoom<1?1/ui.zoom:1)); frame.style.width=`${(SCENE.w*ui.zoom).toFixed(2)}px`; frame.style.height=`${(SCENE.h*ui.zoom).toFixed(2)}px`; const zs=$('#zoomStatus'); if(zs)zs.textContent=`${Math.round(ui.zoom*100)}%`; if(renderMini)renderMinimap(rectMap()); requestAnimationFrame(()=>{positionMinimap();if(ui.selected.size)renderContext(rectMap());});
 }
-function fitZoom() { const vp=$('#viewport'); if(!vp)return; const pad=36; const z=Math.min((vp.clientWidth-pad)/SCENE.w,(vp.clientHeight-pad)/SCENE.h,1.15); ui.autoFit=true; setZoom(z,true,0.1); requestAnimationFrame(()=>{vp.scrollLeft=Math.max(0,(vp.scrollWidth-vp.clientWidth)/2);vp.scrollTop=Math.max(0,(vp.scrollHeight-vp.clientHeight)/2);}); }
-function togglePreview() { ui.preview=!ui.preview; activeRoot?.classList.toggle('preview-mode',ui.preview); requestAnimationFrame(fitZoom); }
+function fitZoom(fit='page') { const vp=$('#viewport'); if(!vp)return; const pad=fit==='width'?24:36; const widthFit=(vp.clientWidth-pad)/SCENE.w; const pageFit=Math.min(widthFit,(vp.clientHeight-pad)/SCENE.h); const z=Math.min(fit==='width'?widthFit:pageFit,1.15); ui.autoFit=true;ui.previewFit=fit;setZoom(z,true,0.1);requestAnimationFrame(()=>{vp.scrollLeft=Math.max(0,(vp.scrollWidth-vp.clientWidth)/2);vp.scrollTop=fit==='width'?Math.max(0,18-vp.offsetTop):Math.max(0,(vp.scrollHeight-vp.clientHeight)/2);}); }
+function togglePreview() { ui.preview=!ui.preview; activeRoot?.classList.toggle('preview-mode',ui.preview);activeRoot?.setAttribute('data-preview-fit',ui.preview?'page':'');requestAnimationFrame(()=>fitZoom('page')); }
 const LAYOUT_ORDER=Object.freeze({
   editorial:['text','metric','chart','comparison','timeline','table','image','diagram','risk','matrix','evidence','decision','project','engineering','wafer'],
   executive:['metric','comparison','text','decision','chart','table','timeline','risk','evidence','project','image','diagram','matrix','engineering','wafer'],
@@ -2204,18 +2242,22 @@ function syncPresetSelectionAction() {
   button.textContent=count>=2?`Save selected section · ${count}…`:'Save selected section…';
   button.title=count>=2?'Save the selected composition as an insertable Section preset':'Select 2+ elements to save a Section preset';
 }
+function presetPreviewMarkup(presetId, personal=false) {
+  const order=personal?['metric','chart','table','text','timeline']:((LAYOUT_ORDER[presetId]||LAYOUT_ORDER.editorial).slice(0,5));
+  return `<span class="preset-preview" aria-hidden="true">${order.map((type,index)=>`<i class="preset-preview-block preset-preview-${esc(type)}" style="--preset-index:${index}"></i>`).join('')}</span>`;
+}
 function renderPresetList(){
   syncPresetSelectionAction();
   const kind=String($('#presetKindFilter')?.value||'all');
   const built=$('#builtinPresetList');
   if(built)built.innerHTML=kind==='section'
     ?'<div class="keyboard-help">Built-in presets are full-report layouts. Switch to All or Reports to use them.</div>'
-    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy"><b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}">Apply</button></div>`).join('');
+    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy">${presetPreviewMarkup(p.id)}<b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}" ${model().layoutPreset===p.id?'disabled title="This preset is already applied"':''}>${model().layoutPreset===p.id?'Applied':'Apply'}</button></div>`).join('');
   const host=$('#presetList');if(!host)return;
   const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>(kind==='all'||p.kind===kind)&&(!query||p.name.toLowerCase().includes(query)));
   host.innerHTML=shown.length?shown.map((p)=>{
     const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=personalPresetSummary(p),applyLabel=p.kind==='section'?'Insert':'Apply';
-    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy"><input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
+    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy">${presetPreviewMarkup(p.id,true)}<input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
   }).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save a report preset or select 2+ elements and save a Section preset.'}</div>`;
 }
 function loadPreset(index){
@@ -2223,8 +2265,10 @@ function loadPreset(index){
   try{
     if(saved.kind==='section')return pasteCompositionPayload(structuredClone(saved.payload));
     const next=parseCanonical(serializeCanonical(saved.model));
+    if(sameValue(next,model()))return toast('Preset is already applied');
     const accepted=commitOps('Load preset',[{op:'model.replace',value:next}],{announce:'Preset loaded'});
     if(accepted)ui.selected.clear();
+    if(accepted)renderPresetList();
   }catch{toast('Preset is corrupt and was not loaded');}
 }
 function updatePreset(index){
@@ -2492,8 +2536,8 @@ function wireGlobal(signal) {
   on($('#pageSizeBtn'),'click',openPageSize);
   on($('#debugBtn'),'click',openDeveloperConsole); on(window,'company_ui:open-developer-console',openDeveloperConsole);
   on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];updateDebugBadge();return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
-  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#presetSaveSelection'),'click',saveSelectionPreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
-  on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',fitZoom); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());});
+  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#presetSaveSelection'),'click',saveSelectionPreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>{location.assign(`/visualizer/reports?report=${encodeURIComponent(bootstrap.report_id||'')}`);}); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
+  on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',()=>fitZoom('page')); on($('#previewFitWidth'),'click',()=>fitZoom('width')); on($('#previewFitPage'),'click',()=>fitZoom('page')); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());positionMinimap();});
   on($('#libraryClose'),'click',()=>setLibrary(false)); on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#panelBackdrop'),'click',()=>{setLibrary(false);setInspector(false);}); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen)); on(window,'keydown',(event)=>{if(event.key==='Escape'&&mobileShell()&&!$('.modal.show')&&(ui.libraryOpen||ui.inspectorOpen)){event.preventDefault();setLibrary(false);setInspector(false);}});
   on($('#pasteDataBtn'),'click',openDataFirstDialog);
   on($('#blankStartSurface'),'click',(event)=>{const action=event.target.closest('[data-blank-action]')?.dataset.blankAction;if(action==='paste')openDataFirstDialog();if(action==='library'){setLibrary(true);requestAnimationFrame(()=>$('#componentSearch')?.focus());}});
@@ -2521,7 +2565,7 @@ function wireGlobal(signal) {
 function setupResizeObserver() {
   window.__VIZ_RESIZE_OBSERVER__?.disconnect?.();
   if (typeof ResizeObserver==='undefined'||!$('#viewport')) return;
-  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
+  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom(ui.preview?(ui.previewFit||'page'):'page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
 }
 function buildSelfTest() {
   const result = { smartHull: preflight().coverage === 100, initialOverlaps: preflight().overlaps, revisionSafety: false, undoRedo: false, pointerLifecycle: true, resizeObserver: !!window.__VIZ_RESIZE_OBSERVER__, deterministic: false, noPointerMoveFullRender: true };
@@ -2541,7 +2585,7 @@ function init(root=$('.cui-visualizer-root')) {
   activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-theme',document.documentElement.dataset.theme||'light'); activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
   restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); if(mobileShell()){setInspector(false);setLibrary(false);}else{setInspector(storage.get('viz-inspector-open')!=='0');setLibrary(storage.get('viz-library-open')!=='0');} updateDebugBadge(); requestAnimationFrame(fitZoom);
   activeRoot.dataset.editorReady='true';
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup};
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit})),placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}

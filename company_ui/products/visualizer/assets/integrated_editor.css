@@ -1375,3 +1375,101 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-report-template-title { font-weight:700; color:var(--cui-text-primary,var(--viz-ink)); }
 .cui-report-template-description { color:var(--cui-text-secondary,var(--viz-muted)); font-size:12px; line-height:1.35; }
 .cui-report-template:hover, .cui-report-template:focus-visible { border-color:var(--cui-primary,var(--viz-accent)); background:var(--cui-surface-secondary,var(--viz-surface-2)); }
+
+/* Stage A: the desktop shell is a real three-column layout.  The tablet
+   drawer breakpoint is intentionally kept at 800px; 1024px still gets a
+   bounded canvas rather than an Inspector layered over it. */
+@media (min-width: 801px) {
+  .cui-visualizer-root .shell {
+    grid-template-columns:var(--viz-library-width) minmax(0,1fr) var(--viz-inspector-width)!important;
+    min-width:0;
+  }
+  .cui-visualizer-root[data-library="closed"] .shell { grid-template-columns:0 minmax(0,1fr) var(--viz-inspector-width)!important; }
+  .cui-visualizer-root[data-inspector="closed"] .shell { grid-template-columns:var(--viz-library-width) minmax(0,1fr) 0!important; }
+  .cui-visualizer-root[data-library="closed"]:is([data-inspector="closed"]) .shell { grid-template-columns:0 minmax(0,1fr) 0!important; }
+  .cui-visualizer-root .left,
+  .cui-visualizer-root .right {
+    position:relative!important;
+    inset:auto!important;
+    width:auto!important;
+    min-width:0;
+    grid-row:1;
+    box-shadow:none!important;
+  }
+  .cui-visualizer-root .left { grid-column:1; }
+  .cui-visualizer-root .work { grid-column:2; min-width:0; overflow:hidden; }
+  .cui-visualizer-root .right { grid-column:3; }
+  .cui-visualizer-root .viewport { min-width:0; overflow:auto; }
+}
+@media (min-width: 801px) and (max-width: 1150px) {
+  .cui-visualizer-root { --viz-library-width:210px; --viz-inspector-width:270px; }
+}
+@media (min-width: 801px) and (max-width: 1050px) {
+  .cui-visualizer-root #miniToggle { display:none!important; }
+}
+
+/* Selection is a crisp outline only.  The old pseudo-ring and elevation
+   shadow could paint a blurry patch over the upper-left of the selected
+   report content. */
+.cui-visualizer-root .component.selected {
+  border-color:var(--viz-accent)!important;
+  box-shadow:none!important;
+  outline:2px solid color-mix(in srgb,var(--viz-accent) 78%,transparent);
+  outline-offset:2px;
+}
+.cui-visualizer-root .component.selected::before { content:none!important; display:none!important; }
+.cui-visualizer-root .component.dragging { opacity:.82; box-shadow:none!important; }
+.cui-visualizer-root .drop-ghost { box-shadow:none!important; }
+
+/* Preview is a reading surface, with controls outside the report model. */
+.cui-visualizer-root .preview-controls { display:none; }
+.cui-visualizer-root.preview-mode .preview-controls {
+  display:flex;
+  position:fixed;
+  top:14px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:5200;
+  gap:6px;
+  padding:4px;
+  border:1px solid var(--viz-line);
+  border-radius:9px;
+  background:color-mix(in srgb,var(--viz-surface) 94%,transparent);
+  box-shadow:var(--viz-shadow-1);
+}
+.cui-visualizer-root.preview-mode .topbar,
+.cui-visualizer-root.preview-mode .subbar,
+.cui-visualizer-root.preview-mode .bottom,
+.cui-visualizer-root.preview-mode .left,
+.cui-visualizer-root.preview-mode .right { display:none!important; }
+.cui-visualizer-root.preview-mode .app,
+.cui-visualizer-root.preview-mode .shell,
+.cui-visualizer-root.preview-mode .work,
+.cui-visualizer-root.preview-mode .viewport { display:block!important; width:100%!important; height:100%!important; min-height:0!important; }
+.cui-visualizer-root.preview-mode .viewport {
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  min-width:0;
+  padding:58px 12px 48px!important;
+  background:var(--viz-bg);
+}
+.cui-visualizer-root.preview-mode .scene-frame { margin-inline:auto!important; }
+.cui-visualizer-root.preview-mode .work { min-width:0; overflow:hidden; }
+.cui-visualizer-root.preview-mode .preview-exit { top:14px; right:14px; }
+
+/* An explicit responsive contract makes the governed sizing visible to
+   tooling and prevents family renderers from depending on a fixed miniature. */
+.cui-visualizer-root .component[data-content-fit="responsive"] .c-content { min-width:0; min-height:0; }
+.cui-visualizer-root .component[data-layout-growth="plot"] .c-content,
+.cui-visualizer-root .component[data-layout-growth="data"] .c-content,
+.cui-visualizer-root .component[data-layout-growth="media"] .c-content { overflow:auto; }
+
+.cui-visualizer-root .preset-copy { min-width:0; }
+.cui-visualizer-root .preset-preview { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:3px; width:100%; height:24px; margin-bottom:6px; padding:3px; border:1px solid var(--viz-line-soft); border-radius:5px; background:var(--viz-bg); }
+.cui-visualizer-root .preset-preview-block { display:block; min-width:0; border-radius:2px; background:var(--viz-accent); opacity:.72; }
+.cui-visualizer-root .preset-preview-block:nth-child(2n) { background:var(--viz-good); opacity:.58; }
+.cui-visualizer-root .preset-preview-block:nth-child(3n) { background:var(--viz-warn); opacity:.62; }
+.cui-visualizer-root .preset-preview-block:nth-child(4n) { background:var(--viz-purple,var(--viz-accent)); opacity:.55; }
+.cui-visualizer-root .preset-preview-block:nth-child(1) { grid-row:span 2; }
+.cui-visualizer-root .preset-preview-block:nth-child(4) { grid-column:span 2; }

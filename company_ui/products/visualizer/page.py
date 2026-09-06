@@ -7,8 +7,10 @@ import io
 import json
 import os
 import uuid
+from html import escape as html_escape
 from pathlib import Path
 from typing import Any, Mapping
+from urllib.parse import quote
 
 from company_ui.integrations.nicegui_components import FileUpload
 from company_ui.integrations.nicegui_layout import AppShell
@@ -59,7 +61,7 @@ def _normalize_mapping_presets(raw: Any) -> list[dict[str,Any]]:
         output.append({'version':1,'id':ident,'name':name,'schema':{'fields':fields,'signature':'|'.join(fields)},'view':'diagram' if view=='diagram_flow' else view,'mapping':clean})
     encoded=stable_json(output).encode('utf-8')
     return output if len(encoded)<=MAX_MAPPING_PRESET_BYTES else []
-NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),)),))
+NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),NavItem('visualizer-reports','Reports','/visualizer/reports','folder'))),))
 
 
 def _asset_build() -> str:
@@ -216,6 +218,29 @@ def _report_options(repository: ReportRepository, query: str='', sort: str='modi
     return result
 
 
+def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> str:
+    """Render a small, content-safe report preview for the report hub."""
+    items=[entry for entry in model.get('items',[]) if isinstance(entry,Mapping)]
+    colors=('#2f80ed','#63b3ed','#86c5a5','#f2b84b','#a78bfa','#ef8f8f')
+    blocks=[]
+    for index,entry in enumerate(items[:8]):
+        x=8+(index%3)*31; y=10+(index//3)*25; w=25 if index%3 else 28; h=18 if index%3 else 20
+        blocks.append(f'<span class="cui-report-thumb-block" style="left:{x}%;top:{y}%;width:{w}%;height:{h}%;background:{colors[index%len(colors)]}"></span>')
+    if not blocks: blocks=['<span class="cui-report-thumb-empty">Blank canvas</span>']
+    return f'<div class="cui-report-thumb" role="img" aria-label="Preview of {html_escape(title)}">{"".join(blocks)}</div>'
+
+
+def _history_diff_summary(before: Mapping[str,Any], after: Mapping[str,Any]) -> str:
+    before_items={str(entry.get('id')):entry for entry in before.get('items',[]) if isinstance(entry,Mapping)}
+    after_items={str(entry.get('id')):entry for entry in after.get('items',[]) if isinstance(entry,Mapping)}
+    added=len(set(after_items)-set(before_items)); removed=len(set(before_items)-set(after_items)); changed=sum(before_items[key]!=after_items[key] for key in set(before_items)&set(after_items))
+    data='data changed' if before.get('datasets')!=after.get('datasets') else 'data unchanged'
+    mapping='mapping changed' if any(before_items.get(key,{}).get('mapping')!=after_items.get(key,{}).get('mapping') for key in set(before_items)&set(after_items)) else 'mapping unchanged'
+    style_keys={'style','presentation','theme','accent'}
+    style='style changed' if any(any(before_items.get(key,{}).get(field)!=after_items.get(key,{}).get(field) for field in style_keys) for key in set(before_items)&set(after_items)) else 'style unchanged'
+    return f'+{added} / −{removed} elements · {changed} changed · {data} · {mapping} · {style}'
+
+
 def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None:
     if getattr(app,'_company_ui_visualizer_registered',False): return
     app._company_ui_visualizer_registered=True
@@ -233,6 +258,217 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         data=repository.assets.read_image(asset_id); mime=str(validate_image_bytes(data)['mime'])
         return Response(content=data,media_type=mime,headers={'Cache-Control':'private, max-age=3600'})
 
+    @ui.page('/visualizer/reports')
+    async def visualizer_reports_page():
+        """Dedicated report hub; report management never needs the live canvas."""
+        notifications=NiceGUIStateServices.notification_service(); downloads=NiceGUIStateServices.download_service()
+        page_state=NiceGUIStateServices.user_store()
+        request=ui.context.client.request
+        query_report=str(request.query_params.get('report') or '')
+        history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
+        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}
+
+        ui.add_head_html('''<style>
+          .cui-report-hub{max-width:1440px;margin:0 auto;padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5)}
+          .cui-report-hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+          .cui-report-hub-head h1{margin:0;font-size:var(--cui-font-size-32);letter-spacing:-.04em}.cui-report-hub-head p{margin:var(--cui-space-1) 0 0;color:#69717d}
+          .cui-report-hub-toolbar{display:flex;gap:var(--cui-space-2);align-items:center;flex-wrap:wrap;padding:var(--cui-space-3);border:1px solid #dfe4eb;border-radius:var(--cui-radius-control);background:#fff}
+          .cui-report-hub-toolbar>*{min-width:150px}.cui-report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--cui-space-3)}
+          .cui-report-card,.cui-history-card{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid #dfe4eb;border-radius:var(--cui-radius-surface);background:#fff;box-shadow:0 2px 10px rgba(30,55,90,.05)}
+          .cui-report-card h2{margin:0;font-size:var(--cui-font-size-16)}.cui-report-card small,.cui-history-card small{color:#69717d;line-height:var(--cui-line-height-ratio-1_35)}
+          .cui-report-card .q-field{min-width:0}.cui-report-card .q-field__control{min-height:36px!important;height:36px!important}.cui-report-card .q-field__native{font-size:var(--cui-font-size-13)!important}
+          .cui-report-card-actions,.cui-history-actions{display:flex;gap:var(--cui-space-1);flex-wrap:wrap}.cui-report-card-actions .q-btn,.cui-history-actions .q-btn{min-height:34px}
+          .cui-report-thumb{height:132px;position:relative;overflow:hidden;border-radius:var(--cui-radius-control);background:linear-gradient(135deg,#f4f7fb,#e9eff7);border:1px solid #dfe4eb}
+          .cui-report-thumb-block{position:absolute;display:block;border-radius:var(--cui-radius-micro);opacity:.86}.cui-report-thumb-empty{position:absolute;inset:0;display:grid;place-items:center;color:#69717d;font-size:var(--cui-font-size-12)}
+          .cui-report-hub-section{display:grid;gap:var(--cui-space-2)}.cui-report-hub-section>h2{margin:0;font-size:var(--cui-font-size-18)}.cui-report-hub-empty{padding:var(--cui-space-6);border:1px dashed #cbd3df;border-radius:var(--cui-radius-control);color:#69717d;background:#fafbfc}
+          .cui-history-panel{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-4);border:1px solid #dfe4eb;border-radius:var(--cui-radius-surface);background:#f8fafc}.cui-history-list{display:grid;gap:var(--cui-space-2)}
+          .cui-history-card{grid-template-columns:150px minmax(0,1fr);align-items:start}.cui-history-card .cui-report-thumb{height:94px}.cui-history-card h3{margin:0;font-size:var(--cui-font-size-14)}
+          @media(max-width:800px){.cui-report-hub{padding:var(--cui-space-5) var(--cui-space-3) 78px}.cui-report-hub-toolbar>*{flex:1 1 100%;min-width:0}.cui-history-card{grid-template-columns:1fr}.cui-history-card .cui-report-thumb{height:120px}}
+        </style>''')
+
+        def hub_url(report_id: str) -> str: return f'/visualizer?report={quote(report_id,safe="")}'
+        def sorted_records(records):
+            sort=str(sort_select.value or 'modified')
+            if sort=='title': return sorted(records,key=lambda record:(record.title.casefold(),record.report_id))
+            if sort=='created': return sorted(records,key=lambda record:(record.created_at,record.report_id),reverse=True)
+            return sorted(records,key=lambda record:(record.updated_at,record.report_id),reverse=True)
+
+        async def create_hub_report() -> None:
+            template_id=str(template_select.value or 'blank')
+            spec=REPORT_TEMPLATES.get(template_id); title='Untitled report' if template_id=='blank' else str(spec['name'])
+            record=repository.create(f'report-{uuid.uuid4().hex}',title=title,model=template_model(template_id),metadata={'template_id':template_id})
+            notifications.success(f'{title} created'); ui.navigate.to(hub_url(record.report_id))
+
+        async def upload_hub_report(event: Any) -> None:
+            try:
+                name,content=await _read_upload(event,max_bytes=MODEL_MAX_BYTES)
+                value=json.loads(content.decode('utf-8')); model_source=value.get('model',value) if isinstance(value,Mapping) else None
+                if not isinstance(model_source,Mapping): raise VisualizerContractError('report JSON must contain a model object')
+                canonical=canonical_model(model_source); _validate_model_images(canonical)
+                record=repository.create(f'import-{uuid.uuid4().hex}',title=Path(name).stem[:160] or 'Imported report',model=canonical,metadata={'imported_from':name})
+                import_hub_dialog.close(); notifications.success('Report imported'); ui.navigate.to(hub_url(record.report_id))
+            except Exception as exc: notifications.error(f'Report import rejected: {exc}')
+
+        async def duplicate_hub_report(report_id: str) -> None:
+            try:
+                source=repository.get(report_id); record=repository.create(f'report-{uuid.uuid4().hex}',title=f'{source.title} copy'[:160],model=source.model,metadata={**source.metadata,'duplicated_from':source.report_id})
+                notifications.success('Report duplicated'); history_report_id=record.report_id; render_cards.refresh(); render_history.refresh()
+            except Exception as exc: notifications.error(f'Duplicate rejected: {exc}')
+
+        async def rename_hub_report(report_id: str,event: Any) -> None:
+            try:
+                latest=repository.get(report_id); value=str(getattr(event,'value','') or '')
+                if value.strip()!=latest.title: repository.rename(report_id,value,expected_revision=latest.revision); notifications.success('Report renamed'); render_cards.refresh()
+            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before renaming.')
+            except Exception as exc: notifications.error(f'Rename rejected: {exc}')
+
+        async def describe_hub_report(report_id: str,event: Any) -> None:
+            try:
+                latest=repository.get(report_id); value=str(getattr(event,'value','') or '')
+                if value!=str(latest.metadata.get('description') or ''): repository.update_description(report_id,value,expected_revision=latest.revision); notifications.success('Description updated'); render_cards.refresh()
+            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before editing metadata.')
+            except Exception as exc: notifications.error(f'Description update rejected: {exc}')
+
+        def select_history(report_id: str) -> None:
+            nonlocal history_report_id
+            history_report_id=report_id; page_state['visualizer.current_report']=report_id; render_history.refresh()
+
+        def begin_trash(report_id: str) -> None:
+            record=repository.get(report_id); delete_target.update(report_id=record.report_id,revision=record.revision); delete_summary.set_text(f'Move “{record.title}” to trash? Its history remains recoverable.'); delete_dialog.open()
+
+        async def confirm_trash() -> None:
+            report_id=delete_target.get('report_id'); revision=delete_target.get('revision')
+            if not report_id or not isinstance(revision,int): return
+            try:
+                repository.trash_report(report_id,expected_revision=revision); delete_dialog.close(); notifications.success('Report moved to trash'); render_cards.refresh()
+            except Exception as exc: notifications.error(f'Trash rejected: {exc}')
+
+        async def restore_hub_report(report_id: str) -> None:
+            try: repository.restore(report_id); notifications.success('Report restored'); render_cards.refresh()
+            except Exception as exc: notifications.error(f'Restore rejected: {exc}')
+
+        def export_hub_json(report_id: str) -> None:
+            record=repository.get(report_id); payload=stable_json({'report_id':record.report_id,'title':record.title,'description':record.metadata.get('description',''),'revision':record.revision,'model':record.model}).encode('utf-8'); downloads.download(f'{record.title or "visembler-report"}.json',payload,media_type='application/json')
+
+        async def checkpoint_hub(report_id: str,field: Any) -> None:
+            try:
+                record=repository.get(report_id); repository.checkpoint(report_id,str(field.value or ''),expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
+            except Exception as exc: notifications.error(f'Checkpoint rejected: {exc}')
+
+        def begin_history_restore(report_id: str,history_id: str,summary: str) -> None:
+            restore_target.update(report_id=report_id,history_id=history_id); history_restore_summary.set_text(f'Restore {summary}? This replaces the active report state and creates a new revision.'); history_restore_dialog.open()
+
+        async def confirm_history_restore() -> None:
+            report_id=restore_target.get('report_id'); history_id=restore_target.get('history_id')
+            if not report_id or not history_id: return
+            try:
+                record=repository.get(report_id); repository.restore_history(report_id,history_id,expected_revision=record.revision); history_restore_dialog.close(); notifications.success('Revision restored as a new revision'); render_cards.refresh(); render_history.refresh()
+            except Exception as exc: notifications.error(f'Revision restore rejected: {exc}')
+
+        async def duplicate_hub_history(report_id: str,history_id: str) -> None:
+            try:
+                repository.duplicate_from_history(report_id,history_id,f'report-{uuid.uuid4().hex}'); notifications.success('Historical revision duplicated as a new report'); render_cards.refresh()
+            except Exception as exc: notifications.error(f'Historical duplicate rejected: {exc}')
+
+        @ui.refreshable
+        def render_cards() -> None:
+            needle=' '.join(str(search.value or '').split()).casefold(); view=str(view_filter.value or 'active'); active=sorted_records(repository.list()); trash=sorted_records(repository.list_trash())
+            def matches(record): return not needle or needle in record.title.casefold() or needle in record.report_id.casefold() or needle in str(record.metadata.get('description') or '').casefold()
+            if view in {'active','all'}:
+                visible=[record for record in active if matches(record)]
+                with ui.element('section').classes('cui-report-hub-section'):
+                    ui.label(f'Active reports · {len(visible)}').classes('text-h6')
+                    if not visible: ui.label('No active reports match this search.').classes('cui-report-hub-empty')
+                    else:
+                        with ui.element('div').classes('cui-report-grid'):
+                            for record in visible:
+                                with ui.card().classes('cui-report-card'):
+                                    ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False)
+                                    ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
+                                    ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
+                                    ui.label(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
+                                    with ui.row().classes('cui-report-card-actions'):
+                                        ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps')
+                                        ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps')
+                                        ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps')
+                                        ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps')
+                                        ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative')
+            if view in {'trash','all'}:
+                visible=[record for record in trash if matches(record)]
+                with ui.element('section').classes('cui-report-hub-section'):
+                    ui.label(f'Trash · {len(visible)}').classes('text-h6')
+                    if not visible: ui.label('Trash is empty.').classes('cui-report-hub-empty')
+                    else:
+                        with ui.element('div').classes('cui-report-grid'):
+                            for record in visible:
+                                with ui.card().classes('cui-report-card'):
+                                    ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
+                                    with ui.row().classes('cui-report-card-actions'):
+                                        ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps'); ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps')
+
+        @ui.refreshable
+        def render_history() -> None:
+            if not history_report_id:
+                with ui.element('section').classes('cui-history-panel'): ui.label('Select History on an active report to inspect revisions.').classes('cui-report-hub-empty')
+                return
+            try: record=repository.get(history_report_id); entries=repository.list_history(history_report_id)
+            except Exception: entries=[]; record=None
+            with ui.element('section').classes('cui-history-panel'):
+                if not record: ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
+                ui.label(f'History · {record.title}').classes('text-h6'); ui.label('Each restore is explicit, revisioned, and leaves the prior state in history.').classes('text-caption')
+                checkpoint=ui.input(label='Named checkpoint',placeholder='Before review').props('outlined dense hide-bottom-space')
+                ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
+                if not entries: ui.label('No saved revisions yet.').classes('cui-report-hub-empty')
+                else:
+                    with ui.element('div').classes('cui-history-list'):
+                        for entry in entries[:40]:
+                            try: snapshot=repository.get_history(record.report_id,str(entry['history_id'])); historical=snapshot.get('model',{})
+                            except Exception: continue
+                            summary=f'r{entry["revision"]} · {entry.get("updated_at") or "timestamp unavailable"} · {entry.get("label") or "Saved revision"}{" · checkpoint" if entry.get("checkpoint") else ""}'
+                            with ui.card().classes('cui-history-card'):
+                                ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}'),sanitize=False)
+                                with ui.element('div').classes('cui-history-card-copy'):
+                                    ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(record.model,historical)).classes('text-caption')
+                                    with ui.row().classes('cui-history-actions'):
+                                        ui.button('Restore this revision',on_click=lambda rid=record.report_id,hid=entry['history_id'],s=summary:begin_history_restore(rid,str(hid),s)).props('unelevated no-caps')
+                                        ui.button('Duplicate as new report',on_click=lambda rid=record.report_id,hid=entry['history_id']:duplicate_hub_history(rid,str(hid))).props('flat no-caps')
+
+        import_hub_dialog=ui.dialog()
+        with AppShell('Visembler',NAVIGATION,active_route='/visualizer/reports',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Report hub',owner='Visembler'):
+            with ui.column().classes('cui-report-hub w-full'):
+                with ui.element('header').classes('cui-report-hub-head'):
+                    with ui.column().classes('gap-0'):
+                        ui.label('Reports').classes('text-h3'); ui.label('Open, organize, and recover reports without covering the authoring canvas.').classes('text-body1')
+                    ui.button('Open editor',on_click=lambda:ui.navigate.to(hub_url(history_report_id) if history_report_id else '/visualizer')).props('flat no-caps')
+                    ui.button('Import…',on_click=import_hub_dialog.open).props('flat no-caps')
+                with ui.element('section').classes('cui-report-hub-toolbar'):
+                    search=ui.input(label='Search reports',placeholder='Title, description, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('flex-grow')
+                    sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
+                    view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
+                    template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
+                    ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
+                render_cards()
+                render_history()
+
+            with import_hub_dialog:
+                with ui.card().classes('cui-dialog-card cui-visualizer-import-card'):
+                    ui.label('Import').classes('cui-dialog-title')
+                    ui.label('Import a Visembler report from its canonical JSON file.').classes('cui-field-description')
+                    with ui.column().classes('w-full gap-3'):
+                        FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_hub_report)
+                    ui.button('Done',on_click=import_hub_dialog.close).props('flat no-caps')
+
+            delete_dialog=ui.dialog()
+            with delete_dialog:
+                with ui.card().classes('cui-dialog-card'):
+                    delete_summary=ui.label('Move this report to trash?').classes('cui-dialog-title'); ui.label('The report and its history remain recoverable until the trash entry is removed from storage.').classes('cui-field-description')
+                    with ui.row(): ui.button('Move to trash',on_click=confirm_trash).props('unelevated no-caps color=negative'); ui.button('Cancel',on_click=delete_dialog.close).props('flat no-caps')
+            history_restore_dialog=ui.dialog()
+            with history_restore_dialog:
+                with ui.card().classes('cui-dialog-card'):
+                    history_restore_summary=ui.label('Restore this revision?').classes('cui-dialog-title'); ui.label('The current state is retained in history and the restore creates a new revision.').classes('cui-field-description')
+                    with ui.row(): ui.button('Restore revision',on_click=confirm_history_restore).props('unelevated no-caps'); ui.button('Cancel',on_click=history_restore_dialog.close).props('flat no-caps')
+
     @ui.page('/visualizer')
     async def visualizer_page():
         notifications=NiceGUIStateServices.notification_service(); downloads=NiceGUIStateServices.download_service()
@@ -241,7 +477,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         records=repository.list()
         if not records:
             records=[repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})]
-        preferred=str(page_state.get('visualizer.current_report') or '')
+        query_report=str(ui.context.client.request.query_params.get('report') or '')
+        preferred=query_report or str(page_state.get('visualizer.current_report') or '')
         current=next((record for record in records if record.report_id==preferred),records[0]); page_state['visualizer.current_report']=current.report_id
         ppt_template:dict[str,Any]={'name':None,'content':None}
 
@@ -590,8 +827,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
                     # company-ui: allow-ai005 — report reuse remains a primary action.
                     ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
-                    # company-ui: allow-ai005 — secondary lifecycle actions are consolidated.
-                    ui.button('Manage',on_click=open_manage_reports).props('flat no-caps')
+                    # Report lifecycle is a separate route so it never obscures the active canvas.
+                    ui.button('Manage',on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}')).props('flat no-caps').tooltip('Open the dedicated report hub')
                 # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
                 host=ui.element('div').classes('cui-visualizer-host w-full').props('aria-label="Visembler report editor"')
                 host.on('visualizer_bridge',handle_semantic,args=['detail'])

@@ -1,5 +1,9 @@
 <div class="cui-visualizer-root" data-editor-ready="false" data-library="open" data-inspector="open">
   <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit preview</button>
+  <div class="preview-controls" id="previewControls" role="toolbar" aria-label="Preview controls">
+    <button class="tb" id="previewFitWidth" type="button">Fit width</button>
+    <button class="tb" id="previewFitPage" type="button">Fit page</button>
+  </div>
   <div class="app">
     <header class="topbar" aria-label="Visembler toolbar">
       <div class="toolbar" role="toolbar" aria-label="Editor actions">
@@ -104,7 +108,7 @@
             <span class="zoom-status" id="zoomStatus" aria-live="polite">88%</span>
             <button class="tb icon" id="zoomIn" aria-label="Zoom in">+</button>
             <button class="tb" id="zoomFit">Fit</button>
-            <button class="tb" id="miniToggle" aria-pressed="false">Map</button>
+            <button class="tb" id="miniToggle" aria-pressed="false" aria-label="Toggle minimap" title="Show or hide the report minimap">Minimap</button>
           </div>
         </div>
         <div class="viewport" id="viewport">

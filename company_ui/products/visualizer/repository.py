@@ -194,6 +194,16 @@ class ReportRepository:
     def list_history(self, report_id: str) -> list[dict[str,Any]]:
         with self._transaction(): self._get_unlocked(report_id); return self._history_entries_unlocked(validate_report_id(report_id))
 
+    def get_history(self, report_id: str, history_id: str) -> dict[str,Any]:
+        """Return one validated immutable revision for the report hub.
+
+        The hub needs the historical model to render a bounded preview and a
+        semantic diff.  Keep the read under the same repository lock and
+        validation path as the existing history actions.
+        """
+        with self._transaction():
+            return dict(self._load_history_unlocked(validate_report_id(report_id), history_id))
+
     def checkpoint(self, report_id: str, name: str, *, expected_revision: int) -> dict[str,Any]:
         with self._transaction():
             record=self._get_unlocked(report_id)

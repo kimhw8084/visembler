@@ -109,6 +109,12 @@ def import_native_report(page: Any, source: Path, evidence: Path,
     page.on('response', responded)
     try:
         page.get_by_role('button', name='Manage', exact=True).click()
+        # The production shell navigates to the dedicated Report Hub. The
+        # isolated contract fixture intentionally keeps the older in-page
+        # dialog so this helper can continue proving the visible upload click.
+        if '/visualizer/reports' not in page.url:
+            page.get_by_role('button', name='Import…', exact=True).wait_for(
+                state='visible', timeout=timeout_ms)
         page.get_by_role('button', name='Import…', exact=True).click()
         card = page.locator('.cui-visualizer-import-card:visible')
         card.wait_for(state='visible', timeout=timeout_ms)
