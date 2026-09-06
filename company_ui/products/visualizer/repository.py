@@ -227,6 +227,14 @@ class ReportRepository:
             updated=replace(cur,title=cleaned,revision=cur.revision+1,updated_at=utc_now())
             self._save_unlocked(updated); self._snapshot_unlocked(updated,label='Renamed'); return updated
 
+    def update_description(self, report_id: str, description: str, *, expected_revision: int) -> ReportRecord:
+        with self._transaction():
+            cur=self._get_unlocked(report_id)
+            if cur.revision != expected_revision: raise RevisionConflictError(cur.revision,expected_revision)
+            cleaned=' '.join(str(description).replace('\x00','').split())[:1000]
+            updated=replace(cur,metadata={**cur.metadata,'description':cleaned},revision=cur.revision+1,updated_at=utc_now())
+            self._save_unlocked(updated); self._snapshot_unlocked(updated,label='Description updated'); return updated
+
     def delete(self, report_id: str, *, expected_revision: int) -> bool:
         with self._transaction():
             cur=self._get_unlocked(report_id)

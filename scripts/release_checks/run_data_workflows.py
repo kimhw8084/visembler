@@ -133,7 +133,7 @@ def main():
   run('linked-locked-peer-detach',linked)
   def transform(ctx,p,rid):
    ident=paste_create(p,BASE);select(p,ident)
-   p.locator('[data-transform-type]').select_option('sort');p.locator('[data-transform-field]').select_option('value_2');p.locator('[data-transform-action="apply"]').click();settled(p)
+   p.locator('[data-transform-type]').select_option('sort');p.locator('[data-transform-field]').select_option('value_2');p.locator('[data-transform-action="save"]').click();settled(p)
    refresh(p,ident,REORDER)
    assert entry(p,ident)['transform_recipe']['steps'][0]['field']=='value_1'
    assert '727' in body(p,ident) and '919' in body(p,ident)
@@ -220,7 +220,7 @@ def main():
     return svg
    try:
     ident=paste_create(p,TYPED);rows=dataset(p,ident)['rows'];assert rows[0]==['00123',0,'0','',None,True,'2026-09-05']
-    select(p,ident);p.locator('[data-transform-type]').select_option('sort');p.locator('[data-transform-field]').select_option('code_1');p.locator('[data-transform-action="apply"]').click();settled(p)
+    select(p,ident);p.locator('[data-transform-type]').select_option('sort');p.locator('[data-transform-field]').select_option('code_1');p.locator('[data-transform-action="save"]').click();settled(p)
     image_id=add(p,'ImageMediaEngine','Image + Caption')
     im=Image.new('RGB',(240,140),'#145f91');ImageDraw.Draw(im).rectangle((20,20,180,100),fill='#f0b030');ip=out/'fixture.png';im.save(ip)
     p.locator('#iImageFile').set_input_files(str(ip));p.wait_for_function('()=>window.CompanyUIVisualizerBridge.state().model.items.some(i=>i.src?.startsWith("data:"))');settled(p)

@@ -195,8 +195,11 @@ async def _read_upload(event: Any, *, max_bytes: int) -> tuple[str, bytes]:
     return Path(name).name,payload
 
 
-def _report_options(repository: ReportRepository, query: str='') -> dict[str,str]:
-    needle=' '.join(str(query).split()).casefold(); records=repository.list(); counts:dict[str,int]={}
+def _report_options(repository: ReportRepository, query: str='', sort: str='modified') -> dict[str,str]:
+    needle=' '.join(str(query).split()).casefold(); records=repository.list()
+    if sort=='title': records=sorted(records,key=lambda record:(record.title.casefold(),record.report_id))
+    elif sort=='created': records=sorted(records,key=lambda record:(record.created_at,record.report_id),reverse=True)
+    counts:dict[str,int]={}
     for record in records:
         blank=not record.model.get('items') and not record.model.get('groups')
         label='New blank report' if record.title=='Untitled report' and blank else record.title
@@ -205,7 +208,8 @@ def _report_options(repository: ReportRepository, query: str='') -> dict[str,str
     for record in records:
         blank=not record.model.get('items') and not record.model.get('groups')
         label='New blank report' if record.title=='Untitled report' and blank else record.title
-        if needle and needle not in label.casefold() and needle not in record.report_id.casefold(): continue
+        description=str(record.metadata.get('description') or '')
+        if needle and needle not in label.casefold() and needle not in record.report_id.casefold() and needle not in description.casefold(): continue
         if counts[label]>1:
             label=f'{label}{" · blank" if blank else ""} · {record.report_id[-6:]}'
         result[record.report_id]=label
@@ -250,6 +254,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             current=record; page_state['visualizer.current_report']=record.report_id
             report_select.options=_report_options(repository); report_select.value=record.report_id; report_select.update()
             report_title.value=record.title; report_title.update()
+            report_description.value=str(record.metadata.get('description') or ''); report_description.update()
+            report_meta.set_text(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision}')
             await send('report.bootstrap',_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'))
             if notice: notifications.success(notice)
 
@@ -323,6 +329,14 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             except RevisionConflictError: await activate(repository.get(current.report_id),notice='Report changed elsewhere; latest revision loaded')
             except Exception as exc: notifications.error(f'Rename rejected: {exc}')
 
+        async def update_report_description(event: Any) -> None:
+            try:
+                latest=repository.get(current.report_id); value=str(getattr(event,'value','') or '')
+                if value.strip()==str(latest.metadata.get('description') or ''): return
+                await activate(repository.update_description(latest.report_id,value,expected_revision=latest.revision),notice='Report description updated')
+            except RevisionConflictError: await activate(repository.get(current.report_id),notice='Report changed elsewhere; latest revision loaded')
+            except Exception as exc: notifications.error(f'Description update rejected: {exc}')
+
         async def select_report(event: Any) -> None:
             report_id=str(getattr(event,'value','') or '')
             if report_id and report_id != current.report_id:
@@ -352,6 +366,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         def refresh_reports(event: Any=None) -> None:
             query=str(getattr(event,'value','') or '')
             report_select.options=_report_options(repository,query); report_select.value=current.report_id; report_select.update()
+
+        def refresh_manage(event: Any=None) -> None:
+            query=str(getattr(manage_search,'value','') or '')
+            sort=str(getattr(manage_sort,'value','modified') or 'modified')
+            manage_results.set_text(f'{len(_report_options(repository,query,sort))} active match(es) · {len(repository.list_trash())} in trash')
 
         async def clean_empty() -> None:
             removed=0
@@ -405,8 +424,15 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             active_count=len(repository.list())
             trash_count=len(repository.list_trash())
             manage_current.set_text(f'Current · {current.title}')
-            manage_counts.set_text(f'{active_count} active report{"s" if active_count!=1 else ""} · {trash_count} in trash')
+            manage_counts.set_text(f'{active_count} active report{"s" if active_count!=1 else ""} · {trash_count} in trash · history is retained per active report')
+            manage_search.value=''; manage_search.update(); manage_sort.value='modified'; manage_sort.update()
+            manage_results.set_text(f'{active_count} active match(es) · {trash_count} in trash')
             manage_dialog.open()
+
+        async def export_current_json() -> None:
+            latest=repository.get(current.report_id)
+            payload=stable_json({'report_id':latest.report_id,'title':latest.title,'description':latest.metadata.get('description',''),'revision':latest.revision,'model':latest.model}).encode('utf-8')
+            downloads.download(f'{latest.title or "visembler-report"}.json',payload,media_type='application/json')
 
         async def manage_duplicate() -> None:
             manage_dialog.close()
@@ -531,8 +557,12 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     manage_current=ui.label('').classes('cui-field-description')
                     # company-ui: allow-ai005 — dynamic report counts in the isolated compatibility host.
                     manage_counts=ui.label('').classes('cui-field-description')
+                    manage_search=ui.input(label='Search active reports',on_change=refresh_manage).props('outlined dense hide-bottom-space').classes('w-full')
+                    manage_sort=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=refresh_manage).props('outlined dense hide-bottom-space').classes('w-full')
+                    manage_results=ui.label('').classes('cui-field-description')
                     # company-ui: allow-ai005 — primary reuse action.
                     ui.button('Duplicate current report',on_click=manage_duplicate).props('unelevated no-caps')
+                    ui.button('Export current JSON',on_click=export_current_json).props('flat no-caps')
                     # company-ui: allow-ai005 — existing history workflow.
                     ui.button('Report history',on_click=manage_history).props('flat no-caps')
                     # company-ui: allow-ai005 — existing canonical JSON import workflow.
@@ -552,6 +582,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 with ui.element('section').classes('cui-visualizer-reportbar w-full').props('aria-label="Report controls"'):
                     # company-ui: allow-ai005 — report title is the primary identity control.
                     report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
+                    report_description=ui.input(label='Description',value=str(current.metadata.get('description') or ''),on_change=update_report_description,placeholder='What this report is for').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-description')
+                    report_meta=ui.label(f'Created {current.created_at} · Modified {current.updated_at} · revision {current.revision}').classes('cui-visualizer-report-meta')
                     # company-ui: allow-ai005 — searchable report switcher replaces a separate filter field.
                     report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space use-input input-debounce=0').classes('cui-visualizer-report-select')
                     # company-ui: allow-ai005 — frequent creation remains one click away.

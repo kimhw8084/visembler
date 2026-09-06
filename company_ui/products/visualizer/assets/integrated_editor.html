@@ -29,14 +29,15 @@
       <div class="rightbar" aria-label="Report actions">
         <button class="tb" id="preflightBtn">Validate</button>
         <button class="tb" id="previewBtn">Preview</button>
-        <button class="tb accent" id="saveBtn">Save</button>
+        <button class="tb" id="saveBtn">Autosaved</button>
         <button class="tb" id="exportBtn" aria-label="Export" aria-haspopup="dialog"><span class="export-label">Export</span><span aria-hidden="true">▾</span></button>
       </div>
     </header>
 
     <div class="shell">
+      <button class="panel-backdrop" id="panelBackdrop" aria-label="Close open panel" aria-hidden="true"></button>
       <aside class="left" id="libraryPane" aria-label="Authoring library">
-        <div class="pane-title library-pane-title"><span>Library</span><span class="pane-hint">Drag or click</span></div>
+        <div class="pane-title library-pane-title"><span>Library</span><span class="pane-hint">Drag or click</span><button class="mini-btn pane-close" id="libraryClose" aria-label="Collapse library">×</button></div>
         <div class="library-tabs" role="tablist" aria-label="Library views">
           <button id="elementsTab" class="library-tab active" role="tab" aria-selected="true" data-library-tab="elements">Elements</button>
           <button id="presetsTab" class="library-tab" role="tab" aria-selected="false" data-library-tab="presets">Presets</button>

@@ -95,7 +95,7 @@ export function renderEngineeringChartSvg(plan,{width=700,height=390}={}){
   const W=Math.max(260,Number(width)||700),H=Math.max(180,Number(height)||390),m={l:48,r:22,t:24,b:38};let body='';
   if(plan.type==='spc'){
     const signals=new Set(plan.rules.signals.flatMap(s=>s.indices));const limits=[{value:plan.ucl},{value:plan.lcl}];
-    if(engFinite(Number(plan.spec.usl)))limits.push({value:Number(plan.spec.usl),className:'viz-eng-spec'});if(engFinite(Number(plan.spec.lsl)))limits.push({value:Number(plan.spec.lsl),className:'viz-eng-spec'});
+    if(engFinite(plan.spec.usl))limits.push({value:plan.spec.usl,className:'viz-eng-spec'});if(engFinite(plan.spec.lsl))limits.push({value:plan.spec.lsl,className:'viz-eng-spec'});
     body=seriesPlot(plan.values,{W,H,m,limits,center:plan.center,signalIndices:signals,label:'Sample'});
   } else if(plan.type==='imr'||plan.type==='xbarr'){
     const topH=Math.floor((H-18)/2),gap=18,bottomY=topH+gap;
