@@ -64,7 +64,7 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','production_library.mjs','element_renderer.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -563,5 +563,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         token_url=f'{STATIC_ROUTE}/assets/tokens.css?v={build}'
         module_url=f'{STATIC_ROUTE}/assets/integrated_editor.mjs?v={build}'
         ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
-        bootstrap={'report_id':current.report_id,'revision':current.revision,'model':current.model,'asset_build':build}
+        # Cold loads must resolve stored media just like activate()/conflict payloads.
+        # Keep asset IDs canonical; add renderable URLs only to the browser copy.
+        bootstrap={**_payload(current,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),'asset_build':build}
         _bootstrap_editor(ui,bootstrap,build,module_url)

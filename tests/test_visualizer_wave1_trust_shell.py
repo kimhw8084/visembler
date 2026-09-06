@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
+import subprocess
 
 ROOT = Path(__file__).resolve().parents[1]
 PRODUCT = ROOT / 'company_ui' / 'products' / 'visualizer'
@@ -45,14 +47,32 @@ def test_wave1_builtin_preset_apply_is_one_transactional_model_replace() -> None
 
 def test_wave1_export_surface_uses_canonical_json_and_xmlserializer_without_powerpoint_ui() -> None:
     editor = _read(ASSETS / 'integrated_editor.mjs')
-    assert "const text=store.exportEnvelope(2)" in editor
+    # Execute the current export/copy entrypoints; an old source-string match
+    # cannot prove that portable image data reaches the downloaded envelope.
+    probe = r'''
+import fs from 'node:fs';
+const source=fs.readFileSync('company_ui/products/visualizer/assets/integrated_editor.mjs','utf8');
+const body=(name,next)=>source.slice(source.indexOf('async function '+name+'('),source.indexOf(next,source.indexOf('async function '+name+'(')));
+const expected={schema_version:1,revision:5,model:{items:[{id:'img',engine:'ImageMediaEngine',src:'data:image/png;base64,AAAA'}],datasets:[]}};
+const downloads=[],messages=[],copied=[];
+const scope={portableReport:async()=>({envelope:expected}),downloadBlob:(blob,name)=>downloads.push({blob,name}),toast:m=>messages.push(m),navigator:{clipboard:{writeText:async text=>copied.push(text)}},debugEvent:()=>{}};
+const make=code=>new Function(...Object.keys(scope),code+';return '+(/function (\w+)/.exec(code)[1]))(...Object.values(scope));
+await make(body('exportModel','async function exportRetainedEdits'))();
+await make(body('copyReportJson','function openExportMenu'))();
+console.log(JSON.stringify({name:downloads[0]?.name,download:JSON.parse(await downloads[0].blob.text()),copied:JSON.parse(copied[0])}));
+'''
+    observed = json.loads(subprocess.run(['node','--input-type=module','-e',probe],cwd=ROOT,text=True,capture_output=True,check=True).stdout)
+    assert observed['name'] == 'visembler_report_model.json'
+    assert observed['download'] == observed['copied']
+    assert observed['download']['revision'] == 5
+    assert observed['download']['model']['items'][0]['src'].startswith('data:image/png;base64,')
     assert "function exportModel(){showPreflight();" not in editor
     assert 'id="exportJsonAction">Download Report JSON</button>' in editor
     assert 'id="exportCopyJsonAction">Copy Report JSON</button>' in editor
     assert 'id="exportPngAction"' not in editor and 'id="exportJpegAction"' not in editor
     assert "new XMLSerializer().serializeToString(svg)" in editor
     assert "document.createElementNS('http://www.w3.org/2000/svg','svg')" in editor
-    assert "style.textContent=css" in editor
+    assert "getComputedStyle(node)" in editor and "inlineAssetUrls" in editor
     assert "exportPptAction" not in editor
     assert "try SVG or PowerPoint" not in editor
 

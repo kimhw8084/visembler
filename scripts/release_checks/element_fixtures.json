@@ -1,0 +1,348 @@
+{
+  "status": "SPECIFICATION_NOT_EXECUTED",
+  "basis": "Selectors from reviewed editor; verify actual actionability and bindings before asserting coverage. For data-backed controls route through Data Dock rather than these raw-entry selectors. Use UI input/change events, never direct model mutation as editing proof.",
+  "cases": [
+    {
+      "engine": "TextEngine",
+      "element": "Hero Title",
+      "fields": {
+        "#iText": "Fab review Δ / 장비 A — verify after refresh."
+      },
+      "render_check": "Canvas narrative text must contain the new sentence; preserve line breaks/Unicode."
+    },
+    {
+      "engine": "TextEngine",
+      "element": "Section Heading",
+      "fields": {
+        "#iText": "Fab review Δ / 장비 A — verify after refresh."
+      },
+      "render_check": "Canvas narrative text must contain the new sentence; preserve line breaks/Unicode."
+    },
+    {
+      "engine": "TextEngine",
+      "element": "Executive Statement",
+      "fields": {
+        "#iText": "Fab review Δ / 장비 A — verify after refresh."
+      },
+      "render_check": "Canvas narrative text must contain the new sentence; preserve line breaks/Unicode."
+    },
+    {
+      "engine": "TextEngine",
+      "element": "Body Narrative",
+      "fields": {
+        "#iText": "Fab review Δ / 장비 A — verify after refresh."
+      },
+      "render_check": "Canvas narrative text must contain the new sentence; preserve line breaks/Unicode."
+    },
+    {
+      "engine": "TextEngine",
+      "element": "Key Takeaway",
+      "fields": {
+        "#iText": "Fab review Δ / 장비 A — verify after refresh."
+      },
+      "render_check": "Canvas narrative text must contain the new sentence; preserve line breaks/Unicode."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Hero KPI",
+      "fields": {
+        "#iValue": "73.125"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Metric + Delta",
+      "fields": {
+        "#iValue": "73.125"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Target vs Actual",
+      "fields": {
+        "#iActual": "73.125",
+        "#iTarget": "90"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Progress Metric",
+      "fields": {
+        "#iCurrent": "73.125",
+        "#iMax": "100"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Status Metric",
+      "fields": {
+        "#iValue": "73.125"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Capacity Metric",
+      "fields": {
+        "#iCurrent": "73.125",
+        "#iCapacity": "110"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Rate Metric",
+      "fields": {
+        "#iNumerator": "22",
+        "#iDenominator": "40",
+        "#iValue": "0.55"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Threshold Metric",
+      "fields": {
+        "#iValue": "73.125",
+        "#iWarning": "75",
+        "#iCritical": "90"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Metric with Sparkline",
+      "fields": {
+        "#iValue": "73.125",
+        "#iSeries": "T1\t10\nT2\t30\nT3\t73.125"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "MetricEngine",
+      "element": "Metric Ring",
+      "fields": {
+        "#iValue": "73.125",
+        "#iMax": "100"
+      },
+      "render_check": "Visible metric value/format must change; an updated title alone is insufficient."
+    },
+    {
+      "engine": "ComparisonEngine",
+      "element": "As-Is → To-Be",
+      "fields": {
+        "#iBefore": "80",
+        "#iAfter": "25"
+      },
+      "render_check": "Both before and after values must affect the rendered comparison."
+    },
+    {
+      "engine": "ComparisonEngine",
+      "element": "Before/After KPI",
+      "fields": {
+        "#iBefore": "80",
+        "#iAfter": "25"
+      },
+      "render_check": "Both before and after values must affect the rendered comparison."
+    },
+    {
+      "engine": "ComparisonEngine",
+      "element": "Time Compression",
+      "fields": {
+        "#iBefore": "80",
+        "#iAfter": "25"
+      },
+      "render_check": "Both before and after values must affect the rendered comparison."
+    },
+    {
+      "engine": "CoreChartEngine",
+      "element": "Vertical Bar",
+      "fields": {
+        "#iData": "Lot-A\t10\nLot-B\t30\nLot-C\t70"
+      },
+      "render_check": "Compare labels and actual SVG marks before/after. No sample fallback."
+    },
+    {
+      "engine": "CoreChartEngine",
+      "element": "Horizontal Bar",
+      "fields": {
+        "#iData": "Lot-A\t10\nLot-B\t30\nLot-C\t70"
+      },
+      "render_check": "Compare labels and actual SVG marks before/after. No sample fallback."
+    },
+    {
+      "engine": "CoreChartEngine",
+      "element": "Line Chart",
+      "fields": {
+        "#iData": "Lot-A\t10\nLot-B\t30\nLot-C\t70"
+      },
+      "render_check": "Compare labels and actual SVG marks before/after. No sample fallback."
+    },
+    {
+      "engine": "CoreChartEngine",
+      "element": "Area Chart",
+      "fields": {
+        "#iData": "Lot-A\t10\nLot-B\t30\nLot-C\t70"
+      },
+      "render_check": "Compare labels and actual SVG marks before/after. No sample fallback."
+    },
+    {
+      "engine": "TableEngine",
+      "element": "Clean Table",
+      "fields": {
+        "[data-table-cell=\"0:1\"]": "73.125"
+      },
+      "render_check": "Changed cell appears in rendered table and persists; add a quoted text-zero fixture separately."
+    },
+    {
+      "engine": "TimelineEngine",
+      "element": "Event Timeline",
+      "fields": {
+        "#iTimeline": "Intake Δ|2026-09-01\nVerify|2026-09-03\nRelease|2026-09-05"
+      },
+      "render_check": "Labels/dates or sequence states reflect edited content; null dates are not invented."
+    },
+    {
+      "engine": "TimelineEngine",
+      "element": "Milestone Rail",
+      "fields": {
+        "#iTimeline": "Intake Δ|2026-09-01\nVerify|2026-09-03\nRelease|2026-09-05"
+      },
+      "render_check": "Labels/dates or sequence states reflect edited content; null dates are not invented."
+    },
+    {
+      "engine": "TimelineEngine",
+      "element": "Sequence Strip",
+      "fields": {
+        "#iTimeline": "Intake Δ|2026-09-01\nVerify|2026-09-03\nRelease|2026-09-05"
+      },
+      "render_check": "Labels/dates or sequence states reflect edited content; null dates are not invented."
+    },
+    {
+      "engine": "DiagramEngine",
+      "element": "Process Flow",
+      "fields": {
+        "#iNodes": "Source\nNormalize\nVerify",
+        "#iEdges": "Source -> Normalize\nNormalize -> Verify"
+      },
+      "render_check": "All edited nodes/connectors render; verify renaming updates edges safely."
+    },
+    {
+      "engine": "DiagramEngine",
+      "element": "Data Flow",
+      "fields": {
+        "#iNodes": "Source\nNormalize\nVerify",
+        "#iEdges": "Source -> Normalize\nNormalize -> Verify"
+      },
+      "render_check": "All edited nodes/connectors render; verify renaming updates edges safely."
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "element": "Image",
+      "upload": "#iImageFile",
+      "fixture": "Generate two visibly distinct PNGs locally; upload via set_input_files. No external network asset.",
+      "fields": {
+        "#iAlt": "Synthetic metrology check Δ",
+        "#iCaption": "Metrology evidence"
+      },
+      "render_check": "Image decodes; pixel/content changes on replacement; accessible text persists; undo restores original."
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "element": "Image + Caption",
+      "upload": "#iImageFile",
+      "fixture": "Generate two visibly distinct PNGs locally; upload via set_input_files. No external network asset.",
+      "fields": {
+        "#iAlt": "Synthetic metrology check Δ",
+        "#iCaption": "Metrology evidence"
+      },
+      "render_check": "Image decodes; pixel/content changes on replacement; accessible text persists; undo restores original."
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "element": "Screenshot Frame",
+      "upload": "#iImageFile",
+      "fixture": "Generate two visibly distinct PNGs locally; upload via set_input_files. No external network asset.",
+      "fields": {
+        "#iAlt": "Synthetic metrology check Δ",
+        "#iCaption": "Metrology evidence"
+      },
+      "render_check": "Image decodes; pixel/content changes on replacement; accessible text persists; undo restores original."
+    },
+    {
+      "engine": "EvidenceCompositeEngine",
+      "element": "Evidence Card",
+      "fields": {
+        "#iStatement": "Pressure excursion at chamber B",
+        "#iDetail": "Matched control lot confirms Δ.",
+        "#iStatus": "Observed"
+      },
+      "render_check": "Evidence statement/detail/status changes visibly."
+    },
+    {
+      "engine": "DecisionCompositeEngine",
+      "element": "Risk Callout",
+      "fields": {
+        "#iStatement": "Hold lot until validation",
+        "#iDetail": "Check chamber B control wafer.",
+        "#iStatus": "Open"
+      },
+      "render_check": "Risk statement/detail/status changes visibly."
+    },
+    {
+      "engine": "ProjectCompositeEngine",
+      "element": "Project Card",
+      "fields": {
+        "#iStatement": "Validate chamber recovery",
+        "#iDetail": "Owner: Process Engineering; verify control lot.",
+        "#iStatus": "Planned"
+      },
+      "render_check": "Project statement/detail/status changes visibly."
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "element": "SPC Control Chart",
+      "fields": {
+        "#iObservations": "1\t98.1\n2\t98.7\n3\t97.9\n4\t99.0\n5\t98.2"
+      },
+      "render_check": "Actual numerical marks/statistical output changes consistently; retain existing engineering golden assertions."
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "element": "I-MR Chart",
+      "fields": {
+        "#iObservations": "1\t98.1\n2\t98.7\n3\t97.9\n4\t99.0\n5\t98.2"
+      },
+      "render_check": "Actual numerical marks/statistical output changes consistently; retain existing engineering golden assertions."
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "element": "CUSUM Chart",
+      "fields": {
+        "#iObservations": "1\t98.1\n2\t98.7\n3\t97.9\n4\t99.0\n5\t98.2"
+      },
+      "render_check": "Actual numerical marks/statistical output changes consistently; retain existing engineering golden assertions."
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "element": "EWMA Chart",
+      "fields": {
+        "#iObservations": "1\t98.1\n2\t98.7\n3\t97.9\n4\t99.0\n5\t98.2"
+      },
+      "render_check": "Actual numerical marks/statistical output changes consistently; retain existing engineering golden assertions."
+    },
+    {
+      "engine": "WaferFabEngine",
+      "element": "Wafer Map",
+      "fields": {
+        "#iObservations": "1\t1\t99.1\n2\t1\t94.2\n1\t2\t97.7",
+        "#iLot": "L00042"
+      },
+      "render_check": "Correct die coordinates, measurements/colors and lot identity; preserve leading-zero identifiers in data-backed counterpart."
+    }
+  ]
+}

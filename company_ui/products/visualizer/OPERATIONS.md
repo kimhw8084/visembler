@@ -28,3 +28,20 @@ report, its history, and an image asset before treating the backup as valid.
 Rollback means stop the candidate, retain the original directory unchanged, and
 restart with the verified backup directory. This procedure does not change
 history retention or delete source data.
+
+## Final local/internal-pilot verification
+
+Run the maintained verifier against a new evidence directory after source or
+runtime changes:
+
+```bash
+python scripts/verify_release.py --host-mode native \
+  --output "$HOME/Downloads/visembler-final-$(date +%Y%m%d_%H%M%S)"
+```
+
+A bounded local/internal-pilot candidate is accepted only when `report.json`
+records `PASS_LOCAL_INTERNAL_PILOT`. The verifier executes the full test suite,
+39 production-element workflows, data/portability checks, performance timing,
+native disconnect/restart recovery, real browser module-worker failure/retry,
+the backup/restore drill, and responsive/keyboard visual acceptance on one
+stable source manifest. Missing or failed gates keep the result blocked.

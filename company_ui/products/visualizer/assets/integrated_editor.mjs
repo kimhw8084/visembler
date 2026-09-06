@@ -23,6 +23,8 @@ import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.m
 import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
 import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
 import { planDatasetRefresh } from './authoring_dataset_refresh.mjs';
+import { portableEnvelope, inlineAssetUrls } from './authoring_portability.mjs';
+import { createIntakeClient } from './authoring_intake_client.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -397,12 +399,13 @@ function sameValue(a,b) { return JSON.stringify(a)===JSON.stringify(b); }
 function persistPendingState() {
   const pending=[...ui.pendingCommits.values()];
   if(!pending.length&&!ui.recovery){storage.remove(persistenceKey());return;}
-  storage.set(persistenceKey(),JSON.stringify({report_id:String(bootstrap.report_id||'default'),model:parseCanonical(store.serialize()),pending,recovery:ui.recovery,saved_at:Date.now()}));
+  if(storage.set(persistenceKey(),JSON.stringify({report_id:String(bootstrap.report_id||'default'),model:ui.recovery?.model||parseCanonical(store.serialize()),pending,recovery:ui.recovery,saved_at:Date.now()}))===false){ui.localRecoveryFailure='Local recovery copy could not be saved. Export JSON before closing this tab.';toast(ui.localRecoveryFailure);}
 }
 function updateSaveUi() {
   const button=$('#saveBtn');
   if(ui.recovery&&!ui.recovery.reapplying){setSaveStatus('Local edits need recovery','bad');if(button){button.textContent='Recover edits';button.disabled=false;button.title='Safely reapply retained local edits';}return;}
   if(ui.persistenceFailure){setSaveStatus('Not saved','bad');if(button){button.textContent='Retry save';button.disabled=false;button.title='Retry the failed automatic save';}return;}
+  if(ui.localRecoveryFailure&&ui.pendingCommits.size){setSaveStatus('Recovery copy unavailable — export JSON','bad');if(button){button.textContent='Saving without recovery';button.disabled=true;button.title=ui.localRecoveryFailure;}return;}
   if(ui.pendingCommits.size){setSaveStatus('Saving…','pending');if(button){button.textContent='Saving…';button.disabled=true;button.title='Edits are being saved automatically';}return;}
   setSaveStatus('Saved automatically','good');if(button){button.textContent='Autosaved';button.disabled=true;button.title='Every edit is saved automatically';}
 }
@@ -411,7 +414,7 @@ function dispatchNextPendingCommit() {
   if(ui.saveInFlight||ui.persistenceFailure||ui.recovery)return false;
   const queued=[...ui.pendingCommits.values()].sort((a,b)=>(Number(a.base_revision)||0)-(Number(b.base_revision)||0)||String(a.commit_id||'').localeCompare(String(b.commit_id||'')));
   const next=queued[0]; if(!next){updateSaveUi();return false;}
-  ui.saveInFlight=next.commit_id; persistPendingState(); updateSaveUi();
+  ui.saveInFlight=next.commit_id; clearTimeout(ui.saveTimer);const sendingReport=next.report_id,sendingId=next.commit_id;ui.saveTimer=setTimeout(()=>{if(String(bootstrap.report_id)!==String(sendingReport)||ui.saveInFlight!==sendingId)return;ui.saveInFlight=null;ui.persistenceFailure={message:'Save confirmation timed out. Retry is safe.',commit_id:sendingId};persistPendingState();updateSaveUi();},15000); persistPendingState(); updateSaveUi();
   if(!dispatchSemantic('report.commit',next)){
     ui.saveInFlight=null;
     ui.persistenceFailure={message:'Save transport is unavailable',commit_id:next.commit_id};
@@ -433,7 +436,8 @@ function retainLocalRecovery(reason) {
 function restorePersistedRecovery(payload) {
   try {
     const saved=JSON.parse(storage.get(persistenceKey(payload.report_id||bootstrap.report_id||'default'))||'null');
-    if(saved?.report_id===String(payload.report_id||bootstrap.report_id||'default')&&Array.isArray(saved.pending)&&saved.pending.length&&!sameValue(saved.model,payload.model)) ui.recovery={reason:'Recovered after refresh',pending:saved.pending,model:saved.model,created_at:saved.saved_at||Date.now()};
+    const pending=Array.isArray(saved?.pending)&&saved.pending.length?saved.pending:Array.isArray(saved?.recovery?.pending)?saved.recovery.pending:[];
+    if(saved?.report_id===String(payload.report_id||bootstrap.report_id||'default')&&pending.length&&!sameValue(saved.recovery?.model||saved.model,payload.model)) ui.recovery={...(saved.recovery||{}),reason:saved.recovery?.reason||'Recovered after refresh',pending,model:saved.recovery?.model||saved.model,created_at:saved.saved_at||Date.now()};
   } catch { storage.remove(persistenceKey(payload.report_id||bootstrap.report_id||'default')); }
 }
 function replaceFromServer(payload, reason='Server synchronization', { preserveLocal=false, restorePersisted=false }={}) {
@@ -441,7 +445,7 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   const reportChanged=String(payload.report_id||bootstrap.report_id||'default')!==String(bootstrap.report_id||'default');
   if(reportChanged&&!preserveLocal){retainLocalRecovery('Report switched before save confirmation');ui.recovery=null;ui.persistenceFailure=null;}
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
-  if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;
+  if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
   store=new EditorStore(parseCanonical(migrateLegacyItems(payload.model)),{revision:payload.revision});
   invalidateResolvedData();
@@ -461,7 +465,7 @@ function reapplyLocalRecovery() {
   for(const transaction of recovery.pending||[]){const before=parseCanonical(transaction.canonical_before||recovery.model);if(!transaction.ops?.every(op=>opPreconditionsMatch(probe.model,before,op)))return toast('Local edits overlap newer report changes; recovery draft is retained for review');try{probe.commit(probe.command(transaction.ops,transaction.label||'Recovered edit','recovery-probe'));ops.push(...transaction.ops);}catch{return toast('Local edits cannot be reapplied safely; recovery draft is retained');}}
   if(!ops.length)return false;const savedRecovery=ui.recovery;ui.recovery=null;const accepted=commitOps('Reapply retained local edits',ops,{announce:'Local edits reapplied'});if(accepted){ui.recovery={...savedRecovery,reapplying:true,reapply_commit_id:accepted.id};persistPendingState();updateSaveUi();}else{ui.recovery=savedRecovery;persistPendingState();updateSaveUi();}return !!accepted;
 }
-window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{};debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
+window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{},active=String(bootstrap.report_id||'default'),replyReport=String(p.report_id||p.report?.report_id||active);debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(['report.commit_result','report.conflict','report.error'].includes(m.type)&&replyReport!==active){debugEvent('warn','Ignored stale report reply',`${m.type} for ${replyReport} while ${active} is active`);return;}if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
 
 function commitOps(label, ops, { announce = null, render = true } = {}) {
   let next;
@@ -475,7 +479,7 @@ function undo() {
   if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); invalidateResolvedData(); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); renderAll(); toast('Undid last edit');
 }
 function redo() {
-  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); invalidateResolvedData(); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Redo'}}); renderAll(); toast('Redid last edit');
+  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); invalidateResolvedData(); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); renderAll(); toast('Redid last edit');
 }
 function pruneSelection() {
   const ids = new Set(model().items.map((entry) => entry.id));
@@ -885,7 +889,7 @@ function renderVirtualCustomTable(entry) {
   host.innerHTML=`<table><thead><tr>${grid.headers.map((header,index)=>`<th><input data-table-header="${index}" value="${esc(header)}" aria-label="Column ${index+1} header"></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=grid.headers.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;}),visible=grid.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.tableFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.tableFilter.toLowerCase())));
   spacer.style.height=`${visible.length*rowHeight}px`;const selected=(row,column)=>{const range=ui.tableRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.tableCell=`${record.index}:${column}`;input.value=formatAuthoringScalar(record.row[column]);input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));const active=document.activeElement,activeSlot=pool.findIndex(row=>row.contains(active));if(activeSlot>=0){const cell=active.dataset.datasetCell||active.dataset.tableCell;const nextRecord=visible[start+activeSlot];if(cell&&String(nextRecord?.index)!==cell.split(':')[0]){active.blur();if(!host.isConnected||!scroll.isConnected)return;}}body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{const key=`${record.index}:${column}`;if(input!==document.activeElement||input.dataset.tableCell!==key)input.value=formatAuthoringScalar(record.row[column]);input.dataset.tableCell=key;input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
 }
 function selectedDataset(entry) { return entry?.dataset_id ? model().datasets.find((dataset)=>dataset.id===entry.dataset_id) : null; }
 function dataDockMarkup(entry) {
@@ -910,7 +914,7 @@ function renderVirtualDataDock(entry, dataset) {
   host.innerHTML=`<table><thead><tr>${fields.map((field,index)=>`<th><input draggable="true" data-dataset-field="${index}" data-field-id="${esc(field.id)}" value="${esc(field.name)}" aria-label="Rename ${esc(field.name)}"><select data-dataset-type="${index}" aria-label="${esc(field.name)} type">${fieldTypes.map(type=>`<option value="${type}" ${field.type===type?'selected':''}>${type}</option>`).join('')}</select></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=fields.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;});const visible=dataset.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.dataDockFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.dataDockFilter.toLowerCase())));spacer.style.height=`${visible.length*rowHeight}px`;
   const selected=(row,column)=>{const range=ui.dataDockRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.datasetCell=`${record.index}:${column}`;input.value=formatAuthoringScalar(record.row[column]);input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));const active=document.activeElement,activeSlot=pool.findIndex(row=>row.contains(active));if(activeSlot>=0){const cell=active.dataset.datasetCell||active.dataset.tableCell;const nextRecord=visible[start+activeSlot];if(cell&&String(nextRecord?.index)!==cell.split(':')[0]){active.blur();if(!host.isConnected||!scroll.isConnected)return;}}body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{const key=`${record.index}:${column}`;if(input!==document.activeElement||input.dataset.datasetCell!==key)input.value=formatAuthoringScalar(record.row[column]);input.dataset.datasetCell=key;input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
 }
 function commitDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}) {
   const consumers=datasetConsumers(nextDataset.id);
@@ -929,7 +933,7 @@ function replaceDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}
 }
 function datasetConsumers(datasetId){return model().items.filter(candidate=>candidate.dataset_id===datasetId);}
 function commitDatasetRefresh(entry,intake,selectedOnly=false){
-  const dataset=selectedDataset(entry);
+  entry=entry&&item(entry.id);const dataset=selectedDataset(entry);
   if(!entry||!dataset||!intake)return false;
   const plan=planDatasetRefresh({dataset,intake,items:model().items,selectedId:entry.id,selectedOnly,viewForEntry:viewContractForEntry});
   if(!plan.valid){toast(plan.reason);return false;}
@@ -948,19 +952,21 @@ function openDatasetRefresh(entry){
   const dataset=selectedDataset(entry);if(!dataset)return;
   ui.datasetRefresh={entryId:entry.id,datasetId:dataset.id,revision:dataset.revision||0,sourceText:'',intake:null,token:0,loading:false,error:null};
   const render=()=>{
-    const state=ui.datasetRefresh;if(!state)return;
+    const state=ui.datasetRefresh;if(!state)return;const focus=dialogFocusSnapshot();
     const current=item(state.entryId),currentDataset=selectedDataset(current);
     if(!current||!currentDataset||currentDataset.id!==state.datasetId||currentDataset.revision!==state.revision){closeModals();return toast('The dataset changed; reopen Refresh data.');}
     const linked=datasetConsumers(dataset.id).length,plan=state.intake?planDatasetRefresh({dataset,intake:state.intake,items:model().items,selectedId:entry.id,viewForEntry:viewContractForEntry}):null;
+    const independentPlan=state.intake?planDatasetRefresh({dataset,intake:state.intake,items:model().items,selectedId:entry.id,selectedOnly:true,viewForEntry:viewContractForEntry}):null;
     const detail=plan?.compatibility?.kind==='changed'?[plan.compatibility.added.length?`added ${plan.compatibility.added.join(', ')}`:'',plan.compatibility.removed.length?`missing ${plan.compatibility.removed.join(', ')}`:''].filter(Boolean).join(' · '):'';
     $('#modalTitle').textContent='Refresh data';
     const summary=state.loading?'Parsing and profiling data…':state.error?state.error:plan?`${dataset.rows.length} rows → ${state.intake.rows.length} rows · ${plan.valid?plan.compatibility.kind:plan.compatibility.kind==='changed'?`Schema changed · ${detail}`:plan.reason}`:'Paste a recurring export to check compatibility.';
-    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog"><b>${esc(dataset.name)} · revision ${dataset.revision||1}</b><span>Feeds ${linked} visual${linked===1?'':'s'}</span><textarea id="refreshDataText" placeholder="Paste refreshed Excel, CSV, or TSV data">${esc(state.sourceText)}</textarea><small>${esc(summary)}</small><div class="modal-actions"><button class="tb" data-close>Cancel</button><button class="tb" id="refreshReview" ${state.intake?'':'disabled'}>Review mapping</button><button class="tb accent" id="refreshLinked" ${plan?.valid?'':'disabled'}>${linked===1?'Refresh data':`Refresh linked dataset · ${linked} visuals`}</button>${linked>1?`<button class="tb" id="refreshOnly" ${plan?.valid?'':'disabled'}>Refresh this visual only</button>`:''}</div></div>`;
+    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog"><b>${esc(dataset.name)} · revision ${dataset.revision||1}</b><span>Feeds ${linked} visual${linked===1?'':'s'}</span><textarea id="refreshDataText" placeholder="Paste refreshed Excel, CSV, or TSV data">${esc(state.sourceText)}</textarea><small>${esc(summary)}</small><div class="modal-actions"><button class="tb" data-close>Cancel</button><button class="tb" id="refreshReview" ${state.intake?'':'disabled'}>Review mapping</button><button class="tb accent" id="refreshLinked" ${plan?.valid?'':'disabled'}>${linked===1?'Refresh data':`Refresh linked dataset · ${linked} visuals`}</button>${linked>1?`<button class="tb" id="refreshOnly" ${independentPlan?.valid?'':'disabled'}>Refresh this visual only</button>`:''}</div></div>`;
     $('#refreshDataText').oninput=async event=>{const source=event.target.value,token=++state.token;state.sourceText=source;state.intake=null;state.error=null;state.loading=!!source.trim();render();if(!source.trim())return;try{const intake=await parsePasteAsync(source);if(ui.datasetRefresh!==state||token!==state.token)return;state.intake=intake;state.loading=false;render();}catch(error){if(ui.datasetRefresh===state&&token===state.token){state.loading=false;state.error=error.message||'Could not parse data.';render();}}};
     $('[data-close]',$('#modalBody'))?.addEventListener('click',closeModals,{once:true});
     $('#refreshLinked')?.addEventListener('click',()=>{if(commitDatasetRefresh(current,state.intake,false))closeModals();});
     $('#refreshOnly')?.addEventListener('click',()=>{if(commitDatasetRefresh(current,state.intake,true))closeModals();});
     $('#refreshReview')?.addEventListener('click',()=>{const source=state.sourceText;closeModals();openDataFirstDialog();ui.dataFirst.sourceText=source;parseDataFirstText(source);});
+    restoreDialogFocus(focus);
   };
   render();openModal($('#genericModal'),$('#refreshDataText'));
 }
@@ -1017,7 +1023,8 @@ async function validatedImageDataUrl(file) {
   return await fileToDataUrl(file);
 }
 function bindSemanticInspector(entry) {
-  const patch=(label,value)=>{ if (entry.locked) return toast('Unlock the component before editing'); return commitOps(label,[{op:'item.patch',id:entry.id,patch:value}]); };
+  const bindingReport=String(bootstrap.report_id);
+  const patch=(label,value)=>{const current=item(entry.id);if(String(bootstrap.report_id)!==bindingReport||!current)return false;if(current.locked)return toast('Unlock the component before editing');return commitOps(label,[{op:'item.patch',id:current.id,patch:value}]);};
   if(entry.engine==='TableEngine')renderVirtualCustomTable(entry);
   $('#iValueFormat')?.addEventListener('change',(e)=>patch('Edit metric value format',{value_format:e.target.value}));
   $('#iDecimals')?.addEventListener('change',(e)=>patch('Edit metric decimals',{decimals:Math.max(0,Math.min(6,Math.round(Number(e.target.value)||0)))}));
@@ -1073,7 +1080,7 @@ function bindSemanticInspector(entry) {
   $('[data-diagram-action="add-node"]')?.addEventListener('click',()=>patch('Add diagram node',{nodes:[...(entry.nodes||[]),`Node ${(entry.nodes||[]).length+1}`]}));
   $('[data-diagram-action="add-connected"]')?.addEventListener('click',()=>{const nodes=entry.nodes?.length?[...entry.nodes]:['Source'];const next=`Node ${nodes.length+1}`;patch('Add connected diagram node',{nodes:[...nodes,next],edges:[...(entry.edges||[]),[nodes.at(-1),next]]});});
   $('[data-diagram-action="sample"]')?.addEventListener('click',()=>patch('Restore diagram sample',diagramStarter()));
-  $('#iImageFile')?.addEventListener('change',async(e)=>{try{const file=e.target.files?.[0];if(file)patch('Set image',{src:await validatedImageDataUrl(file)});}catch(err){toast(String(err.message||err));}}); $('#iAlt')?.addEventListener('change',(e)=>patch('Edit image alt text',{alt:e.target.value})); $('#iCaption')?.addEventListener('change',(e)=>patch('Edit image caption',{caption:e.target.value})); $('#iFocal')?.addEventListener('change',(e)=>patch('Edit image focal point',{focal:e.target.value||'50% 50%'}));
+  $('#iImageFile')?.addEventListener('change',async(e)=>{try{const file=e.target.files?.[0];if(file)patch('Set image',{src:await validatedImageDataUrl(file),asset_id:null});}catch(err){toast(String(err.message||err));}}); $('#iAlt')?.addEventListener('change',(e)=>patch('Edit image alt text',{alt:e.target.value})); $('#iCaption')?.addEventListener('change',(e)=>patch('Edit image caption',{caption:e.target.value})); $('#iFocal')?.addEventListener('change',(e)=>patch('Edit image focal point',{focal:e.target.value||'50% 50%'}));
   $('[data-image-action="replace"]')?.addEventListener('click',()=>$('#iImageFile')?.click());$('[data-image-action="paste"]')?.addEventListener('click',()=>toast('Paste an image with Ctrl/Cmd+V while this image is selected'));
   $('#iStatement')?.addEventListener('change',(e)=>patch('Edit statement',{statement:e.target.value})); $('#iDetail')?.addEventListener('change',(e)=>patch('Edit detail',{detail:e.target.value})); $('#iStatus')?.addEventListener('change',(e)=>patch('Edit status',{status:e.target.value}));
   $('#iObservations')?.addEventListener('change',(e)=>patch('Edit observations',{observations:parseObservations(e.target.value,entry.engine==='WaferFabEngine'?['x','y','value']:['label','value'])}));
@@ -1477,13 +1484,25 @@ function addComponent(type, pos = null) {
   const canonical=quickCanonical[type]; if (!canonical) return;
   addLibraryElement(canonical[0],canonical[1],pos);
 }
+function initialManualGeometry(entry,pos=null) {
+  if(model().mode==='smart')return {};
+  const guided=model().mode==='guided',inset=guided?CANVAS.gap:0,policy=semanticPolicy(entry);
+  const w=Math.min(CANVAS.w-inset*2,Math.max(policy.minW,Math.min(policy.prefW,520)));
+  const h=Math.min(CANVAS.h-inset*2,Math.max(policy.minH,Math.min(policy.prefH,320)));
+  const cascade=model().mode==='free'&&!pos?(model().items.length%6)*24:0;
+  const bounded=(x,y)=>({x:clamp(x,inset,CANVAS.w-inset-w),y:clamp(y,inset,CANVAS.h-inset-h),w,h});
+  if(!guided)return bounded((pos?.x??CANVAS.w/2)-w/2+cascade,(pos?.y??CANVAS.h/2)-h/2+cascade);
+  const peers=currentRects(),candidates=[];
+  if(pos)candidates.push(bounded(Math.round((pos.x-w/2)/CANVAS.gap)*CANVAS.gap,Math.round((pos.y-h/2)/CANVAS.gap)*CANVAS.gap));
+  candidates.push(bounded(inset,inset));
+  const xs=[inset,...peers.map(r=>r.x+r.w+CANVAS.gap)],ys=[inset,...peers.map(r=>r.y+r.h+CANVAS.gap)];
+  for(const y of ys.sort((a,b)=>a-b))for(const x of xs.sort((a,b)=>a-b))candidates.push(bounded(x,y));
+  return candidates.find(candidate=>peers.every(peer=>!overlap(candidate,peer,CANVAS.gap-.1)))||null;
+}
 function addLibraryElement(element, engine, pos = null) {
   const type=engineToType[engine]||'text'; const d=typeDefaults[type]||typeDefaults.text; const id=`c${model().nextId}`;
   const entry={id,type,element,engine,title:element,showTitle:false,textAlign:'left',weight:d.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map((x)=>x.z||0))+1,...starterContent(engine,element)};
-  if (model().mode!=='smart') {
-    const inset=model().mode==='guided'?CANVAS.gap:0; const width=Math.min(CANVAS.w-inset*2,d.minW*1.3); const height=Math.min(CANVAS.h-inset*2,d.minH*1.25);
-    const cascade=model().mode==='free'&&!pos?(model().items.length%6)*24:0; entry.x=clamp((pos?.x??CANVAS.w/2)-width/2+cascade,inset,CANVAS.w-inset-width); entry.y=clamp((pos?.y??CANVAS.h/2)-height/2+cascade,inset,CANVAS.h-inset-height); entry.w=width; entry.h=height;
-  }
+  const geometry=initialManualGeometry(entry,pos);if(!geometry){toast('No free space in Guided mode. Increase page size or switch to Free.');return;}Object.assign(entry,geometry);
   const accepted=commitOps('Add Visembler element',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1}}],{announce:`${element} added`});
   if (!accepted) return;
   const recentKey=`${engine}::${element}`;ui.recentElements=[recentKey,...ui.recentElements.filter((key)=>key!==recentKey)].slice(0,8);storage.set('viz-library-recent',JSON.stringify(ui.recentElements));
@@ -1796,13 +1815,9 @@ function showDropGhost(e) { const g = $('#dropGhost'); if (model().mode === 'sma
 function toggleChartPoint(entry, k) { const cross = entry.cross === k ? null : k; const crossFilter = cross == null ? null : chartData(entry)[cross][0]; commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]); }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
 function setBrushByKeyboard(entry, kind, delta) { const D = chartData(entry); const next = [...(entry.brush || [0, D.length - 1])]; if (kind === 'start') next[0] = clamp(next[0] + delta, 0, next[1]); else next[1] = clamp(next[1] + delta, next[0], D.length - 1); if (next[0] !== entry.brush[0] || next[1] !== entry.brush[1]) commitOps('Adjust brush range', [{ op: 'item.patch', id: entry.id, patch: { brush: next } }]); }
-let intakeWorker = null, intakeSequence = 0;
 function parsePaste(txt) { const result=intakeText(txt); return result.rows.length ? result : null; }
-function parsePasteAsync(txt) {
-  const source=String(txt||''); if(source.length<OFF_THREAD_INTAKE_BYTES||typeof Worker==='undefined')return Promise.resolve(parsePaste(source));
-  if(!intakeWorker)intakeWorker=new Worker(new URL('./authoring_data_worker.mjs',import.meta.url),{type:'module'});
-  const id=++intakeSequence; return new Promise((resolve,reject)=>{const receive=({data})=>{if(data?.id!==id)return;intakeWorker.removeEventListener('message',receive);if(data.error)reject(new Error(data.error));else resolve(data.result?.rows?.length?data.result:null);};intakeWorker.addEventListener('message',receive);intakeWorker.postMessage({id,text:source});});
-}
+const intakeClient=createIntakeClient({makeWorker:()=>new Worker(new URL('./authoring_data_worker.mjs',import.meta.url),{type:'module'}),parseInline:parsePaste,threshold:OFF_THREAD_INTAKE_BYTES});
+function parsePasteAsync(txt) { return intakeClient.parse(txt); }
 function datasetId() { return `dataset-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`; }
 function fieldById(dataset, id) { return dataset.fields.find((field)=>field.id===id); }
 function fieldIndex(dataset, id) { return dataset.fields.findIndex((field)=>field.id===id); }
@@ -1831,7 +1846,8 @@ function dataFirstEntry(plan, id) {
 }
 function createDataFirstVisual(plan, label='Create visual from data') {
   if(!plan?.valid)return false;
-  const id=`c${model().nextId}`, entry=dataFirstEntry(plan,id);
+  const id=`c${model().nextId}`, entry=dataFirstEntry(plan,id),geometry=initialManualGeometry(entry);
+  if(!geometry){toast('No free space in Guided mode. Increase page size or switch to Free.');return false;}Object.assign(entry,geometry);
   const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,plan.dataset],nextId:model().nextId+1,crossFilter:null}},{op:'item.add',item:entry}],{announce:`Created ${entry.element}`});
   if(accepted){ui.selected=new Set([id]);renderAll();}
   return !!accepted;
@@ -1850,17 +1866,31 @@ function dataFirstFieldOptions(fields, contract, role, selected) {
   });
   return options.join('');
 }
+function dialogFocusSnapshot(){
+  const node=document.activeElement;if(!node||!$('#modalBody')?.contains(node))return null;
+  const selector=node.id?`#${CSS.escape(node.id)}`:['data-data-first-role','data-data-first-view'].filter(k=>node.hasAttribute(k)).map(k=>`[${k}="${CSS.escape(node.getAttribute(k))}"]`)[0];
+  return selector?{node,selector,start:node.selectionStart,end:node.selectionEnd,scrollTop:node.scrollTop}:null;
+}
+function restoreDialogFocus(saved){
+  if(!saved)return;let node=$(saved.selector,$('#modalBody'));if(!node)return;
+  // Reuse the focused intake textarea, preserving native editing/undo history.
+  if(['dataFirstText','refreshDataText'].includes(saved.node.id)&&node!==saved.node){node.replaceWith(saved.node);node=saved.node;}
+  node.focus({preventScroll:true});if(typeof saved.start==='number'&&node.setSelectionRange)node.setSelectionRange(saved.start,saved.end);node.scrollTop=saved.scrollTop;
+}
 function renderDataFirstDialog() {
   const state=ui.dataFirst, modal=$('#genericModal'); if(!state||!modal)return;
+  const focus=dialogFocusSnapshot();
   const intake=state.intake, selected=state.destinationEntryId?item(state.destinationEntryId):null;
   $('#modalTitle').textContent='Create from data';
   const paste=`<label class="data-first-paste"><span>Paste rows from Excel, CSV, or TSV</span><textarea id="dataFirstText" placeholder="Paste rows from Excel, CSV, or TSV" aria-describedby="dataFirstHelp">${esc(state.sourceText||'')}</textarea><small id="dataFirstHelp">Paste a rectangular spreadsheet range, CSV, or TSV. Data stays in this report.</small></label>`;
   if(!intake) {
-    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-status" aria-live="polite">${state.loading?'Parsing and profiling data…':'Paste data to see production-ready visual choices.'}</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`;
-    bindDataFirstDialog(); openModal(modal,$('#dataFirstText')); return;
+    const status=state.loading?'Parsing and profiling data…':state.error||'Paste data to see production-ready visual choices.';
+    const statusAttrs=state.error?'class="data-first-status error" role="alert"':'class="data-first-status" aria-live="polite"';
+    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div ${statusAttrs}>${esc(status)}</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`;
+    bindDataFirstDialog();if(!modal.classList.contains('show'))openModal(modal,$('#dataFirstText'));restoreDialogFocus(focus);return;
   }
   const recommendations=productionRecommendations(intake), recommendation=recommendations.find(candidate=>candidate.view===state.view)||recommendations[0];
-  if(!recommendation) { $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-status error" role="alert">No supported production visual is available for this data.</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`; bindDataFirstDialog(); return; }
+  if(!recommendation) { $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-status error" role="alert">No supported production visual is available for this data.</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`; bindDataFirstDialog();restoreDialogFocus(focus);return; }
   state.view=recommendation.view; state.mapping=state.mapping&&state.mappingView===recommendation.view?state.mapping:structuredClone(recommendation.mapping); state.mappingView=recommendation.view;
   const contract=contractFor(recommendation.contract_view||recommendation.view), validation=contract.validate(state.mapping,intake.fields), target=productionTargetForView(recommendation.view);
   const roles=[...contract.required_roles,...contract.optional_roles.filter(role=>state.mapping[role])];
@@ -1872,7 +1902,7 @@ function renderDataFirstDialog() {
   const matches=state.matches||[], saved=state.savedPresetId&&mappingPresets.find(preset=>preset.id===state.savedPresetId), savedUi=saved?`<div class="data-first-saved" aria-live="polite"><b>Using saved mapping · ${esc(saved.name)}</b><button type="button" class="link-button" id="dataFirstDetected">Use detected mapping</button><button type="button" class="link-button" data-forget-mapping="${esc(saved.id)}" aria-label="Forget mapping ${esc(saved.name)}">Forget</button></div>`:matches.length>1?`<div class="data-first-saved"><b>Saved mappings for this data</b><div class="data-first-saved-list">${matches.map(match=>`<button type="button" class="tb" data-use-mapping="${esc(match.preset.id)}">${esc(match.preset.name)} · ${esc(productionTargetForView(match.preset.view)?.element||match.preset.view)}</button>`).join('')}</div></div>`:'';
   const save=validation.valid&&hasUniqueNormalizedFields(intake.fields)?'<button type="button" class="tb" id="dataFirstSaveMapping">Save mapping</button>':!hasUniqueNormalizedFields(intake.fields)?'<small>Saved mappings require unique column names.</small>':'';
   $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-summary"><b>${intake.rows.length.toLocaleString()} rows · ${intake.fields.length} columns</b><span>${intake.header.present?'Header detected':'No header detected'} · ${intake.delimiter==='\t'?'TSV':intake.delimiter===','?'CSV':'Delimited text'} · ${intake.warnings.length} warning${intake.warnings.length===1?'':'s'}</span></div><ul class="data-first-fields">${fields}</ul>${savedUi}<section class="data-first-recommendations" aria-label="Production visual recommendations">${cards}</section><section class="data-first-mappings"><div><b>Field mapping</b><button type="button" class="link-button" id="dataFirstReset">Use detected mapping</button></div>${mappingRows}</section>${error}${replacement}<div class="modal-actions">${save}<button type="button" class="tb" data-close>Cancel</button><button type="button" class="tb accent" id="dataFirstCreate" ${validation.valid?'':'disabled'}>Create visual</button></div></div>`;
-  bindDataFirstDialog();
+  bindDataFirstDialog();restoreDialogFocus(focus);
 }
 async function parseDataFirstText(text) {
   const state=ui.dataFirst; if(!state)return; const token=++state.token; state.error=null; state.intake=null;
@@ -1910,9 +1940,14 @@ async function appendTextToSelection(txt) {
   const parsed=await parsePasteAsync(txt);if(!parsed||ui.selected.size!==1)return false;const entry=item([...ui.selected][0]),existing=entry&&selectedDataset(entry);if(!existing){toast('Paste data first, then append matching rows');return false;}const appended=appendCompatibleDataset(existing,datasetFromIntake(parsed,existing.id,existing.name));if(!appended.ok){toast(appended.reason);return false;}const accepted=commitDataset(entry,'Append pasted rows',appended.dataset,entry.mapping||{});if(accepted)toast('Appended data');return !!accepted;
 }
 async function pasteImage(file) {
-  const src=await validatedImageDataUrl(file); let entry=ui.selected.size===1?item([...ui.selected][0]):null;
-  if (entry?.engine!=='ImageMediaEngine') { addLibraryElement('Image','ImageMediaEngine'); entry=item([...ui.selected][0]); }
-  if (!entry) return false; return !!commitOps('Paste image',[{op:'item.patch',id:entry.id,patch:{src}}],{announce:'Image pasted'});
+  const reportId=String(bootstrap.report_id),selection=[...ui.selected],existing=selection.length===1?item(selection[0]):null;
+  const src=await validatedImageDataUrl(file);
+  if(String(bootstrap.report_id)!==reportId||!sameValue(selection,[...ui.selected]))return false;
+  let entry=existing&&item(existing.id);
+  if(entry?.locked)return toast('Unlock the component before editing');
+  if(entry?.engine!=='ImageMediaEngine'){addLibraryElement('Image','ImageMediaEngine');entry=item([...ui.selected][0]);}
+  if(!entry)return false;
+  return !!commitOps('Paste image',[{op:'item.patch',id:entry.id,patch:{src,asset_id:null}}],{announce:'Image pasted'});
 }
 
 function showTip(e, n) { const entry = item(n.closest('.component').dataset.id); if(entry?.behaviors?.tooltip===false)return; const d = chartData(entry)[+(n.dataset.point??n.dataset.behaviorPoint)]; if(!d)return; const tip = $('#tooltip'); tip.innerHTML = `<b>${esc(d[0])}</b><span>${d[1]} · activate to cross-filter</span>`; tip.style.display = 'block'; moveTip(e); }
@@ -2072,14 +2107,45 @@ function deletePreset(index){if(!personalPresets[index])return;personalPresets.s
 function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});dispatchSemantic('mapping.preferences_requested',{});}
 function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;ui.saveInFlight=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
 function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
-function exportModel(){const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
+async function resolvePortableImage(source){
+  if(String(source).startsWith('data:'))return source;
+  const url=new URL(source,document.baseURI),base=new URL(document.baseURI);
+  if(url.origin!==base.origin)throw new Error('External images must be uploaded before export.');
+  const response=await fetch(url,{signal:AbortSignal.timeout(15000),credentials:'same-origin'});
+  if(!response.ok)throw new Error(`Image export failed (${response.status}).`);
+  const blob=await response.blob();
+  if(!['image/png','image/jpeg','image/webp'].includes(blob.type)||blob.size>MAX_IMAGE_BYTES)throw new Error('Image is invalid or exceeds the embedded-image limit.');
+  return fileToDataUrl(blob);
+}
+async function portableReport(){
+  const result=await portableEnvelope(parseCanonical(store.serialize()),store.revision,resolvePortableImage);
+  for(const [source,uri] of [...result.images]){if(!source.startsWith('data:'))result.images.set(new URL(source,document.baseURI).href,uri);}
+  return result;
+}
+async function exportModel(){
+  try{const {envelope}=await portableReport();downloadBlob(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'}),'visembler_report_model.json');toast('Portable report JSON exported');}
+  catch(error){toast(error.message||'Report export failed');}
+}
+async function exportRetainedEdits(){
+  if(!ui.recovery?.model)return toast('No retained local edits to export.');
+  try{const {envelope}=await portableEnvelope(parseCanonical(ui.recovery.model),store.revision,resolvePortableImage);downloadBlob(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'}),'visembler_retained_edits.json');toast('Retained local edits exported');}
+  catch(error){toast(error.message||'Retained edit export failed');}
+}
 function downloadBlob(blob,name){const link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
-function exportSvgMarkup(scale=1){
+function exportSvgMarkup(scale=1,images=new Map()){
   const hull=$('#hull'); if(!hull)throw new Error('Report canvas is unavailable');
   const clone=hull.cloneNode(true);
+  // Resolve layout, colors and SVG marks before leaving this document. External
+  // stylesheets/host scopes are not dependencies of a standalone SVG.
+  const originals=[hull,...hull.querySelectorAll('*')],copies=[clone,...clone.querySelectorAll('*')];
+  const visual=/^(display|position|top|right|bottom|left|z-index|width|height|min-|max-|box-sizing|margin|padding|border|background|color$|opacity|font|line-height|letter-spacing|text-|white-space|word-|overflow|vertical-align|flex|grid|gap|row-gap|column-gap|justify-|align-|place-|transform|object-|visibility|fill|stroke|paint-order|clip-path)/;
+  originals.forEach((node,index)=>{const cs=getComputedStyle(node),target=copies[index];for(const property of cs){if(visual.test(property))target.style.setProperty(property,inlineAssetUrls(cs.getPropertyValue(property),images));}target.style.animation='none';target.style.transition='none';});
+  clone.querySelectorAll('.component').forEach(node=>{node.style.boxShadow='none';node.style.outline='none';node.removeAttribute('data-content-signature');node.removeAttribute('aria-selected');node.removeAttribute('aria-disabled');node.removeAttribute('tabindex');});
+  clone.querySelectorAll('[style]').forEach(node=>node.setAttribute('style',inlineAssetUrls(node.getAttribute('style'),images)));
+  clone.querySelectorAll('.selected,.locked,.grouped').forEach(node=>node.classList.remove('selected','locked','grouped'));
   clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;
   clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
-  const css=[...document.styleSheets].flatMap(sheet=>{try{return [...sheet.cssRules].map(rule=>rule.cssText);}catch{return [];}}).join('\n').replaceAll(':scope','.cui-visualizer-root');
+  const css='/* Visual properties are embedded per node; no host CSS is required. */';
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
   svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
   svg.setAttribute('width',String(Math.round(CANVAS.w*scale)));
@@ -2089,13 +2155,17 @@ function exportSvgMarkup(scale=1){
   foreign.setAttribute('width','100%'); foreign.setAttribute('height','100%');
   const wrapper=document.createElementNS('http://www.w3.org/1999/xhtml','div');
   wrapper.setAttribute('class','cui-visualizer-root');
+  wrapper.setAttribute('data-theme',activeRoot?.getAttribute('data-theme')||'light');
+  wrapper.style.cssText=`width:${CANVAS.w}px;height:${CANVAS.h}px;position:relative;overflow:hidden;`;
+  clone.style.margin='0';clone.style.transform='none';
   const style=document.createElementNS('http://www.w3.org/1999/xhtml','style');
   style.textContent=css;
   wrapper.append(style,clone); foreign.append(wrapper); svg.append(foreign);
   return new XMLSerializer().serializeToString(svg);
 }
 async function exportCanvasImage(format){
-  const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h))),markup=exportSvgMarkup(scale);
+  const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h)));
+  let markup;try{const {envelope,images}=await portableReport();if(envelope.revision!==store.revision)throw new Error('Report changed during export. Export again.');markup=exportSvgMarkup(scale,images);}catch(error){toast(error.message||'Export failed');return;}
   if(format==='svg'){downloadBlob(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}),'visembler_report.svg');toast('SVG exported');return;}
   const source=URL.createObjectURL(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}));
   try{
@@ -2112,17 +2182,17 @@ async function exportCanvasImage(format){
   finally{URL.revokeObjectURL(source);}
 }
 async function copyReportJson(){
-  const text=store.exportEnvelope(2);
-  try{await navigator.clipboard.writeText(text);toast('Report JSON copied');}
+  try{const {envelope}=await portableReport();const text=JSON.stringify(envelope,null,2);await navigator.clipboard.writeText(text);toast('Report JSON copied');}
   catch(error){debugEvent('warn','Clipboard unavailable',error?.message||error);toast('Clipboard permission is unavailable; use Download Report JSON');}
 }
 function openExportMenu(){
   const pf=preflight();
   $('#modalTitle').textContent='Export';
-  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportJsonAction">Download Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button><small>Report JSON is the canonical portable editable format. SVG is the supported visual export for this release.</small></div>`;
+  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportJsonAction">Download Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button>${ui.recovery?.model?'<button type="button" class="tb full-width" id="exportRecoveryJsonAction">Download retained local edits</button>':''}<small>Report JSON is the canonical portable editable format. SVG is the supported visual export for this release.</small></div>`;
   $('#exportJsonAction').onclick=()=>{closeModals();exportModel();};
   $('#exportCopyJsonAction').onclick=async()=>{closeModals();await copyReportJson();};
   $('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};
+  $('#exportRecoveryJsonAction')?.addEventListener('click',()=>{closeModals();exportRetainedEdits();});
   openModal($('#genericModal'));
 }
 function openHelp(){
@@ -2167,9 +2237,9 @@ function renderCommands(query = '') {
   const active=$('[aria-selected="true"]',$('#cmdList')); const input=$('#cmdInput'); if(active)input?.setAttribute('aria-activedescendant',active.id);else input?.removeAttribute('aria-activedescendant');
 }
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }
-function executeCommandIndex(index) { const command=commands[index],state=commandActionState(command?.[3]);if(!state.enabled)return toast(state.reason);command?.[2](); closeModals(); }
-function openModal(modal, focusTarget = null) { ui.modalReturnFocus = document.activeElement; modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
-function closeModals() { if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;$$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
+function executeCommandIndex(index) { const command=commands[index],state=commandActionState(command?.[3]);if(!state.enabled)return toast(state.reason);closeModals();command?.[2](); }
+function openModal(modal, focusTarget = null) { if(!modal.classList.contains('show'))ui.modalReturnFocus=document.activeElement;modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
+function closeModals() { if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();$$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
 function trapModalFocus(e) {
   const modal = e.target.closest('.modal.show'); if (!modal || e.key !== 'Tab') return;
   const nodes = $$('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', modal).filter((n) => n.offsetParent !== null); if (!nodes.length) return;
@@ -2297,7 +2367,7 @@ function wireGlobal(signal) {
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
   $$('[data-close]').forEach((button)=>on(button,'click',closeModals));$$('.modal').forEach((modal)=>on(modal,'click',(e)=>{if(e.target===modal)closeModals();}));on(document,'keydown',trapModalFocus);
-  on(window,'keydown',(e)=>{const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
+  on(window,'keydown',(e)=>{if(e.defaultPrevented)return;const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||document.activeElement?.isContentEditable;if($('.modal.show')){if(e.key==='Escape'){e.preventDefault();cancelPointerSession();closeModals();}return;}if(editing||e.target.closest?.('.q-dialog'))return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
   on(window,'keyup',(e)=>{if(e.code==='Space')ui.space=false;});on(window,'blur',()=>{ui.space=false;cancelPointerSession('window-blur');});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
   on(window,'paste',async(e)=>{const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await pasteToSelection(text);}});

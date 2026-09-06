@@ -18,12 +18,23 @@ function metric(entry){
   const n=entry.element.toLowerCase(),fallback=n.includes('capacity')?'1.42M':n.includes('rate')?'98.7%':'42.8',formatted=formatMetricDisplay(entry.value,{style:entry.value_format||'auto',decimals:entry.decimals,currency:entry.currency_symbol||'$'}),value=formatted===null?num(null,fallback):esc(formatted),unit=esc(metricDisplayUnit(entry));
   if(n.includes('pair')) return shell(entry,`<div class="metric-pair"><div><span>Primary</span><b>${value}${unit}</b></div><div><span>Secondary</span><b>${num(entry.target,'38.4')}</b></div></div>`,'Metric');
   if(n.includes('strip')) { const metrics=Array.isArray(entry.metrics)&&entry.metrics.length?entry.metrics:[['Yield','98.7%'],['Cycle','42.8m'],['Risk','Low']]; return shell(entry,`<div class="metric-strip">${metrics.slice(0,6).map(metric=>{const label=Array.isArray(metric)?metric[0]:metric.label,value=Array.isArray(metric)?metric[1]:metric.value;return `<div><span>${esc(label)}</span><b>${num(value)}</b></div>`;}).join('')}</div>`,'Metric'); }
-  if(n.includes('target')) { const actual=num(entry.actual??entry.value,'42.8'),target=num(entry.target,'50'),variance=num(entry.variance,'−7.2'); return shell(entry,`<div class="target-metric"><div class="metric-value">${actual}${unit}</div><div class="target-track"><i style="width:72%"></i><em style="left:84%"></em></div><div class="metric-meta"><span>Target ${target}</span><span>Variance ${variance}</span></div></div>`,'Metric'); }
+  if(n.includes('target')) {
+    const actual=entry.actual??entry.value,target=entry.target,valid=typeof actual==='number'&&Number.isFinite(actual)&&typeof target==='number'&&Number.isFinite(target);
+    const maximum=valid?Math.max(Math.abs(actual),Math.abs(target),1):1,position=v=>valid?Math.max(0,Math.min(100,v/maximum*100)):0;
+    const variance=entry.variance??(valid?actual-target:null);
+    return shell(entry,`<div class="target-metric"><div class="metric-value">${num(actual)}${unit}</div><div class="target-track"><i style="width:${position(actual)}%"></i><em style="left:${position(target)}%"></em></div><div class="metric-meta"><span>Target ${num(target)}</span><span>Variance ${num(variance)}</span></div></div>`,'Metric');
+  }
   if(n.includes('progress')) { const current=entry.current??entry.value??0,max=entry.max??100,pct=max===0?0:Math.max(0,Math.min(100,Number(current)/Number(max)*100||0)); return shell(entry,`<div class="metric-value">${num(current)}${unit}</div><div class="progress-hero"><i style="width:${pct}%"></i></div><div class="metric-meta"><span>${Math.round(pct)}% complete</span><span>Max ${num(max)}</span></div>`,'Metric'); }
   if(n.includes('confidence')) { const confidence=entry.confidence??entry.value??84,label=esc(entry.interpretation||(+confidence>=80?'High confidence':+confidence>=55?'Moderate confidence':'Low confidence')); return shell(entry,`<div class="confidence-wrap"><div class="metric-ring-small"><span>${num(confidence)}%</span></div><div><b>${label}</b><p>${esc(entry.context||'Independent signals summarized against configured confidence bands.')}</p></div></div>`,'Metric'); }
   if(n.includes('status')) return shell(entry,`<div class="status-hero"><i></i><div><b>${esc(entry.status||entry.label||'On track')}</b><span>${value}${unit}</span></div></div><div class="metric-meta"><span>${esc(entry.detail||'Within operating band')}</span></div>`,'Metric');
   if(n.includes('threshold')) { const warning=entry.warning??70,critical=entry.critical??90,current=entry.value??0,max=Math.max(Number(critical)||100,Number(current)||0,1),pos=Math.max(0,Math.min(100,(Number(current)||0)/max*100)); return shell(entry,`<div class="metric-value">${value}${unit}</div><div class="threshold-scale"><span></span><span></span><span></span><i style="left:${pos}%"></i></div><div class="metric-meta"><span>Watch ${num(warning)}</span><span>Critical ${num(critical)}</span></div>`,'Metric'); }
-  if(n.includes('sparkline')) return shell(entry,`<div class="metric-value compact">${value}${unit}</div><svg class="metric-spark" viewBox="0 0 180 48"><path d="M3 39L32 31L61 34L90 19L119 25L148 13L177 9"/></svg><div class="metric-meta"><span>${num(entry.delta,'+6.4')}%</span><span>${esc(entry.period||'last 7 periods')}</span></div>`,'Metric');
+  if(n.includes('sparkline')) {
+    const rows=(entry.series||[]).map(row=>Array.isArray(row)?row[1]:row.value),values=rows.filter(value=>typeof value==='number'&&Number.isFinite(value));
+    const lo=values.length?Math.min(...values):0,hi=values.length?Math.max(...values):1;let connected=false;
+    const path=rows.map((v,i)=>{if(typeof v!=='number'||!Number.isFinite(v)){connected=false;return '';}
+      const x=3+i*174/Math.max(1,rows.length-1),y=hi===lo?24:43-(v-lo)*38/(hi-lo),command=connected?'L':'M';connected=true;return `${command}${x.toFixed(2)} ${y.toFixed(2)}`;}).join(' ');
+    return shell(entry,`<div class="metric-value compact">${value}${unit}</div><svg class="metric-spark" viewBox="0 0 180 48" role="img" aria-label="${values.length} numeric trend points"><path d="${path}"/></svg><div class="metric-meta"><span>${num(entry.delta)}%</span><span>${esc(entry.period||'last 7 periods')}</span></div>`,'Metric');
+  }
   if(n.includes('ring')) { const max=Number(entry.max??100)||100,current=Number(entry.value??0)||0,pct=Math.max(0,Math.min(100,current/max*100)); return shell(entry,`<div class="metric-ring-large"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" class="chart-ring-bg"/><circle cx="50" cy="50" r="38" class="chart-ring" pathLength="100" stroke-dasharray="${pct} ${100-pct}" transform="rotate(-90 50 50)"/></svg><b>${num(entry.value,0)}${unit}</b></div><div class="metric-meta center"><span>${esc(entry.center_label||'Progress')}</span></div>`,'Metric'); }
   if(n.includes('ladder')) { const levels=Array.isArray(entry.levels)&&entry.levels.length?entry.levels:[['P90',52],['Median',42.8],['P10',31]]; return shell(entry,`<div class="metric-ladder">${levels.slice(0,5).map((x,i)=>{const label=Array.isArray(x)?x[0]:x.label,val=Array.isArray(x)?x[1]:x.value;return `<div class="l${i}"><span>${esc(label)}</span><b>${num(val)}</b></div>`;}).join('')}</div>`,'Metric'); }
   if(n.includes('metric + delta')) return shell(entry,`<div class="delta-metric"><b>${value}${unit}</b><span>▲ ${num(entry.delta,'6.4')}%</span><small>vs previous period</small></div>`,'Metric');
@@ -249,7 +260,7 @@ function text(entry){
 
 function chartRows(entry){
   const raw=Array.isArray(entry.data)&&entry.data.length?entry.data:Array.isArray(entry.rows)?entry.rows:[];
-  const normalized=raw.map((r,i)=>Array.isArray(r)?{label:String(r[0]??`Row ${i+1}`),value:r[1],extra:r.slice(2)}:{label:String(r?.label??`Row ${i+1}`),value:r?.value,extra:[]});
+  const normalized=raw.map((r,i)=>Array.isArray(r)?{label:String(r[0]??`Row ${i+1}`),value:r[1],sourceIndex:i,extra:r.slice(2)}:{label:String(r?.label??`Row ${i+1}`),value:r?.value,sourceIndex:i,extra:[]});
   return prepareChartRows(normalized,{sortMode:entry.sort_mode||'input',missingPolicy:entry.missing_policy||'gap'});
 }
 function chartEmpty(entry,n,W,H,left,right,top,plotW,plotH){
@@ -300,7 +311,7 @@ function chart(entry){
   }
   if(n.includes('bar')||n.includes('histogram')||n.includes('pareto')||n.includes('waterfall')){
     const bw=plotW/Math.max(1,valid.length)*.62;
-    const bars=valid.map((r,i)=>{const h=r.v===null?0:Math.abs(r.v)/max*plotH;const x=left+(i+.5)*plotW/Math.max(1,valid.length)-bw/2;return `<rect data-behavior-point="${i}" x="${x.toFixed(2)}" y="${(top+plotH-h).toFixed(2)}" width="${bw.toFixed(2)}" height="${h.toFixed(2)}" rx="3" class="${i===valid.length-1?'accent-fill':'soft-fill'}"/>`;}).join('');
+    const bars=valid.map((r,i)=>{const h=r.v===null?0:Math.abs(r.v)/max*plotH;const x=left+(i+.5)*plotW/Math.max(1,valid.length)-bw/2;return `<rect data-behavior-point="${r.sourceIndex}" aria-label="${esc(r.label)}: ${num(r.v)}" x="${x.toFixed(2)}" y="${(top+plotH-h).toFixed(2)}" width="${bw.toFixed(2)}" height="${h.toFixed(2)}" rx="3" class="${i===valid.length-1?'accent-fill':'soft-fill'}"/>`;}).join('');
     const pareto=n.includes('pareto')?`<path d="${valid.map((r,i)=>`${i?'L':'M'} ${(left+(i+.5)*plotW/valid.length).toFixed(1)} ${(top+plotH-(i+1)/valid.length*plotH*.85).toFixed(1)}`).join(' ')}" class="accent-line"/>`:'';
     return shell(entry,`<svg class="viz-svg" viewBox="0 0 ${W} ${H}"><path class="gridline" d="M${left} ${top+plotH}H${W-right} M${left} ${top+plotH*.5}H${W-right}"/>${bars}${pareto}</svg>`,'Chart');
   }
@@ -315,11 +326,11 @@ function chart(entry){
   if(n.includes('funnel')) return shell(entry,`<div class="funnel-live">${valid.slice(0,4).map((r,i)=>`<div style="--w:${100-i*17}%"><b>${esc(r.label)}</b><span>${num(r.v)}</span></div>`).join('')}</div>`,'Chart');
   if(n.includes('sankey')) return shell(entry,`<svg class="viz-svg sankey-live" viewBox="0 0 ${W} ${H}"><rect x="16" y="20" width="10" height="78" rx="3"/><rect x="234" y="16" width="10" height="42" rx="3"/><rect x="234" y="72" width="10" height="32" rx="3"/><path d="M26 35 C105 35 152 22 234 30"/><path d="M26 67 C108 67 151 86 234 86"/></svg>`,'Chart');
   const min=Math.min(...nums),range=Math.max(...nums)-min,yFor=value=>range===0?top+plotH/2:top+plotH-(value-min)/range*plotH;
-  const points=valid.map((r,i)=>{const x=left+i*plotW/Math.max(1,valid.length-1);const y=r.v===null?null:yFor(r.v);return {x,y};});
+  const points=valid.map((r,i)=>{const x=left+i*plotW/Math.max(1,valid.length-1);const y=r.v===null?null:yFor(r.v);return {x,y,sourceIndex:r.sourceIndex,label:r.label,value:r.v};});
   const segments=[];let current=[];for(const p of points){if(p.y===null){if(current.length)segments.push(current);current=[];}else current.push(p);}if(current.length)segments.push(current);
   const area=n.includes('area');
   const lines=segments.map(seg=>{const d=seg.map((p,i)=>`${i?'L':'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');const a=area?`<path d="M${seg[0].x} ${top+plotH} ${seg.map(p=>`L${p.x} ${p.y}`).join(' ')} L${seg.at(-1).x} ${top+plotH}Z" class="chart-area"/>`:'';return `${a}<path d="${d}" class="accent-line"/>`;}).join('');
-  return shell(entry,`<svg class="viz-svg" viewBox="0 0 ${W} ${H}"><path class="gridline" d="M${left} ${top+plotH}H${W-right} M${left} ${top+plotH*.5}H${W-right}"/>${lines}${points.filter(p=>p.y!==null).map((p,index)=>`<circle data-behavior-point="${index}" cx="${p.x}" cy="${p.y}" r="3" class="accent-fill"/>`).join('')}</svg>`,'Chart');
+  return shell(entry,`<svg class="viz-svg" viewBox="0 0 ${W} ${H}"><path class="gridline" d="M${left} ${top+plotH}H${W-right} M${left} ${top+plotH*.5}H${W-right}"/>${lines}${points.filter(p=>p.y!==null).map((p,index)=>`<circle data-behavior-point="${p.sourceIndex}" aria-label="${esc(p.label)}: ${num(p.value)}" cx="${p.x}" cy="${p.y}" r="3" class="accent-fill"><title>${esc(p.label)}: ${num(p.value)}</title></circle>`).join('')}</svg>`,'Chart');
 }
 
 function engineeringEmpty(entry,n,W,H){

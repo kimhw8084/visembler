@@ -161,5 +161,7 @@ def test_visembler_branding_is_consistent_while_compatibility_identifiers_remain
     assert '.cui-visualizer-host > * { display:block; flex:1 1 0; min-height:0; height:100%; }' in css
     assert "NavItem('visualizer','Visembler','/visualizer'" in page
     assert 'aria-label="Visembler toolbar"' in toolbar
-    assert "a.download='visembler_report_model.json'" in editor
+    # The portable async export uses the shared downloader; branding is unchanged.
+    assert "'visembler_report_model.json'" in editor
+    assert 'async function exportModel()' in editor and 'await portableReport()' in editor
     assert "window.CompanyUIVisualizerBridge" in editor
