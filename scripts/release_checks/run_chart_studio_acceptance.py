@@ -91,7 +91,7 @@ def main()->int:
           browser=pw.chromium.launch(**browser_kwargs());context=browser.new_context(accept_downloads=True,viewport={'width':1440,'height':900});page=context.new_page();page.set_default_timeout(7000);events=BrowserEvents();events.attach(page)
           page.on('dialog',lambda dialog:dialog.accept('Acceptance recipe'))
           load_studio(page,host,line_id);initial_hash=page.evaluate('()=>CompanyUIChartStudio.hash()')
-          check('C001','open Line Chart Studio',lambda:assert_route(page,'Line Chart'))
+          check('C001','open Line Chart Studio',lambda:assert_plotted(page,'Line Chart',3))
           check('C002','Data panel',lambda:assert_tab(page,'data'))
           check('C003','Fields panel',lambda:assert_tab(page,'fields'))
           check('C004','Visual panel',lambda:assert_tab(page,'visual'))
@@ -172,6 +172,18 @@ def assert_true(value,message):
 
 
 def assert_route(page,typ): assert_true('/visualizer/chart-studio' in page.url and page.locator('#cs-chart-type').input_value()==typ,f'route/type mismatch: {page.url}')
+def assert_plotted(page,typ,expected_rows=None):
+    assert_route(page,typ)
+    current=model(page); summary=page.locator('#cs-summary').inner_text(); markup=page.locator('#cs-canvas').inner_html()
+    assert_true(current['dataset']['rows'] and 'X unmapped' not in summary and 'Y unmapped' not in summary,'compatible non-empty data remained unmapped')
+    marks=page.locator('#cs-canvas [data-chart-point],#cs-canvas [data-wafer-die]').count()
+    assert_true(marks>0 or typ in {'CUSUM Chart','EWMA Chart'},'non-empty chart rendered no plotted marks')
+    if expected_rows is not None: assert_true(len(current['dataset']['rows'])==expected_rows,f'expected {expected_rows} hydrated rows, got {len(current["dataset"]["rows"])}')
+    if typ=='Wafer Map':
+        dies=page.locator('#cs-canvas [data-wafer-die]').count()
+        assert_true(dies>0,'non-empty Wafer data rendered no dies')
+        if expected_rows is not None: assert_true(dies==expected_rows,'wafer die count does not match observations')
+    assert_true('unmapped' not in markup.lower(),'unmapped SVG summary reached acceptance output')
 def assert_tab(page,tab): page.locator(f'[data-cs-tab="{tab}"]').click();assert_true(page.locator('#cs-panel').count()==1,f'{tab} panel missing')
 def get_path(value,path):
     for key in path.split('.'): value=value[key]
@@ -181,7 +193,7 @@ def production_count():
 def check_undo_redo(page):
     before=page.evaluate('()=>CompanyUIChartStudio.hash()');command(page,'set',{'path':'axes.y.title','value':'Undo probe'});changed=page.evaluate('()=>CompanyUIChartStudio.hash()');page.locator('[data-action="undo"]').click();undone=page.evaluate('()=>CompanyUIChartStudio.hash()');page.locator('[data-action="redo"]').click();redone=page.evaluate('()=>CompanyUIChartStudio.hash()');assert_true(before!=changed and before==undone and changed==redone,'undo/redo did not restore chart state')
 def reload_and_verify(page,host,rid):
-    page.goto(f'{host.url}/visualizer/chart-studio?report={quote(rid)}&element=chart-1',wait_until='domcontentloaded');page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);assert_true(page.locator('#cs-chart-type').count()==1,'reopen failed')
+    page.goto(f'{host.url}/visualizer/chart-studio?report={quote(rid)}&element=chart-1',wait_until='domcontentloaded');page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);assert_plotted(page,page.locator('#cs-chart-type').input_value())
 def run_perf_fixture():
     script="""import * as c from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs';const d={id:'perf',fields:[{id:'t',name:'time',type:'date'},{id:'v',name:'value',type:'number'},{id:'s',name:'series',type:'categorical'}],rows:Array.from({length:10000},(_,i)=>['2026-01-01',i%101,`S${i%50}`])};const m=c.normalizeChartModel({chart_type:'Line Chart',dataset:d,mapping:{x:'t',y:'v',series:'s'}});const a=performance.now();c.renderChartSvg(m,{width:900,height:480});const w={id:'wafer',fields:[{id:'x',name:'die_x',type:'number'},{id:'y',name:'die_y',type:'number'},{id:'v',name:'value',type:'number'}],rows:Array.from({length:2500},(_,i)=>[i%50,Math.floor(i/50),i%97])};c.renderChartSvg(c.normalizeChartModel({chart_type:'Wafer Map',dataset:w,mapping:{die_x:'x',die_y:'y',value:'v'}}),{width:900,height:520});console.log(JSON.stringify({line_rows:d.rows.length,wafer_rows:w.rows.length,elapsed_ms:Number((performance.now()-a).toFixed(2))}));"""
     return json.loads(subprocess.check_output(['node','--input-type=module','--eval',script],cwd=ROOT,text=True))

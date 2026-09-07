@@ -3,7 +3,8 @@ import { prepareEngineeringChart, renderEngineeringChartSvg } from '../vendor/pr
 import { prepareTimeline } from '../vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26';
 import { validateGraph } from '../vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26';
 import { formatMetricDisplay, metricDisplayUnit, prepareChartRows } from './authoring_format.mjs';
-import { renderChartStudioElement } from './authoring_chart_studio.mjs';
+import { CHART_TYPES, renderChartStudioElement } from './authoring_chart_studio.mjs';
+import { renderDiagramSvg } from './authoring_diagram_studio.mjs';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const slug=value=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -114,21 +115,26 @@ function matrix(entry){
   return shell(entry,`<div class="matrix" role="grid">${Array.from({length:16},(_,i)=>`<div class="matrix-cell level-${(i*7)%5}">${i%5===0?'High':i%3===0?'Med':'Low'}</div>`).join('')}</div>`,'Matrix');
 }
 
+function timelineItems(items,limit=12){
+  const visible=items.slice(0,limit),hidden=Math.max(0,items.length-visible.length);
+  return {visible,hidden,more:hidden?`<span class="timeline-more" aria-label="${hidden} additional events">+${hidden} more</span>`:''};
+}
+
 function timeline(entry){
   const n=entry.element.toLowerCase(), milestones=entry.milestones?.length?entry.milestones:[{label:'Discover',date:null},{label:'Validate',date:null},{label:'Implement',date:null},{label:'Verify',date:null}];
-  if(entry.dataset_id){try{const dated=milestones.length&&milestones.every(item=>typeof item.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(item.date));const plan=prepareTimeline(dated?'dated':'sequence',{tasks:milestones.map((item,index)=>dated?{id:`task-${index}`,label:item.label,start:item.date,milestone:true}:{id:`task-${index}`,label:item.label,order:index}),dependencies:milestones.slice(1).map((_,index)=>({source:`task-${index}`,target:`task-${index+1}`}))});return shell(entry,`<div class="timeline-rail" data-timeline-plan="${esc(plan.fingerprint)}">${plan.tasks.slice(0,5).map((task,index)=>`<div class="tl-step"><span class="tl-dot"></span><div><b data-direct="milestone:${index}" title="Double-click to edit label">${esc(task.label)}</b><small>${esc(plan.mode==='dated'?task.start:`Step ${index+1}`)}</small></div></div>`).join('')}</div>`,'Timeline');}catch(error){return shell(entry,`<div class="data-empty-state full"><b>Timeline data needs review</b><span>${esc(error.message)}</span></div>`,'Timeline');}}
+  if(entry.dataset_id){try{const dated=milestones.length&&milestones.every(item=>typeof item.date==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(item.date));const plan=prepareTimeline(dated?'dated':'sequence',{tasks:milestones.map((item,index)=>dated?{id:`task-${index}`,label:item.label,start:item.date,milestone:true}:{id:`task-${index}`,label:item.label,order:index}),dependencies:milestones.slice(1).map((_,index)=>({source:`task-${index}`,target:`task-${index+1}`}))}),bounded=timelineItems(plan.tasks);return shell(entry,`<div class="timeline-rail" data-timeline-events data-timeline-plan="${esc(plan.fingerprint)}">${bounded.visible.map((task,index)=>`<div class="tl-step" data-timeline-event><span class="tl-dot"></span><div><b data-direct="milestone:${index}" title="Double-click to edit label">${esc(task.label)}</b><small>${esc(plan.mode==='dated'?task.start:`Step ${index+1}`)}</small></div></div>`).join('')}${bounded.more}</div>`,'Timeline');}catch(error){return shell(entry,`<div class="data-empty-state full"><b>Timeline data needs review</b><span>${esc(error.message)}</span></div>`,'Timeline');}}
   if(n.includes('gantt')) return shell(entry,`<div class="gantt"><div class="gantt-labels"><span>Discover</span><span>Validate</span><span>Implement</span></div><div class="gantt-bars"><i style="--x:0;--w:34"></i><i style="--x:25;--w:42"></i><i style="--x:62;--w:34"></i></div></div>`,'Timeline');
   if(n.includes('swimlane')) return shell(entry,`<div class="swim-timeline"><div><b>Ops</b><i style="left:8%;width:32%"></i><i style="left:64%;width:22%"></i></div><div><b>Eng</b><i style="left:28%;width:40%"></i></div><div><b>QA</b><i style="left:58%;width:30%"></i></div></div>`,'Timeline');
   if(n.includes('calendar')) return shell(entry,`<div class="calendar-heat">${Array.from({length:35},(_,i)=>`<span class="h${(i*3)%5}"></span>`).join('')}</div>`,'Timeline');
   if(n.includes('schedule')) return shell(entry,`<div class="schedule-grid"><b>Mon</b><b>Tue</b><b>Wed</b><b>Thu</b><span></span><span class="task">Verify</span><span></span><span class="task alt">Close</span></div>`,'Timeline');
-  if(n.includes('sequence')) return shell(entry,`<div class="sequence-strip">${milestones.slice(0,4).map((m,i)=>`<span><i>${i+1}</i><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b></span>`).join('<em>→</em>')}</div>`,'Timeline');
+  if(n.includes('sequence')) {const bounded=timelineItems(milestones);return shell(entry,`<div class="sequence-strip" data-timeline-events>${bounded.visible.map((m,i)=>`${i?'<em aria-hidden="true">→</em>':''}<span data-timeline-event><i>${i+1}</i><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b></span>`).join('')}${bounded.more}</div>`,'Timeline');}
   if(n.includes('before/after')) return shell(entry,`<div class="before-after-time"><div><b>Before</b><i></i><span>188m</span></div><em>→</em><div><b>After</b><i class="short"></i><span>14m</span></div></div>`,'Timeline');
-  if(n.includes('vertical')) return shell(entry,`<div class="timeline-vertical">${milestones.slice(0,4).map((m,i)=>`<div class="${i<2?'done':''}"><i></i><b>${esc(m.label)}</b><span>${esc(m.date||`Step ${i+1}`)}</span></div>`).join('')}</div>`,'Timeline');
-  if(n.includes('event timeline')) return shell(entry,`<div class="event-timeline-live">${milestones.slice(0,4).map((m,i)=>`<div><span>${esc(m.date||`0${i+1}`)}</span><i></i><b>${esc(m.label)}</b></div>`).join('')}</div>`,'Timeline');
-  if(n.includes('phase roadmap')) return shell(entry,`<div class="phase-roadmap-live">${milestones.slice(0,4).map((m,i)=>`<div class="p${i}"><b>Phase ${i+1}</b><span>${esc(m.label)}</span></div>`).join('')}</div>`,'Timeline');
+  if(n.includes('vertical')) {const bounded=timelineItems(milestones);return shell(entry,`<div class="timeline-vertical" data-timeline-events>${bounded.visible.map((m,i)=>`<div class="${i<2?'done':''}" data-timeline-event><i></i><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b><span>${esc(m.date||`Step ${i+1}`)}</span></div>`).join('')}${bounded.more}</div>`,'Timeline');}
+  if(n.includes('event timeline')) {const bounded=timelineItems(milestones);return shell(entry,`<div class="event-timeline-live" data-timeline-events>${bounded.visible.map((m,i)=>`<div data-timeline-event><span>${esc(m.date||`0${i+1}`)}</span><i></i><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b></div>`).join('')}${bounded.more}</div>`,'Timeline');}
+  if(n.includes('phase roadmap')) {const bounded=timelineItems(milestones);return shell(entry,`<div class="phase-roadmap-live" data-timeline-events>${bounded.visible.map((m,i)=>`<div class="p${i}" data-timeline-event><b>Phase ${i+1}</b><span data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</span></div>`).join('')}${bounded.more}</div>`,'Timeline');}
   if(n.includes('dependency roadmap')) return shell(entry,`<div class="dependency-roadmap-live"><span>A</span><i>→</i><span>B</span><i class="down">↘</i><span>C</span><i>→</i><span>D</span></div>`,'Timeline');
-  if(n.includes('milestone rail')) return shell(entry,`<div class="milestone-rail-live">${milestones.slice(0,4).map((m,i)=>`<span><i class="${i<2?'done':''}"></i><b>${esc(m.label)}</b></span>`).join('')}</div>`,'Timeline');
-  return shell(entry,`<div class="timeline-rail">${milestones.slice(0,5).map((m,i)=>`<div class="tl-step ${i<2?'done':''}"><span class="tl-dot"></span><div><b>${esc(m.label)}</b><small>${esc(m.date||`Step ${i+1}`)}</small></div></div>`).join('')}</div>`,'Timeline');
+  if(n.includes('milestone rail')) {const bounded=timelineItems(milestones);return shell(entry,`<div class="milestone-rail-live" data-timeline-events>${bounded.visible.map((m,i)=>`<span data-timeline-event><i class="${i<2?'done':''}"></i><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b></span>`).join('')}${bounded.more}</div>`,'Timeline');}
+  const bounded=timelineItems(milestones);return shell(entry,`<div class="timeline-rail" data-timeline-events>${bounded.visible.map((m,i)=>`<div class="tl-step ${i<2?'done':''}" data-timeline-event><span class="tl-dot"></span><div><b data-direct="milestone:${i}" title="Double-click to edit label">${esc(m.label)}</b><small>${esc(m.date||`Step ${i+1}`)}</small></div></div>`).join('')}${bounded.more}</div>`,'Timeline');
 }
 
 function legacyDiagram(entry){
@@ -160,15 +166,7 @@ function legacyDiagram(entry){
 
 function diagram(entry){
   const n=entry.element.toLowerCase();
-  if(Array.isArray(entry.nodes)&&entry.nodes.length&&(entry.dataset_id||n==='data flow'||n==='process flow')){
-    try{
-      const graph=validateGraph('dag',{nodes:entry.nodes.map(node=>({id:String(node),label:String(node)})),edges:(Array.isArray(entry.edges)?entry.edges:[]).map(([source,target],index)=>({id:`edge-${index}`,source:String(source),target:String(target)}))});
-      const nodes=graph.topologicalOrder.slice(0,4),edges=graph.edges.filter(edge=>nodes.includes(edge.source)&&nodes.includes(edge.target)),down=entry.direction==='down';
-      const position=new Map(nodes.map((node,index)=>[node,down?{x:100+(index%2)*70,y:8+index*36}:{x:16+index*70,y:48+(index%2)*24}]));
-      const connector=(source,target)=>down?`M${source.x+29} ${source.y+32} L${target.x+29} ${target.y}`:`M${source.x+58} ${source.y+16} L${target.x} ${target.y+16}`;
-      return shell(entry,`<svg class="diagram-svg flow-svg" data-graph-plan="${esc(graph.fingerprint)}" data-direction="${down?'down':'right'}" viewBox="0 0 300 180"><defs><marker id="bound-arr" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edges.map(edge=>{const source=position.get(edge.source),target=position.get(edge.target),x=(source.x+target.x+29)/2,y=(source.y+target.y+32)/2;return `<path d="${connector(source,target)}" marker-end="url(#bound-arr)"/>${entry.edge_label?`<text class="diagram-edge-label" data-edge-label="default" x="${x}" y="${y-5}" text-anchor="middle">${esc(entry.edge_label)}</text>`:''}`;}).join('')}${nodes.map((node,index)=>{const p=position.get(node);return `<rect x="${p.x}" y="${p.y}" width="58" height="32" rx="8"/><text data-direct="diagram-node:${index}" title="Double-click to rename" x="${p.x+29}" y="${p.y+20}">${esc(node)}</text>`;}).join('')}</svg>`,'Diagram');
-    }catch(error){return shell(entry,`<div class="data-empty-state full"><b>Diagram data needs review</b><span>${esc(error.message)}</span></div>`,'Diagram');}
-  }
+  if(entry.diagram||(Array.isArray(entry.nodes)&&entry.nodes.length&&(entry.dataset_id||n==='data flow'||n==='process flow')))return shell(entry,renderDiagramSvg(entry,{label:`${entry.title||entry.element} diagram`}),'Diagram');
   return legacyDiagram(entry);
 }
 
@@ -461,7 +459,7 @@ function infrastructure(entry){
 }
 
 export function renderIntegratedElement(entry){
-  if(entry?.chart_studio && ['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry.engine)) return renderChartStudioElement(entry);
+  if(['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)&&CHART_TYPES.includes(entry?.element)) return renderChartStudioElement(entry,entry._resolved_dataset||{});
   switch(entry.engine){
     case 'TextEngine': return text(entry);
     case 'CoreChartEngine': return chart(entry);

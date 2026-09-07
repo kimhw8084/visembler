@@ -2,7 +2,7 @@ import {
   CHART_TYPES, CORE_TYPES, ENGINEERING_TYPES, addAnnotation, addColumn, addReferenceBand,
   addReferenceLine, addRow, aggregateRows, applyChartTransform, applyRecipeToModel,
   chartToEntry, chartSummary, copyChartSetup, deleteColumns, deleteRows, deriveColumn,
-  filterRows, insertColumn, insertRow, mapRole, normalizeChartModel, profileChartData,
+  chartModelFromEntry, filterRows, insertColumn, insertRow, mapRole, normalizeChartModel, profileChartData,
   recommendationsFor, renameColumn, renderChartSvg, reorderColumns, saveRecipe, sortRows,
   switchChartType, topRows, updateChartData, validateChartMapping,
 } from './authoring_chart_studio.mjs';
@@ -20,7 +20,7 @@ const formatValue=value=>value===null?'null':value===undefined?'missing':value==
 const safeStorage=()=>{try{return window.localStorage;}catch{return null;}};
 
 const initialEntry=clone(boot.entry||{});
-const initialModel=normalizeChartModel(boot.chart_model||initialEntry.chart_studio||{chart_type:initialEntry.element,dataset:boot.dataset||{},mapping:initialEntry.mapping||{}},initialEntry.element||'Line Chart');
+const initialModel=chartModelFromEntry({...initialEntry,...(boot.chart_model&&typeof boot.chart_model==='object'?{chart_studio:boot.chart_model}:{})},boot.dataset||{});
 const state={model:initialModel,entry:initialEntry,reportModel:clone(boot.report_model||{}),revision:Number(boot.revision||1),tab:'data',undo:[],redo:[],selectedRows:new Set(),selectedCols:new Set(),clipboard:null,recipes:[],dirty:false,pending:null,preview:false,dark:false};
 const chartFamily=type=>CORE_TYPES.includes(type)?'core':ENGINEERING_TYPES.includes(type)?'engineering':type==='Wafer Map'?'wafer':'core';
 const compatibleTypes=()=>{const family=chartFamily(state.model.chart_type);return CHART_TYPES.filter(type=>chartFamily(type)===family);};

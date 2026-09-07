@@ -167,11 +167,11 @@ def main() -> int:
             ))
 
             _load(page, host, ids['timeline'])
-            check('solo Timeline governed content fit', lambda: _assert_solo(page, 'timeline', 420))
+            check('solo Timeline governed content fit', lambda: _assert_solo(page, 'timeline', .80, .18))
             _load(page, host, ids['chart'])
-            check('solo chart governed content fit', lambda: _assert_solo(page, 'chart', 500))
+            check('solo chart governed content fit', lambda: _assert_solo(page, 'chart', .82, .42))
             _load(page, host, ids['wafer'])
-            check('solo Wafer Map governed content fit', lambda: _assert_solo(page, 'wafer', 520))
+            check('solo Wafer Map governed content fit', lambda: _assert_solo(page, 'wafer', .40, .28))
 
             _load(page, host, ids['mixed'])
             page.set_viewport_size({'width': 1440, 'height': 900})
@@ -230,9 +230,11 @@ def assert_width_growth(page):
     assert after > 500, after
 
 
-def _assert_solo(page, kind: str, max_height: int):
+def _assert_solo(page, kind: str, min_width_share: float, min_area_share: float):
     rect = page.evaluate('()=>__VIZ_PROD__.layoutRects()[0]')
-    assert rect['w'] > 0 and rect['h'] > 0 and rect['h'] <= max_height, (kind, rect)
+    canvas = page.evaluate('()=>CompanyUIVisualizerBridge.state().model.canvas')
+    width_share=rect['w']/canvas['width'];area_share=rect['w']*rect['h']/(canvas['width']*canvas['height'])
+    assert width_share >= min_width_share and area_share >= min_area_share and rect['y'] <= 20, (kind, rect, width_share, area_share)
     node = page.locator('.component').first
     assert node.get_attribute('data-content-fit') == 'responsive'
     assert node.get_attribute('data-layout-growth') in {'horizontal', 'plot', 'square', 'text', 'data', 'media', 'balanced'}

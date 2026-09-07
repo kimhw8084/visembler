@@ -103,12 +103,14 @@ def test_r22_minimap_is_opt_in_at_startup():
     assert 'id="miniToggle" aria-pressed="false"' in shell
 
 
-def test_r23_smart_layout_uses_its_compacted_row_height_and_authoring_panes_are_explicit():
+def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_explicit():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     shell = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
 
-    assert 'const h=spec.height' in editor
+    assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' in editor
+    assert 'const layoutTargetH=solo?baseNeeded:targetH' in editor
+    assert 'const familyCap={plot:spec.height' in editor
     assert 'Math.max(policy.minH,spec.height)' not in editor
     assert 'show or hide the element library' in shell.lower()
     assert 'id="historyBtn"' in shell
@@ -118,13 +120,16 @@ def test_r23_smart_layout_uses_its_compacted_row_height_and_authoring_panes_are_
     assert 'id="libraryToggle"' in shell and 'aria-pressed="true"' in shell and 'id="inspectorToggle"' in shell
 
 
-def test_r25_smart_layout_fills_the_fixed_page_and_table_preview_is_not_capped_at_five_rows():
+def test_r25_smart_layout_prioritizes_growth_capable_families_and_table_preview_is_not_capped_at_five_rows():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     renderer = (PRODUCT / 'assets/element_renderer.mjs').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
 
-    assert 'for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length' in editor
+    assert 'if(!solo&&baseNeeded<layoutTargetH&&rowSpecs.length)' in editor
+    assert 'const growthScore=spec=>' in editor
+    assert 'plot:5,data:4.5,media:4,square:4' in editor
+    assert 'for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length' not in editor
     assert "beginPointerSession($('#viewport')" in editor
     assert "box.classList.add('active')" in editor
     assert ".lasso.active{display:block!important" in css

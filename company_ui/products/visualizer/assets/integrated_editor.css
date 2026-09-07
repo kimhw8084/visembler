@@ -873,6 +873,7 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-reportbar {
   display:flex!important;
   align-items:center!important;
+  flex-wrap:wrap!important;
   gap:8px!important;
   min-height:52px;
   padding:8px 10px!important;
@@ -1457,6 +1458,29 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-root.preview-mode .scene-frame { margin-inline:auto!important; }
 .cui-visualizer-root.preview-mode .work { min-width:0; overflow:hidden; }
 .cui-visualizer-root.preview-mode .preview-exit { top:14px; right:14px; }
+.cui-visualizer-root.preview-mode .component,
+.cui-visualizer-root.preview-mode .component:hover,
+.cui-visualizer-root.preview-mode .component.selected {
+  border-color:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  cursor:default!important;
+  pointer-events:none!important;
+}
+.cui-visualizer-root.preview-mode .component *,
+.cui-visualizer-root.preview-mode .scene { cursor:default!important; }
+.cui-visualizer-root.preview-mode .component.selected::before,
+.cui-visualizer-root.preview-mode .component.locked::after,
+.cui-visualizer-root.preview-mode .resize-h,
+.cui-visualizer-root.preview-mode .component.selected .resize-h,
+.cui-visualizer-root.preview-mode .context,
+.cui-visualizer-root.preview-mode .c-head,
+.cui-visualizer-root.preview-mode [data-editor-only],
+.cui-visualizer-root.preview-mode .canvas-grid,
+.cui-visualizer-root.preview-mode .group-layer,
+.cui-visualizer-root.preview-mode .overlay-layer,
+.cui-visualizer-root.preview-mode .drop-ghost,
+.cui-visualizer-root.preview-mode .lasso { display:none!important; }
 
 /* An explicit responsive contract makes the governed sizing visible to
    tooling and prevents family renderers from depending on a fixed miniature. */
@@ -1473,3 +1497,159 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-root .preset-preview-block:nth-child(4n) { background:var(--viz-purple,var(--viz-accent)); opacity:.55; }
 .cui-visualizer-root .preset-preview-block:nth-child(1) { grid-row:span 2; }
 .cui-visualizer-root .preset-preview-block:nth-child(4) { grid-column:span 2; }
+
+/* Stage D content-first and delivery surfaces use the existing modal layer so
+   they remain bounded, keyboard reachable, and independent of report data. */
+.cui-visualizer-root .stage-d-dialog { width:min(760px,calc(100vw - 32px)); max-height:min(760px,calc(100dvh - 32px)); overflow:auto; }
+.cui-visualizer-root .stage-d-intake { display:grid; gap:14px; }
+.cui-visualizer-root .stage-d-intake textarea { min-height:132px; width:100%; resize:vertical; }
+.cui-visualizer-root .stage-d-kicker { color:var(--viz-muted); font-size:12px; line-height:1.45; }
+.cui-visualizer-root .stage-d-recommendations { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:8px; }
+.cui-visualizer-root .stage-d-recommendation { display:grid; gap:5px; min-height:106px; padding:12px; text-align:left; border:1px solid var(--viz-line); border-radius:10px; background:var(--viz-surface-2); color:var(--viz-ink); cursor:pointer; }
+.cui-visualizer-root .stage-d-recommendation:hover,.cui-visualizer-root .stage-d-recommendation:focus-visible,.cui-visualizer-root .stage-d-recommendation.active { border-color:var(--viz-accent); box-shadow:0 0 0 2px color-mix(in srgb,var(--viz-accent) 18%,transparent); }
+.cui-visualizer-root .stage-d-recommendation small { color:var(--viz-muted); }
+.cui-visualizer-root .stage-d-actions { display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; }
+.cui-visualizer-root .stage-d-finding { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:8px; align-items:center; padding:10px; border:1px solid var(--viz-line-soft); border-radius:8px; background:var(--viz-surface-2); }
+.cui-visualizer-root .stage-d-finding b { font-size:11px; text-transform:uppercase; color:var(--viz-warn); }
+.cui-visualizer-root .stage-d-finding span { font-size:12px; }
+.cui-visualizer-root .stage-d-role-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:8px; }
+.cui-visualizer-root .stage-d-role-card { display:grid; gap:5px; padding:10px; border:1px solid var(--viz-line-soft); border-radius:8px; background:var(--viz-surface-2); }
+.cui-visualizer-root .stage-d-role-card select { min-width:0; }
+@media(max-width:800px) { .cui-visualizer-root .stage-d-dialog { width:calc(100vw - 20px); max-height:calc(100dvh - 20px); } .cui-visualizer-root .stage-d-finding { grid-template-columns:auto minmax(0,1fr); } .cui-visualizer-root .stage-d-finding button { grid-column:2; justify-self:start; } }
+@media(max-width:800px) { .cui-visualizer-root #stageDAssistantBtn,.cui-visualizer-root #stageDCleanBtn,.cui-visualizer-root #stageDFitBtn { display:none; } .cui-visualizer-root #stageDIntakeBtn { font-size:0; min-width:44px; padding-inline:8px; } .cui-visualizer-root #stageDIntakeBtn::after { content:'+'; font-size:18px; line-height:1; } }
+@media(max-width:1500px) { .cui-visualizer-root #stageDIntakeBtn,.cui-visualizer-root #stageDAssistantBtn,.cui-visualizer-root #stageDCleanBtn,.cui-visualizer-root #stageDFitBtn { width:36px; min-width:36px; padding-inline:4px; font-size:0; } .cui-visualizer-root #stageDIntakeBtn::after { content:'+'; font-size:18px; line-height:1; } .cui-visualizer-root #stageDAssistantBtn::after { content:'✓'; font-size:15px; line-height:1; } .cui-visualizer-root #stageDCleanBtn::after { content:'✦'; font-size:15px; line-height:1; } .cui-visualizer-root #stageDFitBtn::after { content:'⛶'; font-size:16px; line-height:1; } }
+
+/* Final visual remediation: internal renderers consume their allocated card,
+   while text/metric cards retain intentional content-fit behavior. */
+.cui-visualizer-root .context { position:fixed;z-index:190;backdrop-filter:none;background:var(--viz-surface);color:var(--viz-ink); }
+.cui-visualizer-root .context button { color:var(--viz-ink); }
+.cui-visualizer-root .c-content { container-type:size; }
+.cui-visualizer-root .component[data-layout-growth="plot"] .integrated-element-content,
+.cui-visualizer-root .component[data-layout-growth="data"] .integrated-element-content,
+.cui-visualizer-root .component[data-layout-growth="media"] .integrated-element-content,
+.cui-visualizer-root .component[data-layout-growth="square"] .integrated-element-content,
+.cui-visualizer-root .component[data-layout-growth="plot"] .gallery-card,
+.cui-visualizer-root .component[data-layout-growth="data"] .gallery-card,
+.cui-visualizer-root .component[data-layout-growth="media"] .gallery-card,
+.cui-visualizer-root .component[data-layout-growth="square"] .gallery-card { height:100%; }
+.cui-visualizer-root .component[data-layout-growth="plot"] .card-body,
+.cui-visualizer-root .component[data-layout-growth="data"] .card-body,
+.cui-visualizer-root .component[data-layout-growth="media"] .card-body,
+.cui-visualizer-root .component[data-layout-growth="square"] .card-body { min-height:0;height:100%;flex:1 1 auto!important; }
+.cui-visualizer-root .viz-svg,.cui-visualizer-root .diagram-svg,
+.cui-visualizer-root .cs-static-chart,.cui-visualizer-root .cs-chart-svg { width:100%;height:100%;min-height:120px;max-height:none;margin:0; }
+.cui-visualizer-root .cs-static-chart { flex:1 1 auto;min-height:0;display:grid; }
+.cui-visualizer-root .cs-static-summary { min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere; }
+.cui-visualizer-root .wafer-demo { width:min(90cqw,90cqh,520px);height:min(90cqw,90cqh,520px);min-width:148px;min-height:148px; }
+.cui-visualizer-root .timeline-rail,.cui-visualizer-root .event-timeline-live,.cui-visualizer-root .milestone-rail-live,.cui-visualizer-root .sequence-strip { width:100%; }
+.cui-visualizer-root .tl-step b,.cui-visualizer-root .tl-step small { font-size:clamp(11px,2.2cqw,16px); }
+.cui-visualizer-root .diagram-studio-static text { font-size:clamp(10px,1.8cqw,16px);fill:var(--viz-ink); }
+.cui-visualizer-root .diagram-studio-static .diagram-edge-label { font-size:clamp(9px,1.45cqw,13px)!important;paint-order:stroke;stroke:var(--viz-surface);stroke-width:4px; }
+
+/* Timeline families distribute authored events through their card.  The
+   renderer exposes each meaningful event so visual tests measure the rail,
+   labels and markers—not an empty wrapper. */
+.cui-visualizer-root [data-timeline-events] {
+  width:100%;
+  height:100%;
+  min-width:0;
+  min-height:0;
+  margin:0;
+  padding:clamp(10px,3cqw,28px) clamp(8px,4cqw,36px);
+  box-sizing:border-box;
+  position:relative;
+}
+.cui-visualizer-root .timeline-rail[data-timeline-events],
+.cui-visualizer-root .event-timeline-live[data-timeline-events],
+.cui-visualizer-root .milestone-rail-live[data-timeline-events] {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(6px,1.4cqw,18px);
+}
+.cui-visualizer-root .timeline-rail[data-timeline-events]::before,
+.cui-visualizer-root .event-timeline-live[data-timeline-events]::before,
+.cui-visualizer-root .milestone-rail-live[data-timeline-events]::before {
+  content:"";
+  position:absolute;
+  left:8%;
+  right:8%;
+  top:50%;
+  width:auto;
+  height:2px;
+  background:var(--viz-line);
+  transform:translateY(-50%);
+}
+.cui-visualizer-root .timeline-rail[data-timeline-events] [data-timeline-event],
+.cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event],
+.cui-visualizer-root .milestone-rail-live[data-timeline-events] [data-timeline-event] {
+  flex:1 1 0;
+  min-width:0;
+  max-width:18%;
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-rows:minmax(2.4em,1fr) auto minmax(2.4em,1fr);
+  align-items:center;
+  justify-items:center;
+  gap:clamp(5px,1.2cqh,12px);
+  text-align:center;
+}
+.cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>span {
+  align-self:end;
+  color:var(--viz-muted);
+  font-size:clamp(10px,1.8cqw,14px);
+}
+.cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>i {
+  width:clamp(12px,2.2cqw,18px);
+  height:clamp(12px,2.2cqw,18px);
+  position:relative;
+  left:auto;
+  top:auto;
+}
+.cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>i::after { content:none; }
+.cui-visualizer-root [data-timeline-events] [data-timeline-event] b {
+  align-self:start;
+  max-width:100%;
+  font-size:clamp(11px,2cqw,16px);
+  line-height:1.25;
+  overflow-wrap:anywhere;
+}
+.cui-visualizer-root .timeline-rail[data-timeline-events] .tl-dot,
+.cui-visualizer-root .milestone-rail-live[data-timeline-events] i { grid-row:2; margin:0; }
+.cui-visualizer-root .timeline-rail[data-timeline-events] .tl-step>div { display:contents; }
+.cui-visualizer-root .timeline-rail[data-timeline-events] b,
+.cui-visualizer-root .milestone-rail-live[data-timeline-events] b { grid-row:3; align-self:start; }
+.cui-visualizer-root .timeline-rail[data-timeline-events] small { grid-row:1; align-self:end; color:var(--viz-muted); }
+.cui-visualizer-root .sequence-strip[data-timeline-events] {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:clamp(4px,1cqw,12px);
+}
+.cui-visualizer-root .sequence-strip[data-timeline-events] [data-timeline-event] { flex:1 1 0; min-width:0; display:grid; justify-items:center; gap:clamp(6px,1.5cqh,14px); text-align:center; }
+.cui-visualizer-root .sequence-strip[data-timeline-events] [data-timeline-event] i { width:clamp(26px,4cqw,40px); height:clamp(26px,4cqw,40px); font-size:clamp(11px,1.8cqw,15px); }
+.cui-visualizer-root .sequence-strip[data-timeline-events]>em { flex:0 0 auto; }
+.cui-visualizer-root .timeline-more { flex:0 0 auto; z-index:2; align-self:center; padding:4px 7px; border-radius:999px; background:var(--viz-surface-3); color:var(--viz-muted); font-size:11px; font-weight:750; }
+
+@container (max-width:560px) and (min-height:240px) {
+  .cui-visualizer-root .timeline-rail[data-timeline-events],
+  .cui-visualizer-root .event-timeline-live[data-timeline-events],
+  .cui-visualizer-root .milestone-rail-live[data-timeline-events],
+  .cui-visualizer-root .sequence-strip[data-timeline-events] { flex-direction:column; align-items:stretch; justify-content:space-between; }
+  .cui-visualizer-root .timeline-rail[data-timeline-events]::before,
+  .cui-visualizer-root .event-timeline-live[data-timeline-events]::before,
+  .cui-visualizer-root .milestone-rail-live[data-timeline-events]::before { left:50%; right:auto; top:7%; bottom:7%; width:2px; height:auto; transform:translateX(-50%); }
+  .cui-visualizer-root .timeline-rail[data-timeline-events] [data-timeline-event],
+  .cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event],
+  .cui-visualizer-root .milestone-rail-live[data-timeline-events] [data-timeline-event] { flex:1 1 0; width:100%; max-width:none; grid-template-columns:minmax(54px,.8fr) auto minmax(70px,1.3fr); grid-template-rows:1fr; gap:10px; text-align:left; }
+  .cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>span,
+  .cui-visualizer-root .timeline-rail[data-timeline-events] small { grid-column:1; grid-row:1; align-self:center; justify-self:end; }
+  .cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>i,
+  .cui-visualizer-root .timeline-rail[data-timeline-events] .tl-dot,
+  .cui-visualizer-root .milestone-rail-live[data-timeline-events] i { grid-column:2; grid-row:1; align-self:center; }
+  .cui-visualizer-root .event-timeline-live[data-timeline-events] [data-timeline-event]>b,
+  .cui-visualizer-root .timeline-rail[data-timeline-events] b,
+  .cui-visualizer-root .milestone-rail-live[data-timeline-events] b { grid-column:3; grid-row:1; align-self:center; justify-self:start; }
+  .cui-visualizer-root .sequence-strip[data-timeline-events]>em { transform:rotate(90deg); align-self:center; }
+}

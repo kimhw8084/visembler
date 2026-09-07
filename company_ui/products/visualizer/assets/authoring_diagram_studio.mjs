@@ -136,7 +136,9 @@ export function normalizeDiagram(value = {}) {
 
 export function diagramFromEntry(entry = {}) {
   if (entry.diagram && typeof entry.diagram === 'object') return normalizeDiagram(entry.diagram);
-  return normalizeDiagram({nodes:entry.nodes || [],edges:entry.edges || [],direction:entry.direction,edge_label:entry.edge_label});
+  const hasGeometry=(entry.nodes||[]).some(node=>node&&typeof node==='object'&&(Number.isFinite(node.x)||Number.isFinite(node.y)));
+  const diagram=normalizeDiagram({nodes:entry.nodes || [],edges:entry.edges || [],direction:entry.direction,edge_label:entry.edge_label});
+  return hasGeometry?diagram:autoLayout(diagram,{direction:diagram.layout.direction,preservePinned:true});
 }
 
 export function diagramToEntry(entry = {}, value = {}) {
@@ -264,3 +266,26 @@ export function createSubflow(value, ids = [], name = 'Subflow') { const diagram
 export function insertSubflow(value, subflow, origin = {x:64,y:64}) { let diagram=normalizeDiagram(value); if(!subflow||!Array.isArray(subflow.nodes))return {diagram,ids:[]}; const taken=new Set(diagram.nodes.map(node=>node.id)),mapping=new Map(),minX=Math.min(...subflow.nodes.map(node=>node.x),0),minY=Math.min(...subflow.nodes.map(node=>node.y),0); const ids=[]; subflow.nodes.forEach(node=>{const id=uniqueId(`${idPart(subflow.name||'subflow')}-${node.id}`,taken);mapping.set(node.id,id);const result=addNode(diagram,{...clone(node),id,x:finite(origin.x,64)+node.x-minX,y:finite(origin.y,64)+node.y-minY,lock:false,pinned:false});diagram=result.diagram;ids.push(result.node.id);}); subflow.edges?.forEach(edge=>{if(mapping.has(edge.source)&&mapping.has(edge.target))diagram=addEdge(diagram,mapping.get(edge.source),mapping.get(edge.target),clone(edge));}); diagram.layout.lastCommand='Insert subflow'; return {diagram,ids}; }
 
 export function diagramSummary(value) { const diagram=normalizeDiagram(value); return `${diagram.nodes.length} nodes · ${diagram.edges.length} connectors · ${diagram.swimlanes.length} lanes · ${diagram.layers.length} layers`; }
+
+const svgEscape=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function staticPath(points,routing) {
+  if(!points.length)return '';
+  if(routing==='curved'&&points.length>2)return `M${points[0].x} ${points[0].y} Q${points[1].x} ${points[1].y} ${points.at(-1).x} ${points.at(-1).y}`;
+  return `M${points.map(point=>`${point.x} ${point.y}`).join(' L')}`;
+}
+function staticPoint(points,fraction=.5) {
+  if(points.length<2)return points[0]||{x:0,y:0};
+  const lengths=points.slice(1).map((point,index)=>Math.hypot(point.x-points[index].x,point.y-points[index].y)),total=lengths.reduce((sum,value)=>sum+value,0),target=total*fraction;
+  let traversed=0;for(let index=0;index<lengths.length;index+=1){if(traversed+lengths[index]>=target){const ratio=(target-traversed)/Math.max(1,lengths[index]),start=points[index],end=points[index+1];return {x:start.x+(end.x-start.x)*ratio,y:start.y+(end.y-start.y)*ratio};}traversed+=lengths[index];}
+  return points.at(-1);
+}
+export function renderDiagramSvg(value={},options={}) {
+  const diagram=value?.engine?diagramFromEntry(value):normalizeDiagram(value),visibleLayers=new Set(diagram.layers.filter(layer=>layer.visible!==false).map(layer=>layer.id)),nodes=diagram.nodes.filter(node=>visibleLayers.has(node.layer)),nodeIds=new Set(nodes.map(node=>node.id));
+  const all=[...nodes.map(nodeRect),...diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(nodeRect),...diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(nodeRect)];
+  const minX=all.length?Math.min(...all.map(rect=>rect.x))-28:0,minY=all.length?Math.min(...all.map(rect=>rect.y))-28:0,maxX=all.length?Math.max(...all.map(rect=>rect.x+rect.w))+28:640,maxY=all.length?Math.max(...all.map(rect=>rect.y+rect.h))+28:360,width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY);
+  const lanes=diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(lane=>`<g class="diagram-static-lane"><rect x="${lane.x}" y="${lane.y}" width="${lane.width}" height="${lane.height}" rx="10"/><text x="${lane.x+14}" y="${lane.y+22}">${svgEscape(lane.label)}</text></g>`).join('');
+  const groups=diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(group=>`<g class="diagram-static-group"><rect x="${group.x}" y="${group.y}" width="${group.width}" height="${group.height}" rx="10"/><text x="${group.x+12}" y="${group.y+20}">${svgEscape(group.label)}</text></g>`).join('');
+  const edges=diagram.edges.filter(edge=>visibleLayers.has(edge.layer)&&nodeIds.has(edge.source)&&nodeIds.has(edge.target)).map(edge=>{const points=routeEdge(diagram,edge),dash=edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':'';const labels=(edge.labels||[]).map((label,index)=>{const fraction=label.position==='source'?.25:label.position==='target'?.75:.5,point=staticPoint(points,fraction);return `<text class="diagram-edge-label" data-edge-label="${svgEscape(label.id||index)}" x="${point.x+finite(label.offset,0)}" y="${point.y-7-index*14}" text-anchor="middle">${svgEscape(label.text)}</text>`;}).join('');return `<g data-diagram-edge="${svgEscape(edge.id)}"><path d="${staticPath(points,edge.routing)}" stroke="${svgEscape(edge.style.color||'currentColor')}" stroke-width="${edge.style.width}" fill="none" marker-end="${edge.endMarker==='none'?'':'url(#diagram-static-arrow)'}"${dash}/>${labels}</g>`;}).join('');
+  const nodeMarkup=nodes.map((node,index)=>{const shape=node.shape==='decision'?`<path d="M${node.x+node.width/2} ${node.y}L${node.x+node.width} ${node.y+node.height/2}L${node.x+node.width/2} ${node.y+node.height}L${node.x} ${node.y+node.height/2}Z"/>`:`<rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${['start','end'].includes(node.shape)?node.height/2:9}"/>`;return `<g data-diagram-node="${svgEscape(node.id)}" data-shape="${svgEscape(node.shape)}">${shape}<text data-direct="diagram-node:${index}" x="${node.x+node.width/2}" y="${node.y+node.height/2+(node.secondary?-6:4)}" text-anchor="middle">${svgEscape(node.label)}</text>${node.secondary?`<text class="diagram-node-secondary" x="${node.x+node.width/2}" y="${node.y+node.height/2+13}" text-anchor="middle">${svgEscape(node.secondary)}</text>`:''}</g>`;}).join('');
+  return `<svg class="diagram-svg flow-svg diagram-studio-static" data-graph-plan="canonical-${nodes.length}-${diagram.edges.length}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${diagram.edges.length}" data-direction="${diagram.layout.direction}" viewBox="${minX} ${minY} ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${svgEscape(options.label||diagramSummary(diagram))}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-static-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${lanes}${groups}${edges}${nodeMarkup}</svg>`;
+}

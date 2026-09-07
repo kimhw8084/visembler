@@ -66,7 +66,7 @@ NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visua
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -219,26 +219,68 @@ def _report_options(repository: ReportRepository, query: str='', sort: str='modi
 
 
 def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> str:
-    """Render a small, content-safe report preview for the report hub."""
+    """Render a content-derived miniature, never a generic item-count block."""
     items=[entry for entry in model.get('items',[]) if isinstance(entry,Mapping)]
-    colors=('#2f80ed','#63b3ed','#86c5a5','#f2b84b','#a78bfa','#ef8f8f')
-    blocks=[]
-    for index,entry in enumerate(items[:8]):
-        x=8+(index%3)*31; y=10+(index//3)*25; w=25 if index%3 else 28; h=18 if index%3 else 20
-        blocks.append(f'<span class="cui-report-thumb-block" style="left:{x}%;top:{y}%;width:{w}%;height:{h}%;background:{colors[index%len(colors)]}"></span>')
-    if not blocks: blocks=['<span class="cui-report-thumb-empty">Blank canvas</span>']
-    return f'<div class="cui-report-thumb" role="img" aria-label="Preview of {html_escape(title)}">{"".join(blocks)}</div>'
+    if not items:
+        return f'<div class="cui-report-thumb cui-report-thumb--blank" role="img" aria-label="Blank preview of {html_escape(title)}"><svg viewBox="0 0 320 180"><rect class="thumb-page" x="8" y="8" width="304" height="164" rx="7"/><path class="thumb-blank-mark" d="M132 90h56M160 62v56"/><text x="160" y="140" text-anchor="middle">Blank report</text></svg></div>'
+    datasets={str(value.get('id')):value for value in model.get('datasets',[]) if isinstance(value,Mapping)}
+    canvas=model.get('canvas') if isinstance(model.get('canvas'),Mapping) else {}
+    canvas_w=max(1,float(canvas.get('w') or canvas.get('width') or 1200)); canvas_h=max(1,float(canvas.get('h') or canvas.get('height') or 900))
+    sx,sy=296/canvas_w,148/canvas_h
+    def values(entry: Mapping[str,Any]) -> list[float]:
+        source=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else {}
+        dataset=source.get('dataset') if isinstance(source.get('dataset'),Mapping) else datasets.get(str(entry.get('dataset_id')), {})
+        rows=dataset.get('rows',[]) if isinstance(dataset,Mapping) else []
+        output=[]
+        for row in rows:
+            if isinstance(row,list): output.extend(value for value in row if isinstance(value,(int,float)) and not isinstance(value,bool))
+        if not output:
+            for row in entry.get('data',[]):
+                if isinstance(row,(list,tuple)) and len(row)>1 and isinstance(row[1],(int,float)) and not isinstance(row[1],bool): output.append(float(row[1]))
+        return output[:20]
+    shapes=[]
+    for index,entry in enumerate(items[:12]):
+        explicit=all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h'))
+        if explicit: x=12+float(entry['x'])*sx; y=12+float(entry['y'])*sy; w=max(28,float(entry['w'])*sx); h=max(20,float(entry['h'])*sy)
+        else:
+            columns=2 if len(items)>1 else 1; col=index%columns; row=index//columns
+            w=140 if columns==2 else 286; h=max(34,min(68,138/max(1,(len(items)+columns-1)//columns)-4)); x=14+col*148; y=16+row*(h+5)
+        w=min(w,306-x);h=min(h,166-y);engine=str(entry.get('engine') or '');element=str(entry.get('element') or '');family='text'
+        outer=f'<rect class="thumb-card" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="4"/>'
+        if engine in {'CoreChartEngine','EngineeringChartEngine'}:
+            family='chart';nums=values(entry) or [2,5,3,7];lo=min(nums);span=max(1e-9,max(nums)-lo);points=' '.join(f'{x+6+i*max(1,w-12)/max(1,len(nums)-1):.1f},{y+h-6-(value-lo)/span*max(6,h-14):.1f}' for i,value in enumerate(nums));inner=f'<path class="thumb-axis" d="M{x+5:.1f} {y+5:.1f}V{y+h-5:.1f}H{x+w-4:.1f}"/><polyline class="thumb-chart-line" points="{points}"/>'
+        elif engine=='WaferFabEngine':
+            family='wafer';observations=entry.get('observations',[]);count=max(1,min(18,len(observations)));radius=max(9,min(w,h)*.34);cx=x+w/2;cy=y+h/2;dies=''.join(f'<rect class="thumb-die" x="{cx-radius+3+(i%5)*radius*.36:.1f}" y="{cy-radius+3+(i//5)*radius*.36:.1f}" width="{max(2,radius*.28):.1f}" height="{max(2,radius*.28):.1f}"/>' for i in range(count));inner=f'<circle class="thumb-wafer" cx="{cx:.1f}" cy="{cy:.1f}" r="{radius:.1f}"/>{dies}'
+        elif engine=='DiagramEngine':
+            family='diagram';labels=[str(node.get('label') or node.get('id')) if isinstance(node,Mapping) else str(node) for node in entry.get('nodes',[])][:4] or ['Start','Process','End'];step=max(1,(w-20)/max(1,len(labels)-1));nodes=''.join(f'<rect class="thumb-node" x="{x+5+i*step:.1f}" y="{y+h/2-6:.1f}" width="{min(24,max(13,step-5)):.1f}" height="12" rx="3"/>' for i in range(len(labels)));links=''.join(f'<path class="thumb-edge" d="M{x+18+i*step:.1f} {y+h/2:.1f}H{x+5+(i+1)*step:.1f}"/>' for i in range(len(labels)-1));inner=links+nodes
+        elif engine=='MetricEngine':
+            family='metric';inner=f'<text class="thumb-metric" x="{x+8:.1f}" y="{y+h*.62:.1f}">{html_escape(str(entry.get("value") if entry.get("value") is not None else "—")[:12])}</text><path class="thumb-rule" d="M{x+8:.1f} {y+h-8:.1f}H{x+w-8:.1f}"/>'
+        elif engine=='TableEngine':
+            family='table';inner=''.join(f'<path class="thumb-rule" d="M{x+5:.1f} {y+7+i*max(5,(h-12)/4):.1f}H{x+w-5:.1f}"/>' for i in range(4))
+        elif engine=='ImageMediaEngine':
+            family='media';inner=f'<rect class="thumb-media" x="{x+5:.1f}" y="{y+5:.1f}" width="{max(1,w-10):.1f}" height="{max(1,h-10):.1f}" rx="3"/><path class="thumb-media-mark" d="M{x+8:.1f} {y+h-9:.1f}l{w*.28:.1f}-{h*.32:.1f} {w*.18:.1f} {h*.17:.1f} {w*.18:.1f}-{h*.24:.1f}"/>'
+        else:
+            label=str(entry.get('title') or entry.get('statement') or entry.get('text') or element or 'Text');family='text';inner=f'<text class="thumb-copy" x="{x+7:.1f}" y="{y+15:.1f}">{html_escape(label[:32])}</text><path class="thumb-copy-line" d="M{x+7:.1f} {y+24:.1f}H{x+w-9:.1f}M{x+7:.1f} {y+31:.1f}H{x+w*.7:.1f}"/>'
+        shapes.append(f'<g data-preview-family="{family}" data-preview-element="{html_escape(element)}">{outer}{inner}</g>')
+    return f'<div class="cui-report-thumb" role="img" aria-label="Content preview of {html_escape(title)}"><svg class="cui-report-thumb-svg" viewBox="0 0 320 180"><rect class="thumb-page" x="5" y="5" width="310" height="170" rx="8"/>{"".join(shapes)}</svg></div>'
 
 
 def _history_diff_summary(before: Mapping[str,Any], after: Mapping[str,Any]) -> str:
     before_items={str(entry.get('id')):entry for entry in before.get('items',[]) if isinstance(entry,Mapping)}
     after_items={str(entry.get('id')):entry for entry in after.get('items',[]) if isinstance(entry,Mapping)}
-    added=len(set(after_items)-set(before_items)); removed=len(set(before_items)-set(after_items)); changed=sum(before_items[key]!=after_items[key] for key in set(before_items)&set(after_items))
-    data='data changed' if before.get('datasets')!=after.get('datasets') else 'data unchanged'
-    mapping='mapping changed' if any(before_items.get(key,{}).get('mapping')!=after_items.get(key,{}).get('mapping') for key in set(before_items)&set(after_items)) else 'mapping unchanged'
-    style_keys={'style','presentation','theme','accent'}
-    style='style changed' if any(any(before_items.get(key,{}).get(field)!=after_items.get(key,{}).get(field) for field in style_keys) for key in set(before_items)&set(after_items)) else 'style unchanged'
-    return f'+{added} / −{removed} elements · {changed} changed · {data} · {mapping} · {style}'
+    common=set(before_items)&set(after_items); parts=[]
+    added=len(set(after_items)-set(before_items)); removed=len(set(before_items)-set(after_items))
+    if added: parts.append(f'{added} added')
+    if removed: parts.append(f'{removed} removed')
+    def count(keys: set[str]) -> int: return sum(any(before_items[key].get(field)!=after_items[key].get(field) for field in keys) for key in common)
+    categories=(('content/text',{'title','text','statement','detail','status','caption','alt','value','unit','delta','target','milestones'}),('geometry',{'x','y','w','h','order','z','groupId','locked'}),('data',{'data','rows','observations','customTable'}),('mapping',{'dataset_id','mapping','transform_recipe'}),('chart config',{'chart_studio','analysis_fields','analysis_rows','analysis_mapping'}),('diagram config',{'diagram','nodes','edges','direction','edge_label'}),('style/theme',{'style','presentation','theme','accent','textAlign','emphasis','message_role'}))
+    for label,keys in categories:
+        changed=count(keys)
+        if changed: parts.append(f'{changed} {label}')
+    if before.get('datasets')!=after.get('datasets'): parts.append('report data')
+    metadata_keys={'title','description','theme','layoutPreset','mode','canvas'}
+    if any(before.get(key)!=after.get(key) for key in metadata_keys): parts.append('report metadata')
+    return ' · '.join(parts) if parts else 'No material model change'
 
 
 def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None:
@@ -334,7 +376,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             if entry.get('engine') not in chart_engines: raise VisualizerContractError('Chart Studio requires a chart, engineering chart, or Wafer Map element')
             datasets=current.model.get('datasets',[])
             dataset=next((item for item in datasets if isinstance(item,Mapping) and str(item.get('id'))==str(entry.get('dataset_id'))),{})
-            chart_model=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else {'chart_type':entry.get('element'),'mapping':entry.get('mapping',{}),'dataset':dataset,'data':entry.get('data',[]),'rows':entry.get('rows',[])}
+            # The browser-side canonical adapter owns legacy/core/engineering/
+            # wafer hydration. Do not create a second chart model here.
+            chart_model=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else None
         except Exception as exc:
             notifications.error(f'Unable to open Chart Studio: {exc}')
             ui.navigate.to(f'/visualizer?report={quote(report_id,safe="")}')
@@ -384,7 +428,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         request=ui.context.client.request
         query_report=str(request.query_params.get('report') or '')
         history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
-        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}
+        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; hub_layout='grid'
 
         ui.add_head_html('''<style>
           .cui-report-hub{max-width:1440px;margin:0 auto;padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5)}
@@ -392,12 +436,14 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
           .cui-report-hub-head h1{margin:0;font-size:var(--cui-font-size-32);letter-spacing:-.04em}.cui-report-hub-head p{margin:var(--cui-space-1) 0 0;color:#69717d}
           .cui-report-hub-toolbar{display:flex;gap:var(--cui-space-2);align-items:center;flex-wrap:wrap;padding:var(--cui-space-3);border:1px solid #dfe4eb;border-radius:var(--cui-radius-control);background:#fff}
           .cui-report-hub-toolbar>*{min-width:150px}.cui-report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--cui-space-3)}
+          .cui-report-grid.cui-report-list{grid-template-columns:1fr;gap:var(--cui-space-2)}
+          .cui-report-list .cui-report-card{grid-template-columns:180px minmax(0,1fr);align-items:start}.cui-report-list .cui-report-thumb{grid-row:span 2;height:108px}
           .cui-report-card,.cui-history-card{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid #dfe4eb;border-radius:var(--cui-radius-surface);background:#fff;box-shadow:0 2px 10px rgba(30,55,90,.05)}
           .cui-report-card h2{margin:0;font-size:var(--cui-font-size-16)}.cui-report-card small,.cui-history-card small{color:#69717d;line-height:var(--cui-line-height-ratio-1_35)}
           .cui-report-card .q-field{min-width:0}.cui-report-card .q-field__control{min-height:36px!important;height:36px!important}.cui-report-card .q-field__native{font-size:var(--cui-font-size-13)!important}
           .cui-report-card-actions,.cui-history-actions{display:flex;gap:var(--cui-space-1);flex-wrap:wrap}.cui-report-card-actions .q-btn,.cui-history-actions .q-btn{min-height:34px}
           .cui-report-thumb{height:132px;position:relative;overflow:hidden;border-radius:var(--cui-radius-control);background:linear-gradient(135deg,#f4f7fb,#e9eff7);border:1px solid #dfe4eb}
-          .cui-report-thumb-block{position:absolute;display:block;border-radius:var(--cui-radius-micro);opacity:.86}.cui-report-thumb-empty{position:absolute;inset:0;display:grid;place-items:center;color:#69717d;font-size:var(--cui-font-size-12)}
+          .cui-report-thumb svg{width:100%;height:100%;display:block}.thumb-page{fill:#f8fafc;stroke:#d9e1eb}.thumb-card{fill:#fff;stroke:#cad4e0}.thumb-chart-line{fill:none;stroke:#1769d1;stroke-width:2}.thumb-axis,.thumb-edge,.thumb-rule,.thumb-copy-line{fill:none;stroke:#94a3b8;stroke-width:1}.thumb-wafer{fill:#edf4fb;stroke:#496a8e}.thumb-die{fill:#2f80ed;stroke:#fff;stroke-width:.5}.thumb-node{fill:#eef5ff;stroke:#1769d1}.thumb-metric{font-size:var(--cui-font-size-18);font-weight:var(--cui-font-weight-700);font-family:system-ui;fill:#1f3a57}.thumb-copy{font-size:var(--cui-font-size-10);font-weight:var(--cui-font-weight-700);font-family:system-ui;fill:#25364a}.thumb-media{fill:#adc9dd}.thumb-media-mark{fill:none;stroke:#fff;stroke-width:2}.thumb-blank-mark{stroke:#9cb0c7;stroke-width:2}.cui-report-thumb text{font-size:var(--cui-font-size-10);font-family:system-ui;fill:#69717d}.cui-history-compare{display:grid;grid-template-columns:1fr 1fr;gap:6px}.cui-history-compare .cui-report-thumb{height:78px}.cui-history-preview-label{font-size:var(--cui-font-size-10);color:#69717d;text-align:center}
           .cui-report-hub-section{display:grid;gap:var(--cui-space-2)}.cui-report-hub-section>h2{margin:0;font-size:var(--cui-font-size-18)}.cui-report-hub-empty{padding:var(--cui-space-6);border:1px dashed #cbd3df;border-radius:var(--cui-radius-control);color:#69717d;background:#fafbfc}
           .cui-history-panel{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-4);border:1px solid #dfe4eb;border-radius:var(--cui-radius-surface);background:#f8fafc}.cui-history-list{display:grid;gap:var(--cui-space-2)}
           .cui-history-card{grid-template-columns:150px minmax(0,1fr);align-items:start}.cui-history-card .cui-report-thumb{height:94px}.cui-history-card h3{margin:0;font-size:var(--cui-font-size-14)}
@@ -410,6 +456,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             if sort=='title': return sorted(records,key=lambda record:(record.title.casefold(),record.report_id))
             if sort=='created': return sorted(records,key=lambda record:(record.created_at,record.report_id),reverse=True)
             return sorted(records,key=lambda record:(record.updated_at,record.report_id),reverse=True)
+
+        def set_hub_layout(layout: str) -> None:
+            nonlocal hub_layout
+            hub_layout='list' if layout=='list' else 'grid'
+            render_cards.refresh()
 
         async def create_hub_report() -> None:
             template_id=str(template_select.value or 'blank')
@@ -470,7 +521,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
 
         async def checkpoint_hub(report_id: str,field: Any) -> None:
             try:
-                record=repository.get(report_id); repository.checkpoint(report_id,str(field.value or ''),expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
+                name=' '.join(str(field.value or '').split())
+                if not name: notifications.warning('Enter a checkpoint name first'); return
+                record=repository.get(report_id); repository.checkpoint(report_id,name,expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
             except Exception as exc: notifications.error(f'Checkpoint rejected: {exc}')
 
         def begin_history_restore(report_id: str,history_id: str,summary: str) -> None:
@@ -498,7 +551,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     ui.label(f'Active reports · {len(visible)}').classes('text-h6')
                     if not visible: ui.label('No active reports match this search.').classes('cui-report-hub-empty')
                     else:
-                        with ui.element('div').classes('cui-report-grid'):
+                        with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
                             for record in visible:
                                 with ui.card().classes('cui-report-card'):
                                     ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False)
@@ -534,8 +587,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             with ui.element('section').classes('cui-history-panel'):
                 if not record: ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
                 ui.label(f'History · {record.title}').classes('text-h6'); ui.label('Each restore is explicit, revisioned, and leaves the prior state in history.').classes('text-caption')
-                checkpoint=ui.input(label='Named checkpoint',placeholder='Before review').props('outlined dense hide-bottom-space')
-                ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
+                checkpoint=ui.input(label='Named checkpoint',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
+                checkpoint_button=ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
+                checkpoint.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
                 if not entries: ui.label('No saved revisions yet.').classes('cui-report-hub-empty')
                 else:
                     with ui.element('div').classes('cui-history-list'):
@@ -544,9 +598,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                             except Exception: continue
                             summary=f'r{entry["revision"]} · {entry.get("updated_at") or "timestamp unavailable"} · {entry.get("label") or "Saved revision"}{" · checkpoint" if entry.get("checkpoint") else ""}'
                             with ui.card().classes('cui-history-card'):
-                                ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}'),sanitize=False)
+                                with ui.element('div').classes('cui-history-compare'):
+                                    with ui.element('div'): ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}'),sanitize=False); ui.label(f'r{entry["revision"]}').classes('cui-history-preview-label')
+                                    with ui.element('div'): ui.html(_report_thumbnail_markup(record.model,f'{record.title} current'),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
                                 with ui.element('div').classes('cui-history-card-copy'):
-                                    ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(record.model,historical)).classes('text-caption')
+                                    ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(historical,record.model)).classes('text-caption')
                                     with ui.row().classes('cui-history-actions'):
                                         ui.button('Restore this revision',on_click=lambda rid=record.report_id,hid=entry['history_id'],s=summary:begin_history_restore(rid,str(hid),s)).props('unelevated no-caps')
                                         ui.button('Duplicate as new report',on_click=lambda rid=record.report_id,hid=entry['history_id']:duplicate_hub_history(rid,str(hid))).props('flat no-caps')
@@ -558,11 +614,16 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     with ui.column().classes('gap-0'):
                         ui.label('Reports').classes('text-h3'); ui.label('Open, organize, and recover reports without covering the authoring canvas.').classes('text-body1')
                     ui.button('Open editor',on_click=lambda:ui.navigate.to(hub_url(history_report_id) if history_report_id else '/visualizer')).props('flat no-caps')
+                    ui.button('Dataset library',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=datasets' if history_report_id else '/visualizer?panel=datasets')).props('flat no-caps')
+                    ui.button('Reusable assets',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=assets' if history_report_id else '/visualizer?panel=assets')).props('flat no-caps')
+                    ui.button('Blueprints',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=blueprints' if history_report_id else '/visualizer?panel=blueprints')).props('flat no-caps')
                     ui.button('Import…',on_click=import_hub_dialog.open).props('flat no-caps')
                 with ui.element('section').classes('cui-report-hub-toolbar'):
                     search=ui.input(label='Search reports',placeholder='Title, description, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('flex-grow')
                     sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
                     view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
+                    ui.button('Grid',on_click=lambda:set_hub_layout('grid')).props('flat no-caps').tooltip('Show report cards')
+                    ui.button('List',on_click=lambda:set_hub_layout('list')).props('flat no-caps').tooltip('Show a compact report list')
                     template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
                     ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
                 render_cards()
@@ -752,7 +813,9 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             history_dialog.close(); await activate(record,notice='Historical revision duplicated')
 
         async def create_checkpoint() -> None:
-            latest=repository.get(current.report_id); repository.checkpoint(latest.report_id,str(checkpoint_name.value or ''),expected_revision=latest.revision)
+            name=' '.join(str(checkpoint_name.value or '').split())
+            if not name: notifications.warning('Enter a checkpoint name first'); return
+            latest=repository.get(current.report_id); repository.checkpoint(latest.report_id,name,expected_revision=latest.revision)
             checkpoint_name.value=''; checkpoint_name.update(); await open_history(); notifications.success('Checkpoint created')
 
         async def upload_report(event: Any) -> None:
@@ -876,9 +939,10 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     history_select=ui.select(label='Revision',options={}).props('outlined dense hide-bottom-space')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    checkpoint_name=ui.input(label='Checkpoint name',placeholder='Before review').props('outlined dense hide-bottom-space')
+                    checkpoint_name=ui.input(label='Checkpoint name',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Save checkpoint',on_click=create_checkpoint).props('flat no-caps')
+                    checkpoint_button=ui.button('Save checkpoint',on_click=create_checkpoint).props('flat no-caps')
+                    checkpoint_name.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Restore revision',on_click=restore_history_selected).props('unelevated no-caps')
                     # company-ui: allow-ai005 — see dialog compatibility host above.

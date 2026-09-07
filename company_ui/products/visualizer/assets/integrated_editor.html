@@ -24,6 +24,8 @@
           <button class="tb" id="front">Front</button>
         </div>
         <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
+        <button class="tb" id="stageDIntakeBtn" title="Start from text, data, or image evidence">Start with content</button>
+        <button class="tb" id="stageDAssistantBtn" title="Review message delivery checks">Delivery checks</button>
         <button class="tb" id="libraryToggle" aria-pressed="true" title="Show or hide the element library">Hide library</button>
         <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
         <button class="tb" id="historyBtn" title="Open report history, checkpoints, restore, and duplicate">History</button>
@@ -31,6 +33,8 @@
         <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
       </div>
       <div class="rightbar" aria-label="Report actions">
+        <button class="tb" id="stageDCleanBtn" title="Clean layout using message hierarchy">Clean layout</button>
+        <button class="tb" id="stageDFitBtn" title="Fit the complete report">Fit report</button>
         <button class="tb" id="preflightBtn">Validate</button>
         <button class="tb" id="previewBtn">Preview</button>
         <button class="tb" id="saveBtn">Autosaved</button>
@@ -140,5 +144,8 @@
   </div>
   <div class="modal" id="debugModal" role="dialog" aria-modal="true" aria-labelledby="debugTitle">
     <div class="dialog debug-dialog"><div class="dialog-head"><div><b id="debugTitle">Developer console</b><span id="debugSummary"></span></div><button class="tb" data-close>Close</button></div><div id="debugBody"></div></div>
+  </div>
+  <div class="modal" id="stageDModal" role="dialog" aria-modal="true" aria-labelledby="stageDTitle">
+    <div class="dialog stage-d-dialog"><div class="dialog-head"><b id="stageDTitle">Start with content</b><button class="tb" data-stage-d-close>Close</button></div><div id="stageDBody"></div></div>
   </div>
 </div>
