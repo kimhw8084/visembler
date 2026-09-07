@@ -1,0 +1,48 @@
+<div id="chart-studio" class="cui-chart-studio" data-studio-ready="false">
+  <header class="cs-toolbar" aria-label="Chart Studio toolbar">
+    <div class="cs-leading">
+      <button class="cs-btn cs-back" data-action="back" type="button">← Report</button>
+      <div class="cs-title"><span>Chart Studio</span><b id="cs-report-title">Chart</b><small id="cs-save-status" aria-live="polite">Ready</small></div>
+    </div>
+    <div class="cs-toolbar-group" role="toolbar" aria-label="Chart history and type">
+      <button class="cs-btn cs-icon" data-action="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
+      <button class="cs-btn cs-icon" data-action="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+      <label class="cs-type"><span>Chart type</span><select id="cs-chart-type" aria-label="Chart type"></select></label>
+    </div>
+    <div class="cs-toolbar-group cs-actions" role="toolbar" aria-label="Chart commands">
+      <button class="cs-btn" data-action="best-axes" type="button">Best readable axes</button>
+      <button class="cs-btn" data-action="clean-labels" type="button">Clean labels</button>
+      <button class="cs-btn" data-action="copy-setup" type="button">Copy setup</button>
+      <button class="cs-btn" data-action="toggle-markers" type="button">Markers</button>
+      <button class="cs-btn" data-action="toggle-theme" type="button">Light / dark</button>
+      <button class="cs-btn" data-action="fit" type="button">Fit</button>
+      <button class="cs-btn" data-action="preview" type="button">Preview</button>
+      <button class="cs-btn" data-action="import-json" type="button">Import JSON</button>
+      <button class="cs-btn" data-action="export-json" type="button">Export JSON</button>
+      <button class="cs-btn" data-action="export-svg" type="button">Export SVG</button>
+      <button class="cs-btn cs-primary" data-action="save" type="button">Save chart</button>
+    </div>
+  </header>
+  <div class="cs-shell">
+    <aside class="cs-left" aria-label="Chart Studio authoring panels">
+      <nav class="cs-tabs" role="tablist" aria-label="Chart authoring sections">
+        <button class="is-active" data-cs-tab="data" role="tab" aria-selected="true">Data</button>
+        <button data-cs-tab="fields" role="tab" aria-selected="false">Fields</button>
+        <button data-cs-tab="visual" role="tab" aria-selected="false">Visual</button>
+        <button data-cs-tab="interaction" role="tab" aria-selected="false">Interaction</button>
+      </nav>
+      <div id="cs-panel" class="cs-panel"></div>
+    </aside>
+    <main class="cs-main" aria-label="Live chart preview">
+      <div class="cs-canvas-head"><div><span class="cs-eyebrow">Live preview</span><b id="cs-chart-name">Chart</b></div><span id="cs-validation" aria-live="polite">Ready</span></div>
+      <div id="cs-canvas-wrap" class="cs-canvas-wrap"><div id="cs-canvas" role="img" aria-label="Chart preview"></div><div id="cs-preview-banner" hidden><span>Reading preview</span><button class="cs-btn" data-action="preview-close" type="button">Exit preview</button></div></div>
+      <div class="cs-summary"><b id="cs-summary-title">Chart summary</b><span id="cs-summary"></span><span id="cs-why"></span></div>
+    </main>
+    <aside class="cs-right" aria-label="Chart context and recipes">
+      <section class="cs-side-section"><div class="cs-section-head"><span>Recommendations</span><span id="cs-recommendation-count"></span></div><div id="cs-recommendations"></div></section>
+      <section class="cs-side-section"><div class="cs-section-head"><span>Chart recipe</span><button class="cs-link" data-action="save-recipe" type="button">Save</button></div><div id="cs-recipe-list"></div></section>
+      <section class="cs-side-section"><div class="cs-section-head"><span>Selected data</span><span id="cs-selection-summary">0 cells</span></div><div id="cs-selection-detail" class="cs-muted">Click chart marks or table cells to inspect values.</div></section>
+    </aside>
+  </div>
+  <input id="cs-import-json" type="file" accept="application/json,.json" hidden>
+</div>
