@@ -71,6 +71,20 @@
   .engineering-live .spec-line{stroke:var(--viz-bad);stroke-width:1.2;stroke-dasharray:2 2}
 }
 
+.cui-visualizer-root[data-read-only="true"] .resize-h,
+.cui-visualizer-root[data-read-only="true"] .context,
+.cui-visualizer-root[data-read-only="true"] [data-editor-only] { display:none!important; }
+.cui-visualizer-root[data-read-only="true"] .component { cursor:default!important; }
+.cui-visualizer-root[data-read-only="true"] .inspector-section input,
+.cui-visualizer-root[data-read-only="true"] .inspector-section select,
+.cui-visualizer-root[data-read-only="true"] .inspector-section textarea { pointer-events:none; opacity:.65; }
+
+@media (pointer: coarse) {
+  .cui-visualizer-root .tb,
+  .cui-visualizer-root .mini-btn,
+  .cui-visualizer-root .pal { min-width:44px!important; min-height:44px!important; }
+}
+
 .cui-visualizer-root[data-theme="dark"] {
   color-scheme: dark;
   --viz-bg: #17171a;

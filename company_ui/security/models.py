@@ -4,7 +4,16 @@ from dataclasses import dataclass, field
 from enum import Enum
 from ipaddress import ip_address, ip_network
 import hmac
+import contextvars
 from typing import Any, Mapping, Protocol
+
+
+_principal_context: contextvars.ContextVar['Principal | None'] = contextvars.ContextVar('company_ui_principal', default=None)
+
+
+def current_principal() -> 'Principal | None':
+    """Return the principal installed for the current HTTP/WebSocket scope."""
+    return _principal_context.get()
 
 
 class AuthMethod(str, Enum):
@@ -173,4 +182,8 @@ class IdentityMiddleware:
         principal = await self.adapter.authenticate(headers, client_host)
         state = scope.setdefault('state', {})
         state['company_ui_principal'] = principal
-        await self.app(scope, receive, send)
+        token = _principal_context.set(principal)
+        try:
+            await self.app(scope, receive, send)
+        finally:
+            _principal_context.reset(token)

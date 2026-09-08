@@ -163,9 +163,28 @@ class ReportRepository:
         with self._transaction():
             out=[]
             for path in sorted(self.root.glob('*.json')):
+                if path.name.startswith('_'):
+                    continue
                 try: out.append(self._get_unlocked(path.stem))
                 except VisualizerContractError: continue
             return sorted(out,key=lambda r:(r.updated_at,r.report_id),reverse=True)
+
+    def list_summaries(self) -> list[dict[str, Any]]:
+        """Read metadata without hydrating every report model or asset."""
+        with self._transaction():
+            out=[]
+            for path in sorted(self.root.glob('*.json')):
+                if path.name.startswith('_'):
+                    continue
+                try:
+                    value=json.loads(path.read_text(encoding='utf-8'))
+                    if not isinstance(value, Mapping) or value.get('report_id') != path.stem:
+                        continue
+                    model=value.get('model') if isinstance(value.get('model'), Mapping) else {}
+                    out.append({'report_id': path.stem, 'title': str(value.get('title') or 'Untitled report'), 'revision': int(value.get('revision') or 0), 'updated_at': str(value.get('updated_at') or ''), 'item_count': len(model.get('items', ())), 'group_count': len(model.get('groups', ()))})
+                except (OSError, TypeError, ValueError, json.JSONDecodeError):
+                    continue
+            return sorted(out,key=lambda r:(r['updated_at'],r['report_id']),reverse=True)
 
     def commit(self, report_id: str, *, base_revision: int, model: Mapping[str,Any], commit_id: str) -> ReportRecord:
         if not commit_id or len(commit_id)>160: raise VisualizerContractError('invalid commit id')

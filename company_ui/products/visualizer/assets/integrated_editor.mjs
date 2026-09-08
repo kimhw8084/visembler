@@ -29,6 +29,7 @@ const MAX_IMAGE_BYTES = 750_000;
 const OFF_THREAD_INTAKE_BYTES = 250_000;
 const AUTHORING_VERSION = 'v0.4.25';
 const bootstrap = window.__CUI_VISUALIZER_BOOTSTRAP__ || {};
+let readOnly = bootstrap.capabilities?.read_only === true;
 let activeRoot = null;
 let eventAbort = null;
 let personalPresets = [];
@@ -404,6 +405,7 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   if(reportChanged&&!preserveLocal){retainLocalRecovery('Report switched before save confirmation');ui.recovery=null;ui.persistenceFailure=null;}
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
+  if (payload.capabilities) { bootstrap.capabilities=payload.capabilities; readOnly=payload.capabilities.read_only===true; }
   store=new EditorStore(parseCanonical(migrateLegacyItems(payload.model)),{revision:payload.revision});
   bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
 }
@@ -424,6 +426,7 @@ function reapplyLocalRecovery() {
 window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{};debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();return;}if(m.type==='report.conflict'){replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,recovery:!!ui.recovery};}};
 
 function commitOps(label, ops, { announce = null, render = true } = {}) {
+  if (readOnly) { toast('This report is read-only'); return null; }
   let next;
   try { next=prospectiveModel(ops,label); } catch(err) { debugEvent('error',`Rejected edit: ${label}`,err?.stack||err); toast(String(err.message||err)); return null; }
   if (modelBytes(next)>MAX_MODEL_BYTES) { toast('This edit would make the report too large; nothing was changed'); return null; }
@@ -431,9 +434,11 @@ function commitOps(label, ops, { announce = null, render = true } = {}) {
   pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('commit'); if(render)renderAll(); if(announce)toast(announce); syncAccepted(accepted); return accepted;
 }
 function undo() {
+  if (readOnly) return toast('This report is read-only');
   if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); renderAll(); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); toast('Undid last edit');
 }
 function redo() {
+  if (readOnly) return toast('This report is read-only');
   if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); renderAll(); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); toast('Redid last edit');
 }
 function pruneSelection() {
@@ -1235,6 +1240,7 @@ function smartReorderOps(q, id) {
   return rest.map((entry, k) => entry.order === k ? null : { op: 'item.patch', id: entry.id, patch: { order: k } }).filter(Boolean);
 }
 function startDrag(e, id, el) {
+  if(readOnly)return toast('This report is read-only');
   if(e.button!==0)return;e.preventDefault();e.stopPropagation();if(!ui.selected.has(id)){ui.selected.clear();ui.selected.add(id);reconcileCanvas({content:false});renderInspector();}const movers=selectedMovers(id);if(!movers.length)return toast('Locked component');
   const rm=committedRectMap(),p=logicalPoint(e),orig=movers.map(m=>{const r=rm.get(m.id);return{id:m.id,x:r.x,y:r.y,w:r.w,h:r.h}});movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.add('dragging'));
   const previewAt=(ev)=>{const q=logicalPoint(ev),dx=q.x-p.x,dy=q.y-p.y;if(model().mode==='smart'){showSmartReorderGhost(q,id);return;}let sx=dx,sy=dy,guide={gx:null,gy:null};if(model().mode==='guided'&&ui.snap){guide=snapDelta(orig,dx,dy,movers);sx=guide.dx;sy=guide.dy;}const inset=model().mode==='guided'?CANVAS.gap:0,bounded=clampMovementDelta(orig,sx,sy,CANVAS,inset);sx=bounded.dx;sy=bounded.dy;if(model().mode==='guided'&&ui.snap)showGuides(guide);orig.forEach(o=>ui.previewPatches.set(o.id,{x:o.x+sx,y:o.y+sy}));renderGeometryOnly();};
@@ -1596,6 +1602,13 @@ function developerSnapshot() {
   const pf=preflight(); const modelValue=parseCanonical(store.serialize());
   return {report_id:bootstrap.report_id,revision:store.revision,mode:modelValue.mode,items:modelValue.items.length,selected:[...ui.selected],pending_commits:ui.pendingCommits.size,model_bytes:modelBytes(modelValue),preflight:{layout:pf.layoutIssues.length,accessibility:pf.accessibilityIssues.length,data:pf.dataIssues.length},pointer_active:!!ui.pointerSession,editor_ready:activeRoot?.dataset.editorReady||'unknown'};
 }
+function applyReadOnlyUi() {
+  if (!activeRoot) return;
+  activeRoot.dataset.readOnly=readOnly?'true':'false';
+  const mutationIds=['undo','redo','auto','layoutBtn','group','ungroup','lock','back','front','saveBtn','historyBtn','presetSave'];
+  mutationIds.forEach((id)=>{const node=$(`#${id}`);if(node)node.disabled=readOnly;});
+  if (readOnly) $$('#inspector input,#inspector textarea,#inspector select,#inspector button').forEach((node)=>{node.disabled=true;});
+}
 function renderDeveloperConsole() {
   const body=$('#debugBody'),summary=$('#debugSummary'); if(!body||!summary)return;
   const snapshot=developerSnapshot(); summary.textContent=`Revision ${snapshot.revision} · ${snapshot.items} elements · ${ui.debugLog.length} events`;
@@ -1779,7 +1792,7 @@ function init(root=$('.cui-visualizer-root')) {
   if (root===activeRoot && root.dataset.editorReady==='true') return true;
   eventAbort?.abort(); cancelPointerSession('rebind'); window.__VIZ_RESIZE_OBSERVER__?.disconnect?.(); activeRoot=root; eventAbort=new AbortController();
   activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
-  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')==='1'); requestAnimationFrame(fitZoom);
+  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')==='1'); applyReadOnlyUi(); requestAnimationFrame(fitZoom);
   activeRoot.dataset.editorReady='true';
   window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>document.documentElement.setAttribute('data-theme',theme),cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;

@@ -1,5 +1,16 @@
 # Company UI 3.0.0a1 — Source-Complete Application Platform Alpha
 
+## Visembler current boundary
+
+Visembler is the governed Visualizer product in this source tree. Its current
+application status is maintained in
+[`docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md`](docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md):
+the local single-instance contract remains `PASS_LOCAL_INTERNAL_PILOT`, and the
+company-boundary implementation is eligible for
+`READY_FOR_COMPANY_TARGET_CERTIFICATION` only after its fresh local gates pass.
+That status is distinct from the Company UI framework's historical alpha
+evidence below.
+
 Company UI is a Company-owned NiceGUI application platform for internal engineering, data, monitoring and RCA products. `3.0.0a1` is the first v3 architecture line: it keeps the certified v2 rendering/design contracts as the compatibility floor while adding governed application runtime, data, workspace, interaction and extension layers above them.
 
 ## Release status
@@ -43,9 +54,9 @@ Pillow==12.3.0
 
 Setup validates production runtime only and must not require browser-certification packages or a free fixed port. `run_lab` owns its configured lab port. Full browser certification remains strict.
 
-## 3.0.0a1 source evidence
+## Historical 3.0.0a1 source evidence
 
-- Python/source regression estate: **670/670 PASS**
+- Python/source regression estate at the historical alpha cut: **670/670 PASS**
 - governance: **PASS — 0 errors / 0 warnings**
 - static/source certification: **12 PASS / 1 expected environment warning / 0 FAIL / 0 SKIP**
 - public visual integrations mapped to the live lab: **183/183**

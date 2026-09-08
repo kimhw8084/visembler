@@ -6,6 +6,10 @@ from typing import Mapping
 
 from company_ui.runtime import RuntimeConfig, RuntimeEnvironment
 from company_ui.integrations.nicegui_runtime import NiceGUIRuntimeAdapter
+from company_ui.security import (
+    AccessPolicy, AuthenticationAdapter, AuthorizationModel, HeaderAuthenticationAdapter,
+    HeaderIdentityConfig, Principal, RoleDefinition, TrustedProxyPolicy,
+)
 
 
 def _persistent_local_secret(secret_file: Path) -> str:
@@ -87,4 +91,32 @@ def build_runtime_adapter(environ: Mapping[str,str] | None = None) -> tuple[Nice
     issues=config.validate_environment(env)
     # Multi-replica/proxy concerns remain Company UI configuration checks; Visembler does not infer infrastructure.
     if issues: raise RuntimeError('runtime environment validation failed: '+', '.join(issues))
-    return NiceGUIRuntimeAdapter(config),env
+    if config.environment is RuntimeEnvironment.PROD:
+        if env.get('COMPANY_UI_AUTH_MODE', 'trusted_proxy').strip().lower() != 'trusted_proxy':
+            raise RuntimeError('Visembler production requires COMPANY_UI_AUTH_MODE=trusted_proxy or a separately supplied AuthenticationAdapter')
+        if not env.get('COMPANY_UI_AUTH_ASSERTION_SECRET') and not env.get('COMPANY_UI_TRUSTED_IDENTITY_PROXIES'):
+            raise RuntimeError('Visembler production requires an explicit trusted identity proxy allowlist or validated assertion secret')
+        if not config.proxy.enabled and not env.get('COMPANY_UI_AUTH_ASSERTION_SECRET'):
+            raise RuntimeError('Visembler production requires COMPANY_UI_PROXY_ENABLED=true when using trusted proxy identity')
+        networks=tuple(item.strip() for item in env.get('COMPANY_UI_TRUSTED_IDENTITY_PROXIES', env.get('COMPANY_UI_TRUSTED_PROXIES', '127.0.0.1,::1')).split(',') if item.strip())
+        auth_adapter: AuthenticationAdapter = HeaderAuthenticationAdapter(
+            HeaderIdentityConfig(require_trusted_proxy=True),
+            trusted_proxies=TrustedProxyPolicy(networks),
+            assertion_secret=env.get('COMPANY_UI_AUTH_ASSERTION_SECRET') or None,
+        )
+    else:
+        subject=' '.join((env.get('COMPANY_UI_DEV_SUBJECT') or 'local-dev').split()) or 'local-dev'
+
+        class DevelopmentAuthenticationAdapter:
+            async def authenticate(self, headers, client_host=None):
+                return Principal(subject, display_name=subject, roles=frozenset({'visembler.admin'}), authenticated=True)
+
+        auth_adapter = DevelopmentAuthenticationAdapter()
+    all_report_permissions=frozenset({'report.create', 'report.read', 'report.edit', 'report.rename', 'report.duplicate', 'report.share', 'report.delete', 'report.restore', 'report.history.read', 'report.history.restore', 'report.export', 'administration', 'diagnostics.read'})
+    authorization=AuthorizationModel(roles={
+        'visembler.admin': RoleDefinition('visembler.admin', all_report_permissions),
+        'visembler.editor': RoleDefinition('visembler.editor', frozenset({'report.create'})),
+        'visembler.member': RoleDefinition('visembler.member', frozenset({'report.create'})),
+        'visembler.support': RoleDefinition('visembler.support', frozenset({'diagnostics.read'})),
+    })
+    return NiceGUIRuntimeAdapter(config, auth_adapter=auth_adapter, authorization=authorization),env

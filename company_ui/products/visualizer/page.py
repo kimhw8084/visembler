@@ -15,8 +15,11 @@ from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
 from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
+from company_ui.security import AuthorizationModel, Principal
+from company_ui.security.models import current_principal
 
-from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
+from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, ReportNotFoundError, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
+from .governance import GLOBAL_CREATE, GLOBAL_ADMIN, ReportAccessCatalog, ScopedReportRepository
 from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
 from .ppt_service import export_pptx, import_visembler_pptx
 from .repository import ReportRepository
@@ -124,26 +127,27 @@ async def _read_upload(event: Any, *, max_bytes: int) -> tuple[str, bytes]:
     return Path(name).name,payload
 
 
-def _report_options(repository: ReportRepository, query: str='') -> dict[str,str]:
-    needle=' '.join(str(query).split()).casefold(); records=repository.list(); counts:dict[str,int]={}
-    for record in records:
-        blank=not record.model.get('items') and not record.model.get('groups')
-        label='New blank report' if record.title=='Untitled report' and blank else record.title
+def _report_options(repository: Any, query: str='') -> dict[str,str]:
+    needle=' '.join(str(query).split()).casefold(); summaries=repository.list_summaries(); counts:dict[str,int]={}
+    for summary in summaries:
+        blank=not summary.get('item_count') and not summary.get('group_count')
+        label='New blank report' if summary['title']=='Untitled report' and blank else summary['title']
         counts[label]=counts.get(label,0)+1
     result={}
-    for record in records:
-        blank=not record.model.get('items') and not record.model.get('groups')
-        label='New blank report' if record.title=='Untitled report' and blank else record.title
-        if needle and needle not in label.casefold() and needle not in record.report_id.casefold(): continue
+    for summary in summaries:
+        blank=not summary.get('item_count') and not summary.get('group_count')
+        label='New blank report' if summary['title']=='Untitled report' and blank else summary['title']
+        if needle and needle not in label.casefold() and needle not in summary['report_id'].casefold(): continue
         if counts[label]>1:
-            label=f'{label}{" · blank" if blank else ""} · {record.report_id[-6:]}'
-        result[record.report_id]=label
+            label=f'{label}{" · blank" if blank else ""} · {summary["report_id"][-6:]}'
+        result[summary['report_id']]=label
     return result
 
 
-def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None:
+def register_visualizer(app: Any, ui: Any, repository: ReportRepository, *, access: ReportAccessCatalog | None = None, authorization: AuthorizationModel | None = None) -> None:
     if getattr(app,'_company_ui_visualizer_registered',False): return
     app._company_ui_visualizer_registered=True
+    base_repository=repository
     build=_asset_build()
     app.add_static_files(f'{STATIC_ROUTE}/assets',str(ASSETS),follow_symlink=False,max_cache_age=0)
     app.add_static_files(f'{STATIC_ROUTE}/vendor/production_core',str(VENDOR),follow_symlink=False,max_cache_age=3600)
@@ -152,34 +156,76 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
     @app.get('/',include_in_schema=False)
     async def _root_redirect(): return RedirectResponse('/visualizer',status_code=307)
 
+    access = access or ReportAccessCatalog(base_repository.root)
+    authorization = authorization or AuthorizationModel()
     from fastapi.responses import Response
-    @app.get(f'{STATIC_ROUTE}/report-assets/{{asset_id}}',include_in_schema=False)
-    async def _report_asset(asset_id: str):
-        data=repository.assets.read_image(asset_id); mime=str(validate_image_bytes(data)['mime'])
+    @app.get(f'{STATIC_ROUTE}/report-assets/{{report_id}}/{{asset_id}}',include_in_schema=False)
+    async def _report_asset(report_id: str, asset_id: str):
+        # IdentityMiddleware installs the request/WebSocket principal in the
+        # canonical context; using it here avoids an annotation-dependent
+        # FastAPI query parameter and keeps the asset route fail-closed.
+        principal=current_principal() or Principal.anonymous()
+        scoped=ScopedReportRepository(base_repository,access,principal,authorization)
+        try:
+            data=scoped.read_asset_for_report(report_id,asset_id)
+        except (PermissionError, ReportNotFoundError):
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail='asset not available')
+        mime=str(validate_image_bytes(data)['mime'])
         return Response(content=data,media_type=mime,headers={'Cache-Control':'private, max-age=3600'})
 
     @ui.page('/visualizer')
     async def visualizer_page():
+        page_request=getattr(getattr(ui.context, 'client', None), 'request', None)
+        principal=getattr(getattr(page_request, 'state', None), 'company_ui_principal', None) or current_principal() or Principal.anonymous()
+        if not principal.authenticated:
+            return Response(content='{"detail":"not available"}',status_code=404,media_type='application/json')
+        repository=ScopedReportRepository(base_repository,access,principal,authorization)
         notifications=NiceGUIStateServices.notification_service(); downloads=NiceGUIStateServices.download_service()
         preferences=NiceGUIStateServices.user_preferences(key='company_ui_visualizer_preferences')
         page_state=NiceGUIStateServices.user_store()
-        records=repository.list()
+        records=repository.list_summaries()
         if not records:
-            records=[repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})]
+            requested_report=str(page_request.query_params.get('report') or '').strip() if page_request is not None else ''
+            effective=authorization.effective_permissions(principal)
+            if requested_report or not principal.authenticated or (GLOBAL_CREATE not in effective and GLOBAL_ADMIN not in effective):
+                # A protected direct URL must be indistinguishable from a missing
+                # report.  In particular, do not fall through to the local blank
+                # report bootstrap for a principal who cannot create reports.
+                return Response(content='{"detail":"not available"}',status_code=404,media_type='application/json')
+            repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})
+            records=repository.list_summaries()
         preferred=str(page_state.get('visualizer.current_report') or '')
-        current=next((record for record in records if record.report_id==preferred),records[0]); page_state['visualizer.current_report']=current.report_id
+        requested_report=str(page_request.query_params.get('report') or '').strip() if page_request is not None else ''
+        if requested_report:
+            try:
+                current=repository.get(requested_report)
+            except (PermissionError, ReportNotFoundError):
+                return Response(content='{"detail":"not available"}',status_code=404,media_type='application/json')
+        else:
+            selected=next((summary for summary in records if summary['report_id']==preferred),records[0])
+            current=repository.get(selected['report_id'])
+        page_state['visualizer.current_report']=current.report_id
+        projection=repository.capabilities(current.report_id)
         ppt_template:dict[str,Any]={'name':None,'content':None}
+
+        def asset_url(asset_id: str) -> str:
+            return f'{STATIC_ROUTE}/report-assets/{current.report_id}/{asset_id}'
 
         async def send(kind: str, payload: Mapping[str,Any]) -> None:
             message={'bridge_version':BRIDGE_VERSION,'type':kind,'payload':dict(payload)}
             await ui.run_javascript(f'window.CompanyUIVisualizerBridge?.receive({json.dumps(message,ensure_ascii=False)})')
 
         async def activate(record, *, notice: str|None=None) -> None:
-            nonlocal current
-            current=record; page_state['visualizer.current_report']=record.report_id
+            nonlocal current, projection
+            current=record; projection=repository.capabilities(record.report_id); page_state['visualizer.current_report']=record.report_id
             report_select.options=_report_options(repository); report_select.value=record.report_id; report_select.update()
-            report_title.value=record.title; report_title.update()
-            await send('report.bootstrap',_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'))
+            if projection.can_rename:
+                report_title.value=record.title
+            else:
+                report_title.text=record.title
+            report_title.update()
+            await send('report.bootstrap',_payload(record,asset_url))
             if notice: notifications.success(notice)
 
         async def handle_semantic(event: Any) -> None:
@@ -198,6 +244,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
                     return
                 if kind=='report.save_requested':
+                    if not repository.capabilities(current.report_id).can_edit:
+                        raise PermissionError('report is read-only')
                     latest=repository.get(current.report_id); await send('application.notification',{'level':'success','message':f'Saved · revision {latest.revision}'})
                     return
                 if kind=='report.history_requested':
@@ -212,15 +260,15 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     preferences.save_filter_view(PRESET_KEY,{'presets':presets})
                     await send('preset.preferences_result',{'presets':presets,'saved':True}); return
                 if kind=='ppt.export_requested':
-                    latest=repository.get(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=repository.assets.data_url)
+                    latest=repository.export(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=lambda asset_id: repository.asset_data_url(latest.report_id,asset_id))
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
                 if kind=='dataset.binding_requested':
                     await send('report.error',{'message':'Dataset binding is unavailable until a Company UI Dataset/DataSession is attached to this report.'}); return
             except RevisionConflictError:
-                latest=repository.get(current.report_id); await send('report.conflict',{**_payload(latest,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),'rejected_commit_id':str(payload.get('commit_id') or '')})
+                latest=repository.get(current.report_id); await send('report.conflict',{**_payload(latest,asset_url),'rejected_commit_id':str(payload.get('commit_id') or '')})
             except Exception as exc:
-                try: latest=repository.get(current.report_id); record_payload=_payload(latest,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}')
+                try: latest=repository.get(current.report_id); record_payload=_payload(latest,asset_url)
                 except Exception: record_payload=None
                 await send('report.error',{'message':str(exc)[:400],'commit_id':str(payload.get('commit_id') or ''),**({'report':record_payload} if record_payload else {})})
 
@@ -232,7 +280,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         async def duplicate_current() -> None:
             try:
                 latest=repository.get(current.report_id); title=f'{latest.title} copy'[:160]
-                record=repository.create(f'report-{uuid.uuid4().hex}',title=title,model=latest.model,metadata={**latest.metadata,'duplicated_from':latest.report_id})
+                record=repository.duplicate(latest.report_id,f'report-{uuid.uuid4().hex}',title=title,metadata={**latest.metadata,'duplicated_from':latest.report_id})
                 await activate(record,notice='Report duplicated')
             except Exception as exc: notifications.error(f'Duplicate rejected: {exc}')
 
@@ -382,15 +430,58 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     history_select=ui.select(label='Revision',options={}).props('outlined dense hide-bottom-space')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    checkpoint_name=ui.input(label='Checkpoint name',placeholder='Before review').props('outlined dense hide-bottom-space')
+                    if projection.can_restore_history:
+                        checkpoint_name=ui.input(label='Checkpoint name',placeholder='Before review').props('outlined dense hide-bottom-space')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Save checkpoint',on_click=create_checkpoint).props('flat no-caps')
+                        ui.button('Save checkpoint',on_click=create_checkpoint).props('flat no-caps')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Restore revision',on_click=restore_history_selected).props('unelevated no-caps')
+                        ui.button('Restore revision',on_click=restore_history_selected).props('unelevated no-caps')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Duplicate revision',on_click=duplicate_history_selected).props('flat no-caps')
+                    if projection.can_duplicate:
+                        ui.button('Duplicate revision',on_click=duplicate_history_selected).props('flat no-caps')
+                    if projection.read_only:
+                        ui.label('Read-only history · restore and duplicate are unavailable.').classes('cui-field-description')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Close',on_click=history_dialog.close).props('flat no-caps')
+            share_dialog=ui.dialog()
+            with share_dialog:
+                with ui.card().classes('cui-dialog-card'):
+                    ui.label('Share report').classes('cui-dialog-title')
+                    ui.label('Grant access using the person’s stable company subject. Display names are informational only.').classes('cui-field-description')
+                    share_subject=ui.input(label='Company subject',placeholder='e.g. user-123').props('outlined dense hide-bottom-space')
+                    share_role=ui.select(label='Access',options={'viewer':'Viewer','editor':'Editor'},value='viewer').props('outlined dense hide-bottom-space')
+                    share_summary=ui.label('No additional access grants.').classes('cui-field-description')
+
+                    def refresh_share_summary() -> None:
+                        grants=access.get(current.report_id).get('grants', {})
+                        share_summary.text='; '.join(f'{subject} · {role}' for subject, role in sorted(grants.items())) or 'No additional access grants.'
+                        share_summary.update()
+
+                    def open_share() -> None:
+                        share_subject.value=''; share_role.value='viewer'; share_subject.update(); share_role.update(); refresh_share_summary(); share_dialog.open()
+
+                    def save_share() -> None:
+                        subject=str(share_subject.value or '').strip(); role=str(share_role.value or 'viewer')
+                        if not subject:
+                            notifications.warning('Enter a company subject to share this report.'); return
+                        try:
+                            repository.share(current.report_id,subject,role); refresh_share_summary(); notifications.success(f'Access updated for {subject}.')
+                        except PermissionError:
+                            notifications.error('You do not have permission to share this report.')
+
+                    def revoke_share() -> None:
+                        subject=str(share_subject.value or '').strip()
+                        if not subject:
+                            notifications.warning('Enter the subject to revoke.'); return
+                        try:
+                            repository.share(current.report_id,subject,None); refresh_share_summary(); notifications.success(f'Access revoked for {subject}.')
+                        except PermissionError:
+                            notifications.error('You do not have permission to change sharing.')
+
+                    with ui.row().classes('gap-2'):
+                        ui.button('Grant / update',on_click=save_share).props('unelevated no-caps')
+                        ui.button('Revoke',on_click=revoke_share).props('flat no-caps color=negative')
+                        ui.button('Close',on_click=share_dialog.close).props('flat no-caps')
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             import_dialog=ui.dialog()
             with import_dialog:
@@ -410,28 +501,38 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     ui.button('Done',on_click=import_dialog.close).props('flat no-caps')
 
             # company-ui: allow-ai004 — the editor is an isolated application-owned canvas host.
-            with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full'):
+            with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full').props(f'data-report-read-only="{str(projection.read_only).lower()}"'):
                 # company-ui: allow-ai005 — the report-control strip is part of the isolated editor host.
                 with ui.element('section').classes('cui-visualizer-reportbar w-full').props('aria-label="Report controls"'):
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
+                    if projection.can_rename:
+                        report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
+                    else:
+                        report_title=ui.label(current.title).classes('cui-visualizer-report-title cui-report-read-only-title')
+                        ui.label('Read-only').classes('cui-report-read-only-indicator')
                     # company-ui: allow-ai005 — see isolated editor host above.
                     report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space').classes('cui-visualizer-report-select')
                     # company-ui: allow-ai005 — see isolated editor host above.
                     report_filter=ui.input(label='Find report',on_change=refresh_reports,placeholder='Search reports').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-filter')
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
+                    if projection.can_edit or projection.can_duplicate:
+                        ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
+                    if projection.can_duplicate:
+                        ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
+                    if projection.can_share:
+                        ui.button('Share',on_click=open_share).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
                     # company-ui: allow-ai005 — see isolated editor host above.
                     ui.button('Import…',on_click=import_dialog.open).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
                     ui.button('Clean up empty reports',on_click=clean_dialog.open).props('flat no-caps')
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Trash',on_click=delete_dialog.open).props('outline no-caps color=negative')
+                    if projection.can_delete:
+                        ui.button('Trash',on_click=delete_dialog.open).props('outline no-caps color=negative')
                     # company-ui: allow-ai005 — see isolated editor host above.
-                    ui.button('Restore…',on_click=open_restore).props('flat no-caps')
+                    if projection.can_restore:
+                        ui.button('Restore…',on_click=open_restore).props('flat no-caps')
                 # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
                 host=ui.element('div').classes('cui-visualizer-host w-full').props('aria-label="Visembler report editor"')
                 host.on('visualizer_bridge',handle_semantic,args=['detail'])
@@ -441,5 +542,10 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         token_url=f'{STATIC_ROUTE}/assets/tokens.css?v={build}'
         module_url=f'{STATIC_ROUTE}/assets/integrated_editor.mjs?v={build}'
         ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
-        bootstrap={'report_id':current.report_id,'revision':current.revision,'model':current.model,'asset_build':build}
-        await ui.run_javascript(f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});''')
+        bootstrap=_payload(current,asset_url)
+        bootstrap.update({'asset_build':build,'capabilities':projection.to_dict()})
+        # Bootstrap is a client-side enhancement.  Do not hold the HTTP page
+        # response open waiting for a JavaScript acknowledgement: a browser
+        # that navigates away during startup would otherwise turn a normal
+        # disconnect into a late NiceGUI 500 response.
+        ui.run_javascript(f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});''')

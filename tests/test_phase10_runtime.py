@@ -1,8 +1,12 @@
 import json
 import pytest
+from fastapi import FastAPI
+from httpx import ASGITransport, AsyncClient
 
 from company_ui.runtime import CompatibilityManifest, ProxyConfig, RuntimeConfig, RuntimeEnvironment
 from company_ui.version import FRAMEWORK_VERSION
+from company_ui.integrations.nicegui_runtime import NiceGUIRuntimeAdapter
+from company_ui.security import AccessPolicy, HeaderAuthenticationAdapter, HeaderIdentityConfig, IdentityMiddleware, AuthorizationModel, RoleDefinition
 
 
 def test_proxy_config_normalizes_root_path():
@@ -63,3 +67,19 @@ def test_multi_replica_requires_session_affinity_confirmation():
 
 def test_samesite_none_requires_secure_cookie():
     with pytest.raises(ValueError): RuntimeConfig('Tool', same_site='none', secure_session_cookie=False)
+
+
+@pytest.mark.asyncio
+async def test_diagnostics_endpoint_uses_identity_context_not_query_request() -> None:
+    config=RuntimeConfig('Tool', diagnostics_enabled=True)
+    auth=HeaderAuthenticationAdapter(HeaderIdentityConfig(require_trusted_proxy=False))
+    authorization=AuthorizationModel({'visembler.admin': RoleDefinition('visembler.admin', frozenset({'diagnostics.read'}))})
+    adapter=NiceGUIRuntimeAdapter(config, auth_adapter=auth, authorization=authorization)
+    app=FastAPI()
+    adapter.install_operational_endpoints(app, diagnostics_policy=AccessPolicy(any_permissions=frozenset({'diagnostics.read'})))
+    app.add_middleware(IdentityMiddleware, adapter=auth)
+    async with AsyncClient(transport=ASGITransport(app=app), base_url='http://test') as client:
+        denied=await client.get('/diagnostics')
+        allowed=await client.get('/diagnostics',headers={'x-auth-user':'alice','x-auth-roles':'visembler.admin'})
+    assert denied.status_code == 403
+    assert allowed.status_code in {200, 503}  # diagnostics may report a local doctor finding, but never a query-validation 422

@@ -8,6 +8,7 @@ from company_ui.security import (
     AccessPolicy, AuthenticationAdapter, AuthorizationModel, IdentityMiddleware,
     Principal, SecurityHeaders, SecurityHeadersMiddleware,
 )
+from company_ui.security.models import current_principal
 
 
 def _nicegui():
@@ -64,7 +65,6 @@ class NiceGUIRuntimeAdapter:
     def install_operational_endpoints(self, app: Any | None = None, *, diagnostics_policy: AccessPolicy | None = None) -> None:
         ng_app, _ = _nicegui() if app is None else (app, None)
         try:
-            from fastapi import Request
             from fastapi.responses import JSONResponse
         except ImportError as exc:  # pragma: no cover
             raise RuntimeError('FastAPI is required by NiceGUI runtime endpoints.') from exc
@@ -88,8 +88,12 @@ class NiceGUIRuntimeAdapter:
                 raise ValueError('diagnostics require authentication and an explicit access policy')
 
             @ng_app.get(self.config.diagnostics_path, include_in_schema=False)
-            async def company_ui_diagnostics(request: Request):
-                principal = self.principal_from_request(request)
+            async def company_ui_diagnostics():
+                # IdentityMiddleware has already authenticated this HTTP scope.
+                # Reading its context avoids treating a locally imported
+                # postponed ``Request`` annotation as a user-controlled query
+                # parameter under FastAPI.
+                principal = current_principal() or Principal.anonymous()
                 decision = self.authorization.check(principal, diagnostics_policy)
                 if not decision.allowed:
                     return JSONResponse({'detail': 'forbidden'}, status_code=403)
@@ -118,7 +122,8 @@ class NiceGUIRuntimeAdapter:
     def run(self, *, root: Callable[..., Any] | None = None, environ=None) -> None:
         app, ui = _nicegui()
         self.install_middleware(app)
-        self.install_operational_endpoints(app)
+        diagnostics_policy = AccessPolicy(any_permissions=frozenset({'diagnostics.read'})) if self.auth_adapter is not None else None
+        self.install_operational_endpoints(app, diagnostics_policy=diagnostics_policy)
         kwargs = self.run_kwargs(environ)
         if root is None:
             ui.run(**kwargs)
