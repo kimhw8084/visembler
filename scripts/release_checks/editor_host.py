@@ -116,6 +116,24 @@ class NativeHost(EditorHost):
     """
     native=True
 
+    def create(self, model=None, name=None):
+        """Create an isolated native fixture with an explicit local owner.
+
+        Native acceptance fixtures may be created before or after the NiceGUI
+        process starts.  Registering the fixture in the same ACL sidecar used
+        by the application keeps the harness faithful to the production
+        resource boundary without broadening access to real user data.
+        """
+        report_id = super().create(model=model, name=name)
+        from company_ui.products.visualizer.governance import ReportAccessCatalog
+
+        ReportAccessCatalog(self.repository).migrate(
+            [self.repository.get(report_id)],
+            owner_subject="local-dev",
+            require_explicit_owner=True,
+        )
+        return report_id
+
     def __init__(self, root: Path, data: Path):
         super().__init__(root,data)
         self.port=None; self.url=None; self.process=None; self.log=None

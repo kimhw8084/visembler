@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from company_ui.products.visualizer.domain import stable_json
+from company_ui.products.visualizer.governance import ReportAccessCatalog
 
 
 def _slug(value: str) -> str:
@@ -28,6 +29,7 @@ class CrawlerReportManager:
             raise ValueError("max_existing must allow at least two crawler fixtures")
         self.host = host
         self.repository = host.repository
+        self.access = ReportAccessCatalog(self.repository)
         self.run_id = _slug(run_id or uuid.uuid4().hex[:10])
         self.max_existing = max_existing
         self.scenarios: dict[str, str] = {}
@@ -134,6 +136,10 @@ class CrawlerReportManager:
             model=model,
             metadata={"crawler_owner": self.run_id, "crawler_scenario": scenario, "temporary": True},
         )
+        # Direct fixture creation must use the same explicit local owner as a
+        # native application bootstrap; otherwise the production ACL boundary
+        # correctly hides the synthetic report from the browser.
+        self.access.migrate([record], owner_subject="local-dev", require_explicit_owner=True)
         self.scenarios[scenario] = record.report_id
         self.scenario_models[scenario] = json.loads(stable_json(model))
         return self._record_created(record.report_id)
@@ -185,6 +191,7 @@ class CrawlerReportManager:
             self.created_total += 1
             active = self._active().get(report_id)
             if active is not None and not self._metadata_owned(active):
+                self.access.migrate([active], owner_subject="local-dev", require_explicit_owner=True)
                 marker = f"Crawler-owned temporary report · {self.run_id} · {scenario}"
                 self.repository.update_description(report_id, marker, expected_revision=active.revision)
         if created:
@@ -221,6 +228,7 @@ class CrawlerReportManager:
             self.repository.restore(report_id)
             record = self.repository.get(report_id)
         self.repository.delete(report_id, expected_revision=record.revision)
+        self.access.delete(report_id)
         self.owned_ids.discard(report_id)
         for scenario, value in tuple(self.scenarios.items()):
             if value == report_id:

@@ -4,6 +4,14 @@ Visembler is supported for one local/internal-pilot instance. It is not a claim
 of shared-network readiness: a shared deployment needs an organization-managed
 identity, authorization, durable backup, and hosting/session boundary.
 
+The application-boundary implementation and company-managed deployment contract
+are documented separately in
+[`docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md`](../../../docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md).
+The local status remains authoritative until that runbook's target-environment
+evidence is supplied; the company gate intentionally reports
+`READY_FOR_COMPANY_TARGET_CERTIFICATION` rather than claiming managed-production
+certification from a laptop.
+
 Install the pinned runtime in an isolated Python environment with
 `python -m pip install -r requirements.txt`, then start on loopback with:
 

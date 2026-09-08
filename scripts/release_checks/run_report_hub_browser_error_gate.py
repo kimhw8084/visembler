@@ -18,6 +18,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from playwright.sync_api import sync_playwright
 
 from company_ui.products.visualizer.domain import canonical_model
+from company_ui.products.visualizer.governance import ReportAccessCatalog
 from company_ui.products.visualizer.templates import template_model
 from editor_host import NativeHost
 from native_common import BrowserEvents, browser_kwargs, ready, write_json
@@ -124,6 +125,12 @@ def main() -> int:
                 fixtures = _fixture_models()
                 for index in range(12):
                     report_ids.append(host.create(model=fixtures[index % len(fixtures)], name=f"hub-gate-{index + 1:02d}"))
+                # These are harness-owned reports created after the native
+                # process booted.  Register their explicit local owner so the
+                # production resource boundary does not mistake fixtures for
+                # unowned data.
+                access=ReportAccessCatalog(host.repository)
+                access.migrate(host.repository.list()+host.repository.list_trash(), owner_subject='local-dev', require_explicit_owner=True)
                 pathological_id = report_ids[0]
                 browser = playwright.chromium.launch(**browser_kwargs())
                 context = browser.new_context()

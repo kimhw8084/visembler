@@ -35,12 +35,14 @@ class NiceGUIRuntimeAdapter:
         auth_adapter: AuthenticationAdapter | None = None,
         authorization: AuthorizationModel | None = None,
         security_headers: SecurityHeaders | None = None,
+        diagnostics_policy: AccessPolicy | None = None,
     ):
         self.config = config
         self.health = health or HealthRegistry()
         self.auth_adapter = auth_adapter
         self.authorization = authorization or AuthorizationModel()
         self.security_headers = security_headers or self._default_headers()
+        self.diagnostics_policy = diagnostics_policy
         self._installed = False
 
     def _default_headers(self) -> SecurityHeaders:
@@ -118,7 +120,7 @@ class NiceGUIRuntimeAdapter:
     def run(self, *, root: Callable[..., Any] | None = None, environ=None) -> None:
         app, ui = _nicegui()
         self.install_middleware(app)
-        self.install_operational_endpoints(app)
+        self.install_operational_endpoints(app, diagnostics_policy=self.diagnostics_policy)
         kwargs = self.run_kwargs(environ)
         if root is None:
             ui.run(**kwargs)

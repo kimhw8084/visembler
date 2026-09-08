@@ -95,6 +95,7 @@ class HeaderIdentityConfig:
     email_header: str = 'x-auth-email'
     roles_header: str = 'x-auth-roles'
     permissions_header: str = 'x-auth-permissions'
+    groups_header: str = 'x-auth-groups'
     separator: str = ','
     require_trusted_proxy: bool = True
     assertion_header: str = 'x-company-auth-assertion'
@@ -102,7 +103,7 @@ class HeaderIdentityConfig:
     def __post_init__(self) -> None:
         headers = (
             self.subject_header, self.display_name_header, self.email_header,
-            self.roles_header, self.permissions_header, self.assertion_header,
+            self.roles_header, self.permissions_header, self.groups_header, self.assertion_header,
         )
         if any(not value.strip() for value in headers):
             raise ValueError('identity header names must not be empty')
@@ -133,10 +134,11 @@ class HeaderAuthenticationAdapter:
         if self.config.require_trusted_proxy and not (trusted_network or trusted_assertion):
             return Principal.anonymous()
         subject = normalized.get(self.config.subject_header.lower(), '').strip()
-        if not subject:
+        if not subject or len(subject) > 256 or any(ord(char) < 32 for char in subject):
             return Principal.anonymous()
         roles = self._split(normalized.get(self.config.roles_header.lower()))
         permissions = self._split(normalized.get(self.config.permissions_header.lower()))
+        groups = self._split(normalized.get(self.config.groups_header.lower()))
         return Principal(
             subject=subject,
             display_name=self._clean(normalized.get(self.config.display_name_header.lower())),
@@ -145,6 +147,7 @@ class HeaderAuthenticationAdapter:
             permissions=frozenset(permissions),
             authenticated=True,
             method=AuthMethod.HEADER,
+            metadata={'groups': groups},
         )
 
     def _split(self, value: str | None) -> tuple[str, ...]:

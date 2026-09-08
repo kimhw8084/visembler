@@ -3,7 +3,7 @@
   "framework_version": "3.0.0a1",
   "policy": "Removal or incompatible signature change requires a major-version decision; additions require explicit contract regeneration.",
   "schema_version": 3,
-  "sha256": "904270ff21bb47a344811f2f459a07ddf66a7349a8c3d82d6a8827f417ad50d6",
+  "sha256": "9499637d19feda7015ce6d8e746997d425015fa4976dfa0a93ece646c452a3f2",
   "stability": "frozen-for-2.0",
   "symbols": {
     "AI_CONSTRUCTION_REGISTRY": {
@@ -14863,6 +14863,15 @@
             "annotation": "'str'",
             "default": {
               "present": true,
+              "value": "x-auth-groups"
+            },
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "groups_header"
+          },
+          {
+            "annotation": "'str'",
+            "default": {
+              "present": true,
               "value": ","
             },
             "kind": "POSITIONAL_OR_KEYWORD",
@@ -18868,6 +18877,15 @@
             },
             "kind": "KEYWORD_ONLY",
             "name": "security_headers"
+          },
+          {
+            "annotation": "'AccessPolicy | None'",
+            "default": {
+              "present": true,
+              "value": null
+            },
+            "kind": "KEYWORD_ONLY",
+            "name": "diagnostics_policy"
           }
         ],
         "return": ""

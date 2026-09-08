@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import quote
 
+from fastapi import HTTPException, Request
+
 from company_ui.integrations.nicegui_components import FileUpload
 from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
@@ -21,8 +23,10 @@ from company_ui.navigation import NavItem, NavigationModel, NavSection
 
 from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
 from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
+from .governance import REPORT_EDIT, REPORT_EXPORT, REPORT_READ, REPORT_SHARE, ReportAccessCatalog, ReportRole, ScopedReportRepository
 from .ppt_service import export_pptx, import_visembler_pptx
 from .repository import ReportRepository
+from .runtime import NiceGUIRuntimeAdapter
 from .templates import REPORT_TEMPLATES, template_model
 
 PRODUCT = Path(__file__).resolve().parent
@@ -340,9 +344,27 @@ def _history_diff_summary(before: Mapping[str,Any], after: Mapping[str,Any]) -> 
     return ' · '.join(parts) if parts else 'No material model change'
 
 
-def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None:
+def register_visualizer(
+    app: Any,
+    ui: Any,
+    repository: ReportRepository,
+    *,
+    access: ReportAccessCatalog | None = None,
+    runtime: NiceGUIRuntimeAdapter | None = None,
+) -> None:
     if getattr(app,'_company_ui_visualizer_registered',False): return
     app._company_ui_visualizer_registered=True
+    base_repository=repository
+    access=access or ReportAccessCatalog(base_repository)
+    if runtime is None:
+        raise RuntimeError('Visembler registration requires the Company UI runtime adapter')
+
+    def scoped_repository(request: Any) -> ScopedReportRepository:
+        principal=runtime.principal_from_request(request)
+        if not principal.authenticated:
+            raise HTTPException(status_code=401, detail='authentication required')
+        return ScopedReportRepository(base_repository,access,principal,runtime.authorization)
+
     build=_asset_build()
     app.add_static_files(f'{STATIC_ROUTE}/assets',str(ASSETS),follow_symlink=False,max_cache_age=0)
     app.add_static_files(f'{STATIC_ROUTE}/vendor/production_core',str(VENDOR),follow_symlink=False,max_cache_age=0)
@@ -353,8 +375,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
 
     from fastapi.responses import Response
     @app.get(f'{STATIC_ROUTE}/report-assets/{{asset_id}}',include_in_schema=False)
-    async def _report_asset(asset_id: str):
-        data=repository.assets.read_image(asset_id); mime=str(validate_image_bytes(data)['mime'])
+    async def _report_asset(request: Request, asset_id: str):
+        principal=runtime.principal_from_request(request)
+        if not access.can_read_asset(asset_id,principal):
+            raise HTTPException(status_code=404,detail='asset unavailable')
+        data=base_repository.assets.read_image(asset_id); mime=str(validate_image_bytes(data)['mime'])
         return Response(content=data,media_type=mime,headers={'Cache-Control':'private, max-age=3600'})
 
     @ui.page('/visualizer/diagram-studio')
@@ -368,6 +393,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         """
         notifications=NiceGUIStateServices.notification_service()
         request=ui.context.client.request
+        repository=scoped_repository(request)
         report_id=str(request.query_params.get('report') or '').strip()
         element_id=str(request.query_params.get('element') or '').strip()
         try:
@@ -424,6 +450,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         """
         notifications=NiceGUIStateServices.notification_service()
         request=ui.context.client.request
+        repository=scoped_repository(request)
         report_id=str(request.query_params.get('report') or '').strip()
         element_id=str(request.query_params.get('element') or '').strip()
         chart_engines={'CoreChartEngine','EngineeringChartEngine','WaferFabEngine'}
@@ -483,9 +510,11 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         notifications=NiceGUIStateServices.notification_service(); downloads=NiceGUIStateServices.download_service()
         page_state=NiceGUIStateServices.user_store()
         request=ui.context.client.request
+        repository=scoped_repository(request)
         query_report=str(request.query_params.get('report') or '')
         history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
         delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; hub_layout='grid'
+        share_target={'report_id':None}
 
         ui.add_head_html('''<style>
           .cui-report-hub{max-width:1440px;margin:0 auto;padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5)}
@@ -574,6 +603,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             except Exception as exc: notifications.error(f'Restore rejected: {exc}')
 
         def export_hub_json(report_id: str) -> None:
+            repository.require_export(report_id)
             record=repository.get(report_id); payload=stable_json({'report_id':record.report_id,'title':record.title,'description':record.metadata.get('description',''),'revision':record.revision,'model':record.model}).encode('utf-8'); downloads.download(f'{record.title or "visembler-report"}.json',payload,media_type='application/json')
 
         async def checkpoint_hub(report_id: str,field: Any) -> None:
@@ -598,6 +628,30 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                 repository.duplicate_from_history(report_id,history_id,f'report-{uuid.uuid4().hex}'); notifications.success('Historical revision duplicated as a new report'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Historical duplicate rejected: {exc}')
 
+        def open_share(report_id: str) -> None:
+            try:
+                record=repository.get(report_id); summary=access.access_summary(report_id,repository.principal)
+                share_target['report_id']=record.report_id
+                share_summary.set_text(f"Owner: {summary['owner']} · Grants: {len(summary['grants'])}")
+                share_subject.value=''; share_subject.update(); share_dialog.open()
+            except Exception as exc: notifications.error(f'Unable to open sharing: {exc}')
+
+        async def apply_share() -> None:
+            report_id=share_target.get('report_id'); subject=str(share_subject.value or '').strip(); role=ReportRole(str(share_role.value or 'viewer'))
+            if not report_id or not subject:
+                notifications.warning('Enter a user or group before sharing'); return
+            try:
+                access.grant(report_id,repository.principal,subject,role,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access updated'); render_cards.refresh()
+            except Exception as exc: notifications.error(f'Share rejected: {exc}')
+
+        async def revoke_share() -> None:
+            report_id=share_target.get('report_id'); subject=str(share_subject.value or '').strip()
+            if not report_id or not subject:
+                notifications.warning('Enter the user or group to revoke'); return
+            try:
+                access.revoke(report_id,repository.principal,subject,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access revoked'); render_cards.refresh()
+            except Exception as exc: notifications.error(f'Revoke rejected: {exc}')
+
         @ui.refreshable
         def render_cards() -> None:
             needle=' '.join(str(search.value or '').split()).casefold(); view=str(view_filter.value or 'active'); active=sorted_records(repository.list()); trash=sorted_records(repository.list_trash())
@@ -615,11 +669,14 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                                     ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
                                     ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
                                     ui.label(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
+                                    summary=access.access_summary(record.report_id,repository.principal); ui.label(f"Owner {summary['owner']} · Access {summary['role'] or 'none'}").classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
                                         ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps data-report-action="open"')
                                         ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps data-report-action="duplicate"')
                                         ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps data-report-action="history"')
                                         ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
+                                        if access.can(record.report_id,repository.principal,REPORT_SHARE):
+                                            ui.button('Share',on_click=lambda rid=record.report_id:open_share(rid)).props('flat no-caps data-report-action="share"')
                                         ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
@@ -694,6 +751,19 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                         FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_hub_report)
                     ui.button('Done',on_click=import_hub_dialog.close).props('flat no-caps')
 
+            share_dialog=ui.dialog()
+            with share_dialog:
+                with ui.card().classes('cui-dialog-card'):
+                    ui.label('Share report').classes('cui-dialog-title')
+                    share_summary=ui.label('').classes('cui-field-description')
+                    share_subject=ui.input(label='User or group subject',placeholder='alice@example.com or team-id').props('outlined dense hide-bottom-space').classes('w-full')
+                    share_role=ui.select(label='Access',options={'viewer':'Viewer · read/export','editor':'Editor · authoring/history'},value='viewer').props('outlined dense hide-bottom-space').classes('w-full')
+                    share_group=ui.checkbox('This is a group subject')
+                    with ui.row():
+                        ui.button('Grant or update',on_click=apply_share).props('unelevated no-caps')
+                        ui.button('Revoke',on_click=revoke_share).props('flat no-caps color=negative')
+                        ui.button('Close',on_click=share_dialog.close).props('flat no-caps')
+
             delete_dialog=ui.dialog()
             with delete_dialog:
                 with ui.card().classes('cui-dialog-card'):
@@ -710,10 +780,19 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
         notifications=NiceGUIStateServices.notification_service(); downloads=NiceGUIStateServices.download_service()
         preferences=NiceGUIStateServices.user_preferences(key='company_ui_visualizer_preferences')
         page_state=NiceGUIStateServices.user_store()
+        request=ui.context.client.request
+        repository=scoped_repository(request)
         records=repository.list()
         if not records:
-            records=[repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})]
-        query_report=str(ui.context.client.request.query_params.get('report') or '')
+            # A newly authenticated user may legitimately have no reports in
+            # scope.  Do not collide with another user's default report or
+            # reveal it while bootstrapping a personal blank report.
+            try:
+                records=[repository.create(f'report-{uuid.uuid4().hex}',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})]
+            except PermissionError:
+                ui.notify('No reports are available for this account. Ask an owner to share one.',type='warning')
+                return
+        query_report=str(request.query_params.get('report') or '')
         preferred=query_report or str(page_state.get('visualizer.current_report') or '')
         current=next((record for record in records if record.report_id==preferred),records[0]); page_state['visualizer.current_report']=current.report_id
         ppt_template:dict[str,Any]={'name':None,'content':None}
@@ -770,6 +849,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     preferences.save_filter_view(MAPPING_PRESET_KEY,{'presets':presets})
                     await send('mapping.preferences_result',{'presets':presets,'saved':True}); return
                 if kind=='ppt.export_requested':
+                    repository.require_export(current.report_id)
                     latest=repository.get(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=repository.assets.data_url)
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
@@ -905,6 +985,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
             manage_dialog.open()
 
         async def export_current_json() -> None:
+            repository.require_export(current.report_id)
             latest=repository.get(current.report_id)
             payload=stable_json({'report_id':latest.report_id,'title':latest.title,'description':latest.metadata.get('description',''),'revision':latest.revision,'model':latest.model}).encode('utf-8')
             downloads.download(f'{latest.title or "visembler-report"}.json',payload,media_type='application/json')
