@@ -8,7 +8,7 @@ Company UI is a Company-owned NiceGUI application platform for internal engineer
 
 ## Run Visembler
 
-Install the production dependencies from the repository-root `requirements.txt`, then run the single terminal entrypoint:
+Install the production dependencies from the repository-root `requirements.txt`, then run the single Python entrypoint:
 
 ```bash
 python3.12 -m venv .venv
@@ -16,6 +16,9 @@ python3.12 -m venv .venv
 chmod +x run_visembler.sh
 ./run_visembler.sh
 ```
+
+The direct entrypoint is `app.py`, so a company runtime can also launch it with
+`.venv/bin/python app.py`.
 
 Open `http://127.0.0.1:8080/visualizer`. For a company-managed host or reverse proxy, set `COMPANY_UI_HOST`, `COMPANY_UI_PORT`, `COMPANY_UI_ENVIRONMENT=prod`, `COMPANY_UI_STORAGE_SECRET` (at least 32 characters), and `COMPANY_UI_VISUALIZER_DATA_DIR` before running the script. Use a company-approved Python package index and durable storage for production.
 

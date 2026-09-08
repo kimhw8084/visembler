@@ -42,4 +42,4 @@ echo "Starting Visembler"
 echo "  URL: http://127.0.0.1:${COMPANY_UI_PORT}/visualizer"
 echo "  host: ${COMPANY_UI_HOST}"
 echo "  data: ${COMPANY_UI_VISUALIZER_DATA_DIR}"
-exec "$PY" -m company_ui.products.visualizer.cli
+exec "$PY" "$ROOT/app.py"
