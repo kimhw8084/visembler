@@ -84,10 +84,34 @@ console.log(JSON.stringify(data.rows));
     ]
 
 
+def test_field_aware_direct_edit_preserves_profiled_string_zero() -> None:
+    result = node_json(
+        r"""
+import {parseAuthoringFieldValue} from './company_ui/products/visualizer/assets/authoring_values.mjs';
+console.log(JSON.stringify({
+  identifier: parseAuthoringFieldValue('0',{type:'identifier'}),
+  category: parseAuthoringFieldValue('0',{type:'categorical'}),
+  numeric: parseAuthoringFieldValue('0',{type:'number'}),
+  missing: parseAuthoringFieldValue('',{type:'number'}),
+  blank: parseAuthoringFieldValue('""',{type:'string'}),
+}));
+"""
+    )
+    assert result == {
+        "identifier": "0",
+        "category": "0",
+        "numeric": 0,
+        "missing": None,
+        "blank": "",
+    }
+
+
 def test_wave3_editor_uses_shared_typed_grid_contract() -> None:
     editor = (ASSETS / "integrated_editor.mjs").read_text(encoding="utf-8")
-    assert "function parseCellForField(raw, field)" in editor
-    assert "return parseAuthoringScalar(text,{type:field?.type||'unknown'});" in editor
+    assert "function parseCellForField(raw, field, quoted=false)" in editor
+    assert "parseAuthoringFieldValue" in editor
+    assert "parseCellForField(value,directDataset.fields?.[directColumn])" in editor
+    assert "parseAuthoringFieldValue(raw,field||{},{quoted})" in editor
     assert "from './authoring_values.mjs'" in editor
     assert "function parseTypedCell(raw) { return parseAuthoringScalar(raw); }" in editor
     assert "function parseTable(text) { return parseAuthoringGrid(text).rows; }" in editor

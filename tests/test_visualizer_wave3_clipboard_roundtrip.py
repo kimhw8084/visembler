@@ -20,9 +20,8 @@ def test_wave3_clipboard_uses_typed_roundtrip_formatter() -> None:
 
 def test_wave3_dataset_paste_preserves_quoted_cell_intent_with_field_types() -> None:
     editor = editor_text()
-    assert "function parseCellForField(raw, field)" in editor
-    assert "const quoted=arguments[2]===true;" in editor
-    assert "if(quoted)return text;" in editor
+    assert "function parseCellForField(raw, field, quoted=false)" in editor
+    assert "parseAuthoringFieldValue(raw,field||{},{quoted})" in editor
     assert "const parsed=parseDelimitedText(text)" in editor
     assert "parsed.quoted_rows[rowOffset]?.[columnOffset]" in editor
     assert "parseCellForField(value,next.fields[columnIndex],Boolean(" in editor

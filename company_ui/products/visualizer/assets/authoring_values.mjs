@@ -44,6 +44,21 @@ export function parseAuthoringScalar(raw,{quoted=false,type='unknown'}={}){
   return text;
 }
 
+// Field-aware editing keeps the profile's string intent when a user edits a
+// cell directly.  In particular, an identifier/category field containing 0 is
+// not interchangeable with a numeric measurement containing 0.
+export function parseAuthoringFieldValue(raw,{type='unknown'}={},options={}){
+  const text=String(raw??'');
+  if(options.quoted)return text;
+  if(text.trim()==='')return null;
+  if(['string','categorical','identifier','date','datetime','boolean'].includes(type)){
+    const trimmed=text.trim();
+    if(trimmed==='""'||(trimmed.startsWith('"')&&trimmed.endsWith('"')))return parseAuthoringScalar(trimmed);
+    return text;
+  }
+  return parseAuthoringScalar(text,{type});
+}
+
 export function formatAuthoringScalar(value){
   if(value===null||value===undefined)return '';
   if(typeof value==='number')return Number.isFinite(value)?String(value):String(value);

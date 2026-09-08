@@ -13,7 +13,7 @@ import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRect
 import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
 import { applyGridAction, gridSelection } from './authoring_grid.mjs';
 import { contractFor } from './authoring_contracts.mjs';
-import { parseAuthoringScalar, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
+import { parseAuthoringScalar, parseAuthoringFieldValue, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
@@ -909,17 +909,8 @@ function renderMinimap(rm) {
 }
 
 function parseTypedCell(raw) { return parseAuthoringScalar(raw); }
-function parseCellForField(raw, field) {
-  const quoted=arguments[2]===true;
-  const text=String(raw ?? '');
-  if(quoted)return text;
-  if(text.trim()==='')return null;
-  if(['string','categorical','identifier','date','datetime','boolean'].includes(field?.type)){
-    const trimmed=text.trim();
-    if(trimmed==='""'||(trimmed.startsWith('"')&&trimmed.endsWith('"')))return parseAuthoringScalar(trimmed);
-    return text;
-  }
-  return parseAuthoringScalar(text,{type:field?.type||'unknown'});
+function parseCellForField(raw, field, quoted=false) {
+  return parseAuthoringFieldValue(raw,field||{},{quoted});
 }
 
 function parseGridText(text) {
@@ -2169,6 +2160,32 @@ async function pasteToSelection(txt) {
 async function appendTextToSelection(txt) {
   const parsed=await parsePasteAsync(txt);if(!parsed||ui.selected.size!==1)return false;const entry=item([...ui.selected][0]),existing=entry&&selectedDataset(entry);if(!existing){toast('Paste data first, then append matching rows');return false;}const appended=appendCompatibleDataset(existing,datasetFromIntake(parsed,existing.id,existing.name));if(!appended.ok){toast(appended.reason);return false;}const accepted=commitDataset(entry,'Append pasted rows',appended.dataset,entry.mapping||{});if(accepted)toast('Appended data');return !!accepted;
 }
+function hasAuthoringTextFocus() {
+  const active=document.activeElement;
+  return Boolean(active?.matches?.('input,textarea,select,[role="textbox"],[contenteditable="true"]')||active?.isContentEditable||active?.closest?.('[contenteditable="true"],[role="textbox"],.q-field'));
+}
+function looksLikeTabularPaste(text) {
+  const source=String(text||'').trim();
+  if(!source.includes('\n'))return false;
+  if(source.includes('\t'))return true;
+  const parsed=parseDelimitedText(source);
+  return parsed.rows.length>1&&parsed.rows.some(row=>row.length>1);
+}
+async function pastePlainTextToSelection(text) {
+  if(ui.selected.size!==1||looksLikeTabularPaste(text))return false;
+  const entry=item([...ui.selected][0]);
+  if(entry?.engine!=='TextEngine'||entry.locked)return false;
+  const value=String(text??'').replace(/\r\n?/g,'\n');
+  if(!value.trim())return false;
+  const accepted=commitOps('Paste text into visual',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}],{announce:'Text pasted into visual'});
+  return !!accepted;
+}
+async function handleClipboardText(text) {
+  if(!String(text||'').trim())return false;
+  if(await pastePlainTextToSelection(text))return true;
+  if(!ui.selected.size){stageDOpenIntake(text);return true;}
+  return await pasteToSelection(text);
+}
 async function pasteImage(file) {
   const reportId=String(bootstrap.report_id),selection=[...ui.selected],existing=selection.length===1?item(selection[0]):null;
   const src=await validatedImageDataUrl(file);
@@ -2675,7 +2692,7 @@ function openInlineEditor(entry, comp, directKind=null) {
   else {control.rows=5;control.setAttribute('aria-label','Text content');}
   wrap.appendChild(control); comp.appendChild(wrap);
   let settled=false;
-  const finish=(commit=true)=>{if(settled)return;settled=true;const value=control.value.trim();wrap.remove();if(!commit)return;if(isText)commitOps('Edit text inline',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}]);else if(isMetric)commitOps('Edit metric inline',[{op:'item.patch',id:entry.id,patch:{value:parseTypedCell(value)}}]);else if(isTitle)commitOps('Edit title inline',[{op:'item.patch',id:entry.id,patch:{title:value||entry.element}}]);else if(isCaption)commitOps('Edit image caption inline',[{op:'item.patch',id:entry.id,patch:{caption:value}}]);else if(Number.isInteger(diagramNodeIndex)){const previous=entry.nodes?.[diagramNodeIndex];if(!previous)return;const sourceIndex=directDataset?fieldIndex(directDataset,entry.mapping?.source):-1,targetIndex=directDataset?fieldIndex(directDataset,entry.mapping?.target):-1;if(directDataset&&sourceIndex>=0&&targetIndex>=0){const next=structuredClone(directDataset);next.rows.forEach(row=>{if(String(row[sourceIndex])===String(previous))row[sourceIndex]=value||previous;if(String(row[targetIndex])===String(previous))row[targetIndex]=value||previous;});next.revision=(next.revision||0)+1;commitDataset(entry,'Rename mapped diagram node',next);}else{const nodes=structuredClone(entry.nodes||[]),name=value||previous;nodes[diagramNodeIndex]=name;const edges=(entry.edges||[]).map(([source,target])=>[source===previous?name:source,target===previous?name:target]);commitOps('Rename diagram node',[{op:'item.patch',id:entry.id,patch:{nodes,edges}}]);}}else if(isDatasetCell&&directDataset?.rows?.[directRow]){const next=structuredClone(directDataset);next.rows[directRow][directColumn]=parseTypedCell(value);next.revision=(next.revision||0)+1;commitDataset(entry,'Edit dataset table cell',next);}else if(isDatasetHeader&&directDataset?.fields?.[Number(directParts[1])]){const next=structuredClone(directDataset);next.fields[Number(directParts[1])].name=value||`Column ${Number(directParts[1])+1}`;next.revision=(next.revision||0)+1;commitDataset(entry,'Rename dataset table column',next);}else if(isTableCell){while(directGrid.rows.length<=directRow)directGrid.rows.push(Array(directGrid.headers.length).fill(null));directGrid.rows[directRow][directColumn]=parseTypedCell(value);commitOps('Edit table cell inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else if(isTableHeader){directGrid.headers[Number(directParts[1])]=value||`Column ${Number(directParts[1])+1}`;commitOps('Rename table column inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else {const milestones=structuredClone(entry.milestones||[]);if(!milestones[milestoneIndex])return;milestones[milestoneIndex].label=value||`Step ${milestoneIndex+1}`;commitOps('Edit timeline label inline',[{op:'item.patch',id:entry.id,patch:{milestones}}]);}};
+  const finish=(commit=true)=>{if(settled)return;settled=true;const value=control.value.trim();wrap.remove();if(!commit)return;if(isText)commitOps('Edit text inline',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}]);else if(isMetric)commitOps('Edit metric inline',[{op:'item.patch',id:entry.id,patch:{value:parseTypedCell(value)}}]);else if(isTitle)commitOps('Edit title inline',[{op:'item.patch',id:entry.id,patch:{title:value||entry.element}}]);else if(isCaption)commitOps('Edit image caption inline',[{op:'item.patch',id:entry.id,patch:{caption:value}}]);else if(Number.isInteger(diagramNodeIndex)){const previous=entry.nodes?.[diagramNodeIndex];if(!previous)return;const sourceIndex=directDataset?fieldIndex(directDataset,entry.mapping?.source):-1,targetIndex=directDataset?fieldIndex(directDataset,entry.mapping?.target):-1;if(directDataset&&sourceIndex>=0&&targetIndex>=0){const next=structuredClone(directDataset);next.rows.forEach(row=>{if(String(row[sourceIndex])===String(previous))row[sourceIndex]=value||previous;if(String(row[targetIndex])===String(previous))row[targetIndex]=value||previous;});next.revision=(next.revision||0)+1;commitDataset(entry,'Rename mapped diagram node',next);}else{const nodes=structuredClone(entry.nodes||[]),name=value||previous;nodes[diagramNodeIndex]=name;const edges=(entry.edges||[]).map(([source,target])=>[source===previous?name:source,target===previous?name:target]);commitOps('Rename diagram node',[{op:'item.patch',id:entry.id,patch:{nodes,edges}}]);}}else if(isDatasetCell&&directDataset?.rows?.[directRow]){const next=structuredClone(directDataset);next.rows[directRow][directColumn]=parseCellForField(value,directDataset.fields?.[directColumn]);next.revision=(next.revision||0)+1;commitDataset(entry,'Edit dataset table cell',next);}else if(isDatasetHeader&&directDataset?.fields?.[Number(directParts[1])]){const next=structuredClone(directDataset);next.fields[Number(directParts[1])].name=value||`Column ${Number(directParts[1])+1}`;next.revision=(next.revision||0)+1;commitDataset(entry,'Rename dataset table column',next);}else if(isTableCell){while(directGrid.rows.length<=directRow)directGrid.rows.push(Array(directGrid.headers.length).fill(null));directGrid.rows[directRow][directColumn]=parseTypedCell(value);commitOps('Edit table cell inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else if(isTableHeader){directGrid.headers[Number(directParts[1])]=value||`Column ${Number(directParts[1])+1}`;commitOps('Rename table column inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else {const milestones=structuredClone(entry.milestones||[]);if(!milestones[milestoneIndex])return;milestones[milestoneIndex].label=value||`Step ${milestoneIndex+1}`;commitOps('Edit timeline label inline',[{op:'item.patch',id:entry.id,patch:{milestones}}]);}};
   control.addEventListener('pointerdown',(ev)=>ev.stopPropagation()); control.addEventListener('click',(ev)=>ev.stopPropagation()); control.addEventListener('dblclick',(ev)=>ev.stopPropagation());
   control.addEventListener('keydown',(ev)=>{if(ev.key==='Escape'){ev.preventDefault();finish(false);}else if(ev.key==='Enter'&&!isText&&!isCaption&&!ev.shiftKey){ev.preventDefault();finish(true);}else if((ev.metaKey||ev.ctrlKey)&&ev.key==='Enter'){ev.preventDefault();finish(true);}});
   control.addEventListener('blur',()=>finish(true),{once:true});
@@ -2756,7 +2773,7 @@ function wireGlobal(signal) {
   on($('#viewport'),'scroll',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
   on(window,'resize',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
-  on(window,'paste',async(e)=>{if(ui.preview)return;const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();if(!ui.selected.size){stageDOpenIntake(text);return;}await pasteToSelection(text);}});
+  on(window,'paste',async(e)=>{if(ui.preview||hasAuthoringTextFocus())return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await handleClipboardText(text);}});
   on(activeRoot,'dragover',(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();e.dataTransfer.dropEffect='copy';});
   on(activeRoot,'drop',async(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();try{if(String(file.type||'').startsWith('image/')){await pasteImage(file);return;}const text=await file.text();if(text.trim())stageDOpenIntake(text);else toast('The dropped file did not contain readable content.');}catch(error){toast(error.message||'Dropped content could not be read.');}});
 }

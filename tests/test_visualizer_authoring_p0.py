@@ -57,7 +57,7 @@ def test_personal_preset_list_exposes_every_server_supported_preset() -> None:
 
 def test_data_dock_and_unbound_tables_preserve_large_range_editing_contracts() -> None:
     editor = (ASSETS / 'integrated_editor.mjs').read_text(encoding='utf-8')
-    assert 'function parseCellForField(raw, field)' in editor
+    assert 'function parseCellForField(raw, field, quoted=false)' in editor
     assert 'function renderVirtualCustomTable(entry)' in editor
     assert 'id="tableEditorGrid"' in editor
     assert "Paste table range" in editor
