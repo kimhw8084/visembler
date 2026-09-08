@@ -18,7 +18,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import RLock
-from typing import Any, Iterator, Mapping, Protocol
+from enum import StrEnum
+from typing import Any, Iterable, Iterator, Mapping, Protocol
 
 from company_ui.diagnostics import get_correlation_id
 from company_ui.security import AuthorizationModel, Principal
@@ -34,12 +35,29 @@ CAPABILITY_ACTIONS = (
 )
 GLOBAL_CREATE = 'report.create'
 GLOBAL_ADMIN = 'administration'
+REPORT_READ, REPORT_CREATE, REPORT_EDIT, REPORT_RENAME, REPORT_DUPLICATE, REPORT_SHARE, REPORT_DELETE, REPORT_RESTORE, HISTORY_READ, HISTORY_RESTORE, REPORT_EXPORT = (
+    'report.read', 'report.create', 'report.edit', 'report.rename', 'report.duplicate',
+    'report.share', 'report.delete', 'report.restore', 'report.history.read',
+    'report.history.restore', 'report.export',
+)
+ADMINISTRATION = GLOBAL_ADMIN
+
+
+class ReportRole(StrEnum):
+    OWNER = 'owner'
+    EDITOR = 'editor'
+    VIEWER = 'viewer'
+
+
 _ROLES = {'owner', 'editor', 'viewer'}
 _ROLE_ACTIONS = {
     'owner': frozenset(CAPABILITY_ACTIONS),
     'editor': frozenset({'report.read', 'report.edit', 'report.rename', 'report.duplicate', 'report.history.read', 'report.history.restore', 'report.export'}),
     'viewer': frozenset({'report.read', 'report.history.read', 'report.export'}),
 }
+OWNER_ACTIONS = frozenset(CAPABILITY_ACTIONS)
+EDITOR_ACTIONS = _ROLE_ACTIONS['editor']
+VIEWER_ACTIONS = _ROLE_ACTIONS['viewer']
 
 
 def _now() -> str:
@@ -86,6 +104,18 @@ class IdentityReference:
     subject: str
     display_name: str | None = None
     email: str | None = None
+
+
+class GovernanceRecord(dict[str, Any]):
+    """Mapping-compatible record with the legacy owner_subject view."""
+
+    def __getattr__(self, name: str) -> Any:
+        if name == 'owner_subject':
+            return self.get('owner')
+        try:
+            return self[name]
+        except KeyError as exc:
+            raise AttributeError(name) from exc
 
 
 class ExactSubjectIdentityResolver:
@@ -149,8 +179,9 @@ class AuditTrail:
 class ReportAccessCatalog:
     VERSION = 1
 
-    def __init__(self, root: str | Path):
-        self.root = Path(root).expanduser().resolve()
+    def __init__(self, root: str | Path | ReportRepository):
+        self.repository = root if isinstance(root, ReportRepository) else None
+        self.root = (root.root if isinstance(root, ReportRepository) else Path(root)).expanduser().resolve()
         self.root.mkdir(parents=True, exist_ok=True)
         self.path = self.root / '_governance.json'
         self.lock_path = self.root / '.governance.lock'
@@ -226,13 +257,13 @@ class ReportAccessCatalog:
         with self._transaction():
             value = self._read_unlocked()
             if report_id in value['resources'] or (self.root / f'{report_id}.json').exists() or (self.root / '_trash' / f'{report_id}.json').exists():
-                raise VisualizerContractError(f'report identity is reserved: {report_id}')
+                raise VisualizerContractError(f'report already exists or is reserved: {report_id}')
 
     def begin_create(self, report_id: str, owner: str) -> None:
         with self._transaction():
             value = self._read_unlocked()
             if report_id in value['resources'] or (self.root / f'{report_id}.json').exists() or (self.root / '_trash' / f'{report_id}.json').exists():
-                raise VisualizerContractError(f'report identity is reserved: {report_id}')
+                raise VisualizerContractError(f'report already exists or is reserved: {report_id}')
             value['resources'][validate_report_id(report_id)] = self._new_record(report_id, owner)
             self._write_unlocked(value)
 
@@ -267,22 +298,28 @@ class ReportAccessCatalog:
             record['owner'] = record.get('owner') or 'deleted-resource'; record['grants'] = {}
             self._state(record, 'deleted'); self._write_unlocked(value)
 
-    def migrate(self, report_ids: list[str], *, owner: str | None, production: bool = False, trashed_ids: set[str] | None = None) -> int:
-        if production and not owner:
-            raise VisualizerContractError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required for production governance migration')
+    def migrate(self, report_ids: list[str] | Iterable[Any], *, owner: str | None = None, production: bool = False,
+                trashed_ids: set[str] | None = None, owner_subject: str | None = None,
+                require_explicit_owner: bool | None = None) -> int | dict[str, int]:
+        legacy_contract = owner_subject is not None or require_explicit_owner is not None
+        if owner is None: owner = owner_subject
+        if require_explicit_owner is not None: production = require_explicit_owner
+        ids = [str(getattr(record, 'report_id', record)) for record in report_ids]
         selected = owner or 'local-dev'; trashed_ids = trashed_ids or set()
         created = 0
         with self._transaction():
             value = self._read_unlocked()
-            for report_id in report_ids:
+            for report_id in ids:
                 report_id = validate_report_id(report_id)
                 if report_id in value['resources']:
                     continue
+                if production and not owner:
+                    raise VisualizerContractError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required for production governance migration')
                 state = 'trashed' if report_id in trashed_ids else 'active'
                 value['resources'][report_id] = {**self._new_record(report_id, selected), 'state': state}
                 created += 1
             if created: self._write_unlocked(value)
-        return created
+        return {'examined': len(ids), 'existing': len(ids) - created, 'migrated': created} if legacy_contract else created
 
     def reconcile(self) -> dict[str, Any]:
         """Reconcile files and governance without guessing ownership.
@@ -338,7 +375,92 @@ class ReportAccessCatalog:
         with self._transaction():
             record = self._read_unlocked()['resources'].get(validate_report_id(report_id))
             if not record: raise ReportNotFoundError(report_id)
-            return json.loads(json.dumps(record))
+            return GovernanceRecord(json.loads(json.dumps(record)))
+
+    def has(self, report_id: str) -> bool:
+        try:
+            self.get(report_id)
+            return True
+        except ReportNotFoundError:
+            return False
+
+    def ensure_owner(self, report_id: str, owner_subject: str) -> dict[str, Any]:
+        if self.has(report_id): return self.get(report_id)
+        self.begin_create(report_id, owner_subject)
+        self.mark_active(report_id)
+        return self.get(report_id)
+
+    def create(self, report_id: str, owner_subject: str) -> dict[str, Any]:
+        record = self.ensure_owner(report_id, owner_subject)
+        self.audit.record('report.create', actor=Principal(owner_subject), report_id=report_id)
+        return record
+
+    def delete(self, report_id: str) -> None:
+        with self._transaction():
+            value = self._read_unlocked(); record = value['resources'].get(validate_report_id(report_id))
+            if record:
+                record['owner'] = record.get('owner') or 'deleted-resource'; record['grants'] = {}
+                self._state(record, 'deleted'); self._write_unlocked(value)
+
+    def health(self) -> bool:
+        return self.root.is_dir() and os.access(self.root, os.R_OK | os.W_OK) and self.audit.path.parent.is_dir()
+
+    def _role_name(self, record: Mapping[str, Any], principal: Principal) -> str | None:
+        projection = self._capabilities_for_record(record, principal, AuthorizationModel())
+        return projection.role
+
+    def can(self, report_id: str, principal: Principal, action: str) -> bool:
+        try:
+            record = self.get(report_id)
+        except ReportNotFoundError:
+            return False
+        if action == REPORT_CREATE: return False
+        projection = self._capabilities_for_record(record, principal, AuthorizationModel())
+        return bool(getattr(projection, {
+            REPORT_READ: 'can_read', REPORT_EDIT: 'can_edit', REPORT_RENAME: 'can_rename',
+            REPORT_DUPLICATE: 'can_duplicate', REPORT_SHARE: 'can_share', REPORT_DELETE: 'can_delete',
+            REPORT_RESTORE: 'can_restore', HISTORY_READ: 'can_read_history',
+            HISTORY_RESTORE: 'can_restore_history', REPORT_EXPORT: 'can_export',
+        }.get(action, 'never'), False))
+
+    def require(self, report_id: str, principal: Principal, action: str) -> None:
+        if self.can(report_id, principal, action): return
+        self.audit.record(action, actor=principal, report_id=report_id, outcome='denied', reason='resource access denied')
+        raise PermissionError('resource access denied')
+
+    def require_global(self, principal: Principal, action: str, authorization: AuthorizationModel) -> None:
+        effective = authorization.effective_permissions(principal)
+        if principal.authenticated and (action in effective or GLOBAL_ADMIN in effective or 'visembler.admin' in principal.roles): return
+        self.audit.record(action, actor=principal, outcome='denied', reason='global permission denied')
+        raise PermissionError('access denied')
+
+    def grant(self, report_id: str, actor: Principal, subject: str, role: ReportRole, *, group: bool = False) -> dict[str, Any]:
+        self.require(report_id, actor, REPORT_SHARE)
+        value = str(subject or '').strip()
+        if not value or role is ReportRole.OWNER: raise VisualizerContractError('a valid non-owner share target and role are required')
+        result = self.update_grant(report_id, f'group:{value}' if group else value, str(role.value))
+        self.audit.record('report.share.grant', actor=actor, report_id=report_id, reason=str(role.value))
+        return result
+
+    def revoke(self, report_id: str, actor: Principal, subject: str, *, group: bool = False) -> dict[str, Any]:
+        self.require(report_id, actor, REPORT_SHARE)
+        result = self.update_grant(report_id, f'group:{str(subject or "").strip()}' if group else str(subject or '').strip(), None)
+        self.audit.record('report.share.revoke', actor=actor, report_id=report_id, reason='revoked')
+        return result
+
+    def accessible(self, records: Iterable[Any], principal: Principal, action: str = REPORT_READ) -> list[Any]:
+        return [record for record in records if self.can(str(record.report_id), principal, action)]
+
+    def can_read_asset(self, asset_id: str, principal: Principal) -> bool:
+        if self.repository is None: return False
+        for record in self.accessible(self.repository.list(), principal, REPORT_READ):
+            if any(isinstance(item, Mapping) and item.get('asset_id') == asset_id for item in record.model.get('items', ())): return True
+        return False
+
+    def access_summary(self, report_id: str, principal: Principal) -> dict[str, Any]:
+        record = self.get(report_id)
+        role = self._capabilities_for_record(record, principal, AuthorizationModel()).role
+        return {'owner': record.get('owner'), 'role': role, 'grants': dict(record.get('grants', {}))}
 
     def update_grant(self, report_id: str, subject: str, role: str | None) -> dict[str, Any]:
         if role not in _ROLES - {'owner'} and role is not None:
@@ -402,6 +524,12 @@ class ReportAccessCatalog:
         effective = authorization.effective_permissions(principal)
         admin = principal.authenticated and (GLOBAL_ADMIN in effective or 'visembler.admin' in principal.roles)
         role = 'owner' if principal.authenticated and principal.subject == record.get('owner') else record.get('grants', {}).get(principal.subject) if principal.authenticated else None
+        if role is None and principal.authenticated:
+            groups = principal.metadata.get('groups', ()) if isinstance(principal.metadata, Mapping) else ()
+            for group in groups if isinstance(groups, (list, tuple, set, frozenset)) else ():
+                role = record.get('grants', {}).get(f'group:{group}')
+                if role in _ROLE_ACTIONS:
+                    break
         allowed = set(CAPABILITY_ACTIONS) if admin else set(_ROLE_ACTIONS.get(role or '', ()))
         if record.get('state') == 'trashed':
             allowed = {'report.restore'} if admin or role == 'owner' else set()
@@ -588,6 +716,29 @@ class ScopedReportRepository:
 
     def writable_readiness(self) -> dict[str, Any]:
         return self._access.write_readiness()
+
+    def require_export(self, report_id: str) -> None:
+        self._require(report_id, REPORT_EXPORT)
+
+    def update_description(self, report_id: str, **kwargs: Any) -> Any:
+        self._require(report_id, REPORT_EDIT)
+        record = self._repository.update_description(report_id, **kwargs)
+        self._access.update_summary(record)
+        self._access.audit.record('report.description', actor=self.principal, report_id=report_id, revision=record.revision)
+        return record
+
+    def get_history(self, report_id: str) -> list[dict[str, Any]]:
+        return self.list_history(report_id)
+
+    def read_asset_by_id(self, asset_id: str) -> bytes:
+        if not self._access.can_read_asset(asset_id, self.principal):
+            self._access.audit.record('asset.read', actor=self.principal, outcome='denied', reason='asset access denied')
+            raise PermissionError('asset access denied')
+        return self._repository.assets.read_image(asset_id)
+
+    def asset_data_url_by_id(self, asset_id: str) -> str:
+        self.read_asset_by_id(asset_id)
+        return self._repository.assets.data_url(asset_id)
 
     @property
     def access(self) -> ReportAccessCatalog:

@@ -1,5 +1,9 @@
-<div class="cui-visualizer-root" data-editor-ready="false" data-library="closed" data-inspector="open">
+<div class="cui-visualizer-root" data-editor-ready="false" data-library="open" data-inspector="open">
   <button class="tb preview-exit" id="previewExit" aria-label="Exit preview">Exit preview</button>
+  <div class="preview-controls" id="previewControls" role="toolbar" aria-label="Preview controls">
+    <button class="tb" id="previewFitWidth" type="button">Fit width</button>
+    <button class="tb" id="previewFitPage" type="button">Fit page</button>
+  </div>
   <div class="app">
     <header class="topbar" aria-label="Visembler toolbar">
       <div class="toolbar" role="toolbar" aria-label="Editor actions">
@@ -10,7 +14,6 @@
         <div class="tool-separator" aria-hidden="true"></div>
         <div class="toolgroup" aria-label="Arrange">
           <button class="tb" id="auto" title="Recompose the report using Smart mode constraints">Reflow</button>
-          <button class="tb" id="layoutBtn" aria-haspopup="dialog" title="Choose a report layout">Layouts</button>
           <button class="tb" id="group">Group</button>
           <button class="tb" id="ungroup">Ungroup</button>
         </div>
@@ -21,29 +24,35 @@
           <button class="tb" id="front">Front</button>
         </div>
         <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
-        <button class="tb" id="libraryToggle" aria-pressed="false" title="Show or hide the element library">Library</button>
+        <button class="tb" id="stageDIntakeBtn" title="Start from text, data, or image evidence">Start with content</button>
+        <button class="tb" id="stageDAssistantBtn" title="Review message delivery checks">Delivery checks</button>
+        <button class="tb" id="libraryToggle" aria-pressed="true" title="Show or hide the element library">Hide library</button>
         <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
         <button class="tb" id="historyBtn" title="Open report history, checkpoints, restore, and duplicate">History</button>
+        <button class="tb debug-trigger" id="debugBtn" aria-label="Open Developer Console" title="Open Developer Console"><span class="debug-glyph" aria-hidden="true">&lt;/&gt;</span><span class="debug-badge" id="debugBadge" aria-label="0 developer events">0</span></button>
         <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
       </div>
       <div class="rightbar" aria-label="Report actions">
+        <button class="tb" id="stageDCleanBtn" title="Clean layout using message hierarchy">Clean layout</button>
+        <button class="tb" id="stageDFitBtn" title="Fit the complete report">Fit report</button>
         <button class="tb" id="preflightBtn">Validate</button>
         <button class="tb" id="previewBtn">Preview</button>
-        <button class="tb accent" id="saveBtn">Save</button>
-        <button class="tb" id="exportBtn" aria-haspopup="dialog">Export ▾</button>
+        <button class="tb" id="saveBtn">Autosaved</button>
+        <button class="tb" id="exportBtn" aria-label="Export" aria-haspopup="dialog"><span class="export-label">Export</span><span aria-hidden="true">▾</span></button>
       </div>
     </header>
 
     <div class="shell">
+      <button class="panel-backdrop" id="panelBackdrop" aria-label="Close open panel" aria-hidden="true"></button>
       <aside class="left" id="libraryPane" aria-label="Authoring library">
-        <div class="pane-title library-pane-title"><span>Library</span><span class="pane-hint">Drag or click</span></div>
+        <div class="pane-title library-pane-title"><span>Library</span><span class="pane-hint">Drag or click</span><button class="mini-btn pane-close" id="libraryClose" aria-label="Collapse library">×</button></div>
         <div class="library-tabs" role="tablist" aria-label="Library views">
           <button id="elementsTab" class="library-tab active" role="tab" aria-selected="true" data-library-tab="elements">Elements</button>
           <button id="presetsTab" class="library-tab" role="tab" aria-selected="false" data-library-tab="presets">Presets</button>
         </div>
         <div id="elementsView" class="library-view active" role="tabpanel" aria-labelledby="elementsTab">
           <div class="section quick-section">
-            <div class="section-heading"><span>Quick add</span><small>Common building blocks</small></div>
+            <div class="section-heading"><span>Quick add</span><small>Proven building blocks</small></div>
             <div class="palette">
               <button class="pal pal-metric" data-type="metric"><span class="pal-visual"><i>42.8</i><em>+6.4%</em></span><b>Metric</b><small>Hero KPI</small></button>
               <button class="pal pal-chart" data-type="chart"><span class="pal-visual"><i class="spark"></i></span><b>Chart</b><small>Line chart</small></button>
@@ -54,10 +63,11 @@
               <button class="pal pal-diagram" data-type="diagram"><span class="pal-visual"><i class="diagram-preview"></i></span><b>Diagram</b><small>Process flow</small></button>
               <button class="pal pal-risk" data-type="risk"><span class="pal-visual"><i class="risk-preview">!</i></span><b>Decision</b><small>Risk callout</small></button>
             </div>
+            <button type="button" class="tb data-first-entry" id="pasteDataBtn"><b>Paste data</b><small>Excel, CSV, or TSV</small></button>
           </div>
           <div class="library-sticky-controls">
             <div class="library-filters">
-              <input class="library-search" id="componentSearch" type="search" placeholder="Search 248 elements" aria-label="Search elements">
+              <input class="library-search" id="componentSearch" type="search" placeholder="Search production elements" aria-label="Search elements">
               <select class="library-search" id="engineFilter" aria-label="Filter by family"><option value="">All families</option></select>
             </div>
           </div>
@@ -70,8 +80,14 @@
         <div id="presetsView" class="library-view" role="tabpanel" aria-labelledby="presetsTab" hidden>
           <div class="section preset-section">
             <div class="section-heading"><span>Presets</span><small>Built-in and personal</small></div>
-            <button class="tb full-width preset-primary" id="presetSave">Save as preset…</button>
+            <button class="tb full-width preset-primary" id="presetSave">Save report preset…</button>
+            <button class="tb full-width" id="presetSaveSelection" disabled>Save selected section…</button>
             <input class="library-search" id="presetSearch" type="search" placeholder="Search saved presets" aria-label="Search saved presets">
+            <select class="library-search" id="presetKindFilter" aria-label="Filter personal presets by type">
+              <option value="all">All personal presets</option>
+              <option value="section">Sections</option>
+              <option value="report">Reports</option>
+            </select>
             <div class="preset-subheading">Built-in</div>
             <div id="builtinPresetList"></div>
             <div class="preset-subheading">Personal</div>
@@ -96,7 +112,7 @@
             <span class="zoom-status" id="zoomStatus" aria-live="polite">88%</span>
             <button class="tb icon" id="zoomIn" aria-label="Zoom in">+</button>
             <button class="tb" id="zoomFit">Fit</button>
-            <button class="tb" id="miniToggle" aria-pressed="false">Map</button>
+            <button class="tb" id="miniToggle" aria-pressed="false" aria-label="Toggle minimap" title="Show or hide the report minimap">Minimap</button>
           </div>
         </div>
         <div class="viewport" id="viewport">
@@ -104,7 +120,7 @@
           <div class="minimap" id="minimap" aria-hidden="true"></div>
         </div>
         <div class="bottom">
-          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.25</span><span id="saveStatus">Saved automatically</span></div>
+          <div class="statusline"><span id="modeStatus">Smart</span><span id="selStatus" aria-live="polite">0 selected</span><span id="authoringVersion" class="authoring-version" aria-label="Visualizer authoring version">v0.4.26</span><span id="saveStatus">Saved automatically</span></div>
           <div class="preflight"><button type="button" id="preflightStatus" class="preflight-status-button good">Ready to export</button></div>
         </div>
       </main>
@@ -128,5 +144,8 @@
   </div>
   <div class="modal" id="debugModal" role="dialog" aria-modal="true" aria-labelledby="debugTitle">
     <div class="dialog debug-dialog"><div class="dialog-head"><div><b id="debugTitle">Developer console</b><span id="debugSummary"></span></div><button class="tb" data-close>Close</button></div><div id="debugBody"></div></div>
+  </div>
+  <div class="modal" id="stageDModal" role="dialog" aria-modal="true" aria-labelledby="stageDTitle">
+    <div class="dialog stage-d-dialog"><div class="dialog-head"><b id="stageDTitle">Start with content</b><button class="tb" data-stage-d-close>Close</button></div><div id="stageDBody"></div></div>
   </div>
 </div>

@@ -104,6 +104,7 @@ class ReportRepository:
                 self.assets.read_image(str(entry['asset_id'])); entry.pop('src',None); continue
             if entry.get('engine')!='ImageMediaEngine' or not isinstance(entry.get('src'),str): continue
             src=entry['src']
+            if src=='': continue
             if not src.startswith('data:') or ';base64,' not in src: raise VisualizerContractError(f'image {entry.get("id","?")} must use an embedded validated data URL or asset reference')
             header,encoded=src.split(',',1)
             if header not in {'data:image/png;base64','data:image/jpeg;base64','data:image/webp;base64'}: raise VisualizerContractError('only embedded PNG, JPEG, or WebP images are supported')
@@ -132,17 +133,31 @@ class ReportRepository:
         for asset_id in removed: self.assets.delete(asset_id)
         return removed
 
+    def _quarantine_report_unlocked(self, path: Path) -> bool:
+        if not path.is_file(): return False
+        self.quarantine.mkdir(parents=True,exist_ok=True)
+        target=self.quarantine/f'{path.stem}.{uuid.uuid4().hex}.corrupt.json'
+        try:
+            os.replace(path,target); self._fsync_dir(path.parent); self._fsync_dir(self.quarantine)
+            return True
+        except OSError:
+            return False
+
     def _get_unlocked(self, report_id: str) -> ReportRecord:
-        path=self._path(report_id)
+        expected_id=validate_report_id(report_id); path=self.root/f'{expected_id}.json'
         if not path.is_file(): raise ReportNotFoundError(report_id)
         try: record=ReportRecord.from_dict(json.loads(path.read_text(encoding='utf-8')))
         except Exception as exc:
-            self.quarantine.mkdir(parents=True,exist_ok=True)
-            target=self.quarantine/f'{path.stem}.{int(path.stat().st_mtime_ns)}.corrupt.json'
-            try: os.replace(path,target); self._fsync_dir(path.parent)
-            except OSError: pass
-            raise VisualizerContractError(f'corrupt report quarantined: {report_id}') from exc
-        prepared=self._prepare_model_unlocked(record.model)
+            quarantined=self._quarantine_report_unlocked(path)
+            status='quarantined' if quarantined else 'could not be quarantined'
+            raise VisualizerContractError(f'corrupt report {status}: {expected_id}') from exc
+        try:
+            if record.report_id != expected_id: raise VisualizerContractError('report filename and embedded identity differ')
+            prepared=self._prepare_model_unlocked(record.model)
+        except Exception as exc:
+            quarantined=self._quarantine_report_unlocked(path)
+            status='quarantined' if quarantined else 'could not be quarantined'
+            raise VisualizerContractError(f'corrupt report {status}: {expected_id}') from exc
         if prepared!=record.model: record=replace(record,model=prepared); self._save_unlocked(record)
         return record
 
@@ -198,6 +213,16 @@ class ReportRepository:
     def list_history(self, report_id: str) -> list[dict[str,Any]]:
         with self._transaction(): self._get_unlocked(report_id); return self._history_entries_unlocked(validate_report_id(report_id))
 
+    def get_history(self, report_id: str, history_id: str) -> dict[str,Any]:
+        """Return one validated immutable revision for the report hub.
+
+        The hub needs the historical model to render a bounded preview and a
+        semantic diff.  Keep the read under the same repository lock and
+        validation path as the existing history actions.
+        """
+        with self._transaction():
+            return dict(self._load_history_unlocked(validate_report_id(report_id), history_id))
+
     def checkpoint(self, report_id: str, name: str, *, expected_revision: int) -> dict[str,Any]:
         with self._transaction():
             record=self._get_unlocked(report_id)
@@ -231,6 +256,14 @@ class ReportRepository:
             updated=replace(cur,title=cleaned,revision=cur.revision+1,updated_at=utc_now())
             self._save_unlocked(updated); self._snapshot_unlocked(updated,label='Renamed'); return updated
 
+    def update_description(self, report_id: str, description: str, *, expected_revision: int) -> ReportRecord:
+        with self._transaction():
+            cur=self._get_unlocked(report_id)
+            if cur.revision != expected_revision: raise RevisionConflictError(cur.revision,expected_revision)
+            cleaned=' '.join(str(description).replace('\x00','').split())[:1000]
+            updated=replace(cur,metadata={**cur.metadata,'description':cleaned},revision=cur.revision+1,updated_at=utc_now())
+            self._save_unlocked(updated); self._snapshot_unlocked(updated,label='Description updated'); return updated
+
     def delete(self, report_id: str, *, expected_revision: int) -> bool:
         with self._transaction():
             cur=self._get_unlocked(report_id)
@@ -252,8 +285,12 @@ class ReportRepository:
             if not self.trash.exists(): return []
             out=[]
             for path in sorted(self.trash.glob('*.json')):
-                try: out.append(ReportRecord.from_dict(json.loads(path.read_text(encoding='utf-8'))))
-                except Exception: continue
+                try:
+                    record=ReportRecord.from_dict(json.loads(path.read_text(encoding='utf-8')))
+                    if record.report_id != path.stem: raise VisualizerContractError('report filename and embedded identity differ')
+                    out.append(record)
+                except Exception:
+                    self._quarantine_report_unlocked(path)
             return sorted(out,key=lambda r:(r.updated_at,r.report_id),reverse=True)
 
     def restore(self, report_id: str) -> ReportRecord:
@@ -261,7 +298,13 @@ class ReportRepository:
             report_id=validate_report_id(report_id); source=self.trash/f'{report_id}.json'
             if not source.is_file(): raise ReportNotFoundError(report_id)
             if self._path(report_id).exists(): raise VisualizerContractError('an active report already uses this id')
-            record=ReportRecord.from_dict(json.loads(source.read_text(encoding='utf-8')))
+            try:
+                record=ReportRecord.from_dict(json.loads(source.read_text(encoding='utf-8')))
+                if record.report_id != report_id: raise VisualizerContractError('report filename and embedded identity differ')
+            except Exception as exc:
+                quarantined=self._quarantine_report_unlocked(source)
+                status='quarantined' if quarantined else 'could not be quarantined'
+                raise VisualizerContractError(f'corrupt trashed report {status}: {report_id}') from exc
             os.replace(source,self._path(report_id))
             if self._trash_history_path(report_id).exists(): self.history.mkdir(parents=True,exist_ok=True); os.replace(self._trash_history_path(report_id),self._history_path(report_id))
             self._fsync_dir(self.root); self._fsync_dir(self.trash); return record

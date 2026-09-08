@@ -3,14 +3,45 @@ import {
   RevisionConflictError,
   parseCanonical,
   serializeCanonical,
-} from '../vendor/production_core/core/editor_store.mjs';
-import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs';
+} from '../vendor/production_core/core/editor_store.mjs?v=v0.4.26';
+import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
+import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, productionEntries } from './production_library.mjs';
 import { renderIntegratedElement } from './element_renderer.mjs';
-import { intakeText, datasetFromIntake, appendCompatibleDataset, candidateForView, inferMappings, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
+import { intakeText, datasetFromIntake, appendCompatibleDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
+import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
+import { applyGridAction, gridSelection } from './authoring_grid.mjs';
 import { contractFor } from './authoring_contracts.mjs';
+import { parseAuthoringScalar, parseAuthoringFieldValue, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
+import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
+import { matchSizePatches } from './authoring_arrange.mjs';
+import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
+import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
+import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
+import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
+import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
+import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, mappingFromFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
+import { planDatasetRefresh } from './authoring_dataset_refresh.mjs';
+import { portableEnvelope, inlineAssetUrls } from './authoring_portability.mjs';
+import { createIntakeClient } from './authoring_intake_client.mjs';
+import {
+  BLUEPRINTS,
+  MESSAGE_ROLES,
+  STAGE_D_COMMANDS,
+  applyMessageRole,
+  assetCompatibility,
+  contentFitSummary,
+  contentIntakePlan,
+  createReusableAsset,
+  datasetSummary,
+  deliveryFindings,
+  layoutOperations,
+  rolePolicy,
+  suggestMessageRole,
+  withSuggestedRoles,
+} from './authoring_stage_d.mjs';
 
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -27,13 +58,15 @@ const MAX_BRIDGE_BYTES = 2_000_000;
 const MAX_MODEL_BYTES = 1_500_000;
 const MAX_IMAGE_BYTES = 750_000;
 const OFF_THREAD_INTAKE_BYTES = 250_000;
-const AUTHORING_VERSION = 'v0.4.25';
+const AUTHORING_VERSION = 'v0.4.26';
 const bootstrap = window.__CUI_VISUALIZER_BOOTSTRAP__ || {};
 let readOnly = bootstrap.capabilities?.read_only === true;
 let activeRoot = null;
 let eventAbort = null;
 let personalPresets = [];
+let mappingPresets = [];
 let presetRenderFrame = 0;
+let stageD = null;
 
 const typeDefaults = {
   metric: { title: 'Hero KPI', weight: 1.15, minW: 180, minH: 130 },
@@ -71,7 +104,20 @@ function chartStarterData(element='') {
 function timelineStarter() { return [{label:'Discover',date:'Week 1'},{label:'Validate',date:'Week 2'},{label:'Implement',date:'Week 3'},{label:'Verify',date:'Week 4'}]; }
 function diagramStarter() { return {nodes:['Signal','Analyze','Validate','Decision'],edges:[['Signal','Analyze'],['Analyze','Validate'],['Validate','Decision']],direction:'right'}; }
 function starterContent(engine, element) {
-  if(engine==='MetricEngine') return {value:84.2,unit:'%',delta:6.4,target:90,detail:false};
+  if(engine==='MetricEngine') {
+    const name=String(element||'').toLowerCase();
+    if(name==='hero kpi')return {value:84.2,unit:'%',delta:6.4,target:90,period:'vs prior period'};
+    if(name==='metric + delta')return {value:84.2,unit:'%',delta:6.4,period:'vs prior period'};
+    if(name==='target vs actual')return {actual:84.2,target:90,variance:-5.8,unit:'%'};
+    if(name==='progress metric')return {current:84.2,max:100,unit:'%'};
+    if(name==='status metric')return {status:'On track',detail:'Within operating band',value:84.2,unit:'%'};
+    if(name==='capacity metric')return {current:42.8,capacity:100,unit:'%'};
+    if(name==='rate metric')return {numerator:987,denominator:1000,value:98.7,unit:'%',period:'per lot'};
+    if(name==='threshold metric')return {value:42.8,warning:70,critical:90,unit:'%',threshold_logic:'higher-is-worse'};
+    if(name==='metric with sparkline')return {value:84.2,unit:'%',delta:6.4,period:'last 7 periods',series:[['W1',72],['W2',78],['W3',84],['W4',91]]};
+    if(name==='metric ring')return {value:84.2,max:100,unit:'%',center_label:'Progress'};
+    return {value:84.2,unit:'%',delta:6.4,detail:false};
+  }
   if(engine==='ComparisonEngine') return {before:62,after:91,unit:'%'};
   if(engine==='CoreChartEngine') { const data=chartStarterData(element); return {variant:'line',data,rows:data.map(([label,value])=>({label,value})),brush:[0,data.length-1],cross:null,drill:null,revealed:true}; }
   if(engine==='TextEngine') return {text:'State the insight, evidence, and intended decision in one clear sentence.',body:'State the insight, evidence, and intended decision in one clear sentence.'};
@@ -83,7 +129,7 @@ function starterContent(engine, element) {
   if(engine==='EvidenceCompositeEngine') return {statement:'Pressure excursion aligns with defect onset.',detail:'Validate with a matched control lot before closure.',status:'Observed'};
   if(engine==='DecisionCompositeEngine') return {statement:'Approve the controlled validation path.',detail:'The option reduces cycle time while keeping the change reversible.',status:'Open'};
   if(engine==='ProjectCompositeEngine') return {statement:'Validate chamber recovery.',detail:'Owner: Process Engineering · due Friday · verify with control lot.',status:'Planned'};
-  if(engine==='EngineeringChartEngine') return {observations:[{label:'1',value:98.2},{label:'2',value:98.8},{label:'3',value:98.5},{label:'4',value:99.1},{label:'5',value:98.9}],role:'measurement',lower_limit:97.5,upper_limit:99.5,lcl:97.5,ucl:99.5};
+  if(engine==='EngineeringChartEngine') return {observations:[{label:'1',value:98.2},{label:'2',value:98.8},{label:'3',value:98.5},{label:'4',value:99.1},{label:'5',value:98.9}],role:'measurement',specification_low:97.5,specification_high:99.5,target:null,sigma:null,k:0.5,decision_h:5,lambda:0.2,L:3};
   if(engine==='WaferFabEngine') return {observations:[{x:1,y:1,value:98.4},{x:2,y:1,value:98.8},{x:3,y:2,value:97.9},{x:2,y:3,value:98.6}],tool:'ETCH-04',chamber:'B',lot:'24-118',route:'ETCH → MET'};
   if(engine==='SmartLayoutEngine') return {configuration:'14px governed composition'};
   if(engine==='InteractionLayer') return {behavior:'select → filter → inspect'};
@@ -117,10 +163,10 @@ function migrateLegacyItems(source) {
   return value;
 }
 
-let store = new EditorStore(parseCanonical(migrateLegacyItems(bootstrap.model || {
+let store = new EditorStore(parseCanonical(withSuggestedRoles(migrateLegacyItems(bootstrap.model || {
   schema_version: 1,
   items: structuredClone(initialItems), groups: {}, mode: 'smart', layoutPreset: 'editorial', crossFilter: null, canvas: DEFAULT_CANVAS_SIZE, nextId: 20,
-})), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
+}))), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
 
 const ui = {
   zoom: 1,
@@ -130,6 +176,7 @@ const ui = {
   snap: true,
   showMini: false,
   preview: false,
+  previewFit: 'page',
   autoFit: true,
   previewPatches: new Map(),
   kpiAnimate: new Set(['c1']),
@@ -144,9 +191,10 @@ const ui = {
   contextBoundsCache: null,
   lastPreflight: null,
   inspectorOpen: true,
-  libraryOpen: false,
-  libraryLimit: 60,
+  libraryOpen: true,
+  libraryLimit: 48,
   pendingCommits: new Map(),
+  saveInFlight: null,
   recovery: null,
   persistenceFailure: null,
   intrinsicOverrides: new Map(),
@@ -155,6 +203,7 @@ const ui = {
   presetQuery: '',
   favorites: new Set(Array.isArray(storageJson('viz-library-favorites',[]))?storageJson('viz-library-favorites',[]):[]),
   recentElements: Array.isArray(storageJson('viz-library-recent',[]))?storageJson('viz-library-recent',[]):[],
+  recentCommands: Array.isArray(storageJson('viz-command-recent',[]))?storageJson('viz-command-recent',[]):[],
   guideEpoch: 0,
   guideReason: 'initial',
   contentMeasurePass: 0,
@@ -166,11 +215,18 @@ const ui = {
   dataDockFilter: '',
   tableRange: null,
   tableFilter: '',
+  transformEditor: null,
   resolvedDataCache: new Map(),
+  projectionEpoch: 0,
+  dataFirst: null,
+  mappingPresetsLoaded: false,
+  mappingManagerOpen: false,
+  stageD: { mode: null, sourceText: '', plan: null, selectedRecommendation: 0, query: '' },
 };
 
 function model() { return store.model; }
 function item(id) { return model().items.find((entry) => entry.id === id); }
+function invalidateResolvedData() { ui.projectionEpoch+=1; ui.resolvedDataCache.clear(); }
 function canvasSize() {
   const value=model().canvas||DEFAULT_CANVAS_SIZE;
   return {width:clamp(Math.round(Number(value.width)||DEFAULT_CANVAS_SIZE.width),640,3840),height:clamp(Math.round(Number(value.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H)};
@@ -243,6 +299,8 @@ function semanticPolicy(entry) {
     if(name.includes('gantt')||name.includes('swimlane')||name.includes('roadmap')||name.includes('schedule')) p={...p,minW:390,minH:220,prefW:560,prefH:260};
   } else if(engine==='DiagramEngine') {
     p={...p,minW:340,minH:225,prefW:480,prefH:275,growth:'plot'};
+    if((name.includes('process flow')||name.includes('data flow'))&&String(entry.direction||'right').toLowerCase()!=='down') p={...p,minW:380,minH:170,prefW:580,prefH:220,growth:'horizontal',aspect:2.5};
+    if((name.includes('process flow')||name.includes('data flow'))&&String(entry.direction||'').toLowerCase()==='down') p={...p,minW:290,minH:330,prefW:360,prefH:460,growth:'vertical',aspect:.8};
     if(name.includes('architecture')||name.includes('swimlane')||name.includes('sequence')) p={...p,minW:380,minH:245,prefW:540,prefH:300};
     if(name.includes(' node')) p={...p,minW:190,minH:135,prefW:240,prefH:155,growth:'balanced'};
   } else if(engine==='ImageMediaEngine') {
@@ -256,7 +314,7 @@ function semanticPolicy(entry) {
     p={...p,minW:260,minH:125,prefW:390,prefH:165,growth:'text'};
     if(name.includes('hero title')) p={...p,minW:420,minH:135,prefW:700,prefH:160};
     if(name.includes('body narrative')||name.includes('narrative sequence')) p={...p,minW:320,minH:190,prefW:500,prefH:240};
-    if(name.includes('section heading')||name.includes('eyebrow')||name.includes('footnote')||name.includes('metadata')) p={...p,minW:260,minH:76,prefW:440,prefH:92};
+    if(name.includes('section heading')||name.includes('eyebrow')||name.includes('footnote')||name.includes('metadata')) p={...p,minW:260,minH:84,prefW:440,prefH:100};
   } else if(engine==='ComparisonEngine') {
     p={...p,minW:300,minH:175,prefW:430,prefH:210,growth:'horizontal'};
   } else if(['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) {
@@ -275,7 +333,10 @@ function semanticPolicy(entry) {
   p.prefH=Math.min(p.maxH,Math.max(p.minH,p.prefH*(emphasis==='hero'?1.12:emphasis==='compact'?.9:1)));
   const measured=ui.intrinsicOverrides.get(entry.id);
   if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
-  return {...p,emphasis};
+  // This is the single source of truth for Smart/Guided defaults.  Keep the
+  // policy inspectable so renderers and acceptance probes can distinguish a
+  // useful solo card from a multi-card growth target.
+  return {...p,emphasis,contentFit:true,solo:{w:p.prefW,h:p.prefH},multi:{minW:p.minW,minH:p.minH,prefW:p.prefW,prefH:p.prefH,maxW:p.maxW,maxH:p.maxH}};
 }
 function effectiveWeight(entry) {
   const emphasis=defaultEmphasis(entry);
@@ -306,14 +367,31 @@ function semanticSmartLayout(items=viewItems()) {
   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
   const g=CANVAS.gap,innerW=CANVAS.w-2*g;
   const rows=[];let row=[];let minUsed=0;
-  for(const entry of ordered){const policy=semanticPolicy(entry);const need=(row.length?g:0)+policy.minW;if(row.length&&minUsed+need>innerW){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
+  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),forceOwnRow=role==='Headline'||(role==='Primary Evidence'&&['plot','data','media','square'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,squareConflict=row.length>=2&&(policy.growth==='square'||row.some(member=>member.policy.growth==='square'));if(row.length&&(minUsed+need>innerW||squareConflict||forceOwnRow)){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
   if(row.length)rows.push(row);
-  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});return {members,widths,height:Math.max(...desired)};});
+  const solo=ordered.length===1&&rows.length===1;
+  const innerH=CANVAS.h-2*g;
+  const soloSize=({entry,policy})=>{
+    const role=suggestMessageRole(entry),primary=role==='Primary Evidence'||role==='Headline';
+    if(policy.growth==='square'){const size=Math.min(innerW*(primary ? .82 : .74),innerH*(primary ? .82 : .72),policy.maxW,policy.maxH);return {w:Math.max(policy.minW,size),h:Math.max(policy.minH,size)};}
+    if(['plot','data','media'].includes(policy.growth)){
+      const heightShare=entry.engine==='DiagramEngine'?.52:(primary?.72:.62);
+      return {w:Math.min(policy.maxW,innerW*(primary ? .94 : .9)),h:Math.min(policy.maxH,Math.max(policy.minH,innerH*heightShare))};
+    }
+    if(policy.growth==='vertical')return {w:Math.min(policy.maxW,innerW*.68),h:Math.min(policy.maxH,Math.max(policy.prefH,innerH*.68))};
+    if(policy.growth==='horizontal'){const diagram=entry.engine==='DiagramEngine';return {w:Math.min(policy.maxW,innerW*(primary ? .94 : .9)),h:Math.min(policy.maxH,Math.max(policy.prefH,innerH*(diagram?.42:.34)))};}
+    if(policy.growth==='text')return {w:Math.min(policy.maxW,innerW*(role==='Headline' ? .9 : .76)),h:Math.max(policy.minH,policy.prefH)};
+    return {w:Math.min(policy.maxW,innerW*.72),h:Math.max(policy.minH,policy.prefH)};
+  };
+  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}else if(members.length===1&&members[0].policy.growth==='square'){const policy=members[0].policy,side=Math.min(innerW,innerH*.64,policy.maxW,policy.maxH);widths[0]=Math.max(policy.minW,side);desired[0]=Math.max(policy.minH,side);}return {members,widths,height:Math.max(...desired)};});
   const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height,0)+g*Math.max(0,rowSpecs.length-1)+2*g;
+  // Multi-card reports retain the authored page height (targetH=CANVAS.h);
+  // a solo card uses its governed useful height so it does not become a blank page.
   const targetH=CANVAS.h;
+  const layoutTargetH=solo?baseNeeded:targetH;
   let conflict=null;
-  const usableH=targetH-2*g-g*Math.max(0,rowSpecs.length-1);
-  if(baseNeeded>targetH) {
+  const usableH=layoutTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  if(baseNeeded>layoutTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
     if(minimumTotal<=usableH) {
@@ -324,12 +402,21 @@ function semanticSmartLayout(items=viewItems()) {
     } else {
       const scale=usableH/Math.max(1,minimumTotal);
       rowSpecs.forEach((spec,index)=>{spec.height=Math.max(1,minimum[index]*scale);});
-      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${targetH}px page. Increase Page size for their preferred space.`;
+      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${layoutTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  if(baseNeeded<targetH&&rowSpecs.length){const extra=targetH-baseNeeded;for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length;}
+  if(!solo&&baseNeeded<layoutTargetH&&rowSpecs.length){
+    let extra=layoutTargetH-baseNeeded;
+    const growthScore=spec=>Math.max(...spec.members.map(({entry,policy})=>{
+      const family={plot:5,data:4.5,media:4,square:4,vertical:2.5,horizontal:1.2,balanced:.6,text:0}[policy.growth]||0;
+      const role=suggestMessageRole(entry),roleWeight=role==='Primary Evidence' ? 1.45 : role==='Supporting Evidence' ? 1.15 : role==='Headline' ? .8 : 1;
+      return family*roleWeight;
+    }));
+    const capacity=spec=>{const maximum=Math.max(...spec.members.map(({policy})=>({plot:innerH*.55,data:innerH*.52,media:innerH*.58,square:innerH*.64,vertical:innerH*.55,horizontal:Math.min(innerH*.38,spec.height+90),balanced:spec.height+48,text:spec.height}[policy.growth]||spec.height)));return Math.max(0,maximum-spec.height);};
+    for(let pass=0;pass<4&&extra>.5;pass+=1){const candidates=rowSpecs.map(spec=>({spec,score:growthScore(spec),capacity:capacity(spec)})).filter(value=>value.score>0&&value.capacity>.5),scoreTotal=candidates.reduce((sum,value)=>sum+value.score,0);if(!candidates.length||!scoreTotal)break;let used=0;for(const value of candidates){const add=Math.min(value.capacity,extra*value.score/scoreTotal);value.spec.height+=add;used+=add;}if(used<.5)break;extra-=used;}
+  }
   const rects=[];let y=g;
-  for(const spec of rowSpecs){let x=g;for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i];const h=spec.height;rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
+  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],base=Math.max(policy.minH,policy.prefH),aspectHeight=policy.aspect?Math.max(policy.minH,w/policy.aspect):spec.height;const familyCap={plot:spec.height,data:spec.height,media:Math.min(spec.height,aspectHeight),square:Math.min(spec.height,aspectHeight),vertical:spec.height,horizontal:Math.min(spec.height,Math.max(base,aspectHeight,base+60)),balanced:base+48,text:base}[policy.growth]||base;const h=solo?spec.height:Math.min(spec.height,familyCap);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>CANVAS.h-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(CANVAS.h-g))<.2;}
   return {rects,height:CANVAS.h,conflict};
 }
@@ -346,9 +433,19 @@ function rectMap() { return new Map(currentRects().map((r) => [r.id, r])); }
 function committedRectMap() { return new Map(committedRects().map((r)=>[r.id,r])); }
 
 function localCommitId(prefix='commit', revision=store.revision) { return `${prefix}-${revision}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,9)}`; }
+function updateDebugBadge() {
+  const badge=$('#debugBadge'); if(!badge)return;
+  const errors=ui.debugLog.filter(entry=>entry.level==='error').length;
+  const warnings=ui.debugLog.filter(entry=>entry.level==='warn').length;
+  const count=errors+warnings;
+  badge.textContent=String(Math.min(count,99));
+  badge.setAttribute('aria-label',`${count} console issue${count===1?'':'s'}${errors?` · ${errors} error${errors===1?'':'s'}`:''}`);
+  badge.dataset.level=errors?'error':warnings?'active':'idle';
+}
 function debugEvent(level, event, detail = '') {
   ui.debugLog.unshift({id:++ui.debugSequence,time:new Date().toLocaleTimeString(),level,event,detail:String(detail||'').slice(0,600)});
   if (ui.debugLog.length > 200) ui.debugLog.length=200;
+  updateDebugBadge();
   if ($('#debugModal')?.classList.contains('show')) renderDeveloperConsole();
 }
 function dispatchSemantic(type, payload={}) {
@@ -371,32 +468,45 @@ function sameValue(a,b) { return JSON.stringify(a)===JSON.stringify(b); }
 function persistPendingState() {
   const pending=[...ui.pendingCommits.values()];
   if(!pending.length&&!ui.recovery){storage.remove(persistenceKey());return;}
-  storage.set(persistenceKey(),JSON.stringify({report_id:String(bootstrap.report_id||'default'),model:parseCanonical(store.serialize()),pending,recovery:ui.recovery,saved_at:Date.now()}));
+  if(storage.set(persistenceKey(),JSON.stringify({report_id:String(bootstrap.report_id||'default'),model:ui.recovery?.model||parseCanonical(store.serialize()),pending,recovery:ui.recovery,saved_at:Date.now()}))===false){ui.localRecoveryFailure='Local recovery copy could not be saved. Export JSON before closing this tab.';toast(ui.localRecoveryFailure);}
 }
 function updateSaveUi() {
   const button=$('#saveBtn');
   if(ui.recovery&&!ui.recovery.reapplying){setSaveStatus('Local edits need recovery','bad');if(button){button.textContent='Recover edits';button.disabled=false;button.title='Safely reapply retained local edits';}return;}
   if(ui.persistenceFailure){setSaveStatus('Not saved','bad');if(button){button.textContent='Retry save';button.disabled=false;button.title='Retry the failed automatic save';}return;}
+  if(ui.localRecoveryFailure&&ui.pendingCommits.size){setSaveStatus('Recovery copy unavailable — export JSON','bad');if(button){button.textContent='Saving without recovery';button.disabled=true;button.title=ui.localRecoveryFailure;}return;}
   if(ui.pendingCommits.size){setSaveStatus('Saving…','pending');if(button){button.textContent='Saving…';button.disabled=true;button.title='Edits are being saved automatically';}return;}
   setSaveStatus('Saved automatically','good');if(button){button.textContent='Autosaved';button.disabled=true;button.title='Every edit is saved automatically';}
 }
 function setSaveStatus(text, tone='good') { const node=$('#saveStatus'); if(!node)return; node.textContent=text; node.dataset.tone=tone; }
+function dispatchNextPendingCommit() {
+  if(ui.saveInFlight||ui.persistenceFailure||ui.recovery)return false;
+  const queued=[...ui.pendingCommits.values()].sort((a,b)=>(Number(a.base_revision)||0)-(Number(b.base_revision)||0)||String(a.commit_id||'').localeCompare(String(b.commit_id||'')));
+  const next=queued[0]; if(!next){updateSaveUi();return false;}
+  ui.saveInFlight=next.commit_id; clearTimeout(ui.saveTimer);const sendingReport=next.report_id,sendingId=next.commit_id;ui.saveTimer=setTimeout(()=>{if(String(bootstrap.report_id)!==String(sendingReport)||ui.saveInFlight!==sendingId)return;ui.saveInFlight=null;ui.persistenceFailure={message:'Save confirmation timed out. Retry is safe.',commit_id:sendingId};persistPendingState();updateSaveUi();},15000); persistPendingState(); updateSaveUi();
+  if(!dispatchSemantic('report.commit',next)){
+    ui.saveInFlight=null;
+    ui.persistenceFailure={message:'Save transport is unavailable',commit_id:next.commit_id};
+    persistPendingState(); updateSaveUi(); return false;
+  }
+  return true;
+}
 function syncAccepted(accepted) {
   const payload={report_id:String(bootstrap.report_id||'default'),base_revision:accepted.base_revision,commit_id:accepted.id,model:parseCanonical(accepted.canonical_after),fingerprint:null};
   ui.pendingCommits.set(accepted.id,{...payload,ops:structuredClone(accepted.payload?.ops||[]),label:accepted.meta?.label||'Edit',canonical_before:accepted.canonical_before});
-  ui.persistenceFailure=null; persistPendingState(); updateSaveUi();
-  if(!dispatchSemantic('report.commit',payload)){ui.persistenceFailure={message:'Save transport is unavailable',commit_id:accepted.id};persistPendingState();updateSaveUi();}
+  ui.persistenceFailure=null; persistPendingState(); updateSaveUi(); dispatchNextPendingCommit();
 }
 function retainLocalRecovery(reason) {
   const pending=[...ui.pendingCommits.values()];
   if(!pending.length)return;
   ui.recovery={reason,pending,model:parseCanonical(store.serialize()),created_at:Date.now()};
-  ui.pendingCommits.clear(); persistPendingState();
+  ui.saveInFlight=null; ui.pendingCommits.clear(); persistPendingState();
 }
 function restorePersistedRecovery(payload) {
   try {
     const saved=JSON.parse(storage.get(persistenceKey(payload.report_id||bootstrap.report_id||'default'))||'null');
-    if(saved?.report_id===String(payload.report_id||bootstrap.report_id||'default')&&Array.isArray(saved.pending)&&saved.pending.length&&!sameValue(saved.model,payload.model)) ui.recovery={reason:'Recovered after refresh',pending:saved.pending,model:saved.model,created_at:saved.saved_at||Date.now()};
+    const pending=Array.isArray(saved?.pending)&&saved.pending.length?saved.pending:Array.isArray(saved?.recovery?.pending)?saved.recovery.pending:[];
+    if(saved?.report_id===String(payload.report_id||bootstrap.report_id||'default')&&pending.length&&!sameValue(saved.recovery?.model||saved.model,payload.model)) ui.recovery={...(saved.recovery||{}),reason:saved.recovery?.reason||'Recovered after refresh',pending,model:saved.recovery?.model||saved.model,created_at:saved.saved_at||Date.now()};
   } catch { storage.remove(persistenceKey(payload.report_id||bootstrap.report_id||'default')); }
 }
 function replaceFromServer(payload, reason='Server synchronization', { preserveLocal=false, restorePersisted=false }={}) {
@@ -404,10 +514,12 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   const reportChanged=String(payload.report_id||bootstrap.report_id||'default')!==String(bootstrap.report_id||'default');
   if(reportChanged&&!preserveLocal){retainLocalRecovery('Report switched before save confirmation');ui.recovery=null;ui.persistenceFailure=null;}
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
+  if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
+  store=new EditorStore(parseCanonical(withSuggestedRoles(migrateLegacyItems(payload.model))),{revision:payload.revision});
+  invalidateResolvedData();
   if (payload.capabilities) { bootstrap.capabilities=payload.capabilities; readOnly=payload.capabilities.read_only===true; }
-  store=new EditorStore(parseCanonical(migrateLegacyItems(payload.model)),{revision:payload.revision});
-  bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
+  bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.saveInFlight=null; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
 }
 function opPreconditionsMatch(current,before,op) {
   const itemById=value=>new Map((value.items||[]).map(entry=>[entry.id,entry])); const currentItems=itemById(current),beforeItems=itemById(before);
@@ -423,30 +535,31 @@ function reapplyLocalRecovery() {
   for(const transaction of recovery.pending||[]){const before=parseCanonical(transaction.canonical_before||recovery.model);if(!transaction.ops?.every(op=>opPreconditionsMatch(probe.model,before,op)))return toast('Local edits overlap newer report changes; recovery draft is retained for review');try{probe.commit(probe.command(transaction.ops,transaction.label||'Recovered edit','recovery-probe'));ops.push(...transaction.ops);}catch{return toast('Local edits cannot be reapplied safely; recovery draft is retained');}}
   if(!ops.length)return false;const savedRecovery=ui.recovery;ui.recovery=null;const accepted=commitOps('Reapply retained local edits',ops,{announce:'Local edits reapplied'});if(accepted){ui.recovery={...savedRecovery,reapplying:true,reapply_commit_id:accepted.id};persistPendingState();updateSaveUi();}else{ui.recovery=savedRecovery;persistPendingState();updateSaveUi();}return !!accepted;
 }
-window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{};debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();return;}if(m.type==='report.conflict'){replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,recovery:!!ui.recovery};}};
+window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{},active=String(bootstrap.report_id||'default'),replyReport=String(p.report_id||p.report?.report_id||active);debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(['report.commit_result','report.conflict','report.error'].includes(m.type)&&replyReport!==active){debugEvent('warn','Ignored stale report reply',`${m.type} for ${replyReport} while ${active} is active`);return;}if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
 
 function commitOps(label, ops, { announce = null, render = true } = {}) {
-  if (readOnly) { toast('This report is read-only'); return null; }
+  if (typeof readOnly !== 'undefined' && readOnly) { toast('This report is read-only'); return null; }
   let next;
   try { next=prospectiveModel(ops,label); } catch(err) { debugEvent('error',`Rejected edit: ${label}`,err?.stack||err); toast(String(err.message||err)); return null; }
   if (modelBytes(next)>MAX_MODEL_BYTES) { toast('This edit would make the report too large; nothing was changed'); return null; }
-  const accepted=store.commit(store.command(ops,label,localCommitId('commit',store.revision))); debugEvent('action',label,`${ops.length} operation${ops.length===1?'':'s'} · revision ${accepted.base_revision} → ${store.revision}`);
-  pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('commit'); if(render)renderAll(); if(announce)toast(announce); syncAccepted(accepted); return accepted;
+  if (sameValue(next, model())) { debugEvent('action',`Skipped no-op: ${label}`,'No canonical model change'); return null; }
+  const accepted=store.commit(store.command(ops,label,localCommitId('commit',store.revision))); invalidateResolvedData(); debugEvent('action',label,`${ops.length} operation${ops.length===1?'':'s'} · revision ${accepted.base_revision} → ${store.revision}`);
+  pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('commit'); syncAccepted(accepted); if(render)renderAll(); if(announce)toast(announce); return accepted;
 }
 function undo() {
-  if (readOnly) return toast('This report is read-only');
-  if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); renderAll(); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); toast('Undid last edit');
+  if (typeof readOnly !== 'undefined' && readOnly) return toast('This report is read-only');
+  if (!store.canUndo) return toast('Nothing to undo'); cancelPointerSession('undo'); const base=store.revision,before=store.serialize(),entry=store.undo(base); invalidateResolvedData(); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('undo'); syncAccepted({id:localCommitId('undo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.inverse.ops},meta:{label:'Undo'}}); renderAll(); toast('Undid last edit');
 }
 function redo() {
-  if (readOnly) return toast('This report is read-only');
-  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); renderAll(); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); toast('Redid last edit');
+  if (typeof readOnly !== 'undefined' && readOnly) return toast('This report is read-only');
+  if (!store.canRedo) return toast('Nothing to redo'); cancelPointerSession('redo'); const base=store.revision,before=store.serialize(),entry=store.redo(base); invalidateResolvedData(); pruneSelection(); ui.previewPatches.clear(); clearTransientInteractionVisuals('redo'); syncAccepted({id:localCommitId('redo',base),base_revision:base,canonical_after:store.serialize(),canonical_before:before,payload:{ops:entry.redo.ops},meta:{label:'Redo'}}); renderAll(); toast('Redid last edit');
 }
 function pruneSelection() {
   const ids = new Set(model().items.map((entry) => entry.id));
   ui.selected = new Set([...ui.selected].filter((id) => ids.has(id)));
 }
 
-function resolvedEntry(entry) { const dataset=selectedDataset(entry); if(!dataset)return entry;const key=`${entry.id}:${dataset.revision||0}:${JSON.stringify(entry.mapping||{})}:${JSON.stringify(entry.transform_recipe||null)}`;let patch=ui.resolvedDataCache.get(key);if(!patch){patch=canonicalPatch(entry,dataset,entry.mapping||{});ui.resolvedDataCache.set(key,patch);if(ui.resolvedDataCache.size>80)ui.resolvedDataCache.clear();}return {...entry,...patch}; }
+function resolvedEntry(entry) { const dataset=selectedDataset(entry); if(!dataset)return entry;const key=`${bootstrap.report_id||'default'}:${ui.projectionEpoch}:${entry.id}:${dataset.id}:${dataset.revision||0}:${JSON.stringify(entry.mapping||{})}:${JSON.stringify(entry.transform_recipe||null)}:${JSON.stringify(entry.presentation||null)}`;let patch=ui.resolvedDataCache.get(key);if(!patch){patch=canonicalPatch(entry,dataset,entry.mapping||{});ui.resolvedDataCache.set(key,patch);if(ui.resolvedDataCache.size>80)ui.resolvedDataCache.clear();}return {...entry,...patch,_resolved_dataset:dataset}; }
 function chartData(entry) { const resolved=resolvedEntry(entry); return Array.isArray(resolved.data) && resolved.data.length ? resolved.data : defaultChartData; }
 function metricMarkup(entry) {
   return `<div class="kicker">Metric · live interaction</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">From 188 min manual → 14 min governed workflow</div><div class="metric-big" data-kpi="${entry.id}">${entry.value}%</div><div class="metric-delta">↓ ${entry.value}% cycle-time reduction</div><button class="mini-btn detail-toggle align-start mt-2" data-action="detail" aria-expanded="${entry.detail ? 'true' : 'false'}">${entry.detail ? 'Hide' : 'Show'} detail</button>${entry.detail ? '<div class="metric-detail">Derived from the same before/after model. Web can expand; PPT keeps the accepted summary.</div>' : ''}`;
@@ -498,7 +611,7 @@ function textMarkup(entry, r = {}) {
 const evidenceRows = [['Collect', 'FDC pressure excursion', 'Support', 'High'], ['Normalize', 'Control population clean', 'Support', 'High'], ['Reason', 'Recipe unchanged', 'Contradict', 'High'], ['Verify', 'Spatial signature match', 'Support', 'Medium'], ['Close', 'Containment verified', 'Support', 'High']];
 function tableMarkup(entry) {
   if (entry.customTable) {
-    const headers = entry.customTable.headers.slice(0, 4);
+    const headers = entry.customTable.headers;
     const rows = entry.customTable.rows;
     return `<div class="kicker">Table · pasted data target</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">${rows.length} pasted rows · raw values preserved</div><table class="table-mini"><thead><tr>${headers.map((x) => `<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${headers.map((_, k) => `<td>${esc(row[k] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   }
@@ -515,7 +628,7 @@ function timelineMarkup(entry) {
   return `<div class="kicker">Interactive timeline</div>${componentTitleMarkup(entry)}<div class="timeline" role="group" aria-label="Timeline milestones">${milestones.map((m, k) => `<button class="tm ${k < selected ? 'done' : ''} ${k === selected ? 'active' : ''}" data-tm="${k}" aria-pressed="${k === selected ? 'true' : 'false'}"><i aria-hidden="true"></i><b>${m[0]}</b><span>${m[1]}</span></button>`).join('')}</div><div class="csub">Selected: <b>${milestones[selected][0]}</b> · activate a milestone to inspect its state.</div>`;
 }
 function imageMarkup(entry) { return `<div class="kicker">Image / media</div><div class="ctitle">${esc(entry.title)}</div><div class="image-art" role="img" aria-label="Spatial signature engineering visual"><div class="image-cap">Spatial signature · focal crop</div></div>`; }
-function diagramMarkup(entry) { return `<div class="kicker">Diagram</div><div class="ctitle">${esc(entry.title)}</div><div class="diagram-mini" aria-label="Source to Normalize to Reason flow"><div class="dnode"><b>Source</b><span>FDC / SPC</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Normalize</b><span>Evidence model</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Reason</b><span>Grounded AI</span></div></div><div class="csub">Connections are routed automatically and stay editable.</div>`; }
+function diagramMarkup(entry) { return `<div class="kicker">Diagram</div><div class="ctitle">${esc(entry.title)}</div><div class="diagram-mini" aria-label="Source to Normalize to Reason flow"><div class="dnode"><b>Source</b><span>FDC / SPC</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Normalize</b><span>Evidence model</span></div><div class="dedge" aria-hidden="true"></div><div class="dnode"><b>Reason</b><span>Grounded AI</span></div></div><div class="csub">Connections are routed automatically and stay editable.</div><button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(entry.title)} in Diagram Studio">Edit Diagram</button>`; }
 function riskMarkup(entry) { return `<div class="kicker">Decision / risk</div><div class="ctitle">${esc(entry.title)}</div><div class="text-hero compact">Proceed to production gate after control-population validation.</div><div class="riskbox"><b>Residual risk · Medium</b><span>Support coverage remains the gating constraint.</span></div>`; }
 function semanticallyEmpty(entry){
   if(entry.engine==='CoreChartEngine')return !(entry.data||[]).some((row)=>Array.isArray(row)&&row[1]!==null&&row[1]!==undefined&&row[1]!=='');
@@ -530,14 +643,17 @@ function emptyStateMarkup(entry){
   const engine=entry.engine;
   if(engine==='CoreChartEngine')return '<div class="author-empty-state"><b>Add chart data</b><span>Paste from a spreadsheet or enter values.</span><div class="empty-state-actions"><button type="button" data-empty-action="paste">Paste data</button><button type="button" data-empty-action="enter">Enter data</button></div></div>';
   if(engine==='TableEngine')return '<div class="author-empty-state"><b>Build this table</b><span>Paste rows or start with one editable row.</span><div class="empty-state-actions"><button type="button" data-empty-action="paste">Paste rows</button><button type="button" data-empty-action="add-row">Add row</button></div></div>';
-  if(engine==='ImageMediaEngine')return '<div class="author-empty-state"><b>Add an image</b><span>Paste directly or choose an image file.</span><div class="empty-state-actions"><button type="button" data-empty-action="paste-image">Paste image</button><button type="button" data-empty-action="upload">Upload</button></div></div>';
+  if(engine==='ImageMediaEngine'){const name=entry.element||'Image';const copy=name==='Image + Caption'?'<b>Add an image with caption</b><span>Caption: describe the image</span>':name==='Screenshot Frame'?'<b>Add screenshot or mockup</b><span>Framed screenshot presentation</span>':'<b>Add an image</b><span>Paste directly or choose an image file.</span>';return `<div class="author-empty-state media-empty ${name==='Screenshot Frame'?'screenshot-empty':name==='Image + Caption'?'caption-empty':''}">${copy}<div class="empty-state-actions"><button type="button" data-empty-action="paste-image">Paste image</button><button type="button" data-empty-action="upload">Upload</button></div></div>`;}
   if(engine==='DiagramEngine')return '<div class="author-empty-state"><b>Start the diagram</b><span>Add the first node and connect it to the next step.</span><div class="empty-state-actions"><button type="button" data-empty-action="add-node">Add node</button></div></div>';
   if(engine==='TimelineEngine')return '<div class="author-empty-state"><b>Add the first event</b><span>Dates are optional and remain null when omitted.</span><div class="empty-state-actions"><button type="button" data-empty-action="add-event">Add event</button></div></div>';
   return '';
 }
 function contentMarkup(entry, r) {
   const resolved=resolvedEntry(entry);
-  if (resolved.element && resolved.engine) return `<div class="integrated-element-content">${renderIntegratedElement(resolved)}</div>${emptyStateMarkup(resolved)}`;
+  if (resolved.element && resolved.engine) {
+    const studioAction=resolved.engine==='DiagramEngine'?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-diagram" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Diagram Studio">Edit Diagram</button>`:['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(resolved.engine)?`<button type="button" class="mini-btn diagram-edit-action" data-action="edit-chart" data-editor-only aria-label="Edit ${esc(resolved.title||resolved.element)} in Chart Studio">Edit chart</button>`:'';
+    return `<div class="integrated-element-content">${renderIntegratedElement(resolved)}</div>${studioAction}${emptyStateMarkup(resolved)}`;
+  }
   if (entry.type === 'metric') return metricMarkup(entry);
   if (entry.type === 'chart') return chartMarkup(entry, r);
   if (entry.type === 'text') return textMarkup(entry, r);
@@ -553,13 +669,14 @@ function contentMarkup(entry, r) {
 function ensureCanvasScaffold() {
   const hull = $('#hull');
   if (!$('#componentLayer', hull)) {
-    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
+    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
   }
-  // Contextual controls belong to the scene perimeter, not the clipped canvas.
-  // This lets edge-touching components expose actions without obscuring content.
+  if (!$('#blankStartSurface', hull)) hull.insertAdjacentHTML('afterbegin','<div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div>');
+  // Selection actions use screen coordinates and therefore live outside the
+  // transformed report scene. This prevents zoom/panel reflow detachment.
   $('#context', hull)?.remove();
-  const scene = $('#scene');
-  if (!$('#context', scene)) scene.insertAdjacentHTML('beforeend', '<div class="context" id="context"></div>');
+  $('#context', $('#scene'))?.remove();
+  if (!$('#context', activeRoot)) activeRoot.insertAdjacentHTML('beforeend', '<div class="context" id="context"></div>');
 }
 function createComponentNode(entry) {
   const node = document.createElement('div');
@@ -572,8 +689,10 @@ function createComponentNode(entry) {
   return node;
 }
 function contentSignature(entry, r) {
+  const dataset=selectedDataset(entry);
   const data = {
     entry,
+    dataset:dataset?{id:dataset.id,revision:dataset.revision||0,epoch:ui.projectionEpoch}:null,
     width: Math.round(r.w),
     height: Math.round(r.h),
     crossFilter: entry.type === 'table' ? model().crossFilter : undefined,
@@ -626,6 +745,8 @@ function reconcileCanvas({ content = true } = {}) {
   const hull = $('#hull');
   hull.className = `canvas-hull ${model().mode}`;
   const layer = $('#componentLayer');
+  const blank=$('#blankStartSurface');
+  if(blank){const isBlank=model().items.length===0;blank.hidden=!isBlank;blank.setAttribute('aria-hidden',isBlank?'false':'true');}
   const rm = rectMap();
   syncCanvasDimensions();
   const liveIds = new Set(model().items.map((entry) => entry.id));
@@ -650,6 +771,10 @@ function reconcileCanvas({ content = true } = {}) {
     node.classList.toggle('locked', !!entry.locked);
     node.classList.toggle('grouped', !!entry.groupId);
     node.dataset.contentDensity=entry.contentDensity==='fill'?'fill':'fit';
+    node.dataset.layoutGrowth=r.policy?.growth||'balanced';
+    node.dataset.contentFit=r.policy?.contentFit===false?'fixed':'responsive';
+    node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
+    node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
@@ -719,18 +844,19 @@ function renderContext(rm) {
   const u = rectUnion(rects);
   if (!u) return;
   const locked = [...ui.selected].some((id) => item(id)?.locked);
-  const eligibility=commandEligibility();
-  const contextSignature = `${[...ui.selected].sort().join(',')}|${locked ? 1 : 0}|${eligibility.group?1:0}|${eligibility.ungroup?1:0}`;
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  const lockAction=locked&&eligibility.summary.unlocked===0?eligibility.unlock:eligibility.lock;
+  const contextSignature = `${[...ui.selected].sort().join(',')}|${locked ? 1 : 0}|${lockAction.enabled?1:0}|${eligibility.delete.enabled?1:0}`;
   if (ui.contextSignature !== contextSignature) {
-    c.innerHTML = `<button data-ctx="lock" ${eligibility.lock?'':'disabled'}>${locked ? 'Unlock' : 'Lock'}</button><button data-ctx="group" ${eligibility.group?'':'disabled'}>Group</button><button data-ctx="ungroup" ${eligibility.ungroup?'':'disabled'}>Ungroup</button><button data-ctx="front" ${eligibility.front?'':'disabled'}>Front</button><button data-ctx="delete" ${eligibility.delete?'':'disabled'}>Delete</button>`;
+    const actionButton=(action,label,state)=>`<button data-ctx="${action}" aria-disabled="${state.enabled?'false':'true'}" ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
+    c.innerHTML = `${actionButton('lock',locked&&eligibility.summary.unlocked===0?'Unlock':'Lock',lockAction)}${actionButton('delete','Delete',eligibility.delete)}`;
     ui.contextSignature = contextSignature;
     ui.contextSize = null;
   }
   c.classList.add('show');
 
-  const scene=$('#scene'); const viewport=$('#viewport');
-  const sceneRect=scene.getBoundingClientRect(); const viewportRect=viewport.getBoundingClientRect();
-  const scaleX=sceneRect.width/Math.max(1,scene.clientWidth||SCENE.w); const scaleY=sceneRect.height/Math.max(1,scene.clientHeight||SCENE.h);
+  const viewport=$('#viewport');
+  const viewportRect=viewport.getBoundingClientRect();
   const toolbarRect=c.getBoundingClientRect(); const tw=Math.max(1,toolbarRect.width); const th=Math.max(1,toolbarRect.height); const gap=8;
   const selectedScreen=[...ui.selected].map((id)=>ui.componentNodes.get(id)?.getBoundingClientRect()).filter(Boolean);
   const us=selectedScreen.reduce((acc,r)=>acc?{x:Math.min(acc.x,r.x),y:Math.min(acc.y,r.y),right:Math.max(acc.right,r.right),bottom:Math.max(acc.bottom,r.bottom)}:{x:r.x,y:r.y,right:r.right,bottom:r.bottom},null);
@@ -752,10 +878,11 @@ function renderContext(rm) {
     const selectedOverlap=intersectionArea(r,{x:us.x,y:us.y,w:us.w,h:us.h});
     const peerOverlap=peers.reduce((sum,peer)=>sum+intersectionArea(r,peer),0);
     const displacement=Math.abs(x-candidate.x)+Math.abs(y-candidate.y);
-    return {...candidate,x,y,order,score:selectedOverlap*1e9+peerOverlap*1e4+displacement};
+    const dx=Math.max(0,us.x-(x+tw),x-us.right),dy=Math.max(0,us.y-(y+th),y-us.bottom),adjacency=Math.hypot(dx,dy);
+    return {...candidate,x,y,order,score:selectedOverlap*1e9+adjacency*1e6+peerOverlap*100+displacement};
   }).sort((a,b)=>a.score-b.score||a.order-b.order)[0];
-  c.style.left=`${(scored.x-sceneRect.left)/Math.max(scaleX,1e-6)}px`;
-  c.style.top=`${(scored.y-sceneRect.top)/Math.max(scaleY,1e-6)}px`;
+  c.style.left=`${scored.x}px`;
+  c.style.top=`${scored.y}px`;
   c.dataset.placement=scored.placement;
 }
 function renderMinimap(rm) {
@@ -786,46 +913,33 @@ function renderMinimap(rm) {
   }
 }
 
-function parseTypedCell(raw) {
-  const text=String(raw ?? '').trim();
-  if (text==='') return null;
-  const normalized=text.replace(/,/g,'');
-  if (/^[-+]?\d*\.?\d+(?:e[-+]?\d+)?$/i.test(normalized)) {
-    const value=Number(normalized); return Number.isFinite(value) ? value : text;
-  }
-  return text;
+function parseTypedCell(raw) { return parseAuthoringScalar(raw); }
+function parseCellForField(raw, field, quoted=false) {
+  return parseAuthoringFieldValue(raw,field||{},{quoted});
 }
-function parseCellForField(raw, field) {
-  const text=String(raw ?? ''); if(text.trim()==='')return null;
-  if(['string','categorical','identifier','date','datetime','boolean'].includes(field?.type))return text;
-  return parseTypedCell(text);
-}
-function parseDelimitedLine(line, delimiter) {
-  const out=[]; let cell=''; let quoted=false;
-  for (let i=0;i<line.length;i+=1) {
-    const ch=line[i];
-    if (ch==='"') { if (quoted && line[i+1]==='"') { cell+='"'; i+=1; } else quoted=!quoted; continue; }
-    if (ch===delimiter && !quoted) { out.push(cell); cell=''; continue; }
-    cell+=ch;
-  }
-  out.push(cell); return out.map((value)=>value.trim());
-}
+
 function parseGridText(text) {
   return parseUniversalGridText(text).rows;
 }
-function parsePairs(text) { return parseGridText(text).filter((row)=>row.some((v)=>v!=='')).map((row)=>[String(row[0]??'').trim(),parseTypedCell(row[1])]); }
-function pairsText(entry) { return (entry.data||entry.observations||[]).map((row)=>Array.isArray(row)?`${row[0]??''}\t${row[1]??''}`:`${row.label??''}\t${row.value??''}`).join('\n'); }
-function parseTable(text) { return parseGridText(text).map((row)=>row.map(parseTypedCell)); }
+function parsePairs(text) { return parseAuthoringGrid(text).rows.filter((row)=>row.some((value)=>value!==null&&value!=='')).map((row)=>[String(row[0]??'').trim(),row[1]??null]); }
+function pairsText(entry) { return (entry.data||entry.observations||[]).map((row)=>formatAuthoringRow(Array.isArray(row)?row:[row.label??'',row.value??null])).join('\n'); }
+function parseTable(text) { return parseAuthoringGrid(text).rows; }
 function tableText(entry) {
-  if (entry.customTable) return [entry.customTable.headers||[],...(entry.customTable.rows||[])].map((row)=>row.map((v)=>v??'').join('\t')).join('\n');
-  return (entry.rows||[]).map((row)=>Array.isArray(row)?row.map((v)=>v??'').join('\t'):Object.values(row).map((v)=>v??'').join('\t')).join('\n');
+  if (entry.customTable) return [entry.customTable.headers||[],...(entry.customTable.rows||[])].map((row)=>formatAuthoringRow(row)).join('\n');
+  return (entry.rows||[]).map((row)=>formatAuthoringRow(Array.isArray(row)?row:Object.values(row))).join('\n');
 }
-function matrixText(entry) { return (entry.matrix||[]).map((row)=>row.map((v)=>v??'').join('\t')).join('\n'); }
+function matrixText(entry) { return (entry.matrix||[]).map((row)=>formatAuthoringRow(row)).join('\n'); }
 function timelineText(entry) { return (entry.milestones||[]).map((m)=>`${m.label??''}|${m.date??''}`).join('\n'); }
 function parseTimeline(text) { return String(text||'').split(/\r?\n/).filter((line)=>line.trim()).map((line)=>{const pos=line.indexOf('|');const label=(pos<0?line:line.slice(0,pos)).trim();const raw=pos<0?'':line.slice(pos+1).trim();return {label,date:raw||null};}); }
-function observationsText(entry, fields=['label','value']) { return (entry.observations||[]).map((row)=>fields.map((f)=>row?.[f]??'').join('\t')).join('\n'); }
-function parseObservations(text, fields=['label','value']) { return parseGridText(text).filter((row)=>row.some((v)=>v!=='')).map((row)=>Object.fromEntries(fields.map((field,index)=>[field,index===fields.length-1?parseTypedCell(row[index]):parseTypedCell(row[index])]))); }
-function metricInspectorMarkup(entry){
+function observationsText(entry, fields=['label','value']) { return (entry.observations||[]).map((row)=>formatAuthoringRow(fields.map((field)=>row?.[field]??null))).join('\n'); }
+function parseObservations(text, fields=['label','value']) { return parseAuthoringGrid(text).rows.filter((row)=>row.some((value)=>value!==null&&value!=='')).map((row)=>Object.fromEntries(fields.map((field,index)=>[field,row[index]??null]))); }
+
+function metricFormatMarkup(entry){
+  const style=entry.value_format||'auto';
+  const decimals=Number.isInteger(Number(entry.decimals))?Math.max(0,Math.min(6,Number(entry.decimals))):1;
+  return `<div class="field"><label>Number presentation</label><div class="field-grid"><select id="iValueFormat"><option value="auto" ${style==='auto'?'selected':''}>Auto</option><option value="number" ${style==='number'?'selected':''}>Number</option><option value="percent" ${style==='percent'?'selected':''}>Percent</option><option value="currency" ${style==='currency'?'selected':''}>Currency</option><option value="compact" ${style==='compact'?'selected':''}>Compact</option></select><input id="iDecimals" type="number" min="0" max="6" step="1" value="${decimals}" aria-label="Decimal places"></div><input id="iCurrencySymbol" value="${esc(entry.currency_symbol||'$')}" maxlength="4" placeholder="Currency symbol" ${style==='currency'?'':'disabled'}><small>Formatting changes presentation only; the stored metric value remains typed and unchanged.</small></div>`;
+}
+function legacyMetricInspectorMarkup(entry){
   const name=String(entry.element||'').toLowerCase();
   if(name.includes('ladder'))return `<div class="field"><label for="iLevels">Levels / steps · label + value</label><textarea id="iLevels" rows="7">${esc((entry.levels||[['P90',52],['Median',42.8],['P10',31]]).map((row)=>Array.isArray(row)?row.join('\t'):`${row.label??''}\t${row.value??''}`).join('\n'))}</textarea><div class="field-grid"><select id="iOrientation"><option value="vertical" ${entry.orientation==='vertical'?'selected':''}>Vertical</option><option value="horizontal" ${entry.orientation==='horizontal'?'selected':''}>Horizontal</option></select><input id="iValue" placeholder="Current position" value="${esc(entry.value??'')}"></div><small>Each step remains semantic and editable.</small></div>`;
   if(name.includes('ring'))return `<div class="field"><label>Ring value</label><div class="field-grid"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iMax" placeholder="Maximum" value="${esc(entry.max??100)}"></div><input id="iCenterLabel" placeholder="Center label" value="${esc(entry.center_label||'Progress')}"><textarea id="iThresholds" rows="4" placeholder="Threshold label,value">${esc((entry.thresholds||[]).map((x)=>Array.isArray(x)?x.join('\t'):`${x.label??''}\t${x.value??''}`).join('\n'))}</textarea></div>`;
@@ -838,9 +952,22 @@ function metricInspectorMarkup(entry){
   if(name.includes('sparkline'))return `<div class="field"><label>Metric & series</label><div class="field-grid"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><textarea id="iSeries" rows="5" placeholder="Period,value">${esc((entry.series||[]).map((x)=>Array.isArray(x)?x.join('\t'):`${x.label??''}\t${x.value??''}`).join('\n'))}</textarea><div class="field-grid"><input id="iDelta" placeholder="Comparison" value="${esc(entry.delta??'')}"><input id="iPeriod" placeholder="Period label" value="${esc(entry.period||'last 7 periods')}"></div></div>`;
   return `<div class="field"><label>Metric</label><div class="inline2"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><div class="inline2"><input id="iDelta" placeholder="Delta" value="${esc(entry.delta??'')}"><input id="iTarget" placeholder="Target" value="${esc(entry.target??'')}"></div><small>Blank remains missing; numeric 0 remains zero.</small></div>`;
 }
+function metricInspectorMarkup(entry){
+  const name=String(entry.element||'').toLowerCase();
+  if(name.includes('ring'))return `<div class="field"><label>Ring value</label><div class="field-grid"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iMax" placeholder="Maximum" value="${esc(entry.max??100)}"></div><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"><input id="iCenterLabel" placeholder="Center label" value="${esc(entry.center_label||'Progress')}"><small>Only numeric value and maximum drive the ring geometry. Text values remain display-only.</small></div>`;
+  if(name.includes('capacity'))return `<div class="field"><label>Capacity</label><div class="field-grid"><input id="iCurrent" placeholder="Current" value="${esc(entry.current??entry.value??'')}"><input id="iCapacity" placeholder="Capacity" value="${esc(entry.capacity??'')}"></div><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div>`;
+  if(name.includes('rate'))return `<div class="field"><label>Rate basis</label><div class="field-grid"><input id="iNumerator" placeholder="Numerator" value="${esc(entry.numerator??'')}"><input id="iDenominator" placeholder="Denominator" value="${esc(entry.denominator??'')}"></div><div class="field-grid"><input id="iValue" placeholder="Displayed rate" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><input id="iPeriod" placeholder="Period" value="${esc(entry.period||'per period')}"></div>`;
+  if(name.includes('threshold'))return `<div class="field"><label>Threshold metric</label><div class="field-grid"><input id="iValue" placeholder="Current value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><div class="field-grid"><input id="iWarning" placeholder="Warning" value="${esc(entry.warning??'')}"><input id="iCritical" placeholder="Critical" value="${esc(entry.critical??'')}"></div><select id="iThresholdLogic"><option value="higher-is-worse" ${entry.threshold_logic==='higher-is-worse'?'selected':''}>Higher is worse</option><option value="lower-is-worse" ${entry.threshold_logic==='lower-is-worse'?'selected':''}>Lower is worse</option></select><small>Threshold direction changes the indicator scale.</small></div>`;
+  if(name.includes('target'))return `<div class="field"><label>Target vs actual</label><div class="field-grid"><input id="iActual" placeholder="Actual" value="${esc(entry.actual??entry.value??'')}"><input id="iTarget" placeholder="Target" value="${esc(entry.target??'')}"></div><div class="field-grid"><input id="iVariance" placeholder="Variance" value="${esc(entry.variance??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div></div>`;
+  if(name.includes('progress'))return `<div class="field"><label>Progress</label><div class="field-grid"><input id="iCurrent" placeholder="Current" value="${esc(entry.current??entry.value??'')}"><input id="iMax" placeholder="Maximum" value="${esc(entry.max??100)}"></div><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div>`;
+  if(name.includes('status'))return `<div class="field"><label>Status metric</label><div class="field-grid"><input id="iStatus" placeholder="Status" value="${esc(entry.status||'')}"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"></div><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"><textarea id="iDetail" rows="3" placeholder="Detail">${esc(entry.detail||'')}</textarea><small>Status metrics do not expose delta or target controls.</small></div>`;
+  if(name.includes('sparkline'))return `<div class="field"><label>Metric & series</label><div class="field-grid"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><textarea id="iSeries" rows="5" placeholder="Period,value">${esc((entry.series||[]).map((x)=>Array.isArray(x)?x.join('\t'):`${x.label??''}\t${x.value??''}`).join('\n'))}</textarea><div class="field-grid"><input id="iDelta" placeholder="Comparison" value="${esc(entry.delta??'')}"/><input id="iPeriod" placeholder="Period label" value="${esc(entry.period||'last 7 periods')}"></div></div>`;
+  if(name==='metric + delta')return `<div class="field"><label>Metric + delta</label><div class="field-grid"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><input id="iDelta" placeholder="Delta" value="${esc(entry.delta??'')}"><input id="iPeriod" placeholder="Period" value="${esc(entry.period||'')}"><small>No target control is exposed for this variant.</small></div>`;
+  return `<div class="field"><label>Hero KPI</label><div class="inline2"><input id="iValue" placeholder="Value" value="${esc(entry.value??'')}"><input id="iUnit" placeholder="Unit" value="${esc(entry.unit||'')}"></div><div class="inline2"><input id="iDelta" placeholder="Delta" value="${esc(entry.delta??'')}"><input id="iTarget" placeholder="Target (optional)" value="${esc(entry.target??'')}"></div><input id="iPeriod" placeholder="Comparison context" value="${esc(entry.period||'')}"><small>Blank remains missing; numeric 0 remains zero.</small></div>`;
+}
 function tableInspectorMarkup(entry){
   const headers=entry.customTable?.headers||['Field','Value'];const rows=entry.customTable?.rows||entry.rows||[];const cols=Math.max(1,headers.length,...rows.map((r)=>Array.isArray(r)?r.length:0));
-  return `<div class="field"><label>Data grid</label><input id="tableFind" class="data-dock-find" type="search" value="${esc(ui.tableFilter)}" placeholder="Find in table" aria-label="Find in table"><div id="tableEditorGrid" class="data-dock-grid" role="grid" aria-label="Editable table"></div><div class="data-actions"><button type="button" data-table-action="add-row">Add row</button><button type="button" data-table-action="add-column">Add column</button><button type="button" data-table-action="delete-row">Delete last row</button><button type="button" data-table-action="delete-column">Delete last column</button><button type="button" data-table-action="paste">Paste rows</button></div><small>Virtualized rows · Tab/Shift+Tab navigates all rows. Ctrl/Cmd+C copies a range; Delete clears it.</small></div>`;
+  return `<div class="field"><label>Data grid</label><input id="tableFind" class="data-dock-find" type="search" value="${esc(ui.tableFilter)}" placeholder="Find in table" aria-label="Find in table"><div id="tableEditorGrid" class="data-dock-grid" role="grid" aria-label="Editable table"></div><div class="data-actions"><button type="button" data-table-action="insert-row-above">Insert row above</button><button type="button" data-table-action="insert-row-below">Insert row below</button><button type="button" data-table-action="delete-rows">Delete selected row(s)</button><button type="button" data-table-action="insert-column-left">Insert column left</button><button type="button" data-table-action="insert-column-right">Insert column right</button><button type="button" data-table-action="delete-columns">Delete selected column(s)</button><button type="button" data-table-action="paste">Paste rows</button></div><small>Virtualized rows · focus a cell to make it current; Shift+Arrow selects a range. Actions preserve typed values and commit once.</small></div>`;
 }
 function paddedTable(entry){const headers=[...(entry.customTable?.headers||['Field','Value'])];const rows=(entry.customTable?.rows||entry.rows||[]).map((row)=>Array.isArray(row)?[...row]:Object.values(row));const cols=Math.max(1,headers.length,...rows.map((row)=>row.length));while(headers.length<cols)headers.push(`Column ${headers.length+1}`);rows.forEach((row)=>{while(row.length<cols)row.push(null);});return {headers,rows};}
 function renderVirtualCustomTable(entry) {
@@ -849,84 +976,229 @@ function renderVirtualCustomTable(entry) {
   host.innerHTML=`<table><thead><tr>${grid.headers.map((header,index)=>`<th><input data-table-header="${index}" value="${esc(header)}" aria-label="Column ${index+1} header"></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=grid.headers.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;}),visible=grid.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.tableFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.tableFilter.toLowerCase())));
   spacer.style.height=`${visible.length*rowHeight}px`;const selected=(row,column)=>{const range=ui.tableRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.tableCell=`${record.index}:${column}`;input.value=record.row[column]??'';input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));const active=document.activeElement,activeSlot=pool.findIndex(row=>row.contains(active));if(activeSlot>=0){const cell=active.dataset.datasetCell||active.dataset.tableCell;const nextRecord=visible[start+activeSlot];if(cell&&String(nextRecord?.index)!==cell.split(':')[0]){active.blur();if(!host.isConnected||!scroll.isConnected)return;}}body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{const key=`${record.index}:${column}`;if(input!==document.activeElement||input.dataset.tableCell!==key)input.value=formatAuthoringScalar(record.row[column]);input.dataset.tableCell=key;input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${grid.headers[column]}`);});});};host.__tableVisible=visible.map(record=>record.index);host.__tableScroll=scroll;host.__tablePaint=paint;scroll.addEventListener('scroll',paint,{passive:true});paint();
 }
 function selectedDataset(entry) { return entry?.dataset_id ? model().datasets.find((dataset)=>dataset.id===entry.dataset_id) : null; }
-function dataDockMarkup(entry) {
+const TRANSFORM_TYPES=Object.freeze(['filter','sort','top_n','rename','derive','aggregate','group','unpivot','pivot','bin','rank','cumulative','normalize','date_extract']);
+function transformFieldOptions(fields,selected='') { return `<option value="">Choose field</option>${fields.map(field=>`<option value="${esc(field.id)}" ${selected===field.id?'selected':''}>${esc(field.name)}</option>`).join('')}`; }
+function transformValue(value='') { return value===null||value===undefined?'':String(value); }
+function transformStepLabel(step) { return String(step?.type||'transform').replaceAll('_',' '); }
+function transformStepSummary(step,fields) {
+  const name=(id)=>fields.find(field=>field.id===id)?.name||id||'field';
+  if(step.type==='filter')return `${name(step.field)} ${step.operator||'contains'} “${transformValue(step.value)}”`;
+  if(step.type==='sort')return `${name(step.field)} · ${step.direction==='desc'?'descending':'ascending'}`;
+  if(step.type==='top_n')return `${step.n||'N'} by ${name(step.ranking_field||step.field)}`;
+  if(step.type==='rename')return `${name(step.field||step.old_field)} → ${step.name||step.new_name||'new name'}`;
+  if(step.type==='derive')return `${step.name||'Derived'} from ${name(step.source_field||step.field)}`;
+  if(step.type==='aggregate'||step.type==='group')return `${name(step.by||step.field)} · ${step.aggregation||'sum'} ${name(step.value_field)}`;
+  if(step.type==='date_extract')return `${name(step.field)} · ${step.part||'date'}`;
+  if(step.type==='bin')return `${name(step.field)} · size ${step.size||1}`;
+  return name(step.field||step.source_field||'configured fields');
+}
+function transformControls(type,fields,draft={}) {
+  const field=transformFieldOptions(fields,draft.field),source=transformFieldOptions(fields,draft.source_field||draft.field),ranking=transformFieldOptions(fields,draft.ranking_field||draft.field),group=transformFieldOptions(fields,draft.by||draft.field),valueField=transformFieldOptions(fields,draft.value_field);
+  if(type==='filter')return `<div class="transform-control-grid"><label>Field<select data-transform-field>${field}</select></label><label>Operator<select data-transform-operator><option value="contains" ${draft.operator!=='equals'?'selected':''}>contains</option><option value="equals" ${draft.operator==='equals'?'selected':''}>equals</option></select></label><label class="wide">Value<input data-transform-value value="${esc(transformValue(draft.value))}" placeholder="Value"></label></div>`;
+  if(type==='sort')return `<div class="transform-control-grid"><label>Field<select data-transform-field>${field}</select></label><label>Order<select data-transform-direction><option value="asc" ${draft.direction!=='desc'?'selected':''}>Ascending</option><option value="desc" ${draft.direction==='desc'?'selected':''}>Descending</option></select></label></div>`;
+  if(type==='top_n')return `<div class="transform-control-grid"><label>N<input data-transform-n type="number" min="1" step="1" value="${esc(transformValue(draft.n))}" placeholder="10"></label><label>Ranking field<select data-transform-ranking-field>${ranking}</select></label><label>Order<select data-transform-direction><option value="desc" ${draft.direction!=='asc'?'selected':''}>Highest first</option><option value="asc" ${draft.direction==='asc'?'selected':''}>Lowest first</option></select></label></div>`;
+  if(type==='rename')return `<div class="transform-control-grid"><label>Old field<select data-transform-old-field>${field}</select></label><label>New field name<input data-transform-new-name value="${esc(transformValue(draft.name||draft.new_name))}" placeholder="New name"></label></div>`;
+  if(type==='derive')return `<div class="transform-control-grid"><label>Source field<select data-transform-source-field>${source}</select></label><label>Destination field<input data-transform-name value="${esc(transformValue(draft.name))}" placeholder="Derived field"></label><label>Multiplier<input data-transform-multiplier inputmode="decimal" value="${esc(transformValue(draft.multiplier??1))}"></label><label>Offset<input data-transform-offset inputmode="decimal" value="${esc(transformValue(draft.offset??0))}"></label></div>`;
+  if(type==='aggregate'||type==='group')return `<div class="transform-control-grid"><label>Group by<select data-transform-group-field>${group}</select></label><label>Value field<select data-transform-value-field>${valueField}</select></label><label>Aggregation<select data-transform-aggregation><option value="sum" ${draft.aggregation==='sum'||!draft.aggregation?'selected':''}>Sum</option><option value="mean" ${draft.aggregation==='mean'?'selected':''}>Mean</option><option value="min" ${draft.aggregation==='min'?'selected':''}>Minimum</option><option value="max" ${draft.aggregation==='max'?'selected':''}>Maximum</option><option value="count" ${draft.aggregation==='count'?'selected':''}>Count</option></select></label></div>`;
+  if(type==='date_extract')return `<div class="transform-control-grid"><label>Field<select data-transform-field>${field}</select></label><label>Date part<select data-transform-part><option value="date" ${draft.part!=='year'&&draft.part!=='month'?'selected':''}>Date</option><option value="year" ${draft.part==='year'?'selected':''}>Year</option><option value="month" ${draft.part==='month'?'selected':''}>Month</option></select></label></div>`;
+  if(type==='unpivot')return `<div class="transform-control-grid"><label class="wide">Keep fields<input data-transform-value value="${esc(transformValue((draft.keep_fields||[]).map(id=>fields.find(field=>field.id===id)?.name||id).join(', ')))}" placeholder="Field names separated by commas"></label></div>`;
+  if(type==='pivot')return `<div class="transform-control-grid"><label>Index field<select data-transform-field>${field}</select></label><label>Column field<select data-transform-column-field>${transformFieldOptions(fields,draft.column_field)}</select></label><label>Value field<select data-transform-value-field>${transformFieldOptions(fields,draft.value_field)}</select></label><label>Aggregation<select data-transform-aggregation><option value="sum" ${draft.aggregation!=='mean'?'selected':''}>Sum</option><option value="mean" ${draft.aggregation==='mean'?'selected':''}>Mean</option></select></label></div>`;
+  if(type==='bin')return `<div class="transform-control-grid"><label>Field<select data-transform-field>${field}</select></label><label>Bin size<input data-transform-value inputmode="decimal" value="${esc(transformValue(draft.size??1))}" placeholder="10"></label></div>`;
+  return `<div class="transform-control-grid"><label>Field<select data-transform-field>${field}</select></label><label>Parameter<input data-transform-value value="${esc(transformValue(draft.value))}" placeholder="Optional"></label></div>`;
+}
+function transformControlMarkup(entry,dataset) {
+  const fields=dataset.fields||[],recipe=entry.transform_recipe||{},steps=Array.isArray(recipe.steps)?recipe.steps:[],editing=ui.transformEditor?.entryId===entry.id?ui.transformEditor:null,index=Number.isInteger(editing?.index)?editing.index:null,draft=index===null?{}:steps[index]||{},type=editing?.type||draft.type||'filter';
+  const stack=steps.length?`<ol class="transform-stack" aria-label="Transform recipe">${steps.map((step,stepIndex)=>`<li data-transform-step="${stepIndex}"><div><b>Step ${stepIndex+1} · ${esc(transformStepLabel(step))}</b><span>${esc(transformStepSummary(step,fields))}</span></div><div class="transform-step-actions"><button type="button" data-transform-step-action="up" data-transform-index="${stepIndex}" ${stepIndex?'':'disabled'} aria-label="Move step ${stepIndex+1} up">↑</button><button type="button" data-transform-step-action="down" data-transform-index="${stepIndex}" ${stepIndex===steps.length-1?'disabled':''} aria-label="Move step ${stepIndex+1} down">↓</button><button type="button" data-transform-step-action="edit" data-transform-index="${stepIndex}">Edit</button><button type="button" data-transform-step-action="remove" data-transform-index="${stepIndex}">Remove</button></div></li>`).join('')}</ol>`:'<p class="transform-empty">No transform steps yet. Add a step to build an ordered recipe.</p>';
+  return `<section class="data-transform-panel" aria-label="Data transforms"><div class="transform-heading"><div><b>Transform recipe</b><small>Ordered steps run top to bottom.</small></div>${steps.length?`<span>${steps.length} step${steps.length===1?'':'s'}</span>`:''}</div>${stack}<div class="transform-editor"><label>Operation<select data-transform-type>${TRANSFORM_TYPES.map(option=>`<option value="${option}" ${type===option?'selected':''}>${option.replaceAll('_',' ')}</option>`).join('')}</select></label>${transformControls(type,fields,draft)}<div class="transform-actions"><button type="button" data-transform-action="save">${index===null?'Add transform':'Save step'}</button>${index!==null?'<button type="button" data-transform-action="cancel">Cancel</button>':''}<button type="button" data-transform-action="clear" ${steps.length?'':'disabled'}>Clear recipe</button></div></div></section>`;
+}
+function legacyDataDockMarkup(entry) {
   const dataset=selectedDataset(entry); if(!dataset) return '';
   const fields=dataset.fields||[], mapping=entry.mapping||{};
   const option=(selected)=>`<option value="">Unmapped</option>${fields.map(field=>`<option value="${esc(field.id)}" ${selected===field.id?'selected':''}>${esc(field.name)} · ${esc(field.type)}</option>`).join('')}`;
-  const roles=['category','x','y','value','series','color','size','time','source','target','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','subgroup','specification_low','specification_high','lower_limit','upper_limit'];
-  const contextualRoles=()=>{const name=String(entry.element||'').toLowerCase();if(entry.engine==='WaferFabEngine')return ['die_x','die_y','value','wafer_id','lot_id','tool','chamber','recipe','process','product','bin'];if(entry.engine==='MatrixEngine')return ['category','series','value'];if(entry.engine!=='EngineeringChartEngine')return [];if(name.includes('main effects')||name.includes('interaction plot'))return ['value','category','series'];if(name.includes('response surface')||name.includes('contour')||name.includes('residual')||name.includes('predicted vs actual'))return ['value','x','y'];if(name.includes('confidence interval'))return ['value','category'];if(name.includes('error-bar'))return ['value','category','lower_limit','upper_limit'];return ['value','time','subgroup','specification_low','specification_high'];};
+  const roles=['category','x','y','value','series','color','size','time','source','target','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','route','bin','subgroup','specification_low','specification_high','lower_limit','upper_limit'];
+  const contextualRoles=()=>{const name=String(entry.element||'').toLowerCase();if(entry.engine==='WaferFabEngine')return ['die_x','die_y','value','wafer_id','lot_id','tool','chamber','recipe','process','product','route','bin'];if(entry.engine==='MatrixEngine')return ['category','series','value'];if(entry.engine!=='EngineeringChartEngine')return [];if(name.includes('main effects')||name.includes('interaction plot'))return ['value','category','series'];if(name.includes('response surface')||name.includes('contour')||name.includes('residual')||name.includes('predicted vs actual'))return ['value','x','y'];if(name.includes('confidence interval'))return ['value','category'];if(name.includes('error-bar'))return ['value','category','lower_limit','upper_limit'];return ['value','time','subgroup','specification_low','specification_high'];};
   const visibleRoles=new Set(['x','y','value','category',...contextualRoles(),...roles.filter(role=>mapping[role])]);
   const mappingValidation=contractFor(viewContractForEntry(entry)).validate(mapping,fields);
   const mappingStatus=mappingValidation.incompatible.length?`<small class="mapping-status error">Choose a compatible field for ${esc(mappingValidation.incompatible.join(', '))}.</small>`:mappingValidation.missing.length?`<small class="mapping-status">Map ${esc(mappingValidation.missing.join(', '))} to complete this view.</small>`:'<small class="mapping-status valid">Mapping ready.</small>';
   const warnings=(dataset.warnings||[]).slice(0,4), intakeWarnings=warnings.length?`<details class="data-intake-warnings"><summary>${warnings.length} intake warning${warnings.length===1?'':'s'}</summary><ul>${warnings.map(warning=>`<li>${esc(warning.message||warning.code||'Review imported data.')}</li>`).join('')}</ul><button type="button" data-review-mapping>Review field mapping</button></details>`:'', inferredFields=`<small class="data-inferred-fields">Inferred fields: ${fields.map(field=>`${esc(field.name)} · ${esc(field.type)}`).join(' · ')||'none'}</small>`, performanceNote=dataset.rows.length>PERFORMANCE_LIMITS.largeRows?`<small class="data-inferred-fields">Large-data mode: the Data Dock keeps all source rows virtualized; canvas previews are deterministically sampled.</small>`:'';
-  const views=['bar','line','scatter','table','engineering','wafer','diagram'];
-  const transformTypes=['filter','sort','group','aggregate','unpivot','pivot','derive','bin','rank','cumulative','normalize','date_extract'];
-  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · rev ${dataset.revision}</span></div>${inferredFields}${performanceNote}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+C copies a selected range; Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div><div class="data-transform"><select data-transform-type>${transformTypes.map(type=>`<option value="${type}">${type.replace('_',' ')}</option>`).join('')}</select><select data-transform-field>${fields.map(field=>`<option value="${esc(field.id)}">${esc(field.name)}</option>`).join('')}</select><input data-transform-value placeholder="Value / parameter" aria-label="Transform value or parameter"><button type="button" data-transform-action="apply">Apply</button><button type="button" data-transform-action="clear">Clear</button></div>`);
+  const views=['bar','line','table','timeline','engineering','wafer','diagram'];
+  const linked=model().items.filter(candidate=>candidate.dataset_id===dataset.id).length;
+  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · rev ${dataset.revision}</span></div><button type="button" class="tb" data-refresh-dataset>Refresh data… <small>Feeds ${linked} visual${linked===1?'':'s'}</small></button>${inferredFields}${performanceNote}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+A selects all · Ctrl/Cmd+C copies a selected range · Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div>${transformControlMarkup(entry,dataset)}`);
+}
+function dataDockMarkup(entry) {
+  const markup=legacyDataDockMarkup(entry);
+  return markup.replace(/<div class="data-actions"><button type="button" data-dataset-action="add-row">Add row<\/button><button type="button" data-dataset-action="add-column">Add column<\/button><button type="button" data-dataset-action="delete-row">Delete last row<\/button><button type="button" data-dataset-action="delete-column">Delete last column<\/button><\/div>/,`<div class="data-actions"><button type="button" data-dataset-action="insert-row-above">Insert row above</button><button type="button" data-dataset-action="insert-row-below">Insert row below</button><button type="button" data-dataset-action="delete-rows">Delete selected row(s)</button><button type="button" data-dataset-action="insert-column-left">Insert column left</button><button type="button" data-dataset-action="insert-column-right">Insert column right</button><button type="button" data-dataset-action="delete-columns">Delete selected column(s)</button></div>`);
 }
 function renderVirtualDataDock(entry, dataset) {
   const host=$('#dataDockGrid');if(!host)return;const rowHeight=31,poolSize=24,fields=dataset.fields||[];
   host.setAttribute('aria-rowcount',String(dataset.rows.length));host.setAttribute('aria-colcount',String(fields.length));
   const fieldTypes=['string','integer','number','boolean','date','datetime','categorical','identifier','unknown'];
-  host.innerHTML=`<table><thead><tr>${fields.map((field,index)=>`<th><input draggable="true" data-dataset-field="${index}" data-field-id="${esc(field.id)}" value="${esc(field.name)}" aria-label="Rename ${esc(field.name)}"><select data-dataset-type="${index}" aria-label="${esc(field.name)} type">${fieldTypes.map(type=>`<option value="${type}" ${field.type===type?'selected':''}>${type}</option>`).join('')}</select></th>`).join('')}</tr></thead></table><div class="data-dock-scroll"><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
+  host.innerHTML=`<div class="data-dock-scroll"><table class="data-dock-header"><thead><tr>${fields.map((field,index)=>`<th><input draggable="true" data-dataset-field="${index}" data-field-id="${esc(field.id)}" value="${esc(field.name)}" aria-label="Rename ${esc(field.name)}"><select data-dataset-type="${index}" aria-label="${esc(field.name)} type">${fieldTypes.map(type=>`<option value="${type}" ${field.type===type?'selected':''}>${type}</option>`).join('')}</select></th>`).join('')}</tr></thead></table><div class="data-dock-spacer"></div><table class="data-dock-rows"><tbody></tbody></table></div>`;
   const scroll=$('.data-dock-scroll',host),spacer=$('.data-dock-spacer',host),body=$('tbody',host),pool=Array.from({length:poolSize},()=>{const row=document.createElement('tr');row.innerHTML=fields.map(()=>'<td><input></td>').join('');body.appendChild(row);return row;});const visible=dataset.rows.map((row,index)=>({row,index})).filter(({row})=>!ui.dataDockFilter||row.some(value=>String(value??'').toLowerCase().includes(ui.dataDockFilter.toLowerCase())));spacer.style.height=`${visible.length*rowHeight}px`;
   const selected=(row,column)=>{const range=ui.dataDockRange;if(!range)return false;const [ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number);return row>=Math.min(ar,fr)&&row<=Math.max(ar,fr)&&column>=Math.min(ac,fc)&&column<=Math.max(ac,fc);};
-  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{input.dataset.datasetCell=`${record.index}:${column}`;input.value=record.row[column]??'';input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
+  const paint=()=>{const start=Math.max(0,Math.min(Math.max(0,visible.length-poolSize),Math.floor(scroll.scrollTop/rowHeight)-4));const active=document.activeElement,activeSlot=pool.findIndex(row=>row.contains(active));if(activeSlot>=0){const cell=active.dataset.datasetCell||active.dataset.tableCell;const nextRecord=visible[start+activeSlot];if(cell&&String(nextRecord?.index)!==cell.split(':')[0]){active.blur();if(!host.isConnected||!scroll.isConnected)return;}}body.style.transform=`translateY(${start*rowHeight}px)`;pool.forEach((tr,slot)=>{const record=visible[start+slot];tr.hidden=!record;if(!record)return;[...tr.querySelectorAll('input')].forEach((input,column)=>{const key=`${record.index}:${column}`;if(input!==document.activeElement||input.dataset.datasetCell!==key)input.value=formatAuthoringScalar(record.row[column]);input.dataset.datasetCell=key;input.classList.toggle('range-selected',selected(record.index,column));input.setAttribute('aria-label',`Row ${record.index+1}, ${fields[column].name}`);});});};host.__dockPaint=paint;host.__dockScroll=scroll;host.__dockVisible=visible.map(record=>record.index);scroll.addEventListener('scroll',paint,{passive:true});paint();
+}
+function transformNumber(value,fallback=null) { const parsed=parseTypedCell(value); return typeof parsed==='number'&&Number.isFinite(parsed)?parsed:fallback; }
+function readTransformStep(type,panel,fields,existing={}) {
+  const value=(selector)=>$(selector,panel)?.value??'';
+  const field=value('[data-transform-field]'), source=value('[data-transform-source-field]'), name=value('[data-transform-name]'), step={...existing,type};
+  if(type==='filter')return {...step,field,operator:value('[data-transform-operator]')||'contains',value:value('[data-transform-value]')};
+  if(type==='sort')return {...step,field,direction:value('[data-transform-direction]')||'asc'};
+  if(type==='top_n')return {...step,ranking_field:value('[data-transform-ranking-field]'),n:transformNumber(value('[data-transform-n]')),direction:value('[data-transform-direction]')||'desc'};
+  if(type==='rename')return {...step,field:value('[data-transform-old-field]'),name:value('[data-transform-new-name]').trim()};
+  if(type==='derive')return {...step,source_field:source,name:name.trim(),multiplier:transformNumber(value('[data-transform-multiplier]'),1),offset:transformNumber(value('[data-transform-offset]'),0)};
+  if(type==='aggregate'||type==='group')return {...step,by:value('[data-transform-group-field]'),field:value('[data-transform-group-field]'),value_field:value('[data-transform-value-field]'),aggregation:value('[data-transform-aggregation]')||'sum'};
+  if(type==='date_extract')return {...step,field,part:value('[data-transform-part]')||'date'};
+  if(type==='unpivot')return {...step,keep_fields:value('[data-transform-value]').split(',').map(label=>label.trim()).filter(Boolean).map(label=>fields.find(candidate=>candidate.id===label||candidate.name===label)?.id||label)};
+  if(type==='pivot')return {...step,field,index_fields:[field],column_field:value('[data-transform-column-field]'),value_field:value('[data-transform-value-field]'),aggregation:value('[data-transform-aggregation]')||'sum'};
+  if(type==='bin')return {...step,field,size:transformNumber(value('[data-transform-value]'),1)};
+  return {...step,field,value:value('[data-transform-value]')};
 }
 function commitDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}) {
+  const consumers=datasetConsumers(nextDataset.id);
+  if(!entry||entry.locked)return toast('Unlock the selected visual before editing data');
+  if(consumers.some(candidate=>candidate.locked))return toast('Unlock every linked visual before changing shared data');
   const datasets=model().datasets.map(dataset=>dataset.id===nextDataset.id?nextDataset:dataset);
   const ops=[{op:'model.patch',patch:{datasets}}];
   model().items.filter(candidate=>candidate.dataset_id===nextDataset.id&&candidate.id===entry.id).forEach(candidate=>ops.push({op:'item.patch',id:candidate.id,patch:{mapping:nextMapping}}));
-  return commitOps(label,ops);
+  const accepted=commitOps(label,ops);if(accepted)stageDRememberDataset(nextDataset);return accepted;
 }
 function replaceDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}) {
+  if(!entry||entry.locked)return toast('Unlock the selected visual before replacing data');
+  const existing=selectedDataset(entry); if(existing&&datasetConsumers(existing.id).length>1){const detached={...nextDataset,id:nextDataset.id===existing.id?datasetId():nextDataset.id,revision:1},recipe=entry.transform_recipe?.source_dataset_id?{...entry.transform_recipe,source_dataset_id:detached.id}:entry.transform_recipe;return commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,detached],crossFilter:null}},{op:'item.patch',id:entry.id,patch:{dataset_id:detached.id,mapping:nextMapping,...(recipe?{transform_recipe:recipe}:{})}}]);}
   if(model().datasets.some(dataset=>dataset.id===nextDataset.id))return commitDataset(entry,label,nextDataset,nextMapping);
-  return commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,nextDataset],crossFilter:null}},{op:'item.patch',id:entry.id,patch:{dataset_id:nextDataset.id,mapping:nextMapping}}]);
+  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,nextDataset],crossFilter:null}},{op:'item.patch',id:entry.id,patch:{dataset_id:nextDataset.id,mapping:nextMapping}}]);if(accepted)stageDRememberDataset(nextDataset);return accepted;
+}
+function datasetConsumers(datasetId){return model().items.filter(candidate=>candidate.dataset_id===datasetId);}
+function commitDatasetRefresh(entry,intake,selectedOnly=false){
+  entry=entry&&item(entry.id);const dataset=selectedDataset(entry);
+  if(!entry||!dataset||!intake)return false;
+  const plan=planDatasetRefresh({dataset,intake,items:model().items,selectedId:entry.id,selectedOnly,viewForEntry:viewContractForEntry});
+  if(!plan.valid){toast(plan.reason);return false;}
+  const nextId=selectedOnly&&plan.consumers.length>1?datasetId():dataset.id;
+  const next={...datasetFromIntake(intake,nextId,dataset.name),revision:nextId===dataset.id?(dataset.revision||0)+1:1,metadata:{...(dataset.metadata||{}),refresh:{count:((dataset.metadata?.refresh?.count)||0)+1,previous_revision:dataset.revision||0,previous_row_count:(dataset.rows||[]).length,new_row_count:(intake.rows||[]).length,schema_signature:plan.schema_signature}}};
+  const ops=[nextId===dataset.id?{op:'model.patch',patch:{datasets:model().datasets.map(value=>value.id===dataset.id?next:value),crossFilter:null}}:{op:'model.patch',patch:{datasets:[...model().datasets,next],crossFilter:null}}];
+  for(const rebound of plan.mappings){
+    const patch={mapping:rebound.mapping};
+    if(nextId!==dataset.id)patch.dataset_id=nextId;
+    if(rebound.transform_recipe){patch.transform_recipe={...rebound.transform_recipe,...(nextId!==dataset.id?{source_dataset_id:nextId}:{})};}
+    ops.push({op:'item.patch',id:rebound.id,patch});
+  }
+  return commitOps(selectedOnly?'Refresh this visual data':'Refresh linked dataset',ops,{announce:`Refreshed ${next.name}`});
+}
+function openDatasetRefresh(entry){
+  const dataset=selectedDataset(entry);if(!dataset)return;
+  ui.datasetRefresh={entryId:entry.id,datasetId:dataset.id,revision:dataset.revision||0,sourceText:'',intake:null,token:0,loading:false,error:null};
+  const render=()=>{
+    const state=ui.datasetRefresh;if(!state)return;const focus=dialogFocusSnapshot();
+    const current=item(state.entryId),currentDataset=selectedDataset(current);
+    if(!current||!currentDataset||currentDataset.id!==state.datasetId||currentDataset.revision!==state.revision){closeModals();return toast('The dataset changed; reopen Refresh data.');}
+    const linked=datasetConsumers(dataset.id).length,plan=state.intake?planDatasetRefresh({dataset,intake:state.intake,items:model().items,selectedId:entry.id,viewForEntry:viewContractForEntry}):null;
+    const independentPlan=state.intake?planDatasetRefresh({dataset,intake:state.intake,items:model().items,selectedId:entry.id,selectedOnly:true,viewForEntry:viewContractForEntry}):null;
+    const detail=plan?.compatibility?.kind==='changed'?[plan.compatibility.added.length?`added ${plan.compatibility.added.join(', ')}`:'',plan.compatibility.removed.length?`missing ${plan.compatibility.removed.join(', ')}`:''].filter(Boolean).join(' · '):'';
+    $('#modalTitle').textContent='Refresh data';
+    const summary=state.loading?'Parsing and profiling data…':state.error?state.error:plan?`${dataset.rows.length} rows → ${state.intake.rows.length} rows · ${plan.valid?plan.compatibility.kind:plan.compatibility.kind==='changed'?`Schema changed · ${detail}`:plan.reason}`:'Paste a recurring export to check compatibility.';
+    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog"><b>${esc(dataset.name)} · revision ${dataset.revision||1}</b><span>Feeds ${linked} visual${linked===1?'':'s'}</span><textarea id="refreshDataText" placeholder="Paste refreshed Excel, CSV, or TSV data">${esc(state.sourceText)}</textarea><small>${esc(summary)}</small><div class="modal-actions"><button class="tb" data-close>Cancel</button><button class="tb" id="refreshReview" ${state.intake?'':'disabled'}>Review mapping</button><button class="tb accent" id="refreshLinked" ${plan?.valid?'':'disabled'}>${linked===1?'Refresh data':`Refresh linked dataset · ${linked} visuals`}</button>${linked>1?`<button class="tb" id="refreshOnly" ${independentPlan?.valid?'':'disabled'}>Refresh this visual only</button>`:''}</div></div>`;
+    $('#refreshDataText').oninput=async event=>{const source=event.target.value,token=++state.token;state.sourceText=source;state.intake=null;state.error=null;state.loading=!!source.trim();render();if(!source.trim())return;try{const intake=await parsePasteAsync(source);if(ui.datasetRefresh!==state||token!==state.token)return;state.intake=intake;state.loading=false;render();}catch(error){if(ui.datasetRefresh===state&&token===state.token){state.loading=false;state.error=error.message||'Could not parse data.';render();}}};
+    $('[data-close]',$('#modalBody'))?.addEventListener('click',closeModals,{once:true});
+    $('#refreshLinked')?.addEventListener('click',()=>{if(commitDatasetRefresh(current,state.intake,false))closeModals();});
+    $('#refreshOnly')?.addEventListener('click',()=>{if(commitDatasetRefresh(current,state.intake,true))closeModals();});
+    $('#refreshReview')?.addEventListener('click',()=>{const source=state.sourceText;closeModals();openDataFirstDialog();ui.dataFirst.sourceText=source;parseDataFirstText(source);});
+    restoreDialogFocus(focus);
+  };
+  render();openModal($('#genericModal'),$('#refreshDataText'));
 }
 function bindDataDock(entry) {
   const dataset=selectedDataset(entry); if(!dataset)return;
   renderVirtualDataDock(entry,dataset);
-  const update=(label,mutate,mapping=entry.mapping||{})=>{const next={...dataset,fields:(dataset.fields||[]).map(field=>({...field})),rows:[...(dataset.rows||[])]};mutate(next);next.revision=(dataset.revision||0)+1;ui.resolvedDataCache.clear();commitDataset(entry,label,next,mapping);};
+  $('[data-refresh-dataset]')?.addEventListener('click',()=>openDatasetRefresh(entry));
+  const update=(label,mutate,mapping=entry.mapping||{})=>{if(entry.locked)return toast('Unlock the selected visual before editing data');const next={...dataset,fields:(dataset.fields||[]).map(field=>({...field})),rows:[...(dataset.rows||[])]};mutate(next);next.revision=(dataset.revision||0)+1;commitDataset(entry,label,next,mapping);};
   $('#dataDockFind')?.addEventListener('input',event=>{ui.dataDockFilter=event.target.value;renderVirtualDataDock(entry,dataset);});
   $('[data-review-mapping]')?.addEventListener('click',()=>$('.mapping-chips select')?.focus());
   $('#dataDockGrid')?.addEventListener('change',event=>{const target=event.target;if(target.matches('[data-dataset-field]'))return update('Rename dataset field',next=>{next.fields[+target.dataset.datasetField].name=target.value.trim()||`Column ${+target.dataset.datasetField+1}`;});if(target.matches('[data-dataset-type]'))return update('Override field type',next=>{next.fields[+target.dataset.datasetType].type=target.value;});if(target.matches('[data-dataset-cell]')){const [row,column]=target.dataset.datasetCell.split(':').map(Number);update('Edit dataset cell',next=>{next.rows[row]=[...next.rows[row]];next.rows[row][column]=parseCellForField(target.value,next.fields[column]);});}});
   $('#dataDockGrid')?.addEventListener('focusin',event=>{const target=event.target;if(target.matches('[data-dataset-cell]')){ui.dataDockCell=target.dataset.datasetCell;if(ui.dataDockRange?.focus!==ui.dataDockCell)ui.dataDockRange={anchor:ui.dataDockCell,focus:ui.dataDockCell};}});
-  $('#dataDockGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const [row,column]=target.dataset.datasetCell.split(':').map(Number),host=$('#dataDockGrid'),visible=host.__dockVisible||[];const range=ui.dataDockRange||{anchor:target.dataset.datasetCell,focus:target.dataset.datasetCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const text=dataset.rows.slice(loRow,hiRow+1).map(record=>record.slice(loColumn,hiColumn+1).map(value=>value??'').join('\t')).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected data cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();return update('Clear dataset range',next=>{for(let r=loRow;r<=hiRow;r+=1){next.rows[r]=[...next.rows[r]];for(let c=loColumn;c<=hiColumn;c+=1)next.rows[r][c]=null;}});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,dataset.fields.length-1)),next=`${nextRow}:${nextColumn}`;ui.dataDockRange=event.shiftKey?{anchor:ui.dataDockRange?.anchor||target.dataset.datasetCell,focus:next}:{anchor:next,focus:next};host.__dockScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__dockPaint();requestAnimationFrame(()=>host.querySelector(`[data-dataset-cell="${next}"]`)?.focus());});
-  $('#dataDockGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;const rows=parseGridText(text);if(!rows.length)return;event.preventDefault();const [startRow,startColumn]=target.dataset.datasetCell.split(':').map(Number);update('Paste dataset cells',next=>{next.rows=next.rows.map(row=>[...row]);const width=Math.max(...rows.map(row=>row.length),0);while(next.fields.length<startColumn+width){const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows.forEach(row=>row.push(null));}rows.forEach((row,rowOffset)=>{const rowIndex=startRow+rowOffset;while(next.rows.length<=rowIndex)next.rows.push(Array(next.fields.length).fill(null));row.forEach((value,columnOffset)=>{const columnIndex=startColumn+columnOffset;next.rows[rowIndex][columnIndex]=parseCellForField(value,next.fields[columnIndex]);});});});});
+  $('#dataDockGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const [row,column]=target.dataset.datasetCell.split(':').map(Number),host=$('#dataDockGrid'),visible=host.__dockVisible||[];const range=ui.dataDockRange||{anchor:target.dataset.datasetCell,focus:target.dataset.datasetCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='a'){event.preventDefault();const lastRow=Math.max(0,dataset.rows.length-1),lastColumn=Math.max(0,dataset.fields.length-1);ui.dataDockRange={anchor:'0:0',focus:`${lastRow}:${lastColumn}`};host.__dockPaint();host.querySelector(`[data-dataset-cell="${target.dataset.datasetCell}"]`)?.focus();toast('Select all dataset cells');return;}if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const text=dataset.rows.slice(loRow,hiRow+1).map(record=>formatAuthoringRow(record.slice(loColumn,hiColumn+1))).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected data cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();return update('Clear dataset range',next=>{for(let r=loRow;r<=hiRow;r+=1){next.rows[r]=[...next.rows[r]];for(let c=loColumn;c<=hiColumn;c+=1)next.rows[r][c]=null;}});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,dataset.fields.length-1)),next=`${nextRow}:${nextColumn}`;ui.dataDockRange=event.shiftKey?{anchor:ui.dataDockRange?.anchor||target.dataset.datasetCell,focus:next}:{anchor:next,focus:next};host.__dockScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__dockPaint();requestAnimationFrame(()=>host.querySelector(`[data-dataset-cell="${next}"]`)?.focus());});
+  $('#dataDockGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-dataset-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;const parsed=parseDelimitedText(text),rows=parsed.rows;if(!rows.length)return;event.preventDefault();const [startRow,startColumn]=target.dataset.datasetCell.split(':').map(Number);update('Paste dataset cells',next=>{next.rows=next.rows.map(row=>[...row]);const width=Math.max(...rows.map(row=>row.length),0);while(next.fields.length<startColumn+width){const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows.forEach(row=>row.push(null));}rows.forEach((row,rowOffset)=>{const rowIndex=startRow+rowOffset;while(next.rows.length<=rowIndex)next.rows.push(Array(next.fields.length).fill(null));row.forEach((value,columnOffset)=>{const columnIndex=startColumn+columnOffset;next.rows[rowIndex][columnIndex]=parseCellForField(value,next.fields[columnIndex],Boolean(parsed.quoted_rows[rowOffset]?.[columnOffset]));});});});});
   $$('[data-dataset-role]').forEach(select=>select.addEventListener('change',event=>{const role=event.target.dataset.datasetRole,mapping={...(entry.mapping||{})};if(event.target.value)mapping[role]=event.target.value;else delete mapping[role];const validation=contractFor(viewContractForEntry(entry)).validate(mapping,dataset.fields);if(validation.incompatible.includes(role)){event.target.value=entry.mapping?.[role]||'';return toast(`Choose a compatible field for ${role}.`);}update(`Map ${role}`,()=>{},mapping);}));
   $$('[data-role-drop]').forEach(zone=>{zone.addEventListener('dragover',event=>{event.preventDefault();zone.classList.add('drag-over');});zone.addEventListener('dragleave',()=>zone.classList.remove('drag-over'));zone.addEventListener('drop',event=>{event.preventDefault();zone.classList.remove('drag-over');const fieldId=event.dataTransfer?.getData('application/x-visembler-field');if(!fieldId)return;const role=zone.dataset.roleDrop,mapping={...(entry.mapping||{}),[role]:fieldId},validation=contractFor(viewContractForEntry(entry)).validate(mapping,dataset.fields);if(validation.incompatible.includes(role))return toast(`Choose a compatible field for ${role}.`);update(`Map ${role}`,()=>{},mapping);});});
   $('#dataDockGrid')?.addEventListener('dragstart',event=>{const field=event.target.closest('[data-field-id]');if(field)event.dataTransfer?.setData('application/x-visembler-field',field.dataset.fieldId);});
   $('[data-view-type]')?.addEventListener('change',event=>{
-    const view=event.target.value, engine=({bar:'CoreChartEngine',line:'CoreChartEngine',scatter:'CoreChartEngine',table:'TableEngine',engineering:'EngineeringChartEngine',wafer:'WaferFabEngine',diagram:'DiagramEngine'})[view];
+    const view=event.target.value,target=productionTargetForView(view);
+    if(!target){event.target.value=entry.view_type||entry.type;return toast('Choose a supported production visual.');}
     const binding=mappingFor({candidate_mappings:inferMappings(dataset.fields)},view);if(binding.error){event.target.value=entry.view_type||entry.type;return toast(binding.error);}
-    const type=engineToType[engine]||entry.type; const patch={engine,type,element:view==='wafer'?'Wafer Map':view==='diagram'?'Data Flow':view==='engineering'?'SPC Control Chart':view==='table'?'Clean Table':`${view[0].toUpperCase()+view.slice(1)} Chart`,view_type:view,mapping:binding.mapping};
+    const type=engineToType[target.engine]||entry.type; const patch={engine:target.engine,type,element:target.element,view_type:target.view,mapping:binding.mapping};
     commitOps(`Change view to ${view}`,[{op:'item.patch',id:entry.id,patch}],{announce:`Changed view to ${view}`});
   });
-  $('[data-transform-action="apply"]')?.addEventListener('click',()=>{const type=$('[data-transform-type]')?.value,field=$('[data-transform-field]')?.value,value=$('[data-transform-value]')?.value;if(!type||!field)return toast('Choose a transform field');const recipe=structuredClone(entry.transform_recipe||{id:`recipe-${entry.id}`,source_dataset_id:dataset.id,steps:[]});const step={type,field,direction:'asc'};if(type==='filter')Object.assign(step,{operator:'contains',value});if(type==='derive')Object.assign(step,{source_field:field,multiplier:value===''?1:Number(value)});if(type==='bin')Object.assign(step,{size:Number(value)||1});if(type==='date_extract')Object.assign(step,{part:value||'date'});if(type==='group'||type==='aggregate')Object.assign(step,{by:field,value_field:(entry.mapping||{}).value||field,aggregation:value||'sum'});if(type==='unpivot')Object.assign(step,{keep_fields:value?value.split(',').map(item=>item.trim()).filter(Boolean):[field]});if(type==='pivot'){const [columnField,valueField]=value.split(',').map(item=>item.trim());Object.assign(step,{index_fields:[field],column_field:columnField||(entry.mapping||{}).series,value_field:valueField||(entry.mapping||{}).value,aggregation:'sum'});}recipe.steps.push(step);commitOps(`Apply ${type} transform`,[{op:'item.patch',id:entry.id,patch:{transform_recipe:recipe}}],{announce:`Applied ${type} transform`});});
-  $('[data-transform-action="clear"]')?.addEventListener('click',()=>commitOps('Clear transforms',[{op:'item.patch',id:entry.id,patch:{transform_recipe:null}}],{announce:'Cleared transforms'}));
+  const transformPanel=$('.data-transform-panel');
+  $('[data-transform-type]',transformPanel)?.addEventListener('change',event=>{ui.transformEditor={entryId:entry.id,index:ui.transformEditor?.entryId===entry.id?ui.transformEditor.index:null,type:event.target.value};renderInspector();requestAnimationFrame(()=> $('[data-transform-type]')?.focus());});
+  $('[data-transform-action="cancel"]',transformPanel)?.addEventListener('click',()=>{ui.transformEditor=null;renderInspector();});
+  $('[data-transform-action="clear"]',transformPanel)?.addEventListener('click',()=>{ui.transformEditor=null;commitOps('Clear transforms',[{op:'item.patch',id:entry.id,patch:{transform_recipe:null}}],{announce:'Cleared transforms'});});
+  $('[data-transform-action="save"]',transformPanel)?.addEventListener('click',()=>{const type=$('[data-transform-type]',transformPanel)?.value,steps=structuredClone(entry.transform_recipe?.steps||[]),editing=ui.transformEditor?.entryId===entry.id?ui.transformEditor:null,index=Number.isInteger(editing?.index)?editing.index:null,step=readTransformStep(type,transformPanel,dataset.fields,index===null?{}:steps[index]);if(!type)return toast('Choose a transform operation');if(['filter','sort','rename','top_n','derive','aggregate','group','bin'].includes(type)&&!step.field&&!step.ranking_field&&!step.by)return toast('Choose the fields for this transform');if(type==='rename'&&!step.name)return toast('Enter a new field name');if(type==='top_n'&&(!Number.isInteger(step.n)||step.n<1))return toast('Enter a whole number greater than zero for N');if(index===null){step.id=localCommitId('transform-step');steps.push(step);}else steps[index]=step;ui.transformEditor=null;const recipe={...(entry.transform_recipe||{}),id:entry.transform_recipe?.id||`recipe-${entry.id}`,source_dataset_id:entry.transform_recipe?.source_dataset_id||dataset.id,steps};commitOps(index===null?`Add ${type} transform`:`Edit ${type} transform`,[{op:'item.patch',id:entry.id,patch:{transform_recipe:recipe}}],{announce:`${index===null?'Added':'Updated'} ${type} transform`});});
+  $$('[data-transform-step-action]',transformPanel).forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.transformStepAction,index=Number(button.dataset.transformIndex),steps=structuredClone(entry.transform_recipe?.steps||[]);if(!Number.isInteger(index)||!steps[index])return;if(action==='edit'){ui.transformEditor={entryId:entry.id,index,type:steps[index].type};renderInspector();return;}if(action==='remove')steps.splice(index,1);else if(action==='up'&&index>0)[steps[index-1],steps[index]]=[steps[index],steps[index-1]];else if(action==='down'&&index<steps.length-1)[steps[index],steps[index+1]]=[steps[index+1],steps[index]];else return;ui.transformEditor=null;const recipe=steps.length?{...(entry.transform_recipe||{}),steps}:{...entry.transform_recipe,steps:[]};commitOps(`${action==='remove'?'Remove':action==='up'||action==='down'?'Reorder':'Update'} transform`,[{op:'item.patch',id:entry.id,patch:{transform_recipe:recipe}}],{announce:`Transform ${action}`});}));
   $$('[data-paste-special]').forEach(button=>button.addEventListener('click',async()=>{const mode=button.dataset.pasteSpecial;if(mode==='dataset_data'||mode==='mapping'||mode==='style')return copySemanticSelection(mode);if(mode==='append-data'){if(ui.semanticClipboard?.dataset)return pasteSemanticPayload(ui.semanticClipboard,'append-data');try{const text=await navigator.clipboard?.readText?.();if(text&&await appendTextToSelection(text))return;}catch{/* paste event remains available */}return toast('Copy matching tabular data, then choose Append data');}if(!ui.semanticClipboard)return toast('Copy a visual, data, mapping, or style first');pasteSemanticPayload(ui.semanticClipboard,mode==='paste-data'?'data':mode);}));
   $$('[data-dataset-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.datasetAction;if(action==='add-row')update('Add dataset row',next=>next.rows.push(Array(next.fields.length).fill(null)));if(action==='add-column')update('Add dataset column',next=>{const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows=next.rows.map(row=>[...row,null]);});if(action==='delete-row')update('Delete dataset row',next=>next.rows.pop());if(action==='delete-column'&&dataset.fields.length>1)update('Delete dataset column',next=>{next.fields.pop();next.rows=next.rows.map(row=>row.slice(0,-1));});}));
+  $$('[data-dataset-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.datasetAction;if(!['insert-row-above','insert-row-below','delete-rows','insert-column-left','insert-column-right','delete-columns'].includes(action))return;update(action.replaceAll('-',' '),next=>{const source={headers:next.fields.map(field=>field.name),rows:next.rows},selection=gridSelection(ui.dataDockRange,next.rows.length,next.fields.length),grid=applyGridAction(source,action,ui.dataDockRange);if(action.startsWith('insert-column')){const index=action.endsWith('left')?selection.firstColumn:selection.lastColumn+1,count=grid.headers.length-next.fields.length;next.fields.splice(index,0,...Array.from({length:count},(_,offset)=>{let id=`column_${index+offset+1}`;while(next.fields.some(field=>field.id===id))id=`${id}_new`;return{id,name:grid.headers[index+offset]||`Column ${index+offset+1}`,type:'unknown',nullable:true};}));}else if(action==='delete-columns'){next.fields.splice(selection.firstColumn,next.fields.length-grid.headers.length);}next.rows=grid.rows;});}));
 }
-function semanticInspectorMarkup(entry) {
+function legacySemanticInspectorMarkup(entry) {
   const engine=entry.engine||'';
+  if(entry.dataset_id)return `<div class="field"><b>Linked dataset</b><small>Values come from the Data Dock below. Edit the canonical dataset there so the canvas, preview, export, and undo history stay synchronized.</small></div>`;
   if (engine==='TextEngine') return `<div class="field"><label for="iText">Narrative</label><textarea id="iText" rows="7">${esc(entry.text||entry.body||'')}</textarea></div>`;
-  if (engine==='MetricEngine') return metricInspectorMarkup(entry);
-  if (engine==='ComparisonEngine') return `<div class="field"><label>Comparison</label><div class="inline2"><input id="iBefore" placeholder="Before" value="${esc(entry.before??'')}"><input id="iAfter" placeholder="After" value="${esc(entry.after??'')}"></div></div>`;
-  if (engine==='CoreChartEngine') {const behaviors=entry.behaviors||{};return `<div class="field"><label for="iData">Chart data · label + value</label><textarea id="iData" rows="8" spellcheck="false">${esc(pairsText(entry))}</textarea><div class="data-actions"><button type="button" data-chart-action="sample">Restore useful sample</button><button type="button" data-chart-action="clear">Clear values</button></div><small>Paste TSV/CSV. Blank numeric cells remain missing; the starter data is safe to overwrite.</small></div><div class="field"><label>Attached behaviors</label><div class="behavior-options"><label><input type="checkbox" data-chart-behavior="tooltip" ${behaviors.tooltip!==false?'checked':''}> Tooltip</label><label><input type="checkbox" data-chart-behavior="cross_filter" ${behaviors.cross_filter!==false?'checked':''}> Cross-filter</label><label><input type="checkbox" data-chart-behavior="drill" ${behaviors.drill!==false?'checked':''}> Drill</label></div><small>Click a mark to filter; double-click it to drill when enabled.</small></div>`;}
+  if (engine==='MetricEngine') return metricInspectorMarkup(entry)+metricFormatMarkup(entry);
+  if (engine==='ComparisonEngine') return `<div class="field"><label>Comparison values</label><div class="inline2"><label>Before<input id="iBefore" placeholder="Before" value="${esc(entry.before??'')}"></label><label>After<input id="iAfter" placeholder="After" value="${esc(entry.after??'')}"></label></div><label>Unit<input id="iUnit" placeholder="%, minutes, count…" value="${esc(entry.unit||'')}"></label><small>Labels and units are rendered from these values for Before/After KPI, Time Compression, and As-Is → To-Be variants.</small></div>`;
+  if (engine==='CoreChartEngine') {const behaviors=entry.behaviors||{},sortMode=entry.sort_mode||'input',missingPolicy=entry.missing_policy||'gap';return `<div class="field"><label for="iData">Chart data · label + value</label><textarea id="iData" rows="8" spellcheck="false">${esc(pairsText(entry))}</textarea><div class="data-actions"><button type="button" data-chart-action="sample">Restore useful sample</button><button type="button" data-chart-action="clear">Clear values</button></div><small>Paste TSV/CSV. Numeric 0 remains zero; text "0" remains text; blank stays missing.</small></div><div class="field"><label>Data presentation</label><div class="field-grid"><select id="iChartSort"><option value="input" ${sortMode==='input'?'selected':''}>Input order</option><option value="label-asc" ${sortMode==='label-asc'?'selected':''}>Label A→Z</option><option value="value-desc" ${sortMode==='value-desc'?'selected':''}>Value high→low</option><option value="value-asc" ${sortMode==='value-asc'?'selected':''}>Value low→high</option></select><select id="iChartMissing"><option value="gap" ${missingPolicy==='gap'?'selected':''}>Missing as gap</option><option value="drop" ${missingPolicy==='drop'?'selected':''}>Drop missing rows</option><option value="zero" ${missingPolicy==='zero'?'selected':''}>Missing as zero</option></select></div><small>Sorting and missing-value policy affect rendering only; pasted source values remain unchanged.</small></div><div class="field"><label>Attached behaviors</label><div class="behavior-options"><label><input type="checkbox" data-chart-behavior="tooltip" ${behaviors.tooltip!==false?'checked':''}> Tooltip</label><label><input type="checkbox" data-chart-behavior="cross_filter" ${behaviors.cross_filter!==false?'checked':''}> Cross-filter</label><label><input type="checkbox" data-chart-behavior="drill" ${behaviors.drill!==false?'checked':''}> Drill</label></div><small>Click a mark to filter; double-click it to drill when enabled.</small></div>`;}
   if (engine==='TableEngine') return tableInspectorMarkup(entry);
   if (engine==='MatrixEngine') return `<div class="field"><label for="iMatrix">Matrix data</label><textarea id="iMatrix" rows="9" spellcheck="false">${esc(matrixText(entry))}</textarea></div>`;
   if (engine==='TimelineEngine') return `<div class="field"><label for="iTimeline">Events · Label|Date</label><textarea id="iTimeline" rows="8">${esc(timelineText(entry))}</textarea><div class="data-actions"><button type="button" data-timeline-action="add">Add event</button><button type="button" data-timeline-action="sequence">Sequence only</button><button type="button" data-timeline-action="sample">Restore sample</button></div><small>Blank dates remain null; sequence-only timelines never invent dates.</small></div>`;
   if (engine==='DiagramEngine') return `<div class="field"><label for="iNodes">Nodes · one per line</label><textarea id="iNodes" rows="5">${esc((entry.nodes||[]).join('\n'))}</textarea><div class="data-actions"><button type="button" data-diagram-action="add-node">Add node</button><button type="button" data-diagram-action="add-connected">Add connected node</button><button type="button" data-diagram-action="sample">Restore sample</button></div></div><div class="field"><label for="iEdges">Edges · A -&gt; B</label><textarea id="iEdges" rows="5">${esc((entry.edges||[]).map((edge)=>`${edge[0]} -> ${edge[1]}`).join('\n'))}</textarea><div class="field-grid"><select id="iDirection"><option value="right" ${entry.direction==='right'?'selected':''}>Left → right</option><option value="down" ${entry.direction==='down'?'selected':''}>Top → bottom</option></select><input id="iEdgeLabel" placeholder="Default edge label" value="${esc(entry.edge_label||'')}"></div><small>Connections are routed automatically, remain editable, and can be extended from the last node.</small></div>`;
   if (engine==='ImageMediaEngine') return `<div class="field"><label for="iImageFile">Image</label><input id="iImageFile" type="file" accept="image/png,image/jpeg,image/webp"><div class="data-actions"><button type="button" data-image-action="paste">Paste image</button><button type="button" data-image-action="replace">Replace</button></div><small>Choose a file or paste with Ctrl/Cmd+V. Embedded image limit: ${Math.round(MAX_IMAGE_BYTES/1000)} KB.</small></div><div class="field"><label>Presentation</label><div class="field-grid"><select id="iImageFit"><option value="fit" ${entry.fit==='fit'?'selected':''}>Fit</option><option value="fill" ${entry.fit==='fill'?'selected':''}>Fill</option></select><input id="iFocal" value="${esc(entry.focal||'50% 50%')}" placeholder="Focal position"></div></div><div class="field"><label for="iAlt">Alt text</label><input id="iAlt" value="${esc(entry.alt||'')}"></div><div class="field"><label for="iCaption">Caption</label><textarea id="iCaption" rows="3">${esc(entry.caption||'')}</textarea></div>`;
   if (['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) return `<div class="field"><label for="iStatement">Statement</label><textarea id="iStatement" rows="4">${esc(entry.statement||'')}</textarea></div><div class="field"><label for="iDetail">Detail</label><textarea id="iDetail" rows="5">${esc(entry.detail||'')}</textarea></div><div class="field"><label for="iStatus">Status</label><input id="iStatus" value="${esc(entry.status||'Draft')}"></div>`;
-  if (engine==='EngineeringChartEngine') return `<div class="field"><label for="iObservations">Observations · label + measurement</label><textarea id="iObservations" rows="8">${esc(observationsText(entry))}</textarea></div><div class="field"><label>Analysis role</label><input id="iRole" value="${esc(entry.role||'measurement')}"><div class="inline2"><input id="iLcl" placeholder="Control LCL" value="${esc(entry.lower_limit??entry.lcl??'')}"><input id="iUcl" placeholder="Control UCL" value="${esc(entry.upper_limit??entry.ucl??'')}"></div><div class="inline2"><input id="iLsl" placeholder="Specification LSL" value="${esc(entry.specification_low??'')}"><input id="iUsl" placeholder="Specification USL" value="${esc(entry.specification_high??'')}"></div><small>Control limits describe process behavior; specification limits describe requirements.</small></div>`;
-  if (engine==='WaferFabEngine') return `<div class="field"><label for="iObservations">Wafer observations · X + Y + Value</label><textarea id="iObservations" rows="8">${esc(observationsText(entry,['x','y','value']))}</textarea></div><div class="field"><label>Process identity</label><div class="inline2"><input id="iTool" placeholder="Tool" value="${esc(entry.tool||'')}"><input id="iChamber" placeholder="Chamber" value="${esc(entry.chamber||'')}"></div><div class="inline2"><input id="iLot" placeholder="Lot" value="${esc(entry.lot||'')}"><input id="iRoute" placeholder="Route" value="${esc(entry.route||'')}"></div></div>`;
+  if (engine==='EngineeringChartEngine') return '<div class="field"><small>Engineering inspectors are selected by the active chart variant.</small></div>';
+  if (engine==='WaferFabEngine') return `<div class="field"><label for="iObservations">Wafer observations · X + Y + Value</label><textarea id="iObservations" rows="8">${esc(observationsText(entry,['x','y','value']))}</textarea><div class="data-actions"><button type="button" data-wafer-action="add">Add die</button><button type="button" data-wafer-action="sample">Restore sample</button><button type="button" data-wafer-action="clear">Clear</button></div><small>Only numeric Value cells drive wafer heat. Text "0" stays text; blank stays missing.</small></div><div class="field"><label>Wafer & process identity</label><div class="inline2"><input id="iWaferId" placeholder="Wafer ID" value="${esc(entry.wafer_id||'')}"><input id="iLot" placeholder="Lot" value="${esc(entry.lot||'')}"></div><div class="inline2"><input id="iTool" placeholder="Tool" value="${esc(entry.tool||'')}"><input id="iChamber" placeholder="Chamber" value="${esc(entry.chamber||'')}"></div><div class="inline2"><input id="iRecipe" placeholder="Recipe" value="${esc(entry.recipe||'')}"><input id="iProcess" placeholder="Process step" value="${esc(entry.process||'')}"></div><div class="inline2"><input id="iBin" placeholder="Bin" value="${esc(entry.bin||'')}"><input id="iRoute" placeholder="Route" value="${esc(entry.route||'')}"></div></div>`;
   if (engine==='SmartLayoutEngine') return `<div class="field"><label for="iConfiguration">Layout configuration</label><textarea id="iConfiguration" rows="5">${esc(entry.configuration||'14px governed composition')}</textarea></div>`;
   if (engine==='InteractionLayer') return `<div class="field"><label for="iBehavior">Interaction behavior</label><textarea id="iBehavior" rows="5">${esc(entry.behavior||'select → filter → inspect')}</textarea></div>`;
   if (engine==='EditorInfrastructure') return `<div class="field"><label for="iConfiguration">Editor configuration</label><textarea id="iConfiguration" rows="5">${esc(entry.configuration||'Editor-only infrastructure')}</textarea></div>`;
   return `<div class="field"><label for="iText">Content</label><textarea id="iText" rows="6">${esc(entry.text||entry.body||'')}</textarea></div>`;
+}
+const VISUAL_TYPE_FAMILIES=Object.freeze({
+  CoreChartEngine:['Vertical Bar','Horizontal Bar','Line Chart','Area Chart'],
+  TimelineEngine:['Event Timeline','Milestone Rail','Sequence Strip'],
+  DiagramEngine:['Process Flow','Data Flow'],
+  EngineeringChartEngine:['SPC Control Chart','I-MR Chart','CUSUM Chart','EWMA Chart'],
+});
+const ENGINEERING_VARIANT_FIELDS=Object.freeze({
+  'SPC Control Chart':[],
+  'I-MR Chart':[],
+  'CUSUM Chart':['target','sigma','k','decision_h'],
+  'EWMA Chart':['target','sigma','lambda','L'],
+});
+function visualTypeSwitcherMarkup(entry){
+  const options=VISUAL_TYPE_FAMILIES[entry.engine];
+  if(!options?.includes(entry.element))return '';
+  return `<div class="field visual-type-field"><label for="iVisualType">Visual type</label><select id="iVisualType">${options.map(element=>`<option value="${esc(`${entry.engine}::${element}`)}" ${element===entry.element?'selected':''}>${esc(element)}</option>`).join('')}</select><small>Compatible types preserve data binding, geometry, style, order, grouping, and lock state.</small></div>`;
+}
+function semanticInspectorMarkup(entry) {
+  if(entry.engine==='EngineeringChartEngine'){
+    const name=String(entry.element||'');
+    const limits=name==='SPC Control Chart'?`<div class="inline2"><input id="iLsl" placeholder="Specification LSL" value="${esc(entry.specification_low??'')}"><input id="iUsl" placeholder="Specification USL" value="${esc(entry.specification_high??'')}"></div><small>Control limits are computed from observations. Specification limits are optional requirements.</small>`:'<small>Control limits are computed by the selected algorithm and are not writable.</small>';
+    const params=name==='CUSUM Chart'?`<div class="field-grid"><input id="iTarget" placeholder="Target (optional)" value="${esc(entry.target??'')}"><input id="iSigma" placeholder="Sigma (optional)" value="${esc(entry.sigma??'')}"></div><div class="field-grid"><input id="iK" placeholder="Reference k" value="${esc(entry.k??0.5)}"><input id="iDecisionH" placeholder="Decision h" value="${esc(entry.decision_h??5)}"></div>`:name==='EWMA Chart'?`<div class="field-grid"><input id="iTarget" placeholder="Target (optional)" value="${esc(entry.target??'')}"><input id="iSigma" placeholder="Sigma (optional)" value="${esc(entry.sigma??'')}"></div><div class="field-grid"><input id="iLambda" placeholder="Lambda" value="${esc(entry.lambda??0.2)}"><input id="iControlL" placeholder="Control L" value="${esc(entry.L??3)}"></div>`:'';
+    return visualTypeSwitcherMarkup(entry)+`<div class="field"><label for="iObservations">Observations · label + measurement</label><textarea id="iObservations" rows="8">${esc(observationsText(entry))}</textarea><div class="data-actions"><button type="button" data-engineering-action="add">Add observation</button><button type="button" data-engineering-action="sample">Restore sample</button><button type="button" data-engineering-action="clear">Clear</button></div><small>Text "0" remains text and is not treated as a measurement.</small></div><div class="field"><label>Analysis controls</label><input id="iRole" value="${esc(entry.role||'measurement')}">${limits}${params}</div>`;
+  }
+  return visualTypeSwitcherMarkup(entry)+legacySemanticInspectorMarkup(entry);
+}
+const VISUAL_TYPE_VIEWS=Object.freeze({'Vertical Bar':'bar','Horizontal Bar':'bar','Line Chart':'line','Area Chart':'line','Event Timeline':'timeline','Milestone Rail':'timeline','Sequence Strip':'timeline','Process Flow':'diagram','Data Flow':'diagram','SPC Control Chart':'engineering','I-MR Chart':'engineering','CUSUM Chart':'engineering','EWMA Chart':'engineering'});
+function switchVisualType(entry,value){
+  const [engine,element]=String(value||'').split('::');
+  if(engine!==entry.engine||!VISUAL_TYPE_FAMILIES[engine]?.includes(element))return toast('Choose a compatible visual type');
+  const patch={engine,type:engineToType[engine]||entry.type,element};
+  if(entry.view_type)patch.view_type=VISUAL_TYPE_VIEWS[element]||entry.view_type;
+  if(engine==='EngineeringChartEngine'){
+    const targetFields=new Set(ENGINEERING_VARIANT_FIELDS[element]||[]);
+    for(const field of ['target','sigma','k','decision_h','lambda','L'])patch[field]=targetFields.has(field)?(entry[field]??(field==='k'?0.5:field==='decision_h'?5:field==='L'?3:field==='lambda'?0.2:null)):null;
+  }
+  return commitOps('Change visual type',[{op:'item.patch',id:entry.id,patch}],{announce:`Changed visual type to ${element}`});
 }
 async function fileToDataUrl(file) { return await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result||''));reader.onerror=()=>reject(reader.error||new Error('Image read failed'));reader.readAsDataURL(file);}); }
 async function validatedImageDataUrl(file) {
@@ -935,14 +1207,20 @@ async function validatedImageDataUrl(file) {
   return await fileToDataUrl(file);
 }
 function bindSemanticInspector(entry) {
-  const patch=(label,value)=>{ if (entry.locked) return toast('Unlock the component before editing'); return commitOps(label,[{op:'item.patch',id:entry.id,patch:value}]); };
+  const bindingReport=String(bootstrap.report_id);
+  const patch=(label,value)=>{const current=item(entry.id);if(String(bootstrap.report_id)!==bindingReport||!current)return false;if(current.locked)return toast('Unlock the component before editing');return commitOps(label,[{op:'item.patch',id:current.id,patch:value}]);};
+  $('#iVisualType')?.addEventListener('change',(e)=>switchVisualType(entry,e.target.value));
   if(entry.engine==='TableEngine')renderVirtualCustomTable(entry);
+  $('#iValueFormat')?.addEventListener('change',(e)=>patch('Edit metric value format',{value_format:e.target.value}));
+  $('#iDecimals')?.addEventListener('change',(e)=>patch('Edit metric decimals',{decimals:Math.max(0,Math.min(6,Math.round(Number(e.target.value)||0)))}));
+  $('#iCurrencySymbol')?.addEventListener('change',(e)=>patch('Edit metric currency symbol',{currency_symbol:e.target.value||'$'}));
+  $('#iChartSort')?.addEventListener('change',(e)=>patch('Edit chart sort',{sort_mode:e.target.value}));
+  $('#iChartMissing')?.addEventListener('change',(e)=>patch('Edit chart missing-value policy',{missing_policy:e.target.value}));
   $('#iText')?.addEventListener('change',(e)=>patch('Edit narrative',{text:e.target.value,body:e.target.value}));
   $('#iValue')?.addEventListener('change',(e)=>patch('Edit metric',{value:parseTypedCell(e.target.value)})); $('#iUnit')?.addEventListener('change',(e)=>patch('Edit metric unit',{unit:e.target.value})); $('#iDelta')?.addEventListener('change',(e)=>patch('Edit metric delta',{delta:parseTypedCell(e.target.value)})); $('#iTarget')?.addEventListener('change',(e)=>patch('Edit metric target',{target:parseTypedCell(e.target.value)}));
   for(const [id,key] of [['iMax','max'],['iConfidence','confidence'],['iCurrent','current'],['iCapacity','capacity'],['iNumerator','numerator'],['iDenominator','denominator'],['iWarning','warning'],['iCritical','critical'],['iActual','actual'],['iVariance','variance']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:parseTypedCell(e.target.value),...(key==='actual'?{value:parseTypedCell(e.target.value)}:{})}));
   for(const [id,key] of [['iCenterLabel','center_label'],['iInterpretation','interpretation'],['iContext','context'],['iBands','bands'],['iPeriod','period'],['iThresholdLogic','threshold_logic'],['iOrientation','orientation'],['iDirection','direction'],['iEdgeLabel','edge_label'],['iImageFit','fit']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key.replaceAll('_',' ')}`,{[key]:e.target.value}));
   $('#iLevels')?.addEventListener('change',(e)=>patch('Edit metric ladder levels',{levels:parseGridText(e.target.value).filter((row)=>row.some((x)=>x!=='')).map((row)=>[String(row[0]??''),parseTypedCell(row[1])])}));
-  $('#iThresholds')?.addEventListener('change',(e)=>patch('Edit ring thresholds',{thresholds:parseGridText(e.target.value).filter((row)=>row.some((x)=>x!=='')).map((row)=>[String(row[0]??''),parseTypedCell(row[1])])}));
   $('#iSeries')?.addEventListener('change',(e)=>patch('Edit metric sparkline series',{series:parseGridText(e.target.value).filter((row)=>row.some((x)=>x!=='')).map((row)=>[String(row[0]??''),parseTypedCell(row[1])])}));
   $('#iBefore')?.addEventListener('change',(e)=>patch('Edit comparison before',{before:parseTypedCell(e.target.value)})); $('#iAfter')?.addEventListener('change',(e)=>patch('Edit comparison after',{after:parseTypedCell(e.target.value)}));
   $('#iData')?.addEventListener('change',(e)=>{const data=parsePairs(e.target.value);patch('Edit chart data',{data,rows:data.map(([label,value])=>({label,value})),brush:[0,Math.max(0,data.length-1)],cross:null,drill:null});});
@@ -954,20 +1232,13 @@ function bindSemanticInspector(entry) {
   $$('[data-table-header]').forEach((input)=>input.addEventListener('change',(e)=>{const grid=tableSnapshot();grid.headers[+e.target.dataset.tableHeader]=e.target.value;patch('Rename table header',{customTable:grid,rows:grid.rows});}));
   $$('[data-table-cell]').forEach((input)=>input.addEventListener('change',(e)=>{const [r,c]=e.target.dataset.tableCell.split(':').map(Number);const grid=tableSnapshot();while(grid.rows.length<=r)grid.rows.push(Array(grid.headers.length).fill(null));while(grid.rows[r].length<grid.headers.length)grid.rows[r].push(null);grid.rows[r][c]=parseTypedCell(e.target.value);patch('Edit table cell',{customTable:grid,rows:grid.rows});}));
   $('#tableEditorGrid')?.addEventListener('focusin',event=>{const target=event.target;if(target.matches('[data-table-cell]')){if(ui.tableRange?.focus!==target.dataset.tableCell)ui.tableRange={anchor:target.dataset.tableCell,focus:target.dataset.tableCell};}});
-  $('#tableEditorGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const [row,column]=target.dataset.tableCell.split(':').map(Number),host=$('#tableEditorGrid'),visible=host.__tableVisible||[],range=ui.tableRange||{anchor:target.dataset.tableCell,focus:target.dataset.tableCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const grid=tableSnapshot(),text=grid.rows.slice(loRow,hiRow+1).map(record=>record.slice(loColumn,hiColumn+1).map(value=>value??'').join('\t')).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected table cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();const grid=tableSnapshot();for(let r=loRow;r<=hiRow;r+=1)for(let c=loColumn;c<=hiColumn;c+=1)grid.rows[r][c]=null;return patch('Clear table range',{customTable:grid,rows:grid.rows});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,tableSnapshot().headers.length-1)),next=`${nextRow}:${nextColumn}`;ui.tableRange=event.shiftKey?{anchor:ui.tableRange?.anchor||target.dataset.tableCell,focus:next}:{anchor:next,focus:next};host.__tableScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__tablePaint();requestAnimationFrame(()=>host.querySelector(`[data-table-cell="${next}"]`)?.focus());});
-  $('#tableEditorGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;event.preventDefault();const parsed=parseGridText(text),[startRow,startColumn]=target.dataset.tableCell.split(':').map(Number),grid=tableSnapshot(),width=Math.max(...parsed.map(row=>row.length),0);while(grid.headers.length<startColumn+width){grid.headers.push(`Column ${grid.headers.length+1}`);grid.rows.forEach(row=>row.push(null));}parsed.forEach((row,rowOffset)=>{const index=startRow+rowOffset;while(grid.rows.length<=index)grid.rows.push(Array(grid.headers.length).fill(null));row.forEach((value,columnOffset)=>{grid.rows[index][startColumn+columnOffset]=parseTypedCell(value);});});patch('Paste table range',{customTable:grid,rows:grid.rows});});
+  $('#tableEditorGrid')?.addEventListener('keydown',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const [row,column]=target.dataset.tableCell.split(':').map(Number),host=$('#tableEditorGrid'),visible=host.__tableVisible||[],range=ui.tableRange||{anchor:target.dataset.tableCell,focus:target.dataset.tableCell},[ar,ac]=range.anchor.split(':').map(Number),[fr,fc]=range.focus.split(':').map(Number),loRow=Math.min(ar,fr),hiRow=Math.max(ar,fr),loColumn=Math.min(ac,fc),hiColumn=Math.max(ac,fc);if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='a'){event.preventDefault();const grid=tableSnapshot();const lastRow=Math.max(0,grid.rows.length-1),lastColumn=Math.max(0,grid.headers.length-1);ui.tableRange={anchor:'0:0',focus:`${lastRow}:${lastColumn}`};host.__tablePaint();host.querySelector(`[data-table-cell="${target.dataset.tableCell}"]`)?.focus();toast('Select all table cells');return;}if((event.metaKey||event.ctrlKey)&&event.key.toLowerCase()==='c'){event.preventDefault();const grid=tableSnapshot(),text=grid.rows.slice(loRow,hiRow+1).map(record=>formatAuthoringRow(record.slice(loColumn,hiColumn+1))).join('\n');navigator.clipboard?.writeText(text).then(()=>toast('Copied selected table cells')).catch(()=>toast('Copy unavailable in this browser'));return;}if(event.key==='Delete'||event.key==='Backspace'){event.preventDefault();const grid=tableSnapshot();for(let r=loRow;r<=hiRow;r+=1)for(let c=loColumn;c<=hiColumn;c+=1)grid.rows[r][c]=null;return patch('Clear table range',{customTable:grid,rows:grid.rows});}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;event.preventDefault();const position=Math.max(0,visible.indexOf(row)),nextRow=visible[clamp(position+delta[0],0,Math.max(0,visible.length-1))]??row,nextColumn=clamp(column+delta[1],0,Math.max(0,tableSnapshot().headers.length-1)),next=`${nextRow}:${nextColumn}`;ui.tableRange=event.shiftKey?{anchor:ui.tableRange?.anchor||target.dataset.tableCell,focus:next}:{anchor:next,focus:next};host.__tableScroll.scrollTop=Math.max(0,visible.indexOf(nextRow)*31-80);host.__tablePaint();requestAnimationFrame(()=>host.querySelector(`[data-table-cell="${next}"]`)?.focus());});
+  $('#tableEditorGrid')?.addEventListener('paste',event=>{const target=event.target;if(!target.matches('[data-table-cell]'))return;const text=event.clipboardData?.getData('text/plain');if(!text)return;event.preventDefault();const parsed=parseAuthoringGrid(text).rows,[startRow,startColumn]=target.dataset.tableCell.split(':').map(Number),grid=tableSnapshot(),width=Math.max(...parsed.map(row=>row.length),0);while(grid.headers.length<startColumn+width){grid.headers.push(`Column ${grid.headers.length+1}`);grid.rows.forEach(row=>row.push(null));}parsed.forEach((row,rowOffset)=>{const index=startRow+rowOffset;while(grid.rows.length<=index)grid.rows.push(Array(grid.headers.length).fill(null));row.forEach((value,columnOffset)=>{grid.rows[index][startColumn+columnOffset]=value;});});patch('Paste table range',{customTable:grid,rows:grid.rows});});
   $$('[data-table-action]').forEach((button)=>button.addEventListener('click',async()=>{
-    const grid=tableSnapshot();
-    if(button.dataset.tableAction==='add-row'){
-      grid.rows.push(Array(grid.headers.length).fill(null));
-      patch('Add table row',{customTable:grid,rows:grid.rows}); return;
+    const grid=tableSnapshot(),action=button.dataset.tableAction;
+    if(['insert-row-above','insert-row-below','delete-rows','insert-column-left','insert-column-right','delete-columns'].includes(action)){
+      const next=applyGridAction(grid,action,ui.tableRange);patch(action.replaceAll('-',' '),{customTable:next,rows:next.rows});return;
     }
-    if(button.dataset.tableAction==='add-column'){
-      grid.headers.push(`Column ${grid.headers.length+1}`); grid.rows.forEach((row)=>row.push(null));
-      patch('Add table column',{customTable:grid,rows:grid.rows}); return;
-    }
-    if(button.dataset.tableAction==='delete-row'){grid.rows.pop();patch('Delete table row',{customTable:grid,rows:grid.rows});return;}
-    if(button.dataset.tableAction==='delete-column'&&grid.headers.length>1){grid.headers.pop();grid.rows.forEach(row=>row.pop());patch('Delete table column',{customTable:grid,rows:grid.rows});return;}
     if(button.dataset.tableAction==='paste'){
       try {
         const text=await navigator.clipboard?.readText?.();
@@ -981,17 +1252,58 @@ function bindSemanticInspector(entry) {
   $('[data-timeline-action="add"]')?.addEventListener('click',()=>patch('Add timeline event',{milestones:[...(entry.milestones||[]),{label:`Event ${(entry.milestones||[]).length+1}`,date:null}]}));
   $('[data-timeline-action="sequence"]')?.addEventListener('click',()=>patch('Use sequence-only timeline',{milestones:(entry.milestones||[]).map((m)=>({...m,date:null}))}));
   $('[data-timeline-action="sample"]')?.addEventListener('click',()=>patch('Restore timeline sample',{milestones:timelineStarter()}));
-  $('#iNodes')?.addEventListener('change',(e)=>patch('Edit diagram nodes',{nodes:String(e.target.value).split(/\r?\n/).map((x)=>x.trim()).filter(Boolean)})); $('#iEdges')?.addEventListener('change',(e)=>patch('Edit diagram edges',{edges:String(e.target.value).split(/\r?\n/).map((line)=>line.split(/\s*->\s*/)).filter((edge)=>edge.length===2&&edge[0]&&edge[1])}));
+  $('#iNodes')?.addEventListener('change',(e)=>{const nodes=parseDiagramNodes(e.target.value),edges=reconcileDiagramEdges(entry.nodes||[],nodes,entry.edges||[]);patch('Edit diagram nodes',{nodes,edges});});
+  $('#iEdges')?.addEventListener('change',(e)=>{const edges=parseDiagramEdges(e.target.value),validation=validateDiagramEdges(entry.nodes||[],edges);if(!validation.valid)return toast(`Unknown diagram node: ${validation.unknown.join(', ')}`);patch('Edit diagram edges',{edges});});
   $('[data-diagram-action="add-node"]')?.addEventListener('click',()=>patch('Add diagram node',{nodes:[...(entry.nodes||[]),`Node ${(entry.nodes||[]).length+1}`]}));
   $('[data-diagram-action="add-connected"]')?.addEventListener('click',()=>{const nodes=entry.nodes?.length?[...entry.nodes]:['Source'];const next=`Node ${nodes.length+1}`;patch('Add connected diagram node',{nodes:[...nodes,next],edges:[...(entry.edges||[]),[nodes.at(-1),next]]});});
   $('[data-diagram-action="sample"]')?.addEventListener('click',()=>patch('Restore diagram sample',diagramStarter()));
-  $('#iImageFile')?.addEventListener('change',async(e)=>{try{const file=e.target.files?.[0];if(file)patch('Set image',{src:await validatedImageDataUrl(file)});}catch(err){toast(String(err.message||err));}}); $('#iAlt')?.addEventListener('change',(e)=>patch('Edit image alt text',{alt:e.target.value})); $('#iCaption')?.addEventListener('change',(e)=>patch('Edit image caption',{caption:e.target.value})); $('#iFocal')?.addEventListener('change',(e)=>patch('Edit image focal point',{focal:e.target.value||'50% 50%'}));
+  $('#iImageFile')?.addEventListener('change',async(e)=>{try{const file=e.target.files?.[0];if(file)patch('Set image',{src:await validatedImageDataUrl(file),asset_id:null});}catch(err){toast(String(err.message||err));}}); $('#iAlt')?.addEventListener('change',(e)=>patch('Edit image alt text',{alt:e.target.value})); $('#iCaption')?.addEventListener('change',(e)=>patch('Edit image caption',{caption:e.target.value})); $('#iFocal')?.addEventListener('change',(e)=>patch('Edit image focal point',{focal:e.target.value||'50% 50%'}));
   $('[data-image-action="replace"]')?.addEventListener('click',()=>$('#iImageFile')?.click());$('[data-image-action="paste"]')?.addEventListener('click',()=>toast('Paste an image with Ctrl/Cmd+V while this image is selected'));
   $('#iStatement')?.addEventListener('change',(e)=>patch('Edit statement',{statement:e.target.value})); $('#iDetail')?.addEventListener('change',(e)=>patch('Edit detail',{detail:e.target.value})); $('#iStatus')?.addEventListener('change',(e)=>patch('Edit status',{status:e.target.value}));
-  $('#iObservations')?.addEventListener('change',(e)=>patch('Edit observations',{observations:parseObservations(e.target.value,entry.engine==='WaferFabEngine'?['x','y','value']:['label','value'])})); $('#iRole')?.addEventListener('change',(e)=>patch('Edit statistical role',{role:e.target.value})); $('#iLcl')?.addEventListener('change',(e)=>patch('Edit lower control limit',{lower_limit:parseTypedCell(e.target.value),lcl:parseTypedCell(e.target.value)})); $('#iUcl')?.addEventListener('change',(e)=>patch('Edit upper control limit',{upper_limit:parseTypedCell(e.target.value),ucl:parseTypedCell(e.target.value)})); $('#iLsl')?.addEventListener('change',(e)=>patch('Edit lower specification limit',{specification_low:parseTypedCell(e.target.value)})); $('#iUsl')?.addEventListener('change',(e)=>patch('Edit upper specification limit',{specification_high:parseTypedCell(e.target.value)}));
-  for (const [id,key] of [['iTool','tool'],['iChamber','chamber'],['iLot','lot'],['iRoute','route'],['iBehavior','behavior'],['iConfiguration','configuration']]) $('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:e.target.value}));
+  $('#iObservations')?.addEventListener('change',(e)=>patch('Edit observations',{observations:parseObservations(e.target.value,entry.engine==='WaferFabEngine'?['x','y','value']:['label','value'])}));
+  $('[data-engineering-action="add"]')?.addEventListener('click',()=>{const observations=[...(entry.observations||[])],last=observations.at(-1),label=String((Number(last?.label)||observations.length)+1);observations.push({label,value:null});patch('Add engineering observation',{observations});});
+  $('[data-engineering-action="sample"]')?.addEventListener('click',()=>patch('Restore engineering sample',{observations:[{label:'1',value:98.2},{label:'2',value:98.8},{label:'3',value:98.5},{label:'4',value:99.1},{label:'5',value:98.9}]}));
+  $('[data-engineering-action="clear"]')?.addEventListener('click',()=>patch('Clear engineering observations',{observations:[]}));
+  $('[data-engineering-action="clear-limits"]')?.addEventListener('click',()=>patch('Clear engineering limits',{lower_limit:null,upper_limit:null,lcl:null,ucl:null,specification_low:null,specification_high:null}));
+  $('[data-wafer-action="add"]')?.addEventListener('click',()=>{const observations=[...(entry.observations||[])];observations.push({x:0,y:0,value:null});patch('Add wafer observation',{observations});});
+  $('[data-wafer-action="sample"]')?.addEventListener('click',()=>patch('Restore wafer sample',{observations:[{x:1,y:1,value:98.4},{x:2,y:1,value:98.8},{x:3,y:2,value:97.9},{x:2,y:3,value:98.6}]}));
+  $('[data-wafer-action="clear"]')?.addEventListener('click',()=>patch('Clear wafer observations',{observations:[]}));
+ $('#iRole')?.addEventListener('change',(e)=>patch('Edit statistical role',{role:e.target.value})); $('#iLsl')?.addEventListener('change',(e)=>patch('Edit lower specification limit',{specification_low:parseTypedCell(e.target.value)})); $('#iUsl')?.addEventListener('change',(e)=>patch('Edit upper specification limit',{specification_high:parseTypedCell(e.target.value)}));
+ for(const [id,key] of [['iSigma','sigma'],['iK','k'],['iDecisionH','decision_h'],['iLambda','lambda'],['iControlL','L']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:parseTypedCell(e.target.value)}));
+  for (const [id,key] of [['iWaferId','wafer_id'],['iLot','lot'],['iTool','tool'],['iChamber','chamber'],['iRecipe','recipe'],['iProcess','process'],['iBin','bin'],['iRoute','route'],['iBehavior','behavior'],['iConfiguration','configuration']]) $('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:e.target.value}));
 }
 function inspectorSection(title, body) { return `<section class="inspector-section"><div class="inspector-section-title">${esc(title)}</div>${body}</section>`; }
+function reuseInspectorMarkup(entry) {
+  const dataset=selectedDataset(entry);
+  const hasMapping=!!dataset&&Object.keys(entry.mapping||{}).length>0;
+  const caps=reuseCapabilities({
+    selectionCount:1,
+    selectionLocked:!!entry.locked,
+    hasDataset:!!dataset,
+    hasMapping,
+    clipboard:ui.semanticClipboard,
+  });
+  const button=(label,action,enabled=true)=>`<button type="button" class="tb" data-reuse-action="${action}" ${enabled?'':'disabled'}>${label}</button>`;
+  return inspectorSection('Reuse',`<div class="field"><label>Copy from this element</label><div class="r-actions">${button('Visual','copy-visual',caps.copyVisual)}${button('Style','copy-style',caps.copyStyle)}${button('Data','copy-data',caps.copyData)}${button('Mapping','copy-mapping',caps.copyMapping)}</div><label>Use current clipboard</label><div class="r-actions">${button('Paste as new','paste-new',caps.pasteNew)}${button('Paste style','paste-style',caps.pasteStyle)}${button('Paste data','paste-data',caps.pasteData)}${button('Paste mapping','paste-mapping',caps.pasteMapping)}${button('Append data','append-data',caps.appendData)}</div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Unsupported actions stay unavailable instead of failing after a click.</small></div>`);
+}
+function bindReuseInspector(entry=null) {
+  $$('[data-reuse-action]',$('#inspector')).forEach(button=>button.addEventListener('click',()=>{
+    const action=button.dataset.reuseAction;
+    if(action==='copy-visual'){copySemanticSelection('visual_full');renderInspector();return;}
+    if(action==='copy-selection'){copySemanticSelection('visual_full');renderInspector();return;}
+    if(action==='copy-style'){copySemanticSelection('style');renderInspector();return;}
+    if(action==='copy-data'){copySemanticSelection('dataset_data');renderInspector();return;}
+    if(action==='copy-mapping'){copySemanticSelection('mapping');renderInspector();return;}
+    if(action==='cut-selection'){cutSemanticSelection();return;}
+    if(action==='save-section'){saveSelectionPreset();return;}
+    if(action==='paste-new'){pasteSemanticClipboard();return;}
+    if(!ui.semanticClipboard)return toast('Copy reusable content first');
+    if(action==='paste-style'){pasteSemanticPayload(ui.semanticClipboard,'style');return;}
+    if(action==='paste-data'){pasteSemanticPayload(ui.semanticClipboard,'data');return;}
+    if(action==='paste-mapping'){pasteSemanticPayload(ui.semanticClipboard,'mapping');return;}
+    if(action==='append-data'){pasteSemanticPayload(ui.semanticClipboard,'append-data');return;}
+  }));
+}
 function semanticSectionName(engine) {
   if (['CoreChartEngine','TableEngine','MatrixEngine','EngineeringChartEngine','WaferFabEngine'].includes(engine)) return 'Data';
   if (engine==='ImageMediaEngine') return 'Media';
@@ -1001,40 +1313,97 @@ function semanticSectionName(engine) {
   if (engine==='InteractionLayer') return 'Behavior';
   return 'Content';
 }
+function batchOption(value,label,state) {
+  return `<option value="${value}" ${!state.mixed&&String(state.value)===String(value)?'selected':''}>${label}</option>`;
+}
+function batchSelectMarkup(field,label,state,options) {
+  const mixed=state.mixed?'<option value="" selected disabled>Mixed — choose to apply</option>':'';
+  return `<label>${label}</label><select data-batch-field="${field}">${mixed}${options.map(([value,text])=>batchOption(value,text,state)).join('')}</select>`;
+}
+function batchSelectionMarkup(entries) {
+  const state=batchSelectionState(entries);
+  return inspectorSection('Batch format',`<div class="field"><small>Locked members are skipped; each change applies in one step.</small>${batchSelectMarkup('showTitle','Canvas title',state.showTitle,[['true','Show'],['false','Hide']])}${batchSelectMarkup('textAlign','Content alignment',state.textAlign,[['left','Left'],['center','Center'],['right','Right']])}${batchSelectMarkup('contentDensity','Vertical space',state.contentDensity,[['fit','Fit content'],['fill','Fill component']])}${batchSelectMarkup('emphasis','Visual emphasis',state.emphasis,[['compact','Compact'],['standard','Standard'],['prominent','Prominent'],['hero','Hero']])}<small>Only shared presentation properties are batch editable. Data, mappings, values, titles, geometry, and engineering identity are never changed here.</small></div>`);
+}
+function bindBatchSelection(entries) {
+  $$('[data-batch-field]',$('#inspector')).forEach(control=>control.addEventListener('change',event=>{
+    const field=event.target.dataset.batchField;
+    const plan=batchPatchPlan(entries,field,event.target.value);
+    if(!plan.length)return toast('No unlocked selected elements can accept this change');
+    commitOps(`Batch ${batchFieldLabel(field)}`,plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`Applied ${batchFieldLabel(field)} to ${plan.length} elements`});
+  }));
+}
+const inspectorActionAttributes=Object.freeze({
+  'align-left':'data-inspector="align-left"','align-center':'data-inspector="align-center"','align-right':'data-inspector="align-right"',
+  'align-top':'data-inspector="align-top"','align-middle':'data-inspector="align-middle"','align-bottom':'data-inspector="align-bottom"',
+  'distribute-x':'data-inspector="distribute-x"','distribute-y':'data-inspector="distribute-y"',
+  'match-width':'data-inspector="match-width"','match-height':'data-inspector="match-height"','match-size':'data-inspector="match-size"',
+  group:'data-inspector="group"',ungroup:'data-inspector="ungroup"',delete:'data-inspector="delete"',lock:'data-inspector="lock"',
+});
+function eligibilityButton(label,action,state) {
+  return `<button type="button" class="tb" ${inspectorActionAttributes[action]} aria-disabled="${state.enabled?'false':'true'}" ${state.enabled?'':`disabled title="${esc(state.reason)}"`}>${label}</button>`;
+}
+function bindSelectionLockControls(entries) {
+  const state=selectionLockState(entries),host=$('#inspector');
+  const buttons=$$('[data-selection-lock]',host);
+  buttons.forEach(button=>{
+    const target=button.dataset.selectionLock==='true';
+    button.disabled=target?state.unlocked===0:state.locked===0;
+    button.title=target?'Lock every selected element':'Unlock every selected element';
+    button.addEventListener('click',()=>setSelectionLocked(entries,target));
+  });
+}
 function renderInspector() {
   const p = $('#inspector'); if (!p) return;
+  syncPresetSelectionAction();
   const ids = [...ui.selected];
   if (ids.length === 1) {
     const entry = item(ids[0]); const d=typeDefaults[entry.type]||typeDefaults.text; const policy=semanticPolicy(entry);const actualRect=rectMap().get(entry.id);
+    const eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
+    const lockAction=entry.locked?eligibility.unlock:eligibility.lock;
     const identity=`<div class="inspector-identity"><span>${esc((entry.engine||entry.type).replace(/Engine|Composite|Layer|Infrastructure/g,''))}</span><b>${esc(entry.element||entry.title)}</b></div>`;
     const titleSection=inspectorSection('Identity',`<div class="field"><label for="iTitle">Title</label><input id="iTitle" value="${esc(entry.title)}"><label class="toggle-field"><input id="iShowTitle" type="checkbox" ${entry.showTitle===true||entry.show_title===true?'checked':''}> <span>Show title on canvas</span></label><label for="iTextAlign">Content alignment</label><select id="iTextAlign"><option value="left" ${(entry.textAlign||entry.text_align||'left')==='left'?'selected':''}>Left</option><option value="center" ${(entry.textAlign||entry.text_align)==='center'?'selected':''}>Center</option><option value="right" ${(entry.textAlign||entry.text_align)==='right'?'selected':''}>Right</option></select><small>Titles are optional. Alignment applies to text and data labels inside this element.</small></div>`);
     const contentSection=inspectorSection(semanticSectionName(entry.engine||''),semanticInspectorMarkup(entry));
     const emphasis=defaultEmphasis(entry);
     const density=`<label for="iContentDensity">Vertical space</label><select id="iContentDensity"><option value="fit" ${(entry.contentDensity||'fit')==='fit'?'selected':''}>Fit content</option><option value="fill" ${entry.contentDensity==='fill'?'selected':''}>Fill component</option></select><small>Fit content avoids decorative top and bottom space. Use Fill only when the component needs a balanced card treatment.</small>`;
-    const layoutBody=model().mode==='smart'?`<div class="field"><label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field"><label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
-    const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>PowerPoint</span><b>Editable region</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>PowerPoint</span><b>Semantic export eligible</b></div>');
+    const messageRole=`<label for="iMessageRole">Message role</label><select id="iMessageRole" aria-describedby="iMessageRoleHelp">${MESSAGE_ROLES.map(role=>`<option value="${esc(role)}" ${suggestMessageRole(entry)===role?'selected':''}>${esc(role)}</option>`).join('')}</select><small id="iMessageRoleHelp">Guides Smart reading order and hierarchy; content and data stay unchanged.</small>`;
+    const layoutBody=model().mode==='smart'?`<div class="field">${messageRole}<label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field">${messageRole}<label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
+    const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>SVG</span><b>Visual export ready</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>SVG</span><b>Visual export ready</b></div>');
+    const reuseSection=reuseInspectorMarkup(entry);
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
-    p.innerHTML=identity+titleSection+contentSection+dataDockMarkup(entry)+containerSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
+    const deleteButton=`<button type="button" class="tb" data-inspector="delete" aria-disabled="${eligibility.delete.enabled?'false':'true'}" ${eligibility.delete.enabled?'':`disabled title="${esc(eligibility.delete.reason)}"`}>Delete</button>`;
+    const actionSection=inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${deleteButton}${eligibilityButton(entry.locked?'Unlock':'Lock','lock',lockAction)}</div></div>`);
+    p.innerHTML=identity+actionSection+titleSection+contentSection+dataDockMarkup(entry)+containerSection+reuseSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
     $('#iTitle').addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Rename component',[{op:'item.patch',id:entry.id,patch:{title:e.target.value}}]));
     $('#iShowTitle')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Toggle canvas title',[{op:'item.patch',id:entry.id,patch:{showTitle:e.target.checked}}]));
     $('#iTextAlign')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content alignment',[{op:'item.patch',id:entry.id,patch:{textAlign:e.target.value}}]));
     $('#iContentDensity')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content density',[{op:'item.patch',id:entry.id,patch:{contentDensity:e.target.value}}]));
+    $('#iMessageRole')?.addEventListener('change',(e)=>{const result=applyMessageRole(model(),[entry.id],e.target.value);if(entry.locked)return toast('Unlock the component before editing');if(result.ops.length)commitOps(`Set message role · ${e.target.value}`,result.ops);});
     bindSemanticInspector(entry);
     bindDataDock(entry);
+    bindReuseInspector(entry);
     $$('[data-emphasis]',p).forEach((button)=>button.addEventListener('click',()=>entry.locked?toast('Unlock the component before editing'):commitOps('Set visual emphasis',[{op:'item.patch',id:entry.id,patch:{emphasis:button.dataset.emphasis}}])));
     $('#iWeight')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set advanced layout weight',[{op:'item.patch',id:entry.id,patch:{weight:+e.target.value}}])); $('#iW')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set width',[{op:'item.patch',id:entry.id,patch:{w:Math.max(policy.minW,+e.target.value||entry.w)}}])); $('#iH')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set height',[{op:'item.patch',id:entry.id,patch:{h:Math.max(policy.minH,+e.target.value||entry.h)}}]));
     if (entry.locked) p.querySelectorAll('input,textarea,select').forEach((node)=>{node.disabled=true;});
     return;
   }
   if (ids.length > 1) {
-    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${ids.length} elements</b></div>${inspectorSection('Arrange','<div class="field"><div class="r-actions"><button class="tb" data-inspector="align-left">Align left</button><button class="tb" data-inspector="align-top">Align top</button><button class="tb" data-inspector="align-center">Center</button><button class="tb" data-inspector="distribute-x">Distribute H</button><button class="tb" data-inspector="distribute-y">Distribute V</button></div></div>')}${inspectorSection('Structure','<div class="field"><div class="r-actions"><button class="tb" data-inspector="group">Group</button><button class="tb" data-inspector="ungroup">Ungroup</button><button class="tb" data-inspector="lock">Lock / unlock</button></div></div>')}`; return;
+    const selectedEntries=ids.map(item).filter(Boolean);
+    const eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
+    const multiLocked=selectedEntries.some(entry=>!!entry.locked);
+    const reuseCaps=reuseCapabilities({selectionCount:ids.length,selectionLocked:multiLocked,clipboard:ui.semanticClipboard});
+    const batchMulti=batchSelectionMarkup(selectedEntries);
+    const selectionSummary=`${eligibility.summary.count} selected · ${eligibility.summary.unlocked} unlocked · ${eligibility.summary.locked} locked${eligibility.summary.grouped?` · ${eligibility.summary.grouped} grouped`:''}`;
+    const arrangeButton=(label,action)=>eligibilityButton(label,action,eligibility.arrange);
+    const reuseMulti=inspectorSection('Reuse',`<div class="field"><div class="r-actions"><button type="button" class="tb" data-reuse-action="copy-selection" ${eligibility.reuse.copySelection.enabled?'':`disabled title="${esc(eligibility.reuse.copySelection.reason)}"`}>Copy selection</button><button type="button" class="tb" data-reuse-action="cut-selection" ${reuseCaps.cut?'':`disabled title="${esc(eligibility.reuse.cut.reason)}"`}>Cut</button><button type="button" class="tb" data-reuse-action="paste-new" ${reuseCaps.pasteNew?'':'disabled'} title="${reuseCaps.pasteNew?'Paste copied visual or composition':'Clipboard empty'}">Paste as new</button><button type="button" class="tb" data-reuse-action="paste-style" ${reuseCaps.pasteStyle&&eligibility.reuse.pasteStyle.enabled?'':`disabled title="${esc(eligibility.reuse.pasteStyle.reason)}"`}>Apply style</button><button type="button" class="tb" data-reuse-action="save-section">Save section</button></div><small>${esc(reuseClipboardLabel(ui.semanticClipboard))} · Multi-selection copy preserves complete groups and referenced datasets.</small></div>`);
+    const arrangeHelp=model().mode==='smart'?'Smart mode owns arrangement and placement.':`${eligibility.arrange.partial?'Locked members will be skipped. ':''}First unlocked selected element is the size reference.`;
+    p.innerHTML = `<div class="inspector-identity"><span>Selection</span><b>${selectionSummary}</b></div>${inspectorSection('Arrange',`<div class="field"><label>Horizontal alignment</label><div class="r-actions">${arrangeButton('Left','align-left')}${arrangeButton('Center','align-center')}${arrangeButton('Right','align-right')}</div><label>Vertical alignment</label><div class="r-actions">${arrangeButton('Top','align-top')}${arrangeButton('Middle','align-middle')}${arrangeButton('Bottom','align-bottom')}</div><label>Distribution</label><div class="r-actions">${arrangeButton('Distribute H','distribute-x')}${arrangeButton('Distribute V','distribute-y')}</div><label>Equal size</label><div class="r-actions">${arrangeButton('Width','match-width')}${arrangeButton('Height','match-height')}${arrangeButton('Both','match-size')}</div><small>${arrangeHelp}</small></div>`)}${inspectorSection('Structure',`<div class="field"><div class="r-actions">${eligibilityButton('Group','group',eligibility.group)}${eligibilityButton('Ungroup','ungroup',eligibility.ungroup)}<button class="tb" data-selection-lock="true">Lock all</button><button class="tb" data-selection-lock="false">Unlock all</button></div></div>`)}${inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${eligibilityButton('Delete','delete',eligibility.delete)}</div><small>${eligibility.delete.partial?'Delete skips locked members.':''}</small></div>`)}${batchMulti}${reuseMulti}`; bindBatchSelection(selectedEntries); bindSelectionLockControls(selectedEntries); bindReuseInspector(null); return;
   }
   renderCanvasInspector(p);
 }
 function renderCanvasInspector(p) {
   const pf = preflight();
   const size=canvasSize();
-  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row"><span>Page size</span><b>${size.width} × ${size.height}</b></div><button class="tb full-width" id="inspectorPageSize">Change page size</button><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}${inspectorSection('Smart layouts',builtInPresets.map(layout=>`<div class="suggestion"><b>${esc(layout.name)}</b><p>${esc(layout.description)}</p><button class="tb" data-suggestion="${layout.id}">Apply</button></div>`).join(''))}`;
+  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row page-size-row"><span>Page size <b>${size.width} × ${size.height}</b></span><button class="tb" id="inspectorPageSize" aria-label="Change page size">Change</button></div><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}`;
   $('#inspectorPageSize')?.addEventListener('click',openPageSize);
 }
 
@@ -1062,18 +1431,22 @@ function syncModeButtons() {
   const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition within the fixed page':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
 }
 function commandEligibility() {
-  const entries=[...ui.selected].map(item).filter(Boolean);
-  const any=entries.length>0; const groupIds=new Set(entries.map((entry)=>entry.groupId).filter(Boolean));
-  const sameExistingGroup=entries.length>1&&groupIds.size===1&&entries.every((entry)=>entry.groupId);
+  const structure=structuralSelectionState(model(),[...ui.selected]);
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
   return {
-    group: entries.length>=2&&!sameExistingGroup,
-    ungroup: entries.some((entry)=>!!entry.groupId),
-    lock:any, front:any, back:any, delete:entries.some((entry)=>!entry.locked),
+    group:structure.groupable&&state.group.enabled,
+    ungroup:structure.groupIds.length>0&&structure.blockedGroupIds.length===0&&state.ungroup.enabled,
+    lock:state.lock.enabled,
+    front:structure.unlockedCount>0&&state.front.enabled,
+    back:structure.unlockedCount>0&&state.back.enabled,
+    delete:state.delete.enabled,
   };
 }
 function updateCommandEligibility() {
-  const state=commandEligibility();
-  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#lock','lock'],['#front','front'],['#back','back']]){const node=$(selector);if(node)node.disabled=!state[key];}
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  for(const [selector,key] of [['#group','group'],['#ungroup','ungroup'],['#front','front'],['#back','back']]){const node=$(selector);if(node){node.disabled=!state[key].enabled;node.title=state[key].enabled?(state[key].partial?'Locked members will be skipped.':''):state[key].reason;}}
+  const lockButton=$('#lock'),entries=[...ui.selected].map(item).filter(Boolean),lockState=selectionLockState(entries),willLock=lockState.unlocked>0;
+  if(lockButton){const action=willLock?state.lock:state.unlock;lockButton.disabled=!action.enabled;lockButton.textContent=willLock?'Lock':'Unlock';lockButton.title=willLock?'Lock every selected element':'Unlock every selected element';if(!action.enabled)lockButton.title=action.reason;else if(action.partial)lockButton.title='Locked members will be skipped.';}
 }
 function preflight() {
   const R = currentRects();
@@ -1225,10 +1598,19 @@ function smartOrderAt(q) {
   rs.sort((a, b) => Math.hypot(q.x - a.cx, q.y - a.cy) - Math.hypot(q.x - b.cx, q.y - b.cy));
   return item(rs[0]?.id);
 }
+function showGhostRects(rects, mode='placement') {
+  const g=$('#dropGhost'),u=rectUnion(rects||[]);if(!g||!u)return;
+  Object.assign(g.style,{display:'block',left:`${u.x}px`,top:`${u.y}px`,width:`${u.w}px`,height:`${u.h}px`});
+  g.dataset.placementMode=mode;
+  g.setAttribute('aria-label',`Proposed placement ${Math.round(u.x)}, ${Math.round(u.y)}, ${Math.round(u.w)} by ${Math.round(u.h)}`);
+}
 function showSmartReorderGhost(q, id) {
-  const target = smartOrderAt(q); const g = $('#dropGhost'); const r = rectMap().get(target?.id || id);
-  if (!r) return;
-  Object.assign(g.style, { display: 'block', left: `${r.x}px`, top: `${r.y}px`, width: `${r.w}px`, height: `${r.h}px` });
+  const target=smartOrderAt(q),ops=smartReorderOps(q,id),moving=new Set(selectedMovers(id).map(entry=>entry.id));
+  if(!target)return;
+  const patches=new Map(ops.map(op=>[op.id,op.patch]));
+  const previewItems=model().items.map(entry=>patches.has(entry.id)?{...entry,...patches.get(entry.id)}:entry);
+  const preview=semanticSmartLayout(previewItems).rects.filter(rect=>moving.has(rect.id));
+  showGhostRects(preview.length?preview:[rectMap().get(target.id)],'smart-reorder');
 }
 function smartReorderOps(q, id) {
   const target = smartOrderAt(q); if (!target) return [];
@@ -1240,26 +1622,29 @@ function smartReorderOps(q, id) {
   return rest.map((entry, k) => entry.order === k ? null : { op: 'item.patch', id: entry.id, patch: { order: k } }).filter(Boolean);
 }
 function startDrag(e, id, el) {
-  if(readOnly)return toast('This report is read-only');
+  if(readOnly||ui.preview)return toast(readOnly?'This report is read-only':'Preview is read-only');
   if(e.button!==0)return;e.preventDefault();e.stopPropagation();if(!ui.selected.has(id)){ui.selected.clear();ui.selected.add(id);reconcileCanvas({content:false});renderInspector();}const movers=selectedMovers(id);if(!movers.length)return toast('Locked component');
   const rm=committedRectMap(),p=logicalPoint(e),orig=movers.map(m=>{const r=rm.get(m.id);return{id:m.id,x:r.x,y:r.y,w:r.w,h:r.h}});movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.add('dragging'));
-  const previewAt=(ev)=>{const q=logicalPoint(ev),dx=q.x-p.x,dy=q.y-p.y;if(model().mode==='smart'){showSmartReorderGhost(q,id);return;}let sx=dx,sy=dy,guide={gx:null,gy:null};if(model().mode==='guided'&&ui.snap){guide=snapDelta(orig,dx,dy,movers);sx=guide.dx;sy=guide.dy;}const inset=model().mode==='guided'?CANVAS.gap:0,bounded=clampMovementDelta(orig,sx,sy,CANVAS,inset);sx=bounded.dx;sy=bounded.dy;if(model().mode==='guided'&&ui.snap)showGuides(guide);orig.forEach(o=>ui.previewPatches.set(o.id,{x:o.x+sx,y:o.y+sy}));renderGeometryOnly();};
+  const previewAt=(ev)=>{const q=logicalPoint(ev),dx=q.x-p.x,dy=q.y-p.y;if(model().mode==='smart'){showSmartReorderGhost(q,id);return;}let sx=dx,sy=dy,guide={gx:null,gy:null};if(model().mode==='guided'&&ui.snap){guide=snapDelta(orig,dx,dy,movers);sx=guide.dx;sy=guide.dy;}const inset=model().mode==='guided'?CANVAS.gap:0,bounded=clampMovementDelta(orig,sx,sy,CANVAS,inset);sx=bounded.dx;sy=bounded.dy;if(model().mode==='guided'&&ui.snap)showGuides(guide);const proposed=orig.map(o=>{const patch={x:o.x+sx,y:o.y+sy};ui.previewPatches.set(o.id,patch);return {...o,...patch};});showGhostRects(proposed,'move');renderGeometryOnly();};
   beginPointerSession(el,e,{move:previewAt,end(ev){hideGuides();$('#dropGhost').style.display='none';movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.remove('dragging'));if(model().mode==='smart'){const ops=smartReorderOps(logicalPoint(ev),id);ui.previewPatches.clear();if(ops.length)commitOps('Reorder components',ops);else renderGeometryOnly();return;}previewAt(ev);if(model().mode==='guided'&&hasSelectedOverlap()){ui.previewPatches.clear();renderGeometryOnly();toast('Guided mode blocked an overlap');return;}const ops=[...ui.previewPatches.entries()].map(([entryId,patch])=>({op:'item.patch',id:entryId,patch}));ui.previewPatches.clear();if(ops.length)commitOps('Move components',ops);else renderGeometryOnly();},cancel(){hideGuides();$('#dropGhost').style.display='none';ui.previewPatches.clear();movers.forEach(m=>$(`.component[data-id="${m.id}"]`)?.classList.remove('dragging'));renderGeometryOnly();toast('Move cancelled');}});
 }
 function snapResizeRect(entry,raw,handle){if(model().mode!=='guided'||!ui.snap)return {...raw,gx:null,gy:null};const rm=committedRectMap(),others=[...rm.entries()].filter(([id])=>id!==entry.id).map(([,r])=>r),left=raw.x,right=raw.x+raw.w,top=raw.y,bottom=raw.y+raw.h,x=guidedTargets('x',raw,others,new Set([entry.id])),y=guidedTargets('y',raw,others,new Set([entry.id])),sx=handle.includes('w')?nearestSnap(left,x.targets):handle.includes('e')?nearestSnap(right,x.targets):null,sy=handle.includes('n')?nearestSnap(top,y.targets):handle.includes('s')?nearestSnap(bottom,y.targets):null,next={...raw,gx:sx?.pos??null,gy:sy?.pos??null};if(sx){if(handle.includes('w')){next.w=right-sx.pos;next.x=sx.pos;}else next.w=sx.pos-left;}if(sy){if(handle.includes('n')){next.h=bottom-sy.pos;next.y=sy.pos;}else next.h=sy.pos-top;}return next;}
-function startResize(e,id,el){const entry=item(id);if(entry.locked)return toast('Locked component');e.preventDefault();e.stopPropagation();const handle=el.dataset.resize||'se',p=logicalPoint(e),base=committedRectMap().get(id),start={x:base.x,y:base.y,w:base.w,h:base.h,weight:entry.weight};const previewAt=(ev)=>{const q=logicalPoint(ev),delta={x:q.x-p.x,y:q.y-p.y};if(model().mode==='smart')ui.previewPatches.set(id,{weight:clamp(start.weight+(delta.x+delta.y)/240,.45,3.4)});else{const policy=semanticPolicy(entry),inset=model().mode==='guided'?CANVAS.gap:0;let raw=resizeRect(start,handle,delta,{minW:policy.minW,minH:policy.minH,canvas:CANVAS,inset,shift:ev.shiftKey,alt:ev.altKey});raw=snapResizeRect(entry,raw,handle);if(model().mode==='guided')showGuides(raw);ui.previewPatches.set(id,{x:raw.x,y:raw.y,w:raw.w,h:raw.h});}renderGeometryOnly();};beginPointerSession(el,e,{move:previewAt,end(ev){previewAt(ev);hideGuides('resize-end');if(model().mode==='guided'&&hasSelectedOverlap()){ui.previewPatches.clear();renderGeometryOnly();toast('Guided mode blocked resize overlap');return;}const patch=ui.previewPatches.get(id);ui.previewPatches.clear();if(patch)commitOps('Resize component',[{op:'item.patch',id,patch}]);else renderGeometryOnly();},cancel(){ui.previewPatches.clear();renderGeometryOnly();toast('Resize cancelled');}});}
+function startResize(e,id,el){if(ui.preview)return;const entry=item(id);if(entry.locked)return toast('Locked component');e.preventDefault();e.stopPropagation();const handle=el.dataset.resize||'se',p=logicalPoint(e),base=committedRectMap().get(id),start={x:base.x,y:base.y,w:base.w,h:base.h,weight:entry.weight};const previewAt=(ev)=>{const q=logicalPoint(ev),delta={x:q.x-p.x,y:q.y-p.y};if(model().mode==='smart')ui.previewPatches.set(id,{weight:clamp(start.weight+(delta.x+delta.y)/240,.45,3.4)});else{const policy=semanticPolicy(entry),inset=model().mode==='guided'?CANVAS.gap:0;let raw=resizeRect(start,handle,delta,{minW:policy.minW,minH:policy.minH,canvas:CANVAS,inset,shift:ev.shiftKey,alt:ev.altKey});raw=snapResizeRect(entry,raw,handle);if(model().mode==='guided')showGuides(raw);ui.previewPatches.set(id,{x:raw.x,y:raw.y,w:raw.w,h:raw.h});}renderGeometryOnly();};beginPointerSession(el,e,{move:previewAt,end(ev){previewAt(ev);hideGuides('resize-end');if(model().mode==='guided'&&hasSelectedOverlap()){ui.previewPatches.clear();renderGeometryOnly();toast('Guided mode blocked resize overlap');return;}const patch=ui.previewPatches.get(id);ui.previewPatches.clear();if(patch)commitOps('Resize component',[{op:'item.patch',id,patch}]);else renderGeometryOnly();},cancel(){ui.previewPatches.clear();renderGeometryOnly();toast('Resize cancelled');}});}
 
 function startLasso(e) {
-  ui.selected.clear(); const p = logicalPoint(e); const box = $('#lasso'); box.style.display = 'block'; ui.lasso = { start: p };
-  beginPointerSession($('#viewport'), e, {
-    move(ev) {
-      const q = logicalPoint(ev); const x = Math.min(p.x, q.x); const y = Math.min(p.y, q.y); const w = Math.abs(q.x - p.x); const h = Math.abs(q.y - p.y);
-      Object.assign(box.style, { left: `${x}px`, top: `${y}px`, width: `${w}px`, height: `${h}px` });
-      const L = { x, y, w, h }; ui.selected = new Set(currentRects().filter((r) => overlap(L, r, 0)).map((r) => r.id));
-      $$('.component').forEach((n) => { n.classList.toggle('selected', ui.selected.has(n.dataset.id)); n.setAttribute('aria-selected', ui.selected.has(n.dataset.id) ? 'true' : 'false'); });
+  if(ui.preview)return;
+  e.preventDefault(); e.stopPropagation();
+  ui.selected.clear(); const p=logicalPoint(e); const box=$('#lasso');
+  box.classList.add('active'); Object.assign(box.style,{left:`${p.x}px`,top:`${p.y}px`,width:'0px',height:'0px'}); ui.lasso={start:p};
+  beginPointerSession($('#viewport'),e,{
+    move(ev){
+      const q=logicalPoint(ev),x=Math.min(p.x,q.x),y=Math.min(p.y,q.y),w=Math.abs(q.x-p.x),h=Math.abs(q.y-p.y);
+      Object.assign(box.style,{left:`${x}px`,top:`${y}px`,width:`${w}px`,height:`${h}px`});
+      const L={x,y,w,h}; ui.selected=new Set(currentRects().filter((r)=>overlap(L,r,0)).map((r)=>r.id));
+      $$('.component').forEach((n)=>{n.classList.toggle('selected',ui.selected.has(n.dataset.id));n.setAttribute('aria-selected',ui.selected.has(n.dataset.id)?'true':'false');});
     },
-    end() { box.style.display = 'none'; ui.lasso = null; reconcileCanvas({ content: false }); renderInspector(); },
-    cancel() { box.style.display = 'none'; ui.lasso = null; ui.selected.clear(); reconcileCanvas({ content: false }); renderInspector(); },
+    end(){box.classList.remove('active');ui.lasso=null;reconcileCanvas({content:false});renderInspector();},
+    cancel(){box.classList.remove('active');ui.lasso=null;ui.selected.clear();reconcileCanvas({content:false});renderInspector();},
   });
 }
 function startPan(e) {
@@ -1290,23 +1675,35 @@ function addComponent(type, pos = null) {
   const canonical=quickCanonical[type]; if (!canonical) return;
   addLibraryElement(canonical[0],canonical[1],pos);
 }
+function initialManualGeometry(entry,pos=null) {
+  if(model().mode==='smart')return {};
+  const guided=model().mode==='guided',inset=guided?CANVAS.gap:0,policy=semanticPolicy(entry);
+  const w=Math.min(CANVAS.w-inset*2,Math.max(policy.minW,Math.min(policy.prefW,520)));
+  const h=Math.min(CANVAS.h-inset*2,Math.max(policy.minH,Math.min(policy.prefH,320)));
+  const cascade=model().mode==='free'&&!pos?(model().items.length%6)*24:0;
+  const bounded=(x,y)=>({x:clamp(x,inset,CANVAS.w-inset-w),y:clamp(y,inset,CANVAS.h-inset-h),w,h});
+  if(!guided)return bounded((pos?.x??CANVAS.w/2)-w/2+cascade,(pos?.y??CANVAS.h/2)-h/2+cascade);
+  const peers=currentRects(),candidates=[];
+  if(pos)candidates.push(bounded(Math.round((pos.x-w/2)/CANVAS.gap)*CANVAS.gap,Math.round((pos.y-h/2)/CANVAS.gap)*CANVAS.gap));
+  candidates.push(bounded(inset,inset));
+  const xs=[inset,...peers.map(r=>r.x+r.w+CANVAS.gap)],ys=[inset,...peers.map(r=>r.y+r.h+CANVAS.gap)];
+  for(const y of ys.sort((a,b)=>a-b))for(const x of xs.sort((a,b)=>a-b))candidates.push(bounded(x,y));
+  return candidates.find(candidate=>peers.every(peer=>!overlap(candidate,peer,CANVAS.gap-.1)))||null;
+}
 function addLibraryElement(element, engine, pos = null) {
   const type=engineToType[engine]||'text'; const d=typeDefaults[type]||typeDefaults.text; const id=`c${model().nextId}`;
-  const entry={id,type,element,engine,title:element,showTitle:false,textAlign:'left',weight:d.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map((x)=>x.z||0))+1,...starterContent(engine,element)};
-  if (model().mode!=='smart') {
-    const inset=model().mode==='guided'?CANVAS.gap:0; const width=Math.min(CANVAS.w-inset*2,d.minW*1.3); const height=Math.min(CANVAS.h-inset*2,d.minH*1.25);
-    entry.x=clamp((pos?.x??CANVAS.w/2)-width/2,inset,CANVAS.w-inset-width); entry.y=clamp((pos?.y??CANVAS.h/2)-height/2,inset,CANVAS.h-inset-height); entry.w=width; entry.h=height;
-  }
+  const entry={id,type,element,engine,title:element,showTitle:false,textAlign:'left',message_role:suggestMessageRole({element,engine}),weight:d.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map((x)=>x.z||0))+1,...starterContent(engine,element)};
+  const geometry=initialManualGeometry(entry,pos);if(!geometry){toast('No free space in Guided mode. Increase page size or switch to Free.');return;}Object.assign(entry,geometry);
   const accepted=commitOps('Add Visembler element',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1}}],{announce:`${element} added`});
   if (!accepted) return;
   const recentKey=`${engine}::${element}`;ui.recentElements=[recentKey,...ui.recentElements.filter((key)=>key!==recentKey)].slice(0,8);storage.set('viz-library-recent',JSON.stringify(ui.recentElements));
   ui.selected=new Set([id]); renderAll(); renderLibrary();
 }
 function libraryEntries() {
-  return Object.entries(ELEMENTS_BY_ENGINE).filter(([engine])=>!['EditorInfrastructure','InteractionLayer','SmartLayoutEngine'].includes(engine)).flatMap(([engine,elements])=>(Array.isArray(elements)?elements:[]).map((entry)=>({engine,element:typeof entry==='string'?entry:String(entry?.element||entry?.name||'')}))).filter((x)=>x.element);
+  return productionEntries();
 }
 function libraryDescription(entry) {
-  return ({SmartLayoutEngine:'Composition and layout',TextEngine:'Narrative and annotation',MetricEngine:'KPI and measurement',ComparisonEngine:'Before / after comparison',CoreChartEngine:'Analytical chart',TableEngine:'Editable data grid',MatrixEngine:'Matrix and heatmap',TimelineEngine:'Milestones and sequence',DiagramEngine:'Nodes and connectors',ImageMediaEngine:'Image and media',EvidenceCompositeEngine:'Evidence and provenance',DecisionCompositeEngine:'Decision and risk',ProjectCompositeEngine:'Project execution',EngineeringChartEngine:'Engineering analysis',WaferFabEngine:'Wafer / fab analysis',InteractionLayer:'Interactive behavior',EditorInfrastructure:'Editor workflow'})[entry.engine]||'Report element';
+  return entry.description || ({TextEngine:'Narrative and annotation',MetricEngine:'KPI and measurement',ComparisonEngine:'Before / after comparison',CoreChartEngine:'Analytical chart',TableEngine:'Editable data grid',TimelineEngine:'Milestones and sequence',DiagramEngine:'Nodes and connectors',ImageMediaEngine:'Image and media',EvidenceCompositeEngine:'Evidence and provenance',DecisionCompositeEngine:'Decision and risk',ProjectCompositeEngine:'Project execution',EngineeringChartEngine:'Engineering analysis',WaferFabEngine:'Wafer / fab analysis'})[entry.engine]||'Report element';
 }
 function libraryThumbMarkup(entry) {
   const name=entry.element.toLowerCase(); const engine=entry.engine;
@@ -1342,29 +1739,46 @@ function renderLibrary() {
   const sections=$('#librarySections');if(sections){
     const byKey=new Map(all.map((entry)=>[`${entry.engine}::${entry.element}`,entry]));
     const recent=ui.recentElements.map((key)=>byKey.get(key)).filter(Boolean).slice(0,4);const favorites=[...ui.favorites].map((key)=>byKey.get(key)).filter(Boolean).slice(0,4);
-    const recommended=['Hero KPI','Key Takeaway','Line Chart','Clean Table'].map((name)=>all.find((entry)=>entry.element===name)).filter(Boolean);
-    sections.innerHTML=[favorites.length?`<div class="library-section-title"><span>Favorites</span></div><div class="library-mini-list">${favorites.map(libraryItemMarkup).join('')}</div>`:'',recent.length?`<div class="library-section-title"><span>Recent</span></div><div class="library-mini-list">${recent.map(libraryItemMarkup).join('')}</div>`:'',!query&&!engine?`<div class="library-section-title"><span>Recommended</span></div><div class="library-mini-list">${recommended.map(libraryItemMarkup).join('')}</div><div class="library-section-title"><span>All elements</span><small>${all.length}</small></div>`:''].join('');
+    const recommended=PRODUCTION_RECOMMENDED.map((key)=>byKey.get(key)).filter(Boolean);
+    sections.innerHTML=[favorites.length?`<div class="library-section-title"><span>Favorites</span></div><div class="library-mini-list">${favorites.map(libraryItemMarkup).join('')}</div>`:'',recent.length?`<div class="library-section-title"><span>Recent</span></div><div class="library-mini-list">${recent.map(libraryItemMarkup).join('')}</div>`:'',!query&&!engine?`<div class="library-section-title"><span>Recommended</span><small>Proven starting points</small></div><div class="library-mini-list">${recommended.map(libraryItemMarkup).join('')}</div><div class="library-section-title"><span>Production elements</span><small>${all.length}</small></div>`:''].join('');
   }
   const more=$('#libraryMore'); if (more) { more.hidden=shown.length>=filtered.length; more.textContent=shown.length<filtered.length?`Show more · ${shown.length}/${filtered.length}`:`${filtered.length} shown`; }
 }
 
 function initializeLibrary() {
-  const select=$('#engineFilter'); if (select && !select.dataset.ready) { select.innerHTML='<option value="">All families</option>'+Object.keys(ELEMENTS_BY_ENGINE).map((engine)=>`<option value="${esc(engine)}">${esc(engine.replace(/Engine|Composite|Layer|Infrastructure/g,''))}</option>`).join(''); select.dataset.ready='true'; }
+  const select=$('#engineFilter'); if (select && !select.dataset.ready) { select.innerHTML='<option value="">All production families</option>'+Object.keys(PRODUCTION_LIBRARY).map((engine)=>`<option value="${esc(engine)}">${esc(engine.replace(/Engine|Composite|Layer|Infrastructure/g,''))}</option>`).join(''); select.dataset.ready='true'; }
+  const search=$('#componentSearch'); if(search)search.placeholder=`Search ${PRODUCTION_LIBRARY_COUNT} production elements`;
   renderLibrary();
 }
 function deleteSelected() {
-  const ids = [...ui.selected].filter((id) => !item(id)?.locked); if (!ids.length) return toast('Nothing deletable selected');
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  if(!eligibility.delete.enabled)return toast(eligibility.delete.reason);
+  const ids = [...ui.selected].filter((id) => !item(id)?.locked);
   const ops = ids.map((id) => ({ op: 'item.remove', id }));
   for (const [gid, group] of Object.entries(model().groups)) if (group.items.some((id) => ids.includes(id))) ops.push({ op: 'group.set', id: gid, value: { ...group, items: group.items.filter((id) => !ids.includes(id)) } });
   const survivors = model().items.filter((entry) => !ids.includes(entry.id));
   ops.push(...normalizeOrderOps(survivors)); ui.selected.clear(); commitOps('Delete components', ops, { announce: `${ids.length} component${ids.length > 1 ? 's' : ''} deleted` });
 }
+function setSelectionLocked(entries,locked) {
+  const plan=selectionLockPlan(entries,locked);
+  if(!plan.length)return toast(locked?'Selection is already locked':'Selection is already unlocked');
+  return commitOps(locked?'Lock selection':'Unlock selection',plan.map(({id,patch})=>({op:'item.patch',id,patch})),{announce:`${plan.length} selected element${plan.length===1?'':'s'} ${locked?'locked':'unlocked'}`});
+}
 function toggleLock() {
-  if (!ui.selected.size) return; const want = [...ui.selected].some((id) => !item(id).locked); const ops = [...ui.selected].map((id) => ({ op: 'item.patch', id, patch: { locked: want } })); commitOps(want ? 'Lock selection' : 'Unlock selection', ops, { announce: want ? 'Selection locked' : 'Selection unlocked' });
+  const entries=[...ui.selected].map(item).filter(Boolean);
+  if(!entries.length)return;
+  const state=selectionLockState(entries);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  const action=state.unlocked>0?eligibility.lock:eligibility.unlock;
+  if(!action.enabled)return toast(action.reason);
+  return setSelectionLocked(entries,state.unlocked>0);
 }
 function groupSelected() {
-  if (ui.selected.size < 2) return toast('Select 2+ components');
-  const gid = `g${store.revision}-${model().nextId}`; const ids = [...ui.selected]; const ops = [{ op: 'group.set', id: gid, value: { id: gid, items: ids, layout: { kind: 'free', gap: CANVAS.gap } } }, ...ids.map((id) => ({ op: 'item.patch', id, patch: { groupId: gid } }))]; commitOps('Group selection', ops, { announce: 'Group container created' });
+  const ids=[...ui.selected],state=structuralSelectionState(model(),ids),eligibility=selectionActionEligibility(model(),ids,{clipboardKind:ui.semanticClipboard?.kind||null});
+  if(!eligibility.group.enabled)return toast(state.lockedCount?'Unlock selected components before grouping':state.groupedCount?'Ungroup selected components before creating a new group':eligibility.group.reason);
+  const gid=`g${store.revision}-${model().nextId}`;
+  const ops=[{op:'group.set',id:gid,value:{id:gid,items:ids,layout:{kind:'free',gap:CANVAS.gap}}},...ids.map(id=>({op:'item.patch',id,patch:{groupId:gid}}))];
+  commitOps('Group selection',ops,{announce:`Grouped ${ids.length} elements`});
 }
 function setContainerLayout(kind) {
   const gids=new Set([...ui.selected].map(id=>item(id)?.groupId).filter(Boolean));if(!gids.size)return toast('Select a grouped element');const rm=rectMap(),ops=[];
@@ -1372,16 +1786,49 @@ function setContainerLayout(kind) {
   if(ops.length)commitOps(`Apply ${kind} container layout`,[{op:'model.patch',patch:{mode:'guided'}},...ops],{announce:`Applied ${kind} container layout`});
 }
 function ungroupSelected() {
-  const gids = new Set([...ui.selected].map((id) => item(id)?.groupId).filter(Boolean)); if (!gids.size) return toast('No selected group');
-  const ops = []; for (const gid of gids) { model().items.filter((entry) => entry.groupId === gid).forEach((entry) => ops.push({ op: 'item.patch', id: entry.id, patch: { groupId: null } })); ops.push({ op: 'group.delete', id: gid }); }
-  commitOps('Ungroup selection', ops, { announce: 'Ungrouped' });
+  const state=structuralSelectionState(model(),[...ui.selected]);
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  if(!eligibility.ungroup.enabled)return toast(state.blockedGroupIds.length?'Unlock group members before ungrouping':eligibility.ungroup.reason);
+  const ops=[];
+  for (const gid of state.ungroupableGroupIds) {
+    model().items.filter(entry=>entry.groupId===gid).forEach(entry=>ops.push({op:'item.patch',id:entry.id,patch:{groupId:null}}));
+    ops.push({op:'group.delete',id:gid});
+  }
+  if(!ops.length)return toast('No eligible selected group');
+  commitOps('Ungroup selection',ops,{announce:`Ungrouped ${state.ungroupableGroupIds.length} group${state.ungroupableGroupIds.length===1?'':'s'}`});
 }
-function layer(delta) { if (!ui.selected.size) return; commitOps(delta > 0 ? 'Bring forward' : 'Send backward', [...ui.selected].map((id) => ({ op: 'item.patch', id, patch: { z: clamp((item(id).z || 1) + delta, 0, 99) } }))); }
+function layer(delta) {
+  const eligibility=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  const action=delta>0?eligibility.front:eligibility.back;
+  if(!action.enabled)return toast(action.reason);
+  const entries=[...ui.selected].map(item).filter(Boolean),plan=layerSelectionPlan(entries,delta);
+  if(!plan.length)return toast('Selected components are locked');
+  commitOps(
+    delta>0?'Bring forward':'Send backward',
+    plan.map(({id,patch})=>({op:'item.patch',id,patch})),
+    {announce:`${delta>0?'Brought forward':'Sent backward'} ${plan.length} unlocked element${plan.length===1?'':'s'}`},
+  );
+}
 function align(kind) {
   if (model().mode === 'smart') return toast('Align is automatic in Smart mode'); if (ui.selected.size < 2) return toast('Select 2+ components');
   const rm = rectMap(), inset=model().mode==='guided'?CANVAS.gap:0; const A = [...ui.selected].map((id) => ({ entry: item(id), r: rm.get(id) })).filter((x)=>x.entry&&x.r&&!x.entry.locked); if(A.length<2)return toast('Select 2+ unlocked components'); const u = rectUnion(A.map((x) => x.r)); const ops = [];
-  for (const x of A) { const patch = {}; if (kind === 'left') patch.x = u.x; if (kind === 'top') patch.y = u.y; if (kind === 'center') patch.x = u.x + (u.w - x.r.w) / 2; if (kind === 'middle') patch.y = u.y + (u.h - x.r.h) / 2; if(patch.x!=null)patch.x=clamp(patch.x,inset,CANVAS.w-inset-x.r.w);if(patch.y!=null)patch.y=clamp(patch.y,inset,CANVAS.h-inset-x.r.h);ops.push({ op: 'item.patch', id: x.entry.id, patch }); }
+  for (const x of A) { const patch = {}; if (kind === 'left') patch.x = u.x; if (kind === 'center') patch.x = u.x + (u.w - x.r.w) / 2; if (kind === 'right') patch.x = u.x + u.w - x.r.w; if (kind === 'top') patch.y = u.y; if (kind === 'middle') patch.y = u.y + (u.h - x.r.h) / 2; if (kind === 'bottom') patch.y = u.y + u.h - x.r.h; if(patch.x!=null)patch.x=clamp(patch.x,inset,CANVAS.w-inset-x.r.w);if(patch.y!=null)patch.y=clamp(patch.y,inset,CANVAS.h-inset-x.r.h);ops.push({ op: 'item.patch', id: x.entry.id, patch }); }
   if(model().mode==='guided'&&manualOpsOverlap(ops))return toast('Guided alignment would overlap another component'); commitOps(`Align ${kind}`, ops);
+}
+function matchSize(kind) {
+  if (model().mode === 'smart') return toast('Equal sizing is automatic in Smart mode');
+  if (ui.selected.size < 2) return toast('Select 2+ components');
+  const rm=rectMap(),entries=[...ui.selected].map((id)=>{
+    const entry=item(id),r=rm.get(id),policy=entry?semanticPolicy(entry):null;
+    return entry&&r&&!entry.locked?{id,entry,r,minW:policy.minW,minH:policy.minH}:null;
+  }).filter(Boolean);
+  if(entries.length<2)return toast('Select 2+ unlocked components');
+  const inset=model().mode==='guided'?CANVAS.gap:0;
+  const patches=matchSizePatches(entries,kind,{canvasWidth:CANVAS.w,canvasHeight:CANVAS.h,inset});
+  const ops=patches.map(({id,patch})=>({op:'item.patch',id,patch}));
+  if(!ops.length)return;
+  if(model().mode==='guided'&&manualOpsOverlap(ops))return toast('Guided equal sizing would overlap another component');
+  commitOps(`Match ${kind}`,ops,{announce:`Matched ${kind} to first selected element`});
 }
 function distribute(axis) {
   if (model().mode === 'smart') return toast('Distribution is automatic in Smart mode'); if (ui.selected.size < 3) return toast('Select 3+ components');
@@ -1402,17 +1849,20 @@ function setMode(nextMode) {
   performModeSwitch(nextMode);
 }
 function applySuggestion(preset) {
-  const ops = [{ op: 'model.patch', patch: { layoutPreset: preset, mode: 'smart' } }];
-  const orderMap = LAYOUT_ORDER[preset] || LAYOUT_ORDER.editorial;
-  if (orderMap) [...model().items].sort((a, b) => orderMap.indexOf(a.type) - orderMap.indexOf(b.type)).forEach((entry, k) => { if (entry.order !== k) ops.push({ op: 'item.patch', id: entry.id, patch: { order: k } }); });
-  commitOps('Apply layout suggestion', ops, { announce: `${preset[0].toUpperCase() + preset.slice(1)} composition applied` });
+  const next=parseCanonical(store.serialize());
+  next.layoutPreset=preset;
+  next.mode='smart';
+  const orderMap=LAYOUT_ORDER[preset]||LAYOUT_ORDER.editorial;
+  if(orderMap){
+    const ranked=[...next.items].sort((a,b)=>orderMap.indexOf(a.type)-orderMap.indexOf(b.type));
+    const orderById=new Map(ranked.map((entry,index)=>[entry.id,index]));
+    next.items=next.items.map(entry=>({...entry,order:orderById.get(entry.id)??entry.order}));
+  }
+  const accepted=commitOps('Apply built-in preset',[{op:'model.replace',value:next}],{announce:`${preset[0].toUpperCase()+preset.slice(1)} composition applied`});
+  if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);renderPresetList();}
+  return accepted;
 }
 function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const ops = [{ op: 'model.patch', patch: { mode: 'smart' } }, ...normalizeOrderOps()]; commitOps('Reflow report', ops, { announce: 'Smart composition reflowed' }); }
-function openLayoutGallery() {
-  $('#modalTitle').textContent='Report layouts';
-  $('#modalBody').innerHTML=`<div class="modal-form"><b>Choose a composition</b><span>Layouts preserve your components and data. They reorder the story and use Smart mode to compose it within the fixed page size.</span><div class="layout-gallery">${builtInPresets.map(layout=>`<button type="button" class="suggestion" data-layout-choice="${layout.id}"><b>${esc(layout.name)}</b><span>${esc(layout.description)}</span></button>`).join('')}</div></div>`;
-  $$('[data-layout-choice]',$('#modalBody')).forEach(button=>button.addEventListener('click',()=>{applySuggestion(button.dataset.layoutChoice);closeModals();}));openModal($('#genericModal'));
-}
 function setCanvasSize(width, height) {
   width=Math.round(Number(width)); height=Math.round(Number(height));
   if(!Number.isInteger(width)||!Number.isInteger(height)||width<640||width>3840||height<360||height>MAX_CANVAS_H)return toast('Page size must be 640–3840px wide and 360–4800px high');
@@ -1425,23 +1875,104 @@ function setCanvasSize(width, height) {
   commitOps('Set page size',ops,{announce:`Page size set to ${width} × ${height}`});
 }
 function openPageSize() {
-  const size=canvasSize();
+  const size=canvasSize(),modal=$('#genericModal');
+  modal.classList.add('page-size-modal');
   $('#modalTitle').textContent='Page size';
-  $('#modalBody').innerHTML=`<form class="modal-form" id="pageSizeForm"><b>Absolute report page</b><span>The page stays this size until you change it. Smart layout fits within it; Guided and Free scale existing geometry only when you apply a new size.</span><div class="field-grid"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><div class="r-actions"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Presentation</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply page size</button></div></form>`;
-  const form=$('#pageSizeForm');$$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});$('[data-close]',form).addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#pageWidth'));
+  $('#modalBody').innerHTML=`<form class="modal-form page-size-form" id="pageSizeForm"><div class="page-size-presets" role="group" aria-label="Page size presets"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Wide</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="page-size-dimensions"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><small>Smart fits within the fixed page. Guided and Free scale existing geometry when the size changes.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply</button></div></form>`;
+  const form=$('#pageSizeForm');
+  $$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));
+  form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});
+  $('[data-close]',form).addEventListener('click',closeModals,{once:true});
+  openModal(modal,$('#pageWidth'));
+}
+function selectAllComponents() {
+  const ids=model().items.map(entry=>entry.id);
+  if(!ids.length)return toast('No elements to select');
+  ui.selected=new Set(ids);
+  reconcileCanvas({content:false});
+  renderInspector();
+}
+function duplicateSelected() {
+  const ids=[...ui.selected].filter(id=>item(id));
+  if(!ids.length)return toast('Select at least one element to duplicate');
+  const size=canvasSize();
+  const plan=duplicateSelectionPlan(model(),ids,{
+    mode:model().mode,
+    canvasWidth:size.width,
+    canvasHeight:size.height,
+  });
+  if(!plan.ops.length)return;
+  const accepted=commitOps(
+    ids.length===1?'Duplicate component':'Duplicate selection',
+    plan.ops,
+    {announce:`Duplicated ${ids.length} element${ids.length===1?'':'s'}`},
+  );
+  if(!accepted)return;
+  ui.selected=new Set(plan.newIds);
+  renderAll();
+  return plan.newIds;
 }
 function duplicateOne(id) {
-  const source = item(id); const copy = structuredClone(source); const nextId = `c${model().nextId}`; copy.id = nextId; copy.order = model().items.length; copy.z = (source.z || 1) + 1; copy.title = `${source.title} copy`; copy.groupId = null;
-  if (model().mode !== 'smart') { copy.x = clamp(source.x + 24, 0, CANVAS.w - source.w); copy.y = clamp(source.y + 24, 0, CANVAS.h - source.h); }
-  commitOps('Duplicate component', [{ op: 'item.add', item: copy }, { op: 'model.patch', patch: { nextId: model().nextId + 1 } }]); ui.selected = new Set([nextId]); renderAll();
+  if(!item(id))return;
+  ui.selected=new Set([id]);
+  return duplicateSelected();
 }
 const CLIPBOARD_PREFIX='VISMBLER_P0:';
+function clipboardRects() {
+  return Object.fromEntries([...rectMap()].map(([id,r])=>[id,{x:r.x,y:r.y,w:r.w,h:r.h}]));
+}
+function writeSemanticClipboard(payload,message) {
+  ui.semanticClipboard=payload;
+  const encoded=CLIPBOARD_PREFIX+JSON.stringify(payload);
+  navigator.clipboard?.writeText?.(encoded).catch(()=>{});
+  if(message)toast(message);
+  return payload;
+}
 function copySemanticSelection(kind='visual_full') {
-  if(ui.selected.size!==1)return toast('Select one visual to copy'); const entry=item([...ui.selected][0]); if(!entry)return;
-  const dataset=selectedDataset(entry); const payload={version:1,kind,entry:structuredClone(entry),dataset:dataset?structuredClone(dataset):null}; ui.semanticClipboard=payload;
-  const encoded=CLIPBOARD_PREFIX+JSON.stringify(payload); navigator.clipboard?.writeText?.(encoded).catch(()=>{}); toast(kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`); return payload;
+  if(!ui.selected.size)return toast('Select at least one visual to copy');
+  if(ui.selected.size>1) {
+    if(kind!=='visual_full')return toast('Data, mapping, and style copy require one selected visual');
+    const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+    if(!payload)return false;
+    return writeSemanticClipboard(payload,`${payload.items.length} elements copied`);
+  }
+  const entry=item([...ui.selected][0]); if(!entry)return;
+  const dataset=selectedDataset(entry);
+  if(kind==='style') {
+    return writeSemanticClipboard(
+      {version:2,kind:'style',style:styleSnapshot(entry)},
+      'Style copied',
+    );
+  }
+  const payload={version:1,kind,entry:structuredClone(entry),dataset:dataset?structuredClone(dataset):null};
+  return writeSemanticClipboard(payload,kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`);
+}
+
+function pasteCompositionPayload(payload) {
+  const size=canvasSize(),inset=model().mode==='guided'?CANVAS.gap:0;
+  const plan=pasteCompositionPlan(model(),payload,{mode:model().mode,canvasWidth:size.width,canvasHeight:size.height,inset});
+  if(!plan.ops.length)return false;
+  const accepted=commitOps('Paste composition',plan.ops,{announce:`Pasted ${plan.newIds.length} elements`});
+  if(accepted){ui.selected=new Set(plan.newIds);renderAll();}
+  return !!accepted;
 }
 function pasteSemanticPayload(payload, mode='auto') {
+  if(payload?.kind==='composition')return pasteCompositionPayload(payload);
+  if(mode==='style' || payload?.kind==='style') {
+    if(ui.selected.size<1)return false;
+    const source=payload?.entry||null;
+    const snapshot=payload?.style||(source?styleSnapshot(source):null);
+    if(!snapshot)return false;
+    const targets=[...ui.selected].map(item).filter(Boolean);
+    const plan=stylePastePlan(targets,snapshot);
+    if(!plan.length)return toast('No unlocked selected elements can accept this style');
+    const ops=plan.map(({id,patch})=>({op:'item.patch',id,patch}));
+    return !!commitOps(
+      targets.length===1?'Paste style':'Paste style to selection',
+      ops,
+      {announce:`Applied style to ${plan.length} element${plan.length===1?'':'s'} · ${styleSummary(snapshot)}`},
+    );
+  }
   if(!payload?.entry)return false; const source=payload.entry;
   if(mode==='append-data') {
     if(ui.selected.size!==1||!payload.dataset)return false;const target=item([...ui.selected][0]),existing=selectedDataset(target);if(!existing)return toast('Paste data first, then append matching rows');const appended=appendCompatibleDataset(existing,payload.dataset);if(!appended.ok)return toast(appended.reason);const accepted=commitDataset(target,'Append dataset data',appended.dataset,target.mapping||{});if(accepted)toast('Appended data');return !!accepted;
@@ -1451,25 +1982,50 @@ function pasteSemanticPayload(payload, mode='auto') {
     return !!replaceDataset(target,'Paste dataset data',dataset,structuredClone(source.mapping||{}));
   }
   if(mode==='mapping' || payload.kind==='mapping') { if(ui.selected.size!==1)return false;const target=item([...ui.selected][0]),dataset=selectedDataset(target);if(!dataset)return false;const mapping=structuredClone(source.mapping||{}),validation=contractFor(viewContractForEntry(target)).validate(mapping,dataset.fields);if(!validation.valid)return toast(mappingProblem(validation));return !!commitOps('Paste mapping',[{op:'item.patch',id:target.id,patch:{mapping}}],{announce:'Pasted mapping'}); }
-  if(mode==='style' || payload.kind==='style') { if(ui.selected.size!==1)return false;const target=item([...ui.selected][0]);const style=['title','showTitle','textAlign','weight','emphasis','variant','unit'].reduce((out,key)=>{if(key in source)out[key]=source[key];return out;},{});return !!commitOps('Paste style',[{op:'item.patch',id:target.id,patch:style}],{announce:'Pasted style'}); }
   const copy=structuredClone(source),nextId=`c${model().nextId}`;copy.id=nextId;copy.order=model().items.length;copy.z=(source.z||0)+1;copy.groupId=null;copy.title=`${source.title} copy`;
   let datasets=model().datasets; if(payload.dataset&&mode==='independent'){const cloned={...structuredClone(payload.dataset),id:datasetId(),name:`${payload.dataset.name} copy`,revision:1};datasets=[...datasets,cloned];copy.dataset_id=cloned.id;}
   if(model().mode!=='smart'){copy.x=clamp((source.x||0)+24,0,CANVAS.w-(source.w||200));copy.y=clamp((source.y||0)+24,0,CANVAS.h-(source.h||140));}
   const ops=[{op:'item.add',item:copy},{op:'model.patch',patch:{nextId:model().nextId+1,...(datasets!==model().datasets?{datasets}:{})}}];const accepted=commitOps(mode==='independent'?'Paste independent visual':'Paste linked visual',ops,{announce:mode==='independent'?'Pasted independent visual':'Pasted linked visual'});if(accepted)ui.selected=new Set([nextId]);return !!accepted;
 }
+function cutSemanticSelection() {
+  if(!ui.selected.size)return toast('Select at least one element to cut');
+  const entries=[...ui.selected].map(item).filter(Boolean);
+  if(entries.some(entry=>entry.locked))return toast('Unlock selected components before cutting');
+  const payload=copySemanticSelection('visual_full');
+  if(!payload)return false;
+  deleteSelected();
+  return true;
+}
+function pasteSemanticClipboard() {
+  if(!ui.semanticClipboard)return toast('Clipboard is empty');
+  return pasteSemanticPayload(ui.semanticClipboard,'independent');
+}
 function semanticPayloadFromText(text) { if(!String(text||'').startsWith(CLIPBOARD_PREFIX))return null;try{return JSON.parse(String(text).slice(CLIPBOARD_PREFIX.length));}catch{return null;} }
-function showDropGhost(e) { const g = $('#dropGhost'); if (model().mode === 'smart') Object.assign(g.style, { display: 'block', left: '6px', top: `${CANVAS.h - 80}px`, width: `${CANVAS.w - 12}px`, height: '70px' }); else { const p = logicalPoint(e); Object.assign(g.style, { display: 'block', left: `${clamp(p.x - 90, 0, CANVAS.w - 180)}px`, top: `${clamp(p.y - 60, 0, CANVAS.h - 120)}px`, width: '180px', height: '120px' }); } }
+function draggedLibraryEntry(e) {
+  let element='',engine='',type='';
+  try { const encoded=e.dataTransfer?.getData('application/x-viz-element'); if(encoded){const value=JSON.parse(encoded);element=String(value.element||'');engine=String(value.engine||'');} } catch {}
+  type=e.dataTransfer?.getData('application/x-viz-type')||'';
+  if(!engine&&type&&quickCanonical[type]) [element,engine]=quickCanonical[type];
+  if(!engine)return null;
+  const mappedType=engineToType[engine]||type||'text',defaults=typeDefaults[mappedType]||typeDefaults.text;
+  return {id:'__drop__',type:mappedType,element:element||defaults.title,engine,title:element||defaults.title,order:model().items.length,weight:defaults.weight,locked:false,groupId:null,z:0,...starterContent(engine,element||defaults.title)};
+}
+function showDropGhost(e) {
+  const entry=draggedLibraryEntry(e);if(!entry)return;
+  const p=logicalPoint(e),previewEntry={...entry};
+  if(model().mode==='smart'){
+    const rect=semanticSmartLayout([...model().items,previewEntry]).rects.find(value=>value.id===entry.id);if(rect)showGhostRects([rect],'smart-insert');
+    return;
+  }
+  const rect=initialManualGeometry(previewEntry,p);if(rect)showGhostRects([rect],`${model().mode}-insert`);
+}
 
 function toggleChartPoint(entry, k) { const cross = entry.cross === k ? null : k; const crossFilter = cross == null ? null : chartData(entry)[cross][0]; commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]); }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
 function setBrushByKeyboard(entry, kind, delta) { const D = chartData(entry); const next = [...(entry.brush || [0, D.length - 1])]; if (kind === 'start') next[0] = clamp(next[0] + delta, 0, next[1]); else next[1] = clamp(next[1] + delta, next[0], D.length - 1); if (next[0] !== entry.brush[0] || next[1] !== entry.brush[1]) commitOps('Adjust brush range', [{ op: 'item.patch', id: entry.id, patch: { brush: next } }]); }
-let intakeWorker = null, intakeSequence = 0;
 function parsePaste(txt) { const result=intakeText(txt); return result.rows.length ? result : null; }
-function parsePasteAsync(txt) {
-  const source=String(txt||''); if(source.length<OFF_THREAD_INTAKE_BYTES||typeof Worker==='undefined')return Promise.resolve(parsePaste(source));
-  if(!intakeWorker)intakeWorker=new Worker(new URL('./authoring_data_worker.mjs',import.meta.url),{type:'module'});
-  const id=++intakeSequence; return new Promise((resolve,reject)=>{const receive=({data})=>{if(data?.id!==id)return;intakeWorker.removeEventListener('message',receive);if(data.error)reject(new Error(data.error));else resolve(data.result?.rows?.length?data.result:null);};intakeWorker.addEventListener('message',receive);intakeWorker.postMessage({id,text:source});});
-}
+const intakeClient=createIntakeClient({makeWorker:()=>new Worker(new URL('./authoring_data_worker.mjs',import.meta.url),{type:'module'}),parseInline:parsePaste,threshold:OFF_THREAD_INTAKE_BYTES});
+function parsePasteAsync(txt) { return intakeClient.parse(txt); }
 function datasetId() { return `dataset-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,8)}`; }
 function fieldById(dataset, id) { return dataset.fields.find((field)=>field.id===id); }
 function fieldIndex(dataset, id) { return dataset.fields.findIndex((field)=>field.id===id); }
@@ -1480,7 +2036,7 @@ function canonicalPatch(entry, dataset, mapping) {
   if(entry.engine==='TableEngine'||entry.type==='table') {const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.tableRows);return {customTable:{headers:dataset.fields.map(field=>field.name),rows},rows,source_row_count:dataset.rows.length};}
   if(entry.engine==='MatrixEngine') { const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.tableRows),rowIndex=fieldIndex(dataset,mapping.category||mapping.y),columnIndex=fieldIndex(dataset,mapping.series||mapping.x),valueIndex=fieldIndex(dataset,mapping.value);if(rowIndex>=0&&columnIndex>=0&&valueIndex>=0)return {matrix_long:rows.map(row=>({row:row[rowIndex],column:row[columnIndex],value:row[valueIndex]})),source_row_count:dataset.rows.length};return {matrix:[dataset.fields.map(field=>field.name),...rows],source_row_count:dataset.rows.length}; }
   if(entry.engine==='DiagramEngine'&&mapping.source&&mapping.target) { const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.diagramEdges),sourceIndex=fieldIndex(dataset,mapping.source),targetIndex=fieldIndex(dataset,mapping.target),edges=rows.map(row=>[String(row[sourceIndex]??''),String(row[targetIndex]??'')]).filter(edge=>edge[0]&&edge[1]),nodes=[...new Set(edges.flat())]; return {nodes,edges,source_row_count:dataset.rows.length}; }
-  if(entry.engine==='WaferFabEngine') { const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.waferRows),first=(role)=>{const index=fieldIndex(dataset,mapping[role]);return index<0?null:dataset.rows.find(row=>row[index]!==null&&row[index]!==undefined&&String(row[index]).trim()!=='')?.[index]??null;};return {observations:rows.map(row=>({x:row[fieldIndex(dataset,mapping.die_x||mapping.x)],y:row[fieldIndex(dataset,mapping.die_y||mapping.y)],value:row[fieldIndex(dataset,mapping.value)]})),wafer_id:first('wafer_id'),lot:first('lot_id'),tool:first('tool'),chamber:first('chamber'),recipe:first('recipe'),process:first('process'),bin:first('bin'),fab_rows:rows.map(row=>Object.fromEntries(dataset.fields.map((field,index)=>[field.name,row[index]]))),fab_fields:dataset.fields.map(field=>({id:field.id,name:field.name,type:field.type})),fab_mapping:mapping,source_row_count:dataset.rows.length}; }
+  if(entry.engine==='WaferFabEngine') { const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.waferRows),at=(row,role)=>{const index=fieldIndex(dataset,mapping[role]);return index<0?null:row[index]??null;},first=(role)=>{const index=fieldIndex(dataset,mapping[role]);return index<0?null:dataset.rows.find(row=>row[index]!==null&&row[index]!==undefined&&String(row[index]).trim()!=='')?.[index]??null;};return {observations:rows.map(row=>({x:at(row,'die_x')??at(row,'x'),y:at(row,'die_y')??at(row,'y'),value:at(row,'value'),lot_id:at(row,'lot_id'),wafer_id:at(row,'wafer_id'),tool:at(row,'tool'),chamber:at(row,'chamber'),recipe:at(row,'recipe'),process:at(row,'process'),route:at(row,'route'),product:at(row,'product'),bin:at(row,'bin'),status:at(row,'status')})),wafer_id:first('wafer_id'),lot:first('lot_id'),tool:first('tool'),chamber:first('chamber'),recipe:first('recipe'),process:first('process'),route:first('route'),product:first('product'),bin:first('bin'),status:first('status'),fab_rows:rows.map(row=>Object.fromEntries(dataset.fields.map((field,index)=>[field.name,row[index]]))),fab_fields:dataset.fields.map(field=>({id:field.id,name:field.name,type:field.type})),fab_mapping:mapping,source_row_count:dataset.rows.length}; }
   if(entry.engine==='TimelineEngine') {const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.chartRows);return {milestones:rows.map((row,index)=>({label:String(row[fieldIndex(dataset,mapping.category||mapping.label)]??index+1),date:row[fieldIndex(dataset,mapping.time)]??null})),source_row_count:dataset.rows.length};}
   if(entry.engine==='EngineeringChartEngine') { const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.engineeringRows),valueIndex=fieldIndex(dataset,mapping.value),labelIndex=fieldIndex(dataset,mapping.time||mapping.category||mapping.x),subgroupIndex=fieldIndex(dataset,mapping.subgroup);const grouped=new Map();rows.forEach(row=>{const key=subgroupIndex<0?null:String(row[subgroupIndex]??'');if(key!==null){if(!grouped.has(key))grouped.set(key,[]);grouped.get(key).push(row[valueIndex]);}});const first=(role)=>{const index=fieldIndex(dataset,mapping[role]);return index<0?null:dataset.rows.find(row=>row[index]!==null&&row[index]!==undefined)?.[index]??null;};return {observations:rows.map((row,index)=>({label:String(row[labelIndex]??index+1),value:row[valueIndex]})),subgroups:[...grouped.values()],specification_low:first('specification_low'),specification_high:first('specification_high'),analysis_rows:rows.map(row=>Object.fromEntries(dataset.fields.map((field,index)=>[field.name,row[index]]))),analysis_fields:dataset.fields.map(field=>({id:field.id,name:field.name,type:field.type})),analysis_mapping:mapping,source_row_count:dataset.rows.length}; }
   const labelId=mapping.category||mapping.label||mapping.time||mapping.x||dataset.fields[0]?.id; const valueId=mapping.value||mapping.y||dataset.fields.find(field=>['integer','number'].includes(field.type))?.id; const labels=valuesFor(dataset,labelId), values=valuesFor(dataset,valueId); const firstValue=values.find(value=>value!==null&&value!==undefined), lastValue=[...values].reverse().find(value=>value!==null&&value!==undefined);
@@ -1489,15 +2045,115 @@ function canonicalPatch(entry, dataset, mapping) {
   if(['TextEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(entry.engine)) return {text:String(lastValue??labels.at(-1)??''),body:String(lastValue??labels.at(-1)??''),statement:String(lastValue??labels.at(-1)??''),detail:`Mapped from ${fieldById(dataset,valueId)?.name||'data'}`};
   const indexes=sampledRows(dataset.rows.map((_,index)=>index),PERFORMANCE_LIMITS.chartRows),data=indexes.map(index=>[String(labels[index]??index+1),values[index]]); return {data,rows:data.map(([label,value])=>({label,value})),brush:[0,Math.max(0,data.length-1)],cross:null,drill:null,subtitle:`Mapped ${names(labelId)} to ${names(valueId)}`,source_row_count:dataset.rows.length};
 }
-function viewContractForEntry(entry) { if(entry?.view_type)return entry.view_type; if(entry?.engine==='TableEngine')return 'table';if(entry?.engine==='DiagramEngine')return 'diagram';if(entry?.engine==='EngineeringChartEngine')return 'engineering';if(entry?.engine==='WaferFabEngine')return 'wafer';return 'bar'; }
-function mappingProblem(validation) { return validation.incompatible.length?`Cannot bind: incompatible field for ${validation.incompatible.join(', ')}.`:`Cannot bind: map ${validation.missing.join(', ')} first.`; }
+function viewContractForEntry(entry) { if(entry?.view_type)return entry.view_type; if(entry?.engine==='TableEngine')return 'table';if(entry?.engine==='TimelineEngine')return 'timeline';if(entry?.engine==='DiagramEngine')return 'diagram';if(entry?.engine==='EngineeringChartEngine')return 'engineering';if(entry?.engine==='WaferFabEngine')return 'wafer';if(entry?.engine==='CoreChartEngine'&&/(line|area)/i.test(entry.element||''))return 'line';return 'bar'; }
+function mappingProblem(validation={}) { const incompatible=Array.isArray(validation.incompatible)?validation.incompatible:[],missing=Array.isArray(validation.missing)?validation.missing:Array.isArray(validation.unresolved)?validation.unresolved:[]; return incompatible.length?`Cannot bind: incompatible field for ${incompatible.join(', ')}.`:missing.length?`Cannot bind: map ${missing.join(', ')} first.`:'Cannot bind this data to the selected visual.'; }
 function mappingFor(result, view) { const candidate=candidateForView(result,view);if(!candidate)return {error:`No ${view} mapping candidate is available.`};if(candidate.unresolved.length||candidate.incompatible.length)return {error:mappingProblem(candidate)};return {mapping:structuredClone(candidate.mapping),candidate}; }
-function pasteToBlank(result) {
-  const recommendation=result.recommendations[0]; if(!recommendation)return toast('No compatible visualization was inferred; review the pasted field types.'); const view=recommendation.view, binding=mappingFor(result,view);if(binding.error)return toast(binding.error); const engine=({bar:'CoreChartEngine',line:'CoreChartEngine',scatter:'CoreChartEngine',table:'TableEngine',wafer:'WaferFabEngine',diagram:'DiagramEngine',engineering:'EngineeringChartEngine'})[view]||'TableEngine';
-  const type=engineToType[engine]||'table', defaults=typeDefaults[type]||typeDefaults.table, id=`c${model().nextId}`, dataId=datasetId(), dataset=datasetFromIntake(result,dataId,'Pasted data'), mapping=binding.mapping;
-  const entry={id,type,element:view==='wafer'?'Wafer Map':view==='diagram'?'Data Flow':view==='engineering'?'SPC Control Chart':view==='table'?'Clean Table':'Bar Chart',engine,title:recommendation?.view==='table'?'Pasted data':`${recommendation?.view||'Data'} view`,showTitle:false,textAlign:'left',weight:defaults.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map((item)=>item.z||0))+1,dataset_id:dataId,view_type:view,mapping,...starterContent(engine,'')};
-  const accepted=commitOps('Paste data onto canvas',[{op:'model.patch',patch:{datasets:[...model().datasets,dataset],nextId:model().nextId+1}},{op:'item.add',item:entry}],{announce:`Created ${entry.title}`}); if(accepted) ui.selected=new Set([id]); return !!accepted;
+function dataFirstEntry(plan, id) {
+  const {target}=plan, type=engineToType[target.engine]||'table', defaults=typeDefaults[type]||typeDefaults.table;
+  return {id,type,element:target.element,engine:target.engine,title:target.element,showTitle:false,textAlign:'left',message_role:suggestMessageRole(target),weight:defaults.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map((entry)=>entry.z||0))+1,dataset_id:plan.dataset.id,view_type:plan.view,mapping:plan.mapping,...starterContent(target.engine,target.element)};
 }
+function createDataFirstVisual(plan, label='Create visual from data') {
+  if(!plan?.valid)return false;
+  const id=`c${model().nextId}`,entry=dataFirstEntry(plan,id),startSmart=model().mode==='guided'&&!model().items.length,geometry=startSmart?null:initialManualGeometry(entry);
+  if(!startSmart&&!geometry){toast('No free space in Guided mode. Increase page size or switch to Free.');return false;}if(geometry)Object.assign(entry,geometry);
+  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,plan.dataset],nextId:model().nextId+1,crossFilter:null,...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:entry}],{announce:`Created ${entry.element}`});
+  if(accepted){stageDRememberDataset(plan.dataset);ui.selected=new Set([id]);renderAll();}
+  return !!accepted;
+}
+function pasteToBlank(result) {
+  const recommendation=productionRecommendations(result)[0]; if(!recommendation)return toast('No compatible production visual was inferred; review the pasted field types.');
+  const plan=planDataFirstCreation({intake:result,view:recommendation.view,mapping:recommendation.mapping,datasetId:datasetId()});
+  if(!plan.valid)return toast(plan.error);
+  return createDataFirstVisual(plan,'Paste data onto canvas');
+}
+function dataFirstFieldOptions(fields, contract, role, selected) {
+  const options=['<option value="">Unmapped</option>'];
+  fields.forEach(field=>{
+    const incompatible=contract.validate({[role]:field.id},fields).incompatible.includes(role);
+    options.push(`<option value="${esc(field.id)}" ${selected===field.id?'selected':''} ${incompatible?'disabled':''}>${esc(field.name)} · ${esc(field.type)}${incompatible?' · incompatible':''}</option>`);
+  });
+  return options.join('');
+}
+function dialogFocusSnapshot(){
+  const node=document.activeElement;if(!node||!$('#modalBody')?.contains(node))return null;
+  const selector=node.id?`#${CSS.escape(node.id)}`:['data-data-first-role','data-data-first-view'].filter(k=>node.hasAttribute(k)).map(k=>`[${k}="${CSS.escape(node.getAttribute(k))}"]`)[0];
+  return selector?{node,selector,start:node.selectionStart,end:node.selectionEnd,scrollTop:node.scrollTop}:null;
+}
+function restoreDialogFocus(saved){
+  if(!saved)return;let node=$(saved.selector,$('#modalBody'));if(!node)return;
+  // Reuse the focused intake textarea, preserving native editing/undo history.
+  if(['dataFirstText','refreshDataText'].includes(saved.node.id)&&node!==saved.node){node.replaceWith(saved.node);node=saved.node;}
+  node.focus({preventScroll:true});if(typeof saved.start==='number'&&node.setSelectionRange)node.setSelectionRange(saved.start,saved.end);node.scrollTop=saved.scrollTop;
+}
+function renderDataFirstDialog() {
+  const state=ui.dataFirst, modal=$('#genericModal'); if(!state||!modal||ui.mappingManagerOpen)return; ui.mappingManagerOpen=false;
+  const focus=dialogFocusSnapshot();
+  const intake=state.intake, selected=state.destinationEntryId?item(state.destinationEntryId):null;
+  $('#modalTitle').textContent='Create from data';
+  const paste=`<label class="data-first-paste"><span>Paste rows from Excel, CSV, or TSV</span><textarea id="dataFirstText" placeholder="Paste rows from Excel, CSV, or TSV" aria-describedby="dataFirstHelp">${esc(state.sourceText||'')}</textarea><small id="dataFirstHelp">Paste a rectangular spreadsheet range, CSV, or TSV. Data stays in this report.</small></label>`;
+  if(!intake) {
+    const status=state.loading?'Parsing and profiling data…':state.error||'Paste data to see production-ready visual choices.';
+    const statusAttrs=state.error?'class="data-first-status error" role="alert"':'class="data-first-status" aria-live="polite"';
+    $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div ${statusAttrs}>${esc(status)}</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`;
+    bindDataFirstDialog();if(!modal.classList.contains('show'))openModal(modal,$('#dataFirstText'));restoreDialogFocus(focus);return;
+  }
+  const recommendations=productionRecommendations(intake), recommendation=recommendations.find(candidate=>candidate.view===state.view)||recommendations[0];
+  if(!recommendation) { $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-status error" role="alert">No supported production visual is available for this data.</div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button></div></div>`; bindDataFirstDialog();restoreDialogFocus(focus);return; }
+  state.view=recommendation.view; state.mapping=state.mapping&&state.mappingView===recommendation.view?state.mapping:structuredClone(recommendation.mapping); state.mappingView=recommendation.view;
+  const contract=contractFor(recommendation.contract_view||recommendation.view), validation=contract.validate(state.mapping,intake.fields), target=productionTargetForView(recommendation.view);
+  const roles=[...contract.required_roles,...contract.optional_roles.filter(role=>state.mapping[role])];
+  const fields=intake.fields.map(field=>`<li><b>${esc(field.name)}</b><span>${esc(field.type)}${field.semantic_tags?.length?` · ${esc(field.semantic_tags.join(', '))}`:''}</span></li>`).join('');
+  const cards=recommendations.map(candidate=>{const active=candidate.view===recommendation.view,targetName=candidate.production_target?.element||productionTargetForView(candidate.view)?.element;return `<button type="button" class="data-first-recommendation ${active?'active':''}" data-data-first-view="${esc(candidate.view)}" aria-pressed="${active?'true':'false'}"><b>${esc(targetName)}</b><span>${esc(candidate.reason)}</span><small>${candidate.confidence>=.9?'High confidence':candidate.confidence>=.75?'Good fit':'Safe fallback'}</small></button>`;}).join('');
+  const mappingRows=roles.map(role=>`<label class="data-first-mapping"><span>${esc(role.replaceAll('_',' '))}${contract.required_roles.includes(role)?' *':''}</span><select data-data-first-role="${esc(role)}">${dataFirstFieldOptions(intake.fields,contract,role,state.mapping[role])}</select></label>`).join('');
+  const replacement=selected?(()=>{const selectedView=viewContractForEntry(selected), binding=mappingFor(intake,selectedView), replaceValidation=binding.error?{valid:false,error:binding.error}:contractFor(selectedView).validate(binding.mapping,intake.fields);return `<div class="data-first-destination"><b>Selected visual: ${esc(selected.element||selected.title)}</b><button type="button" class="tb" id="dataFirstReplace" ${replaceValidation.valid?'':`disabled title="${esc(replaceValidation.error||mappingProblem(replaceValidation))}"`}>Replace selected data</button>${replaceValidation.valid?'':'<small>Replace selected data is unavailable: '+esc(replaceValidation.error||mappingProblem(replaceValidation))+'.</small>'}</div>`;})():'';
+  const error=validation.valid?'':`<div class="data-first-status error" id="dataFirstValidation" role="alert">${esc(mappingProblem(validation))}</div>`;
+  const matches=state.matches||[], saved=state.savedPresetId&&mappingPresets.find(preset=>preset.id===state.savedPresetId), savedUi=saved?`<div class="data-first-saved" aria-live="polite"><b>Using saved mapping · ${esc(saved.name)}</b><button type="button" class="link-button" id="dataFirstDetected">Use detected mapping</button><button type="button" class="link-button" data-forget-mapping="${esc(saved.id)}" aria-label="Forget mapping ${esc(saved.name)}">Forget</button></div>`:matches.length>1?`<div class="data-first-saved"><b>Saved mappings for this data</b><div class="data-first-saved-list">${matches.map(match=>`<button type="button" class="tb" data-use-mapping="${esc(match.preset.id)}">${esc(match.preset.name)} · ${esc(productionTargetForView(match.preset.view)?.element||match.preset.view)}</button>`).join('')}</div></div>`:'';
+  const mappingManagerButton=`<button type="button" class="link-button" id="dataFirstManageMappings">Manage saved mappings${mappingPresets.length?` · ${mappingPresets.length}`:''}</button>`;
+  const save=validation.valid&&hasUniqueNormalizedFields(intake.fields)?'<button type="button" class="tb" id="dataFirstSaveMapping">Save mapping</button>':!hasUniqueNormalizedFields(intake.fields)?'<small>Saved mappings require unique column names.</small>':'';
+  $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-summary"><b>${intake.rows.length.toLocaleString()} rows · ${intake.fields.length} columns</b><span>${intake.header.present?'Header detected':'No header detected'} · ${intake.delimiter==='\t'?'TSV':intake.delimiter===','?'CSV':'Delimited text'} · ${intake.warnings.length} warning${intake.warnings.length===1?'':'s'}</span></div><ul class="data-first-fields">${fields}</ul><div class="data-first-mapping-manager-link">${savedUi}${mappingManagerButton}</div><section class="data-first-recommendations" aria-label="Production visual recommendations">${cards}</section><section class="data-first-mappings"><div><b>Field mapping</b><button type="button" class="link-button" id="dataFirstReset">Use detected mapping</button></div>${mappingRows}</section>${error}${replacement}<div class="modal-actions">${save}<button type="button" class="tb" data-close>Cancel</button><button type="button" class="tb accent" id="dataFirstCreate" ${validation.valid?'':'disabled'}>Create visual</button></div></div>`;
+  bindDataFirstDialog();restoreDialogFocus(focus);
+}
+function mappingPresetCompatibility(preset,intake) {
+  if(!intake||!hasUniqueNormalizedFields(intake.fields))return {kind:'unknown',label:'Needs unique column names',mapping:null};
+  if(preset?.schema?.signature!==mappingSchemaSignature(intake.fields))return {kind:'incompatible',label:'Incompatible schema',mapping:null};
+  const mapping=mappingFromFieldNames(preset.mapping,intake.fields),validation=mapping?contractFor(preset.view).validate(mapping,intake.fields):{valid:false};
+  return validation.valid?{kind:'compatible',label:'Compatible',mapping}:{kind:'incompatible',label:'Does not satisfy this visual',mapping:null};
+}
+function saveMappingPresets() { mappingPresets=[...mappingPresets];dispatchSemantic('mapping.preferences_save_requested',{presets:mappingPresets}); }
+function renderMappingManager() {
+  const state=ui.dataFirst;if(!state)return;
+  ui.mappingManagerOpen=true;
+  $('#modalTitle').textContent='Manage mapping presets';
+  const rows=mappingPresets.length?mappingPresets.map(preset=>{const compatibility=mappingPresetCompatibility(preset,state.intake);const target=productionTargetForView(preset.view);return `<article class="mapping-manager-row" data-mapping-preset="${esc(preset.id)}"><div class="mapping-manager-heading"><input data-mapping-name value="${esc(preset.name)}" aria-label="Rename ${esc(preset.name)}"><span class="mapping-compatibility ${compatibility.kind}">${esc(compatibility.label)}</span></div><small>${esc(target?.element||preset.view)} · ${preset.schema?.fields?.length||0} fields</small><div class="mapping-manager-actions"><button type="button" class="tb" data-mapping-action="apply" ${compatibility.kind==='compatible'?'':'disabled'}>Apply</button><button type="button" class="tb" data-mapping-action="update" ${state.intake&&state.mapping&&state.view===preset.view&&hasUniqueNormalizedFields(state.intake.fields)?'':'disabled'}>Update from current</button><button type="button" class="tb" data-mapping-action="duplicate">Duplicate</button><button type="button" class="tb" data-mapping-action="delete">Forget</button></div></article>`;}).join(''):'<p class="mapping-manager-empty">No saved mappings yet. Save one after choosing a visual and mapping its fields.</p>';
+  $('#modalBody').innerHTML=`<div class="modal-form mapping-manager"><p class="field-help">Saved mappings are only applied when the current schema and visual contract are compatible. Incompatible presets are never auto-applied.</p><div class="mapping-manager-list">${rows}</div><div class="modal-actions"><button type="button" class="tb" id="mappingManagerBack">Back to data</button></div></div>`;
+  $('#mappingManagerBack').onclick=()=>{ui.mappingManagerOpen=false;renderDataFirstDialog();};
+  $$('[data-mapping-action]').forEach(button=>button.addEventListener('click',()=>{const row=button.closest('[data-mapping-preset]'),preset=mappingPresets.find(value=>value.id===row?.dataset.mappingPreset),action=button.dataset.mappingAction;if(!preset)return;const compatibility=mappingPresetCompatibility(preset,state.intake);if(action==='apply'&&compatibility.mapping){state.savedPresetId=preset.id;state.view=preset.view;state.mapping=compatibility.mapping;state.mappingView=preset.view;ui.mappingManagerOpen=false;renderDataFirstDialog();toast(`Applied mapping · ${preset.name}`);return;}if(action==='update'&&state.intake&&state.mapping&&state.view===preset.view){preset.schema={fields:state.intake.fields.map(field=>normalizedFieldName(field.name)).sort(),signature:mappingSchemaSignature(state.intake.fields)};preset.mapping=mappingToFieldNames(state.mapping,state.intake.fields);saveMappingPresets();state.savedPresetId=preset.id;state.matches=matchingMappingPresets(mappingPresets,state.intake);renderMappingManager();toast(`Updated mapping · ${preset.name}`);return;}if(action==='duplicate'){const copy=structuredClone(preset);copy.id=`mapping-${Date.now().toString(36)}`;copy.name=`${preset.name} copy`;mappingPresets.push(copy);saveMappingPresets();renderMappingManager();return;}if(action==='delete'){mappingPresets=mappingPresets.filter(value=>value.id!==preset.id);saveMappingPresets();if(state.savedPresetId===preset.id)state.savedPresetId=null;renderMappingManager();toast('Mapping preset forgotten');}}));
+  $$('[data-mapping-name]').forEach(input=>input.addEventListener('change',()=>{const preset=mappingPresets.find(value=>value.id===input.closest('[data-mapping-preset]')?.dataset.mappingPreset);const name=input.value.trim();if(!preset||!name)return; preset.name=name.slice(0,80);saveMappingPresets();toast(`Renamed mapping · ${preset.name}`);}));
+}
+async function parseDataFirstText(text) {
+  const state=ui.dataFirst; if(!state)return; const token=++state.token; state.error=null; state.intake=null;
+  if(!String(text||'').trim()){state.loading=false;state.matches=[];state.savedPresetId=null;renderDataFirstDialog();return;}
+  state.loading=true; renderDataFirstDialog();
+  try { const intake=await parsePasteAsync(text); if(ui.dataFirst!==state||token!==state.token)return; state.intake=intake; state.loading=false; state.mapping=null; state.mappingView=null; state.matches=matchingMappingPresets(mappingPresets,intake); state.savedPresetId=null; if(state.matches.length===1){const match=state.matches[0];state.view=match.preset.view;state.mapping=match.mapping;state.mappingView=match.preset.view;state.savedPresetId=match.preset.id;} renderDataFirstDialog(); }
+  catch(error) { if(ui.dataFirst===state&&token===state.token){state.loading=false;state.error=error.message||String(error);renderDataFirstDialog();} }
+}
+function bindDataFirstDialog() {
+  const state=ui.dataFirst, form=$('#modalBody'); if(!state||!form)return;
+  $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
+  $('#dataFirstText',form)?.addEventListener('input',event=>{const text=event.target.value;state.sourceText=text;parseDataFirstText(text);});
+  $$('[data-data-first-view]',form).forEach(button=>button.addEventListener('click',()=>{state.view=button.dataset.dataFirstView;state.mapping=null;state.mappingView=null;renderDataFirstDialog();}));
+  $$('[data-data-first-role]',form).forEach(select=>select.addEventListener('change',event=>{state.mapping={...state.mapping,[event.target.dataset.dataFirstRole]:event.target.value};renderDataFirstDialog();}));
+  $('#dataFirstReset',form)?.addEventListener('click',()=>{const candidate=productionRecommendations(state.intake).find(item=>item.view===state.view);state.mapping=structuredClone(candidate?.mapping||{});state.mappingView=state.view;renderDataFirstDialog();});
+  $('#dataFirstDetected',form)?.addEventListener('click',()=>{state.savedPresetId=null;state.view=null;state.mapping=null;state.mappingView=null;renderDataFirstDialog();});
+  $$('[data-use-mapping]',form).forEach(button=>button.addEventListener('click',()=>{const match=(state.matches||[]).find(candidate=>candidate.preset.id===button.dataset.useMapping);if(match){state.savedPresetId=match.preset.id;state.view=match.preset.view;state.mapping=match.mapping;state.mappingView=match.preset.view;renderDataFirstDialog();}}));
+  $('#dataFirstManageMappings',form)?.addEventListener('click',renderMappingManager);
+  $$('[data-forget-mapping]',form).forEach(button=>button.addEventListener('click',()=>{mappingPresets=mappingPresets.filter(preset=>preset.id!==button.dataset.forgetMapping);dispatchSemantic('mapping.preferences_save_requested',{presets:mappingPresets});state.savedPresetId=null;state.matches=matchingMappingPresets(mappingPresets,state.intake);state.view=null;state.mapping=null;state.mappingView=null;renderDataFirstDialog();toast('Saved mapping forgotten');}));
+  $('#dataFirstSaveMapping',form)?.addEventListener('click',()=>openSaveMappingName());
+  $('#dataFirstCreate',form)?.addEventListener('click',()=>{const plan=planDataFirstCreation({intake:state.intake,view:state.view,mapping:state.mapping,datasetId:datasetId()});if(!plan.valid)return toast(plan.error);if(createDataFirstVisual(plan))closeModals();});
+  $('#dataFirstReplace',form)?.addEventListener('click',()=>{const entry=item(state.destinationEntryId),binding=entry&&mappingFor(state.intake,viewContractForEntry(entry));if(!entry||binding?.error)return;const existing=selectedDataset(entry),dataset={...datasetFromIntake(state.intake,entry.dataset_id||datasetId(),existing?.name||'Pasted data'),revision:(existing?.revision||0)+1};if(replaceDataset(entry,'Replace selected data',dataset,binding.mapping))closeModals();});
+}
+function openDataFirstDialog(initialText='') { const sourceText=typeof initialText==='string'?initialText:'';ui.mappingManagerOpen=false; ui.dataFirst={token:0,intake:null,loading:false,sourceText,mapping:null,mappingView:null,view:null,matches:[],savedPresetId:null,destinationEntryId:ui.selected.size===1?[...ui.selected][0]:null}; renderDataFirstDialog(); if(sourceText.trim())parseDataFirstText(sourceText); }
+function openSaveMappingName() { const state=ui.dataFirst;if(!state?.intake)return; const initial=`${productionTargetForView(state.view)?.element||'Data'} mapping`;$('#modalTitle').textContent='Save mapping';$('#modalBody').innerHTML=`<div class="modal-form"><label>Name<input id="mappingPresetName" maxlength="80" value="${esc(initial)}"></label><div class="modal-actions"><button type="button" class="tb" id="mappingSaveCancel">Cancel</button><button type="button" class="tb accent" id="mappingSaveConfirm">Save mapping</button></div></div>`;$('#mappingSaveCancel').onclick=renderDataFirstDialog;$('#mappingSaveConfirm').onclick=()=>{const name=$('#mappingPresetName').value.trim();if(!name)return;const fields=state.intake.fields,preset={version:1,id:`mapping-${Date.now().toString(36)}`,name,schema:{fields:fields.map(field=>normalizedFieldName(field.name)).sort(),signature:mappingSchemaSignature(fields)},view:state.view,mapping:mappingToFieldNames(state.mapping,fields)};mappingPresets=[...mappingPresets,preset];state.savedPresetId=preset.id;state.matches=matchingMappingPresets(mappingPresets,state.intake);dispatchSemantic('mapping.preferences_save_requested',{presets:mappingPresets});renderDataFirstDialog();toast(`Saved mapping · ${name}`);};openModal($('#genericModal'),$('#mappingPresetName'));}
 async function pasteToSelection(txt) {
   const parsed=await parsePasteAsync(txt); if (!parsed) return false;
   if(ui.selected.size!==1) return pasteToBlank(parsed);
@@ -1510,10 +2166,41 @@ async function pasteToSelection(txt) {
 async function appendTextToSelection(txt) {
   const parsed=await parsePasteAsync(txt);if(!parsed||ui.selected.size!==1)return false;const entry=item([...ui.selected][0]),existing=entry&&selectedDataset(entry);if(!existing){toast('Paste data first, then append matching rows');return false;}const appended=appendCompatibleDataset(existing,datasetFromIntake(parsed,existing.id,existing.name));if(!appended.ok){toast(appended.reason);return false;}const accepted=commitDataset(entry,'Append pasted rows',appended.dataset,entry.mapping||{});if(accepted)toast('Appended data');return !!accepted;
 }
+function hasAuthoringTextFocus() {
+  const active=document.activeElement;
+  return Boolean(active?.matches?.('input,textarea,select,[role="textbox"],[contenteditable="true"]')||active?.isContentEditable||active?.closest?.('[contenteditable="true"],[role="textbox"],.q-field'));
+}
+function looksLikeTabularPaste(text) {
+  const source=String(text||'').trim();
+  if(!source.includes('\n'))return false;
+  if(source.includes('\t'))return true;
+  const parsed=parseDelimitedText(source);
+  return parsed.rows.length>1&&parsed.rows.some(row=>row.length>1);
+}
+async function pastePlainTextToSelection(text) {
+  if(ui.selected.size!==1||looksLikeTabularPaste(text))return false;
+  const entry=item([...ui.selected][0]);
+  if(entry?.engine!=='TextEngine'||entry.locked)return false;
+  const value=String(text??'').replace(/\r\n?/g,'\n');
+  if(!value.trim())return false;
+  const accepted=commitOps('Paste text into visual',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}],{announce:'Text pasted into visual'});
+  return !!accepted;
+}
+async function handleClipboardText(text) {
+  if(!String(text||'').trim())return false;
+  if(await pastePlainTextToSelection(text))return true;
+  if(!ui.selected.size){stageDOpenIntake(text);return true;}
+  return await pasteToSelection(text);
+}
 async function pasteImage(file) {
-  const src=await validatedImageDataUrl(file); let entry=ui.selected.size===1?item([...ui.selected][0]):null;
-  if (entry?.engine!=='ImageMediaEngine') { addLibraryElement('Image','ImageMediaEngine'); entry=item([...ui.selected][0]); }
-  if (!entry) return false; return !!commitOps('Paste image',[{op:'item.patch',id:entry.id,patch:{src}}],{announce:'Image pasted'});
+  const reportId=String(bootstrap.report_id),selection=[...ui.selected],existing=selection.length===1?item(selection[0]):null;
+  const src=await validatedImageDataUrl(file);
+  if(String(bootstrap.report_id)!==reportId||!sameValue(selection,[...ui.selected]))return false;
+  let entry=existing&&item(existing.id);
+  if(entry?.locked)return toast('Unlock the component before editing');
+  if(entry?.engine!=='ImageMediaEngine'){addLibraryElement('Image','ImageMediaEngine');entry=item([...ui.selected][0]);}
+  if(!entry)return false;
+  return !!commitOps('Paste image',[{op:'item.patch',id:entry.id,patch:{src,asset_id:null}}],{announce:'Image pasted'});
 }
 
 function showTip(e, n) { const entry = item(n.closest('.component').dataset.id); if(entry?.behaviors?.tooltip===false)return; const d = chartData(entry)[+(n.dataset.point??n.dataset.behaviorPoint)]; if(!d)return; const tip = $('#tooltip'); tip.innerHTML = `<b>${esc(d[0])}</b><span>${d[1]} · activate to cross-filter</span>`; tip.style.display = 'block'; moveTip(e); }
@@ -1531,12 +2218,131 @@ function runKpiAnimations() {
 }
 function toast(text) { const x = $('#toast'); x.textContent = text; x.classList.add('show'); clearTimeout(toast.timer); toast.timer = setTimeout(() => x.classList.remove('show'), matchMedia('(prefers-reduced-motion: reduce)').matches ? 600 : 1500); }
 
-function setZoom(z, renderMini = true) {
-  ui.zoom=clamp(z,0.55,1.40); ui.contextSize=null; ui.contextBoundsCache=null; const scene=$('#scene'); const frame=$('#sceneFrame'); if (!scene || !frame) return;
+const STAGE_D_ASSET_KEY = 'viz-stage-d-reusable-assets';
+const STAGE_D_DATASET_KEY = 'viz-stage-d-datasets';
+function stageDStored(key) { const value=storageJson(key,[]); return Array.isArray(value)?value.filter(item=>item&&typeof item==='object'):[]; }
+function stageDSaveStored(key,value) { storage.set(key,JSON.stringify(value.slice(0,100))); }
+function stageDRememberDataset(dataset) {
+  if(!dataset?.id)return;
+  const records=stageDStored(STAGE_D_DATASET_KEY).filter(value=>value.id!==dataset.id);
+  records.unshift({...datasetSummary(dataset,[...model().items].filter(entry=>entry.dataset_id===dataset.id).map(entry=>entry.title||entry.element||entry.id)),data:structuredClone(dataset)});
+  stageDSaveStored(STAGE_D_DATASET_KEY,records);
+}
+function stageDSelectedEntries() { return [...ui.selected].map(item).filter(Boolean); }
+function stageDUseDataset(id) {
+  const record=stageDStored(STAGE_D_DATASET_KEY).find(value=>value.id===id),entry=stageDSelectedEntries()[0];
+  if(!record?.data)return toast('This dataset is no longer available.');
+  if(!entry)return toast('Select a visual before applying a dataset.');
+  if(entry.locked)return toast('Unlock the selected visual before applying a dataset.');
+  const view=viewContractForEntry(entry),result=candidateForView({candidate_mappings:inferMappings(record.data.fields||[])},view);
+  if(!result||result.unresolved?.length||result.incompatible?.length)return toast(`Incompatible schema for ${entry.element||'this visual'}; review mapping first.`);
+  const existing=model().datasets.some(dataset=>dataset.id===record.data.id),dataset=existing?{...structuredClone(record.data),id:datasetId(),name:`${record.name} · linked copy`}:structuredClone(record.data);
+  const accepted=commitOps(`Use dataset · ${record.name}`,[{op:'model.patch',patch:{datasets:existing?[...model().datasets,dataset]:model().datasets.some(value=>value.id===dataset.id)?model().datasets:model().datasets.concat(dataset)}},{op:'item.patch',id:entry.id,patch:{dataset_id:dataset.id,mapping:structuredClone(result.mapping)}}],{announce:`Dataset applied to ${entry.element||'visual'}`});
+  if(accepted){stageDRememberDataset(dataset);stageDClose();ui.selected=new Set([entry.id]);renderAll();}
+  return !!accepted;
+}
+function stageDOpen(mode='intake', sourceText='') {
+  ui.stageD={...ui.stageD,mode,sourceText:String(sourceText||''),plan:mode==='intake'?contentIntakePlan(sourceText):null,selectedRecommendation:0};
+  stageDRender();
+  openModal($('#stageDModal'),mode==='intake'?$('#stageDText'):null);
+}
+function stageDClose() { $('#stageDModal')?.classList.remove('show'); ui.stageD={...ui.stageD,mode:null,plan:null}; }
+function stageDOpenIntake(sourceText='') { stageDOpen('intake',sourceText); }
+function stageDSelectedRecommendation() { const plan=ui.stageD.plan; return plan?.recommendations?.[ui.stageD.selectedRecommendation]||plan?.recommendations?.[0]||null; }
+function stageDIntakeMarkup() {
+  const state=ui.stageD, plan=state.plan, recommendations=plan?.recommendations||[];
+  const cards=recommendations.map((candidate,index)=>`<button type="button" class="stage-d-recommendation ${index===state.selectedRecommendation?'active':''}" data-stage-d-recommendation="${index}" aria-pressed="${index===state.selectedRecommendation?'true':'false'}"><b>${esc(candidate.title||candidate.element||candidate.view||'Visual')}</b><span>${esc(candidate.reason||'A sensible starting point for this content.')}</span><small>${index===0?'Recommended':'Alternative'}</small></button>`).join('');
+  const profile=plan?.profile?`${plan.profile.rows.toLocaleString()} rows · ${plan.profile.columns} columns`:'';
+  const status=plan?.kind==='empty'?'Paste text, tabular data, or an image to get deterministic suggestions.':plan?`${plan.kind==='text'?'Text content':plan.kind==='image'?'Image evidence':'Data shape recognized'}${profile?` · ${profile}`:''}`:'Paste content to see recommendations.';
+  return `<div class="stage-d-intake"><label class="field"><span>Paste content or evidence</span><textarea id="stageDText" placeholder="Paste a headline, paragraph, TSV/CSV range, or process steps" aria-describedby="stageDHelp">${esc(state.sourceText)}</textarea><small id="stageDHelp">Visembler keeps your source content intact. Suggestions are deterministic and editable.</small></label><div class="stage-d-kicker" aria-live="polite">${esc(status)}</div>${recommendations.length?`<section><b>Suggested starting points</b><div class="stage-d-recommendations" aria-label="Content recommendations">${cards}</div></section>`:'<div class="stage-d-kicker">No suggestion yet.</div>'}<div class="stage-d-actions"><button type="button" class="tb" data-stage-d-action="blueprints">Use a blueprint</button>${plan?.kind==='table'?'<button type="button" class="tb" data-stage-d-action="full-report">Build report from data</button>':''}<button type="button" class="tb" data-stage-d-close>Cancel</button>${recommendations.length?'<button type="button" class="tb accent" data-stage-d-action="create">Create selected</button>':''}</div></div>`;
+}
+function stageDBlueprintItems(blueprint) {
+  const slots={Headline:['Hero Title','TextEngine'], 'Primary Evidence':['Line Chart','CoreChartEngine'], 'Supporting Evidence':['Clean Table','TableEngine'], Context:['Key Takeaway','TextEngine'], Risk:['Risk Callout','DecisionCompositeEngine'], Action:['Project Card','ProjectCompositeEngine']};
+  return blueprint.roles.map((role,index)=>{const [element,engine]=slots[role]||slots['Supporting Evidence'];const type=engineToType[engine]||'text';const d=typeDefaults[type]||typeDefaults.text;const entry={id:`c${model().nextId+index}`,type,element,engine,title:element,showTitle:false,textAlign:'left',weight:d.weight,order:model().items.length+index,locked:false,groupId:null,z:Math.max(0,...model().items.map(x=>x.z||0))+index+1,message_role:role,emphasis:rolePolicy(role).emphasis,...starterContent(engine,element)};const geometry=initialManualGeometry(entry);if(geometry)Object.assign(entry,geometry);return entry;});
+}
+function stageDCreateBlueprint(id) {
+  const blueprint=BLUEPRINTS.find(value=>value.id===id)||BLUEPRINTS[0],startSmart=model().mode==='guided'&&!model().items.length,stageMode=startSmart?'smart':model().mode;const entries=stageDBlueprintItems(blueprint);const staged={...model(),mode:stageMode,items:[...model().items,...entries],nextId:model().nextId+entries.length};const layout=layoutOperations(staged,{action:'clean',mode:stageMode});const ops=[...entries.map(entry=>({op:'item.add',item:entry})),{op:'model.patch',patch:{nextId:staged.nextId,...(startSmart?{mode:'smart'}:{})}},...layout];const accepted=commitOps(`Create ${blueprint.name} report`,ops,{announce:`${blueprint.name} structure created`});if(accepted){ui.selected=new Set(entries.map(entry=>entry.id));renderAll();}stageDClose();return !!accepted;
+}
+function stageDBlueprintMarkup() {
+  return `<div class="stage-d-intake"><div class="stage-d-kicker">Blueprints provide a message structure and role hierarchy. Your report data remains editable.</div><div class="stage-d-recommendations">${BLUEPRINTS.map((blueprint,index)=>`<button type="button" class="stage-d-recommendation ${index===0?'active':''}" data-stage-d-blueprint="${esc(blueprint.id)}"><b>${esc(blueprint.name)}</b><span>${esc(blueprint.description)}</span><small>${blueprint.roles.join(' · ')}</small></button>`).join('')}</div><div class="stage-d-actions"><button type="button" class="tb" data-stage-d-close>Cancel</button></div></div>`;
+}
+function stageDRolesMarkup() {
+  const entries=model().items||[];
+  return `<div class="stage-d-intake"><div class="stage-d-kicker">Roles guide Smart layout and reading order. They never rewrite the underlying content or data.</div><div class="stage-d-role-grid">${entries.map(entry=>`<label class="stage-d-role-card"><b>${esc(entry.title||entry.element||entry.id)}</b><small>${esc(entry.element||entry.engine||'Visual')}</small><select data-stage-d-role="${esc(entry.id)}" aria-label="Message role for ${esc(entry.title||entry.element||entry.id)}">${MESSAGE_ROLES.map(role=>`<option value="${esc(role)}" ${suggestMessageRole(entry)===role?'selected':''}>${esc(role)}</option>`).join('')}</select></label>`).join('')}</div><div class="stage-d-actions"><button type="button" class="tb" data-stage-d-action="clean-layout">Apply roles to Smart layout</button><button type="button" class="tb" data-stage-d-close>Done</button></div></div>`;
+}
+function stageDDeliveryMarkup() {
+  const findings=deliveryFindings(model());
+  const rows=findings.length?findings.map(finding=>`<article class="stage-d-finding"><b>${esc(finding.severity)}</b><span>${esc(finding.message)}</span>${finding.element_id?`<button type="button" class="tb" data-stage-d-focus="${esc(finding.element_id)}">Focus</button>`:finding.action==='add-headline'?'<button type="button" class="tb" data-stage-d-action="add-headline">Add headline</button>':''}</article>`).join(''):'<div class="stage-d-kicker">No actionable delivery findings for this report.</div>';
+  return `<div class="stage-d-intake"><div class="stage-d-kicker">These checks improve clarity without blocking save or export.</div><div class="stage-d-findings">${rows}</div><div class="stage-d-actions"><button type="button" class="tb" data-stage-d-action="roles">Edit message roles</button><button type="button" class="tb" data-stage-d-close>Done</button></div></div>`;
+}
+function stageDAssetsMarkup(kind='assets') {
+  const records=kind==='datasets'?stageDStored(STAGE_D_DATASET_KEY):stageDStored(STAGE_D_ASSET_KEY);
+  const selected=stageDSelectedEntries();
+  const rows=records.length?records.map(record=>{const compatibility=record.compatibility?.mode&&record.compatibility.mode!==model().mode?'Incompatible mode':'Compatible';return `<article class="stage-d-finding"><b>${esc(record.type||'asset')}</b><span><input data-stage-d-asset-name="${esc(record.id)}" value="${esc(record.name||'Untitled')}" aria-label="Rename ${esc(record.name||'asset')}"><br><small>${esc(record.description||record.provenance||'Reusable content')} · ${record.row_count??record.payload?.items?.length??0} ${record.row_count!=null?'rows':'items'} · ${esc(compatibility)}</small></span><div class="stage-d-actions">${kind==='datasets'?`<button type="button" class="tb" data-stage-d-asset-use="${esc(record.id)}">Use</button>`:''}<button type="button" class="tb" data-stage-d-asset-update="${esc(record.id)}">Update</button><button type="button" class="tb" data-stage-d-asset-duplicate="${esc(record.id)}">Duplicate</button><button type="button" class="tb" data-stage-d-asset-delete="${esc(record.id)}">Delete</button></div></article>`}).join(''):`<div class="stage-d-kicker">No ${kind==='datasets'?'saved datasets':'reusable assets'} yet.</div>`;
+  return `<div class="stage-d-intake"><div class="stage-d-kicker">${kind==='datasets'?'Dataset reuse stays report-independent. Source rows and typed scalars remain in the report model.':'Reusable assets are versioned locally and can be reviewed before applying.'}</div><div class="stage-d-findings">${rows}</div><div class="stage-d-actions">${kind==='datasets'?'<button type="button" class="tb" data-stage-d-action="refresh-datasets">Refresh list</button>':`<button type="button" class="tb" data-stage-d-action="save-asset" ${selected.length?'':'disabled'}>Save selected as reusable asset</button>`}<button type="button" class="tb" data-stage-d-action="${kind==='datasets'?'assets':'datasets'}">${kind==='datasets'?'Reusable assets':'Dataset library'}</button><button type="button" class="tb" data-stage-d-close>Done</button></div></div>`;
+}
+function stageDRender() {
+  const modal=$('#stageDModal'),body=$('#stageDBody');if(!modal||!body||!ui.stageD.mode)return;
+  const mode=ui.stageD.mode;$('#stageDTitle').textContent=mode==='intake'?'Start with content':mode==='blueprints'?'Choose a report blueprint':mode==='roles'?'Message roles':mode==='delivery'?'Delivery checks':mode==='datasets'?'Dataset library':'Reusable assets';
+  body.innerHTML=mode==='intake'?stageDIntakeMarkup():mode==='blueprints'?stageDBlueprintMarkup():mode==='roles'?stageDRolesMarkup():mode==='delivery'?stageDDeliveryMarkup():stageDAssetsMarkup(mode);stageDBind();
+}
+function stageDCreateText() {
+  const candidate=stageDSelectedRecommendation();if(!candidate||!ui.stageD.sourceText.trim())return false;const element=candidate.element||candidate.title||'Body Narrative';const id=`c${model().nextId}`,startSmart=model().mode==='guided'&&!model().items.length;const type='text',entry={id,type,element,engine:'TextEngine',title:element,showTitle:false,text:ui.stageD.sourceText.trim(),body:ui.stageD.sourceText.trim(),message_role:ui.stageD.plan?.defaultRole||'Context',emphasis:ui.stageD.plan?.defaultRole==='Headline'?'hero':'standard',weight:typeDefaults.text.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map(x=>x.z||0))+1};const accepted=commitOps('Create from pasted text',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1,...(startSmart?{mode:'smart'}:{})}}],{announce:`${element} created`});if(accepted){ui.selected=new Set([id]);renderAll();}stageDClose();return !!accepted;
+}
+function stageDCreateProcess() {
+  const lines=String(ui.stageD.sourceText||'').split(/\r?\n/).map(value=>value.trim()).filter(Boolean);if(lines.length<2)return false;const id=`c${model().nextId}`,startSmart=model().mode==='guided'&&!model().items.length,entry={id,type:'diagram',element:'Process Flow',engine:'DiagramEngine',title:'Process Flow',showTitle:false,nodes:lines,edges:lines.slice(1).map((label,index)=>[lines[index],label]),direction:'right',message_role:'Primary Evidence',weight:typeDefaults.diagram.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map(x=>x.z||0))+1};const accepted=commitOps('Create process flow from steps',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1,...(startSmart?{mode:'smart'}:{})}}],{announce:'Process Flow created'});if(accepted){ui.selected=new Set([id]);renderAll();}stageDClose();return !!accepted;
+}
+function stageDCreateFullReport() {
+  const intake=intakeText(ui.stageD.sourceText||''),recommendation=productionRecommendations(intake)[0];
+  if(!recommendation)return toast('No supported visual could be inferred from this data.');
+  const datasetIdValue=datasetId(),plan=planDataFirstCreation({intake,view:recommendation.view,mapping:recommendation.mapping,datasetId:datasetIdValue,datasetName:'Pasted report data'});
+  if(!plan.valid)return toast(plan.error||'Review the field mapping before creating this report.');
+  const visualId=`c${model().nextId}`,headlineId=`c${model().nextId+1}`,takeawayId=`c${model().nextId+2}`;
+  const visual=dataFirstEntry(plan,visualId);visual.order=model().items.length+1;
+  const headline={id:headlineId,type:'text',element:'Hero Title',engine:'TextEngine',title:'Process health report',showTitle:false,text:`${visual.element} · report summary`,body:`${visual.element} · report summary`,message_role:'Headline',emphasis:'hero',weight:typeDefaults.text.weight,order:model().items.length,locked:false,groupId:null,z:visual.z+1};
+  const takeaway={id:takeawayId,type:'text',element:'Key Takeaway',engine:'TextEngine',title:'Key Takeaway',showTitle:false,text:'Review the primary evidence and record the next action.',body:'Review the primary evidence and record the next action.',message_role:'Action',emphasis:'standard',weight:typeDefaults.text.weight,order:model().items.length+2,locked:false,groupId:null,z:visual.z+2};
+  for(const entry of [visual,headline,takeaway]){const geometry=initialManualGeometry(entry);if(geometry)Object.assign(entry,geometry);}
+  const startSmart=model().mode==='guided'&&!model().items.length,stageMode=startSmart?'smart':model().mode,staged={...model(),mode:stageMode,items:[...model().items,headline,visual,takeaway],datasets:[...model().datasets,plan.dataset],nextId:model().nextId+3};
+  const layout=layoutOperations(staged,{action:'clean',mode:stageMode});
+  const accepted=commitOps('Create report from pasted data',[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,crossFilter:null,...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:headline},{op:'item.add',item:visual},{op:'item.add',item:takeaway},...layout],{announce:'Report structure created'});
+  if(accepted){stageDRememberDataset(plan.dataset);ui.selected=new Set([visualId]);renderAll();}stageDClose();return !!accepted;
+}
+function stageDCreateHeadline() { const entry={id:`c${model().nextId}`,type:'text',element:'Hero Title',engine:'TextEngine',title:'Hero Title',showTitle:false,text:'Write the report message here.',body:'Write the report message here.',message_role:'Headline',emphasis:'hero',weight:typeDefaults.text.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map(x=>x.z||0))+1};const accepted=commitOps('Add report headline',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1}}],{announce:'Headline added'});if(accepted){ui.selected=new Set([entry.id]);renderAll();}stageDClose();}
+function stageDCreateFromIntake() { const plan=ui.stageD.plan,candidate=stageDSelectedRecommendation();if(!plan||!candidate)return false;if(plan.kind==='text')return plan.defaultRole==='Headline'?stageDCreateText():stageDCreateText();if(plan.kind==='process')return stageDCreateProcess();if(plan.kind==='image'){stageDClose();addLibraryElement(candidate.element||'Image','ImageMediaEngine');toast('Add meaningful alt text in the inspector');return true;}stageDClose();openDataFirstDialog(ui.stageD.sourceText);return true; }
+function stageDApplyRole(id,role) { const result=applyMessageRole(model(),[id],role);if(result.ops.length)commitOps(`Set message role · ${role}`,result.ops); }
+function stageDCleanLayout(action='clean') { const ops=layoutOperations(model(),{action,mode:model().mode});if(!ops.length){if(model().mode==='free')toast('Free mode geometry is user-owned');else toast('Layout is already clean');return false;}const accepted=commitOps(action==='balance'?'Balance report whitespace':'Clean report layout',ops,{announce:action==='balance'?'Whitespace balanced':'Layout cleaned'});return !!accepted; }
+function stageDFocus(id) { const entry=item(id);if(!entry)return;ui.selected=new Set([id]);renderAll();renderInspector();stageDClose();requestAnimationFrame(()=>{const node=ui.componentNodes.get(id);node?.scrollIntoView?.({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center',inline:'center'});}); }
+function stageDSaveAsset() { const entries=stageDSelectedEntries();if(!entries.length)return;const asset=createReusableAsset({name:`${entries.length} element section`,description:'Reusable report section',type:'reusable section',payload:{kind:'composition',items:entries},compatibility:{mode:model().mode}});stageDSaveStored(STAGE_D_ASSET_KEY,[asset,...stageDStored(STAGE_D_ASSET_KEY)]);toast('Reusable section saved');stageDRender(); }
+function stageDUpdateAsset(id) { const key=ui.stageD.mode==='datasets'?STAGE_D_DATASET_KEY:STAGE_D_ASSET_KEY,records=stageDStored(key),record=records.find(value=>value.id===id),input=$(`[data-stage-d-asset-name="${CSS.escape(id)}"]`);if(!record||!input)return;record.name=String(input.value||record.name).trim().slice(0,120)||record.name;const selected=stageDSelectedEntries();if(selected.length&&record.type==='reusable section')record.payload={kind:'composition',items:structuredClone(selected)};record.modified=new Date().toISOString();record.version=Number(record.version||1)+1;stageDSaveStored(key,records);toast(`Updated ${record.name}`);stageDRender(); }
+function stageDDuplicateAsset(id) { const key=ui.stageD.mode==='datasets'?STAGE_D_DATASET_KEY:STAGE_D_ASSET_KEY,record=stageDStored(key).find(value=>value.id===id);if(!record)return;const copy=key===STAGE_D_ASSET_KEY?createReusableAsset({name:`${record.name} copy`,description:record.description,type:record.type,payload:record.payload,compatibility:record.compatibility}):{...structuredClone(record),id:`${record.id}-copy-${Date.now().toString(36)}`,name:`${record.name} copy`,modified:new Date().toISOString(),version:Number(record.version||1)+1};stageDSaveStored(key,[copy,...stageDStored(key)]);toast(`Duplicated ${record.name}`);stageDRender(); }
+function stageDBind() {
+  const body=$('#stageDBody');if(!body)return;const text=$('#stageDText');text?.addEventListener('input',event=>{ui.stageD={...ui.stageD,sourceText:event.target.value,plan:contentIntakePlan(event.target.value),selectedRecommendation:0};stageDRender();requestAnimationFrame(()=>{const node=$('#stageDText');node?.focus();node?.setSelectionRange(node.value.length,node.value.length);});});
+  body.querySelectorAll('[data-stage-d-recommendation]').forEach(button=>button.addEventListener('click',()=>{ui.stageD.selectedRecommendation=Number(button.dataset.stageDRecommendation)||0;stageDRender();}));
+  body.querySelectorAll('[data-stage-d-blueprint]').forEach(button=>button.addEventListener('click',()=>stageDCreateBlueprint(button.dataset.stageDBlueprint)));
+  body.querySelectorAll('[data-stage-d-close]').forEach(button=>button.addEventListener('click',stageDClose));
+  body.querySelectorAll('[data-stage-d-role]').forEach(select=>select.addEventListener('change',event=>stageDApplyRole(event.target.dataset.stageDRole,event.target.value)));
+  body.querySelectorAll('[data-stage-d-focus]').forEach(button=>button.addEventListener('click',()=>stageDFocus(button.dataset.stageDFocus)));
+  body.querySelectorAll('[data-stage-d-asset-use]').forEach(button=>button.addEventListener('click',()=>stageDUseDataset(button.dataset.stageDAssetUse)));
+  body.querySelectorAll('[data-stage-d-asset-delete]').forEach(button=>button.addEventListener('click',()=>{const key=ui.stageD.mode==='datasets'?STAGE_D_DATASET_KEY:STAGE_D_ASSET_KEY,record=stageDStored(key).find(value=>value.id===button.dataset.stageDAssetDelete);if(record&&!window.confirm(`Delete ${record.name||'this reusable item'}? Existing reports keep their embedded copy.`))return;stageDSaveStored(key,stageDStored(key).filter(value=>value.id!==button.dataset.stageDAssetDelete));stageDRender();toast('Reusable item deleted');}));
+  body.querySelectorAll('[data-stage-d-asset-update]').forEach(button=>button.addEventListener('click',()=>stageDUpdateAsset(button.dataset.stageDAssetUpdate)));
+  body.querySelectorAll('[data-stage-d-asset-duplicate]').forEach(button=>button.addEventListener('click',()=>stageDDuplicateAsset(button.dataset.stageDAssetDuplicate)));
+  body.querySelectorAll('[data-stage-d-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.stageDAction;if(action==='create')return stageDCreateFromIntake();if(action==='full-report')return stageDCreateFullReport();if(action==='add-headline')return stageDCreateHeadline();if(action==='blueprints'){ui.stageD={...ui.stageD,mode:'blueprints'};return stageDRender();}if(action==='roles'){ui.stageD={...ui.stageD,mode:'roles'};return stageDRender();}if(action==='datasets'||action==='assets'){ui.stageD={...ui.stageD,mode:action};return stageDRender();}if(action==='clean-layout'){stageDClose();return stageDCleanLayout('clean');}if(action==='save-asset')return stageDSaveAsset();if(action==='refresh-datasets')return stageDRender();}));
+}
+
+function setZoom(z, renderMini = true, minimum = 0.55) {
+  ui.zoom=clamp(z,minimum,1.40); ui.contextSize=null; ui.contextBoundsCache=null; const scene=$('#scene'); const frame=$('#sceneFrame'); if (!scene || !frame) return;
   scene.style.transform=`scale(${ui.zoom})`; scene.style.setProperty('--viz-interaction-scale',String(ui.zoom<1?1/ui.zoom:1)); frame.style.width=`${(SCENE.w*ui.zoom).toFixed(2)}px`; frame.style.height=`${(SCENE.h*ui.zoom).toFixed(2)}px`; const zs=$('#zoomStatus'); if(zs)zs.textContent=`${Math.round(ui.zoom*100)}%`; if(renderMini)renderMinimap(rectMap()); requestAnimationFrame(()=>{positionMinimap();if(ui.selected.size)renderContext(rectMap());});
 }
-function fitZoom() { const vp=$('#viewport'); if(!vp)return; const pad=36; const z=Math.min((vp.clientWidth-pad)/SCENE.w,(vp.clientHeight-pad)/SCENE.h,1.15); ui.autoFit=true; setZoom(z); requestAnimationFrame(()=>{vp.scrollLeft=Math.max(0,(vp.scrollWidth-vp.clientWidth)/2);vp.scrollTop=Math.max(0,(vp.scrollHeight-vp.clientHeight)/2);}); }
-function togglePreview() { ui.preview=!ui.preview; activeRoot?.classList.toggle('preview-mode',ui.preview); requestAnimationFrame(fitZoom); }
+function fitZoom(fit='page') { const vp=$('#viewport'); if(!vp)return; const pad=fit==='width'?24:36; const widthFit=(vp.clientWidth-pad)/SCENE.w; const pageFit=Math.min(widthFit,(vp.clientHeight-pad)/SCENE.h); const z=Math.min(fit==='width'?widthFit:pageFit,1.15); ui.autoFit=true;ui.previewFit=fit;setZoom(z,true,0.1);requestAnimationFrame(()=>{vp.scrollLeft=Math.max(0,(vp.scrollWidth-vp.clientWidth)/2);vp.scrollTop=fit==='width'?Math.max(0,18-vp.offsetTop):Math.max(0,(vp.scrollHeight-vp.clientHeight)/2);}); }
+function togglePreview() {
+  const entering=!ui.preview;
+  if(entering){cancelPointerSession('preview');ui.previewPatches.clear();hideGuides('preview');const ghost=$('#dropGhost');if(ghost)ghost.style.display='none';}
+  ui.preview=entering;
+  activeRoot?.classList.toggle('preview-mode',ui.preview);
+  activeRoot?.setAttribute('data-preview-fit',ui.preview?'page':'');
+  const layer=$('#componentLayer'),hull=$('#hull');if(layer)layer.inert=ui.preview;if(hull)hull.setAttribute('aria-readonly',ui.preview?'true':'false');
+  requestAnimationFrame(()=>fitZoom('page'));
+}
 const LAYOUT_ORDER=Object.freeze({
   editorial:['text','metric','chart','comparison','timeline','table','image','diagram','risk','matrix','evidence','decision','project','engineering','wafer'],
   executive:['metric','comparison','text','decision','chart','table','timeline','risk','evidence','project','image','diagram','matrix','engineering','wafer'],
@@ -1563,40 +2369,212 @@ const builtInPresets=Object.freeze([
   {id:'comparison',name:'Before / After',description:'Comparisons and KPI changes lead the report.'},
   {id:'showcase',name:'Project Showcase',description:'A focused project story with outcome, decision, proof, and delivery plan.'},
 ]);
-function normalizedPersonalPresets(raw) { const result=[]; for(const value of Array.isArray(raw)?raw:[]){try{if(!value||typeof value!=='object')continue;const name=String(value.name||'').trim().slice(0,80);const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));if(!name||modelBytes(modelValue)>MAX_MODEL_BYTES)continue;result.push({id:String(value.id||localCommitId('preset')),name,model:modelValue});if(result.length>=50)break;}catch{/* isolate corrupt preset */}} return result.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})||a.id.localeCompare(b.id)); }
+function normalizedPersonalPresets(raw) {
+  const result=[];
+  for(const value of Array.isArray(raw)?raw:[]) {
+    try {
+      if(!value||typeof value!=='object')continue;
+      const name=String(value.name||'').trim().slice(0,80);
+      if(!name)continue;
+      const id=String(value.id||localCommitId('preset'));
+      if(value.kind==='section') {
+        const payload=structuredClone(value.payload);
+        if(!payload||payload.kind!=='composition'||!Array.isArray(payload.items)||payload.items.length<2)continue;
+        if(new Blob([JSON.stringify(payload)]).size>MAX_MODEL_BYTES)continue;
+        result.push({id,name,kind:'section',payload});
+      } else {
+        const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));
+        if(modelBytes(modelValue)>MAX_MODEL_BYTES)continue;
+        result.push({id,name,kind:'report',model:modelValue});
+      }
+      if(result.length>=50)break;
+    } catch {/* isolate corrupt preset */}
+  }
+  return result.sort((a,b)=>a.name.localeCompare(b.name,undefined,{sensitivity:'base'})||a.id.localeCompare(b.id));
+}
 function schedulePresetListRender(){if(presetRenderFrame)cancelAnimationFrame(presetRenderFrame);presetRenderFrame=requestAnimationFrame(()=>{presetRenderFrame=0;renderPresetList();});}
 function persistPersonalPresets(){personalPresets=normalizedPersonalPresets(personalPresets);storage.set('viz-prod-presets-cache',JSON.stringify(personalPresets));dispatchSemantic('preset.preferences_save_requested',{presets:personalPresets});schedulePresetListRender();}
-function savePresetNamed(name){const cleaned=String(name||'').trim().slice(0,80);if(!cleaned)return toast('Preset name cannot be blank');personalPresets.unshift({id:localCommitId('preset'),name:cleaned,model:parseCanonical(store.serialize())});persistPersonalPresets();toast('Personal preset saved');}
+function savePresetNamed(name){
+  const cleaned=String(name||'').trim().slice(0,80);
+  if(!cleaned)return toast('Preset name cannot be blank');
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'report',model:parseCanonical(store.serialize())});
+  persistPersonalPresets();
+  toast('Personal preset saved');
+}
 function savePreset(){
-  $('#modalTitle').textContent='Save as preset';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly review layout"><small>Personal presets are editable. Built-in presets remain immutable.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save preset</button></div></form>';
+  $('#modalTitle').textContent='Save as preset';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly review layout"><small>Saves the complete current report. Personal presets are editable; built-in presets remain immutable.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save report preset</button></div></form>';
   const form=$('#presetSaveForm');form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#presetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');savePresetNamed(name);closeModals();});
   $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#presetSaveName'));
 }
-function renderPresetList(){const built=$('#builtinPresetList');if(built)built.innerHTML=builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy"><b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}">Apply</button></div>`).join('');const host=$('#presetList');if(!host)return;const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>!query||p.name.toLowerCase().includes(query));host.innerHTML=shown.length?shown.map((p)=>{const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=`${p.model.items.length} element${p.model.items.length===1?'':'s'} · ${p.model.mode}`;return `<div class="preset"><div class="preset-copy"><input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${summary}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">Apply</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;}).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save the current report when you have a reusable composition.'}</div>`;}
-function loadPreset(index){const saved=personalPresets[index];if(!saved)return;try{const next=parseCanonical(serializeCanonical(saved.model));const accepted=commitOps('Load preset',[{op:'model.replace',value:next}],{announce:'Preset loaded'});if(accepted)ui.selected.clear();}catch{toast('Preset is corrupt and was not loaded');}}
-function updatePreset(index){if(!personalPresets[index])return;personalPresets[index]={...personalPresets[index],model:parseCanonical(store.serialize())};persistPersonalPresets();toast('Preset updated');}
-function duplicatePreset(index){const source=personalPresets[index];if(!source)return;personalPresets.splice(index+1,0,{id:localCommitId('preset'),name:`${source.name} copy`.slice(0,80),model:parseCanonical(serializeCanonical(source.model))});persistPersonalPresets();toast('Preset duplicated');}
+function saveSelectionPresetNamed(name){
+  if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
+  const cleaned=String(name||'').trim().slice(0,80);
+  if(!cleaned)return toast('Preset name cannot be blank');
+  const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+  if(!payload)return toast('Select 2+ elements to save a section preset');
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'section',payload});
+  persistPersonalPresets();
+  toast('Section preset saved');
+}
+function saveSelectionPreset(){
+  if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
+  $('#modalTitle').textContent='Save selection as preset';
+  $('#modalBody').innerHTML='<form class="modal-form" id="sectionPresetSaveForm"><label for="sectionPresetSaveName"><b>Section preset name</b></label><input id="sectionPresetSaveName" maxlength="80" autocomplete="off" placeholder="Fab evidence block"><small>Stores only the selected composition. Applying it later inserts an independent copy into the current report.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save section preset</button></div></form>';
+  const form=$('#sectionPresetSaveForm');
+  form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#sectionPresetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');saveSelectionPresetNamed(name);closeModals();});
+  $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
+  openModal($('#genericModal'),$('#sectionPresetSaveName'));
+}
+function syncPresetSelectionAction() {
+  const button=$('#presetSaveSelection');
+  if(!button)return;
+  const count=ui.selected.size;
+  button.disabled=count<2;
+  button.textContent=count>=2?`Save selected section · ${count}…`:'Save selected section…';
+  button.title=count>=2?'Save the selected composition as an insertable Section preset':'Select 2+ elements to save a Section preset';
+}
+function presetPreviewMarkup(presetId, personal=false) {
+  const order=personal?['metric','chart','table','text','timeline']:((LAYOUT_ORDER[presetId]||LAYOUT_ORDER.editorial).slice(0,5));
+  return `<span class="preset-preview" aria-hidden="true">${order.map((type,index)=>`<i class="preset-preview-block preset-preview-${esc(type)}" style="--preset-index:${index}"></i>`).join('')}</span>`;
+}
+function renderPresetList(){
+  syncPresetSelectionAction();
+  const kind=String($('#presetKindFilter')?.value||'all');
+  const built=$('#builtinPresetList');
+  if(built)built.innerHTML=kind==='section'
+    ?'<div class="keyboard-help">Built-in presets are full-report layouts. Switch to All or Reports to use them.</div>'
+    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy">${presetPreviewMarkup(p.id)}<b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}" ${model().layoutPreset===p.id?'disabled title="This preset is already applied"':''}>${model().layoutPreset===p.id?'Applied':'Apply'}</button></div>`).join('');
+  const host=$('#presetList');if(!host)return;
+  const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>(kind==='all'||p.kind===kind)&&(!query||p.name.toLowerCase().includes(query)));
+  host.innerHTML=shown.length?shown.map((p)=>{
+    const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=personalPresetSummary(p),applyLabel=p.kind==='section'?'Insert':'Apply';
+    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy">${presetPreviewMarkup(p.id,true)}<input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
+  }).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save a report preset or select 2+ elements and save a Section preset.'}</div>`;
+}
+function loadPreset(index){
+  const saved=personalPresets[index];if(!saved)return;
+  try{
+    if(saved.kind==='section')return pasteCompositionPayload(structuredClone(saved.payload));
+    const next=parseCanonical(serializeCanonical(saved.model));
+    if(sameValue(next,model()))return toast('Preset is already applied');
+    const accepted=commitOps('Load preset',[{op:'model.replace',value:next}],{announce:'Preset loaded'});
+    if(accepted)ui.selected.clear();
+    if(accepted)renderPresetList();
+  }catch{toast('Preset is corrupt and was not loaded');}
+}
+function updatePreset(index){
+  if(!personalPresets[index])return;
+  if(personalPresets[index].kind==='section'){
+    if(ui.selected.size<2)return toast('Select 2+ elements to update this section preset');
+    const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
+    if(!payload)return toast('Select 2+ elements to update this section preset');
+    personalPresets[index]={...personalPresets[index],payload};
+  }else{
+    personalPresets[index]={...personalPresets[index],kind:'report',model:parseCanonical(store.serialize())};
+  }
+  persistPersonalPresets();toast('Preset updated');
+}
+function duplicatePreset(index){
+  const source=personalPresets[index];if(!source)return;
+  const duplicate=clonePersonalPreset(source,{id:localCommitId('preset'),name:`${source.name} copy`.slice(0,80)});
+  personalPresets.splice(index+1,0,duplicate);
+  persistPersonalPresets();toast('Preset duplicated');
+}
 function renamePreset(index,name){if(!personalPresets[index])return;const cleaned=String(name||'').trim().slice(0,80);if(!cleaned){schedulePresetListRender();return toast('Preset name cannot be blank');}personalPresets[index]={...personalPresets[index],name:cleaned};persistPersonalPresets();}
 function deletePreset(index){if(!personalPresets[index])return;personalPresets.splice(index,1);persistPersonalPresets();toast('Preset deleted');}
-function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});}
-function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;persistPendingState();updateSaveUi();dispatchSemantic('report.commit',failed);return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
+function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});dispatchSemantic('mapping.preferences_requested',{});}
+function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;ui.saveInFlight=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
 function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
-function exportModel(){showPreflight();const blob=new Blob([store.exportEnvelope(2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download='visembler_report_model.json';setTimeout(()=>{a.click();URL.revokeObjectURL(url);},80);toast('Canonical report model exported');}
+async function resolvePortableImage(source){
+  if(String(source).startsWith('data:'))return source;
+  const url=new URL(source,document.baseURI),base=new URL(document.baseURI);
+  if(url.origin!==base.origin)throw new Error('External images must be uploaded before export.');
+  const response=await fetch(url,{signal:AbortSignal.timeout(15000),credentials:'same-origin'});
+  if(!response.ok)throw new Error(`Image export failed (${response.status}).`);
+  const blob=await response.blob();
+  if(!['image/png','image/jpeg','image/webp'].includes(blob.type)||blob.size>MAX_IMAGE_BYTES)throw new Error('Image is invalid or exceeds the embedded-image limit.');
+  return fileToDataUrl(blob);
+}
+async function portableReport(){
+  const result=await portableEnvelope(parseCanonical(store.serialize()),store.revision,resolvePortableImage);
+  for(const [source,uri] of [...result.images]){if(!source.startsWith('data:'))result.images.set(new URL(source,document.baseURI).href,uri);}
+  return result;
+}
+async function exportModel(){
+  try{const {envelope}=await portableReport();downloadBlob(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'}),'visembler_report_model.json');toast('Portable report JSON exported');}
+  catch(error){toast(error.message||'Report export failed');}
+}
+async function exportRetainedEdits(){
+  if(!ui.recovery?.model)return toast('No retained local edits to export.');
+  try{const {envelope}=await portableEnvelope(parseCanonical(ui.recovery.model),store.revision,resolvePortableImage);downloadBlob(new Blob([JSON.stringify(envelope,null,2)],{type:'application/json'}),'visembler_retained_edits.json');toast('Retained local edits exported');}
+  catch(error){toast(error.message||'Retained edit export failed');}
+}
 function downloadBlob(blob,name){const link=document.createElement('a'),url=URL.createObjectURL(blob);link.href=url;link.download=name;link.click();setTimeout(()=>URL.revokeObjectURL(url),500);}
+function exportSvgMarkup(scale=1,images=new Map()){
+  const hull=$('#hull'); if(!hull)throw new Error('Report canvas is unavailable');
+  const clone=hull.cloneNode(true);
+  // Resolve layout, colors and SVG marks before leaving this document. External
+  // stylesheets/host scopes are not dependencies of a standalone SVG.
+  const originals=[hull,...hull.querySelectorAll('*')],copies=[clone,...clone.querySelectorAll('*')];
+  const visual=/^(display|position|top|right|bottom|left|z-index|width|height|min-|max-|box-sizing|margin|padding|border|background|color$|opacity|font|line-height|letter-spacing|text-|white-space|word-|overflow|vertical-align|flex|grid|gap|row-gap|column-gap|justify-|align-|place-|transform|object-|visibility|fill|stroke|paint-order|clip-path)/;
+  originals.forEach((node,index)=>{const cs=getComputedStyle(node),target=copies[index];for(const property of cs){if(visual.test(property))target.style.setProperty(property,inlineAssetUrls(cs.getPropertyValue(property),images));}target.style.animation='none';target.style.transition='none';});
+  clone.querySelectorAll('.component').forEach(node=>{node.style.boxShadow='none';node.style.outline='none';node.removeAttribute('data-content-signature');node.removeAttribute('aria-selected');node.removeAttribute('aria-disabled');node.removeAttribute('tabindex');});
+  clone.querySelectorAll('[style]').forEach(node=>node.setAttribute('style',inlineAssetUrls(node.getAttribute('style'),images)));
+  clone.querySelectorAll('.selected,.locked,.grouped').forEach(node=>node.classList.remove('selected','locked','grouped'));
+  clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;
+  clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost,[data-editor-only]').forEach(node=>node.remove());
+  const css='/* Visual properties are embedded per node; no host CSS is required. */';
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('xmlns','http://www.w3.org/2000/svg');
+  svg.setAttribute('width',String(Math.round(CANVAS.w*scale)));
+  svg.setAttribute('height',String(Math.round(CANVAS.h*scale)));
+  svg.setAttribute('viewBox',`0 0 ${CANVAS.w} ${CANVAS.h}`);
+  const foreign=document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+  foreign.setAttribute('width','100%'); foreign.setAttribute('height','100%');
+  const wrapper=document.createElementNS('http://www.w3.org/1999/xhtml','div');
+  wrapper.setAttribute('class','cui-visualizer-root');
+  wrapper.setAttribute('data-theme',activeRoot?.getAttribute('data-theme')||'light');
+  wrapper.style.cssText=`width:${CANVAS.w}px;height:${CANVAS.h}px;position:relative;overflow:hidden;`;
+  clone.style.margin='0';clone.style.transform='none';
+  const style=document.createElementNS('http://www.w3.org/1999/xhtml','style');
+  style.textContent=css;
+  wrapper.append(style,clone); foreign.append(wrapper); svg.append(foreign);
+  return new XMLSerializer().serializeToString(svg);
+}
 async function exportCanvasImage(format){
-  const hull=$('#hull');if(!hull)return;const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h)));
-  const clone=hull.cloneNode(true);clone.style.cssText+=`;position:relative;left:0;top:0;width:${CANVAS.w}px;height:${CANVAS.h}px`;clone.querySelectorAll('.c-head,.resize-h,.context,.canvas-grid,.group-layer,.overlay-layer,.drop-ghost').forEach(node=>node.remove());
-  const css=[...document.styleSheets].flatMap(sheet=>{try{return [...sheet.cssRules].map(rule=>rule.cssText);}catch{return [];}}).join('\n').replaceAll(':scope','.cui-visualizer-root');
-  const markup=`<svg xmlns="http://www.w3.org/2000/svg" width="${Math.round(CANVAS.w*scale)}" height="${Math.round(CANVAS.h*scale)}" viewBox="0 0 ${CANVAS.w} ${CANVAS.h}"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" class="cui-visualizer-root"><style>${css}</style>${clone.outerHTML}</div></foreignObject></svg>`;
+  const maxPixels=64_000_000,scale=Math.min(4,Math.sqrt(maxPixels/(CANVAS.w*CANVAS.h)));
+  let markup;try{const {envelope,images}=await portableReport();if(envelope.revision!==store.revision)throw new Error('Report changed during export. Export again.');markup=exportSvgMarkup(scale,images);}catch(error){toast(error.message||'Export failed');return;}
   if(format==='svg'){downloadBlob(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}),'visembler_report.svg');toast('SVG exported');return;}
   const source=URL.createObjectURL(new Blob([markup],{type:'image/svg+xml;charset=utf-8'}));
-  try{const image=await new Promise((resolve,reject)=>{const node=new Image();node.onload=()=>resolve(node);node.onerror=reject;node.src=source;});const canvas=document.createElement('canvas');canvas.width=Math.round(CANVAS.w*scale);canvas.height=Math.round(CANVAS.h*scale);const context=canvas.getContext('2d');context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);const mime=format==='jpeg'?'image/jpeg':'image/png';const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.98));if(!blob)throw new Error('The browser could not encode this image');downloadBlob(blob,`visembler_report.${format==='jpeg'?'jpg':'png'}`);toast(`${format==='jpeg'?'JPEG':'PNG'} exported at ${Math.round(scale)}× resolution`);}catch(error){debugEvent('error','Image export failed',error?.message||error);toast('Image export failed; try SVG or PowerPoint');}finally{URL.revokeObjectURL(source);}
+  try{
+    const image=await new Promise((resolve,reject)=>{const node=new Image();node.onload=()=>resolve(node);node.onerror=()=>reject(new Error('The browser could not decode the report SVG'));node.src=source;});
+    const canvas=document.createElement('canvas');canvas.width=Math.round(CANVAS.w*scale);canvas.height=Math.round(CANVAS.h*scale);
+    const context=canvas.getContext('2d');if(!context)throw new Error('Canvas export context is unavailable');
+    context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);context.drawImage(image,0,0,canvas.width,canvas.height);
+    const mime=format==='jpeg'?'image/jpeg':'image/png';
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,mime,.98));
+    if(!blob)throw new Error('The browser could not encode this image');
+    downloadBlob(blob,`visembler_report.${format==='jpeg'?'jpg':'png'}`);
+    toast(`${format==='jpeg'?'JPEG':'PNG'} exported at ${Math.round(scale)}× resolution`);
+  }catch(error){debugEvent('error','Image export failed',error?.message||error);toast('Image export failed; try SVG or Report JSON');}
+  finally{URL.revokeObjectURL(source);}
+}
+async function copyReportJson(){
+  try{const {envelope}=await portableReport();const text=JSON.stringify(envelope,null,2);await navigator.clipboard.writeText(text);toast('Report JSON copied');}
+  catch(error){debugEvent('warn','Clipboard unavailable',error?.message||error);toast('Clipboard permission is unavailable; use Download Report JSON');}
 }
 function openExportMenu(){
-  const pf=preflight();$('#modalTitle').textContent='Export';$('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportPptAction">PowerPoint</button><button type="button" class="tb full-width" id="exportPngAction">PNG · high resolution</button><button type="button" class="tb full-width" id="exportJpegAction">JPEG · high resolution</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button><button type="button" class="tb full-width" id="exportJsonAction">Report JSON</button><small>Exports only authored report elements. PNG and JPEG use up to 4× resolution; PowerPoint keeps supported objects editable and an imported template is optional.</small></div>`;$('#exportPptAction').onclick=()=>{closeModals();exportPpt();};$('#exportPngAction').onclick=()=>{closeModals();exportCanvasImage('png');};$('#exportJpegAction').onclick=()=>{closeModals();exportCanvasImage('jpeg');};$('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};$('#exportJsonAction').onclick=()=>{closeModals();exportModel();};openModal($('#genericModal'));
+  const pf=preflight();
+  $('#modalTitle').textContent='Export';
+  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportJsonAction">Download Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button>${ui.recovery?.model?'<button type="button" class="tb full-width" id="exportRecoveryJsonAction">Download retained local edits</button>':''}<small>Report JSON is the canonical portable editable format. SVG is the supported visual export for this release.</small></div>`;
+  $('#exportJsonAction').onclick=()=>{closeModals();exportModel();};
+  $('#exportCopyJsonAction').onclick=async()=>{closeModals();await copyReportJson();};
+  $('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};
+  $('#exportRecoveryJsonAction')?.addEventListener('click',()=>{closeModals();exportRetainedEdits();});
+  openModal($('#genericModal'));
 }
 function openHelp(){
-  $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock / unlock selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
+  $('#modalTitle').textContent='Help & shortcuts';$('#modalBody').innerHTML='<div class="help-grid"><kbd>⌘/Ctrl K</kbd><span>Open commands</span><kbd>⌘/Ctrl Z</kbd><span>Undo</span><kbd>⇧⌘/Ctrl Z</kbd><span>Redo</span><kbd>Delete</kbd><span>Delete unlocked selection</span><kbd>G</kbd><span>Group eligible selection</span><kbd>L</kbd><span>Lock all / unlock all selection</span><kbd>Space + drag</kbd><span>Pan canvas</span><kbd>Esc</kbd><span>Cancel interaction / clear selection</span><kbd>Double click</kbd><span>Edit element directly</span></div>';openModal($('#genericModal'));
 }
 function developerSnapshot() {
   const pf=preflight(); const modelValue=parseCanonical(store.serialize());
@@ -1624,21 +2602,47 @@ async function copyDeveloperPayload(kind) {
 }
 function openDeveloperConsole() { renderDeveloperConsole(); openModal($('#debugModal')); }
 function setLibraryTab(tab){ui.libraryTab=tab==='presets'?'presets':'elements';$$('[data-library-tab]').forEach((button)=>{const active=button.dataset.libraryTab===ui.libraryTab;button.classList.toggle('active',active);button.setAttribute('aria-selected',active?'true':'false');});const ev=$('#elementsView'),pv=$('#presetsView');if(ev)ev.hidden=ui.libraryTab!=='elements';if(pv)pv.hidden=ui.libraryTab!=='presets';if(ui.libraryTab==='presets')renderPresetList();}
-function setLibrary(open){ui.libraryOpen=!!open;activeRoot?.setAttribute('data-library',ui.libraryOpen?'open':'closed');const button=$('#libraryToggle');if(button){button.setAttribute('aria-pressed',ui.libraryOpen?'true':'false');button.textContent=ui.libraryOpen?'Hide library':'Library';}storage.set('viz-library-open',ui.libraryOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
-function setInspector(open){ui.inspectorOpen=!!open;activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const button=$('#inspectorToggle');if(button){button.setAttribute('aria-pressed',ui.inspectorOpen?'true':'false');button.textContent=ui.inspectorOpen?'Hide inspector':'Inspector';}storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
+function mobileShell(){return matchMedia('(max-width:800px)').matches;}
+function syncPanelButtons(){for(const [selector,open,label] of [['#libraryToggle',ui.libraryOpen,'Library'],['#inspectorToggle',ui.inspectorOpen,'Inspector']]){const button=$(selector);if(!button)continue;button.setAttribute('aria-pressed',open?'true':'false');button.setAttribute('aria-label',open?`Hide ${label.toLowerCase()}`:`Show ${label.toLowerCase()}`);button.classList.toggle('active',open);button.textContent=label;}}
+function syncPanelState(){activeRoot?.setAttribute('data-library',ui.libraryOpen?'open':'closed');activeRoot?.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed');const backdrop=$('#panelBackdrop');if(backdrop){const visible=mobileShell()&&(ui.libraryOpen||ui.inspectorOpen);backdrop.hidden=!visible;backdrop.setAttribute('aria-hidden',visible?'false':'true');}syncPanelButtons();storage.set('viz-library-open',ui.libraryOpen?'1':'0');storage.set('viz-inspector-open',ui.inspectorOpen?'1':'0');requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}
+function focusPanelTarget(selector){requestAnimationFrame(()=>$(selector)?.focus({preventScroll:true}));}
+function setLibrary(open){const was=ui.libraryOpen;ui.libraryOpen=!!open;if(ui.libraryOpen&&mobileShell())ui.inspectorOpen=false;syncPanelState();if(mobileShell()&&was!==ui.libraryOpen)focusPanelTarget(ui.libraryOpen?'#libraryClose':'#libraryToggle');}
+function setInspector(open){const was=ui.inspectorOpen;ui.inspectorOpen=!!open;if(ui.inspectorOpen&&mobileShell())ui.libraryOpen=false;syncPanelState();if(mobileShell()&&was!==ui.inspectorOpen)focusPanelTarget(ui.inspectorOpen?'#inspectorClose':'#inspectorToggle');}
 
 const commands = [
-  ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Group selection', 'Group selected components', groupSelected], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
+  ['Paste content', 'Recommend a visual from text, data, or image evidence', () => stageDOpenIntake()],
+  ['Add element…', 'Open the production element library', () => { setLibrary(true); requestAnimationFrame(() => $('#componentSearch')?.focus()); }],
+  ['Clean Layout', 'Apply message hierarchy and content-aware Smart layout', () => stageDCleanLayout('clean')],
+  ['Fit Report', 'Fit the complete report in the workspace', () => fitZoom('page')],
+  ['Balance Whitespace', 'Reduce unused space while preserving locked content', () => stageDCleanLayout('balance')],
+  ['Replace Visual', 'Choose a compatible production visual for the selection', () => { if(!ui.selected.size)return toast('Select an element first'); setInspector(true); renderInspector(); requestAnimationFrame(()=>$('#iVisualType')?.focus()||$('#componentSearch')?.focus()); }],
+  ['Duplicate with Style/Data', 'Duplicate selected elements while preserving reusable content', () => duplicateSelected()],
+  ['Copy/Paste Style', 'Reuse presentation styling without changing content', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):copySemanticSelection('style')],
+  ['Save Checkpoint', 'Open report history to name a checkpoint', () => { location.assign(`/visualizer/reports?report=${encodeURIComponent(bootstrap.report_id||'')}`); }],
+  ['Open Report Hub', 'Manage reports outside the editing canvas', () => { location.assign(`/visualizer/reports?report=${encodeURIComponent(bootstrap.report_id||'')}`); }],
+  ['Open Dataset Library', 'Reuse report-independent datasets', () => stageDOpen('datasets')],
+  ['Open Reusable Assets', 'Manage presets, recipes, subflows, and sections', () => stageDOpen('assets')],
+  ['Refresh report data', 'Refresh a selected linked dataset and review compatibility', () => { const id=[...ui.selected][0]; const entry=id&&item(id); if(entry?.dataset_id)openDatasetRefresh(entry); else toast('Select a data-backed visual first'); }],
+  ['Duplicate selected', 'Duplicate the current selection', () => duplicateSelected()],
+  ['Focus selected', 'Center the selected content in the workspace', () => { const id=[...ui.selected][0]; if(id)stageDFocus(id); else toast('Select an element first'); }],
+  ['Export JSON', 'Download the canonical editable report', exportModel],
+  ['Export SVG', 'Download a standalone visual report', () => exportCanvasImage('svg')],
+  ['Paste data and create visual', 'Create a visual from Excel, CSV, or TSV data', () => requestAnimationFrame(openDataFirstDialog)], ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected,'delete'], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width'),'arrange'], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height'),'arrange'], ['Match selected size', 'Make width and height match the first unlocked selection', () => matchSize('size'),'arrange'], ['Batch format', 'Open the multi-selection batch format controls', () => {setInspector(true);renderInspector();},'batch'], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full'),'reuse.copySelection'], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection,'reuse.cut'], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first'),'reuse.pasteStyle'], ['Group selection', 'Group selected components', groupSelected,'group'], ['Ungroup selection', 'Ungroup selected components', ungroupSelected,'ungroup'], ['Bring selection forward', 'Bring unlocked selected elements forward', () => layer(1),'front'], ['Send selection backward', 'Send unlocked selected elements backward', () => layer(-1),'back'], ['Lock selection', 'Lock unlocked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),true),'lock'], ['Unlock selection', 'Unlock locked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),false),'unlock'], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
 ];
+function commandActionState(key) {
+  if(!key)return {enabled:true,reason:''};
+  const state=selectionActionEligibility(model(),[...ui.selected],{clipboardKind:ui.semanticClipboard?.kind||null});
+  return key.split('.').reduce((value,part)=>value?.[part],state)||{enabled:false,reason:'Action unavailable'};
+}
 function renderCommands(query = '') {
-  const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
-  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => `<div class="cmd ${k === ui.commandIndex ? 'active' : ''}" id="cmd-option-${index}" role="option" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" tabindex="-1"><div><b>${c[0]}</b><span>${c[1]}</span></div><span>↵</span></div>`).join('');
+  const needle = query.toLowerCase(); const filtered = commands.map((c, index) => ({ c, index })).filter(({ c }) => `${c[0]} ${c[1]}`.toLowerCase().includes(needle)).sort((a,b)=>{const ai=ui.recentCommands.indexOf(a.index),bi=ui.recentCommands.indexOf(b.index);return (ai<0?999:ai)-(bi<0?999:bi)||a.index-b.index;}); ui.commandIndex = clamp(ui.commandIndex, 0, Math.max(0, filtered.length - 1));
+  $('#cmdList').innerHTML = filtered.map(({ c, index }, k) => {const state=commandActionState(c[3]);return `<div class="cmd ${k === ui.commandIndex ? 'active' : ''} ${state.enabled?'':'disabled'}" id="cmd-option-${index}" role="option" aria-disabled="${state.enabled?'false':'true'}" aria-selected="${k === ui.commandIndex ? 'true' : 'false'}" data-command="${index}" data-visible-index="${k}" title="${esc(state.enabled?'':state.reason)}" tabindex="-1"><div class="cmd-copy"><b class="cmd-label">${c[0]}</b><span class="cmd-description">${c[1]}</span></div><span class="cmd-shortcut">↵</span></div>`;}).join('');
   const active=$('[aria-selected="true"]',$('#cmdList')); const input=$('#cmdInput'); if(active)input?.setAttribute('aria-activedescendant',active.id);else input?.removeAttribute('aria-activedescendant');
 }
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }
-function executeCommandIndex(index) { commands[index]?.[2](); closeModals(); }
-function openModal(modal, focusTarget = null) { ui.modalReturnFocus = document.activeElement; modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
-function closeModals() { $$('.modal.show').forEach((m) => m.classList.remove('show')); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
+function executeCommandIndex(index) { const command=commands[index],state=commandActionState(command?.[3]);if(!state.enabled)return toast(state.reason);ui.recentCommands=[index,...ui.recentCommands.filter(value=>value!==index)].slice(0,8);storage.set('viz-command-recent',JSON.stringify(ui.recentCommands));closeModals();command?.[2](); }
+function openModal(modal, focusTarget = null) { if(!modal.classList.contains('show'))ui.modalReturnFocus=document.activeElement;modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
+function closeModals() { if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();$$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
 function trapModalFocus(e) {
   const modal = e.target.closest('.modal.show'); if (!modal || e.key !== 'Tab') return;
   const nodes = $$('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', modal).filter((n) => n.offsetParent !== null); if (!nodes.length) return;
@@ -1659,12 +2663,15 @@ async function handleEmptyAction(entry,action){
   }
 }
 function onHullClick(e) {
+  if(ui.preview)return;
   const interactive = e.target.closest('[data-action], [data-tab], [data-tm], [data-point], [data-behavior-point], [data-ctx], [data-empty-action], .brush-handle');
   const comp = e.target.closest('.component');
   if (interactive) {
     e.stopPropagation();
     if (interactive.dataset.ctx) { if(interactive.disabled)return;const a = interactive.dataset.ctx; if (a === 'lock') toggleLock(); else if (a === 'group') groupSelected(); else if(a==='ungroup')ungroupSelected();else if (a === 'front') layer(1); else deleteSelected(); return; }
     if (!comp) return; const entry = item(comp.dataset.id);
+    if (interactive.dataset.action === 'edit-diagram' && entry?.engine === 'DiagramEngine') { location.assign(`/visualizer/diagram-studio?report=${encodeURIComponent(bootstrap.report_id||'')}&element=${encodeURIComponent(entry.id)}`); return; }
+    if (interactive.dataset.action === 'edit-chart' && ['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)) { location.assign(`/visualizer/chart-studio?report=${encodeURIComponent(bootstrap.report_id||'')}&element=${encodeURIComponent(entry.id)}`); return; }
     if(interactive.dataset.emptyAction){handleEmptyAction(entry,interactive.dataset.emptyAction);return;}
     if (interactive.dataset.action === 'detail') commitOps('Toggle metric detail', [{ op: 'item.patch', id: entry.id, patch: { detail: !entry.detail } }]);
     else if (interactive.dataset.action === 'reveal') commitOps('Toggle chart reveal', [{ op: 'item.patch', id: entry.id, patch: { revealed: !entry.revealed } }]);
@@ -1677,7 +2684,7 @@ function onHullClick(e) {
   }
   if (!comp) return;
   const id = comp.dataset.id;
-  if (e.shiftKey) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else if (!(ui.selected.size === 1 && ui.selected.has(id))) { ui.selected.clear(); ui.selected.add(id); }
+  if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else if (!(ui.selected.size === 1 && ui.selected.has(id))) { ui.selected.clear(); ui.selected.add(id); }
   reconcileCanvas({ content: false }); renderInspector(); comp.focus({ preventScroll: true });
 }
 function focusEditorField(selector) {
@@ -1688,23 +2695,24 @@ function openInlineEditor(entry, comp, directKind=null) {
   if (!entry || entry.locked || !comp) return;
   comp.querySelector('.direct-editor')?.remove();
   const wrap=document.createElement('div'); wrap.className='direct-editor';
-  const isText=entry.engine==='TextEngine', isMetric=entry.engine==='MetricEngine', isTitle=directKind==='title', milestoneIndex=directKind?.startsWith('milestone:')?Number(directKind.split(':')[1]):null, directParts=String(directKind||'').split(':'),diagramNodeIndex=directParts[0]==='diagram-node'?Number(directParts[1]):null,isDatasetCell=directParts[0]==='dataset-cell',isDatasetHeader=directParts[0]==='dataset-header',isTableCell=directParts[0]==='table-cell',isTableHeader=directParts[0]==='table-header';
-  if (!isText && !isMetric && !isTitle && !Number.isInteger(milestoneIndex) && !Number.isInteger(diagramNodeIndex) && !isDatasetCell && !isDatasetHeader && !isTableCell && !isTableHeader) return;
+  const isText=entry.engine==='TextEngine', isMetric=entry.engine==='MetricEngine', isTitle=directKind==='title', isCaption=directKind==='caption', milestoneIndex=directKind?.startsWith('milestone:')?Number(directKind.split(':')[1]):null, directParts=String(directKind||'').split(':'),diagramNodeIndex=directParts[0]==='diagram-node'?Number(directParts[1]):null,isDatasetCell=directParts[0]==='dataset-cell',isDatasetHeader=directParts[0]==='dataset-header',isTableCell=directParts[0]==='table-cell',isTableHeader=directParts[0]==='table-header';
+  if (!isText && !isMetric && !isTitle && !isCaption && !Number.isInteger(milestoneIndex) && !Number.isInteger(diagramNodeIndex) && !isDatasetCell && !isDatasetHeader && !isTableCell && !isTableHeader) return;
   const directDataset=selectedDataset(entry),directRow=Number(directParts[1]),directColumn=Number(directParts[2]);const directGrid=paddedTable(entry);
   const control=document.createElement(isText?'textarea':'input');
   control.className='direct-editor-control';
-  control.value=String(isText?(entry.text??entry.body??''):isMetric?(entry.value??''):isTitle?(entry.title??entry.element):Number.isInteger(milestoneIndex)?entry.milestones?.[milestoneIndex]?.label??'':Number.isInteger(diagramNodeIndex)?entry.nodes?.[diagramNodeIndex]??'':isDatasetCell?directDataset?.rows?.[directRow]?.[directColumn]??'':isDatasetHeader?directDataset?.fields?.[Number(directParts[1])]?.name??'':isTableCell?directGrid.rows?.[directRow]?.[directColumn]??'':directGrid.headers?.[Number(directParts[1])]??'');
-  if(!isText){control.type='text';if(isMetric||isDatasetCell||isTableCell)control.inputMode='decimal';control.setAttribute('aria-label',isTitle?'Component title':Number.isInteger(milestoneIndex)?'Timeline label':Number.isInteger(diagramNodeIndex)?'Diagram node label':isDatasetHeader||isTableHeader?'Table column name':isDatasetCell||isTableCell?'Table cell':'Metric value');}
+  control.value=String(isText?(entry.text??entry.body??''):isMetric?(entry.value??''):isTitle?(entry.title??entry.element):isCaption?(entry.caption??''):Number.isInteger(milestoneIndex)?entry.milestones?.[milestoneIndex]?.label??'':Number.isInteger(diagramNodeIndex)?entry.nodes?.[diagramNodeIndex]??'':isDatasetCell?directDataset?.rows?.[directRow]?.[directColumn]??'':isDatasetHeader?directDataset?.fields?.[Number(directParts[1])]?.name??'':isTableCell?directGrid.rows?.[directRow]?.[directColumn]??'':directGrid.headers?.[Number(directParts[1])]??'');
+  if(!isText&&!isCaption){control.type='text';if(isMetric||isDatasetCell||isTableCell)control.inputMode='decimal';control.setAttribute('aria-label',isTitle?'Component title':isCaption?'Image caption':Number.isInteger(milestoneIndex)?'Timeline label':Number.isInteger(diagramNodeIndex)?'Diagram node label':isDatasetHeader||isTableHeader?'Table column name':isDatasetCell||isTableCell?'Table cell':'Metric value');}
   else {control.rows=5;control.setAttribute('aria-label','Text content');}
   wrap.appendChild(control); comp.appendChild(wrap);
   let settled=false;
-  const finish=(commit=true)=>{if(settled)return;settled=true;const value=control.value.trim();wrap.remove();if(!commit)return;if(isText)commitOps('Edit text inline',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}]);else if(isMetric)commitOps('Edit metric inline',[{op:'item.patch',id:entry.id,patch:{value:parseTypedCell(value)}}]);else if(isTitle)commitOps('Edit title inline',[{op:'item.patch',id:entry.id,patch:{title:value||entry.element}}]);else if(Number.isInteger(diagramNodeIndex)){const previous=entry.nodes?.[diagramNodeIndex];if(!previous)return;const sourceIndex=directDataset?fieldIndex(directDataset,entry.mapping?.source):-1,targetIndex=directDataset?fieldIndex(directDataset,entry.mapping?.target):-1;if(directDataset&&sourceIndex>=0&&targetIndex>=0){const next=structuredClone(directDataset);next.rows.forEach(row=>{if(String(row[sourceIndex])===String(previous))row[sourceIndex]=value||previous;if(String(row[targetIndex])===String(previous))row[targetIndex]=value||previous;});next.revision=(next.revision||0)+1;commitDataset(entry,'Rename mapped diagram node',next);}else{const nodes=structuredClone(entry.nodes||[]),name=value||previous;nodes[diagramNodeIndex]=name;const edges=(entry.edges||[]).map(([source,target])=>[source===previous?name:source,target===previous?name:target]);commitOps('Rename diagram node',[{op:'item.patch',id:entry.id,patch:{nodes,edges}}]);}}else if(isDatasetCell&&directDataset?.rows?.[directRow]){const next=structuredClone(directDataset);next.rows[directRow][directColumn]=parseTypedCell(value);next.revision=(next.revision||0)+1;commitDataset(entry,'Edit dataset table cell',next);}else if(isDatasetHeader&&directDataset?.fields?.[Number(directParts[1])]){const next=structuredClone(directDataset);next.fields[Number(directParts[1])].name=value||`Column ${Number(directParts[1])+1}`;next.revision=(next.revision||0)+1;commitDataset(entry,'Rename dataset table column',next);}else if(isTableCell){while(directGrid.rows.length<=directRow)directGrid.rows.push(Array(directGrid.headers.length).fill(null));directGrid.rows[directRow][directColumn]=parseTypedCell(value);commitOps('Edit table cell inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else if(isTableHeader){directGrid.headers[Number(directParts[1])]=value||`Column ${Number(directParts[1])+1}`;commitOps('Rename table column inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else {const milestones=structuredClone(entry.milestones||[]);if(!milestones[milestoneIndex])return;milestones[milestoneIndex].label=value||`Step ${milestoneIndex+1}`;commitOps('Edit timeline label inline',[{op:'item.patch',id:entry.id,patch:{milestones}}]);}};
+  const finish=(commit=true)=>{if(settled)return;settled=true;const value=control.value.trim();wrap.remove();if(!commit)return;if(isText)commitOps('Edit text inline',[{op:'item.patch',id:entry.id,patch:{text:value,body:value}}]);else if(isMetric)commitOps('Edit metric inline',[{op:'item.patch',id:entry.id,patch:{value:parseTypedCell(value)}}]);else if(isTitle)commitOps('Edit title inline',[{op:'item.patch',id:entry.id,patch:{title:value||entry.element}}]);else if(isCaption)commitOps('Edit image caption inline',[{op:'item.patch',id:entry.id,patch:{caption:value}}]);else if(Number.isInteger(diagramNodeIndex)){const previous=entry.nodes?.[diagramNodeIndex];if(!previous)return;const sourceIndex=directDataset?fieldIndex(directDataset,entry.mapping?.source):-1,targetIndex=directDataset?fieldIndex(directDataset,entry.mapping?.target):-1;if(directDataset&&sourceIndex>=0&&targetIndex>=0){const next=structuredClone(directDataset);next.rows.forEach(row=>{if(String(row[sourceIndex])===String(previous))row[sourceIndex]=value||previous;if(String(row[targetIndex])===String(previous))row[targetIndex]=value||previous;});next.revision=(next.revision||0)+1;commitDataset(entry,'Rename mapped diagram node',next);}else{const nodes=structuredClone(entry.nodes||[]),name=value||previous;nodes[diagramNodeIndex]=name;const edges=(entry.edges||[]).map(([source,target])=>[source===previous?name:source,target===previous?name:target]);commitOps('Rename diagram node',[{op:'item.patch',id:entry.id,patch:{nodes,edges}}]);}}else if(isDatasetCell&&directDataset?.rows?.[directRow]){const next=structuredClone(directDataset);next.rows[directRow][directColumn]=parseCellForField(value,directDataset.fields?.[directColumn]);next.revision=(next.revision||0)+1;commitDataset(entry,'Edit dataset table cell',next);}else if(isDatasetHeader&&directDataset?.fields?.[Number(directParts[1])]){const next=structuredClone(directDataset);next.fields[Number(directParts[1])].name=value||`Column ${Number(directParts[1])+1}`;next.revision=(next.revision||0)+1;commitDataset(entry,'Rename dataset table column',next);}else if(isTableCell){while(directGrid.rows.length<=directRow)directGrid.rows.push(Array(directGrid.headers.length).fill(null));directGrid.rows[directRow][directColumn]=parseTypedCell(value);commitOps('Edit table cell inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else if(isTableHeader){directGrid.headers[Number(directParts[1])]=value||`Column ${Number(directParts[1])+1}`;commitOps('Rename table column inline',[{op:'item.patch',id:entry.id,patch:{customTable:directGrid,rows:directGrid.rows}}]);}else {const milestones=structuredClone(entry.milestones||[]);if(!milestones[milestoneIndex])return;milestones[milestoneIndex].label=value||`Step ${milestoneIndex+1}`;commitOps('Edit timeline label inline',[{op:'item.patch',id:entry.id,patch:{milestones}}]);}};
   control.addEventListener('pointerdown',(ev)=>ev.stopPropagation()); control.addEventListener('click',(ev)=>ev.stopPropagation()); control.addEventListener('dblclick',(ev)=>ev.stopPropagation());
-  control.addEventListener('keydown',(ev)=>{if(ev.key==='Escape'){ev.preventDefault();finish(false);}else if((ev.metaKey||ev.ctrlKey)&&ev.key==='Enter'){ev.preventDefault();finish(true);}});
+  control.addEventListener('keydown',(ev)=>{if(ev.key==='Escape'){ev.preventDefault();finish(false);}else if(ev.key==='Enter'&&!isText&&!isCaption&&!ev.shiftKey){ev.preventDefault();finish(true);}else if((ev.metaKey||ev.ctrlKey)&&ev.key==='Enter'){ev.preventDefault();finish(true);}});
   control.addEventListener('blur',()=>finish(true),{once:true});
   requestAnimationFrame(()=>{control.focus({preventScroll:true});control.select?.();});
 }
 function onHullDoubleClick(e) {
+  if(ui.preview)return;
   const point=e.target.closest('[data-point]');
   if(point){e.stopPropagation();const entry=item(point.closest('.component').dataset.id);drillChartPoint(entry,+point.dataset.point);return;}
   const behaviorPoint=e.target.closest('[data-behavior-point]');
@@ -1719,15 +2727,17 @@ function onHullDoubleClick(e) {
   focusEditorField(focusByEngine[entry.engine]||'#iTitle');
 }
 function onHullPointerDown(e) {
+  if(ui.preview)return;
   const handle = e.target.closest('.brush-handle'); if (handle) return startBrush(e, handle);
   const resize = e.target.closest('.resize-h'); if (resize) return startResize(e, resize.closest('.component').dataset.id, resize);
   const head = e.target.closest('.c-head'); if (head) return startDrag(e, head.closest('.component').dataset.id, head);
   if (e.target === $('#hull') || e.target.classList.contains('canvas-grid') || e.target.id === 'componentLayer') { if (ui.space) startPan(e); else startLasso(e); }
 }
 function onHullKeyDown(e) {
+  if(ui.preview)return;
   const point = e.target.closest('[data-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleChartPoint(item(point.closest('.component').dataset.id), +point.dataset.point); return; }
   const brush = e.target.closest('.brush-handle'); if (brush && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); setBrushByKeyboard(item(brush.closest('.component').dataset.id), brush.dataset.brush, e.key === 'ArrowLeft' ? -1 : 1); return; }
-  const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (e.shiftKey) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
+  const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
 }
 function keyboardResizeSelected(event) {
   if(model().mode==='smart'||!ui.selected.size)return false;
@@ -1744,14 +2754,20 @@ function keyboardResizeSelected(event) {
 }
 function wireGlobal(signal) {
   const on=(node,event,handler,options={})=>node?.addEventListener(event,handler,{...options,signal});
-  on($('#pageSizeBtn'),'click',openPageSize); on($('#layoutBtn'),'click',openLayoutGallery);
-  on(window,'company_ui:open-developer-console',openDeveloperConsole);
-  on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
-  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>dispatchSemantic('report.history_requested',{})); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
-  on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',fitZoom); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());});
-  on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen));
+  on($('#pageSizeBtn'),'click',openPageSize);
+  on($('#stageDIntakeBtn'),'click',()=>stageDOpenIntake());
+  on($('#stageDAssistantBtn'),'click',()=>stageDOpen('delivery'));
+  on($('#stageDCleanBtn'),'click',()=>stageDCleanLayout('clean'));
+  on($('#stageDFitBtn'),'click',()=>fitZoom('page'));
+  on($('#debugBtn'),'click',openDeveloperConsole); on(window,'company_ui:open-developer-console',openDeveloperConsole);
+  on($('#debugModal'),'click',(event)=>{if(event.target===$('#debugModal'))return closeModals();const button=event.target.closest('[data-debug-action]');if(!button)return;const action=button.dataset.debugAction;if(action==='refresh')return renderDeveloperConsole();if(action==='clear'){ui.debugLog=[];updateDebugBadge();return renderDeveloperConsole();}if(action==='copy')copyDeveloperPayload('diagnostic');if(action==='model')copyDeveloperPayload('model');});
+  $$('[data-mode]').forEach((button)=>on(button,'click',()=>setMode(button.dataset.mode))); on($('#undo'),'click',undo); on($('#redo'),'click',redo); on($('#auto'),'click',autoLayout); on($('#group'),'click',groupSelected); on($('#ungroup'),'click',ungroupSelected); on($('#lock'),'click',toggleLock); on($('#front'),'click',()=>layer(1)); on($('#back'),'click',()=>layer(-1)); on($('#preflightBtn'),'click',showPreflight);on($('#preflightStatus'),'click',showPreflight); on($('#presetSave'),'click',savePreset); on($('#presetSaveSelection'),'click',saveSelectionPreset); on($('#commandBtn'),'click',openPalette); on($('#libraryToggle'),'click',()=>setLibrary(!ui.libraryOpen)); on($('#historyBtn'),'click',()=>{location.assign(`/visualizer/reports?report=${encodeURIComponent(bootstrap.report_id||'')}`);}); on($('#helpBtn'),'click',openHelp); on($('#previewBtn'),'click',togglePreview); on($('#previewExit'),'click',togglePreview); on($('#saveBtn'),'click',saveReport); on($('#exportBtn'),'click',openExportMenu);
+  on($('#zoomIn'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom+.1);}); on($('#zoomOut'),'click',()=>{ui.autoFit=false;setZoom(ui.zoom-.1);}); on($('#zoomFit'),'click',()=>fitZoom('page')); on($('#previewFitWidth'),'click',()=>fitZoom('width')); on($('#previewFitPage'),'click',()=>fitZoom('page')); on($('#miniToggle'),'click',()=>{ui.showMini=!ui.showMini;$('#miniToggle').setAttribute('aria-pressed',ui.showMini?'true':'false');renderMinimap(rectMap());positionMinimap();});
+  on($('#libraryClose'),'click',()=>setLibrary(false)); on($('#inspectorClose'),'click',()=>setInspector(false)); on($('#panelBackdrop'),'click',()=>{setLibrary(false);setInspector(false);}); on($('#inspectorToggle'),'click',()=>setInspector(!ui.inspectorOpen)); on(window,'keydown',(event)=>{if(event.key==='Escape'&&mobileShell()&&!$('.modal.show')&&(ui.libraryOpen||ui.inspectorOpen)){event.preventDefault();setLibrary(false);setInspector(false);}});
+  on($('#pasteDataBtn'),'click',()=>openDataFirstDialog());
+  on($('#blankStartSurface'),'click',(event)=>{const action=event.target.closest('[data-blank-action]')?.dataset.blankAction;if(action==='paste')openDataFirstDialog();if(action==='library'){setLibrary(true);requestAnimationFrame(()=>$('#componentSearch')?.focus());}});
   $$('.pal').forEach((p)=>{p.draggable=true;on(p,'click',()=>addComponent(p.dataset.type));on(p,'dragstart',(e)=>{e.dataTransfer.setData('application/x-viz-type',p.dataset.type);e.dataTransfer.effectAllowed='copy';});});
-  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();});
+  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();}); on($('#presetKindFilter'),'change',renderPresetList);
   on($('#componentSearch'),'input',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#engineFilter'),'change',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#libraryMore'),'click',()=>{ui.libraryLimit+=60;renderLibrary();});
   const libraryClick=(e)=>{const favorite=e.target.closest('[data-favorite]');if(favorite){e.preventDefault();e.stopPropagation();return toggleFavorite(favorite.dataset.favorite);}const block=e.target.closest('[data-element][data-engine]');if(block)addLibraryElement(block.dataset.element,block.dataset.engine);};
   const libraryDrag=(e)=>{const block=e.target.closest('[data-element][data-engine]');if(!block)return;e.dataTransfer.setData('application/x-viz-element',JSON.stringify({element:block.dataset.element,engine:block.dataset.engine}));e.dataTransfer.effectAllowed='copy';};
@@ -1759,22 +2775,26 @@ function wireGlobal(signal) {
   on($('#builtinPresetList'),'click',(e)=>{const button=e.target.closest('[data-built-preset]');if(button)applySuggestion(button.dataset.builtPreset);});
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
-  on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-top')align('top');else if(value==='align-center')align('center');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();});
-  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on($('#viewport'),'pointerdown',(event)=>{if(event.button===0&&!hull.contains(event.target)&&!event.target.closest('.minimap'))startLasso(event);});on(hull,'keydown',onHullKeyDown);
-  on(hull,'dragover',(e)=>{e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
+  on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
+  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);
+  on(hull,'dragover',(e)=>{if(ui.preview)return;e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{if(ui.preview)return;e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
   $$('[data-close]').forEach((button)=>on(button,'click',closeModals));$$('.modal').forEach((modal)=>on(modal,'click',(e)=>{if(e.target===modal)closeModals();}));on(document,'keydown',trapModalFocus);
-  on(window,'keydown',(e)=>{const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){const payload=ui.semanticClipboard;e.preventDefault();pasteSemanticPayload(payload,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
+  on(window,'keydown',(e)=>{if(e.defaultPrevented)return;if(ui.preview){if(e.key==='Escape'){e.preventDefault();togglePreview();}return;}const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||document.activeElement?.isContentEditable;if($('.modal.show')){if(e.key==='Escape'){e.preventDefault();cancelPointerSession();closeModals();}return;}if(editing||e.target.closest?.('.q-dialog'))return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if(mobileShell()&&(ui.libraryOpen||ui.inspectorOpen)){setLibrary(false);setInspector(false);return;}if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
   on(window,'keyup',(e)=>{if(e.code==='Space')ui.space=false;});on(window,'blur',()=>{ui.space=false;cancelPointerSession('window-blur');});
+  on($('#viewport'),'scroll',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
+  on(window,'resize',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
-  on(window,'paste',async(e)=>{const tag=document.activeElement?.tagName;if(tag==='INPUT'||tag==='TEXTAREA')return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await pasteToSelection(text);}});
+  on(window,'paste',async(e)=>{if(ui.preview||hasAuthoringTextFocus())return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await handleClipboardText(text);}});
+  on(activeRoot,'dragover',(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();e.dataTransfer.dropEffect='copy';});
+  on(activeRoot,'drop',async(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();try{if(String(file.type||'').startsWith('image/')){await pasteImage(file);return;}const text=await file.text();if(text.trim())stageDOpenIntake(text);else toast('The dropped file did not contain readable content.');}catch(error){toast(error.message||'Dropped content could not be read.');}});
 }
 
 function setupResizeObserver() {
   window.__VIZ_RESIZE_OBSERVER__?.disconnect?.();
   if (typeof ResizeObserver==='undefined'||!$('#viewport')) return;
-  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom();else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
+  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom(ui.preview?(ui.previewFit||'page'):'page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
 }
 function buildSelfTest() {
   const result = { smartHull: preflight().coverage === 100, initialOverlaps: preflight().overlaps, revisionSafety: false, undoRedo: false, pointerLifecycle: true, resizeObserver: !!window.__VIZ_RESIZE_OBSERVER__, deterministic: false, noPointerMoveFullRender: true };
@@ -1791,10 +2811,12 @@ function init(root=$('.cui-visualizer-root')) {
   if (!root) return false;
   if (root===activeRoot && root.dataset.editorReady==='true') return true;
   eventAbort?.abort(); cancelPointerSession('rebind'); window.__VIZ_RESIZE_OBSERVER__?.disconnect?.(); activeRoot=root; eventAbort=new AbortController();
-  activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
-  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); setInspector(storage.get('viz-inspector-open')!=='0'); setLibrary(storage.get('viz-library-open')==='1'); applyReadOnlyUi(); requestAnimationFrame(fitZoom);
+  activeRoot.dataset.editorReady='false'; activeRoot.setAttribute('data-theme',document.documentElement.dataset.theme||'light'); activeRoot.setAttribute('data-inspector',ui.inspectorOpen?'open':'closed'); $('#authoringVersion')?.replaceChildren(AUTHORING_VERSION);
+  restorePersistedRecovery(bootstrap); ensureCanvasScaffold(); initializeLibrary(); hydratePresets(); wireGlobal(eventAbort.signal); renderAll(); updateSaveUi(); setupResizeObserver(); if(mobileShell()){setInspector(false);setLibrary(false);}else{setInspector(storage.get('viz-inspector-open')!=='0');setLibrary(storage.get('viz-library-open')!=='0');} updateDebugBadge(); applyReadOnlyUi(); requestAnimationFrame(fitZoom);
   activeRoot.dataset.editorReady='true';
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),setTheme:(theme)=>document.documentElement.setAttribute('data-theme',theme),cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect};
+  const stagePanel=new URLSearchParams(location.search).get('panel');
+  if(['assets','datasets','blueprints','roles','delivery'].includes(stagePanel))requestAnimationFrame(()=>stageDOpen(stagePanel));
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}

@@ -57,9 +57,11 @@ def test_r14_authoring_ui_removes_persistent_shortcuts_and_preset_name_form():
     html=(PRODUCT/'assets/integrated_editor.html').read_text()
     assert 'Keyboard shortcuts' not in html
     assert 'Preset name' not in html
-    assert 'Save as preset…' in html
+    assert 'Save report preset…' in html
+    assert 'Save selected section…' in html
     assert 'data-library-tab="elements"' in html and 'data-library-tab="presets"' in html
-    assert 'Search 248 elements' in html
+    assert 'Search 248 elements' not in html
+    assert 'Search production elements' in html
 
 
 def test_r14_report_chrome_is_explicit_and_destructive_action_is_named():

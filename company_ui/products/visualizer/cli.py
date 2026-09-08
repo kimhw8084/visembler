@@ -5,8 +5,9 @@ from pathlib import Path
 from typing import Mapping
 
 from company_ui.diagnostics import HealthCheck
-from .governance import ReportAccessCatalog, ScopedReportRepository
+
 from .page import register_visualizer
+from .governance import ReportAccessCatalog
 from .repository import ReportRepository
 from .runtime import build_runtime_adapter
 from .templates import template_model
@@ -22,26 +23,24 @@ def build_application(environ: Mapping[str,str] | None = None):
     data_dir=Path(env.get('COMPANY_UI_VISUALIZER_DATA_DIR') or (Path.home()/'.company_ui'/'visualizer')).expanduser()
     reports_dir=data_dir/'reports'; reports_dir.mkdir(parents=True,exist_ok=True)
     repository=ReportRepository(reports_dir)
-    access=ReportAccessCatalog(reports_dir)
-    records=repository.list(); trashed_records=repository.list_trash()
-    production=env.get('COMPANY_UI_ENVIRONMENT') == 'prod'
-    migration_owner=env.get('COMPANY_UI_MIGRATION_OWNER_SUBJECT') or (None if production else env.get('COMPANY_UI_DEV_SUBJECT','local-dev'))
-    access.migrate([record.report_id for record in [*records, *trashed_records]], owner=migration_owner, production=production, trashed_ids={record.report_id for record in trashed_records})
-    reconciliation=access.reconcile()
-    if reconciliation['blocked']:
-        raise RuntimeError('governance reconciliation blocked resources: ' + ', '.join(reconciliation['blocked']))
-    access.rebuild_summaries([*records, *trashed_records])
-    if not records:
-        # The local bootstrap is owned by the deterministic development
-        # principal. Production requires the explicit migration owner.
-        owner=migration_owner
-        if not owner: raise RuntimeError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required to bootstrap production storage')
-        access.begin_create('default', owner)
-        default_record=repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})
-        access.mark_active('default')
-        access.update_summary(default_record)
-    register_visualizer(app,ui,repository,access=access,authorization=adapter.authorization)
-    adapter.health.register(HealthCheck('visualizer-storage-writable', lambda: access.write_readiness()['ok']))
+    access=ReportAccessCatalog(repository)
+    existing=repository.list()+repository.list_trash()
+    migration_owner=str(env.get('COMPANY_UI_MIGRATION_OWNER_SUBJECT') or '').strip() or (
+        str(env.get('COMPANY_UI_DEV_SUBJECT') or 'local-dev') if env.get('COMPANY_UI_ENVIRONMENT') in {'dev','test'} else ''
+    )
+    if existing:
+        access.migrate(existing,owner_subject=migration_owner or None,require_explicit_owner=env.get('COMPANY_UI_ENVIRONMENT')=='prod')
+    else:
+        if not migration_owner:
+            raise RuntimeError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required to bootstrap a production report repository')
+        record=repository.create('default',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})
+        # The report file is created by the legacy repository first during
+        # bootstrap; migrate the resulting identity into governance without
+        # attempting a second create of the same report ID.
+        access.migrate([record], owner_subject=migration_owner or None, require_explicit_owner=env.get('COMPANY_UI_ENVIRONMENT')=='prod')
+    adapter.health.register(HealthCheck('visualizer.report_storage',lambda: repository.root.is_dir() and repository.root.exists()))
+    adapter.health.register(HealthCheck('visualizer.access_catalog',access.health))
+    register_visualizer(app,ui,repository,access=access,runtime=adapter)
     return adapter, env, repository
 
 

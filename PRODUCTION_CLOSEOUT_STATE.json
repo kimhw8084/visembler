@@ -1,0 +1,39 @@
+{
+  "baseline_head": "26e4fc0dde87d7ebee54ce1734e31abc11a198d1",
+  "input": "Uploaded working copy, including uncommitted persistence fixes.",
+  "input_editor_sha256": "900ab0cad39a62fbcb1338d1fadd1087e1c800f0c232968c955eb0d4c9dc269b",
+  "candidate_editor_sha256": "76447d71e50a2bcae1b5aa639280541ba6eb721ef716dbb96cc6f9889562c7be",
+  "release_status": "READY_FOR_NATIVE_FINAL_CLOSEOUT",
+  "implemented": [
+    "portable image JSON/SVG and retained-draft export",
+    "reloaded-image replacement",
+    "worker lifecycle cleanup",
+    "parse/caret/modal safety",
+    "manual data-first placement",
+    "target/sparkline numeric rendering",
+    "guarded selected-only refresh",
+    "save timeout/local recovery warning",
+    "virtualized grid repaint preserves unsaved active-cell edits",
+    "visible Data-First worker failure state",
+    "native reconnect/restart recovery verifier",
+    "real module-worker failure/cancel/retry verifier",
+    "fresh application install + backup/restore drill",
+    "final responsive/keyboard visual acceptance verifier"
+  ],
+  "executed_scope": "Real Chromium, production editor/store/renderer and production file repository through explicit test-only transport. Not NiceGUI.",
+  "last_observed": {
+    "element_workflows": "39/39, 351 checked action outcomes",
+    "data_workflows": "10/10",
+    "source_persistence": "8/8 with explicit test doubles",
+    "delivery_tests": "9/9 (five new tests, four existing closeout tests)",
+    "full_tests": "908 passed; same 29 baseline/environment failures; no new failing tests",
+    "console_page_request_errors": "0/0/0 in executed browser scenarios",
+    "source_stability": "PASS",
+    "frozen_connector": "unchanged"
+  },
+  "remaining": [
+    "Execute scripts/verify_release.py --host-mode native on the final candidate; fix only reproduced failures."
+  ],
+  "next_step": "Run one final native verifier. PASS_LOCAL_INTERNAL_PILOT is emitted only when every required gate passes on a stable source manifest.",
+  "commit_push_performed": false
+}
