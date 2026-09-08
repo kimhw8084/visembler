@@ -3,15 +3,58 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+from types import SimpleNamespace
 from pathlib import Path
+
+import pytest
+from playwright.sync_api import Error as PlaywrightError
 
 from company_ui.products.visualizer.page import _history_diff_summary, _report_thumbnail_markup
 from company_ui.products.visualizer.repository import ReportRepository
+from scripts.release_checks.run_final_visual_remediation_acceptance import goto_local_route
 
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "company_ui/products/visualizer/assets"
 FROZEN = ROOT / "company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js"
+
+
+class _NavigationPage:
+    def __init__(self, failures: list[str], events=None) -> None:
+        self.failures = list(failures)
+        self.events = events
+        self.calls = 0
+        self.waits: list[int] = []
+
+    def goto(self, url: str, *, wait_until: str):
+        self.calls += 1
+        if self.failures:
+            detail = self.failures.pop(0)
+            if self.events is not None:
+                self.events.unexpected.append(
+                    {"kind": "requestfailed", "detail": f"{url} :: {detail}"}
+                )
+            raise PlaywrightError(f"Page.goto: net::{detail} at {url}")
+        return "loaded"
+
+    def wait_for_timeout(self, milliseconds: int) -> None:
+        self.waits.append(milliseconds)
+
+
+def test_visual_acceptance_retries_only_transient_local_navigation_faults() -> None:
+    events = SimpleNamespace(unexpected=[], expected_fault=[])
+    retries: list[dict] = []
+    page = _NavigationPage(["ERR_ABORTED"], events)
+    assert goto_local_route(page, "http://127.0.0.1:9000/visualizer", events=events, retry_log=retries) == "loaded"
+    assert page.calls == 2 and page.waits == [100]
+    assert events.unexpected == []
+    assert events.expected_fault[0]["kind"] == "requestfailed"
+    assert retries == [{"url": "http://127.0.0.1:9000/visualizer", "attempt": 1, "reason": "ERR_ABORTED"}]
+
+    deterministic = _NavigationPage(["ERR_CONNECTION_REFUSED"])
+    with pytest.raises(PlaywrightError):
+        goto_local_route(deterministic, "http://127.0.0.1:9000/broken")
+    assert deterministic.calls == 1 and deterministic.waits == []
 
 
 def node_json(source: str) -> dict:

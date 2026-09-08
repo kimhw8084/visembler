@@ -17,7 +17,7 @@ import traceback
 from pathlib import Path
 from urllib.parse import quote
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import Error as PlaywrightError, sync_playwright
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT));sys.path.insert(0,str(Path(__file__).parent))
@@ -27,6 +27,7 @@ from editor_host import NativeHost  # noqa: E402
 from native_common import BrowserEvents,browser_kwargs,ready,write_json  # noqa: E402
 
 FROZEN='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'
+TRANSIENT_NAVIGATION_ERRORS=('ERR_ABORTED','ERR_NETWORK_IO_SUSPENDED','ERR_NETWORK_CHANGED','ERR_CONNECTION_RESET')
 NAMES={
  'VR001':'all 39 production elements enumerated','VR002':'solo core chart uses family minimum','VR003':'solo timeline uses family minimum','VR004':'solo wafer uses family minimum','VR005':'solo diagram uses family minimum','VR006':'text/metric content-fit is not a centered island','VR007':'multi-card growth favors visual families','VR008':'no giant blank composite/timeline rows','VR009':'Free geometry survives internal responsiveness',
  'VR010':'legacy array edges render','VR011':'from/to/label edges render','VR012':'source/target edges render','VR013':'canonical diagram studio renders','VR014':'Preview has no diagram error','VR015':'SVG contains nodes and labels','VR016':'Diagram Studio auto-fits on open','VR017':'768 shape palette drawer available','VR018':'768 inspector drawer available',
@@ -40,6 +41,27 @@ NAMES={
 def node_json(source: str):
     result=subprocess.run(['node','--input-type=module','--eval',source],cwd=ROOT,check=True,capture_output=True,text=True,timeout=40)
     return json.loads(result.stdout)
+
+def goto_local_route(page,url,*,events=None,retry_log=None,wait_until='domcontentloaded',attempts=3):
+    """Retry only Chromium-local transient navigation faults, never route/app failures."""
+    for attempt in range(1,attempts+1):
+        try:
+            return page.goto(url,wait_until=wait_until)
+        except PlaywrightError as error:
+            detail=str(error);token=next((value for value in TRANSIENT_NAVIGATION_ERRORS if value in detail),None)
+            if token is None or attempt==attempts:
+                raise
+            if events is not None:
+                # BrowserEvents observes requestfailed before page.goto raises.
+                # Reclassify only this exact transient top-level request after a
+                # successful bounded retry; no application error is ignored.
+                for index in range(len(events.unexpected)-1,-1,-1):
+                    row=events.unexpected[index]
+                    if row.get('kind')=='requestfailed' and url in row.get('detail','') and token in row.get('detail',''):
+                        events.expected_fault.append(events.unexpected.pop(index));break
+            if retry_log is not None: retry_log.append({'url':url,'attempt':attempt,'reason':token})
+            page.wait_for_timeout(100*attempt)
+    raise AssertionError(f'navigation retry loop exhausted without result: {url}')
 
 def report_model(entry,mode='smart',items=None):
     values=items or [entry]
@@ -67,7 +89,7 @@ def toolbar_distance(page,item_id):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True);parser.add_argument('--skip-regressions',action='store_true');parser.add_argument('--skip-benchmark',action='store_true');args=parser.parse_args()
     output=args.output.expanduser().resolve();output.mkdir(parents=True,exist_ok=True)
-    receipt={'scope':'final visual remediation','checks':[],'visual_utilization':[],'unexpected_errors':[],'pass':0,'applicable':0,'not_applicable':0}
+    receipt={'scope':'final visual remediation','checks':[],'visual_utilization':[],'unexpected_errors':[],'navigation_retries':[],'pass':0,'applicable':0,'not_applicable':0}
     rows={cid:{'id':cid,'name':name,'status':'FAIL','error':'not executed'} for cid,name in NAMES.items()}
     def record(cid,value=True,error=''):
         rows[cid]={'id':cid,'name':NAMES[cid],'status':'PASS' if value else 'FAIL'}
@@ -117,8 +139,9 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEnt
             history_record=host.repository.get(line_id);changed=json.loads(json.dumps(history_record.model));changed['items'][0]['title']='Changed trend';changed['items'][0]['x']=80;host.repository.commit(line_id,base_revision=history_record.revision,model=changed,commit_id='visual-history-change');history_record=host.repository.get(line_id);host.repository.checkpoint(line_id,'Visual review',expected_revision=history_record.revision)
             with host,sync_playwright() as playwright:
                 browser=playwright.chromium.launch(**browser_kwargs());context=browser.new_context(viewport={'width':1440,'height':900});page=context.new_page();events=BrowserEvents();events.attach(page)
+                def navigate(url): return goto_local_route(page,url,events=events,retry_log=receipt['navigation_retries'])
                 for key,rid in ids.items():
-                    page.goto(f'{host.url}/visualizer?report={quote(rid)}',wait_until='domcontentloaded');ready(page,require_settled=True);page.wait_for_timeout(80);probe=visual_probe(page);probe['key']=key;receipt['visual_utilization'].append(probe)
+                    navigate(f'{host.url}/visualizer?report={quote(rid)}');ready(page,require_settled=True);page.wait_for_timeout(80);probe=visual_probe(page);probe['key']=key;receipt['visual_utilization'].append(probe)
                 def family_ok(engine,min_area,min_width,min_internal=.04):
                     values=[value for value in receipt['visual_utilization'] if value['engine']==engine]
                     if not values or min(value['card_area_share'] for value in values)<min_area or min(value['width_share'] for value in values)<min_width or min(value['internal_area_share'] for value in values)<min_internal: raise AssertionError(values)
@@ -128,30 +151,30 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEnt
                 if not all_good: receipt['visual_utilization_failures']=[value for value in receipt['visual_utilization'] if value['card_area_share']<({'TextEngine':.08,'MetricEngine':.08,'EvidenceCompositeEngine':.08,'DecisionCompositeEngine':.08,'ProjectCompositeEngine':.08}.get(value['engine'],.18)) or value['overflow']]
                 record('VR001',rows['VR001']['status']=='PASS' and all_good,'one or more production elements missed family utilization/overflow limits' if not all_good else '')
                 multi=report_model(fixture('TextEngine','Body Narrative',1),items=[fixture('TextEngine','Body Narrative',1),fixture('TimelineEngine','Event Timeline',2),fixture('CoreChartEngine','Line Chart',3)])
-                multi_id=host.create(model=multi,name='multi-growth');page.goto(f'{host.url}/visualizer?report={quote(multi_id)}',wait_until='domcontentloaded');ready(page,require_settled=True);layout=page.evaluate('()=>window.__VIZ_PROD__.layoutRects()')
+                multi_id=host.create(model=multi,name='multi-growth');navigate(f'{host.url}/visualizer?report={quote(multi_id)}');ready(page,require_settled=True);layout=page.evaluate('()=>window.__VIZ_PROD__.layoutRects()')
                 attempt('VR007',lambda: (_ for _ in ()).throw(AssertionError(layout)) if next(v for v in layout if v['growth']=='plot')['h']<=next(v for v in layout if v['growth']=='text')['h'] else None)
                 attempt('VR008',lambda: (_ for _ in ()).throw(AssertionError(layout)) if max(v['h'] for v in layout if v['growth'] in {'text','horizontal'})>380 else None)
-                free_before={value['id']:(value['x'],value['y'],value['w'],value['h']) for value in host.repository.get(free_id).model['items']};page.goto(f'{host.url}/visualizer?report={quote(free_id)}',wait_until='domcontentloaded');ready(page,require_settled=True);page.set_viewport_size({'width':1024,'height':800});page.wait_for_timeout(80);free_after={value['id']:(value['x'],value['y'],value['w'],value['h']) for value in page.evaluate('()=>window.CompanyUIVisualizerBridge.state().model.items')};record('VR009',free_before==free_after,str((free_before,free_after)))
-                page.goto(f'{host.url}/visualizer?report={quote(diagram_id)}',wait_until='domcontentloaded');ready(page,require_settled=True);attempt('VR014',lambda: (_ for _ in ()).throw(AssertionError('diagram error in preview')) if 'Diagram data needs review' in page.locator('#componentLayer').inner_text() else None)
+                free_before={value['id']:(value['x'],value['y'],value['w'],value['h']) for value in host.repository.get(free_id).model['items']};navigate(f'{host.url}/visualizer?report={quote(free_id)}');ready(page,require_settled=True);page.set_viewport_size({'width':1024,'height':800});page.wait_for_timeout(80);free_after={value['id']:(value['x'],value['y'],value['w'],value['h']) for value in page.evaluate('()=>window.CompanyUIVisualizerBridge.state().model.items')};record('VR009',free_before==free_after,str((free_before,free_after)))
+                navigate(f'{host.url}/visualizer?report={quote(diagram_id)}');ready(page,require_settled=True);attempt('VR014',lambda: (_ for _ in ()).throw(AssertionError('diagram error in preview')) if 'Diagram data needs review' in page.locator('#componentLayer').inner_text() else None)
                 page.locator('[data-action="edit-diagram"]').click();page.locator('#diagram-studio[data-studio-ready="true"]').wait_for(timeout=20000);page.wait_for_timeout(180)
                 attempt('VR016',lambda: (_ for _ in ()).throw(AssertionError('diagram did not initialize fitted')) if 'scale(' not in (page.locator('#ds-canvas').get_attribute('style') or '') or page.evaluate('()=>CompanyUIDiagramStudio.state().model.nodes.some(n=>{const r=document.querySelector(`[data-node-id="${n.id}"]`)?.getBoundingClientRect(),w=document.querySelector("#ds-canvas-wrap")?.getBoundingClientRect();return r&&!((r.right<=w.right+2)&&(r.bottom<=w.bottom+2)&&(r.left>=w.left-2)&&(r.top>=w.top-2))})') else None)
                 page.set_viewport_size({'width':768,'height':800});page.wait_for_timeout(100);shape_button=page.locator('[data-action="toggle-palette"]');shape_button.click();attempt('VR017',lambda: (_ for _ in ()).throw(AssertionError('shape drawer unavailable')) if not page.locator('.ds-palette.is-open').is_visible() else None);page.locator('[data-action="close-panels"]').last.click();page.locator('[data-action="toggle-inspector"]').click();attempt('VR018',lambda: (_ for _ in ()).throw(AssertionError('inspector drawer unavailable')) if not page.locator('.ds-inspector.is-open').is_visible() else None)
-                page.set_viewport_size({'width':1440,'height':900});page.goto(f'{host.url}/visualizer/chart-studio?report={quote(line_id)}&element=item-4',wait_until='domcontentloaded')
+                page.set_viewport_size({'width':1440,'height':900});navigate(f'{host.url}/visualizer/chart-studio?report={quote(line_id)}&element=item-4')
                 # Resolve element id from the route report instead of relying on registry order.
                 if page.locator('#chart-studio[data-studio-ready="true"]').count()==0:
-                    line_element=host.repository.get(line_id).model['items'][0]['id'];page.goto(f'{host.url}/visualizer/chart-studio?report={quote(line_id)}&element={quote(str(line_element))}',wait_until='domcontentloaded')
+                    line_element=host.repository.get(line_id).model['items'][0]['id'];navigate(f'{host.url}/visualizer/chart-studio?report={quote(line_id)}&element={quote(str(line_element))}')
                 page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);attempt('VR019',lambda: (_ for _ in ()).throw(AssertionError(page.locator('#cs-summary').inner_text())) if 'unmapped' in page.locator('#cs-summary').inner_text().lower() else None);attempt('VR020',lambda: (_ for _ in ()).throw(AssertionError('blank live chart')) if page.locator('#cs-canvas [data-chart-point]').count()<1 else None);attempt('VR021',lambda: (_ for _ in ()).throw(AssertionError('unmapped SVG aria')) if 'unmapped' in (page.locator('#cs-canvas svg').get_attribute('aria-label') or '').lower() else None)
                 page.locator('[data-action="save"]').click();page.wait_for_function('()=>!CompanyUIChartStudio.state.pending',timeout=20000);page.reload(wait_until='domcontentloaded');page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);attempt('VR022',lambda: (_ for _ in ()).throw(AssertionError('reopened chart blank')) if page.locator('#cs-canvas [data-chart-point]').count()<1 else None)
                 for rid,cids in [(wafer_id,('VR023','VR024','VR025')),(engineering_id,('VR026',))]:
-                    element_id=host.repository.get(rid).model['items'][0]['id'];page.goto(f'{host.url}/visualizer/chart-studio?report={quote(rid)}&element={quote(str(element_id))}',wait_until='domcontentloaded');page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);studio=page.evaluate('()=>JSON.parse(JSON.stringify(CompanyUIChartStudio.model))')
+                    element_id=host.repository.get(rid).model['items'][0]['id'];navigate(f'{host.url}/visualizer/chart-studio?report={quote(rid)}&element={quote(str(element_id))}');page.locator('#chart-studio[data-studio-ready="true"]').wait_for(timeout=20000);studio=page.evaluate('()=>JSON.parse(JSON.stringify(CompanyUIChartStudio.model))')
                     if rid==wafer_id:
                         attempt('VR023',lambda studio=studio: (_ for _ in ()).throw(AssertionError(studio)) if len(studio['dataset']['rows'])!=4 else None);attempt('VR024',lambda: (_ for _ in ()).throw(AssertionError('die count mismatch')) if page.locator('#cs-canvas [data-wafer-die]').count()!=4 else None);attempt('VR025',lambda: (_ for _ in ()).throw(AssertionError(page.locator('#cs-canvas').inner_text())) if '91 → 97' not in page.locator('#cs-canvas').inner_text() else None)
                     else: attempt('VR026',lambda studio=studio: (_ for _ in ()).throw(AssertionError('engineering route blank')) if len(studio['dataset']['rows'])!=10 or page.locator('#cs-canvas [data-chart-point]').count()!=10 else None)
-                page.goto(f'{host.url}/visualizer?report={quote(free_id)}',wait_until='domcontentloaded');ready(page,require_settled=True)
+                navigate(f'{host.url}/visualizer?report={quote(free_id)}');ready(page,require_settled=True)
                 for cid,zoom,item_id in [('VR028',.4,'top-right'),('VR029',.55,'bottom-left'),('VR030',1,'top-right')]:
                     page.evaluate('(z)=>window.__VIZ_PROD__.setZoom(z,true,.1)',zoom);distance=toolbar_distance(page,item_id);record(cid,distance<=20,f'distance {distance:.1f}px')
                 page.locator('#libraryToggle').click();page.wait_for_timeout(80);distance=toolbar_distance(page,'bottom-left');page.locator('#inspectorToggle').click();page.wait_for_timeout(80);distance=max(distance,toolbar_distance(page,'top-right'));record('VR031',distance<=20,f'distance {distance:.1f}px')
-                page.goto(f'{host.url}/visualizer/reports?report={quote(line_id)}',wait_until='domcontentloaded');page.locator('.cui-report-hub').wait_for(timeout=20000);attempt('VR034',lambda: (_ for _ in ()).throw(AssertionError('revision comparison miniatures missing')) if page.locator('.cui-history-compare .cui-report-thumb-svg').count()<2 else None)
+                navigate(f'{host.url}/visualizer/reports?report={quote(line_id)}');page.locator('.cui-report-hub').wait_for(timeout=20000);attempt('VR034',lambda: (_ for _ in ()).throw(AssertionError('revision comparison miniatures missing')) if page.locator('.cui-history-compare .cui-report-thumb-svg').count()<2 else None)
                 checkpoint=page.locator('input[placeholder="Before review"]').first;button=page.locator('button:has-text("Save checkpoint")').first;attempt('VR040',lambda: (_ for _ in ()).throw(AssertionError('checkpoint has neither a safe default nor disabled empty state')) if bool(checkpoint.input_value().strip())!=button.is_enabled() else None)
                 receipt['unexpected_errors']=events.unexpected;record('VR055',not events.unexpected,str(events.unexpected[:5]));context.close();browser.close()
     except Exception as error:

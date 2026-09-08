@@ -5,6 +5,7 @@ import hashlib
 import inspect
 import io
 import json
+import math
 import os
 import uuid
 from html import escape as html_escape
@@ -218,15 +219,75 @@ def _report_options(repository: ReportRepository, query: str='', sort: str='modi
     return result
 
 
+_THUMBNAIL_DRAWABLE=(12.0,12.0,296.0,148.0)
+_THUMBNAIL_MIN_CARD=(28.0,20.0)
+
+
+def _finite_float(value: Any, default: float | None=None) -> float | None:
+    if isinstance(value,bool) or not isinstance(value,(int,float)): return default
+    number=float(value)
+    return number if math.isfinite(number) else default
+
+
+def _report_thumbnail_geometry(model: Mapping[str,Any]) -> list[dict[str,Any]]:
+    """Fit report items into the thumbnail's drawable area.
+
+    Smart and Guided layouts may legitimately extend beyond a persisted canvas
+    height.  The miniature therefore fits the union of the canvas and explicit
+    item bounds, rather than clipping item sizes against a stale canvas edge.
+    Items without complete geometry use a bounded grid which always fits all
+    twelve miniature slots.
+    """
+    items=[entry for entry in model.get('items',[]) if isinstance(entry,Mapping)][:12]
+    if not items: return []
+    left,top,drawable_w,drawable_h=_THUMBNAIL_DRAWABLE;right=left+drawable_w;bottom=top+drawable_h
+    canvas=model.get('canvas') if isinstance(model.get('canvas'),Mapping) else {}
+    canvas_w=_finite_float(canvas.get('w')) or _finite_float(canvas.get('width')) or 1200.0
+    canvas_h=_finite_float(canvas.get('h')) or _finite_float(canvas.get('height')) or 900.0
+    canvas_w=max(1.0,canvas_w);canvas_h=max(1.0,canvas_h)
+    explicit=[]
+    for entry in items:
+        values=tuple(_finite_float(entry.get(key)) for key in ('x','y','w','h'))
+        explicit.append(values if all(value is not None for value in values) else None)
+
+    positioned=[value for value in explicit if value is not None]
+    min_x=min([0.0,*[value[0] for value in positioned]]);min_y=min([0.0,*[value[1] for value in positioned]])
+    max_x=max([canvas_w,*[value[0]+max(0.0,value[2]) for value in positioned]])
+    max_y=max([canvas_h,*[value[1]+max(0.0,value[3]) for value in positioned]])
+    sx=drawable_w/max(1.0,max_x-min_x);sy=drawable_h/max(1.0,max_y-min_y)
+
+    columns=2 if len(items)>1 else 1
+    rows=math.ceil(len(items)/columns)
+    gap=4.0
+    fallback_w=(drawable_w-gap*(columns-1))/columns
+    fallback_h=(drawable_h-gap*(rows-1))/rows
+    min_w,min_h=_THUMBNAIL_MIN_CARD
+    result=[]
+    for index,(entry,source) in enumerate(zip(items,explicit)):
+        if source is None:
+            col=index%columns;row=index//columns
+            x=left+col*(fallback_w+gap);y=top+row*(fallback_h+gap);w=fallback_w;h=fallback_h
+        else:
+            source_x,source_y,source_w,source_h=source
+            w=min(drawable_w,max(min_w,max(0.0,source_w)*sx))
+            h=min(drawable_h,max(min_h,max(0.0,source_h)*sy))
+            x=left+(source_x-min_x)*sx;y=top+(source_y-min_y)*sy
+            x=min(max(left,x),right-w);y=min(max(top,y),bottom-h)
+        # This is the SVG rendering boundary.  The fit model above should
+        # already satisfy these invariants; the final normalization protects
+        # against future malformed input without emitting invalid attributes.
+        x=min(max(left,float(x)),right-1.0);y=min(max(top,float(y)),bottom-1.0)
+        w=min(max(1.0,float(w)),right-x);h=min(max(1.0,float(h)),bottom-y)
+        result.append({'entry':entry,'x':x,'y':y,'w':w,'h':h})
+    return result
+
+
 def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> str:
     """Render a content-derived miniature, never a generic item-count block."""
     items=[entry for entry in model.get('items',[]) if isinstance(entry,Mapping)]
     if not items:
         return f'<div class="cui-report-thumb cui-report-thumb--blank" role="img" aria-label="Blank preview of {html_escape(title)}"><svg viewBox="0 0 320 180"><rect class="thumb-page" x="8" y="8" width="304" height="164" rx="7"/><path class="thumb-blank-mark" d="M132 90h56M160 62v56"/><text x="160" y="140" text-anchor="middle">Blank report</text></svg></div>'
     datasets={str(value.get('id')):value for value in model.get('datasets',[]) if isinstance(value,Mapping)}
-    canvas=model.get('canvas') if isinstance(model.get('canvas'),Mapping) else {}
-    canvas_w=max(1,float(canvas.get('w') or canvas.get('width') or 1200)); canvas_h=max(1,float(canvas.get('h') or canvas.get('height') or 900))
-    sx,sy=296/canvas_w,148/canvas_h
     def values(entry: Mapping[str,Any]) -> list[float]:
         source=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else {}
         dataset=source.get('dataset') if isinstance(source.get('dataset'),Mapping) else datasets.get(str(entry.get('dataset_id')), {})
@@ -239,13 +300,9 @@ def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> st
                 if isinstance(row,(list,tuple)) and len(row)>1 and isinstance(row[1],(int,float)) and not isinstance(row[1],bool): output.append(float(row[1]))
         return output[:20]
     shapes=[]
-    for index,entry in enumerate(items[:12]):
-        explicit=all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h'))
-        if explicit: x=12+float(entry['x'])*sx; y=12+float(entry['y'])*sy; w=max(28,float(entry['w'])*sx); h=max(20,float(entry['h'])*sy)
-        else:
-            columns=2 if len(items)>1 else 1; col=index%columns; row=index//columns
-            w=140 if columns==2 else 286; h=max(34,min(68,138/max(1,(len(items)+columns-1)//columns)-4)); x=14+col*148; y=16+row*(h+5)
-        w=min(w,306-x);h=min(h,166-y);engine=str(entry.get('engine') or '');element=str(entry.get('element') or '');family='text'
+    for geometry in _report_thumbnail_geometry(model):
+        entry=geometry['entry'];x=geometry['x'];y=geometry['y'];w=geometry['w'];h=geometry['h']
+        engine=str(entry.get('engine') or '');element=str(entry.get('element') or '');family='text'
         outer=f'<rect class="thumb-card" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="4"/>'
         if engine in {'CoreChartEngine','EngineeringChartEngine'}:
             family='chart';nums=values(entry) or [2,5,3,7];lo=min(nums);span=max(1e-9,max(nums)-lo);points=' '.join(f'{x+6+i*max(1,w-12)/max(1,len(nums)-1):.1f},{y+h-6-(value-lo)/span*max(6,h-14):.1f}' for i,value in enumerate(nums));inner=f'<path class="thumb-axis" d="M{x+5:.1f} {y+5:.1f}V{y+h-5:.1f}H{x+w-4:.1f}"/><polyline class="thumb-chart-line" points="{points}"/>'
@@ -256,11 +313,11 @@ def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> st
         elif engine=='MetricEngine':
             family='metric';inner=f'<text class="thumb-metric" x="{x+8:.1f}" y="{y+h*.62:.1f}">{html_escape(str(entry.get("value") if entry.get("value") is not None else "—")[:12])}</text><path class="thumb-rule" d="M{x+8:.1f} {y+h-8:.1f}H{x+w-8:.1f}"/>'
         elif engine=='TableEngine':
-            family='table';inner=''.join(f'<path class="thumb-rule" d="M{x+5:.1f} {y+7+i*max(5,(h-12)/4):.1f}H{x+w-5:.1f}"/>' for i in range(4))
+            family='table';inner=''.join(f'<path class="thumb-rule" d="M{x+5:.1f} {y+5+i*max(1,(h-10)/3):.1f}H{x+w-5:.1f}"/>' for i in range(4))
         elif engine=='ImageMediaEngine':
             family='media';inner=f'<rect class="thumb-media" x="{x+5:.1f}" y="{y+5:.1f}" width="{max(1,w-10):.1f}" height="{max(1,h-10):.1f}" rx="3"/><path class="thumb-media-mark" d="M{x+8:.1f} {y+h-9:.1f}l{w*.28:.1f}-{h*.32:.1f} {w*.18:.1f} {h*.17:.1f} {w*.18:.1f}-{h*.24:.1f}"/>'
         else:
-            label=str(entry.get('title') or entry.get('statement') or entry.get('text') or element or 'Text');family='text';inner=f'<text class="thumb-copy" x="{x+7:.1f}" y="{y+15:.1f}">{html_escape(label[:32])}</text><path class="thumb-copy-line" d="M{x+7:.1f} {y+24:.1f}H{x+w-9:.1f}M{x+7:.1f} {y+31:.1f}H{x+w*.7:.1f}"/>'
+            label=str(entry.get('title') or entry.get('statement') or entry.get('text') or element or 'Text');family='text';text_y=y+min(15,max(7,h*.42));line_one=y+min(h-5,max(10,h*.68));line_two=y+min(h-3,max(13,h*.84));inner=f'<text class="thumb-copy" x="{x+7:.1f}" y="{text_y:.1f}">{html_escape(label[:32])}</text><path class="thumb-copy-line" d="M{x+7:.1f} {line_one:.1f}H{x+w-9:.1f}M{x+7:.1f} {line_two:.1f}H{x+w*.7:.1f}"/>'
         shapes.append(f'<g data-preview-family="{family}" data-preview-element="{html_escape(element)}">{outer}{inner}</g>')
     return f'<div class="cui-report-thumb" role="img" aria-label="Content preview of {html_escape(title)}"><svg class="cui-report-thumb-svg" viewBox="0 0 320 180"><rect class="thumb-page" x="5" y="5" width="310" height="170" rx="8"/>{"".join(shapes)}</svg></div>'
 
@@ -553,17 +610,17 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     else:
                         with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
                             for record in visible:
-                                with ui.card().classes('cui-report-card'):
+                                with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="active"'):
                                     ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False)
                                     ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
                                     ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
                                     ui.label(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
-                                        ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps')
-                                        ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps')
-                                        ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps')
-                                        ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps')
-                                        ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative')
+                                        ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps data-report-action="open"')
+                                        ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps data-report-action="duplicate"')
+                                        ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps data-report-action="history"')
+                                        ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
+                                        ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
                 with ui.element('section').classes('cui-report-hub-section'):
@@ -572,10 +629,10 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     else:
                         with ui.element('div').classes('cui-report-grid'):
                             for record in visible:
-                                with ui.card().classes('cui-report-card'):
+                                with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="trash"'):
                                     ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
-                                        ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps'); ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps')
+                                        ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps data-report-action="restore"'); ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
 
         @ui.refreshable
         def render_history() -> None:
@@ -609,7 +666,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
 
         import_hub_dialog=ui.dialog()
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer/reports',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Report hub',owner='Visembler'):
-            with ui.column().classes('cui-report-hub w-full'):
+            with ui.column().classes('cui-report-hub w-full').props('data-testid="report-hub"'):
                 with ui.element('header').classes('cui-report-hub-head'):
                     with ui.column().classes('gap-0'):
                         ui.label('Reports').classes('text-h3'); ui.label('Open, organize, and recover reports without covering the authoring canvas.').classes('text-body1')
@@ -622,8 +679,8 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     search=ui.input(label='Search reports',placeholder='Title, description, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('flex-grow')
                     sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
                     view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
-                    ui.button('Grid',on_click=lambda:set_hub_layout('grid')).props('flat no-caps').tooltip('Show report cards')
-                    ui.button('List',on_click=lambda:set_hub_layout('list')).props('flat no-caps').tooltip('Show a compact report list')
+                    ui.button('Grid',on_click=lambda:set_hub_layout('grid')).props('flat no-caps data-testid="report-grid-view"').tooltip('Show report cards')
+                    ui.button('List',on_click=lambda:set_hub_layout('list')).props('flat no-caps data-testid="report-list-view"').tooltip('Show a compact report list')
                     template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
                     ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
                 render_cards()
@@ -1010,7 +1067,7 @@ def register_visualizer(app: Any, ui: Any, repository: ReportRepository) -> None
                     # company-ui: allow-ai005 — report reuse remains a primary action.
                     ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
                     # Report lifecycle is a separate route so it never obscures the active canvas.
-                    ui.button('Manage',on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}')).props('flat no-caps').tooltip('Open the dedicated report hub')
+                    ui.button('Manage',on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}')).props('flat no-caps data-testid="manage-reports"').tooltip('Open the dedicated report hub')
                 # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
                 host=ui.element('div').classes('cui-visualizer-host w-full').props('aria-label="Visembler report editor"')
                 host.on('visualizer_bridge',handle_semantic,args=['detail'])
