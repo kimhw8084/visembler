@@ -9,6 +9,7 @@ import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, p
 import { renderIntegratedElement } from './element_renderer.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { engineeringRecipeCandidates, recipeExecutionPlan, recipeRoleLabel } from './engineering_recipes.mjs';
+import { semanticDatasetForEntry } from './analysis_semantics.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
 import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
@@ -567,7 +568,7 @@ function projectionDataset(entry) {
   if(!dataset||!result||!Array.isArray(result.rows))return dataset;
   return {...dataset,rows:result.rows};
 }
-function resolvedEntry(entry) { const dataset=projectionDataset(entry); if(!dataset)return entry;const key=`${bootstrap.report_id||'default'}:${ui.projectionEpoch}:${entry.id}:${dataset.id}:${dataset.revision||0}:${JSON.stringify(entry.mapping||{})}:${JSON.stringify(entry.transform_recipe||null)}:${JSON.stringify(entry.presentation||null)}`;let patch=ui.resolvedDataCache.get(key);if(!patch){patch=canonicalPatch(entry,dataset,entry.mapping||{});ui.resolvedDataCache.set(key,patch);if(ui.resolvedDataCache.size>80)ui.resolvedDataCache.clear();}return {...entry,...patch,_resolved_dataset:dataset}; }
+function resolvedEntry(entry) { const dataset=projectionDataset(entry); if(!dataset)return entry;const key=`${bootstrap.report_id||'default'}:${ui.projectionEpoch}:${entry.id}:${dataset.id}:${dataset.revision||0}:${JSON.stringify(entry.mapping||{})}:${JSON.stringify(entry.transform_recipe||null)}:${JSON.stringify(entry.analysis_recipe||null)}:${JSON.stringify(entry.presentation||null)}`;let patch=ui.resolvedDataCache.get(key);if(!patch){patch=canonicalPatch(entry,dataset,entry.mapping||{});ui.resolvedDataCache.set(key,patch);if(ui.resolvedDataCache.size>80)ui.resolvedDataCache.clear();}return {...entry,...patch,_resolved_dataset:patch._resolved_dataset||dataset}; }
 function chartData(entry) { const resolved=resolvedEntry(entry); return Array.isArray(resolved.data) && resolved.data.length ? resolved.data : defaultChartData; }
 function metricMarkup(entry) {
   return `<div class="kicker">Metric · live interaction</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">From 188 min manual → 14 min governed workflow</div><div class="metric-big" data-kpi="${entry.id}">${entry.value}%</div><div class="metric-delta">↓ ${entry.value}% cycle-time reduction</div><button class="mini-btn detail-toggle align-start mt-2" data-action="detail" aria-expanded="${entry.detail ? 'true' : 'false'}">${entry.detail ? 'Hide' : 'Show'} detail</button>${entry.detail ? '<div class="metric-detail">Derived from the same before/after model. Web can expand; PPT keeps the accepted summary.</div>' : ''}`;
@@ -1320,8 +1321,8 @@ function analysisProvenanceMarkup(entry) {
   const analysis=entry?.analysis_recipe;if(!analysis)return '';
   const dataset=selectedDataset(entry),fields=dataset?.fields||[],fieldName=(id)=>fields.find(field=>field.id===id)?.name||id||'Unresolved';
   const mappings=Object.entries(analysis.mapping||{}).map(([role,id])=>`<div class="info-row"><span>${esc(recipeRoleLabel(role))}</span><b>${esc(fieldName(id))}</b></div>`).join('');
-  const transform=analysis.transform_recipe?.summary||((analysis.transform_recipe?.steps||[]).map(step=>step.type).join(' · ')||'None');
-  return inspectorSection('Analysis provenance',`<div class="info-row"><span>Recipe</span><b>${esc(analysis.id||'Analysis')} · ${esc(analysis.version||'v1')}</b></div><div class="info-row"><span>Dataset</span><b>${esc(dataset?.name||analysis.source_dataset_id||'Unresolved')}</b></div><details class="advanced-details"><summary>Mapping and transforms</summary>${mappings||'<small>No mappings recorded.</small>'}<div class="info-row"><span>Transforms</span><b>${esc(transform)}</b></div></details>`);
+  const transform=analysis.provenance?.transform_summary||analysis.transform_recipe?.summary||((analysis.transform_recipe?.steps||[]).map(step=>step.type).join(' · ')||'None');
+  return inspectorSection('Analysis provenance',`<div class="info-row"><span>Recipe</span><b>${esc(analysis.id||'Analysis')} · ${esc(analysis.version||'v1')}</b></div><div class="info-row"><span>Dataset</span><b>${esc(dataset?.name||analysis.source_dataset_id||'Unresolved')}</b></div><details class="advanced-details"><summary>Mapping and transforms</summary>${mappings||'<small>No mappings recorded.</small>'}<div class="info-row"><span>Transforms</span><b>${esc(transform)}</b></div>${analysis.provenance?.active_role_set?`<div class="info-row"><span>Schema</span><b>${esc(analysis.provenance.active_role_set.join(' · '))}</b></div>`:''}</details>`);
 }
 function reuseInspectorMarkup(entry) {
   const dataset=selectedDataset(entry);
@@ -2087,7 +2088,7 @@ function datasetId() { return `dataset-${Date.now().toString(36)}-${Math.random(
 function fieldById(dataset, id) { return dataset.fields.find((field)=>field.id===id); }
 function fieldIndex(dataset, id) { return dataset.fields.findIndex((field)=>field.id===id); }
 function valuesFor(dataset, id) { const index=fieldIndex(dataset,id); return index<0?[]:dataset.rows.map(row=>row[index]); }
-function canonicalPatch(entry, dataset, mapping) {
+function legacyCanonicalPatch(entry, dataset, mapping) {
   dataset=applyRecipe(dataset,entry.transform_recipe);
   const pick=(role)=>valuesFor(dataset,mapping[role]); const names=(role)=>fieldById(dataset,mapping[role])?.name||role;
   if(entry.engine==='TableEngine'||entry.type==='table') {const rows=sampledRows(dataset.rows,PERFORMANCE_LIMITS.tableRows);return {customTable:{headers:dataset.fields.map(field=>field.name),rows},rows,source_row_count:dataset.rows.length};}
@@ -2101,6 +2102,25 @@ function canonicalPatch(entry, dataset, mapping) {
   if(entry.engine==='ComparisonEngine') return {before:firstValue??null,after:lastValue??null};
   if(['TextEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(entry.engine)) return {text:String(lastValue??labels.at(-1)??''),body:String(lastValue??labels.at(-1)??''),statement:String(lastValue??labels.at(-1)??''),detail:`Mapped from ${fieldById(dataset,valueId)?.name||'data'}`};
   const indexes=sampledRows(dataset.rows.map((_,index)=>index),PERFORMANCE_LIMITS.chartRows),data=indexes.map(index=>[String(labels[index]??index+1),values[index]]); return {data,rows:data.map(([label,value])=>({label,value})),brush:[0,Math.max(0,data.length-1)],cross:null,drill:null,subtitle:`Mapped ${names(labelId)} to ${names(valueId)}`,source_row_count:dataset.rows.length};
+}
+function canonicalPatch(entry, dataset, mapping) {
+  const semantic=semanticDatasetForEntry(entry,dataset,{aggregation:entry.analysis_recipe?.aggregation});
+  if(!semantic)return legacyCanonicalPatch(entry,dataset,mapping);
+  const resolvedDataset=semantic.dataset;
+  if(!semantic.ok)return {_resolved_dataset:resolvedDataset,analysis_error:semantic.errors?.[0]?.message||'Analysis needs attention: source data no longer matches its recipe.',analysis_semantics:{ok:false,errors:semantic.errors,warnings:semantic.warnings,summary:semantic.summary,provenance:semantic.provenance},source_row_count:dataset.rows?.length||0};
+  const projected=legacyCanonicalPatch({...entry,transform_recipe:null,mapping:semantic.mapping},resolvedDataset,semantic.mapping);
+  const patch={...projected,mapping:semantic.mapping,_resolved_dataset:resolvedDataset,analysis_semantics:{ok:true,summary:semantic.summary,primary:semantic.primary,warnings:semantic.warnings,provenance:semantic.provenance},source_row_count:dataset.rows?.length||0};
+  if(entry.analysis_recipe?.id==='yield-pareto'&&entry.engine==='MetricEngine'){
+    const top=semantic.primary.top_contributor;
+    patch.value=top?.value??null;patch.unit='';patch.metric_label='Top contributor';patch.metric_category=top?.category||'';patch.metric_share=top?.share_percent??null;patch.detail=top?`${top.category} · ${top.value} · ${top.share_percent.toFixed(1)}% of total`:'No contribution rows';
+  }
+  if(entry.analysis_recipe?.id==='pre-post-change'&&entry.engine==='ComparisonEngine'){
+    patch.before=semantic.primary.before??null;patch.after=semantic.primary.after??null;patch.delta=semantic.primary.delta??null;patch.comparison_aggregation='mean';patch.before_label='Pre mean';patch.after_label='Post mean';
+  }
+  if(entry.analysis_recipe?.id==='spc-excursion'&&entry.engine==='EngineeringChartEngine'){
+    patch.specification_low=semantic.primary.specification_low;patch.specification_high=semantic.primary.specification_high;patch.analysis_rows=semantic.rows;
+  }
+  return patch;
 }
 function viewContractForEntry(entry) { if(entry?.view_type)return entry.view_type; if(entry?.engine==='TableEngine')return 'table';if(entry?.engine==='TimelineEngine')return 'timeline';if(entry?.engine==='DiagramEngine')return 'diagram';if(entry?.engine==='EngineeringChartEngine')return 'engineering';if(entry?.engine==='WaferFabEngine')return 'wafer';if(entry?.engine==='CoreChartEngine'){const name=String(entry.element||'').toLowerCase();if(name.includes('histogram'))return 'histogram';if(name.includes('box plot'))return 'box';if(name.includes('regression'))return 'regression_scatter';if(name.includes('scatter'))return 'scatter';if(name.includes('pareto'))return 'pareto';if(name.includes('line'))return name.includes('multi')?'multi_line':'line';}return 'bar'; }
 function mappingProblem(validation={}) { const incompatible=Array.isArray(validation.incompatible)?validation.incompatible:[],missing=Array.isArray(validation.missing)?validation.missing:Array.isArray(validation.unresolved)?validation.unresolved:[]; return incompatible.length?`Cannot bind: incompatible field for ${incompatible.join(', ')}.`:missing.length?`Cannot bind: map ${missing.join(', ')} first.`:'Cannot bind this data to the selected visual.'; }
@@ -2156,14 +2176,15 @@ function recipeFieldOptions(fields,role,selected) {
 function recipeReviewMarkup(state) {
   const {candidates,recipe,plan}=recipeDisplayPlan(state); if(!candidates.length)return '';
   const cards=candidates.slice(0,4).map(candidate=>`<button type="button" class="data-first-recommendation ${candidate.id===recipe?.id?'active':''}" data-data-first-recipe="${esc(candidate.id)}" aria-pressed="${candidate.id===recipe?.id?'true':'false'}"><b>${esc(candidate.name)}</b><span>${esc(candidate.reason)}</span><small>${candidate.ready?'Ready to apply':'Needs mapping'} · ${Math.round(candidate.confidence*100)}% resolved</small></button>`).join('');
-  const roles=(recipe?.roles||[]).map(role=>`<label class="data-first-mapping"><span>${esc(recipeRoleLabel(role))} *</span><select data-data-first-recipe-role="${esc(role)}">${recipeFieldOptions(state.intake.fields,role,plan?.mappings?.[role])}</select></label>`).join('');
+  const activeRoles=recipe?.active_roles||recipe?.roles||[];
+  const roles=activeRoles.map(role=>`<label class="data-first-mapping"><span>${esc(recipeRoleLabel(role))} *</span><select data-data-first-recipe-role="${esc(role)}">${recipeFieldOptions(state.intake.fields,role,plan?.mappings?.[role])}</select></label>`).join('');
   const outputs=(plan?.visuals||[]).map(visual=>`<span>${esc(visual.element)}</span>`).join(' · ');
   const status=plan?.valid?`Ready · creates ${outputs}`:plan?.error||'Choose fields to make this analysis executable.';
-  return `<section class="data-first-analysis" aria-label="Engineering analysis recommendations"><div class="data-first-analysis-heading"><div><b>Recommended analysis</b><small>One atomic operation creates linked evidence from the same dataset.</small></div><span>${candidates.length} compatible</span></div><div class="data-first-recommendations">${cards}</div>${recipe?`<div class="data-first-analysis-review"><div><b>${esc(recipe.name)}</b><small>${esc(recipe.reason)}</small></div><div class="data-first-analysis-uses"><span>Uses</span>${(recipe.roles||[]).map(role=>`<span>${esc(recipeRoleLabel(role))}</span>`).join('')}</div><div class="data-first-mappings">${roles||'<small>No additional mapping is required.</small>'}</div><div class="data-first-analysis-status ${plan?.valid?'valid':'error'}" role="status">${esc(status)}</div><div class="data-first-analysis-actions"><button type="button" class="tb accent" id="dataFirstApplyRecipe" ${plan?.valid?'':'disabled'}>Apply ${esc(recipe.name)}</button></div></div>`:''}</section>`;
+  return `<section class="data-first-analysis" aria-label="Engineering analysis recommendations"><div class="data-first-analysis-heading"><div><b>Recommended analysis</b><small>One atomic operation creates linked evidence from the same dataset.</small></div><span>${candidates.length} compatible</span></div><div class="data-first-recommendations">${cards}</div>${recipe?`<div class="data-first-analysis-review"><div><b>${esc(recipe.name)}</b><small>${esc(recipe.reason)}</small></div><div class="data-first-analysis-uses"><span>Uses</span>${activeRoles.map(role=>`<span>${esc(recipeRoleLabel(role))}</span>`).join('')}</div><div class="data-first-mappings">${roles||'<small>No additional mapping is required.</small>'}</div><div class="data-first-analysis-status ${plan?.valid?'valid':'error'}" role="status">${esc(status)}</div><div class="data-first-analysis-actions"><button type="button" class="tb accent" id="dataFirstApplyRecipe" ${plan?.valid?'':'disabled'}>Apply ${esc(recipe.name)}</button></div></div>`:''}</section>`;
 }
 function analysisEntry(plan,visual,dataset,id,order,analysisId) {
   const type=engineToType[visual.engine]||'table',defaults=typeDefaults[type]||typeDefaults.table;
-  const entry={id,type,element:visual.element,engine:visual.engine,title:visual.element,showTitle:false,textAlign:'left',message_role:visual.role==='primary'?'Primary Evidence':visual.role==='summary'?'Headline':'Supporting Evidence',weight:defaults.weight,order,locked:false,groupId:null,z:Math.max(0,...model().items.map(value=>value.z||0))+order+1,dataset_id:dataset.id,view_type:visual.view,mapping:structuredClone(visual.mapping||{}),analysis_id:analysisId,analysis_recipe:{id:plan.recipe_id,version:plan.recipe_version,role:visual.role,mapping:structuredClone(plan.mappings),transform_recipe:structuredClone(plan.transform_plan),source_dataset_id:dataset.id},...starterContent(visual.engine,visual.element)};
+  const entry={id,type,element:visual.element,engine:visual.engine,title:visual.element,showTitle:false,textAlign:'left',message_role:visual.role==='primary'?'Primary Evidence':visual.role==='summary'?'Headline':'Supporting Evidence',weight:defaults.weight,order,locked:false,groupId:null,z:Math.max(0,...model().items.map(value=>value.z||0))+order+1,dataset_id:dataset.id,view_type:visual.view,mapping:structuredClone(visual.mapping||{}),analysis_id:analysisId,analysis_recipe:{id:plan.recipe_id,version:plan.recipe_version,role:visual.role,mapping:structuredClone(plan.mappings),transform_recipe:structuredClone(plan.transform_plan),source_dataset_id:dataset.id,provenance:structuredClone(plan.provenance),semantic_contract:'value-level derived analysis'},...starterContent(visual.engine,visual.element)};
   if(visual.role==='evidence')entry.transform_recipe={...structuredClone(plan.transform_plan),source_dataset_id:dataset.id};
   else if(plan.transform_plan.steps.length)entry.transform_recipe={...structuredClone(plan.transform_plan),source_dataset_id:dataset.id};
   return entry;

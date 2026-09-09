@@ -131,7 +131,7 @@ console.log(JSON.stringify({valid:plan.valid,status:plan.status,visuals:plan.vis
     assert all(item["production"] for item in payload["visuals"])
     assert payload["allProduction"] is True
     assert payload["sameSource"] is True
-    assert [step["type"] for step in payload["steps"]] == ["sort", "cumulative_percent"]
+    assert [step["type"] for step in payload["steps"]] == ["group", "sort", "cumulative_percent"]
     assert payload["provenance"]["recipe_id"] == "yield-pareto"
 
 
@@ -218,7 +218,7 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
             ready(page)
             panels(page)
             page.locator('#pasteDataBtn').click()
-            page.locator('#dataFirstText').fill('Defect Cause\tYield Loss\tLot\nParticle\t42\tL001\nScratch\t18\tL002\nVoid\t7\tL003')
+            page.locator('#dataFirstText').fill('Defect Cause\tYield Loss\tLot\nParticle\t42\tL001\nParticle\t5\tL002\nScratch\t18\tL003\nVoid\t7\tL004')
             page.locator('[data-data-first-recipe="yield-pareto"]').click()
             page.locator('#dataFirstApplyRecipe').click()
             settled(page)
@@ -227,6 +227,11 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
             assert len({item['analysis_id'] for item in applied['items']}) == 1
             assert len({item['dataset_id'] for item in applied['items']}) == 1
             assert all(item['analysis_recipe']['id'] == 'yield-pareto' for item in applied['items'])
+            rendered = page.locator('.cs-static-chart').evaluate_all('(nodes) => nodes.map(node => node.innerHTML).join("\\n")')
+            assert 'Particle: 47' in rendered
+            assert 'Scratch: 18' in rendered
+            assert 'Void: 7' in rendered
+            assert 'Top contributor' in page.locator('body').inner_text()
             analysis_id = applied['items'][0]['analysis_id']
             page.locator('#undo').click()
             settled(page)
@@ -280,16 +285,16 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
         ),
         (
             'wafer-difference',
-            'Die X\tDie Y\tReference Value\tAffected Value\n1\t1\t10\t11\n2\t1\t10\t9\n1\t2\t11\t15',
+            'Die X\tDie Y\tReference Value\tAffected Value\n1\t1\t10\t11\n2\t1\t10\t9\n1\t2\t10\t15',
             ['Wafer Map', 'Clean Table'],
         ),
         (
             'pre-post-change',
-            'Status\tMeasurement\nPre\t10\nPost\t12\nPost\t13',
+            'Status\tMeasurement\nPre\t10\nPost\t12\nPre\t14\nPost\t16\nPost\t20',
             ['Before/After KPI', 'Line Chart', 'Clean Table'],
         ),
         (
-            'distribution-comparison',
+            'distribution-review',
             'Measurement\n10\n12\n11\n13',
             ['Box Plot', 'Histogram', 'Clean Table'],
         ),
@@ -327,6 +332,23 @@ def test_native_supported_recipe_workflows_create_linked_production_analysis(
             assert len({item['analysis_id'] for item in applied['items']}) == 1
             assert len({item['dataset_id'] for item in applied['items']}) == 1
             assert all(item['analysis_recipe']['id'] == recipe_id for item in applied['items'])
+            rendered = page.locator('.cs-static-chart').evaluate_all('(nodes) => nodes.map(node => node.innerHTML).join("\\n")')
+            if recipe_id == 'spc-excursion':
+                assert '2026-01-01' in rendered
+                assert rendered.index('2026-01-01') < rendered.index('2026-01-03')
+            elif recipe_id == 'tool-chamber-matching':
+                assert 'ETCH-01 · A' in rendered and 'ETCH-01 · B' in rendered
+            elif recipe_id == 'golden-affected':
+                assert 'Golden' in rendered and 'Affected' in rendered
+                assert '10' in rendered and '15' in rendered and '9' in rendered
+            elif recipe_id == 'wafer-difference':
+                assert 'Delta' in rendered and 'Reference' in rendered and 'Affected' in rendered
+                assert '+5' in rendered and '-1' in rendered
+            elif recipe_id == 'pre-post-change':
+                assert 'Pre' in rendered and 'Post' in rendered
+                assert '12' in rendered and '16' in rendered
+            elif recipe_id == 'distribution-review':
+                assert '10.00' in rendered and '13.00' in rendered
             assert not page_errors, page_errors
         finally:
             context.close()
