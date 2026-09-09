@@ -39,7 +39,7 @@ def test_chart_studio_typed_data_and_render_contract() -> None:
     assert observed == {
         'types': ['number', 'string', 'string', 'null', 'number'],
         'values': [0, '0', '', None, 12],
-        'recommendations': 4,
+        'recommendations': 6,
         'svg': True,
         'area': True,
         'recipe': True,

@@ -101,6 +101,34 @@ def test_history_and_export_are_resource_scoped_and_collision_does_not_reassign_
     assert access.can(record.report_id, viewer.principal, REPORT_EXPORT)
 
 
+def test_scoped_history_snapshot_read_is_authorized_and_report_scoped(tmp_path: Path):
+    repo = ReportRepository(tmp_path)
+    access = ReportAccessCatalog(repo)
+    owner = scoped(repo, access, "alice", "report.create")
+    record = owner.create("history-read", model=template_model("blank"))
+    history_id = repo.list_history(record.report_id)[0]["history_id"]
+
+    snapshot = owner.get_history(record.report_id, history_id)
+    assert snapshot["report_id"] == record.report_id
+    assert snapshot["model"] == record.model
+
+    stranger = scoped(repo, access, "mallory")
+    with pytest.raises(PermissionError):
+        stranger.get_history(record.report_id, history_id)
+
+
+def test_scoped_checkpoint_facade_accepts_named_checkpoint(tmp_path: Path):
+    repo = ReportRepository(tmp_path)
+    access = ReportAccessCatalog(repo)
+    owner = scoped(repo, access, "alice", "report.create")
+    record = owner.create("checkpoint-report", model=template_model("blank"))
+
+    checkpoint = owner.checkpoint(record.report_id, name="Weekly review", expected_revision=record.revision)
+
+    assert checkpoint["checkpoint"] is True
+    assert checkpoint["label"] == "Weekly review"
+
+
 def test_share_revoke_group_access_and_stale_commit_preserve_data(tmp_path: Path):
     repo = ReportRepository(tmp_path)
     access = ReportAccessCatalog(repo)

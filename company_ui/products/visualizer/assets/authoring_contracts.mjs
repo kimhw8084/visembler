@@ -7,6 +7,10 @@ export const DATA_CONTRACTS=Object.freeze({
   bar:contract('bar',['category','value'],['series','color','tooltip'],['line','scatter','table']),
   line:contract('line',['x','y'],['series','color','tooltip'],['bar','scatter','table'],{x:new Set([...numeric,...temporal])}),
   scatter:contract('scatter',['x','y'],['size','color','label','tooltip'],['bar','line','table']),
+  multi_line:contract('multi_line',['x','y'],['series','color','label','tooltip'],['line','bar','scatter','table'],{x:new Set([...numeric,...temporal])}),
+  regression_scatter:contract('regression_scatter',['x','y'],['label','tooltip'],['scatter','line','table']),
+  distribution:contract('distribution',['value'],['category','label','tooltip'],['table','bar'],{value:numeric}),
+  pareto:contract('pareto',['category','value'],['label','tooltip'],['bar','table']),
   table:contract('table',[],['category','value','x','y','series'],['bar','line','scatter','matrix_heatmap']),
   matrix_heatmap:contract('matrix_heatmap',[],['category','series','value'],['table']),
   timeline:contract('timeline',['category'],['time','series','tooltip'],['table','diagram_flow'],{time:temporal}),
@@ -14,5 +18,5 @@ export const DATA_CONTRACTS=Object.freeze({
   engineering:contract('engineering',['value'],['time','subgroup','category','series','specification_low','specification_high','lower_limit','upper_limit'],['line','table']),
   wafer:contract('wafer',['die_x','die_y','value'],['wafer_id','lot_id','tool','chamber','recipe','process','product','bin'],['table','engineering']),
 });
-export const LEGACY_VIEW_ALIASES=Object.freeze({chart:'line',matrix:'matrix_heatmap',diagram:'diagram_flow',wafer_fab:'wafer',engineering_chart:'engineering'});
+export const LEGACY_VIEW_ALIASES=Object.freeze({chart:'line',matrix:'matrix_heatmap',diagram:'diagram_flow',wafer_fab:'wafer',engineering_chart:'engineering',histogram:'distribution',box:'distribution',regression:'regression_scatter'});
 export function contractFor(view){return DATA_CONTRACTS[LEGACY_VIEW_ALIASES[view]||view]||DATA_CONTRACTS.table;}

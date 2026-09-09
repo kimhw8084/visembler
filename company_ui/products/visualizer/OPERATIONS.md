@@ -49,7 +49,7 @@ python scripts/verify_release.py --host-mode native \
 
 A bounded local/internal-pilot candidate is accepted only when `report.json`
 records `PASS_LOCAL_INTERNAL_PILOT`. The verifier executes the full test suite,
-39 production-element workflows, data/portability checks, performance timing,
+45 production-element workflows, data/portability checks, performance timing,
 native disconnect/restart recovery, real browser module-worker failure/retry,
 the backup/restore drill, and responsive/keyboard visual acceptance on one
 stable source manifest. Missing or failed gates keep the result blocked.

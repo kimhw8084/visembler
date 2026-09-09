@@ -27,7 +27,7 @@ const missing=entries.filter(entry=>!(ELEMENTS_BY_ENGINE[entry.engine]||[]).incl
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,families:Object.keys(PRODUCTION_LIBRARY).length,missing,keys:entries.map(entry=>`${entry.engine}::${entry.element}`),descriptionsOk:entries.every(entry=>typeof entry.description==='string'&&entry.description.trim().length>10)}));
 """)
     payload = json.loads(output)
-    assert payload['count'] == 39
+    assert payload['count'] == 45
     assert payload['families'] == 13
     assert payload['missing'] == []
     assert payload['descriptionsOk'] is True

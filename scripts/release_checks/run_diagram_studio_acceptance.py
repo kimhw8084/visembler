@@ -384,7 +384,7 @@ def main() -> int:
     report['frozen_connector_sha256'] = hashlib.sha256(frozen.read_bytes()).hexdigest()
     report['passed'] = sum(case.get('status') == 'PASS' for case in report['cases'])
     report['total'] = len(report['cases'])
-    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 39 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
+    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 45 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
     write_json(output / 'diagram-studio-acceptance.json', report)
     print(json.dumps(report, indent=2, ensure_ascii=False))
     return 0 if report['status'] == 'PASS' else 1

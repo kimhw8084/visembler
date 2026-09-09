@@ -218,7 +218,7 @@ def main() -> int:
     report['frozen_connector_sha256'] = hashlib.sha256(frozen.read_bytes()).hexdigest()
     report['passed'] = sum(case.get('status') == 'PASS' for case in report['cases'])
     report['total'] = len(report['cases'])
-    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 39 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
+    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 45 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
     report['source_editor_sha256'] = hashlib.sha256((ROOT / 'company_ui/products/visualizer/assets/integrated_editor.mjs').read_bytes()).hexdigest()
     write_json(output / 'stage-a-acceptance.json', report)
     print(json.dumps(report, indent=2, ensure_ascii=False))
@@ -298,7 +298,8 @@ def _assert_hub(page, host, report_id):
     page.locator('.cui-report-grid').first.wait_for(timeout=20000)
     assert not page.locator('.cui-visualizer-root').count(), 'hub must not embed the editor root'
     assert page.locator('.cui-report-thumb').count() >= 1, 'hub has no report preview thumbnails'
-    card = page.locator('.cui-report-card').first
+    card = page.locator(f'.cui-report-card[data-report-id="{report_id}"]')
+    card.wait_for(timeout=20000)
     old_title = card.locator('input[aria-label="Title"]').input_value()
     new_title = f'{old_title} Stage A'
     card.locator('input[aria-label="Title"]').fill(new_title)

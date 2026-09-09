@@ -59,6 +59,47 @@ REPORT_TEMPLATES = {
             _item('c5','Evidence Card','EvidenceCompositeEngine',4,statement='Engineering evidence',detail='Record provenance and interpretation.',status='Observed'),
         ]}),
     },
+    'yield-loss-investigation': {
+        'name':'Yield Loss Investigation','description':'A structured loss story from headline yield through Pareto, evidence, and corrective action.',
+        'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':8,'items':[
+            _item('c1','Hero KPI','MetricEngine',0,value=None,unit='%',delta=None,target=None,title='Yield'),
+            _item('c2','Pareto','CoreChartEngine',1,data=[],mapping={},showTitle=True,title='Yield loss contributors'),
+            _item('c3','Clean Table','TableEngine',2,customTable={'headers':['Cause','Loss','Owner','Status'],'rows':[['','','','']]}),
+            _item('c4','Wafer Map','WaferFabEngine',3,observations=[],showTitle=True,title='Spatial evidence'),
+            _item('c5','Key Takeaway','TextEngine',4,text='State the dominant contributor, affected scope, and next decision.'),
+            _item('c6','Evidence Card','EvidenceCompositeEngine',5,statement='Containment / corrective action',detail='Owner · due date · verification evidence',status='Planned'),
+        ]}),
+    },
+    'spc-excursion-review': {
+        'name':'SPC Excursion Review','description':'Ordered measurement review with control context, excursion evidence, and disposition.',
+        'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':7,'items':[
+            _item('c1','Executive Statement','TextEngine',0,text='Define the excursion, affected process window, and current disposition.'),
+            _item('c2','SPC Control Chart','EngineeringChartEngine',1,observations=[],lower_limit=None,upper_limit=None,showTitle=True,title='Process behavior'),
+            _item('c3','Clean Table','TableEngine',2,customTable={'headers':['Time','Measurement','Tool','Chamber','Disposition'],'rows':[['','','','','']]}),
+            _item('c4','Event Timeline','TimelineEngine',3,milestones=[{'label':'Excursion','date':None},{'label':'Containment','date':None},{'label':'Verification','date':None}]),
+            _item('c5','Risk Callout','DecisionCompositeEngine',4,statement='Disposition decision',detail='Record evidence, risk, and approval needed.',status='Open'),
+        ]}),
+    },
+    'tool-chamber-matching': {
+        'name':'Tool / Chamber Matching','description':'Compare equipment contexts, rank meaningful differences, and capture the engineering conclusion.',
+        'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':7,'items':[
+            _item('c1','Hero KPI','MetricEngine',0,value=None,unit='',delta=None,target=None,title='Matched metric'),
+            _item('c2','Horizontal Bar','CoreChartEngine',1,data=[],mapping={},showTitle=True,title='Tool / chamber comparison'),
+            _item('c3','Clean Table','TableEngine',2,customTable={'headers':['Tool','Chamber','Metric','Count','Disposition'],'rows':[['','','','','']]}),
+            _item('c4','Scatter Plot','CoreChartEngine',3,data=[],mapping={},showTitle=True,title='Relationship check'),
+            _item('c5','Key Takeaway','TextEngine',4,text='Explain the strongest equipment difference and the next validation step.'),
+        ]}),
+    },
+    'golden-vs-affected': {
+        'name':'Golden vs Affected','description':'Reference-versus-affected evidence with aligned trend, delta context, and action narrative.',
+        'model': canonical_model({'mode':'smart','layoutPreset':'technical','nextId':7,'items':[
+            _item('c1','Before/After KPI','ComparisonEngine',0,before=None,after=None,unit='',title='Reference vs affected'),
+            _item('c2','Multi-Line','CoreChartEngine',1,data=[],mapping={},showTitle=True,title='Golden / affected profile'),
+            _item('c3','Clean Table','TableEngine',2,customTable={'headers':['Position','Golden','Affected','Delta'],'rows':[['','','','']]}),
+            _item('c4','Evidence Card','EvidenceCompositeEngine',3,statement='Divergence evidence',detail='Record aligned position, magnitude, and source.',status='Observed'),
+            _item('c5','Executive Statement','TextEngine',4,text='Summarize where the affected population diverges and what should happen next.'),
+        ]}),
+    },
 }
 
 def template_model(template_id: str) -> dict[str, Any]:

@@ -1,6 +1,6 @@
 # Visembler authoring productivity matrix
 
-This is the maintained product-engineering matrix for the 39 production
+This is the maintained product-engineering matrix for the 45 production
 elements. It records the shared authoring contract rather than pretending that
 each element needs a bespoke editor.
 
@@ -35,6 +35,12 @@ clipboard/direct-edit improvement in this wave.
 | Horizontal Bar | Long-label ranking | Data First recommendation | DF / mapping | CS/I | S + fit | Labels remain usable | fit + KB | Baseline | Recommendation depends on label shape | DF, chart adapter | P0 | chart acceptance |
 | Line Chart | Ordered trend | Data First recommendation | DF / mapping | CS/I | S + fit | Axes/legend static-readable | fit + KB | Baseline | Mapping should remain one-click | DF, chart adapter | P0 | chart acceptance |
 | Area Chart | Trend with magnitude | Data First alternative | DF / mapping | CS/I | S + fit | Area opacity/labels | fit + KB | Baseline | Alternative selection is explicit | DF, chart adapter | P0 | chart acceptance |
+| Multi-Line | Compare multiple ordered runs | Data First recommendation | DF / x-y-series mapping | CS/I | S + fit | Legend and series semantics | fit + KB | Promoted | Multiple runs remain comparable without repasting | DF, chart adapter | P0 | analytics wave, chart acceptance |
+| Scatter Plot | Relationship between measures | Data First recommendation | DF / numeric x-y mapping | CS/I | S + fit | Numeric axes and point tooltips | fit + KB | Promoted | Outlier interpretation remains engineer-led | DF, chart adapter | P0 | analytics wave, chart acceptance |
+| Regression Scatter | Relationship plus fitted trend | Data First recommendation | DF / numeric x-y mapping | CS/I | S + fit | Fit and R² are explicit | fit + KB | Promoted | Statistical inference remains descriptive | DF, advanced chart adapter | P0 | analytics wave, chart acceptance |
+| Histogram | Single-measure distribution | Data First recommendation | DF / numeric value mapping | CS/I | S + fit | Bins and counts are readable | fit + KB | Promoted | Bin policy is deterministic and inspectable | DF, advanced chart adapter | P0 | analytics wave, chart acceptance |
+| Box Plot | Spread, median, outliers | Data First alternative | DF / numeric value mapping | CS/I | S + fit | Quartiles and outliers are explicit | fit + KB | Promoted | One distribution at a time in this wave | DF, advanced chart adapter | P0 | analytics wave, chart acceptance |
+| Pareto | Prioritize categorical contribution | Data First recommendation | DF / category-value mapping | CS/I | S + fit | Descending impact plus cumulative share | fit + KB | Promoted | Source must represent a meaningful contribution | DF, chart adapter | P0 | analytics wave, chart acceptance |
 | Clean Table | Engineering data grid | Data First default | Rectangular paste, DF | Grid DE/I | S + range actions | Typed values, readable density | virtualized + KB | wave | Direct cell edits must preserve field type; fixed in shared parser | typed grid, clipboard | P0 | typed scalar regression, grid tests |
 | Event Timeline | Events over time | Data First recommendation | DF / timeline mapping | DE milestone/I | S + fit | Dates/labels | fit + KB | Baseline | Long event lists need compact review | DF, timeline renderer | P1 | timeline fixtures |
 | Milestone Rail | Compact milestones | Library / timeline intake | DF / timeline mapping | DE/I | S | Rail semantics | fit + KB | Baseline | Needs data-driven spacing | DF, timeline renderer | P1 | timeline fixtures |

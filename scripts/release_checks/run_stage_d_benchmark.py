@@ -118,13 +118,14 @@ def task_2(page, metrics, out, image_path):
     primary_locator_click(metrics, restored.locator('button').filter(has_text="History"))
     page.locator('.cui-history-panel').wait_for(timeout=10000)
     checkpoint = page.locator('input[placeholder="Before review"]').first
+    checkpoint.wait_for(state="visible", timeout=10000)
     if checkpoint.count():
         checkpoint.fill("Weekly review complete")
         checkpoint.press("Tab")
         checkpoint_button=page.locator('button:has-text("Save checkpoint")').first
         page.wait_for_function("button=>!button.disabled",arg=checkpoint_button.element_handle(),timeout=10000)
         primary_locator_click(metrics,checkpoint_button)
-        page.wait_for_timeout(180)
+        page.locator('.cui-history-card').filter(has_text='checkpoint').first.wait_for(timeout=10000)
     return {"refreshed": True, "report_lifecycle": True, "hub_list_view": True, "history_inspected": True, "checkpoint_requested": True, "raw_json_edits": 0}
 
 

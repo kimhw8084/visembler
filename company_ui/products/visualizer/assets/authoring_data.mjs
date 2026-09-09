@@ -3,6 +3,7 @@ import { contractFor } from './authoring_contracts.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { parseDelimitedText, parseAuthoringScalar } from './authoring_values.mjs';
 import { isProductionElement } from './production_library.mjs';
+import { recommendEngineeringRecipes } from './engineering_recipes.mjs';
 const SEMANTIC_ALIASES = Object.freeze({
   lot_id:['lot','lot_id','lotid'], wafer_id:['wafer','wafer_id','waferid','slot'], tool:['tool','tool_id','eqp','equipment','equipment_id'], chamber:['chamber','chamber_id','module'], recipe:['recipe','recipe_id'], process:['step','operation','op','process','process_step'], product:['product','product_id','device'], route:['route','routing','flow'], die_x:['die_x','x','x_coord','wafer_x'], die_y:['die_y','y','y_coord','wafer_y'], bin:['bin','bin_code','die_bin'], value:['value','measure','measurement','result','yield','yield_pct','yield_percent'], specification_low:['lsl','spec_low','lower_spec','specification_low'], specification_high:['usl','spec_high','upper_spec','specification_high'], time:['timestamp','time','datetime','date_time','event_time','date'], source:['source','from'], target:['target','to'], weight:['weight','count','volume'], subgroup:['subgroup','group']
 });
@@ -54,13 +55,19 @@ export function inferMappings(fields) {
   const byTag=tag=>fields.find(field=>field.semantic_tags?.includes(tag)); const numericFields=fields.filter(field=>['integer','number'].includes(field.type)); const category=fields.find(field=>['categorical','identifier','string'].includes(field.type));
   const mapping={}; const set=(role,field)=>{if(field)mapping[role]=field.id;};
   set('source',byTag('source')); set('target',byTag('target')); set('weight',byTag('weight')); set('time',byTag('time')); set('x',byTag('die_x')||byTag('time')||numericFields[0]); set('y',byTag('die_y')||numericFields[1]||byTag('value')); set('value',byTag('value')||numericFields.find(field=>field.id!==mapping.x)||numericFields[0]); set('category',category); set('series',fields.find(field=>field!==category && ['categorical','identifier'].includes(field.type))); set('die_x',byTag('die_x')); set('die_y',byTag('die_y')); ['lot_id','wafer_id','tool','chamber','recipe','product','route','subgroup','specification_low','specification_high'].forEach(role=>set(role,byTag(role)));
-  const contracts=['bar','line','scatter','table','timeline','diagram_flow','engineering','wafer'];
+  const contracts=['bar','line','scatter','multi_line','regression_scatter','distribution','pareto','table','timeline','diagram_flow','engineering','wafer'];
   return contracts.map(view=>{const validation=contractFor(view).validate(mapping,fields);return {view,mapping,confidence:Math.min(1,Object.keys(mapping).length/Math.max(1,fields.length)),unresolved:validation.missing,incompatible:validation.incompatible};}).sort((a,b)=>(a.unresolved.length+a.incompatible.length)-(b.unresolved.length+b.incompatible.length));
 }
-const contractView=view=>view==='diagram'?'diagram_flow':view;
+const contractView=view=>({diagram:'diagram_flow',histogram:'distribution',box:'distribution',regression:'regression_scatter'}[view]||view);
 const PRODUCTION_VIEW_TARGETS=Object.freeze({
   bar:{engine:'CoreChartEngine',element:'Vertical Bar'},
   line:{engine:'CoreChartEngine',element:'Line Chart'},
+  multi_line:{engine:'CoreChartEngine',element:'Multi-Line'},
+  scatter:{engine:'CoreChartEngine',element:'Scatter Plot'},
+  regression_scatter:{engine:'CoreChartEngine',element:'Regression Scatter'},
+  histogram:{engine:'CoreChartEngine',element:'Histogram'},
+  box:{engine:'CoreChartEngine',element:'Box Plot'},
+  pareto:{engine:'CoreChartEngine',element:'Pareto'},
   table:{engine:'TableEngine',element:'Clean Table'},
   timeline:{engine:'TimelineEngine',element:'Event Timeline'},
   diagram:{engine:'DiagramEngine',element:'Data Flow'},
@@ -80,10 +87,22 @@ export function recommendViews(fields, candidates=inferMappings(fields)) {
   const add=(view,reason,confidence)=>{const candidate=candidateForView({candidate_mappings:candidates},view);if(candidate&&!candidate.unresolved.length&&!candidate.incompatible.length)out.push({view,contract_view:candidate.view,mapping:{...candidate.mapping},unresolved:[...candidate.unresolved],incompatible:[...candidate.incompatible],reason,confidence});};
   if(mapping.die_x&&mapping.die_y&&mapping.value)add('wafer','Die coordinates and a measured value were recognized.',.98);
   if(mapping.source&&mapping.target)add('diagram','Source and target fields were recognized.',.95);
-  if(mapping.time&&numeric.length)add('line','Time and measurement fields were recognized.',.92);
+  if(mapping.time&&numeric.length)add('line','Time and measurement fields were recognized.',.97);
   if(mapping.time&&mapping.category&&!numeric.length)add('timeline','A time field and event label were recognized.',.86);
-  if(numeric.length>=2)add('scatter','Two numeric fields were recognized.',.84);
-  if(mapping.category&&mapping.value)add('bar','A category and measured value were recognized.',.88);
+  if(mapping.x&&mapping.y&&numeric.length>=2&&!tags.has('subgroup')) {
+    add('scatter','Two numeric measures make a relationship view useful.',.94);
+    add('regression_scatter','Two numeric measures support a transparent fitted-trend check.',.88);
+  }
+  if(numeric.length===1&&!mapping.category) {
+    add('histogram','One numeric measurement is available, so its distribution can be inspected immediately.',.93);
+    add('box','A numeric measurement can be summarized with median, spread, and outliers.',.82);
+  }
+  if(mapping.category&&mapping.value&&!mapping.source&&!mapping.target) {
+    add('bar','A category and measured value were recognized.',.88);
+    const valueField=fields.find(field=>field.id===mapping.value),valueName=String(valueField?.name||'').toLowerCase();
+    if(tags.has('weight')||/(count|defect|cause|failure|loss|scrap|alarm)/.test(valueName)) add('pareto','Categorical contribution data can be prioritized by descending impact.',.97);
+  }
+  if(mapping.x&&mapping.y&&mapping.series)add('multi_line','A shared ordered axis and series field support a multi-run comparison.',.9);
   if(tags.has('subgroup')&&mapping.value)add('engineering','Subgroup and measurement fields were recognized.',.9);
   add('table','Tabular data is always available.',.5); return out.sort((a,b)=>b.confidence-a.confidence);
 }
@@ -94,14 +113,14 @@ export function productionRecommendations(result) {
     const candidate=candidateForView(result,'table');
     if(candidate&&!candidate.unresolved.length&&!candidate.incompatible.length) supported.push({view:'table',contract_view:'table',mapping:{...candidate.mapping},unresolved:[],incompatible:[],reason:'Tabular data is always available.',confidence:.5});
   }
-  return supported.sort((a,b)=>b.confidence-a.confidence).map(recommendation=>({...recommendation,production_target:productionTargetForView(recommendation.view)}));
+  return supported.sort((a,b)=>b.confidence-a.confidence).map(recommendation=>({...recommendation,production_target:productionTargetForView(recommendation.view),recipes:recommendEngineeringRecipes(result?.fields||[])}));
 }
 export function planDataFirstCreation({intake, view, mapping, datasetId, datasetName='Pasted data'}={}) {
   const target=productionTargetForView(view);
   if(!target)return {valid:false,error:'Choose a supported production visual.'};
   const validation=contractFor(target.view).validate(mapping||{},intake?.fields||[]);
   if(!validation.valid)return {valid:false,error:validation.incompatible.length?`Choose a compatible field for ${validation.incompatible.join(', ')}.`:`Map ${validation.missing.join(', ')} first.`,validation};
-  return {valid:true,target,view:target.view,mapping:structuredClone(mapping||{}),dataset:datasetFromIntake(intake,datasetId,datasetName),validation};
+  return {valid:true,target,view:target.view,mapping:structuredClone(mapping||{}),dataset:datasetFromIntake(intake,datasetId,datasetName),validation,recipes:recommendEngineeringRecipes(intake?.fields||[])};
 }
 export function datasetFromIntake(result, id, name='Pasted data') { return {id,name,revision:1,fields:result.fields,rows:result.rows,source:{kind:'clipboard',label:result.delimiter==='\t'?'TSV':'delimited text',imported_at:new Date().toISOString()},warnings:result.warnings,metadata:{header:result.header}}; }
 export function appendCompatibleDataset(existing, incoming) {

@@ -665,7 +665,7 @@ def register_visualizer(
         async def rename_hub_report(report_id: str,event: Any) -> None:
             try:
                 latest=repository.get(report_id); value=str(getattr(event,'value','') or '')
-                if value.strip()!=latest.title: repository.rename(report_id,value,expected_revision=latest.revision); notifications.success('Report renamed'); render_cards.refresh()
+                if value.strip()!=latest.title: repository.rename(report_id,title=value,expected_revision=latest.revision); notifications.success('Report renamed'); render_cards.refresh()
             except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before renaming.')
             except Exception as exc: notifications.error(f'Rename rejected: {exc}')
 
@@ -702,7 +702,7 @@ def register_visualizer(
             try:
                 name=' '.join(str(field.value or '').split())
                 if not name: notifications.warning('Enter a checkpoint name first'); return
-                record=repository.get(report_id); repository.checkpoint(report_id,name,expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
+                record=repository.get(report_id); repository.checkpoint(report_id,name=name,expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
             except Exception as exc: notifications.error(f'Checkpoint rejected: {exc}')
 
         def begin_history_restore(report_id: str,history_id: str,summary: str) -> None:
@@ -812,7 +812,9 @@ def register_visualizer(
                 checkpoint=ui.input(label='Named checkpoint',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
                 projection=repository.capabilities(record.report_id)
                 if projection.can_restore_history:
-                    checkpoint_button=ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
+                    async def save_hub_checkpoint(_event: Any = None, rid: str = record.report_id, field: Any = checkpoint) -> None:
+                        await checkpoint_hub(rid,field)
+                    checkpoint_button=ui.button('Save checkpoint',on_click=save_hub_checkpoint).props('flat no-caps')
                     checkpoint.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
                 else:
                     checkpoint.disable(); ui.label('Read-only history · restore and duplicate are unavailable.').classes('cui-field-description')
@@ -1119,7 +1121,7 @@ def register_visualizer(
             try:
                 latest=repository.get(current.report_id); value=str(getattr(event,'value','') or '').strip()
                 if value==latest.title: return
-                await activate(repository.rename(latest.report_id,value,expected_revision=latest.revision),notice='Report renamed')
+                await activate(repository.rename(latest.report_id,title=value,expected_revision=latest.revision),notice='Report renamed')
             except RevisionConflictError: await activate(repository.get(current.report_id),notice='Report changed elsewhere; latest revision loaded')
             except Exception as exc: notifications.error(f'Rename rejected: {exc}')
 
@@ -1193,7 +1195,7 @@ def register_visualizer(
         async def create_checkpoint() -> None:
             name=' '.join(str(checkpoint_name.value or '').split())
             if not name: notifications.warning('Enter a checkpoint name first'); return
-            latest=repository.get(current.report_id); repository.checkpoint(latest.report_id,name,expected_revision=latest.revision)
+            latest=repository.get(current.report_id); repository.checkpoint(latest.report_id,name=name,expected_revision=latest.revision)
             checkpoint_name.value=''; checkpoint_name.update(); await open_history(); notifications.success('Checkpoint created')
 
         async def upload_report(event: Any) -> None:

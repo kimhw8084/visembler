@@ -31,7 +31,7 @@ const cases={
 const output=Object.fromEntries(Object.entries(cases).map(([name,text])=>{const intake=intakeText(text), recommendations=productionRecommendations(intake); const first=recommendations[0]; return [name,{recommendations,first:first?.production_target?.element,plan:planDataFirstCreation({intake,view:first?.view,mapping:first?.mapping,datasetId:'test'})}]}));
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,output,targets:Object.values(output).flatMap(value=>value.recommendations).map(r=>isProductionElement(r.production_target.engine,r.production_target.element)),scatterTarget:productionTargetForView('scatter')}));
 """)
-    assert audit["count"] == 39
+    assert audit["count"] == 45
     assert all(audit["targets"])
     assert audit["output"]["wafer"]["first"] == "Wafer Map"
     assert audit["output"]["trend"]["first"] == "Line Chart"
@@ -39,8 +39,8 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,output,targets:Object
     assert audit["output"]["flow"]["first"] == "Data Flow"
     assert audit["output"]["engineering"]["first"] == "SPC Control Chart"
     assert audit["output"]["timeline"]["first"] == "Event Timeline"
-    assert audit["output"]["scatter"]["first"] == "Clean Table"
-    assert audit["scatterTarget"] is None
+    assert audit["output"]["scatter"]["first"] == "Scatter Plot"
+    assert audit["scatterTarget"]["element"] == "Scatter Plot"
     assert all("Bar Chart" not in str(value) for value in audit["output"].values())
 
 

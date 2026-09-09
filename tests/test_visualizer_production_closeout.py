@@ -58,11 +58,11 @@ def test_editor_uses_dataset_identity_epoch_and_canonical_data_dock_path():
     assert "${bootstrap.report_id||'default'}:${ui.projectionEpoch}" in source
     assert 'dataset:dataset?{id:dataset.id,revision:dataset.revision||0,epoch:ui.projectionEpoch}:null' in source
     assert 'Values come from the Data Dock below.' in source
-    assert "const views=['bar','line','table','timeline','engineering','wafer','diagram'];" in source
+    assert "const views=['bar','line','multi_line','scatter','regression_scatter','histogram','box','pareto','table','timeline','engineering','wafer','diagram'];" in source
     assert "const view=event.target.value,target=productionTargetForView(view);" in source
 
 
 def test_closeout_invariants_remain_intact():
     result = node("import {PRODUCTION_LIBRARY_COUNT} from './company_ui/products/visualizer/assets/production_library.mjs';console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT}));")
-    assert result['count'] == 39
+    assert result['count'] == 45
     assert hashlib.sha256(FROZEN.read_bytes()).hexdigest() == 'd8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'

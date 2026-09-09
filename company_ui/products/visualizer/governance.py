@@ -758,8 +758,9 @@ class ScopedReportRepository:
         self._access.audit.record('report.description', actor=self.principal, report_id=report_id, revision=record.revision)
         return record
 
-    def get_history(self, report_id: str) -> list[dict[str, Any]]:
-        return self.list_history(report_id)
+    def get_history(self, report_id: str, history_id: str) -> dict[str, Any]:
+        self._require(report_id, 'report.history.read')
+        return self._repository.get_history(report_id, history_id)
 
     def read_asset_by_id(self, asset_id: str) -> bytes:
         if not self._access.can_read_asset(asset_id, self.principal):
