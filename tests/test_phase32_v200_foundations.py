@@ -49,6 +49,13 @@ def test_v2_public_api_contract_is_signature_aware_and_deterministic():
     assert contract['sha256'] == export_digest(snapshot)
     command_params = [p['name'] for p in contract['symbols']['Command']['callable']['parameters']]
     assert command_params[-3:] == ['description', 'enabled', 'visible']
+    for name in ('Aggregation', 'TableDensity', 'DatePrecision'):
+        assert contract['symbols'][name]['callable']['parameters'] == [{
+            'name': 'values',
+            'kind': 'VAR_POSITIONAL',
+            'annotation': '',
+            'default': {'present': False},
+        }]
 
 
 def test_command_registry_fuzzy_context_and_disabled_contract():

@@ -39,7 +39,7 @@ def _first_existing(candidates:list[str|Path])->str|None:
     for candidate in candidates:
         raw=str(candidate)
         found=shutil.which(raw) if not os.path.isabs(raw) else (raw if Path(raw).exists() else None)
-        if found:return str(Path(found).resolve())
+        if found:return str(Path(found))
     return None
 
 

@@ -40,7 +40,7 @@ The direct entrypoint is `app.py`, so a company runtime can also launch it with
 
 Open `http://127.0.0.1:8080/visualizer`. For a company-managed host or reverse proxy, set `COMPANY_UI_HOST`, `COMPANY_UI_PORT`, `COMPANY_UI_ENVIRONMENT=prod`, `COMPANY_UI_STORAGE_SECRET` (at least 32 characters), and `COMPANY_UI_VISUALIZER_DATA_DIR` before running the script. Use a company-approved Python package index and durable storage for production.
 
-The authoritative parent is frozen `2.0.0rc5`. Existing v2 routes do **not** need to migrate to the v3 workspace/runtime model, and the established renderer, shell, control anatomy, DataTable behavior, chart stack, geometry and accessibility contracts remain the compatibility floor.
+The authoritative parent is frozen `3.0.0a1`. Existing v2 routes do **not** need to migrate to the v3 workspace/runtime model, and the established renderer, shell, control anatomy, DataTable behavior, chart stack, geometry and accessibility contracts remain the compatibility floor.
 
 ## What makes v3 a major architecture
 

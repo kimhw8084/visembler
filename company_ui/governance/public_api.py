@@ -48,6 +48,19 @@ def _stable_default(value: Any) -> Any:
 
 
 def _callable_contract(value: Any) -> dict[str, Any]:
+    # EnumType's inspect.signature representation changed between supported
+    # Python versions.  The public contract needs a stable constructor shape,
+    # not the interpreter's internal EnumMeta signature.
+    if inspect.isclass(value) and issubclass(value, enum.Enum):
+        return {
+            'parameters': [{
+                'name': 'values',
+                'kind': inspect.Parameter.VAR_POSITIONAL.name,
+                'annotation': '',
+                'default': {'present': False},
+            }],
+            'return': '',
+        }
     try:
         signature = inspect.signature(value)
     except (TypeError, ValueError):
