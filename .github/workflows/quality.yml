@@ -114,6 +114,7 @@ jobs:
       - name: Start production-mode Visembler
         env:
           COMPANY_UI_ENVIRONMENT: prod
+          COMPANY_UI_AUTH_MODE: header
           COMPANY_UI_HOST: 0.0.0.0
           COMPANY_UI_PORT: 8124
           COMPANY_UI_PROXY_ENABLED: "true"
