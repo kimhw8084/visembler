@@ -178,16 +178,29 @@ jobs:
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -e '.[test]'
       - name: Security, ownership, migration, recovery, and capacity characterization
-        run: python scripts/release_checks/run_company_production_readiness.py --output "${RUNNER_TEMP}/visembler-company-readiness"
+        run: python scripts/release_checks/run_company_production_readiness.py --output "${RUNNER_TEMP}/visembler-company-readiness.json"
       - name: Require honest staged status
         run: |
           python - <<'PY'
           import json
           import os
           from pathlib import Path
-          receipt = json.loads((Path(os.environ['RUNNER_TEMP']) / 'visembler-company-readiness' / 'company_production_readiness.json').read_text())
-          assert receipt['release_status'] in {'READY_FOR_COMPANY_TARGET_CERTIFICATION', 'PASS_COMPANY_MANAGED_PRODUCTION_CANDIDATE'}
-          assert receipt['checks_status'] == 'PASS'
+          from scripts.release_checks.run_company_production_readiness import (
+              candidate_sha,
+              dependency_fingerprint,
+              source_manifest,
+              validate_local_receipt,
+          )
+          receipt = json.loads((Path(os.environ['RUNNER_TEMP']) / 'visembler-company-readiness.json').read_text())
+          manifest_hash, _ = source_manifest()
+          valid, errors = validate_local_receipt(
+              receipt,
+              sha=candidate_sha(),
+              manifest_hash=manifest_hash,
+              dependency_hash=dependency_fingerprint(),
+          )
+          assert valid, errors
+          assert receipt['status'] in {'READY_FOR_COMPANY_TARGET_CERTIFICATION', 'PASS_COMPANY_MANAGED_PRODUCTION_CANDIDATE'}
           PY
 
   company-user-browser:

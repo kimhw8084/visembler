@@ -47,14 +47,24 @@ def fingerprint(value: Any) -> str:
 
 
 def canonical_model(value: Mapping[str, Any] | None = None) -> dict[str, Any]:
-    src=dict(value or {})
+    from .migrations import migrate_report_model
+    try:
+        src=migrate_report_model(value)
+    except ValueError as exc:
+        raise VisualizerContractError(str(exc)) from exc
     items=src.get('items') if isinstance(src.get('items'), list) else []
     groups=src.get('groups') if isinstance(src.get('groups'), Mapping) else {}
     mode=src.get('mode') if src.get('mode') in ALLOWED_MODES else 'guided'
     next_id=src.get('nextId') if isinstance(src.get('nextId'), int) and src.get('nextId') > 0 else _infer_next_id(items)
     datasets=src.get('datasets') if isinstance(src.get('datasets'), list) else []
+    datasets=json.loads(json.dumps(datasets))
+    for dataset in datasets:
+        if isinstance(dataset, Mapping) and dataset.get('resource_id'):
+            dataset.setdefault('external', True)
+            dataset.setdefault('rows', [])
+            dataset.setdefault('row_count', len(dataset.get('rows') or []))
     canvas=_canonical_canvas(src.get('canvas'))
-    model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':json.loads(json.dumps(datasets)),'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'canvas':canvas,'nextId':next_id}
+    model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':datasets,'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'canvas':canvas,'nextId':next_id}
     validate_model(model)
     encoded=stable_json(model).encode('utf-8')
     if len(encoded) > MODEL_MAX_BYTES: raise VisualizerContractError(f'report model exceeds {MODEL_MAX_BYTES} bytes')
@@ -101,6 +111,13 @@ def validate_model(model: Mapping[str, Any]) -> None:
         dataset_id=dataset.get('id')
         if not isinstance(dataset_id, str) or not dataset_id or dataset_id in dataset_ids: raise VisualizerContractError('dataset requires unique id')
         if not isinstance(dataset.get('fields'), list) or not isinstance(dataset.get('rows'), list): raise VisualizerContractError(f'dataset {dataset_id} requires fields/rows')
+        if dataset.get('resource_id') is not None:
+            if not isinstance(dataset.get('resource_id'), str) or not dataset.get('resource_id'):
+                raise VisualizerContractError(f'dataset {dataset_id} has an invalid external resource reference')
+            if dataset.get('external') is not True:
+                raise VisualizerContractError(f'dataset {dataset_id} external reference must be explicit')
+            if not isinstance(dataset.get('row_count', len(dataset['rows'])), int) or dataset.get('row_count', len(dataset['rows'])) < len(dataset['rows']):
+                raise VisualizerContractError(f'dataset {dataset_id} has an invalid row_count')
         dataset_ids.add(dataset_id)
     ids=set()
     for item in model['items']:

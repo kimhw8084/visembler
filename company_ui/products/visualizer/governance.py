@@ -304,8 +304,14 @@ class ReportAccessCatalog:
         legacy_contract = owner_subject is not None or require_explicit_owner is not None
         if owner is None: owner = owner_subject
         if require_explicit_owner is not None: production = require_explicit_owner
-        ids = [str(getattr(record, 'report_id', record)) for record in report_ids]
+        records = list(report_ids)
+        ids = [str(getattr(record, 'report_id', record)) for record in records]
         selected = owner or 'local-dev'; trashed_ids = trashed_ids or set()
+        summaries = {
+            str(getattr(record, 'report_id')): self._summary(record)
+            for record in records
+            if hasattr(record, 'report_id') and hasattr(record, 'model')
+        }
         created = 0
         with self._transaction():
             value = self._read_unlocked()
@@ -316,9 +322,19 @@ class ReportAccessCatalog:
                 if production and not owner:
                     raise VisualizerContractError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required for production governance migration')
                 state = 'trashed' if report_id in trashed_ids else 'active'
-                value['resources'][report_id] = {**self._new_record(report_id, selected), 'state': state}
+                record = {**self._new_record(report_id, selected), 'state': state}
+                if report_id in summaries:
+                    record['summary'] = summaries[report_id]
+                value['resources'][report_id] = record
                 created += 1
+            # A caller may migrate records whose governance entry already
+            # exists. Keep its summary current without hydrating reports in
+            # normal list/read paths.
+            for report_id, summary in summaries.items():
+                if report_id in value['resources'] and value['resources'][report_id].get('state') == 'active':
+                    value['resources'][report_id]['summary'] = summary
             if created: self._write_unlocked(value)
+            elif summaries: self._write_unlocked(value)
         return {'examined': len(ids), 'existing': len(ids) - created, 'migrated': created} if legacy_contract else created
 
     def reconcile(self) -> dict[str, Any]:
@@ -453,8 +469,16 @@ class ReportAccessCatalog:
 
     def can_read_asset(self, asset_id: str, principal: Principal) -> bool:
         if self.repository is None: return False
-        for record in self.accessible(self.repository.list(), principal, REPORT_READ):
-            if any(isinstance(item, Mapping) and item.get('asset_id') == asset_id for item in record.model.get('items', ())): return True
+        with self._transaction():
+            resources=self._read_unlocked().get('resources', {})
+            for resource in resources.values():
+                if not isinstance(resource, Mapping) or resource.get('state') != 'active':
+                    continue
+                summary=resource.get('summary')
+                if not isinstance(summary, Mapping) or str(asset_id) not in {str(value) for value in summary.get('asset_refs', ())}:
+                    continue
+                if self._capabilities_for_record(resource, principal, AuthorizationModel()).can_read:
+                    return True
         return False
 
     def access_summary(self, report_id: str, principal: Principal) -> dict[str, Any]:
@@ -477,6 +501,9 @@ class ReportAccessCatalog:
     @staticmethod
     def _summary(record: Any) -> dict[str, Any]:
         model=getattr(record, 'model', {}) if not isinstance(record, Mapping) else record.get('model', {})
+        dataset_refs=sorted({str(dataset.get('resource_id')) for dataset in model.get('datasets', ()) if isinstance(dataset, Mapping) and dataset.get('resource_id')}) if isinstance(model, Mapping) else []
+        asset_refs=sorted({str(item.get('asset_id')) for item in model.get('items', ()) if isinstance(item, Mapping) and item.get('asset_id')}) if isinstance(model, Mapping) else []
+        metadata=getattr(record, 'metadata', {}) if not isinstance(record, Mapping) else record.get('metadata', {})
         return {
             'report_id': str(getattr(record, 'report_id', '') if not isinstance(record, Mapping) else record.get('report_id', '')),
             'title': str(getattr(record, 'title', 'Untitled report') if not isinstance(record, Mapping) else record.get('title') or 'Untitled report'),
@@ -484,6 +511,10 @@ class ReportAccessCatalog:
             'updated_at': str(getattr(record, 'updated_at', '') if not isinstance(record, Mapping) else record.get('updated_at') or ''),
             'item_count': len(model.get('items', ())) if isinstance(model, Mapping) else 0,
             'group_count': len(model.get('groups', ())) if isinstance(model, Mapping) else 0,
+            'dataset_refs': dataset_refs,
+            'asset_refs': asset_refs,
+            'description': str(metadata.get('description') or '') if isinstance(metadata, Mapping) else '',
+            'created_at': str(getattr(record, 'created_at', '') if not isinstance(record, Mapping) else record.get('created_at') or ''),
         }
 
     def update_summary(self, record: Any) -> None:

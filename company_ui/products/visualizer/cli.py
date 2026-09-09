@@ -8,6 +8,7 @@ from company_ui.diagnostics import HealthCheck
 
 from .page import register_visualizer
 from .governance import ReportAccessCatalog
+from .dataset_resources import DatasetResourceStore
 from .repository import ReportRepository
 from .runtime import build_runtime_adapter
 from .templates import template_model
@@ -24,12 +25,17 @@ def build_application(environ: Mapping[str,str] | None = None):
     reports_dir=data_dir/'reports'; reports_dir.mkdir(parents=True,exist_ok=True)
     repository=ReportRepository(reports_dir)
     access=ReportAccessCatalog(repository)
+    dataset_store=DatasetResourceStore(data_dir)
     existing=repository.list()+repository.list_trash()
     migration_owner=str(env.get('COMPANY_UI_MIGRATION_OWNER_SUBJECT') or '').strip() or (
         str(env.get('COMPANY_UI_DEV_SUBJECT') or 'local-dev') if env.get('COMPANY_UI_ENVIRONMENT') in {'dev','test'} else ''
     )
     if existing:
         access.migrate(existing,owner_subject=migration_owner or None,require_explicit_owner=env.get('COMPANY_UI_ENVIRONMENT')=='prod')
+        # Rebuild lightweight governed summaries once at startup so older
+        # repositories gain dataset/asset references without making normal
+        # Report Hub or asset requests hydrate every report.
+        access.rebuild_summaries(existing)
     else:
         if not migration_owner:
             raise RuntimeError('COMPANY_UI_MIGRATION_OWNER_SUBJECT is required to bootstrap a production report repository')
@@ -40,7 +46,8 @@ def build_application(environ: Mapping[str,str] | None = None):
         access.migrate([record], owner_subject=migration_owner or None, require_explicit_owner=env.get('COMPANY_UI_ENVIRONMENT')=='prod')
     adapter.health.register(HealthCheck('visualizer.report_storage',lambda: repository.root.is_dir() and repository.root.exists()))
     adapter.health.register(HealthCheck('visualizer.access_catalog',access.health))
-    register_visualizer(app,ui,repository,access=access,runtime=adapter)
+    adapter.health.register(HealthCheck('visualizer.dataset_resources',dataset_store.health))
+    register_visualizer(app,ui,repository,access=access,runtime=adapter,dataset_store=dataset_store)
     return adapter, env, repository
 
 

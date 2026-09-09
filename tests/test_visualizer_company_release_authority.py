@@ -39,6 +39,31 @@ def test_target_receipt_requires_every_gate_and_artifact() -> None:
     assert not valid and 'gate_receipt:session' in errors
 
 
+def test_local_readiness_receipt_uses_current_schema_and_is_validated() -> None:
+    module = _module()
+    sha = module.candidate_sha()
+    manifest, _ = module.source_manifest()
+    deps = module.dependency_fingerprint()
+    receipt = {
+        'schema_version': 1,
+        'status': module.LOCAL_STATUS,
+        'candidate_sha': sha,
+        'source_manifest_hash': manifest,
+        'production_dependency_fingerprint': deps,
+        'configuration_fingerprint': 'safe',
+        'created_at': '2026-09-08T12:00:00+00:00',
+        'local_checks': {name: 'PASS' for name in module.LOCAL_CHECKS} | {'target_receipt': 'PENDING'},
+        'artifact_manifest': {'connector': 'hash'},
+    }
+    valid, errors = module.validate_local_receipt(
+        receipt, sha=sha, manifest_hash=manifest, dependency_hash=deps,
+    )
+    assert valid, errors
+    receipt['status'] = 'BLOCKED'
+    valid, errors = module.validate_local_receipt(receipt)
+    assert not valid and 'status' in errors
+
+
 def test_release_aggregator_rejects_model_only_multi_user_receipt(tmp_path: Path) -> None:
     module=_aggregator(); timestamp='2026-09-08T12:00:00+00:00'; sha=module._head()
     for name in module.REQUIRED:

@@ -36,6 +36,7 @@ TARGET_ARTIFACTS = (
     'company_ui/products/visualizer/assets/integrated_editor.mjs',
     'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js',
 )
+LOCAL_CHECKS = ('identity_boundary', 'resource_authorization', 'lifecycle_reconciliation', 'storage_durability', 'backup_restore')
 
 
 def candidate_sha() -> str:
@@ -65,6 +66,53 @@ def _config_fingerprint() -> str:
 
 def _artifact_manifest(paths: Mapping[str, str]) -> dict[str, str]:
     return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in paths if (ROOT / name).is_file()}
+
+
+def validate_local_receipt(receipt: Mapping[str, Any], *, sha: str | None = None,
+                           manifest_hash: str | None = None,
+                           dependency_hash: str | None = None) -> tuple[bool, list[str]]:
+    """Validate the file emitted for local company-boundary readiness.
+
+    This is intentionally separate from :func:`validate_target_receipt`: local
+    readiness proves the application boundary and storage contract, while a
+    managed-target receipt requires evidence from the actual company
+    environment.  CI and release tooling must consume this function instead
+    of duplicating receipt-field assumptions.
+    """
+    errors: list[str] = []
+    required = {
+        'schema_version', 'status', 'candidate_sha', 'source_manifest_hash',
+        'production_dependency_fingerprint', 'configuration_fingerprint',
+        'created_at', 'local_checks', 'artifact_manifest',
+    }
+    errors.extend(f'missing:{key}' for key in sorted(required - set(receipt)))
+    if receipt.get('schema_version') != 1:
+        errors.append('schema_version')
+    if receipt.get('status') not in {LOCAL_STATUS, TARGET_STATUS}:
+        errors.append('status')
+    if sha is not None and receipt.get('candidate_sha') != sha:
+        errors.append('candidate_sha')
+    if manifest_hash is not None and receipt.get('source_manifest_hash') != manifest_hash:
+        errors.append('source_manifest_hash')
+    if dependency_hash is not None and receipt.get('production_dependency_fingerprint') != dependency_hash:
+        errors.append('production_dependency_fingerprint')
+    if not isinstance(receipt.get('configuration_fingerprint'), str) or not receipt.get('configuration_fingerprint'):
+        errors.append('configuration_fingerprint')
+    local_checks = receipt.get('local_checks') if isinstance(receipt.get('local_checks'), Mapping) else {}
+    for check in LOCAL_CHECKS:
+        if local_checks.get(check) != 'PASS':
+            errors.append(f'local_check:{check}')
+    if local_checks.get('target_receipt') not in {'PENDING', 'PASS', 'BLOCKED'}:
+        errors.append('local_check:target_receipt')
+    if not isinstance(receipt.get('artifact_manifest'), Mapping) or not receipt.get('artifact_manifest'):
+        errors.append('artifact_manifest')
+    try:
+        created = datetime.fromisoformat(str(receipt.get('created_at')).replace('Z', '+00:00'))
+        if created.tzinfo is None:
+            errors.append('created_at_timezone')
+    except ValueError:
+        errors.append('created_at')
+    return not errors, sorted(set(errors))
 
 
 def validate_target_receipt(receipt: Mapping[str, Any], *, sha: str, manifest_hash: str, dependency_hash: str) -> tuple[bool, list[str]]:

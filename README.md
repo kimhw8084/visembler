@@ -18,7 +18,7 @@ Company UI is a Company-owned NiceGUI application platform for internal engineer
 `3.0.0a1` remains the Company UI framework compatibility line. The current
 Visembler candidate has a native local verification receipt for the installed
 Python 3.11.7 / NiceGUI 3.15.0 runtime, with the full current regression estate
-at **1018/1018 PASS**. Its local single-instance status is
+at **1026/1026 PASS**. Its local single-instance status is
 `PASS_LOCAL_INTERNAL_PILOT`; the company boundary is
 `READY_FOR_COMPANY_TARGET_CERTIFICATION` only after the fresh local company
 gates pass. Actual managed identity, proxy, durable-storage, session and

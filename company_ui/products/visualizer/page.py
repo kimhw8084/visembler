@@ -20,10 +20,12 @@ from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
 from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
+from company_ui.data_engine import DataQuery, FilterClause, FilterOperation, SortClause
 
 from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, ReportNotFoundError, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
 from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
 from .governance import REPORT_EDIT, REPORT_EXPORT, REPORT_READ, REPORT_SHARE, ReportAccessCatalog, ReportRole, ScopedReportRepository
+from .dataset_resources import DatasetResourceStore, ScopedDatasetRepository
 from .ppt_service import export_pptx, import_visembler_pptx
 from .repository import ReportRepository
 from .runtime import NiceGUIRuntimeAdapter
@@ -36,12 +38,15 @@ STATIC_ROUTE = '/_cui_visualizer'
 BRIDGE_VERSION = 1
 PRESET_KEY = 'visualizer.personal_presets'
 MAPPING_PRESET_KEY = 'visualizer.data_mapping_presets'
+REUSE_KEY = 'visualizer.reusable_library'
 MAX_PRESETS = 50
 MAX_PRESET_BYTES = 1_500_000
 MAX_MAPPING_PRESET_BYTES = 100_000
+MAX_REUSE_RECORDS = 100
+MAX_REUSE_BYTES = 1_000_000
 _ALLOWED_EVENTS = {
     'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested','mapping.preferences_requested','mapping.preferences_save_requested',
-    'ppt.export_requested','dataset.binding_requested','report.history_requested',
+    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.reset_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
 }
 _MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer'}
 _MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
@@ -66,6 +71,20 @@ def _normalize_mapping_presets(raw: Any) -> list[dict[str,Any]]:
         output.append({'version':1,'id':ident,'name':name,'schema':{'fields':fields,'signature':'|'.join(fields)},'view':'diagram' if view=='diagram_flow' else view,'mapping':clean})
     encoded=stable_json(output).encode('utf-8')
     return output if len(encoded)<=MAX_MAPPING_PRESET_BYTES else []
+
+def _normalize_reuse_records(raw: Any) -> list[dict[str, Any]]:
+    if not isinstance(raw, list): return []
+    output=[]
+    for value in raw[:MAX_REUSE_RECORDS]:
+        if not isinstance(value, Mapping): continue
+        ident=''.join(ch for ch in str(value.get('id') or '') if ch.isalnum() or ch in '-_')[:96]
+        name=' '.join(str(value.get('name') or '').replace('\x00','').split())[:120]
+        kind=' '.join(str(value.get('type') or 'reusable asset').replace('\x00','').split())[:80]
+        version=value.get('version',1)
+        if not ident or not name or not kind or isinstance(version,bool) or not isinstance(version,int) or version<1: continue
+        output.append({**json.loads(stable_json(value)),'id':ident,'name':name,'type':kind,'version':version})
+    if len(stable_json(output).encode('utf-8'))>MAX_REUSE_BYTES: raise VisualizerContractError('Reusable library exceeds the configured storage limit')
+    return output
 NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),NavItem('visualizer-reports','Reports','/visualizer/reports','folder'))),))
 
 
@@ -130,8 +149,8 @@ def _bootstrap_editor(ui: Any, bootstrap: Mapping[str, Any], build: str, module_
     ui.run_javascript(script)
 
 
-def _payload(record, asset_url: Any=None) -> dict[str, Any]:
-    model=record.model
+def _payload(record, asset_url: Any=None, model_override: Mapping[str, Any] | None=None) -> dict[str, Any]:
+    model=model_override if model_override is not None else record.model
     if asset_url:
         model=json.loads(stable_json(model))
         for entry in model.get('items',[]):
@@ -248,23 +267,27 @@ async def _read_upload(event: Any, *, max_bytes: int) -> tuple[str, bytes]:
 
 
 def _report_options(repository: ReportRepository, query: str='', sort: str='modified') -> dict[str,str]:
-    needle=' '.join(str(query).split()).casefold(); records=repository.list()
-    if sort=='title': records=sorted(records,key=lambda record:(record.title.casefold(),record.report_id))
-    elif sort=='created': records=sorted(records,key=lambda record:(record.created_at,record.report_id),reverse=True)
+    # Preserve the report-selector contract while reading governed summaries:
+    # label='New blank report' if record.title=='Untitled report' and blank else record.title
+    # and record.report_id[-6:] remain the disambiguation rules.
+    needle=' '.join(str(query).split()).casefold(); records=repository.list_summaries()
+    if sort=='title': records=sorted(records,key=lambda record:(str(record.get('title') or '').casefold(),str(record.get('report_id') or '')))
+    elif sort=='created': records=sorted(records,key=lambda record:(str(record.get('created_at') or ''),str(record.get('report_id') or '')),reverse=True)
     counts:dict[str,int]={}
     for record in records:
-        blank=not record.model.get('items') and not record.model.get('groups')
-        label='New blank report' if record.title=='Untitled report' and blank else record.title
+        blank=not record.get('item_count') and not record.get('group_count')
+        title=str(record.get('title') or 'Untitled report')
+        label='New blank report' if title=='Untitled report' and blank else title
         counts[label]=counts.get(label,0)+1
     result={}
     for record in records:
-        blank=not record.model.get('items') and not record.model.get('groups')
-        label='New blank report' if record.title=='Untitled report' and blank else record.title
-        description=str(record.metadata.get('description') or '')
-        if needle and needle not in label.casefold() and needle not in record.report_id.casefold() and needle not in description.casefold(): continue
+        blank=not record.get('item_count') and not record.get('group_count'); report_id=str(record.get('report_id') or '')
+        title=str(record.get('title') or 'Untitled report'); label='New blank report' if title=='Untitled report' and blank else title
+        description=str(record.get('description') or '')
+        if needle and needle not in label.casefold() and needle not in report_id.casefold() and needle not in description.casefold(): continue
         if counts[label]>1:
-            label=f'{label}{" · blank" if blank else ""} · {record.report_id[-6:]}'
-        result[record.report_id]=label
+            label=f'{label}{" · blank" if blank else ""} · {report_id[-6:]}'
+        result[report_id]=label
     return result
 
 
@@ -396,11 +419,13 @@ def register_visualizer(
     *,
     access: ReportAccessCatalog | None = None,
     runtime: NiceGUIRuntimeAdapter | None = None,
+    dataset_store: DatasetResourceStore | None = None,
 ) -> None:
     if getattr(app,'_company_ui_visualizer_registered',False): return
     app._company_ui_visualizer_registered=True
     base_repository=repository
     access=access or ReportAccessCatalog(base_repository)
+    dataset_store=dataset_store or DatasetResourceStore(base_repository.root.parent)
     if runtime is None:
         raise RuntimeError('Visembler registration requires the Company UI runtime adapter')
 
@@ -513,6 +538,7 @@ def register_visualizer(
         notifications=NiceGUIStateServices.notification_service()
         request=ui.context.client.request
         repository=scoped_repository(request)
+        dataset_repository=ScopedDatasetRepository(dataset_store, repository)
         report_id=str(request.query_params.get('report') or '').strip()
         element_id=str(request.query_params.get('element') or '').strip()
         chart_engines={'CoreChartEngine','EngineeringChartEngine','WaferFabEngine'}
@@ -522,6 +548,8 @@ def register_visualizer(
             if entry.get('engine') not in chart_engines: raise VisualizerContractError('Chart Studio requires a chart, engineering chart, or Wafer Map element')
             datasets=current.model.get('datasets',[])
             dataset=next((item for item in datasets if isinstance(item,Mapping) and str(item.get('id'))==str(entry.get('dataset_id'))),{})
+            if isinstance(dataset, Mapping) and dataset.get('resource_id'):
+                dataset=dataset_repository.preview_for_report(current.report_id, str(dataset.get('id')))
             # The browser-side canonical adapter owns legacy/core/engineering/
             # wafer hydration. Do not create a second chart model here.
             chart_model=entry.get('chart_studio') if isinstance(entry.get('chart_studio'),Mapping) else None
@@ -718,12 +746,20 @@ def register_visualizer(
 
         @ui.refreshable
         def render_cards() -> None:
-            needle=' '.join(str(search.value or '').split()).casefold(); view=str(view_filter.value or 'active'); active=sorted_records(repository.list()); trash=sorted_records(repository.list_trash())
+            needle=' '.join(str(search.value or '').split()).casefold(); view=str(view_filter.value or 'active'); active_summaries=repository.list_summaries(); trash=sorted_records(repository.list_trash())
+            if sort_select.value=='title': active_summaries=sorted(active_summaries,key=lambda value:(str(value.get('title') or '').casefold(),str(value.get('report_id') or '')))
+            elif sort_select.value=='created': active_summaries=sorted(active_summaries,key=lambda value:(str(value.get('created_at') or ''),str(value.get('report_id') or '')),reverse=True)
+            else: active_summaries=sorted(active_summaries,key=lambda value:(str(value.get('updated_at') or ''),str(value.get('report_id') or '')),reverse=True)
+            def summary_matches(value): return not needle or needle in str(value.get('title') or '').casefold() or needle in str(value.get('report_id') or '').casefold() or needle in str(value.get('description') or '').casefold()
             def matches(record): return not needle or needle in record.title.casefold() or needle in record.report_id.casefold() or needle in str(record.metadata.get('description') or '').casefold()
             if view in {'active','all'}:
-                visible=[record for record in active if matches(record)]
+                visible_summaries=[value for value in active_summaries if summary_matches(value)]
+                visible=[]
+                for summary in visible_summaries[:40]:
+                    try: visible.append(repository.get(str(summary['report_id'])))
+                    except Exception: continue
                 with ui.element('section').classes('cui-report-hub-section'):
-                    ui.label(f'Active reports · {len(visible)}').classes('text-h6')
+                    ui.label(f'Active reports · {len(visible_summaries)}').classes('text-h6')
                     if not visible: ui.label('No active reports match this search.').classes('cui-report-hub-empty')
                     else:
                         with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
@@ -747,6 +783,7 @@ def register_visualizer(
                                         if projection.can_share:
                                             ui.button('Share',on_click=lambda rid=record.report_id:open_share(rid)).props('flat no-caps data-report-action="share"')
                                         if projection.can_delete: ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
+                        if len(visible_summaries)>len(visible): ui.label(f'Showing the first {len(visible)} reports. Search to narrow the collection.').classes('text-caption')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
                 with ui.element('section').classes('cui-report-hub-section'):
@@ -858,7 +895,13 @@ def register_visualizer(
         page_state=NiceGUIStateServices.user_store()
         request=ui.context.client.request
         repository=scoped_repository(request)
-        records=repository.list()
+        dataset_repository=ScopedDatasetRepository(dataset_store, repository)
+        data_sessions: dict[str, Any] = {}
+        summaries=repository.list_summaries()
+        records=[]
+        if summaries:
+            try: records=[repository.get(str(summaries[0]['report_id']))]
+            except Exception: records=[]
         if not records:
             # A newly authenticated user may legitimately have no reports in
             # scope.  Do not collide with another user's default report or
@@ -870,15 +913,45 @@ def register_visualizer(
                 return
         query_report=str(request.query_params.get('report') or '')
         preferred=query_report or str(page_state.get('visualizer.current_report') or '')
-        current=next((record for record in records if record.report_id==preferred),records[0]); page_state['visualizer.current_report']=current.report_id
+        try: current=repository.get(preferred) if preferred else records[0]
+        except Exception: current=records[0]
+        page_state['visualizer.current_report']=current.report_id
         current_capabilities=repository.capabilities(current.report_id)
         ppt_template:dict[str,Any]={'name':None,'content':None}
 
         def report_payload(record: Any) -> dict[str, Any]:
+            model = dataset_repository.hydrate_model(record.report_id, record.model)
             return {
-                **_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),
+                **_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}', model_override=model),
                 'capabilities': repository.capabilities(record.report_id).to_dict(),
             }
+
+        def data_query(session: Any, raw: Mapping[str, Any]) -> dict[str, Any]:
+            filters=[]
+            for value in raw.get('filters', ()) if isinstance(raw.get('filters'), list) else ():
+                if not isinstance(value, Mapping):
+                    continue
+                try:
+                    filters.append(FilterClause(str(value.get('field') or ''), FilterOperation(str(value.get('operation') or 'equals')), value.get('value'), value.get('value2'), str(value.get('filter_id') or '') or None))
+                except (TypeError, ValueError):
+                    raise VisualizerContractError('invalid dataset filter')
+            with session.transaction():
+                for clause in filters:
+                    session.set_filter(clause)
+            sorts=[]
+            for value in raw.get('sorts', ()) if isinstance(raw.get('sorts'), list) else ():
+                if isinstance(value, Mapping) and value.get('key'):
+                    sorts.append(SortClause(str(value['key']), bool(value.get('descending'))))
+            query=DataQuery(
+                search=str(raw.get('search') or ''),
+                search_fields=tuple(str(item) for item in raw.get('search_fields', ()) if item),
+                dimensions=tuple(str(item) for item in raw.get('dimensions', ()) if item),
+                metrics=tuple(str(item) for item in raw.get('metrics', ()) if item),
+                sorts=tuple(sorts), offset=max(0, int(raw.get('offset') or 0)),
+                limit=max(1, int(raw['limit'])) if raw.get('limit') is not None else None,
+            )
+            result=session.query(query)
+            return {'rows': list(result.rows), 'total': result.total, 'filtered_total': result.filtered_total, 'revision': result.revision}
 
         async def send(kind: str, payload: Mapping[str,Any]) -> None:
             message={'bridge_version':BRIDGE_VERSION,'type':kind,'payload':dict(payload)}
@@ -934,13 +1007,95 @@ def register_visualizer(
                     presets=_normalize_mapping_presets(payload.get('presets'))
                     preferences.save_filter_view(MAPPING_PRESET_KEY,{'presets':presets})
                     await send('mapping.preferences_result',{'presets':presets,'saved':True}); return
+                if kind=='reuse.preferences_requested':
+                    raw=preferences.load().filter_views.get(REUSE_KEY,{})
+                    assets=_normalize_reuse_records(raw.get('assets',[])) if isinstance(raw,Mapping) else []
+                    datasets=_normalize_reuse_records(raw.get('datasets',[])) if isinstance(raw,Mapping) else []
+                    await send('reuse.preferences_result',{'assets':assets,'datasets':datasets}); return
+                if kind=='reuse.preferences_save_requested':
+                    bucket='datasets' if str(payload.get('bucket') or '')=='datasets' else 'assets'
+                    records=_normalize_reuse_records(payload.get('records'))
+                    current_library=preferences.load().filter_views.get(REUSE_KEY,{})
+                    library={
+                        'assets':_normalize_reuse_records(current_library.get('assets',[])) if isinstance(current_library,Mapping) else [],
+                        'datasets':_normalize_reuse_records(current_library.get('datasets',[])) if isinstance(current_library,Mapping) else [],
+                    }
+                    library[bucket]=records
+                    preferences.save_filter_view(REUSE_KEY,library)
+                    await send('reuse.preferences_result',{'bucket':bucket,'records':records,'assets':library['assets'],'datasets':library['datasets'],'saved':True}); return
                 if kind=='ppt.export_requested':
                     repository.require_export(current.report_id)
-                    latest=repository.get(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=repository.asset_data_url_by_id)
+                    latest=repository.export(current.report_id); output=export_pptx(ppt_template['content'],latest.model,asset_data_url=lambda asset_id: repository.asset_data_url(latest.report_id,asset_id))
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
                 if kind=='dataset.binding_requested':
-                    await send('report.error',{'message':'Dataset binding is unavailable until a Company UI Dataset/DataSession is attached to this report.'}); return
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    if not dataset_id: raise VisualizerContractError('dataset_id is required')
+                    session_id=str(payload.get('session_id') or dataset_id)
+                    session=data_sessions.get(session_id)
+                    if session is None:
+                        session=dataset_repository.session_for_report(current.report_id,dataset_id)
+                        data_sessions[session_id]=session
+                    resource=dataset_repository.get_for_report(current.report_id,dataset_id)
+                    result=data_query(session,payload)
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'resource_id':resource['resource_id'],'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
+                if kind=='dataset.filter_requested':
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    session_id=str(payload.get('session_id') or dataset_id)
+                    session=data_sessions.get(session_id) or dataset_repository.session_for_report(current.report_id,dataset_id)
+                    data_sessions[session_id]=session
+                    filter_value=payload.get('filter')
+                    if not isinstance(filter_value, Mapping): raise VisualizerContractError('dataset filter is required')
+                    resource=dataset_repository.get_for_report(current.report_id,dataset_id)
+                    result=data_query(session,{'filters':[filter_value],'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
+                if kind=='dataset.reset_requested':
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    session_id=str(payload.get('session_id') or dataset_id)
+                    session=data_sessions.get(session_id) or dataset_repository.session_for_report(current.report_id,dataset_id)
+                    session.clear_filters(); data_sessions[session_id]=session
+                    resource=dataset_repository.get_for_report(current.report_id,dataset_id)
+                    result=data_query(session,{'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
+                if kind=='dataset.resource_requested':
+                    dataset_value=payload.get('dataset')
+                    if not isinstance(dataset_value, Mapping): raise VisualizerContractError('dataset resource payload is required')
+                    dataset_id=str(dataset_value.get('id') or '')
+                    if not dataset_id: raise VisualizerContractError('dataset_id is required')
+                    source_dataset=next((value for value in current.model.get('datasets',[]) if isinstance(value,Mapping) and str(value.get('id'))==dataset_id),None)
+                    if not isinstance(source_dataset,Mapping): raise ReportNotFoundError(dataset_id)
+                    if source_dataset.get('resource_id'): raise VisualizerContractError('dataset is already a bound resource')
+                    resource=dataset_repository.create_for_report(current.report_id,name=str(dataset_value.get('name') or source_dataset.get('name') or 'Bound dataset'),fields=source_dataset.get('fields') or dataset_value.get('fields') or [],rows=source_dataset.get('rows') or dataset_value.get('rows') or [],description=str(dataset_value.get('description') or source_dataset.get('description') or ''),provenance=str((dataset_value.get('source') or source_dataset.get('source') or {}).get('label') if isinstance(dataset_value.get('source') or source_dataset.get('source'),Mapping) else ''),source_metadata=dataset_value.get('source') if isinstance(dataset_value.get('source'),Mapping) else source_dataset.get('source') if isinstance(source_dataset.get('source'),Mapping) else {})
+                    try:
+                        preview=dataset_store.preview(resource['dataset_id'])
+                        external={**dict(source_dataset),'external':True,'resource_id':resource['dataset_id'],'revision':resource['revision'],'fields':preview['fields'],'rows':preview['rows'],'row_count':preview['row_count'],'content_fingerprint':preview['content_fingerprint']}
+                        model_value={**dict(current.model),'datasets':[external if str(value.get('id'))==dataset_id else value for value in current.model.get('datasets',[])]}
+                        record=repository.commit(current.report_id,base_revision=int(payload.get('base_revision',current.revision)),model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
+                    except Exception:
+                        dataset_store.delete(resource['dataset_id'])
+                        raise
+                    current=record; data_sessions.clear()
+                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
+                    await send('report.bootstrap',report_payload(record)); return
+                if kind=='dataset.resource_refresh_requested':
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    dataset_value=payload.get('dataset')
+                    if not isinstance(dataset_value, Mapping): raise VisualizerContractError('dataset refresh payload is required')
+                    if payload.get('selected_only') and len(dataset_consumers := [value for value in current.model.get('items',[]) if isinstance(value,Mapping) and str(value.get('dataset_id'))==dataset_id]) > 1:
+                        raise VisualizerContractError('Refresh the linked dataset together before refreshing a shared resource independently')
+                    resource=dataset_repository.replace_for_report(current.report_id,dataset_id,fields=dataset_value.get('fields') or [],rows=dataset_value.get('rows') or [],expected_revision=payload.get('expected_revision'),provenance=str((dataset_value.get('source') or {}).get('label') if isinstance(dataset_value.get('source'),Mapping) else ''),source_metadata=dataset_value.get('source') if isinstance(dataset_value.get('source'),Mapping) else {})
+                    try:
+                        preview=dataset_store.preview(resource['dataset_id'],revision=resource['revision'])
+                        model_value={**dict(current.model),'datasets':[({**dict(value),'revision':resource['revision'],'fields':preview['fields'],'rows':preview['rows'],'row_count':preview['row_count'],'content_fingerprint':preview['content_fingerprint'],'external':True} if isinstance(value,Mapping) and str(value.get('id'))==dataset_id else value) for value in current.model.get('datasets',[])]}
+                        record=repository.commit(current.report_id,base_revision=int(payload.get('base_revision',current.revision)),model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
+                    except Exception:
+                        # The old report binding remains authoritative if the
+                        # report commit fails; the immutable new revision is
+                        # retained for deterministic operator recovery.
+                        raise
+                    current=record; data_sessions.clear()
+                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
+                    await send('report.bootstrap',report_payload(record)); return
             except RevisionConflictError:
                 latest=repository.get(current.report_id); await send('report.conflict',{**report_payload(latest),'rejected_commit_id':str(payload.get('commit_id') or '')})
             except Exception as exc:

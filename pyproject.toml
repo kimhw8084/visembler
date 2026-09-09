@@ -46,6 +46,7 @@ mac-cert = [
 test = [
   "pytest>=8,<9",
   "pytest-asyncio>=0.25,<1",
+  "playwright==1.62.0",
 ]
 
 [tool.pytest.ini_options]
@@ -64,3 +65,6 @@ include = ["company_ui*"]
 "company_ui.certification" = ["certification_manifest.json"]
 "company_ui" = ["release_authority.json"]
 "company_ui.products.visualizer" = ["assets/*", "contracts/*", "vendor/production_core/**/*"]
+
+[tool.setuptools.exclude-package-data]
+"company_ui.products.visualizer" = ["vendor/production_core/**/__pycache__/*", "vendor/production_core/**/*.pyc"]
