@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import csv
 import hashlib
 import inspect
 import io
@@ -46,10 +47,25 @@ MAX_REUSE_RECORDS = 100
 MAX_REUSE_BYTES = 1_000_000
 _ALLOWED_EVENTS = {
     'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested','mapping.preferences_requested','mapping.preferences_save_requested',
-    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.reset_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
+    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.reset_requested','dataset.export_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
 }
 _MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer'}
 _MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
+
+
+def _safe_download_stem(value: Any, fallback: str = 'visembler-dataset') -> str:
+    stem = ''.join(character if character.isalnum() or character in '-_' else '-' for character in str(value or '').strip()).strip('-_')
+    return (stem[:96] or fallback)
+
+
+def _dataset_export_bytes(fields: list[Mapping[str, Any]], rows: list[Mapping[str, Any]], *, delimiter: str) -> bytes:
+    output = io.StringIO(newline='')
+    writer = csv.writer(output, delimiter=delimiter, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+    field_ids = [str(field.get('id') or '') for field in fields]
+    writer.writerow([str(field.get('name') or field_id) for field, field_id in zip(fields, field_ids)])
+    for row in rows:
+        writer.writerow([row.get(field_id) for field_id in field_ids])
+    return output.getvalue().encode('utf-8')
 
 def _normalized_mapping_field(value: Any) -> str:
     import re
@@ -133,7 +149,7 @@ class _VisualizerResourceBoundary:
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -1059,6 +1075,30 @@ def register_visualizer(
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
                     result=data_query(session,{'offset':payload.get('offset',0),'limit':payload.get('limit')})
                     await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
+                if kind=='dataset.export_requested':
+                    repository.require_export(current.report_id)
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    if not dataset_id: raise VisualizerContractError('dataset_id is required')
+                    export_format=str(payload.get('format') or 'csv').lower()
+                    if export_format not in {'csv','tsv'}: raise VisualizerContractError('unsupported dataset export format')
+                    scope=str(payload.get('scope') or 'current').lower()
+                    if scope not in {'current','full'}: raise VisualizerContractError('unsupported dataset export scope')
+                    resource=dataset_repository.get_for_report(current.report_id,dataset_id)
+                    if scope=='current':
+                        session_id=str(payload.get('session_id') or dataset_id)
+                        session=data_sessions.get(session_id) or dataset_repository.session_for_report(current.report_id,dataset_id)
+                        data_sessions[session_id]=session
+                    else:
+                        # A fresh session deliberately ignores the current
+                        # report-wide filter state for an explicit full export.
+                        session=dataset_repository.session_for_report(current.report_id,dataset_id)
+                    result=session.query(DataQuery(limit=None))
+                    rows=[dict(row) for row in result.rows]
+                    suffix='tsv' if export_format=='tsv' else 'csv'
+                    media_type='text/tab-separated-values' if suffix=='tsv' else 'text/csv'
+                    filename=f'{_safe_download_stem(current.title)}-{_safe_download_stem(resource.get("name"), "dataset")}.{suffix}'
+                    downloads.download(filename,_dataset_export_bytes(resource['fields'],rows,delimiter='\t' if suffix=='tsv' else ','),media_type=media_type)
+                    await send('application.notification',{'level':'success','message':f'Exported {scope} dataset ({len(rows):,} rows)'}); return
                 if kind=='dataset.resource_requested':
                     dataset_value=payload.get('dataset')
                     if not isinstance(dataset_value, Mapping): raise VisualizerContractError('dataset resource payload is required')

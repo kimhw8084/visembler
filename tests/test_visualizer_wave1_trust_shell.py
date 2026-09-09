@@ -45,7 +45,7 @@ def test_wave1_builtin_preset_apply_is_one_transactional_model_replace() -> None
     assert "next.mode='smart'" in editor
 
 
-def test_wave1_export_surface_uses_canonical_json_and_xmlserializer_without_powerpoint_ui() -> None:
+def test_export_surface_uses_canonical_json_and_governed_editable_visual_outputs() -> None:
     editor = _read(ASSETS / 'integrated_editor.mjs')
     # Execute the current export/copy entrypoints; an old source-string match
     # cannot prove that portable image data reaches the downloaded envelope.
@@ -67,14 +67,17 @@ console.log(JSON.stringify({name:downloads[0]?.name,download:JSON.parse(await do
     assert observed['download']['revision'] == 5
     assert observed['download']['model']['items'][0]['src'].startswith('data:image/png;base64,')
     assert "function exportModel(){showPreflight();" not in editor
-    assert 'id="exportJsonAction">Download Report JSON</button>' in editor
+    assert 'id="exportJsonAction">Portable Report JSON</button>' in editor
     assert 'id="exportCopyJsonAction">Copy Report JSON</button>' in editor
-    assert 'id="exportPngAction"' not in editor and 'id="exportJpegAction"' not in editor
+    assert 'id="exportPngAction"' in editor and 'id="exportJpegAction"' in editor
+    assert 'id="exportPptAction"' in editor
+    assert 'data-export-dataset="current-csv"' in editor
+    assert 'dataset.export_requested' in editor
     assert "new XMLSerializer().serializeToString(svg)" in editor
     assert "document.createElementNS('http://www.w3.org/2000/svg','svg')" in editor
     assert "getComputedStyle(node)" in editor and "inlineAssetUrls" in editor
-    assert "exportPptAction" not in editor
     assert "try SVG or PowerPoint" not in editor
+    assert "try SVG or Report JSON" in editor
 
 
 def test_wave1_lasso_page_size_and_developer_console_have_visible_production_affordances() -> None:

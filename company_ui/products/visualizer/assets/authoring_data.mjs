@@ -5,7 +5,7 @@ import { parseDelimitedText, parseAuthoringScalar } from './authoring_values.mjs
 import { isProductionElement } from './production_library.mjs';
 import { recommendEngineeringRecipes } from './engineering_recipes.mjs';
 const SEMANTIC_ALIASES = Object.freeze({
-  lot_id:['lot','lot_id','lotid'], wafer_id:['wafer','wafer_id','waferid','slot'], tool:['tool','tool_id','eqp','equipment','equipment_id'], chamber:['chamber','chamber_id','module'], recipe:['recipe','recipe_id'], process:['step','operation','op','process','process_step'], product:['product','product_id','device'], route:['route','routing','flow'], die_x:['die_x','x','x_coord','wafer_x'], die_y:['die_y','y','y_coord','wafer_y'], bin:['bin','bin_code','die_bin'], value:['value','measure','measurement','result','yield','yield_pct','yield_percent'], specification_low:['lsl','spec_low','lower_spec','specification_low'], specification_high:['usl','spec_high','upper_spec','specification_high'], time:['timestamp','time','datetime','date_time','event_time','date'], source:['source','from'], target:['target','to'], weight:['weight','count','volume'], subgroup:['subgroup','group']
+  lot_id:['lot','lot_id','lotid'], wafer_id:['wafer','wafer_id','waferid','slot'], tool:['tool','tool_id','eqp','equipment','equipment_id'], chamber:['chamber','chamber_id','module'], recipe:['recipe','recipe_id'], process:['step','operation','op','process','process_step'], product:['product','product_id','device'], route:['route','routing','flow'], die_x:['die_x','x','x_coord','wafer_x'], die_y:['die_y','y','y_coord','wafer_y'], bin:['bin','bin_code','die_bin'], value:['value','measure','measurement','result','yield','yield_pct','yield_percent'], reference_value:['reference','golden','baseline','control','reference_value'], affected_value:['affected','actual','test','failed','exposed','affected_value'], cohort:['cohort','condition','population','status','group'], status:['status','state','condition','cohort'], specification_low:['lsl','spec_low','lower_spec','specification_low'], specification_high:['usl','spec_high','upper_spec','specification_high'], time:['timestamp','time','datetime','date_time','event_time','date'], source:['source','from'], target:['target','to'], weight:['weight','count','volume'], subgroup:['subgroup','group']
 });
 const numeric = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i;
 const dateOnly = /^\d{4}-\d{2}-\d{2}$/;
@@ -28,7 +28,7 @@ function profile(name, values, index) {
   else if(all(value=>!Number.isNaN(Date.parse(value)) && /[-:T/ ]/.test(value))) type='datetime';
   else if(all(value=>numeric.test(value.replace(/[,$€£¥%\s]/g,'')))) type=raw.every(value=>Number.isInteger(Number(value.replace(/[,$€£¥%\s]/g,'')))) ? 'integer' : 'number';
   if(raw.some(value=>idLike.test(value)) || /(^|_)(id|code|lot|wafer|bin)(_|$)/.test(slug(name))) type='identifier';
-  else if(tags.some(tag=>['tool','chamber','recipe','process','product','route','source','target','subgroup'].includes(tag))) type='categorical';
+  else if(tags.some(tag=>['tool','chamber','recipe','process','product','route','source','target','subgroup','cohort','status'].includes(tag))) type='categorical';
   else if(type==='string' && new Set(raw).size <= Math.min(20, Math.max(3, raw.length/2))) type='categorical';
   return {id:fieldId(name,index),name:String(name),type,nullable:present.length!==values.length,semantic_tags:tags,profile:{missing:values.length-present.length,distinct:new Set(raw).size}};
 }
@@ -54,7 +54,7 @@ export function intakeText(text) {
 export function inferMappings(fields) {
   const byTag=tag=>fields.find(field=>field.semantic_tags?.includes(tag)); const numericFields=fields.filter(field=>['integer','number'].includes(field.type)); const category=fields.find(field=>['categorical','identifier','string'].includes(field.type));
   const mapping={}; const set=(role,field)=>{if(field)mapping[role]=field.id;};
-  set('source',byTag('source')); set('target',byTag('target')); set('weight',byTag('weight')); set('time',byTag('time')); set('x',byTag('die_x')||byTag('time')||numericFields[0]); set('y',byTag('die_y')||numericFields[1]||byTag('value')); set('value',byTag('value')||numericFields.find(field=>field.id!==mapping.x)||numericFields[0]); set('category',category); set('series',fields.find(field=>field!==category && ['categorical','identifier'].includes(field.type))); set('die_x',byTag('die_x')); set('die_y',byTag('die_y')); ['lot_id','wafer_id','tool','chamber','recipe','product','route','subgroup','specification_low','specification_high'].forEach(role=>set(role,byTag(role)));
+  set('source',byTag('source')); set('target',byTag('target')); set('weight',byTag('weight')); set('time',byTag('time')); set('x',byTag('die_x')||byTag('time')||numericFields[0]); set('y',byTag('die_y')||numericFields[1]||byTag('value')); set('value',byTag('value')||numericFields.find(field=>field.id!==mapping.x)||numericFields[0]); set('category',category); set('series',fields.find(field=>field!==category && ['categorical','identifier'].includes(field.type))); set('die_x',byTag('die_x')); set('die_y',byTag('die_y')); ['lot_id','wafer_id','tool','chamber','recipe','process','product','route','cohort','status','reference_value','affected_value','subgroup','specification_low','specification_high'].forEach(role=>set(role,byTag(role)));
   const contracts=['bar','line','scatter','multi_line','regression_scatter','distribution','pareto','table','timeline','diagram_flow','engineering','wafer'];
   return contracts.map(view=>{const validation=contractFor(view).validate(mapping,fields);return {view,mapping,confidence:Math.min(1,Object.keys(mapping).length/Math.max(1,fields.length)),unresolved:validation.missing,incompatible:validation.incompatible};}).sort((a,b)=>(a.unresolved.length+a.incompatible.length)-(b.unresolved.length+b.incompatible.length));
 }
@@ -132,4 +132,19 @@ export function appendCompatibleDataset(existing, incoming) {
   dataset.revision=(existing.revision||0)+1;
   dataset.warnings=[...(existing.warnings||[]),...(incoming.warnings||[])];
   return {ok:true,dataset};
+}
+
+export function profileDataset(dataset, { sampleLimit = 20000 } = {}) {
+  const fields=Array.isArray(dataset?.fields)?dataset.fields:[], rows=Array.isArray(dataset?.rows)?dataset.rows:[];
+  const sample=rows.slice(0,Math.max(1,Math.min(Number(sampleLimit)||20000,rows.length||1)));
+  const summaries=fields.map((field,index)=>{
+    const values=sample.map(row=>Array.isArray(row)?row[index]:row?.[field.id]);
+    const present=values.filter(value=>value!==null&&value!==undefined&&String(value).trim()!=='');
+    const distinct=new Set(present.map(value=>`${typeof value}:${String(value)}`));
+    const numbers=present.filter(value=>typeof value==='number'&&Number.isFinite(value));
+    const result={id:field.id,name:field.name,type:field.type||'unknown',semantic_tags:[...(field.semantic_tags||[])],missing:sample.length-present.length,distinct:distinct.size};
+    if(numbers.length)Object.assign(result,{min:Math.min(...numbers),max:Math.max(...numbers)});
+    return result;
+  });
+  return {rows:rows.length,columns:fields.length,sampled_rows:sample.length,fields:summaries,source_revision:dataset?.revision||null,last_refresh:dataset?.source?.imported_at||dataset?.modified_at||null,consumers:0,active_filters:[]};
 }

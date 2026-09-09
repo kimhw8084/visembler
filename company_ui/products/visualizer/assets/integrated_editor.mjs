@@ -7,7 +7,8 @@ import {
 import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
 import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, productionEntries } from './production_library.mjs';
 import { renderIntegratedElement } from './element_renderer.mjs';
-import { intakeText, datasetFromIntake, appendCompatibleDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
+import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
+import { engineeringRecipeCandidates, recipeExecutionPlan, recipeRoleLabel } from './engineering_recipes.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
 import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
@@ -616,14 +617,35 @@ function textMarkup(entry, r = {}) {
   return `<div class="kicker">Executive statement</div><div class="text-hero ${compact ? 'compact' : ''}" title="${esc(full)}">${esc(statement)}</div><div class="text-foot">${foot}</div>`;
 }
 const evidenceRows = [['Collect', 'FDC pressure excursion', 'Support', 'High'], ['Normalize', 'Control population clean', 'Support', 'High'], ['Reason', 'Recipe unchanged', 'Contradict', 'High'], ['Verify', 'Spatial signature match', 'Support', 'Medium'], ['Close', 'Containment verified', 'Support', 'High']];
+function activeCrossFilter() {
+  const raw=model().crossFilter;
+  if(!raw)return null;
+  if(typeof raw==='object')return {field:raw.field||'',label:raw.label||raw.field||'Field',value:raw.value,source:raw.source||raw.source_entry||''};
+  return {field:'',label:'Selection',value:raw,source:'chart'};
+}
+function renderActiveFilters() {
+  const host=$('#activeFilters'); if(!host)return;
+  const filter=activeCrossFilter();
+  if(!filter){host.hidden=true;host.innerHTML='';return;}
+  host.hidden=false;
+  host.innerHTML=`<span class="active-filters-label">Active filter</span><span class="active-filter-chip"><span>${esc(filter.label)} = <b>${esc(filter.value)}</b>${filter.source?` · ${esc(filter.source)}`:''}</span><button type="button" data-clear-active-filter aria-label="Remove active filter">×</button></span><button type="button" class="active-filter-clear" data-clear-all-filters>Clear all</button>`;
+  $('[data-clear-active-filter]',host)?.addEventListener('click',clearActiveCrossFilter);
+  $('[data-clear-all-filters]',host)?.addEventListener('click',clearActiveCrossFilter);
+}
+function clearActiveCrossFilter() {
+  const ops=model().items.filter(entry=>entry.cross!==null&&entry.cross!==undefined).map(entry=>({op:'item.patch',id:entry.id,patch:{cross:null}}));
+  const dataset=model().datasets.find(value=>value.resource_id);
+  if(dataset)dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
+  commitOps('Clear active filters',[...ops,{op:'model.patch',patch:{crossFilter:null}}],{announce:'Active filters cleared'});
+}
 function tableMarkup(entry) {
   if (entry.customTable) {
     const headers = entry.customTable.headers;
     const rows = entry.customTable.rows;
     return `<div class="kicker">Table · pasted data target</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">${rows.length} pasted rows · raw values preserved</div><table class="table-mini"><thead><tr>${headers.map((x) => `<th>${esc(x)}</th>`).join('')}</tr></thead><tbody>${rows.map((row) => `<tr>${headers.map((_, k) => `<td>${esc(row[k] ?? '')}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
   }
-  const rows = model().crossFilter ? evidenceRows.filter((row) => row[0] === model().crossFilter) : evidenceRows;
-  return `<div class="kicker">Table · cross-filter target</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">${model().crossFilter ? `Filtered by chart: ${esc(model().crossFilter)}` : 'All evidence'} · hover rows for highlight</div><table class="table-mini"><thead><tr><th>Evidence</th><th>Polarity</th><th>Confidence</th></tr></thead><tbody>${rows.map((row) => `<tr><td><span class="status-dot ${row[2] === 'Contradict' ? 'warn' : ''}" aria-hidden="true"></span>${esc(row[1])}</td><td>${esc(row[2])}</td><td>${esc(row[3])}</td></tr>`).join('')}</tbody></table>`;
+  const filter=activeCrossFilter(),rows = filter ? evidenceRows.filter((row) => row[0] === filter.value) : evidenceRows;
+  return `<div class="kicker">Table · cross-filter target</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">${filter ? `Filtered by ${esc(filter.label)}: ${esc(filter.value)}` : 'All evidence'} · hover rows for highlight</div><table class="table-mini"><thead><tr><th>Evidence</th><th>Polarity</th><th>Confidence</th></tr></thead><tbody>${rows.map((row) => `<tr><td><span class="status-dot ${row[2] === 'Contradict' ? 'warn' : ''}" aria-hidden="true"></span>${esc(row[1])}</td><td>${esc(row[2])}</td><td>${esc(row[3])}</td></tr>`).join('')}</tbody></table>`;
 }
 function tabsMarkup(entry) {
   const copy = { Summary: 'Leading hypothesis remains Chamber A after contradiction-aware evidence review.', Evidence: '4 supporting observations · 1 meaningful contradiction · controls remain essential.', Next: 'Run targeted chamber verification before upgrading the root-cause status.' };
@@ -1038,7 +1060,8 @@ function legacyDataDockMarkup(entry) {
   const views=['bar','line','multi_line','scatter','regression_scatter','histogram','box','pareto','table','timeline','engineering','wafer','diagram'];
   const linked=model().items.filter(candidate=>candidate.dataset_id===dataset.id).length;
   const resourceAction=dataset.resource_id?' <small class="data-inferred-fields">Bound dataset · revisioned outside the report</small>':(readOnly?'':`<button type="button" class="tb" data-dataset-action="bind-resource">Save as bound dataset</button><small class="data-inferred-fields">Keeps the report portable while storing recurring data as a governed resource.</small>`);
-  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · rev ${dataset.revision}</span></div><button type="button" class="tb" data-refresh-dataset>Refresh data… <small>Feeds ${linked} visual${linked===1?'':'s'}</small></button>${resourceAction}${inferredFields}${performanceNote}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+A selects all · Ctrl/Cmd+C copies a selected range · Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div>${transformControlMarkup(entry,dataset)}`);
+  const summary=datasetProfileMarkup(dataset,linked);
+  return inspectorSection('Data Dock',`<div class="data-dock-meta"><b>${esc(dataset.name)}</b><span>${dataset.rows.length.toLocaleString()} rows · ${fields.length} fields · rev ${dataset.revision}</span></div><button type="button" class="tb" data-refresh-dataset>Refresh data… <small>Feeds ${linked} visual${linked===1?'':'s'}</small></button>${resourceAction}${inferredFields}${performanceNote}${summary}<input id="dataDockFind" class="data-dock-find" type="search" value="${esc(ui.dataDockFilter)}" placeholder="Find in data" aria-label="Find in dataset"><label class="data-view-switch">View<select data-view-type>${views.map(view=>`<option value="${view}" ${(entry.view_type||entry.type)===view?'selected':''}>${view}</option>`).join('')}</select></label><div class="mapping-chips">${roles.filter(role=>visibleRoles.has(role)).map(role=>`<label data-role-drop="${esc(role)}">${esc(role)}<select data-dataset-role="${esc(role)}">${option(mapping[role])}</select></label>`).join('')}</div>${mappingStatus}${intakeWarnings}<div id="dataDockGrid" class="data-dock-grid" role="grid" aria-label="${esc(dataset.name)}"></div><small>Virtualized rows · Tab/Shift+Tab navigates source rows even while filtered. Ctrl/Cmd+A selects all · Ctrl/Cmd+C copies a selected range · Delete clears it.</small><div class="data-actions"><button type="button" data-dataset-action="add-row">Add row</button><button type="button" data-dataset-action="add-column">Add column</button><button type="button" data-dataset-action="delete-row">Delete last row</button><button type="button" data-dataset-action="delete-column">Delete last column</button></div><div class="paste-special" role="group" aria-label="Paste Special"><button type="button" data-paste-special="dataset_data">Copy data</button><button type="button" data-paste-special="mapping">Copy mapping</button><button type="button" data-paste-special="style">Copy style</button><button type="button" data-paste-special="paste-data">Paste data</button><button type="button" data-paste-special="append-data">Append data</button><button type="button" data-paste-special="independent">Paste independent</button></div>${transformControlMarkup(entry,dataset)}`);
 }
 function dataDockMarkup(entry) {
   const markup=legacyDataDockMarkup(entry);
@@ -1293,6 +1316,13 @@ function bindSemanticInspector(entry) {
   for (const [id,key] of [['iWaferId','wafer_id'],['iLot','lot'],['iTool','tool'],['iChamber','chamber'],['iRecipe','recipe'],['iProcess','process'],['iBin','bin'],['iRoute','route'],['iBehavior','behavior'],['iConfiguration','configuration']]) $('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:e.target.value}));
 }
 function inspectorSection(title, body) { return `<section class="inspector-section"><div class="inspector-section-title">${esc(title)}</div>${body}</section>`; }
+function analysisProvenanceMarkup(entry) {
+  const analysis=entry?.analysis_recipe;if(!analysis)return '';
+  const dataset=selectedDataset(entry),fields=dataset?.fields||[],fieldName=(id)=>fields.find(field=>field.id===id)?.name||id||'Unresolved';
+  const mappings=Object.entries(analysis.mapping||{}).map(([role,id])=>`<div class="info-row"><span>${esc(recipeRoleLabel(role))}</span><b>${esc(fieldName(id))}</b></div>`).join('');
+  const transform=analysis.transform_recipe?.summary||((analysis.transform_recipe?.steps||[]).map(step=>step.type).join(' · ')||'None');
+  return inspectorSection('Analysis provenance',`<div class="info-row"><span>Recipe</span><b>${esc(analysis.id||'Analysis')} · ${esc(analysis.version||'v1')}</b></div><div class="info-row"><span>Dataset</span><b>${esc(dataset?.name||analysis.source_dataset_id||'Unresolved')}</b></div><details class="advanced-details"><summary>Mapping and transforms</summary>${mappings||'<small>No mappings recorded.</small>'}<div class="info-row"><span>Transforms</span><b>${esc(transform)}</b></div></details>`);
+}
 function reuseInspectorMarkup(entry) {
   const dataset=selectedDataset(entry);
   const hasMapping=!!dataset&&Object.keys(entry.mapping||{}).length>0;
@@ -1392,7 +1422,7 @@ function renderInspector() {
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
     const deleteButton=`<button type="button" class="tb" data-inspector="delete" aria-disabled="${eligibility.delete.enabled?'false':'true'}" ${eligibility.delete.enabled?'':`disabled title="${esc(eligibility.delete.reason)}"`}>Delete</button>`;
     const actionSection=inspectorSection('Actions',`<div class="field"><div class="r-actions"><button class="tb" data-inspector="duplicate">Duplicate · Cmd/Ctrl+D</button>${deleteButton}${eligibilityButton(entry.locked?'Unlock':'Lock','lock',lockAction)}</div></div>`);
-    p.innerHTML=identity+actionSection+titleSection+contentSection+dataDockMarkup(entry)+containerSection+reuseSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
+    p.innerHTML=identity+actionSection+titleSection+contentSection+analysisProvenanceMarkup(entry)+dataDockMarkup(entry)+containerSection+reuseSection+inspectorSection('Layout',layoutBody)+accessibility+`<div class="inspector-meta">${entry.locked?'Locked · ':''}Changes apply to this element only.</div>`;
     $('#iTitle').addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Rename component',[{op:'item.patch',id:entry.id,patch:{title:e.target.value}}]));
     $('#iShowTitle')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Toggle canvas title',[{op:'item.patch',id:entry.id,patch:{showTitle:e.target.checked}}]));
     $('#iTextAlign')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content alignment',[{op:'item.patch',id:entry.id,patch:{textAlign:e.target.value}}]));
@@ -1438,7 +1468,7 @@ function renderAll() {
   } while(changed&&pass<4);
   ui.contentMeasurePass=pass;
   reconcileCanvas({content:false});
-  renderInspector(); setZoom(ui.zoom, false); syncModeButtons();
+  renderInspector(); renderActiveFilters(); setZoom(ui.zoom, false); syncModeButtons();
   if(focusedComponentId&&ui.componentNodes.has(focusedComponentId))requestAnimationFrame(()=>ui.componentNodes.get(focusedComponentId)?.focus({preventScroll:true}));
 }
 
@@ -2040,12 +2070,11 @@ function showDropGhost(e) {
   const rect=initialManualGeometry(previewEntry,p);if(rect)showGhostRects([rect],`${model().mode}-insert`);
 }
 
-function toggleChartPoint(entry, k) {
-  const cross = entry.cross === k ? null : k, crossFilter = cross == null ? null : chartData(entry)[cross][0], dataset=selectedDataset(entry);
+function toggleChartPoint(entry, k, selection = {}) {
+  const cross = entry.cross === k ? null : k, dataset=selectedDataset(entry), fieldId=selection.field||entry.mapping?.category||entry.mapping?.label||entry.mapping?.time||entry.mapping?.x||dataset?.fields?.[0]?.id, fieldName=fieldById(dataset,fieldId)?.name||fieldId||'Selection', selectedValue=cross == null ? null : (selection.value ?? chartData(entry)[cross]?.[0]), crossFilter = cross == null ? null : {field:fieldId,label:fieldName,value:selectedValue,source:entry.title||entry.element||'chart',source_entry:entry.id};
   if(dataset?.resource_id){
-    const fieldId=entry.mapping?.category||entry.mapping?.label||entry.mapping?.time||entry.mapping?.x||dataset.fields?.[0]?.id;
     if(cross==null)dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
-    else if(fieldId)dispatchSemantic('dataset.filter_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filter:{field:fieldId,operation:'equals',value:crossFilter},limit:10000});
+    else if(fieldId)dispatchSemantic('dataset.filter_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filter:{field:fieldId,operation:'equals',value:selectedValue},limit:10000});
   }
   commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
 }
@@ -2113,6 +2142,57 @@ function restoreDialogFocus(saved){
   if(['dataFirstText','refreshDataText'].includes(saved.node.id)&&node!==saved.node){node.replaceWith(saved.node);node=saved.node;}
   node.focus({preventScroll:true});if(typeof saved.start==='number'&&node.setSelectionRange)node.setSelectionRange(saved.start,saved.end);node.scrollTop=saved.scrollTop;
 }
+function recipeDisplayPlan(state) {
+  const candidates=state?.intake?engineeringRecipeCandidates(state.intake.fields):[];
+  const selectedId=state?.recipeId||candidates.find(candidate=>candidate.ready)?.id;
+  const candidate=candidates.find(value=>value.id===selectedId)||candidates[0];
+  if(!candidate)return {candidates,recipe:null,plan:null};
+  const plan=recipeExecutionPlan(candidate,state.intake.fields,state.recipeMapping||{});
+  return {candidates,recipe:candidate,plan};
+}
+function recipeFieldOptions(fields,role,selected) {
+  return `<option value="">Unresolved</option>${(fields||[]).map(field=>{const numeric=['value','reference_value','affected_value'].includes(role)&&!['integer','number'].includes(field.type);return `<option value="${esc(field.id)}" ${selected===field.id?'selected':''} ${numeric?'disabled':''}>${esc(field.name)} · ${esc(field.type)}${numeric?' · numeric required':''}</option>`;}).join('')}`;
+}
+function recipeReviewMarkup(state) {
+  const {candidates,recipe,plan}=recipeDisplayPlan(state); if(!candidates.length)return '';
+  const cards=candidates.slice(0,4).map(candidate=>`<button type="button" class="data-first-recommendation ${candidate.id===recipe?.id?'active':''}" data-data-first-recipe="${esc(candidate.id)}" aria-pressed="${candidate.id===recipe?.id?'true':'false'}"><b>${esc(candidate.name)}</b><span>${esc(candidate.reason)}</span><small>${candidate.ready?'Ready to apply':'Needs mapping'} · ${Math.round(candidate.confidence*100)}% resolved</small></button>`).join('');
+  const roles=(recipe?.roles||[]).map(role=>`<label class="data-first-mapping"><span>${esc(recipeRoleLabel(role))} *</span><select data-data-first-recipe-role="${esc(role)}">${recipeFieldOptions(state.intake.fields,role,plan?.mappings?.[role])}</select></label>`).join('');
+  const outputs=(plan?.visuals||[]).map(visual=>`<span>${esc(visual.element)}</span>`).join(' · ');
+  const status=plan?.valid?`Ready · creates ${outputs}`:plan?.error||'Choose fields to make this analysis executable.';
+  return `<section class="data-first-analysis" aria-label="Engineering analysis recommendations"><div class="data-first-analysis-heading"><div><b>Recommended analysis</b><small>One atomic operation creates linked evidence from the same dataset.</small></div><span>${candidates.length} compatible</span></div><div class="data-first-recommendations">${cards}</div>${recipe?`<div class="data-first-analysis-review"><div><b>${esc(recipe.name)}</b><small>${esc(recipe.reason)}</small></div><div class="data-first-analysis-uses"><span>Uses</span>${(recipe.roles||[]).map(role=>`<span>${esc(recipeRoleLabel(role))}</span>`).join('')}</div><div class="data-first-mappings">${roles||'<small>No additional mapping is required.</small>'}</div><div class="data-first-analysis-status ${plan?.valid?'valid':'error'}" role="status">${esc(status)}</div><div class="data-first-analysis-actions"><button type="button" class="tb accent" id="dataFirstApplyRecipe" ${plan?.valid?'':'disabled'}>Apply ${esc(recipe.name)}</button></div></div>`:''}</section>`;
+}
+function analysisEntry(plan,visual,dataset,id,order,analysisId) {
+  const type=engineToType[visual.engine]||'table',defaults=typeDefaults[type]||typeDefaults.table;
+  const entry={id,type,element:visual.element,engine:visual.engine,title:visual.element,showTitle:false,textAlign:'left',message_role:visual.role==='primary'?'Primary Evidence':visual.role==='summary'?'Headline':'Supporting Evidence',weight:defaults.weight,order,locked:false,groupId:null,z:Math.max(0,...model().items.map(value=>value.z||0))+order+1,dataset_id:dataset.id,view_type:visual.view,mapping:structuredClone(visual.mapping||{}),analysis_id:analysisId,analysis_recipe:{id:plan.recipe_id,version:plan.recipe_version,role:visual.role,mapping:structuredClone(plan.mappings),transform_recipe:structuredClone(plan.transform_plan),source_dataset_id:dataset.id},...starterContent(visual.engine,visual.element)};
+  if(visual.role==='evidence')entry.transform_recipe={...structuredClone(plan.transform_plan),source_dataset_id:dataset.id};
+  else if(plan.transform_plan.steps.length)entry.transform_recipe={...structuredClone(plan.transform_plan),source_dataset_id:dataset.id};
+  return entry;
+}
+function createRecipeAnalysis(state,plan) {
+  if(!plan?.valid||!state?.intake)return false;
+  const dataset=datasetFromIntake(state.intake,datasetId(),`${plan.recipe.name} source`),analysisId=`analysis-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
+  const entries=plan.visuals.map((visual,index)=>analysisEntry(plan,visual,dataset,`c${model().nextId+index}`,model().items.length+index,analysisId));
+  const startSmart=model().mode==='guided'&&!model().items.length,mode=startSmart?'smart':model().mode,staged={...model(),mode,items:[...model().items,...entries],datasets:[...model().datasets,dataset],nextId:model().nextId+entries.length};
+  const layout=layoutOperations(staged,{action:'clean',mode});
+  const currentCanvas=canvasSize(),requiredHeight=Math.min(MAX_CANVAS_H,Math.max(currentCanvas.height,900+Math.max(0,entries.length-2)*260)),canvasPatch=requiredHeight>currentCanvas.height?{canvas:{...currentCanvas,height:requiredHeight}}:{};
+  const accepted=commitOps(`Apply ${plan.recipe.name}`,[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,crossFilter:null,...canvasPatch,...(startSmart?{mode:'smart'}:{})}},...entries.map(entry=>({op:'item.add',item:entry})),...layout],{announce:`${plan.recipe.name} applied · ${entries.length} linked visuals`});
+  if(accepted){stageDRememberDataset(dataset);ui.selected=new Set(entries.map(entry=>entry.id));renderAll();}
+  return !!accepted;
+}
+function datasetProfileMarkup(dataset, linked=null) {
+  if(!dataset)return '';
+  const profile=profileDataset(dataset),rows=profile.fields.slice(0,12).map(field=>`<tr><td>${esc(field.name)}</td><td>${esc(field.type)}</td><td>${field.missing}</td><td>${field.distinct}</td><td>${field.min??'—'}${field.max!==undefined?` → ${field.max}`:''}</td></tr>`).join('');
+  return `${linked===null?'':datasetSummaryMarkup(dataset,linked)}<details class="data-profile"><summary>Field profile · ${profile.sampled_rows.toLocaleString()} sampled rows</summary><table><thead><tr><th>Field</th><th>Type</th><th>Missing</th><th>Distinct</th><th>Range</th></tr></thead><tbody>${rows}</tbody></table></details>`;
+}
+function datasetSummaryMarkup(dataset, linked) {
+  if(!dataset)return '';
+  const source=dataset.provenance?.source||dataset.source?.label||dataset.source||dataset.metadata?.source||(dataset.resource_id?'Bound dataset resource':'Pasted into report');
+  const refresh=dataset.updated_at||dataset.modified_at||dataset.metadata?.refreshed_at||'Current report revision';
+  const filter=activeCrossFilter();
+  const transformNames=[...new Set(model().items.filter(entry=>entry.dataset_id===dataset.id).flatMap(entry=>(entry.transform_recipe?.steps||[]).map(step=>transformStepLabel(step))))];
+  const transform=transformNames.length?transformNames.join(' · '):'None';
+  return `<details class="data-summary"><summary>Dataset summary</summary><div class="data-summary-grid"><div><span>Source</span><b>${esc(source)}</b></div><div><span>Revision</span><b>${esc(dataset.revision??0)}</b></div><div><span>Rows</span><b>${esc(dataset.rows?.length??dataset.row_count??0)}</b></div><div><span>Consumers</span><b>${esc(linked)}</b></div><div><span>Last refresh</span><b>${esc(refresh)}</b></div><div><span>Active filters</span><b>${esc(filter?`${filter.label} = ${filter.value}`:'None')}</b></div></div><div class="data-summary-transform"><span>Transform recipe</span><b>${esc(transform)}</b></div></details>`;
+}
 function renderDataFirstDialog() {
   const state=ui.dataFirst, modal=$('#genericModal'); if(!state||!modal||ui.mappingManagerOpen)return; ui.mappingManagerOpen=false;
   const focus=dialogFocusSnapshot();
@@ -2138,7 +2218,7 @@ function renderDataFirstDialog() {
   const matches=state.matches||[], saved=state.savedPresetId&&mappingPresets.find(preset=>preset.id===state.savedPresetId), savedUi=saved?`<div class="data-first-saved" aria-live="polite"><b>Using saved mapping · ${esc(saved.name)}</b><button type="button" class="link-button" id="dataFirstDetected">Use detected mapping</button><button type="button" class="link-button" data-forget-mapping="${esc(saved.id)}" aria-label="Forget mapping ${esc(saved.name)}">Forget</button></div>`:matches.length>1?`<div class="data-first-saved"><b>Saved mappings for this data</b><div class="data-first-saved-list">${matches.map(match=>`<button type="button" class="tb" data-use-mapping="${esc(match.preset.id)}">${esc(match.preset.name)} · ${esc(productionTargetForView(match.preset.view)?.element||match.preset.view)}</button>`).join('')}</div></div>`:'';
   const mappingManagerButton=`<button type="button" class="link-button" id="dataFirstManageMappings">Manage saved mappings${mappingPresets.length?` · ${mappingPresets.length}`:''}</button>`;
   const save=validation.valid&&hasUniqueNormalizedFields(intake.fields)?'<button type="button" class="tb" id="dataFirstSaveMapping">Save mapping</button>':!hasUniqueNormalizedFields(intake.fields)?'<small>Saved mappings require unique column names.</small>':'';
-  $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-summary"><b>${intake.rows.length.toLocaleString()} rows · ${intake.fields.length} columns</b><span>${intake.header.present?'Header detected':'No header detected'} · ${intake.delimiter==='\t'?'TSV':intake.delimiter===','?'CSV':'Delimited text'} · ${intake.warnings.length} warning${intake.warnings.length===1?'':'s'}</span></div><ul class="data-first-fields">${fields}</ul><div class="data-first-mapping-manager-link">${savedUi}${mappingManagerButton}</div><section class="data-first-recommendations" aria-label="Production visual recommendations">${cards}</section><section class="data-first-mappings"><div><b>Field mapping</b><button type="button" class="link-button" id="dataFirstReset">Use detected mapping</button></div>${mappingRows}</section>${error}${replacement}<div class="modal-actions">${save}<button type="button" class="tb" data-close>Cancel</button><button type="button" class="tb accent" id="dataFirstCreate" ${validation.valid?'':'disabled'}>Create visual</button></div></div>`;
+  $('#modalBody').innerHTML=`<div class="modal-form data-first-dialog">${paste}<div class="data-first-summary"><b>${intake.rows.length.toLocaleString()} rows · ${intake.fields.length} columns</b><span>${intake.header.present?'Header detected':'No header detected'} · ${intake.delimiter==='\t'?'TSV':intake.delimiter===','?'CSV':'Delimited text'} · ${intake.warnings.length} warning${intake.warnings.length===1?'':'s'}</span></div>${datasetProfileMarkup({fields:intake.fields,rows:intake.rows})}<ul class="data-first-fields">${fields}</ul><div class="data-first-mapping-manager-link">${savedUi}${mappingManagerButton}</div><section class="data-first-recommendations" aria-label="Production visual recommendations">${cards}</section>${recipeReviewMarkup(state)}<section class="data-first-mappings"><div><b>Field mapping</b><button type="button" class="link-button" id="dataFirstReset">Use detected mapping</button></div>${mappingRows}</section>${error}${replacement}<div class="modal-actions">${save}<button type="button" class="tb" data-close>Cancel</button><button type="button" class="tb accent" id="dataFirstCreate" ${validation.valid?'':'disabled'}>Create visual</button></div></div>`;
   bindDataFirstDialog();restoreDialogFocus(focus);
 }
 function mappingPresetCompatibility(preset,intake) {
@@ -2168,8 +2248,10 @@ async function parseDataFirstText(text) {
 function bindDataFirstDialog() {
   const state=ui.dataFirst, form=$('#modalBody'); if(!state||!form)return;
   $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
-  $('#dataFirstText',form)?.addEventListener('input',event=>{const text=event.target.value;state.sourceText=text;parseDataFirstText(text);});
+  $('#dataFirstText',form)?.addEventListener('input',event=>{const text=event.target.value;state.sourceText=text;state.recipeId=null;state.recipeMapping={};parseDataFirstText(text);});
   $$('[data-data-first-view]',form).forEach(button=>button.addEventListener('click',()=>{state.view=button.dataset.dataFirstView;state.mapping=null;state.mappingView=null;renderDataFirstDialog();}));
+  $$('[data-data-first-recipe]',form).forEach(button=>button.addEventListener('click',()=>{state.recipeId=button.dataset.dataFirstRecipe;state.recipeMapping={};renderDataFirstDialog();}));
+  $$('[data-data-first-recipe-role]',form).forEach(select=>select.addEventListener('change',event=>{state.recipeMapping={...state.recipeMapping,[event.target.dataset.dataFirstRecipeRole]:event.target.value||null};renderDataFirstDialog();}));
   $$('[data-data-first-role]',form).forEach(select=>select.addEventListener('change',event=>{state.mapping={...state.mapping,[event.target.dataset.dataFirstRole]:event.target.value};renderDataFirstDialog();}));
   $('#dataFirstReset',form)?.addEventListener('click',()=>{const candidate=productionRecommendations(state.intake).find(item=>item.view===state.view);state.mapping=structuredClone(candidate?.mapping||{});state.mappingView=state.view;renderDataFirstDialog();});
   $('#dataFirstDetected',form)?.addEventListener('click',()=>{state.savedPresetId=null;state.view=null;state.mapping=null;state.mappingView=null;renderDataFirstDialog();});
@@ -2178,9 +2260,10 @@ function bindDataFirstDialog() {
   $$('[data-forget-mapping]',form).forEach(button=>button.addEventListener('click',()=>{mappingPresets=mappingPresets.filter(preset=>preset.id!==button.dataset.forgetMapping);dispatchSemantic('mapping.preferences_save_requested',{presets:mappingPresets});state.savedPresetId=null;state.matches=matchingMappingPresets(mappingPresets,state.intake);state.view=null;state.mapping=null;state.mappingView=null;renderDataFirstDialog();toast('Saved mapping forgotten');}));
   $('#dataFirstSaveMapping',form)?.addEventListener('click',()=>openSaveMappingName());
   $('#dataFirstCreate',form)?.addEventListener('click',()=>{const plan=planDataFirstCreation({intake:state.intake,view:state.view,mapping:state.mapping,datasetId:datasetId()});if(!plan.valid)return toast(plan.error);if(createDataFirstVisual(plan))closeModals();});
+  $('#dataFirstApplyRecipe',form)?.addEventListener('click',()=>{const selected=recipeDisplayPlan(state),plan=selected.plan;if(!plan?.valid)return toast(plan?.error||'Review the analysis mapping first.');if(createRecipeAnalysis(state,plan))closeModals();});
   $('#dataFirstReplace',form)?.addEventListener('click',()=>{const entry=item(state.destinationEntryId),binding=entry&&mappingFor(state.intake,viewContractForEntry(entry));if(!entry||binding?.error)return;const existing=selectedDataset(entry),dataset={...datasetFromIntake(state.intake,entry.dataset_id||datasetId(),existing?.name||'Pasted data'),revision:(existing?.revision||0)+1};if(replaceDataset(entry,'Replace selected data',dataset,binding.mapping))closeModals();});
 }
-function openDataFirstDialog(initialText='') { const sourceText=typeof initialText==='string'?initialText:'';ui.mappingManagerOpen=false; ui.dataFirst={token:0,intake:null,loading:false,sourceText,mapping:null,mappingView:null,view:null,matches:[],savedPresetId:null,destinationEntryId:ui.selected.size===1?[...ui.selected][0]:null}; renderDataFirstDialog(); if(sourceText.trim())parseDataFirstText(sourceText); }
+function openDataFirstDialog(initialText='') { const sourceText=typeof initialText==='string'?initialText:'';ui.mappingManagerOpen=false; ui.dataFirst={token:0,intake:null,loading:false,sourceText,mapping:null,mappingView:null,view:null,matches:[],savedPresetId:null,destinationEntryId:ui.selected.size===1?[...ui.selected][0]:null,recipeId:null,recipeMapping:{}}; renderDataFirstDialog(); if(sourceText.trim())parseDataFirstText(sourceText); }
 function openSaveMappingName() { const state=ui.dataFirst;if(!state?.intake)return; const initial=`${productionTargetForView(state.view)?.element||'Data'} mapping`;$('#modalTitle').textContent='Save mapping';$('#modalBody').innerHTML=`<div class="modal-form"><label>Name<input id="mappingPresetName" maxlength="80" value="${esc(initial)}"></label><div class="modal-actions"><button type="button" class="tb" id="mappingSaveCancel">Cancel</button><button type="button" class="tb accent" id="mappingSaveConfirm">Save mapping</button></div></div>`;$('#mappingSaveCancel').onclick=renderDataFirstDialog;$('#mappingSaveConfirm').onclick=()=>{const name=$('#mappingPresetName').value.trim();if(!name)return;const fields=state.intake.fields,preset={version:1,id:`mapping-${Date.now().toString(36)}`,name,schema:{fields:fields.map(field=>normalizedFieldName(field.name)).sort(),signature:mappingSchemaSignature(fields)},view:state.view,mapping:mappingToFieldNames(state.mapping,fields)};mappingPresets=[...mappingPresets,preset];state.savedPresetId=preset.id;state.matches=matchingMappingPresets(mappingPresets,state.intake);dispatchSemantic('mapping.preferences_save_requested',{presets:mappingPresets});renderDataFirstDialog();toast(`Saved mapping · ${name}`);};openModal($('#genericModal'),$('#mappingPresetName'));}
 async function pasteToSelection(txt) {
   const parsed=await parsePasteAsync(txt); if (!parsed) return false;
@@ -2591,13 +2674,42 @@ async function copyReportJson(){
   try{const {envelope}=await portableReport();const text=JSON.stringify(envelope,null,2);await navigator.clipboard.writeText(text);toast('Report JSON copied');}
   catch(error){debugEvent('warn','Clipboard unavailable',error?.message||error);toast('Clipboard permission is unavailable; use Download Report JSON');}
 }
+function exportDatasetTarget(){
+  const selected=[...ui.selected].map(id=>item(id)).find(entry=>entry?.dataset_id);
+  const dataset=selected?selectedDataset(selected):model().datasets.find(value=>value?.id);
+  return dataset?{entry:selected,dataset}:null;
+}
+function datasetRowsForExport(dataset,scope){
+  const fields=dataset.fields||[],fieldIds=fields.map(field=>field.id),filter=scope==='current'?activeCrossFilter():null;
+  const rows=(dataset.rows||[]).filter(row=>!filter||!filter.field||row[fieldIds.indexOf(filter.field)]===filter.value);
+  return {fields,rows:rows.map(row=>Object.fromEntries(fieldIds.map((fieldId,index)=>[fieldId,row[index]??null])))};
+}
+function exportInlineDataset(dataset,format,scope){
+  const {fields,rows}=datasetRowsForExport(dataset,scope),delimiter=format==='tsv'?'\t':',',lines=[];
+  const encode=(value)=>{const text=value==null?'':String(value);return delimiter===','&&/[",\n\r]/.test(text)?`"${text.replaceAll('"','""')}"`:delimiter==='\t'&&/[\t\n\r"]/.test(text)?`"${text.replaceAll('"','""')}"`:text;};
+  lines.push(fields.map(field=>encode(field.name||field.id)).join(delimiter));
+  rows.forEach(row=>lines.push(fields.map(field=>encode(row[field.id])).join(delimiter)));
+  const suffix=format==='tsv'?'tsv':'csv',mime=format==='tsv'?'text/tab-separated-values':'text/csv',name=`${String(dataset.name||'visembler-dataset').replace(/[^a-z0-9_-]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,96)||'visembler-dataset'}.${suffix}`;
+  downloadBlob(new Blob([lines.join('\n')+'\n'],{type:`${mime};charset=utf-8`}),name);toast(`Exported ${scope} dataset`);
+}
+function exportDataset(format,scope){
+  const target=exportDatasetTarget();if(!target)return toast('Select a data-backed visual first');
+  const {dataset}=target;
+  if(dataset.resource_id){dispatchSemantic('dataset.export_requested',{report_id:String(bootstrap.report_id||'default'),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,format,scope});toast(`Dataset ${scope} ${format.toUpperCase()} export requested`);return;}
+  exportInlineDataset(dataset,format,scope);
+}
 function openExportMenu(){
   const pf=preflight();
+  const target=exportDatasetTarget(),hasDataset=!!target,filter=activeCrossFilter();
   $('#modalTitle').textContent='Export';
-  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div><button type="button" class="tb accent full-width" id="exportJsonAction">Download Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button><button type="button" class="tb full-width" id="exportSvgAction">SVG</button>${ui.recovery?.model?'<button type="button" class="tb full-width" id="exportRecoveryJsonAction">Download retained local edits</button>':''}<small>Report JSON is the canonical portable editable format. SVG is the supported visual export for this release.</small></div>`;
+  $('#modalBody').innerHTML=`<div class="modal-form"><div class="info-row"><span>Validation</span><b>${pf.issues.length?`${pf.issues.length} issue${pf.issues.length===1?'':'s'}`:'Ready'}</b></div>${filter?`<div class="export-filter-notice"><b>${esc(filter.label)} = ${esc(filter.value)}</b><span>Active filter from ${esc(filter.source||'linked visual')}. Visual exports reflect the current report view.</span></div>`:''}<section class="export-section"><b>Editable</b><button type="button" class="tb accent full-width" id="exportPptAction">Editable PowerPoint</button><button type="button" class="tb full-width" id="exportJsonAction">Portable Report JSON</button><button type="button" class="tb full-width" id="exportCopyJsonAction">Copy Report JSON</button></section><section class="export-section"><b>Visual</b><div class="export-button-row"><button type="button" class="tb" id="exportSvgAction">SVG</button><button type="button" class="tb" id="exportPngAction">PNG</button><button type="button" class="tb" id="exportJpegAction">JPEG</button></div></section>${hasDataset?`<section class="export-section"><b>Data · ${esc(target.dataset.name||'selected dataset')}</b><small>Choose whether to export the current filtered view or the full underlying dataset.</small><div class="export-button-row"><button type="button" class="tb" data-export-dataset="current-csv">Current CSV</button><button type="button" class="tb" data-export-dataset="full-csv">Full CSV</button><button type="button" class="tb" data-export-dataset="current-tsv">Current TSV</button><button type="button" class="tb" data-export-dataset="full-tsv">Full TSV</button></div></section>`:''}${ui.recovery?.model?'<button type="button" class="tb full-width" id="exportRecoveryJsonAction">Download retained local edits</button>':''}<small>Report JSON is the canonical portable editable format. Dataset export is permission-checked and does not expose inaccessible resources.</small></div>`;
+  $('#exportPptAction').onclick=()=>{closeModals();exportPpt();};
   $('#exportJsonAction').onclick=()=>{closeModals();exportModel();};
   $('#exportCopyJsonAction').onclick=async()=>{closeModals();await copyReportJson();};
   $('#exportSvgAction').onclick=()=>{closeModals();exportCanvasImage('svg');};
+  $('#exportPngAction').onclick=()=>{closeModals();exportCanvasImage('png');};
+  $('#exportJpegAction').onclick=()=>{closeModals();exportCanvasImage('jpeg');};
+  $$('[data-export-dataset]').forEach((button)=>button.addEventListener('click',()=>{const [scope,format]=button.dataset.exportDataset.split('-');closeModals();exportDataset(format,scope);}));
   $('#exportRecoveryJsonAction')?.addEventListener('click',()=>{closeModals();exportRetainedEdits();});
   openModal($('#genericModal'));
 }
@@ -2692,7 +2804,7 @@ async function handleEmptyAction(entry,action){
 }
 function onHullClick(e) {
   if(ui.preview)return;
-  const interactive = e.target.closest('[data-action], [data-tab], [data-tm], [data-point], [data-behavior-point], [data-ctx], [data-empty-action], .brush-handle');
+  const interactive = e.target.closest('[data-action], [data-tab], [data-tm], [data-point], [data-behavior-point], [data-chart-point], [data-ctx], [data-empty-action], .brush-handle');
   const comp = e.target.closest('.component');
   if (interactive) {
     e.stopPropagation();
@@ -2707,7 +2819,7 @@ function onHullClick(e) {
     else if (interactive.dataset.tab) commitOps('Switch tab', [{ op: 'item.patch', id: entry.id, patch: { tab: interactive.dataset.tab } }]);
     else if (interactive.dataset.tm != null) commitOps('Select timeline milestone', [{ op: 'item.patch', id: entry.id, patch: { tm: +interactive.dataset.tm } }]);
     else if (interactive.dataset.point != null) toggleChartPoint(entry, +interactive.dataset.point);
-    else if (interactive.dataset.behaviorPoint != null && entry.behaviors?.cross_filter!==false) toggleChartPoint(entry,+interactive.dataset.behaviorPoint);
+    else if ((interactive.dataset.behaviorPoint != null || interactive.dataset.chartPoint != null) && entry.behaviors?.cross_filter!==false) toggleChartPoint(entry, +(interactive.dataset.behaviorPoint ?? interactive.dataset.chartPoint), {field:interactive.dataset.filterField, value:interactive.dataset.filterValue});
     return;
   }
   if (!comp) return;
@@ -2763,7 +2875,7 @@ function onHullPointerDown(e) {
 }
 function onHullKeyDown(e) {
   if(ui.preview)return;
-  const point = e.target.closest('[data-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleChartPoint(item(point.closest('.component').dataset.id), +point.dataset.point); return; }
+  const point = e.target.closest('[data-point], [data-chart-point], [data-behavior-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleChartPoint(item(point.closest('.component').dataset.id), +(point.dataset.point ?? point.dataset.behaviorPoint ?? point.dataset.chartPoint), {field:point.dataset.filterField, value:point.dataset.filterValue}); return; }
   const brush = e.target.closest('.brush-handle'); if (brush && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); setBrushByKeyboard(item(brush.closest('.component').dataset.id), brush.dataset.brush, e.key === 'ArrowLeft' ? -1 : 1); return; }
   const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
 }
