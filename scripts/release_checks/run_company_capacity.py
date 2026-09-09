@@ -19,6 +19,10 @@ from company_ui.products.visualizer.domain import canonical_model
 from company_ui.products.visualizer.governance import CAPABILITY_ACTIONS, ReportAccessCatalog, ScopedReportRepository
 from company_ui.products.visualizer.repository import ReportRepository
 from company_ui.security import AuthorizationModel, Principal, RoleDefinition
+try:
+    from source_identity import candidate_sha
+except ModuleNotFoundError:  # imported from the repository test suite
+    from scripts.release_checks.source_identity import candidate_sha
 
 
 def _image() -> str:
@@ -48,7 +52,7 @@ def run(output: Path) -> int:
             started=time.perf_counter(); owner.read_asset_for_report('report-0000',asset_id); asset_auth_ms=(time.perf_counter()-started)*1000
             started=time.perf_counter(); owner.rename('report-0000',title=f'Renamed operations report {count}',expected_revision=1); rename_ms=(time.perf_counter()-started)*1000
             results.append({'reports':count,'image_items_per_report':image_count,'create_ms':round(create_ms,3),'scoped_list_ms':round(list_ms,3),'open_ms':round(open_ms,3),'history_ms':round(history_ms,3),'asset_authorization_ms':round(asset_auth_ms,3),'rename_ms':round(rename_ms,3),'listed':len(listed),'asset_reference_count':len(repository.assets.ids())})
-    result={'schema_version':1,'status':'PASS','candidate_sha':__import__('subprocess').check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'created_at':datetime.now(timezone.utc).isoformat(),'results':results,'method':'non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation','listing_projection':'rebuildable governance summary metadata; canonical report JSON remains authoritative'}
+    result={'schema_version':1,'status':'PASS','candidate_sha':candidate_sha(ROOT),'created_at':datetime.now(timezone.utc).isoformat(),'results':results,'method':'non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation','listing_projection':'rebuildable governance summary metadata; canonical report JSON remains authoritative'}
     output.parent.mkdir(parents=True,exist_ok=True); output.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n',encoding='utf-8'); print(json.dumps({'status':'PASS','output':str(output),'results':results},sort_keys=True)); return 0
 
 

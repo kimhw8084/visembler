@@ -19,6 +19,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+try:
+    from source_identity import candidate_sha as source_identity_candidate_sha, source_manifest as source_identity_manifest
+except ModuleNotFoundError:  # imported from the repository test suite
+    from scripts.release_checks.source_identity import candidate_sha as source_identity_candidate_sha, source_manifest as source_identity_manifest
+
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 
@@ -33,26 +38,12 @@ TARGET_ARTIFACTS = (
 )
 
 
-def _git(*args: str) -> str:
-    return subprocess.check_output(['git', *args], cwd=ROOT, text=True).strip()
-
-
 def candidate_sha() -> str:
-    return _git('rev-parse', 'HEAD')
+    return source_identity_candidate_sha(ROOT)
 
 
 def source_manifest() -> tuple[str, dict[str, str]]:
-    paths = [Path(item) for item in _git('ls-files', '-z', '--cached', '--others', '--exclude-standard').split('\0') if item]
-    artifacts: dict[str, str] = {}
-    digest = hashlib.sha256()
-    for path in paths:
-        full = ROOT / path
-        if not full.is_file():
-            continue
-        content = full.read_bytes(); sha = hashlib.sha256(content).hexdigest()
-        artifacts[str(path)] = sha
-        digest.update(str(path).encode()); digest.update(b'\0'); digest.update(content)
-    return digest.hexdigest(), artifacts
+    return source_identity_manifest(ROOT)
 
 
 def dependency_fingerprint() -> str:

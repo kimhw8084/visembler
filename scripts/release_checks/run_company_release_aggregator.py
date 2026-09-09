@@ -12,11 +12,19 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).parent))
+
+try:
+    from source_identity import candidate_sha
+except ModuleNotFoundError:
+    from scripts.release_checks.source_identity import candidate_sha
+
 REQUIRED = ('full_tests', 'integrity', 'native', 'company_boundary', 'multi_user', 'migration_recovery', 'fault_lifecycle', 'capacity', 'source_stability')
 
 
 def _head() -> str:
-    return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip()
+    return candidate_sha(ROOT)
 
 
 def aggregate(receipt_dir: Path, output: Path) -> int:

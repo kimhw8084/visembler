@@ -12,8 +12,9 @@ Production requires:
 
 - `COMPANY_UI_ENVIRONMENT=prod`
 - `COMPANY_UI_STORAGE_SECRET` with at least 32 characters
-- `COMPANY_UI_AUTH_MODE=trusted_proxy`
-- `COMPANY_UI_TRUSTED_IDENTITY_PROXIES` containing the gateway networks
+- `COMPANY_UI_AUTH_MODE=header`
+- `COMPANY_UI_PROXY_ENABLED=true`
+- `COMPANY_UI_TRUSTED_PROXIES` containing the gateway networks
 - `COMPANY_UI_MIGRATION_OWNER_SUBJECT` for first migration of legacy reports
 - secure cookies and TLS termination at the managed proxy
 
@@ -24,7 +25,8 @@ the stable subject is the ACL identity.
 ## Run and verify
 
 ```bash
-python -m company_ui.products.visualizer.cli
+python scripts/launch_visembler.py --host 0.0.0.0 --port 8080 \
+  --data-dir /absolute/path/to/visembler-data
 python scripts/release_checks/run_company_production_readiness.py \
   --output /tmp/visembler-company-readiness.json
 python scripts/release_checks/run_company_user_acceptance.py \

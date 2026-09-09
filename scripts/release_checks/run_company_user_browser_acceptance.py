@@ -17,6 +17,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(Path(__file__).parent))
+
+try:
+    from source_identity import candidate_sha
+except ModuleNotFoundError:
+    from scripts.release_checks.source_identity import candidate_sha
 
 from company_ui.products.visualizer.governance import CAPABILITY_ACTIONS, ReportAccessCatalog, ScopedReportRepository
 from company_ui.products.visualizer.page import template_model
@@ -85,8 +91,12 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
             if alice_response.headers.get('x-content-type-options') != 'nosniff' or alice_response.headers.get('x-frame-options') != 'DENY':
                 raise AssertionError('required security headers missing')
             _record(checks, 'CB013', 'PASS')
-            if not alice.get_by_role('button', name='Share', exact=True).is_visible():
-                raise AssertionError('owner Share command is not visible')
+            alice_hub = alice_context.new_page()
+            visit(alice_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
+            alice_hub.locator('[data-testid="report-hub"]').wait_for(timeout=15000)
+            owner_card = alice_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
+            if not owner_card.get_by_role('button', name='Share', exact=True).is_visible():
+                raise AssertionError('owner Share command is not visible in Report Hub')
             _record(checks, 'CB002', 'PASS')
 
             bob_before_context = context('bob')
@@ -102,9 +112,9 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                 raise AssertionError(f'unauthorized asset status {asset_response.status}')
             _record(checks, 'CB005', 'PASS')
 
-            alice.get_by_role('button', name='Share', exact=True).click()
-            alice.get_by_label('Company subject').fill('bob')
-            alice.get_by_role('button', name='Grant / update', exact=True).click()
+            owner_card.get_by_role('button', name='Share', exact=True).click()
+            alice_hub.get_by_label('User or group subject').fill('bob')
+            alice_hub.get_by_role('button', name='Grant or update', exact=True).click()
             page_wait = 0
             while page_wait < 10 and access.get(shared_id).get('grants', {}).get('bob') != 'viewer':
                 alice.wait_for_timeout(100)
@@ -152,7 +162,7 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                     raise AssertionError(f'page overflow at {width}px')
                 responsive.close(); responsive_context.close()
             _record(checks, 'CB014', 'PASS')
-            anonymous.close(); alice.close(); bob.close(); bob_editor.close(); revoked.close(); bob_before.close(); carol.close()
+            anonymous.close(); alice.close(); alice_hub.close(); bob.close(); bob_editor.close(); revoked.close(); bob_before.close(); carol.close()
             anonymous_context.close(); alice_context.close(); bob_context.close(); bob_before_context.close(); carol_context.close(); browser.close()
     except Exception as exc:
         _record(checks, 'CB999', 'FAIL', f'{type(exc).__name__}: {exc}')
@@ -175,7 +185,7 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
         'status': 'PASS' if all(item['status'] == 'PASS' for item in checks) and not remaining else 'FAIL',
         'created_at': datetime.now(timezone.utc).isoformat(),
         'base_url': base_url,
-        'candidate_sha': __import__('subprocess').check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        'candidate_sha': candidate_sha(ROOT),
         'browser_mode': 'playwright',
         'checks': checks,
         'browser_console_errors': errors,

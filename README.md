@@ -15,7 +15,14 @@ Company UI is a Company-owned NiceGUI application platform for internal engineer
 
 ## Release status
 
-`3.0.0a1` is **source-complete alpha**, not stable `3.0.0`. Source-level non-regression is green across the complete inherited estate; live target/runtime/browser/human certification remains deliberately PENDING because NiceGUI and the supported browser matrix are unavailable in this build sandbox.
+`3.0.0a1` remains the Company UI framework compatibility line. The current
+Visembler candidate has a native local verification receipt for the installed
+Python 3.11.7 / NiceGUI 3.15.0 runtime, with the full current regression estate
+at **1018/1018 PASS**. Its local single-instance status is
+`PASS_LOCAL_INTERNAL_PILOT`; the company boundary is
+`READY_FOR_COMPANY_TARGET_CERTIFICATION` only after the fresh local company
+gates pass. Actual managed identity, proxy, durable-storage, session and
+recovery evidence remains external and is not inferred from this checkout.
 
 ## Run Visembler
 
@@ -80,7 +87,10 @@ Setup validates production runtime only and must not require browser-certificati
 - canonical live routes: **22**
 - wheel RECORD verification: **391/391 hashes, 0 mismatches**
 - isolated no-dependency wheel import: **PASS**
-- expected warning: NiceGUI is unavailable in this build sandbox; target runtime/browser/human visual certification is therefore PENDING rather than inferred.
+- These figures are historical framework-alpha evidence, not the current
+  Visembler product receipt. Current product evidence is recorded in
+  `CERTIFICATION_REPORT.json`, `LIVE_CERTIFICATION_READINESS.json`, and the
+  dated native-verifier evidence bundle.
 
 ## Stable 3.0.0 promotion blockers
 

@@ -17,6 +17,10 @@ from company_ui.products.visualizer.governance import CAPABILITY_ACTIONS, Report
 from company_ui.products.visualizer.repository import ReportRepository
 from company_ui.products.visualizer.templates import template_model
 from company_ui.security import AuthorizationModel, Principal, RoleDefinition
+try:
+    from source_identity import candidate_sha
+except ModuleNotFoundError:  # imported from the repository test suite
+    from scripts.release_checks.source_identity import candidate_sha
 
 
 def _auth() -> AuthorizationModel:
@@ -63,13 +67,9 @@ def run(output: Path) -> int:
         check('MU018 owner trash/restore',lambda: owner_trash_restore(alice,repository))
         check('MU019 governance reconcile',lambda: assert_no_blocked(access))
         check('MU020 assets do not bypass ACL',lambda: expect(PermissionError,lambda: revoked.read_asset_for_report('company-report','sha256-'+'0'*64)))
-    result={'schema_version':1,'status':'PASS' if all(item['status']=='PASS' for item in checks) else 'FAIL','candidate_sha':git_head(),'created_at':datetime.now(timezone.utc).isoformat(),'browser_mode':'model-boundary; run with a live target URL for browser-context evidence','checks':checks,'passed':sum(item['status']=='PASS' for item in checks),'failed':sum(item['status']=='FAIL' for item in checks)}
+    result={'schema_version':1,'status':'PASS' if all(item['status']=='PASS' for item in checks) else 'FAIL','candidate_sha':candidate_sha(ROOT),'created_at':datetime.now(timezone.utc).isoformat(),'browser_mode':'model-boundary; run with a live target URL for browser-context evidence','checks':checks,'passed':sum(item['status']=='PASS' for item in checks),'failed':sum(item['status']=='FAIL' for item in checks)}
     output.parent.mkdir(parents=True,exist_ok=True); output.write_text(json.dumps(result,indent=2,sort_keys=True)+'\n',encoding='utf-8'); print(json.dumps({'status':result['status'],'passed':result['passed'],'failed':result['failed'],'output':str(output)},sort_keys=True)); return 0 if result['status']=='PASS' else 2
 
-
-def git_head():
-    import subprocess
-    return subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 
 def assert_ids(records, expected): assert {record.report_id for record in records}==expected
 def assert_no_blocked(access): assert access.reconcile()['blocked']==[]

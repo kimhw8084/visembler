@@ -11,7 +11,7 @@ import uuid
 from html import escape as html_escape
 from pathlib import Path
 from typing import Any, Mapping
-from urllib.parse import quote
+from urllib.parse import parse_qs, quote
 
 from fastapi import HTTPException, Request
 
@@ -21,7 +21,7 @@ from company_ui.integrations.nicegui_state import NiceGUIStateServices
 from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
 
-from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
+from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, ReportNotFoundError, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
 from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
 from .governance import REPORT_EDIT, REPORT_EXPORT, REPORT_READ, REPORT_SHARE, ReportAccessCatalog, ReportRole, ScopedReportRepository
 from .ppt_service import export_pptx, import_visembler_pptx
@@ -69,6 +69,49 @@ def _normalize_mapping_presets(raw: Any) -> list[dict[str,Any]]:
 NAVIGATION = NavigationModel((NavSection('workspace','Workspace',(NavItem('visualizer','Visembler','/visualizer','chart-line'),NavItem('visualizer-reports','Reports','/visualizer/reports','folder'))),))
 
 
+class _VisualizerResourceBoundary:
+    """Reject protected Visualizer HTTP requests before NiceGUI renders a page.
+
+    NiceGUI can turn an exception raised while constructing a ``ui.page`` into
+    an HTML error surface with a 200 response on a subsequent client request.
+    That is unsuitable for protected report URLs: the transport boundary must
+    remain an opaque 404 before a page/client is created.  This middleware
+    reuses the configured Company UI authentication adapter and the same
+    scoped repository used by the page handlers; it does not create a second
+    authorization model.
+    """
+
+    def __init__(self, app: Any, *, auth_adapter: Any, repository: ReportRepository,
+                 access: ReportAccessCatalog, authorization: Any) -> None:
+        self.app = app
+        self.auth_adapter = auth_adapter
+        self.repository = repository
+        self.access = access
+        self.authorization = authorization
+
+    async def __call__(self, scope: Mapping[str, Any], receive: Any, send: Any) -> None:
+        if scope.get('type') != 'http' or not str(scope.get('path') or '').startswith('/visualizer'):
+            await self.app(scope, receive, send)
+            return
+        headers = {key.decode('latin-1').lower(): value.decode('latin-1') for key, value in scope.get('headers', [])}
+        client = scope.get('client')
+        client_host = client[0] if client else None
+        principal = await self.auth_adapter.authenticate(headers, client_host) if self.auth_adapter is not None else None
+        report_id = parse_qs(bytes(scope.get('query_string') or b'').decode('latin-1')).get('report', [''])[0].strip()
+        denied = principal is None or not principal.authenticated
+        if not denied and report_id:
+            scoped = ScopedReportRepository(self.repository, self.access, principal, self.authorization)
+            try:
+                scoped.get(report_id)
+            except (PermissionError, ReportNotFoundError, ValueError):
+                denied = True
+        if denied:
+            from starlette.responses import PlainTextResponse
+            await PlainTextResponse('Not found', status_code=404)(scope, receive, send)
+            return
+        await self.app(scope, receive, send)
+
+
 def _asset_build() -> str:
     h=hashlib.sha256()
     asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
@@ -80,8 +123,10 @@ def _asset_build() -> str:
     return h.hexdigest()[:16]
 
 
-def _bootstrap_editor(ui: Any, bootstrap: Mapping[str, Any], build: str, module_url: str) -> None:
-    script=f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});'''
+def _bootstrap_editor(ui: Any, bootstrap: Mapping[str, Any], build: str, module_url: str, *, capabilities: Mapping[str, Any] | None = None) -> None:
+    browser_bootstrap=dict(bootstrap)
+    if capabilities is not None: browser_bootstrap['capabilities']=dict(capabilities)
+    script=f'''window.__CUI_VISUALIZER_BOOTSTRAP__={json.dumps(browser_bootstrap,ensure_ascii=False)};window.__CUI_VISUALIZER_ASSET_BUILD__={json.dumps(build)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('.cui-visualizer-root');if(root)root.dataset.editorReady='failed';}});'''
     ui.run_javascript(script)
 
 
@@ -362,9 +407,20 @@ def register_visualizer(
     def scoped_repository(request: Any) -> ScopedReportRepository:
         principal=runtime.principal_from_request(request)
         if not principal.authenticated:
-            raise HTTPException(status_code=401, detail='authentication required')
+            # Protected visualizer routes deliberately do not distinguish an
+            # anonymous caller from a missing report.  This keeps the report
+            # id, title, and existence boundary opaque while still allowing
+            # the platform health/auth probes to use their own semantics.
+            raise HTTPException(status_code=404, detail='resource unavailable')
         return ScopedReportRepository(base_repository,access,principal,runtime.authorization)
 
+    app.add_middleware(
+        _VisualizerResourceBoundary,
+        auth_adapter=runtime.auth_adapter,
+        repository=base_repository,
+        access=access,
+        authorization=runtime.authorization,
+    )
     build=_asset_build()
     app.add_static_files(f'{STATIC_ROUTE}/assets',str(ASSETS),follow_symlink=False,max_cache_age=0)
     app.add_static_files(f'{STATIC_ROUTE}/vendor/production_core',str(VENDOR),follow_symlink=False,max_cache_age=0)
@@ -440,6 +496,7 @@ def register_visualizer(
         studio_bootstrap={
             'report_id':current.report_id,'revision':current.revision,'title':current.title,
             'element_id':element_id,'entry':json.loads(stable_json(entry)),'model':json.loads(stable_json(current.model)),
+            'capabilities': repository.capabilities(current.report_id).to_dict(),
             'asset_build':build,
         }
         script=f'''window.__CUI_DIAGRAM_STUDIO_BOOTSTRAP__={json.dumps(studio_bootstrap,ensure_ascii=False)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('#diagram-studio');if(root)root.dataset.studioReady='failed';}});'''
@@ -504,6 +561,7 @@ def register_visualizer(
             'report_id':current.report_id,'revision':current.revision,'title':current.title,
             'element_id':element_id,'entry':json.loads(stable_json(entry)),'dataset':json.loads(stable_json(dataset or {})),
             'chart_model':json.loads(stable_json(chart_model)),'report_model':json.loads(stable_json(current.model)),
+            'capabilities': repository.capabilities(current.report_id).to_dict(),
             'asset_build':build,
         }
         script=f'''window.__CUI_CHART_STUDIO_BOOTSTRAP__={json.dumps(studio_bootstrap,ensure_ascii=False)};import({json.dumps(module_url)}).catch(error=>{{console.error(error);const root=document.querySelector('#chart-studio');if(root)root.dataset.studioReady='failed';}});'''
@@ -518,6 +576,7 @@ def register_visualizer(
         repository=scoped_repository(request)
         query_report=str(request.query_params.get('report') or '')
         history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
+        can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
         delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; hub_layout='grid'
         share_target={'report_id':None}
 
@@ -671,18 +730,23 @@ def register_visualizer(
                             for record in visible:
                                 with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="active"'):
                                     ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False)
-                                    ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
-                                    ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
+                                    projection=repository.capabilities(record.report_id)
+                                    if projection.can_rename:
+                                        ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
+                                        ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
+                                    else:
+                                        ui.label(record.title).classes('cui-report-card-title')
+                                        ui.label(str(record.metadata.get('description') or '') or 'No description').classes('cui-report-card-description')
                                     ui.label(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
-                                    summary=access.access_summary(record.report_id,repository.principal); ui.label(f"Owner {summary['owner']} · Access {summary['role'] or 'none'}").classes('text-caption')
+                                    ui.label(f"Owner {record.metadata.get('owner_display_name') or 'account owner'} · Access {projection.role or 'none'}").classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
                                         ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps data-report-action="open"')
-                                        ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps data-report-action="duplicate"')
-                                        ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps data-report-action="history"')
-                                        ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
-                                        if access.can(record.report_id,repository.principal,REPORT_SHARE):
+                                        if projection.can_duplicate: ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps data-report-action="duplicate"')
+                                        if projection.can_read_history: ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps data-report-action="history"')
+                                        if projection.can_export: ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
+                                        if projection.can_share:
                                             ui.button('Share',on_click=lambda rid=record.report_id:open_share(rid)).props('flat no-caps data-report-action="share"')
-                                        ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
+                                        if projection.can_delete: ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
                 with ui.element('section').classes('cui-report-hub-section'):
@@ -694,7 +758,9 @@ def register_visualizer(
                                 with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="trash"'):
                                     ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
-                                        ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps data-report-action="restore"'); ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
+                                        projection=repository.capabilities(record.report_id)
+                                        if projection.can_restore: ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps data-report-action="restore"')
+                                        if projection.can_export: ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
 
         @ui.refreshable
         def render_history() -> None:
@@ -707,8 +773,12 @@ def register_visualizer(
                 if not record: ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
                 ui.label(f'History · {record.title}').classes('text-h6'); ui.label('Each restore is explicit, revisioned, and leaves the prior state in history.').classes('text-caption')
                 checkpoint=ui.input(label='Named checkpoint',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
-                checkpoint_button=ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
-                checkpoint.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
+                projection=repository.capabilities(record.report_id)
+                if projection.can_restore_history:
+                    checkpoint_button=ui.button('Save checkpoint',on_click=lambda rid=record.report_id,field=checkpoint:checkpoint_hub(rid,field)).props('flat no-caps')
+                    checkpoint.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
+                else:
+                    checkpoint.disable(); ui.label('Read-only history · restore and duplicate are unavailable.').classes('cui-field-description')
                 if not entries: ui.label('No saved revisions yet.').classes('cui-report-hub-empty')
                 else:
                     with ui.element('div').classes('cui-history-list'):
@@ -723,8 +793,8 @@ def register_visualizer(
                                 with ui.element('div').classes('cui-history-card-copy'):
                                     ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(historical,record.model)).classes('text-caption')
                                     with ui.row().classes('cui-history-actions'):
-                                        ui.button('Restore this revision',on_click=lambda rid=record.report_id,hid=entry['history_id'],s=summary:begin_history_restore(rid,str(hid),s)).props('unelevated no-caps')
-                                        ui.button('Duplicate as new report',on_click=lambda rid=record.report_id,hid=entry['history_id']:duplicate_hub_history(rid,str(hid))).props('flat no-caps')
+                                        if projection.can_restore_history: ui.button('Restore this revision',on_click=lambda rid=record.report_id,hid=entry['history_id'],s=summary:begin_history_restore(rid,str(hid),s)).props('unelevated no-caps')
+                                        if projection.can_duplicate: ui.button('Duplicate as new report',on_click=lambda rid=record.report_id,hid=entry['history_id']:duplicate_hub_history(rid,str(hid))).props('flat no-caps')
 
         import_hub_dialog=ui.dialog()
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer/reports',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Report hub',owner='Visembler'):
@@ -736,15 +806,16 @@ def register_visualizer(
                     ui.button('Dataset library',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=datasets' if history_report_id else '/visualizer?panel=datasets')).props('flat no-caps')
                     ui.button('Reusable assets',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=assets' if history_report_id else '/visualizer?panel=assets')).props('flat no-caps')
                     ui.button('Blueprints',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=blueprints' if history_report_id else '/visualizer?panel=blueprints')).props('flat no-caps')
-                    ui.button('Import…',on_click=import_hub_dialog.open).props('flat no-caps')
+                    if can_create: ui.button('Import…',on_click=import_hub_dialog.open).props('flat no-caps')
                 with ui.element('section').classes('cui-report-hub-toolbar'):
                     search=ui.input(label='Search reports',placeholder='Title, description, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('flex-grow')
                     sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
                     view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
                     ui.button('Grid',on_click=lambda:set_hub_layout('grid')).props('flat no-caps data-testid="report-grid-view"').tooltip('Show report cards')
                     ui.button('List',on_click=lambda:set_hub_layout('list')).props('flat no-caps data-testid="report-list-view"').tooltip('Show a compact report list')
-                    template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
-                    ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
+                    if can_create:
+                        template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
+                        ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
                 render_cards()
                 render_history()
 
@@ -800,20 +871,30 @@ def register_visualizer(
         query_report=str(request.query_params.get('report') or '')
         preferred=query_report or str(page_state.get('visualizer.current_report') or '')
         current=next((record for record in records if record.report_id==preferred),records[0]); page_state['visualizer.current_report']=current.report_id
+        current_capabilities=repository.capabilities(current.report_id)
         ppt_template:dict[str,Any]={'name':None,'content':None}
+
+        def report_payload(record: Any) -> dict[str, Any]:
+            return {
+                **_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),
+                'capabilities': repository.capabilities(record.report_id).to_dict(),
+            }
 
         async def send(kind: str, payload: Mapping[str,Any]) -> None:
             message={'bridge_version':BRIDGE_VERSION,'type':kind,'payload':dict(payload)}
             await ui.run_javascript(f'window.CompanyUIVisualizerBridge?.receive({json.dumps(message,ensure_ascii=False)})')
 
         async def activate(record, *, notice: str|None=None) -> None:
-            nonlocal current
-            current=record; page_state['visualizer.current_report']=record.report_id
+            nonlocal current, current_capabilities
+            current=record; current_capabilities=repository.capabilities(record.report_id); page_state['visualizer.current_report']=record.report_id
             report_select.options=_report_options(repository); report_select.value=record.report_id; report_select.update()
-            report_title.value=record.title; report_title.update()
-            report_description.value=str(record.metadata.get('description') or ''); report_description.update()
-            report_meta.set_text(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision}')
-            await send('report.bootstrap',_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'))
+            if report_title is not None:
+                report_title.value=record.title; report_title.update()
+            if report_description is not None:
+                report_description.value=str(record.metadata.get('description') or ''); report_description.update()
+            if report_meta is not None:
+                report_meta.set_text(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision}')
+            await send('report.bootstrap',report_payload(record))
             if notice: notifications.success(notice)
 
         async def handle_semantic(event: Any) -> None:
@@ -861,7 +942,7 @@ def register_visualizer(
                 if kind=='dataset.binding_requested':
                     await send('report.error',{'message':'Dataset binding is unavailable until a Company UI Dataset/DataSession is attached to this report.'}); return
             except RevisionConflictError:
-                latest=repository.get(current.report_id); await send('report.conflict',{**_payload(latest,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),'rejected_commit_id':str(payload.get('commit_id') or '')})
+                latest=repository.get(current.report_id); await send('report.conflict',{**report_payload(latest),'rejected_commit_id':str(payload.get('commit_id') or '')})
             except Exception as exc:
                 try: latest=repository.get(current.report_id); record_payload=_payload(latest,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}')
                 except Exception: record_payload=None
@@ -898,7 +979,7 @@ def register_visualizer(
         async def select_report(event: Any) -> None:
             report_id=str(getattr(event,'value','') or '')
             if report_id and report_id != current.report_id:
-                try: await activate(repository.get(report_id))
+                try: ui.navigate.to(f'/visualizer?report={quote(report_id,safe="")}')
                 except Exception as exc: notifications.error(f'Unable to open report: {exc}')
 
         async def delete_current() -> None:
@@ -1019,6 +1100,8 @@ def register_visualizer(
             manage_dialog.close()
             clean_dialog.open()
 
+        report_title=None; report_description=None; report_meta=None
+        can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler'):
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             new_dialog=ui.dialog()
@@ -1139,19 +1222,24 @@ def register_visualizer(
                     ui.button('Close',on_click=manage_dialog.close).props('flat no-caps')
 
             # company-ui: allow-ai004 — the editor is an isolated application-owned canvas host.
-            with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full'):
+            with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full').props(f'data-report-read-only="{str(current_capabilities.read_only).lower()}"'):
                 # company-ui: allow-ai005 — the report-control strip is part of the isolated editor host.
                 with ui.element('section').classes('cui-visualizer-reportbar w-full').props('aria-label="Report controls"'):
                     # company-ui: allow-ai005 — report title is the primary identity control.
-                    report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
-                    report_description=ui.input(label='Description',value=str(current.metadata.get('description') or ''),on_change=update_report_description,placeholder='What this report is for').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-description')
+                    if current_capabilities.read_only:
+                        ui.label(current.title).classes('cui-visualizer-report-title cui-report-read-only-title')
+                        ui.label('Read-only').classes('cui-report-read-only-indicator')
+                        ui.label(str(current.metadata.get('description') or '')).classes('cui-visualizer-report-description cui-report-read-only-description')
+                    else:
+                        report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
+                        report_description=ui.input(label='Description',value=str(current.metadata.get('description') or ''),on_change=update_report_description,placeholder='What this report is for').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-description')
                     report_meta=ui.label(f'Created {current.created_at} · Modified {current.updated_at} · revision {current.revision}').classes('cui-visualizer-report-meta')
                     # company-ui: allow-ai005 — searchable report switcher replaces a separate filter field.
                     report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space use-input input-debounce=0').classes('cui-visualizer-report-select')
                     # company-ui: allow-ai005 — frequent creation remains one click away.
-                    ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
+                    if can_create: ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
                     # company-ui: allow-ai005 — report reuse remains a primary action.
-                    ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
+                    if current_capabilities.can_duplicate: ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
                     # Report lifecycle is a separate route so it never obscures the active canvas.
                     ui.button('Manage',on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}')).props('flat no-caps data-testid="manage-reports"').tooltip('Open the dedicated report hub')
                 # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
@@ -1166,4 +1254,4 @@ def register_visualizer(
         # Cold loads must resolve stored media just like activate()/conflict payloads.
         # Keep asset IDs canonical; add renderable URLs only to the browser copy.
         bootstrap={**_payload(current,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}'),'asset_build':build}
-        _bootstrap_editor(ui,bootstrap,build,module_url)
+        _bootstrap_editor(ui,bootstrap,build,module_url,capabilities=current_capabilities.to_dict())

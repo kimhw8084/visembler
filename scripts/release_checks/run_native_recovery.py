@@ -33,6 +33,29 @@ def recover_if_needed(page,host,rid,value):
     page.wait_for_function('()=>{const s=CompanyUIVisualizerBridge.state();return !s.recovery&&s.pending===0&&!s.inflight}',timeout=20000)
 
 
+def reopen_after_restart(page, host):
+    """Open a fresh document after NativeHost has completed its bounded restart.
+
+    Reloading the old NiceGUI frame races the browser's closing transport and
+    can raise ERR_ABORTED even after the new server is healthy.  A same-origin
+    navigation exercises the same recovery path without depending on that
+    stale frame lifecycle.
+    """
+    page.goto(host.url + '/visualizer', wait_until='domcontentloaded', timeout=20000)
+
+
+def fresh_page_after_restart(context, host, events):
+    """Use a new page in the same context after a server restart.
+
+    The context retains the recovery journal in local storage, while the new
+    page avoids navigation races with the old NiceGUI transport document.
+    """
+    page = context.new_page()
+    events.attach(page)
+    page.goto(host.url + '/visualizer', wait_until='domcontentloaded', timeout=20000)
+    return page
+
+
 def main()->int:
     ap=argparse.ArgumentParser();ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=True);(out/'screenshots').mkdir(exist_ok=True)
@@ -58,7 +81,7 @@ def main()->int:
                     c['steps']+=['offline edit journaled','pending commit retained']
                     p.screenshot(path=str(out/'screenshots'/'01-offline-draft.png'))
                     ctx.set_offline(False);p.wait_for_timeout(900)
-                    p.reload(wait_until='domcontentloaded');ready(p);events.fault=False
+                    reopen_after_restart(p,host);ready(p);events.fault=False
                     recover_if_needed(p,host,rid,'Offline draft')
                     assert report_value(host,rid)=='Offline draft'
                     c['steps']+=['reconnected','draft persisted/recovered'];c['status']='PASS'
@@ -90,7 +113,8 @@ def main()->int:
                     # recovery journal is not replayed again.
                     revision_after=recovered.revision
                     events.fault=True;host.restart()
-                    p.reload(wait_until='domcontentloaded');ready(p,require_settled=True);events.fault=False
+                    p.close()
+                    p=fresh_page_after_restart(ctx,host,events);ready(p,require_settled=True);events.fault=False
                     assert report_value(host,rid)=='Restart draft'
                     assert host.repository.get(rid).revision==revision_after
                     assert not state(p).get('recovery')

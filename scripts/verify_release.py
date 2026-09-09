@@ -72,6 +72,18 @@ def main() -> int:
         (output / 'progress.json').write_text(json.dumps(results, indent=2) + '\n')
         print(f'{name}: {row["status"]}', flush=True)
 
+    run('repository-contracts', [sys.executable, 'scripts/release_checks/run_repository_contracts.py',
+                                '--output', str(output / 'repository-contracts.json')], 180)
+    run('company-boundary-model', [sys.executable, 'scripts/release_checks/run_company_user_acceptance.py',
+                                   '--output', str(output / 'company-boundary-model.json')], 180)
+    run('company-boundary-browser', [sys.executable, 'scripts/release_checks/run_company_boundary_browser_gate.py',
+                                    '--output', str(output / 'company-boundary-browser.json')], 360)
+    run('company-readiness-local', [sys.executable, 'scripts/release_checks/run_company_production_readiness.py',
+                                   '--data-dir', str(output / 'company-readiness-data'),
+                                   '--output', str(output / 'company-readiness-local.json')], 180)
+    run('company-capacity', [sys.executable, 'scripts/release_checks/run_company_capacity.py',
+                             '--output', str(output / 'company-capacity.json')], 300)
+
     run('delivery-tests', [sys.executable, '-m', 'pytest', 'tests/test_visualizer_completion_delivery.py',
                           'tests/test_visualizer_production_closeout.py', '--tb=short',
                           '--junitxml=' + str(output / 'delivery-tests.xml')])
@@ -125,6 +137,7 @@ def main() -> int:
     required_names={
         'delivery-tests','full-tests','syntax-integrated_editor.mjs','syntax-element_renderer.mjs',
         'syntax-authoring_dataset_refresh.mjs','syntax-authoring_portability.mjs','syntax-authoring_intake_client.mjs',
+        'repository-contracts','company-boundary-model','company-boundary-browser','company-readiness-local','company-capacity',
         'persistence-source-probe','elements','data','performance','source-stability','frozen-connector',
     }
     if ROOT.joinpath('.git').exists(): required_names.add('git-diff-check')
@@ -148,6 +161,8 @@ def main() -> int:
         'remaining_release_validation': remaining,
         'checks_status': 'PASS' if all_pass else 'INCOMPLETE_OR_FAILED',
         'release_status': release_status,
+        'company_boundary_status': 'READY_FOR_COMPANY_TARGET_CERTIFICATION' if by_name.get('company-readiness-local', {}).get('status') == 'PASS' else 'BLOCKED',
+        'managed_target_status': 'PENDING',
         'supported_scope': 'single local/internal-pilot instance; shared-network identity/authorization/hosting remain organization-managed',
         'git_status_at_start': git_status_start,
         'reason': 'All bounded local/internal-pilot gates passed on this exact source.' if release_status=='PASS_LOCAL_INTERNAL_PILOT' else 'One or more required bounded-release gates are incomplete or failed.',
@@ -155,6 +170,8 @@ def main() -> int:
     (output / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     release_manifest={
         'release_status':release_status,
+        'company_boundary_status':report['company_boundary_status'],
+        'managed_target_status':'PENDING',
         'source_editor_sha256':report['source_editor_sha256'],
         'source_page_sha256':report['source_page_sha256'],
         'frozen_connector_sha256':before.get(FROZEN),
