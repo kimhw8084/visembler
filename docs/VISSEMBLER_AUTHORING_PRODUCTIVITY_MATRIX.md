@@ -1,6 +1,6 @@
 # Visembler authoring productivity matrix
 
-This is the maintained product-engineering matrix for the 49 production
+This is the maintained product-engineering matrix for the 52 production
 elements. It records the shared authoring contract rather than pretending that
 each element needs a bespoke editor.
 
@@ -57,6 +57,9 @@ clipboard/direct-edit improvement in this wave.
 | I-MR Chart | Individuals/moving range | Engineering Data First | DF observations | I/CS engineering | S + fit | I/MR labeling | fit + KB | Baseline | Variant choice requires understanding | DF, chart adapter | P0 | engineering tests |
 | CUSUM Chart | Sustained shifts | Engineering Data First | DF observations/params | I/CS engineering | S + fit | Parameters visible | fit + KB | Baseline | Parameter defaults need context | DF, chart adapter | P0 | engineering tests |
 | EWMA Chart | Small shifts | Engineering Data First | DF observations/params | I/CS engineering | S + fit | Parameters visible | fit + KB | Baseline | Parameter defaults need context | DF, chart adapter | P0 | engineering tests |
+| Xbar-R Chart | Constant-size subgroup means/ranges | Statistical Data First | DF subgroup/measurement/order | I/CS statistical | S + fit | X̄/R panels, explicit control limits | fit + KB | Promoted | Signals describe unusual behavior, not root cause | DF, statistics backend | P0 | statistical quality wave |
+| DOE Main Effects | Observed response means by factor level | Statistical Data First | DF factor/response mapping | I/CS statistical | S + fit | Descriptive means, no significance claim | fit + KB | Promoted | Factor-level ordering remains deterministic | DF, statistics backend | P0 | statistical quality wave |
+| DOE Interaction Plot | Observed response means by factor cell | Statistical Data First | DF factor A/factor B/response | I/CS statistical | S + fit | Shared scale, missing-cell validation | fit + KB | Promoted | Descriptive interaction only | DF, statistics backend | P0 | statistical quality wave |
 | Wafer Map | Spatial wafer evidence | Wafer Data First | DF coordinates/value/identity | I/Chart Studio | S + fit | Outline, legend, identity | fit + KB | Baseline | Filtering/selection is specialized | DF, wafer adapter | P0 | wafer/chart acceptance |
 | Wafer Difference Map | Signed affected-minus-reference die comparison | Data First recommendation | DF coordinates/reference/affected mapping | I/Chart Studio | S + fit | Zero-centered delta, source-value tooltip | fit + KB | Promoted | Duplicate die policy and missing pairs remain explicit | DF, wafer adapter | P0 | fab semantic fixtures |
 | Tool × Chamber Matrix | Equipment/module measurement comparison | Data First recommendation | DF tool/chamber/value mapping | I/Chart Studio | S + fit | Shared scale, aggregation, missing cells | fit + KB | Promoted | Matrix selection requires compound filters when bound | DF, wafer adapter | P0 | fab semantic fixtures |

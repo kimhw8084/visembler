@@ -4,7 +4,11 @@
 // recipe mapping and a visual projection; renderers must not infer engineering
 // meaning from row order, first/last values, or presentation metadata.
 
+import { doeInteraction, doeMainEffects, processCapability, xbarR } from '../vendor/production_core/core/statistics_engine.mjs';
+
 export const ANALYSIS_SEMANTICS_VERSION = 'v2';
+export const STATISTICAL_ANALYSIS_VERSION = 'statistical-v1';
+export const STATISTICAL_RECIPE_IDS = Object.freeze(['xbar-r-process-review', 'process-capability', 'doe-response-review']);
 
 const numericTypes = new Set(['integer', 'number']);
 const clone = value => typeof structuredClone === 'function' ? structuredClone(value) : JSON.parse(JSON.stringify(value));
@@ -30,13 +34,16 @@ const CONTRACTS = Object.freeze({
   'pre-post-change': {version: 'v2', role_sets: [['cohort', 'value']]},
   'distribution-review': {version: 'v1', role_sets: [['value']]},
   'distribution-comparison': {version: 'v2', role_sets: [['cohort', 'value']]},
+  'xbar-r-process-review': {version: STATISTICAL_ANALYSIS_VERSION, role_sets: [['subgroup', 'value']], optional_roles: ['order', 'specification_low', 'specification_high']},
+  'process-capability': {version: STATISTICAL_ANALYSIS_VERSION, role_sets: [['value', 'specification_low'], ['value', 'specification_high'], ['value', 'specification_low', 'specification_high']], optional_roles: ['target', 'cohort']},
+  'doe-response-review': {version: STATISTICAL_ANALYSIS_VERSION, role_sets: [['factor_a', 'factor_b', 'response']], optional_roles: ['factor_c']},
 });
 
 export function recipeRoleContract(recipeId) {
   const contract = CONTRACTS[recipeId];
   if (!contract) return {recipe_id: recipeId, version: ANALYSIS_SEMANTICS_VERSION, required_roles: [], consumed_roles: [], role_sets: []};
   const roles = [...new Set(contract.role_sets.flat())].sort();
-  return {recipe_id: recipeId, version: contract.version, required_roles: roles, consumed_roles: roles, role_sets: clone(contract.role_sets)};
+  return {recipe_id: recipeId, version: contract.version, required_roles: roles, consumed_roles: roles, optional_roles: clone(contract.optional_roles || []), role_sets: clone(contract.role_sets)};
 }
 
 function emptyResult(recipeId, dataset, mapping, contract) {
@@ -64,7 +71,7 @@ function derivedDataset(source, recipeId, fields, rows, metadata = {}) {
     ...clone(source || {}),
     fields,
     rows,
-    metadata: {...clone(source?.metadata || {}), ...metadata, analysis_recipe: recipeId, semantic_version: ANALYSIS_SEMANTICS_VERSION},
+    metadata: {...clone(source?.metadata || {}), ...metadata, analysis_recipe: recipeId, semantic_version: metadata.semantic_version || ANALYSIS_SEMANTICS_VERSION},
   };
 }
 
@@ -327,6 +334,111 @@ function executeDistribution(dataset, mapping, recipeId) {
   return result;
 }
 
+function mappedNumberValues(dataset, fieldId) {
+  const index = fieldIndex(dataset, fieldId);
+  if (index < 0) return [];
+  return (dataset.rows || []).map(row => numberValue(row[index])).filter(value => value !== null);
+}
+
+function consistentSpecification(dataset, fieldId, label, explicitValue = null) {
+  if (explicitValue !== null && explicitValue !== undefined) {
+    const value = numberValue(explicitValue);
+    return value === null ? {error: error('INVALID_SPECIFICATION', `${label} must be finite.`)} : {value, source: 'explicit-analysis'};
+  }
+  if (!fieldId) return {value: null, source: null};
+  const values = mappedNumberValues(dataset, fieldId);
+  if (!values.length) return {error: error('MISSING_SPECIFICATION', `${label} does not contain a finite value.`)};
+  const unique = [...new Set(values)];
+  if (unique.length > 1) return {error: error('CONFLICTING_SPECIFICATION', `${label} contains conflicting values; filter the dataset or configure one explicit value.`, {values: unique})};
+  return {value: unique[0], source: 'dataset-column'};
+}
+
+function executeXbarR(dataset, mapping) {
+  const result = emptyResult('xbar-r-process-review', dataset, mapping, CONTRACTS['xbar-r-process-review']);
+  result.errors = validMapping(dataset, mapping, ['subgroup', 'value']);
+  if (result.errors.length) return result;
+  const subgroupIndex = fieldIndex(dataset, mapping.subgroup), valueIndex = fieldIndex(dataset, mapping.value), orderIndex = fieldIndex(dataset, mapping.order);
+  const groups = new Map();
+  (dataset.rows || []).forEach((sourceRow, sourceIndex) => {
+    const subgroup = text(sourceRow[subgroupIndex]), value = numberValue(sourceRow[valueIndex]);
+    if (!subgroup) { result.errors.push(error('MISSING_SUBGROUP', `Row ${sourceIndex + 1} is missing its subgroup identity.`, {source_index: sourceIndex})); return; }
+    if (value === null) { result.errors.push(error('INVALID_MEASUREMENT', `Row ${sourceIndex + 1} has a non-finite measurement.`, {source_index: sourceIndex})); return; }
+    const rawOrder = orderIndex >= 0 ? sourceRow[orderIndex] : null;
+    if (!groups.has(subgroup)) groups.set(subgroup, {subgroup, values: [], order: rawOrder, source_index: sourceIndex});
+    groups.get(subgroup).values.push(value);
+  });
+  if (result.errors.length) return result;
+  const ordered = [...groups.values()].sort((a, b) => orderIndex >= 0 ? compareOrdered(a.order, b.order) || a.source_index - b.source_index : a.source_index - b.source_index);
+  if (ordered.length < 2) { result.errors.push(error('SUBGROUPS', 'Xbar-R requires at least two subgroups.', {subgroups: ordered.length})); return result; }
+  const low = consistentSpecification(dataset, mapping.specification_low, 'LSL');
+  const high = consistentSpecification(dataset, mapping.specification_high, 'USL');
+  if (low.error) result.errors.push(low.error); if (high.error) result.errors.push(high.error);
+  if (result.errors.length) return result;
+  let stats;
+  try { stats = xbarR(ordered.map(group => group.values)); } catch (cause) { result.errors.push(error(cause.code || 'XBAR_R_INVALID', cause.message, cause.details || {})); return result; }
+  const fields = [derivedField('__subgroup', 'Subgroup', 'categorical', ['subgroup']), derivedField('__sequence', 'Subgroup sequence', 'integer', ['order']), derivedField('__mean', 'X̄ subgroup mean', 'number', ['value']), derivedField('__range', 'R subgroup range', 'number', ['range'])];
+  const rows = ordered.map((group, index) => [group.subgroup, index + 1, stats.means[index], stats.ranges[index]]);
+  result.rows = ordered.map((group, index) => ({subgroup: group.subgroup, sequence: index + 1, mean: stats.means[index], range: stats.ranges[index], n: stats.n}));
+  result.dataset = derivedDataset(dataset, 'xbar-r-process-review', fields, rows, {semantic_version: STATISTICAL_ANALYSIS_VERSION, xbar_r: stats});
+  result.mapping = {subgroup: '__subgroup', order: '__sequence', value: '__mean', range: '__range'};
+  result.summary = {subgroup_count: stats.subgroupCount, subgroup_size: stats.n, xbarbar: stats.xbarbar, rbar: stats.rbar, sigma: stats.sigma, xbar_limits: stats.xbarLimits, r_limits: stats.rLimits, signals: stats.rules.signals, specification: {lsl: low.value, usl: high.value, lsl_source: low.source, usl_source: high.source}};
+  result.primary = {kind: 'xbar-r', stats, subgroups: ordered.map(group => group.values), subgroup_labels: ordered.map(group => group.subgroup)};
+  result.provenance = 'group by mapped subgroup; order by mapped order when provided; compute X̄/R with validated constants; apply Western Electric signals to X̄ only';
+  result.dataset.metadata.analysis_provenance = result.provenance;
+  result.dataset.metadata.statistical_summary = result.summary;
+  result.ok = true;
+  return result;
+}
+
+function executeCapability(dataset, mapping, options = {}) {
+  const result = emptyResult('process-capability', dataset, mapping, CONTRACTS['process-capability']);
+  const hasLow = Boolean(mapping?.specification_low) || options.lsl !== null && options.lsl !== undefined;
+  const hasHigh = Boolean(mapping?.specification_high) || options.usl !== null && options.usl !== undefined;
+  result.errors = validMapping(dataset, mapping, ['value']);
+  if (!hasLow && !hasHigh) result.errors.push(error('SPEC_LIMITS', 'Process Capability requires LSL, USL, or both.'));
+  if (result.errors.length) return result;
+  const {accepted, warnings} = numericRows(dataset, mapping, mapping.value);
+  result.warnings = warnings;
+  const low = consistentSpecification(dataset, mapping.specification_low, 'LSL', options.lsl);
+  const high = consistentSpecification(dataset, mapping.specification_high, 'USL', options.usl);
+  const targetSpec = consistentSpecification(dataset, mapping.target, 'Target', options.target);
+  if (low.error) result.errors.push(low.error); if (high.error) result.errors.push(high.error); if (targetSpec.error) result.errors.push(targetSpec.error);
+  if (result.errors.length) return result;
+  let stats;
+  try { stats = processCapability(accepted.map(item => item.value), {lsl: low.value, usl: high.value, target: targetSpec.value}); } catch (cause) { result.errors.push(error(cause.code || 'CAPABILITY_INVALID', cause.message, cause.details || {})); return result; }
+  const fields = [derivedField('__value', 'Measurement', 'number', ['value']), derivedField('__lsl', 'LSL', 'number', ['specification_low']), derivedField('__usl', 'USL', 'number', ['specification_high']), derivedField('__target', 'Target', 'number', ['target']), derivedField('__cpk', 'Cpk', 'number', ['capability'])];
+  result.rows = accepted.map(item => ({value: item.value, lsl: stats.lsl, usl: stats.usl, target: stats.target, cpk: stats.cpk, source_index: item.sourceIndex}));
+  result.dataset = derivedDataset(dataset, 'process-capability', fields, result.rows.map(row => [row.value, row.lsl, row.usl, row.target, row.cpk]), {semantic_version: STATISTICAL_ANALYSIS_VERSION, capability: stats, specification_sources: {lsl: low.source, usl: high.source, target: targetSpec.source}});
+  result.mapping = {value: '__value', specification_low: '__lsl', specification_high: '__usl', target: '__target'};
+  result.summary = {...stats, specification_sources: {lsl: low.source, usl: high.source, target: targetSpec.source}};
+  result.primary = {kind: 'process-capability', stats};
+  result.provenance = `compute capability from sample standard deviation; ${stats.lsl === null ? 'USL-only' : stats.usl === null ? 'LSL-only' : 'LSL/USL'} specification`;
+  result.dataset.metadata.analysis_provenance = result.provenance;
+  result.dataset.metadata.statistical_summary = result.summary;
+  result.ok = true;
+  return result;
+}
+
+function executeDoe(dataset, mapping) {
+  const result = emptyResult('doe-response-review', dataset, mapping, CONTRACTS['doe-response-review']);
+  result.errors = validMapping(dataset, mapping, ['factor_a', 'factor_b', 'response']);
+  if (result.errors.length) return result;
+  const rows = (dataset.rows || []).map(row => ({factor_a: row[fieldIndex(dataset, mapping.factor_a)], factor_b: row[fieldIndex(dataset, mapping.factor_b)], response: row[fieldIndex(dataset, mapping.response)]}));
+  let effects, interaction;
+  try { effects = doeMainEffects(rows, {factors: ['factor_a', 'factor_b'], response: 'response'}); interaction = doeInteraction(rows, {factorA: 'factor_a', factorB: 'factor_b', response: 'response'}); } catch (cause) { result.errors.push(error(cause.code || 'DOE_INVALID', cause.message, cause.details || {})); return result; }
+  const fields = [derivedField('__factor_a', 'Factor A', 'categorical', ['factor']), derivedField('__factor_b', 'Factor B', 'categorical', ['factor']), derivedField('__response', 'Response', 'number', ['response'])];
+  result.rows = rows.map((row, index) => ({...row, source_index: index}));
+  result.dataset = derivedDataset(dataset, 'doe-response-review', fields, rows.map(row => [row.factor_a, row.factor_b, row.response]), {semantic_version: STATISTICAL_ANALYSIS_VERSION, doe: {effects, interaction}});
+  result.mapping = {factor_a: '__factor_a', factor_b: '__factor_b', response: '__response', value: '__response'};
+  result.summary = {factors: effects.map(effect => ({factor: effect.factor, levels: effect.levels.map(level => level.level)})), interaction_effect: interaction.interactionEffect};
+  result.primary = {kind: 'doe-response-review', effects, interaction};
+  result.provenance = 'compute observed response means by factor level and factor-cell; descriptive interaction only; no significance or causal claim';
+  result.dataset.metadata.analysis_provenance = result.provenance;
+  result.dataset.metadata.statistical_summary = result.summary;
+  result.ok = true;
+  return result;
+}
+
 export function executeRecipeSemantics(recipeId, dataset = {}, mapping = {}, options = {}) {
   const id = String(recipeId || '');
   if (!CONTRACTS[id]) {
@@ -340,11 +452,14 @@ export function executeRecipeSemantics(recipeId, dataset = {}, mapping = {}, opt
   if (id === 'golden-affected') return executeGoldenAffected(dataset, mapping);
   if (id === 'wafer-difference') return executeWaferDifference(dataset, mapping);
   if (id === 'pre-post-change') return executePrePost(dataset, mapping);
+  if (id === 'xbar-r-process-review') return executeXbarR(dataset, mapping, options);
+  if (id === 'process-capability') return executeCapability(dataset, mapping, options);
+  if (id === 'doe-response-review') return executeDoe(dataset, mapping, options);
   return executeDistribution(dataset, mapping, id);
 }
 
 export function semanticDatasetForEntry(entry, dataset, options = {}) {
   const recipe = entry?.analysis_recipe;
-  if (!recipe || String(recipe.version || '') !== ANALYSIS_SEMANTICS_VERSION && recipe.id !== 'distribution-review') return null;
+  if (!recipe || (String(recipe.version || '') !== ANALYSIS_SEMANTICS_VERSION && recipe.id !== 'distribution-review' && !STATISTICAL_RECIPE_IDS.includes(recipe.id))) return null;
   return executeRecipeSemantics(recipe.id, dataset, recipe.mapping || {}, options);
 }

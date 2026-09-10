@@ -28,8 +28,8 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEnt
 """
     )
     matrix = (ROOT / "docs" / "VISSEMBLER_AUTHORING_PRODUCTIVITY_MATRIX.md").read_text()
-    assert result["count"] == len(result["entries"]) == 49
-    assert len(set(result["entries"])) == 49
+    assert result["count"] == len(result["entries"]) == 52
+    assert len(set(result["entries"])) == 52
     assert all(f"| {element} |" in matrix for element in result["entries"])
 
 

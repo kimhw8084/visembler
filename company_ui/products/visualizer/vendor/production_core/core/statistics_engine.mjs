@@ -311,11 +311,11 @@ export function fitResponseSurface(rows, { x1, x2, response, confidence = 0.95 }
   return { ...fit, coefficientNames:names, namedCoefficients:Object.fromEntries(names.map((name,i)=>[name,fit.coefficients[i]])) };
 }
 
-const XR_CONSTANTS = {
+export const XR_CONSTANTS = Object.freeze({
   2:{A2:1.880,D3:0,D4:3.267,d2:1.128}, 3:{A2:1.023,D3:0,D4:2.574,d2:1.693}, 4:{A2:0.729,D3:0,D4:2.282,d2:2.059},
   5:{A2:0.577,D3:0,D4:2.114,d2:2.326}, 6:{A2:0.483,D3:0,D4:2.004,d2:2.534}, 7:{A2:0.419,D3:0.076,D4:1.924,d2:2.704},
   8:{A2:0.373,D3:0.136,D4:1.864,d2:2.847}, 9:{A2:0.337,D3:0.184,D4:1.816,d2:2.970}, 10:{A2:0.308,D3:0.223,D4:1.777,d2:3.078},
-};
+});
 
 export function westernElectricRules(values, { center = null, sigma = null } = {}) {
   const a=finiteArray(values,{min:2}); const c=center??mean(a); const s=sigma??stddev(a);
@@ -345,11 +345,12 @@ export function individualsMovingRange(values) {
 
 export function xbarR(subgroups) {
   if(!Array.isArray(subgroups)||subgroups.length<2)fail('SUBGROUPS','Xbar-R requires at least two subgroups.');
-  const groups=subgroups.map((g,i)=>finiteArray(g,{min:2,name:`subgroup[${i}]`})); const n=groups[0].length;
+  const groups=subgroups.map((g,i)=>{try{return finiteArray(g,{min:2,name:`subgroup[${i}]`});}catch(error){if(error.code==='DATA_LENGTH')fail('SUBGROUP_SIZE',`Xbar-R subgroup ${i+1} requires at least two observations.`,{subgroup:i,min:2});throw error;}}); const n=groups[0].length;
   if(groups.some(g=>g.length!==n))fail('SUBGROUP_SIZE','Xbar-R requires constant subgroup size.');
   const constants=XR_CONSTANTS[n]; if(!constants)fail('SUBGROUP_SIZE','Xbar-R supports subgroup sizes 2..10.',{n});
   const means=groups.map(mean); const ranges=groups.map(g=>Math.max(...g)-Math.min(...g)); const xbarbar=mean(means); const rbar=mean(ranges); const sigma=rbar/constants.d2;
-  return {n,means,ranges,xbarbar,rbar,sigma,constants,xbarLimits:{center:xbarbar,lcl:xbarbar-constants.A2*rbar,ucl:xbarbar+constants.A2*rbar},rLimits:{center:rbar,lcl:constants.D3*rbar,ucl:constants.D4*rbar},rules:westernElectricRules(means,{center:xbarbar,sigma:sigma/Math.sqrt(n)})};
+  if(rbar<=EPS)fail('SPC_SIGMA','Xbar-R average range is zero; control limits are undefined.',{rbar,n});
+  return {n,subgroupCount:groups.length,means,ranges,xbarbar,rbar,sigma,constants,xbarLimits:{center:xbarbar,lcl:xbarbar-constants.A2*rbar,ucl:xbarbar+constants.A2*rbar},rLimits:{center:rbar,lcl:constants.D3*rbar,ucl:constants.D4*rbar},rules:westernElectricRules(means,{center:xbarbar,sigma:sigma/Math.sqrt(n)})};
 }
 
 export function cusum(values,{target=null,sigma=null,k=0.5,h=5}={}){
@@ -369,10 +370,11 @@ export function ewma(values,{target=null,sigma=null,lambda=0.2,L=3}={}){
 export function processCapability(values,{lsl=null,usl=null,target=null}={}){
   const a=finiteArray(values,{min:2}); if(lsl==null&&usl==null)fail('SPEC_LIMITS','At least one specification limit is required.');
   if(lsl!=null&&!finite(Number(lsl))||usl!=null&&!finite(Number(usl)))fail('SPEC_LIMITS','Specification limits must be finite.');
+  if(target!=null&&!finite(Number(target)))fail('SPEC_LIMITS','Target must be finite.',{target});
   if(lsl!=null&&usl!=null&&Number(usl)<=Number(lsl))fail('SPEC_LIMITS','USL must be greater than LSL.');
   const mu=mean(a),sigma=stddev(a); if(sigma<=EPS)fail('SPC_SIGMA','Capability is undefined for zero variation.');
   const cpu=usl==null?null:(Number(usl)-mu)/(3*sigma); const cpl=lsl==null?null:(mu-Number(lsl))/(3*sigma); const cp=lsl==null||usl==null?null:(Number(usl)-Number(lsl))/(6*sigma); const cpk=cpu==null?cpl:cpl==null?cpu:Math.min(cpu,cpl);
-  return{n:a.length,mean:mu,sigma,lsl:lsl==null?null:Number(lsl),usl:usl==null?null:Number(usl),target:target==null?null:Number(target),cp,cpu,cpl,cpk};
+  return{n:a.length,mean:mu,sigma,sigmaEstimator:'sample_standard_deviation',lsl:lsl==null?null:Number(lsl),usl:usl==null?null:Number(usl),target:target==null?null:Number(target),cp,cpu,cpl,cpk};
 }
 
 export function pareto(categories, values) {

@@ -60,7 +60,7 @@ console.log(JSON.stringify({
 '''
     )
 
-    assert payload["count"] == 49
+    assert payload["count"] == 52
     assert all(payload["promoted"])
     assert [row["delta"] for row in payload["wafer"]["rows"]] == [1, 5, -1]
     assert "Reference 10" in payload["wafer"]["svg"]

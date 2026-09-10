@@ -218,7 +218,7 @@ def main() -> int:
     report['frozen_connector_sha256'] = hashlib.sha256(frozen.read_bytes()).hexdigest()
     report['passed'] = sum(case.get('status') == 'PASS' for case in report['cases'])
     report['total'] = len(report['cases'])
-    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 49 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
+    report['status'] = 'PASS' if report['passed'] == report['total'] and production_count == 52 and not report['unexpected_errors'] and 'harness_error' not in report else 'FAIL'
     report['source_editor_sha256'] = hashlib.sha256((ROOT / 'company_ui/products/visualizer/assets/integrated_editor.mjs').read_bytes()).hexdigest()
     write_json(output / 'stage-a-acceptance.json', report)
     print(json.dumps(report, indent=2, ensure_ascii=False))

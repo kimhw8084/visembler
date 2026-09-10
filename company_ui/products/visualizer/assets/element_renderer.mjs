@@ -25,7 +25,7 @@ function metric(entry){
   if(n==='hero kpi') {
     const target=entry.target,hasTarget=target!==null&&target!==undefined&&target!=='';
     const context=hasTarget?`<span>Target ${num(target)}</span>`:entry.period?`<span>${esc(entry.period)}</span>`:'<span>Current performance</span>';
-    if(entry.metric_label) return shell(entry,`<div class="hero-kpi analysis-kpi"><div class="metric-label">${esc(entry.metric_label)}</div><div class="metric-value">${value}${unit}</div><div class="metric-meta"><span>${esc(entry.metric_category||'Top contributor')}</span><span>${entry.metric_share===null||entry.metric_share===undefined?'':`${Number(entry.metric_share).toFixed(1)}% of total`}</span></div><small class="metric-provenance">Explicit recipe summary</small></div>`,'Metric');
+    if(entry.metric_label) return shell(entry,`<div class="hero-kpi analysis-kpi"><div class="metric-label">${esc(entry.metric_label)}</div><div class="metric-value">${value}${unit}</div><div class="metric-meta"><span>${esc(entry.metric_category||'Top contributor')}</span><span>${entry.metric_share===null||entry.metric_share===undefined?'':`${Number(entry.metric_share).toFixed(1)}% of total`}</span></div>${entry.metric_detail?`<small class="metric-detail">${esc(entry.metric_detail)}</small>`:''}<small class="metric-provenance">Explicit recipe summary</small></div>`,'Metric');
     return shell(entry,`<div class="hero-kpi"><div class="metric-value">${value}${unit}</div><div class="metric-meta"><span>Delta ${num(entry.delta)}</span>${context}</div></div>`,'Metric');
   }
   if(n==='metric + delta') return shell(entry,`<div class="delta-metric"><b>${value}${unit}</b><span>Delta ${num(entry.delta)}</span><small>${esc(entry.period||'Comparison period')}</small></div>`,'Metric');

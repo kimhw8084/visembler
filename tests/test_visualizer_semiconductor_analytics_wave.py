@@ -42,7 +42,7 @@ const base=chartModelFromEntry({engine:'CoreChartEngine',element:'Line Chart',ti
 const switched=switchChartType(base,'Regression Scatter'),switchedEntry=chartToEntry({engine:'CoreChartEngine',element:'Line Chart',title:'Yield trend'},switched);
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEntries().length,promoted,promotedProduction:promoted.map(element=>isProductionElement('CoreChartEngine',element)),chartTypes:promoted.map(element=>CHART_TYPES.includes(element)),rendered,switch:{type:switched.chart_type,dataset:switched.dataset.id,revision:switched.dataset.revision,title:switchedEntry.title,mapping:switched.mapping}}));
 ''')
-    assert payload["count"] == payload["entries"] == 49
+    assert payload["count"] == payload["entries"] == 52
     assert all(payload["promotedProduction"])
     assert all(payload["chartTypes"])
     assert all(item["hasSvg"] and item["safe"] for item in payload["rendered"])
@@ -110,7 +110,7 @@ console.log(JSON.stringify({ids:recipes.map(recipe=>recipe.id),ready:recipes.eve
 ''')
     assert "tool-chamber-matching" in payload["ids"]
     assert "spc-excursion" in payload["ids"]
-    assert all(item in {"Hero KPI", "Key Takeaway", "Line Chart", "Clean Table", "SPC Control Chart", "Horizontal Bar", "Executive Statement", "Before/After KPI", "Box Plot", "Histogram", "Wafer Map", "Wafer Difference Map", "Tool × Chamber Matrix", "Golden vs Affected Profile", "Control vs Affected Distribution"} for item in payload["visuals"])
+    assert all(item in {"Hero KPI", "Key Takeaway", "Line Chart", "Clean Table", "SPC Control Chart", "Horizontal Bar", "Executive Statement", "Before/After KPI", "Box Plot", "Histogram", "Wafer Map", "Wafer Difference Map", "Tool × Chamber Matrix", "Golden vs Affected Profile", "Control vs Affected Distribution", "Xbar-R Chart", "DOE Main Effects", "DOE Interaction Plot"} for item in payload["visuals"])
 
 
 def test_recipe_execution_is_an_atomic_multi_visual_production_plan():
@@ -217,7 +217,8 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
             load_editor(page, host, report_id)
             ready(page)
             panels(page)
-            page.locator('#pasteDataBtn').click()
+            paste_button = page.locator('#pasteDataBtn') if page.locator('#pasteDataBtn').is_visible() else page.locator('#blankStartSurface [data-blank-action="paste"]')
+            paste_button.click()
             page.locator('#dataFirstText').fill('Defect Cause\tYield Loss\tLot\nParticle\t42\tL001\nParticle\t5\tL002\nScratch\t18\tL003\nVoid\t7\tL004')
             page.locator('[data-data-first-recipe="yield-pareto"]').click()
             page.locator('#dataFirstApplyRecipe').click()
@@ -298,6 +299,21 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
             'Measurement\n10\n12\n11\n13',
             ['Box Plot', 'Histogram', 'Clean Table'],
         ),
+        (
+            'xbar-r-process-review',
+            'Subgroup\tOrder\tMeasurement\nG2\t2\t10\nG1\t1\t8\nG2\t2\t14\nG1\t1\t12\nG3\t3\t11\nG3\t3\t17',
+            ['Xbar-R Chart', 'Clean Table', 'Hero KPI'],
+        ),
+        (
+            'process-capability',
+            'Measurement\tLSL\tUSL\tTarget\n9.8\t9.5\t10.5\t10\n10\t9.5\t10.5\t10\n10.2\t9.5\t10.5\t10\n10.1\t9.5\t10.5\t10\n9.9\t9.5\t10.5\t10',
+            ['Histogram', 'Box Plot', 'Hero KPI', 'Clean Table'],
+        ),
+        (
+            'doe-response-review',
+            'Factor A\tFactor B\tResponse\nA\tL\t10\nA\tL\t12\nA\tH\t14\nA\tH\t16\nB\tL\t20\nB\tL\t22\nB\tH\t28\nB\tH\t30',
+            ['DOE Main Effects', 'DOE Interaction Plot', 'Clean Table'],
+        ),
     ],
 )
 def test_native_supported_recipe_workflows_create_linked_production_analysis(
@@ -349,6 +365,76 @@ def test_native_supported_recipe_workflows_create_linked_production_analysis(
                 assert '12' in rendered and '16' in rendered
             elif recipe_id == 'distribution-review':
                 assert '10.00' in rendered and '13.00' in rendered
+            elif recipe_id == 'xbar-r-process-review':
+                assert all(token in rendered for token in ('X̄', 'R', 'UCL', 'Center', 'LCL'))
+                assert 'statistical' in rendered
+            elif recipe_id == 'process-capability':
+                assert all(token in rendered for token in ('LSL', 'USL', 'Target'))
+                assert 'Cpk' in page.locator('body').inner_text()
+                assert 'not control limits' in rendered
+            elif recipe_id == 'doe-response-review':
+                assert 'descriptive means' in rendered
+                assert 'descriptive interaction' in rendered
+            assert not page_errors, page_errors
+        finally:
+            context.close()
+
+
+@pytest.mark.parametrize('viewport_width', [1440, 768, 390])
+@pytest.mark.parametrize(
+    ('recipe_id', 'source_text', 'expected_tokens'),
+    [
+        (
+            'xbar-r-process-review',
+            'Subgroup\tOrder\tMeasurement\nG2\t2\t10\nG1\t1\t8\nG2\t2\t14\nG1\t1\t12\nG3\t3\t11\nG3\t3\t17',
+            ('X̄', 'R', 'UCL', 'LCL'),
+        ),
+        (
+            'process-capability',
+            'Measurement\tLSL\tUSL\tTarget\n9.8\t9.5\t10.5\t10\n10\t9.5\t10.5\t10\n10.2\t9.5\t10.5\t10\n10.1\t9.5\t10.5\t10\n9.9\t9.5\t10.5\t10',
+            ('LSL', 'USL', 'Target'),
+        ),
+        (
+            'doe-response-review',
+            'Factor A\tFactor B\tResponse\nA\tL\t10\nA\tL\t12\nA\tH\t14\nA\tH\t16\nB\tL\t20\nB\tL\t22\nB\tH\t28\nB\tH\t30',
+            ('descriptive means', 'descriptive interaction'),
+        ),
+    ],
+)
+def test_statistical_recipe_workflows_are_readable_across_viewports(
+    recipe_browser, tmp_path, viewport_width, recipe_id, source_text, expected_tokens
+):
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import EditorHost, load_editor
+        from run_editor_workflows import model, panels, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    with EditorHost(ROOT, tmp_path / f'{recipe_id}-{viewport_width}') as host:
+        report_id = host.create()
+        context = recipe_browser.new_context(viewport={'width': viewport_width, 'height': 1000})
+        page_errors = []
+        page = context.new_page()
+        page.on('pageerror', lambda error: page_errors.append(str(error)))
+        page.on('console', lambda message: page_errors.append(message.text) if message.type == 'error' else None)
+        try:
+            load_editor(page, host, report_id)
+            ready(page)
+            panels(page, library=viewport_width > 800, inspector=False)
+            paste_button = page.locator('#pasteDataBtn') if page.locator('#pasteDataBtn').is_visible() else page.locator('#blankStartSurface [data-blank-action="paste"]')
+            paste_button.click()
+            page.locator('#dataFirstText').fill(source_text)
+            page.locator(f'[data-data-first-recipe="{recipe_id}"]').click()
+            page.locator('#dataFirstApplyRecipe').click()
+            settled(page)
+            applied = model(page)
+            assert all(item['analysis_recipe']['id'] == recipe_id for item in applied['items'])
+            rendered = page.locator('.cs-static-chart').evaluate_all('(nodes) => nodes.map(node => node.innerHTML).join("\\n")')
+            assert all(token in rendered for token in expected_tokens)
+            assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+            assert 'NaN' not in rendered and 'Infinity' not in rendered
             assert not page_errors, page_errors
         finally:
             context.close()

@@ -123,14 +123,14 @@ export function productionRecommendations(result) {
     const candidate=candidateForView(result,'table');
     if(candidate&&!candidate.unresolved.length&&!candidate.incompatible.length) supported.push({view:'table',contract_view:'table',mapping:{...candidate.mapping},unresolved:[],incompatible:[],reason:'Tabular data is always available.',confidence:.5});
   }
-  return supported.sort((a,b)=>b.confidence-a.confidence).map(recommendation=>({...recommendation,production_target:productionTargetForView(recommendation.view),recipes:recommendEngineeringRecipes(result?.fields||[])}));
+  return supported.sort((a,b)=>b.confidence-a.confidence).map(recommendation=>({...recommendation,production_target:productionTargetForView(recommendation.view),recipes:recommendEngineeringRecipes(result?.fields||[], result?.rows||null)}));
 }
 export function planDataFirstCreation({intake, view, mapping, datasetId, datasetName='Pasted data'}={}) {
   const target=productionTargetForView(view);
   if(!target)return {valid:false,error:'Choose a supported production visual.'};
   const validation=contractFor(target.view).validate(mapping||{},intake?.fields||[]);
   if(!validation.valid)return {valid:false,error:validation.incompatible.length?`Choose a compatible field for ${validation.incompatible.join(', ')}.`:`Map ${validation.missing.join(', ')} first.`,validation};
-  return {valid:true,target,view:target.view,mapping:structuredClone(mapping||{}),dataset:datasetFromIntake(intake,datasetId,datasetName),validation,recipes:recommendEngineeringRecipes(intake?.fields||[])};
+  return {valid:true,target,view:target.view,mapping:structuredClone(mapping||{}),dataset:datasetFromIntake(intake,datasetId,datasetName),validation,recipes:recommendEngineeringRecipes(intake?.fields||[], intake?.rows||null)};
 }
 export function datasetFromIntake(result, id, name='Pasted data') { return {id,name,revision:1,fields:result.fields,rows:result.rows,source:{kind:'clipboard',label:result.delimiter==='\t'?'TSV':'delimited text',imported_at:new Date().toISOString()},warnings:result.warnings,metadata:{header:result.header}}; }
 export function appendCompatibleDataset(existing, incoming) {

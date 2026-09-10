@@ -64,5 +64,5 @@ def test_editor_uses_dataset_identity_epoch_and_canonical_data_dock_path():
 
 def test_closeout_invariants_remain_intact():
     result = node("import {PRODUCTION_LIBRARY_COUNT} from './company_ui/products/visualizer/assets/production_library.mjs';console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT}));")
-    assert result['count'] == 49
+    assert result['count'] == 52
     assert hashlib.sha256(FROZEN.read_bytes()).hexdigest() == 'd8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'

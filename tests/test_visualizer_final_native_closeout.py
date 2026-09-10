@@ -56,5 +56,5 @@ console.log(JSON.stringify({failed,rows:result.rows.length,pending:client.pendin
 
 def test_final_closeout_invariants():
     out=subprocess.check_output(['node','--input-type=module','-e',"import {PRODUCTION_LIBRARY_COUNT} from './company_ui/products/visualizer/assets/production_library.mjs';console.log(PRODUCTION_LIBRARY_COUNT)"],cwd=ROOT,text=True).strip()
-    assert out=='49'
+    assert out=='52'
     assert hashlib.sha256(FROZEN.read_bytes()).hexdigest()=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'
