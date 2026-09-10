@@ -157,6 +157,10 @@ class NativeHost(EditorHost):
             'PYTHONPATH':str(self.root),
             'COMPANY_UI_HOST':'127.0.0.1',
             'COMPANY_UI_PORT':str(self.port),
+            # NiceGUI's screen-test runtime reads this dedicated port when a
+            # native host is launched from pytest instead of the release
+            # runner. Keep it identical to the isolated application port.
+            'NICEGUI_SCREEN_TEST_PORT':str(self.port),
             'COMPANY_UI_VISUALIZER_DATA_DIR':str(self.data),
             'COMPANY_UI_ENVIRONMENT':'test',
             'PYTHONUNBUFFERED':'1',

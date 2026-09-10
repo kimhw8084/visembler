@@ -9,7 +9,8 @@ import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, p
 import { renderIntegratedElement } from './element_renderer.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { engineeringRecipeCandidates, recommendEngineeringRecipes, recipeExecutionPlan, recipeRoleLabel } from './engineering_recipes.mjs';
-import { semanticDatasetForEntry } from './analysis_semantics.mjs';
+import { semanticDatasetForEntry, semanticResultFromAuthoritative } from './analysis_semantics.mjs';
+import { acceptsStatisticalResult } from './statistical_result_guard.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
 import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
@@ -221,6 +222,10 @@ const ui = {
   resolvedDataCache: new Map(),
   projectionEpoch: 0,
   datasetResults: Object.create(null),
+  // The initial native bootstrap is also an authoritative result boundary.
+  // Reopen must not wait for a bounded preview query before rendering stats.
+  authoritativeAnalyses: structuredClone(bootstrap.analysis_results || {}),
+  datasetRequests: Object.create(null),
   dataFirst: null,
   mappingPresetsLoaded: false,
   mappingManagerOpen: false,
@@ -521,6 +526,8 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
   store=new EditorStore(parseCanonical(withSuggestedRoles(migrateLegacyItems(payload.model))),{revision:payload.revision});
   ui.datasetResults=Object.create(null);
+  ui.authoritativeAnalyses=structuredClone(payload.analysis_results||{});
+  ui.datasetRequests=Object.create(null);
   invalidateResolvedData();
   if (payload.capabilities) { bootstrap.capabilities=payload.capabilities; readOnly=payload.capabilities.read_only===true; }
   bootstrap.report_id=payload.report_id||bootstrap.report_id; bootstrap.revision=payload.revision; ui.saveInFlight=null; ui.pendingCommits.clear(); pruneSelection(); ui.previewPatches.clear(); ui.intrinsicOverrides.clear(); renderAll(); persistPendingState(); updateSaveUi(); toast(reason);
@@ -540,6 +547,31 @@ function reapplyLocalRecovery() {
   if(!ops.length)return false;const savedRecovery=ui.recovery;ui.recovery=null;const accepted=commitOps('Reapply retained local edits',ops,{announce:'Local edits reapplied'});if(accepted){ui.recovery={...savedRecovery,reapplying:true,reapply_commit_id:accepted.id};persistPendingState();updateSaveUi();}else{ui.recovery=savedRecovery;persistPendingState();updateSaveUi();}return !!accepted;
 }
 window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{},active=String(bootstrap.report_id||'default'),replyReport=String(p.report_id||p.report?.report_id||active);debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(['report.commit_result','report.conflict','report.error'].includes(m.type)&&replyReport!==active){debugEvent('warn','Ignored stale report reply',`${m.type} for ${replyReport} while ${active} is active`);return;}if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='dataset.binding_result'){const dataset=model().datasets.find(value=>String(value.id)===String(p.dataset_id));const rows=Array.isArray(p.result?.rows)&&Array.isArray(p.schema||dataset?.fields)?p.result.rows.map(row=>(p.schema||dataset.fields).map(field=>row?.[field.id]??null)):null;if(dataset&&rows){ui.datasetResults[dataset.id]={rows,filtered_total:p.result.filtered_total,total:p.result.total,revision:p.result.revision};invalidateResolvedData();renderAll();}return;}if(m.type==='reuse.preferences_result'){const apply=(bucket,records)=>{if(!Array.isArray(records))return;storage.set(bucket==='datasets'?'viz-stage-datasets':'viz-stage-assets',JSON.stringify(records));};apply('datasets',p.datasets);apply('assets',p.assets);if(p.bucket&&Array.isArray(p.records))apply(p.bucket,p.records);if(ui.stageD?.mode==='datasets'||ui.stageD?.mode==='assets')stageDRender();return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
+
+// Dataset replies are asynchronous. Keep older resource revisions out of the
+// current statistical projection before the generic bridge applies row state.
+const receiveBridgeMessage = window.CompanyUIVisualizerBridge.receive;
+window.CompanyUIVisualizerBridge.receive = message => {
+  const value = typeof message === 'string' ? JSON.parse(message) : message;
+  if (value?.type === 'dataset.binding_result') {
+    const payload = value.payload || {};
+    const dataset = model().datasets.find(item => String(item.id) === String(payload.dataset_id));
+    const expected = Number(dataset?.revision || 0);
+    const actual = Number(payload.result?.source_revision || payload.result?.revision || 0);
+    if (!acceptsStatisticalResult({expectedRevision:expected,resultRevision:actual})) {
+      debugEvent('warn', 'Ignored stale dataset revision', `${actual} while ${expected} is current`);
+      return;
+    }
+    receiveBridgeMessage(message);
+    if (dataset && payload.analysis_results) {
+      ui.authoritativeAnalyses = {...ui.authoritativeAnalyses, ...payload.analysis_results};
+      invalidateResolvedData();
+      renderAll();
+    }
+    return;
+  }
+  receiveBridgeMessage(message);
+};
 
 function commitOps(label, ops, { announce = null, render = true } = {}) {
   if (typeof readOnly !== 'undefined' && readOnly) { toast('This report is read-only'); return null; }
@@ -567,6 +599,15 @@ function projectionDataset(entry) {
   const dataset=selectedDataset(entry),result=dataset&&dataset.resource_id?ui.datasetResults[dataset.id]:null;
   if(!dataset||!result||!Array.isArray(result.rows))return dataset;
   return {...dataset,rows:result.rows};
+}
+function authoritativeAnalysisFor(entry, dataset) {
+  const recipeId=entry?.analysis_recipe?.id;
+  if(!dataset?.resource_id || !['xbar-r-process-review','process-capability','doe-response-review'].includes(recipeId)) return null;
+  const result=ui.authoritativeAnalyses?.[entry.id];
+  if(!result) return {stale:true,message:'The complete resource-backed population has not been resolved yet.'};
+  const source=result.source||{},population=result.population||result.provenance||{};
+  if(String(source.report_id||'')!==String(bootstrap.report_id||'')||String(source.dataset_id||'')!==String(dataset.id)||Number(source.dataset_revision||0)!==Number(dataset.revision||0)||population.complete!==true) return {stale:true,message:'The resource-backed statistical result is stale or incomplete.'};
+  return result;
 }
 function resolvedEntry(entry) { const dataset=projectionDataset(entry); if(!dataset)return entry;const key=`${bootstrap.report_id||'default'}:${ui.projectionEpoch}:${entry.id}:${dataset.id}:${dataset.revision||0}:${JSON.stringify(entry.mapping||{})}:${JSON.stringify(entry.transform_recipe||null)}:${JSON.stringify(entry.analysis_recipe||null)}:${JSON.stringify(entry.presentation||null)}`;let patch=ui.resolvedDataCache.get(key);if(!patch){patch=canonicalPatch(entry,dataset,entry.mapping||{});ui.resolvedDataCache.set(key,patch);if(ui.resolvedDataCache.size>80)ui.resolvedDataCache.clear();}return {...entry,...patch,_resolved_dataset:patch._resolved_dataset||dataset}; }
 function chartData(entry) { const resolved=resolvedEntry(entry); return Array.isArray(resolved.data) && resolved.data.length ? resolved.data : defaultChartData; }
@@ -1515,7 +1556,8 @@ function preflight() {
   const addIssue=(kind,id,message,severity='layout')=>{const issue={kind,id,message,severity};pf.issues.push(issue);if(severity==='layout')pf.layoutIssues.push(issue);else if(severity==='accessibility')pf.accessibilityIssues.push(issue);else pf.dataIssues.push(issue);};
   const inset=model().mode==='free'?0:CANVAS.gap;
   for (let a = 0; a < R.length; a += 1) {
-    const entry = item(R[a].id); if(!entry)continue; const policy=semanticPolicy(entry);
+    const entry = item(R[a].id); if(!entry)continue; const resolved=resolvedEntry(entry); const policy=semanticPolicy(entry);
+    if(resolved.analysis_error||resolved.analysis_semantics?.ok===false) addIssue('analysis',entry.id,resolved.analysis_error||resolved.analysis_semantics?.errors?.[0]?.message||'Analysis needs attention.','data');
     if (R[a].w < policy.minW-.1 || R[a].h < policy.minH-.1){pf.min += 1;addIssue('intrinsic-size',entry.id,`${entry.title} is below its readable ${Math.ceil(policy.minW)}×${Math.ceil(policy.minH)} minimum.`);}
     if (R[a].x < inset-.1 || R[a].y < inset-.1 || R[a].x + R[a].w > CANVAS.w-inset+.1 || R[a].y + R[a].h > CANVAS.h-inset+.1){pf.out += 1;addIssue('safe-hull',entry.id,`${entry.title} extends outside the document safe hull.`);}
     for (let b = a + 1; b < R.length; b += 1) if (overlap(R[a], R[b], 1)){pf.overlaps += 1;addIssue('overlap',entry.id,`${entry.title} overlaps ${item(R[b].id)?.title||'another element'}.`);}
@@ -2128,10 +2170,15 @@ function canonicalPatch(entry, dataset, mapping) {
     if(Object.prototype.hasOwnProperty.call(overrides,'usl'))semanticOptions.usl=overrides.usl;
     if(Object.prototype.hasOwnProperty.call(overrides,'target'))semanticOptions.target=overrides.target;
   }
-  const semantic=semanticDatasetForEntry(entry,dataset,semanticOptions);
+  const authoritative=authoritativeAnalysisFor(entry,dataset);
+  if (authoritative?.stale) return {_resolved_dataset:{...dataset,rows:[]},analysis_error:authoritative.message,analysis_semantics:{ok:false,errors:[{code:'STALE_ANALYSIS',message:authoritative.message}],warnings:[],provenance:{}},statistical_result:null,capability_summary:null,value:null,data:[],rows:[],observations:[],source_row_count:0};
+  const semantic=authoritative ? semanticResultFromAuthoritative(authoritative,dataset) : semanticDatasetForEntry(entry,dataset,semanticOptions);
   if(!semantic)return legacyCanonicalPatch(entry,dataset,mapping);
+  return canonicalPatchFromSemantic(entry,dataset,semantic);
+}
+function canonicalPatchFromSemantic(entry, dataset, semantic) {
   const resolvedDataset=semantic.dataset;
-  if(!semantic.ok)return {_resolved_dataset:resolvedDataset,analysis_error:semantic.errors?.[0]?.message||'Analysis needs attention: source data no longer matches its recipe.',analysis_semantics:{ok:false,errors:semantic.errors,warnings:semantic.warnings,summary:semantic.summary,provenance:semantic.provenance},source_row_count:dataset.rows?.length||0};
+  if(!semantic.ok)return {_resolved_dataset:{...resolvedDataset,rows:[]},analysis_error:semantic.errors?.[0]?.message||'Analysis needs attention: source data no longer matches its recipe.',analysis_semantics:{ok:false,errors:semantic.errors,warnings:semantic.warnings,summary:semantic.summary,provenance:semantic.provenance},statistical_result:null,capability_summary:null,value:null,data:[],rows:[],observations:[],source_row_count:0};
   const projected=legacyCanonicalPatch({...entry,transform_recipe:null,mapping:semantic.mapping},resolvedDataset,semantic.mapping);
   const patch={...projected,mapping:semantic.mapping,_resolved_dataset:resolvedDataset,analysis_semantics:{ok:true,summary:semantic.summary,primary:semantic.primary,warnings:semantic.warnings,provenance:semantic.provenance},source_row_count:dataset.rows?.length||0};
   if(entry.analysis_recipe?.id==='yield-pareto'&&entry.engine==='MetricEngine'){
@@ -2151,7 +2198,7 @@ function canonicalPatch(entry, dataset, mapping) {
     patch.statistical_result=entry.element==='DOE Interaction Plot'?{interaction:semantic.primary.interaction}:{effects:semantic.primary.effects};patch.analysis_rows=semantic.rows;patch.analysis_summary=semantic.summary;
   }
   if(entry.analysis_recipe?.id==='process-capability'){
-    patch.capability_summary=semantic.primary.stats;patch.specification_low=semantic.primary.stats.lsl;patch.specification_high=semantic.primary.stats.usl;patch.target=semantic.primary.stats.target;
+    patch.capability_summary=semantic.primary.stats;patch.statistical_result=semantic.primary.stats;patch.specification_low=semantic.primary.stats.lsl;patch.specification_high=semantic.primary.stats.usl;patch.target=semantic.primary.stats.target;
     if(entry.engine==='MetricEngine'){
       patch.value=semantic.primary.stats.cpk;patch.metric_label='Cpk';patch.metric_category=`n=${semantic.primary.stats.n} · σ ${semantic.primary.stats.sigma.toFixed(4)}`;patch.metric_share=null;patch.metric_detail=`Cp ${semantic.primary.stats.cp===null?'unavailable':semantic.primary.stats.cp.toFixed(3)} · Cpu ${semantic.primary.stats.cpu===null?'—':semantic.primary.stats.cpu.toFixed(3)} · Cpl ${semantic.primary.stats.cpl===null?'—':semantic.primary.stats.cpl.toFixed(3)}`;
     }

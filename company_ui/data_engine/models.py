@@ -91,6 +91,7 @@ class DataResult:
     total: int
     revision: int = 0
     filtered_total: int | None = None
+    source_revision: int = 0
 
 
 @dataclass(frozen=True, slots=True)

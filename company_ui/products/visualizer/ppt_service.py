@@ -39,6 +39,38 @@ def _kind(entry: Mapping[str, Any]) -> str:
     return 'fallback'
 
 
+def _statistical_export_projection(entry: dict[str, Any], result: Mapping[str, Any]) -> None:
+    """Project the canonical statistical result into editable PPT primitives."""
+    if result.get('ok') is not True or (result.get('population') or {}).get('complete') is not True:
+        errors=result.get('errors') or []
+        message=errors[0].get('message') if isinstance(errors[0],Mapping) else 'Statistical analysis is not valid for export.' if errors else 'Statistical analysis is not valid for export.'
+        raise VisualizerContractError(str(message))
+    recipe=str(entry.get('analysis_recipe',{}).get('id') or '') if isinstance(entry.get('analysis_recipe'),Mapping) else ''
+    derived=result.get('derived_statistics') or {}
+    stats=derived.get('stats') or {}
+    if recipe=='process-capability':
+        entry['value']=stats.get('cpk')
+        entry['metric_label']='Cpk'
+        entry['detail']=f"mean {_display(stats.get('mean'))} · sigma {_display(stats.get('sigma'))} · Cp {_display(stats.get('cp'))} · Cpk {_display(stats.get('cpk'))}"
+        histogram=stats.get('histogram') or {}
+        entry['statistical_chart']={'categories':[str(value) for value in histogram.get('edges') or []][:-1], 'series':[{'name':'Complete population count','values':list(histogram.get('counts') or [])}]}
+    elif recipe=='xbar-r-process-review':
+        labels=list(derived.get('subgroup_labels') or [])
+        entry['statistical_chart']={'categories':[str(value) for value in labels], 'series':[{'name':'Xbar subgroup mean','values':list(stats.get('means') or [])},{'name':'R subgroup range','values':list(stats.get('ranges') or [])}]}
+        entry['detail']=f"Xbar center {_display(stats.get('xbarbar'))} · R center {_display(stats.get('rbar'))} · n={_display(stats.get('n'))}"
+    elif recipe=='doe-response-review':
+        if str(entry.get('element') or '')=='DOE Interaction Plot':
+            interaction=derived.get('interaction') or {}
+            entry['statistical_chart']={'categories':[str(value) for value in interaction.get('levelsB') or []], 'series':[{'name':str(level),'values':[cell.get('mean') for cell in row]} for level,row in zip(interaction.get('levelsA') or [],interaction.get('cells') or [])]}
+        else:
+            categories=[]; values=[]
+            for effect in derived.get('effects') or []:
+                for level in effect.get('levels') or []:
+                    categories.append(f"{effect.get('factor')}={level.get('level')}"); values.append(level.get('mean'))
+            entry['statistical_chart']={'categories':categories,'series':[{'name':'Observed response mean','values':values}]}
+        entry['detail']='Observed descriptive means; no significance claim.'
+
+
 def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
     """Resolve canonical dataset bindings into the same export-facing fields as the editor.
 
@@ -50,6 +82,11 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
     for source in model.get('items') or []:
         if not isinstance(source,Mapping): continue
         entry=dict(source); dataset=datasets.get(str(entry.get('dataset_id') or ''))
+        recipe_id=str(entry.get('analysis_recipe',{}).get('id') or '') if isinstance(entry.get('analysis_recipe'),Mapping) else ''
+        if recipe_id in {'xbar-r-process-review','process-capability','doe-response-review'}:
+            authoritative=entry.get('authoritative_analysis')
+            if not isinstance(authoritative,Mapping): raise VisualizerContractError('Authoritative statistical result is required for PowerPoint export.')
+            _statistical_export_projection(entry,authoritative)
         if not dataset:
             resolved.append(entry); continue
         fields=list(dataset.get('fields') or []); rows=[list(row) for row in dataset.get('rows') or [] if isinstance(row,Sequence) and not isinstance(row,(str,bytes))]
@@ -238,16 +275,25 @@ def _fill_kpi(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     value=entry.get('value')
     if value is None and str(entry.get('engine') or '')=='ComparisonEngine':
         value=f"{_display(entry.get('before'))} → {_display(entry.get('after'))}".strip()
-    tf=shape.text_frame; tf.clear();p=tf.paragraphs[0];p.text=title;p.font.bold=True;p.font.size=Pt(10)
+    tf=shape.text_frame; tf.clear();p=tf.paragraphs[0];p.text=f"{title} · {entry.get('metric_label')}" if entry.get('metric_label') else title;p.font.bold=True;p.font.size=Pt(10)
     p2=tf.add_paragraph();p2.text=_display(value);p2.font.bold=True;p2.font.size=Pt(24)
     unit=str(entry.get('unit') or '')
     if unit:
         p3=tf.add_paragraph();p3.text=unit;p3.font.size=Pt(9)
+    if entry.get('detail'):
+        p3=tf.add_paragraph();p3.text=str(entry['detail']);p3.font.size=Pt(8)
 
 
 def _fill_chart(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if not getattr(shape,'has_chart',False): return
-    rows=_chart_rows(entry);data=ChartData();data.categories=[r[0] for r in rows];data.add_series(title,[r[1] for r in rows]);shape.chart.replace_data(data)
+    statistical=entry.get('statistical_chart') if isinstance(entry.get('statistical_chart'),Mapping) else None
+    if statistical:
+        data=ChartData();data.categories=[str(value) for value in statistical.get('categories') or []]
+        for series in statistical.get('series') or []:
+            if isinstance(series,Mapping): data.add_series(str(series.get('name') or title),list(series.get('values') or []))
+        shape.chart.replace_data(data)
+    else:
+        rows=_chart_rows(entry);data=ChartData();data.categories=[r[0] for r in rows];data.add_series(title,[r[1] for r in rows]);shape.chart.replace_data(data)
     shape.chart.has_title=True;shape.chart.chart_title.text_frame.text=title;shape.chart.has_legend=False
 
 

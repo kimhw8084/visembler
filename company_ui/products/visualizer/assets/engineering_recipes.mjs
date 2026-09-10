@@ -2,7 +2,7 @@
 // Compatibility and mapping review live here. Value-level execution is kept
 // in analysis_semantics.mjs so renderers cannot accidentally define meaning.
 
-import { ANALYSIS_SEMANTICS_VERSION, STATISTICAL_ANALYSIS_VERSION, recipeRoleContract } from './analysis_semantics.mjs';
+import { ANALYSIS_SEMANTICS_VERSION, STATISTICAL_ANALYSIS_VERSION, isStrictFiniteNumber, recipeRoleContract } from './analysis_semantics.mjs';
 
 const clone = value => typeof structuredClone === 'function' ? structuredClone(value) : JSON.parse(JSON.stringify(value));
 const numericTypes = new Set(['integer', 'number']);
@@ -18,12 +18,63 @@ function xbarStructureCompatible(fields, mapping, rows) {
   const groups = new Map();
   for (const row of rows) {
     const subgroup = String(row?.[subgroupIndex] ?? '').trim();
-    const value = Number(row?.[valueIndex]);
-    if (!subgroup || !Number.isFinite(value)) return false;
+    const value = row?.[valueIndex];
+    if (!subgroup || !isStrictFiniteNumber(value)) return false;
     groups.set(subgroup, (groups.get(subgroup) || 0) + 1);
   }
   const sizes = [...groups.values()];
   return sizes.length >= 2 && sizes.every(size => size >= 2 && size <= 10) && new Set(sizes).size === 1;
+}
+
+function capabilityStructureCompatible(fields, mapping, rows) {
+  if (!Array.isArray(rows)) return true;
+  const valueIndex = (fields || []).findIndex(field => field.id === mapping?.value);
+  const lowIndex = (fields || []).findIndex(field => field.id === mapping?.specification_low);
+  const highIndex = (fields || []).findIndex(field => field.id === mapping?.specification_high);
+  if (valueIndex < 0 || (lowIndex < 0 && highIndex < 0) || rows.length < 2) return false;
+  const values = [];
+  let low = null, high = null;
+  for (const row of rows) {
+    const value = row?.[valueIndex];
+    if (!isStrictFiniteNumber(value)) return false;
+    values.push(Number(value));
+    for (const [index, target] of [[lowIndex, 'low'], [highIndex, 'high']]) {
+      if (index < 0) continue;
+      const candidate = row?.[index];
+      if (!isStrictFiniteNumber(candidate)) return false;
+      const numeric = Number(candidate);
+      if (target === 'low' && low !== null && low !== numeric) return false;
+      if (target === 'high' && high !== null && high !== numeric) return false;
+      if (target === 'low') low = numeric;
+      if (target === 'high') high = numeric;
+    }
+  }
+  if (low !== null && high !== null && !(high > low)) return false;
+  return new Set(values).size > 1;
+}
+
+function doeStructureCompatible(fields, mapping, rows) {
+  if (!Array.isArray(rows)) return true;
+  const factorAIndex = (fields || []).findIndex(field => field.id === mapping?.factor_a);
+  const factorBIndex = (fields || []).findIndex(field => field.id === mapping?.factor_b);
+  const responseIndex = (fields || []).findIndex(field => field.id === mapping?.response);
+  if (factorAIndex < 0 || factorBIndex < 0 || responseIndex < 0 || !rows.length) return false;
+  const levelsA = new Set(), levelsB = new Set(), cells = new Set();
+  for (const row of rows) {
+    const a = String(row?.[factorAIndex] ?? '').trim();
+    const b = String(row?.[factorBIndex] ?? '').trim();
+    if (!a || !b || !isStrictFiniteNumber(row?.[responseIndex])) return false;
+    levelsA.add(a); levelsB.add(b); cells.add(`${a}\u0000${b}`);
+  }
+  if (levelsA.size < 2 || levelsB.size < 2) return false;
+  for (const a of levelsA) for (const b of levelsB) if (!cells.has(`${a}\u0000${b}`)) return false;
+  return true;
+}
+
+function strongDoeSemantics(fields) {
+  const tagged = tagsOf(fields);
+  if (tagged.has('factor_a') && tagged.has('factor_b') && tagged.has('response')) return true;
+  return Boolean(fieldByName(fields, /factor\s*(a|1)|factor.?a/) && fieldByName(fields, /factor\s*(b|2)|factor.?b/) && fieldByName(fields, /response|output/));
 }
 
 export const RECIPE_VERSION = ANALYSIS_SEMANTICS_VERSION;
@@ -286,8 +337,8 @@ export function recommendEngineeringRecipes(fields = [], rows = null) {
     if (recipeValue.id === 'pre-post-change') return Boolean(recipeValue.mapping.cohort);
     if (recipeValue.id === 'distribution-comparison') return Boolean(recipeValue.mapping.cohort && recipeValue.mapping.value);
     if (recipeValue.id === 'xbar-r-process-review') return Boolean(recipeValue.mapping.subgroup && recipeValue.mapping.value && xbarStructureCompatible(list, recipeValue.mapping, rows));
-    if (recipeValue.id === 'process-capability') return Boolean(recipeValue.mapping.value && (recipeValue.mapping.specification_low || recipeValue.mapping.specification_high));
-    if (recipeValue.id === 'doe-response-review') return Boolean(recipeValue.mapping.factor_a && recipeValue.mapping.factor_b && recipeValue.mapping.response);
+    if (recipeValue.id === 'process-capability') return Boolean(recipeValue.mapping.value && (recipeValue.mapping.specification_low || recipeValue.mapping.specification_high) && capabilityStructureCompatible(list, recipeValue.mapping, rows));
+    if (recipeValue.id === 'doe-response-review') return Boolean(strongDoeSemantics(list) && recipeValue.mapping.factor_a && recipeValue.mapping.factor_b && recipeValue.mapping.response && doeStructureCompatible(list, recipeValue.mapping, rows));
     return numeric.length > 0;
   }).sort((a, b) => b.confidence - a.confidence || a.name.localeCompare(b.name));
 }

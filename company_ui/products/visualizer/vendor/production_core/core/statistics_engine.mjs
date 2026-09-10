@@ -290,7 +290,9 @@ export function doeInteraction(rows, { factorA, factorB, response }) {
   const levelsA = uniqueSorted(rows.map((r) => r[factorA])); const levelsB = uniqueSorted(rows.map((r) => r[factorB]));
   if (levelsA.length < 2 || levelsB.length < 2) fail('DOE_LEVELS', 'Interaction plot requires at least two levels per factor.');
   const cells = levelsA.map((a) => levelsB.map((b) => {
-    const vals = finiteArray(rows.filter((r) => r[factorA] === a && r[factorB] === b).map((r) => Number(r[response])), { name: `${factorA}:${a}/${factorB}:${b}` });
+    const raw = rows.filter((r) => r[factorA] === a && r[factorB] === b).map((r) => Number(r[response]));
+    if (!raw.length) fail('DOE_CELL', `Interaction cell ${factorA}:${a}/${factorB}:${b} is missing.`, { factorA: a, factorB: b });
+    const vals = finiteArray(raw, { name: `${factorA}:${a}/${factorB}:${b}` });
     return { a, b, n: vals.length, mean: mean(vals) };
   }));
   let interactionEffect = null;

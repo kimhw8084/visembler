@@ -327,11 +327,12 @@ class DatasetResourceStore:
 
     def session(self, resource_id: str, *, revision: int | None = None) -> DataSession:
         value = self.get(resource_id, revision=revision)
+        revision_number = int(value.get('revision') or revision or 0)
         row_maps = [dict(zip((field['id'] for field in value['fields']), row)) for row in value['rows']]
         dimensions=tuple(Dimension(field['id'], label=field.get('name'), field=field['id']) for field in value['fields'])
         metrics=tuple(Metric(field['id'], label=field.get('name'), field=field['id'], aggregation=Aggregation.SUM)
                       for field in value['fields'] if field.get('type') in {'integer', 'number'})
-        return DataSession(Dataset(value['resource_id'], row_maps, dimensions=dimensions, metrics=metrics))
+        return DataSession(Dataset(value['resource_id'], row_maps, dimensions=dimensions, metrics=metrics, revision=revision_number))
 
 
 class ScopedDatasetRepository:

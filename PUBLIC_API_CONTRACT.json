@@ -3,7 +3,7 @@
   "framework_version": "3.0.0a1",
   "policy": "Removal or incompatible signature change requires a major-version decision; additions require explicit contract regeneration.",
   "schema_version": 3,
-  "sha256": "b80af3c2cc6dbab72bdfd16242312af0ef841cf430e4e8a9d3588a3eabdc3978",
+  "sha256": "fc48acda0c0305ad3e998855fa2be2cdbc936da8d73c53fe98c9320fe5a01bcd",
   "stability": "frozen-for-2.0",
   "symbols": {
     "AI_CONSTRUCTION_REGISTRY": {
@@ -6993,6 +6993,15 @@
             },
             "kind": "POSITIONAL_OR_KEYWORD",
             "name": "filtered_total"
+          },
+          {
+            "annotation": "'int'",
+            "default": {
+              "present": true,
+              "value": 0
+            },
+            "kind": "POSITIONAL_OR_KEYWORD",
+            "name": "source_revision"
           }
         ],
         "return": "None"
@@ -7508,6 +7517,15 @@
             },
             "kind": "KEYWORD_ONLY",
             "name": "row_key"
+          },
+          {
+            "annotation": "'int'",
+            "default": {
+              "present": true,
+              "value": 0
+            },
+            "kind": "KEYWORD_ONLY",
+            "name": "revision"
           }
         ],
         "return": ""

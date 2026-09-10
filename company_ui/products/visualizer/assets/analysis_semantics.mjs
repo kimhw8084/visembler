@@ -4,7 +4,7 @@
 // recipe mapping and a visual projection; renderers must not infer engineering
 // meaning from row order, first/last values, or presentation metadata.
 
-import { doeInteraction, doeMainEffects, processCapability, xbarR } from '../vendor/production_core/core/statistics_engine.mjs';
+import { boxPlot, doeInteraction, doeMainEffects, histogram, processCapability, xbarR } from '../vendor/production_core/core/statistics_engine.mjs';
 
 export const ANALYSIS_SEMANTICS_VERSION = 'v2';
 export const STATISTICAL_ANALYSIS_VERSION = 'statistical-v1';
@@ -14,10 +14,12 @@ const numericTypes = new Set(['integer', 'number']);
 const clone = value => typeof structuredClone === 'function' ? structuredClone(value) : JSON.parse(JSON.stringify(value));
 const finite = value => typeof value === 'number' && Number.isFinite(value);
 const numberValue = value => {
-  if (value === null || value === undefined || value === '' || typeof value === 'boolean') return null;
+  if (value === null || value === undefined || typeof value === 'boolean') return null;
+  if (typeof value === 'string' && value.trim() === '') return null;
   const result = Number(value);
   return Number.isFinite(result) ? result : null;
 };
+export const isStrictFiniteNumber = value => numberValue(value) !== null;
 const fieldIndex = (dataset, id) => (dataset?.fields || []).findIndex(field => field.id === id);
 const field = (dataset, id) => (dataset?.fields || []).find(value => value.id === id) || null;
 const error = (code, message, details = {}) => ({code, message, ...details});
@@ -346,6 +348,12 @@ function consistentSpecification(dataset, fieldId, label, explicitValue = null) 
     return value === null ? {error: error('INVALID_SPECIFICATION', `${label} must be finite.`)} : {value, source: 'explicit-analysis'};
   }
   if (!fieldId) return {value: null, source: null};
+  const index = fieldIndex(dataset, fieldId);
+  const rawValues = index < 0 ? [] : (dataset.rows || []).map(row => row[index]);
+  const present = rawValues.filter(value => value !== null && value !== undefined && !(typeof value === 'string' && value.trim() === ''));
+  if (!present.length) return {error: error('MISSING_SPECIFICATION', `${label} does not contain a finite value.`)};
+  if (present.length !== rawValues.length) return {error: error('INVALID_SPECIFICATION', `${label} must be present for every analyzed row.`)};
+  if (present.some(value => !isStrictFiniteNumber(value))) return {error: error('INVALID_SPECIFICATION', `${label} must contain only finite values.`)};
   const values = mappedNumberValues(dataset, fieldId);
   if (!values.length) return {error: error('MISSING_SPECIFICATION', `${label} does not contain a finite value.`)};
   const unique = [...new Set(values)];
@@ -398,6 +406,7 @@ function executeCapability(dataset, mapping, options = {}) {
   if (!hasLow && !hasHigh) result.errors.push(error('SPEC_LIMITS', 'Process Capability requires LSL, USL, or both.'));
   if (result.errors.length) return result;
   const {accepted, warnings} = numericRows(dataset, mapping, mapping.value);
+  if (warnings.length) result.errors.push(error('INVALID_MEASUREMENT', 'Process Capability requires every measurement to be finite.', {rows: warnings.map(value => value.source_index)}));
   result.warnings = warnings;
   const low = consistentSpecification(dataset, mapping.specification_low, 'LSL', options.lsl);
   const high = consistentSpecification(dataset, mapping.specification_high, 'USL', options.usl);
@@ -405,7 +414,10 @@ function executeCapability(dataset, mapping, options = {}) {
   if (low.error) result.errors.push(low.error); if (high.error) result.errors.push(high.error); if (targetSpec.error) result.errors.push(targetSpec.error);
   if (result.errors.length) return result;
   let stats;
-  try { stats = processCapability(accepted.map(item => item.value), {lsl: low.value, usl: high.value, target: targetSpec.value}); } catch (cause) { result.errors.push(error(cause.code || 'CAPABILITY_INVALID', cause.message, cause.details || {})); return result; }
+  try {
+    const values = accepted.map(item => item.value);
+    stats = {...processCapability(values, {lsl: low.value, usl: high.value, target: targetSpec.value}), histogram: histogram(values), box: boxPlot(values)};
+  } catch (cause) { result.errors.push(error(cause.code || 'CAPABILITY_INVALID', cause.message, cause.details || {})); return result; }
   const fields = [derivedField('__value', 'Measurement', 'number', ['value']), derivedField('__lsl', 'LSL', 'number', ['specification_low']), derivedField('__usl', 'USL', 'number', ['specification_high']), derivedField('__target', 'Target', 'number', ['target']), derivedField('__cpk', 'Cpk', 'number', ['capability'])];
   result.rows = accepted.map(item => ({value: item.value, lsl: stats.lsl, usl: stats.usl, target: stats.target, cpk: stats.cpk, source_index: item.sourceIndex}));
   result.dataset = derivedDataset(dataset, 'process-capability', fields, result.rows.map(row => [row.value, row.lsl, row.usl, row.target, row.cpk]), {semantic_version: STATISTICAL_ANALYSIS_VERSION, capability: stats, specification_sources: {lsl: low.source, usl: high.source, target: targetSpec.source}});
@@ -423,7 +435,13 @@ function executeDoe(dataset, mapping) {
   const result = emptyResult('doe-response-review', dataset, mapping, CONTRACTS['doe-response-review']);
   result.errors = validMapping(dataset, mapping, ['factor_a', 'factor_b', 'response']);
   if (result.errors.length) return result;
-  const rows = (dataset.rows || []).map(row => ({factor_a: row[fieldIndex(dataset, mapping.factor_a)], factor_b: row[fieldIndex(dataset, mapping.factor_b)], response: row[fieldIndex(dataset, mapping.response)]}));
+  const rows = (dataset.rows || []).map((row, index) => {
+    const factor_a = row[fieldIndex(dataset, mapping.factor_a)], factor_b = row[fieldIndex(dataset, mapping.factor_b)], response = row[fieldIndex(dataset, mapping.response)];
+    if (!text(factor_a) || !text(factor_b)) result.errors.push(error('MISSING_FACTOR', `DOE row ${index + 1} is missing a factor cell.`, {source_index: index}));
+    if (!isStrictFiniteNumber(response)) result.errors.push(error('INVALID_RESPONSE', `DOE row ${index + 1} has a non-finite response.`, {source_index: index}));
+    return {factor_a, factor_b, response: numberValue(response)};
+  });
+  if (result.errors.length) return result;
   let effects, interaction;
   try { effects = doeMainEffects(rows, {factors: ['factor_a', 'factor_b'], response: 'response'}); interaction = doeInteraction(rows, {factorA: 'factor_a', factorB: 'factor_b', response: 'response'}); } catch (cause) { result.errors.push(error(cause.code || 'DOE_INVALID', cause.message, cause.details || {})); return result; }
   const fields = [derivedField('__factor_a', 'Factor A', 'categorical', ['factor']), derivedField('__factor_b', 'Factor B', 'categorical', ['factor']), derivedField('__response', 'Response', 'number', ['response'])];
@@ -462,4 +480,34 @@ export function semanticDatasetForEntry(entry, dataset, options = {}) {
   const recipe = entry?.analysis_recipe;
   if (!recipe || (String(recipe.version || '') !== ANALYSIS_SEMANTICS_VERSION && recipe.id !== 'distribution-review' && !STATISTICAL_RECIPE_IDS.includes(recipe.id))) return null;
   return executeRecipeSemantics(recipe.id, dataset, recipe.mapping || {}, options);
+}
+
+// Resource-backed analyses are calculated at the governed server boundary.
+// This adapter deliberately returns the same semantic shape as the inline
+// executor so renderers and exports consume one result contract.
+export function semanticResultFromAuthoritative(authoritative, sourceDataset = {}) {
+  if (!authoritative || typeof authoritative !== 'object') return null;
+  const derived = authoritative.renderer_ready?.dataset || {};
+  const derivedStatistics = clone(authoritative.derived_statistics || {});
+  const primary = authoritative.analysis_type === 'xbar-r-process-review'
+    ? {kind: derivedStatistics.kind, stats: clone(derivedStatistics.stats || {}), subgroups: clone(derivedStatistics.subgroups || []), subgroup_labels: clone(derivedStatistics.subgroup_labels || [])}
+    : authoritative.analysis_type === 'process-capability'
+      ? {kind: derivedStatistics.kind, stats: clone(derivedStatistics.stats || {})}
+      : {kind: derivedStatistics.kind, effects: clone(derivedStatistics.effects || []), interaction: clone(derivedStatistics.interaction || {})};
+  return {
+    ok: authoritative.ok === true,
+    recipe_id: authoritative.analysis_type || authoritative.analysis_id || '',
+    version: authoritative.statistical_semantic_version || STATISTICAL_ANALYSIS_VERSION,
+    dataset: derivedDataset(sourceDataset, authoritative.analysis_type || 'statistical-analysis', derived.fields || [], derived.rows || [], {
+      semantic_version: authoritative.statistical_semantic_version || STATISTICAL_ANALYSIS_VERSION,
+      statistical_provenance: clone(authoritative.provenance || {}),
+    }),
+    rows: clone(authoritative.analysis_rows || []),
+    mapping: clone(authoritative.derived_mapping || authoritative.mapping || {}),
+    summary: clone(authoritative.summary || {}),
+    primary,
+    provenance: clone(authoritative.provenance || {}),
+    warnings: clone(authoritative.warnings || []),
+    errors: clone(authoritative.errors || []),
+  };
 }

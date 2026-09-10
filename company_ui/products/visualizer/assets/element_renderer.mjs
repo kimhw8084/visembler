@@ -460,6 +460,7 @@ function infrastructure(entry){
 }
 
 export function renderIntegratedElement(entry){
+  if(entry?.analysis_error||entry?.analysis_semantics?.ok===false) return shell(entry,`<div class="analysis-needs-attention" role="alert"><b>Analysis needs attention</b><span>${esc(entry.analysis_error||entry.analysis_semantics?.errors?.[0]?.message||'The statistical analysis could not be validated.')}</span></div>`,'Analysis');
   if(['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)&&CHART_TYPES.includes(entry?.element)) return renderChartStudioElement(entry,entry._resolved_dataset||{});
   switch(entry.engine){
     case 'TextEngine': return text(entry);

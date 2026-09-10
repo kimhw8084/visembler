@@ -79,9 +79,9 @@ def _sort_value(value: Any) -> tuple[int,str,Any]:
 
 class Dataset:
     """Immutable row source with governed dimensions and metrics."""
-    def __init__(self, key: str, rows: Sequence[Mapping[str,Any]], *, dimensions: Sequence[Dimension]=(), metrics: Sequence[Metric]=(), row_key: str | None=None):
+    def __init__(self, key: str, rows: Sequence[Mapping[str,Any]], *, dimensions: Sequence[Dimension]=(), metrics: Sequence[Metric]=(), row_key: str | None=None, revision: int = 0):
         if not key.strip(): raise ValueError('Dataset key must not be empty')
-        self.key=key; self.row_key=row_key
+        self.key=key; self.row_key=row_key; self.revision=int(revision)
         self._rows=tuple(deepcopy(dict(row)) for row in rows)
         self._fields=frozenset(key for row in self._rows for key in row)
         self._indexes:dict[str,dict[Any,tuple[int,...]]]={}
@@ -157,7 +157,7 @@ class Dataset:
             rows.sort(key=lambda row,s=sort:_sort_value(row.get(s.key)),reverse=sort.descending)
         total=len(self._rows); filtered_total=len(filtered)
         start=query.offset; stop=None if query.limit is None else start+query.limit
-        return DataResult(tuple(deepcopy(row) for row in rows[start:stop]),total=total,revision=revision,filtered_total=filtered_total)
+        return DataResult(tuple(deepcopy(row) for row in rows[start:stop]),total=total,revision=revision,filtered_total=filtered_total,source_revision=self.revision)
 
     def _group(self, rows: Sequence[Mapping[str,Any]], dimension_keys: Sequence[str], metric_keys: Sequence[str]) -> list[dict[str,Any]]:
         dimensions=[]
@@ -213,6 +213,8 @@ class DataSession:
 
     @property
     def filters(self) -> tuple[FilterClause,...]: return tuple(self._filters.values())
+    @property
+    def source_revision(self) -> int: return self.dataset.revision
     @property
     def closed(self) -> bool:return self._closed
 
