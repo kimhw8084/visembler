@@ -241,6 +241,8 @@ function applyOp(model, op) {
     const before = canonicalModel(model);
     const next = canonicalModel(op.value);
     for (const key of MODEL_KEYS) model[key] = clone(next[key]);
+    if (Array.isArray(next.crossFilters)) model.crossFilters = clone(next.crossFilters);
+    else delete model.crossFilters;
     return [{ op: 'model.replace', value: before }];
   }
 

@@ -1105,7 +1105,7 @@ def register_visualizer(
             reports that only persisted the display source.
             """
             raw_filters = record.model.get('crossFilters') if isinstance(record.model, Mapping) else None
-            if not isinstance(raw_filters, list) or not raw_filters:
+            if not isinstance(raw_filters, list):
                 single = record.model.get('crossFilter') if isinstance(record.model, Mapping) else None
                 raw_filters = [single] if isinstance(single, Mapping) else []
             items = [item for item in record.model.get('items', []) if isinstance(item, Mapping)]
@@ -1118,20 +1118,38 @@ def register_visualizer(
             for value in raw_filters:
                 if not isinstance(value, Mapping) or not str(value.get('field') or '').strip():
                     continue
-                source = str(value.get('source_entry') or '').strip()
-                if not source:
-                    source = str(value.get('source') or '').strip()
-                matches = [item for item in items if source and source in {
+                source_entry = str(value.get('source_entry') or '').strip()
+                source = str(value.get('source') or '').strip()
+                identity_matches = [item for item in items if source_entry and source_entry in {
                     str(item.get('id') or ''), str(item.get('title') or ''), str(item.get('element') or '')
                 }]
-                dataset_ids = {str(item.get('dataset_id') or '') for item in matches if str(item.get('dataset_id') or '') in resource_ids}
-                if not dataset_ids and len(resource_ids) == 1:
-                    dataset_ids = set(resource_ids)
+                if len(identity_matches) == 1:
+                    dataset_id = str(identity_matches[0].get('dataset_id') or '')
+                    if dataset_id in resource_ids:
+                        dataset_ids = {dataset_id}
+                    else:
+                        # The live editor does not send an inline visual's
+                        # predicate to an unrelated resource dataset.  Keep
+                        # that same boundary during reopen.
+                        continue
+                else:
+                    legacy_matches = [item for item in items if source and source in {
+                        str(item.get('id') or ''), str(item.get('title') or ''), str(item.get('element') or '')
+                    }]
+                    legacy_dataset_ids = {
+                        str(item.get('dataset_id') or '') for item in legacy_matches
+                        if str(item.get('dataset_id') or '') in resource_ids
+                    }
+                    if len(legacy_matches) == 1 and len(legacy_dataset_ids) == 1:
+                        dataset_ids = legacy_dataset_ids
+                    elif len(legacy_matches) == 1 and not legacy_dataset_ids:
+                        continue
+                    else:
+                        # Unscoped or ambiguous legacy metadata cannot be
+                        # safely assigned by resource count.
+                        unresolved.update(resource_ids)
+                        continue
                 if len(dataset_ids) != 1:
-                    # An old ambiguous filter cannot be safely assigned to a
-                    # resource dataset.  Mark every resource dataset affected
-                    # so reopen fails closed instead of inventing an
-                    # unfiltered result.
                     unresolved.update(resource_ids)
                     continue
                 try:

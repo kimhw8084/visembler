@@ -911,6 +911,281 @@ def test_native_compound_filtered_resource_refresh_and_post_refresh_convergence(
                     browser.close()
 
 
+def test_native_compound_to_single_reset_and_reopen_keep_canonical_filter_state(tmp_path: Path):
+    """Real chart selection replaces a compound session and reset clears both projections."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import panels, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    fields = [
+        {'id': 'measurement', 'name': 'Measurement', 'type': 'number'},
+        {'id': 'lsl', 'name': 'LSL', 'type': 'number'},
+        {'id': 'usl', 'name': 'USL', 'type': 'number'},
+        {'id': 'tool', 'name': 'Tool', 'type': 'categorical'},
+        {'id': 'chamber', 'name': 'Chamber', 'type': 'categorical'},
+        {'id': 'product', 'name': 'Product', 'type': 'categorical'},
+    ]
+    rows = [
+        [10, 0, 100, 'ETCH-01', 'B', 'P1'], [11, 0, 100, 'ETCH-01', 'B', 'P1'],
+        [30, 0, 100, 'ETCH-01', 'B', 'P2'], [31, 0, 100, 'ETCH-01', 'B', 'P2'],
+        [40, 0, 100, 'ETCH-01', 'A', 'P2'], [41, 0, 100, 'ETCH-01', 'A', 'P1'],
+        [50, 0, 100, 'DEP-02', 'B', 'P1'], [51, 0, 100, 'DEP-02', 'A', 'P2'],
+    ]
+    cap_mapping = {'value': 'measurement', 'specification_low': 'lsl', 'specification_high': 'usl'}
+    cap = {
+        **_cap_item('cap'), 'type': 'metric', 'engine': 'MetricEngine', 'element': 'Hero KPI',
+        'title': 'Capability', 'dataset_id': 'd1', 'mapping': cap_mapping,
+        'order': 0, 'x': 20, 'y': 20, 'w': 360, 'h': 180,
+    }
+    chart = {
+        'id': 'chart', 'type': 'chart', 'engine': 'CoreChartEngine', 'element': 'Line Chart',
+        'title': 'Product chart', 'dataset_id': 'd1',
+        'mapping': {'category': 'product', 'value': 'measurement', 'x': 'product', 'y': 'measurement'},
+        'visual': {'markers': True},
+        'order': 1, 'x': 420, 'y': 20, 'w': 720, 'h': 360,
+        'data': [['P1', 10], ['P2', 30]], 'rows': [{'label': 'P1', 'value': 10}, {'label': 'P2', 'value': 30}],
+    }
+    compound = [
+        {'field': 'tool', 'label': 'Tool', 'value': 'ETCH-01', 'source': 'Product chart', 'source_entry': 'chart'},
+        {'field': 'chamber', 'label': 'Chamber', 'value': 'B', 'source': 'Product chart', 'source_entry': 'chart'},
+    ]
+    report_model = canonical_model({
+        'datasets': [{'id': 'd1', 'name': 'Filter transition source', 'fields': fields, 'rows': rows}],
+        'items': [cap, chart], 'crossFilter': compound[0], 'crossFilters': compound, 'mode': 'free', 'nextId': 3,
+    })
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-filter-transition-') as data_dir:
+        with NativeHost(ROOT, Path(data_dir) / 'native-data') as host:
+            report_id = host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                context = browser.new_context(viewport={'width': 1440, 'height': 1000}, accept_downloads=True)
+                page = context.new_page()
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}', wait_until='domcontentloaded')
+                    ready(page)
+                    assert page.locator('#activeFilters').inner_text().count('=') == 2
+                    cap_node = page.locator('.component[data-id="cap"]')
+                    cap_node.focus(); cap_node.press('Enter'); panels(page, library=False, inspector=True)
+                    page.locator('[data-dataset-action="bind-resource"]').click()
+                    page.wait_for_function('() => window.CompanyUIVisualizerBridge.state().model.datasets.some(dataset => dataset.resource_id)', timeout=20000)
+                    page.wait_for_function('() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap?.population?.filtered_total === 4', timeout=20000)
+                    settled(page)
+
+                    assert page.locator('.component[data-id="chart"] [data-behavior-point]').count() >= 3
+                    p2_index = 2
+                    page.locator('.component[data-id="chart"] [data-behavior-point]').nth(p2_index).dispatch_event('click')
+                    page.wait_for_function('() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap?.derived_statistics?.stats?.mean === 38', timeout=20000)
+                    settled(page)
+                    single = page.evaluate('''() => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      const analysis=window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap;
+                      return {model:state.model,analysis};
+                    }''')
+                    assert [(value['field'], value['value']) for value in single['model']['crossFilters']] == [('product', 'P2')]
+                    assert (single['model']['crossFilter']['field'], single['model']['crossFilter']['value']) == ('product', 'P2')
+                    assert [(value['field'], value['value']) for value in single['analysis']['session_filters']] == [('product', 'P2')]
+                    assert single['analysis']['population'] == {'source_total': 8, 'filtered_total': 4, 'analyzed_rows': 4, 'complete': True}
+                    assert single['analysis']['derived_statistics']['stats']['mean'] == 38
+                    assert single['analysis']['session']['filter_fingerprint']
+
+                    export_model = json.loads(json.dumps(single['model']))
+                    export_item = next(item for item in export_model['items'] if item['id'] == 'cap')
+                    export_item['authoritative_analysis'] = single['analysis']
+                    deck = Presentation(io.BytesIO(export_pptx(None, canonical_model(export_model))))
+                    texts = '\n'.join(shape.text for slide in deck.slides for shape in slide.shapes if getattr(shape, 'has_text_frame', False))
+                    assert str(single['analysis']['derived_statistics']['stats']['cpk']) in texts
+
+                    page.reload(wait_until='domcontentloaded'); ready(page)
+                    reopened = page.evaluate('''() => ({
+                      model:window.CompanyUIVisualizerBridge.state().model,
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap,
+                    })''')
+                    assert [(value['field'], value['value']) for value in reopened['model']['crossFilters']] == [('product', 'P2')]
+                    assert (reopened['model']['crossFilter']['field'], reopened['model']['crossFilter']['value']) == ('product', 'P2')
+                    assert reopened['analysis']['population']['filtered_total'] == 4
+                    assert reopened['analysis']['derived_statistics']['stats']['mean'] == 38
+
+                    reopened_p2_index = 2
+                    page.locator('.component[data-id="chart"] [data-behavior-point]').nth(reopened_p2_index).dispatch_event('click')
+                    page.wait_for_function('() => !window.CompanyUIVisualizerBridge.state().model.crossFilters.length && window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap?.population?.filtered_total === 8', timeout=20000)
+                    settled(page)
+                    cleared = page.evaluate('''() => ({
+                      model:window.CompanyUIVisualizerBridge.state().model,
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap,
+                    })''')
+                    assert cleared['model']['crossFilter'] is None
+                    assert cleared['model']['crossFilters'] == []
+                    assert cleared['analysis']['session_filters'] == []
+                    assert cleared['analysis']['population'] == {'source_total': 8, 'filtered_total': 8, 'analyzed_rows': 8, 'complete': True}
+                    assert cleared['analysis']['derived_statistics']['stats']['mean'] == 33
+
+                    page.reload(wait_until='domcontentloaded'); ready(page)
+                    reopened_clear = page.evaluate('''() => ({
+                      model:window.CompanyUIVisualizerBridge.state().model,
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap,
+                    })''')
+                    assert reopened_clear['model']['crossFilter'] is None
+                    assert reopened_clear['model']['crossFilters'] == []
+                    assert reopened_clear['analysis']['population']['filtered_total'] == 8
+                    assert reopened_clear['analysis']['derived_statistics']['stats']['mean'] == 33
+                    assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+                    assert 'NaN' not in page.locator('body').inner_text()
+                    assert 'Infinity' not in page.locator('body').inner_text()
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    page.close()
+                    browser.close()
+
+
+def test_native_persisted_filter_scoping_is_dataset_safe_and_ambiguous_state_fails_closed(tmp_path: Path):
+    """Reopen never assigns an inline predicate to an unrelated resource."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import ready
+    finally:
+        sys.path.remove(scripts)
+
+    inline_fields = [
+        {'id': 'category', 'name': 'Category', 'type': 'categorical'},
+        {'id': 'value', 'name': 'Value', 'type': 'number'},
+    ]
+    capability_fields = [
+        {'id': 'measurement', 'name': 'Measurement', 'type': 'number'},
+        {'id': 'lsl', 'name': 'LSL', 'type': 'number'},
+        {'id': 'usl', 'name': 'USL', 'type': 'number'},
+        {'id': 'product', 'name': 'Product', 'type': 'categorical'},
+    ]
+    inline_dataset = {'id': 'd-inline', 'fields': inline_fields, 'rows': [['A', 1], ['B', 2]]}
+    inline_item = {
+        'id': 'inline', 'type': 'chart', 'engine': 'CoreChartEngine', 'element': 'Vertical Bar',
+        'title': 'Inline source', 'dataset_id': 'd-inline', 'mapping': {'category': 'category', 'value': 'value'},
+        'data': [['A', 1], ['B', 2]], 'rows': [{'label': 'A', 'value': 1}, {'label': 'B', 'value': 2}],
+        'order': 0, 'x': 20, 'y': 20, 'w': 360, 'h': 180,
+    }
+    cap_mapping = {'value': 'measurement', 'specification_low': 'lsl', 'specification_high': 'usl'}
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-filter-scope-') as data_dir:
+        data_root = Path(data_dir) / 'native-data'
+        store = DatasetResourceStore(data_root)
+        resource_rows = [[10, 0, 100, 'P1'], [11, 0, 100, 'P1'], [30, 0, 100, 'P2'], [31, 0, 100, 'P2']]
+        resource_a = store.create(owner='local-dev', dataset_id='resource-a', name='Resource A', fields=capability_fields, rows=resource_rows)
+        resource_b = store.create(owner='local-dev', dataset_id='resource-b', name='Resource B', fields=capability_fields, rows=resource_rows)
+
+        def resource_dataset(resource, dataset_id):
+            preview = store.preview(resource['dataset_id'])
+            return {'id': dataset_id, 'resource_id': resource['dataset_id'], 'revision': 1, 'external': True,
+                    'fields': preview['fields'], 'rows': preview['rows'], 'row_count': preview['row_count']}
+
+        def cap_item(item_id, dataset_id, title='Capability'):
+            return {
+                **_cap_item(item_id), 'type': 'metric', 'engine': 'MetricEngine', 'element': 'Hero KPI',
+                'title': title, 'dataset_id': dataset_id, 'mapping': cap_mapping,
+                'order': 1, 'x': 420, 'y': 20, 'w': 360, 'h': 180,
+            }
+
+        inline_filter = {'field': 'category', 'label': 'Category', 'value': 'A', 'source': 'Inline source', 'source_entry': 'inline'}
+        mixed_cap = cap_item('cap-mixed', 'd-resource')
+        mixed_model = canonical_model({
+            'datasets': [inline_dataset, resource_dataset(resource_a, 'd-resource')],
+            'items': [inline_item, mixed_cap], 'crossFilter': inline_filter, 'crossFilters': [inline_filter], 'nextId': 3,
+        })
+        exact_filter = {'field': 'product', 'label': 'Product', 'value': 'P2', 'source': 'Capability', 'source_entry': 'cap-exact'}
+        exact_cap = cap_item('cap-exact', 'd-exact')
+        exact_model = canonical_model({
+            'datasets': [resource_dataset(resource_a, 'd-exact')], 'items': [exact_cap],
+            'crossFilter': exact_filter, 'crossFilters': [exact_filter], 'nextId': 2,
+        })
+        legacy_filter = {'field': 'product', 'label': 'Product', 'value': 'P2', 'source': 'Capability'}
+        legacy_cap = cap_item('cap-legacy', 'd-legacy')
+        legacy_model = canonical_model({
+            'datasets': [resource_dataset(resource_a, 'd-legacy')], 'items': [legacy_cap],
+            'crossFilter': legacy_filter, 'nextId': 2,
+        })
+        ambiguous_filter = {'field': 'product', 'label': 'Product', 'value': 'P2', 'source': 'Capability'}
+        ambiguous_a = cap_item('cap-a', 'd-a')
+        ambiguous_b = cap_item('cap-b', 'd-b')
+        ambiguous_model = canonical_model({
+            'datasets': [resource_dataset(resource_a, 'd-a'), resource_dataset(resource_b, 'd-b')],
+            'items': [ambiguous_a, ambiguous_b], 'crossFilter': ambiguous_filter, 'nextId': 3,
+        })
+
+        with NativeHost(ROOT, data_root) as host:
+            report_ids = [
+                host.create(model=mixed_model), host.create(model=exact_model),
+                host.create(model=legacy_model), host.create(model=ambiguous_model),
+            ]
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                page = browser.new_page(viewport={'width': 1440, 'height': 1000})
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_ids[0]}', wait_until='domcontentloaded')
+                    ready(page)
+                    mixed = page.evaluate('''() => ({
+                      model:window.CompanyUIVisualizerBridge.state().model,
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.['cap-mixed'],
+                    })''')
+                    assert [(value['field'], value['value']) for value in mixed['model']['crossFilters']] == [('category', 'A')]
+                    assert mixed['analysis']['session_filters'] == []
+                    assert mixed['analysis']['population'] == {'source_total': 4, 'filtered_total': 4, 'analyzed_rows': 4, 'complete': True}
+
+                    page.goto(f'{host.url}/visualizer?report={report_ids[1]}', wait_until='domcontentloaded'); ready(page)
+                    exact = page.evaluate('''() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.['cap-exact']''')
+                    assert [(value['field'], value['value']) for value in exact['session_filters']] == [('product', 'P2')]
+                    assert exact['population']['filtered_total'] == 2
+
+                    page.goto(f'{host.url}/visualizer?report={report_ids[2]}', wait_until='domcontentloaded'); ready(page)
+                    legacy = page.evaluate('''() => ({
+                      model:window.CompanyUIVisualizerBridge.state().model,
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.['cap-legacy'],
+                    })''')
+                    assert [(value['field'], value['value']) for value in legacy['model']['crossFilters']] == [('product', 'P2')]
+                    assert [(value['field'], value['value']) for value in legacy['analysis']['session_filters']] == [('product', 'P2')]
+                    assert legacy['analysis']['population']['filtered_total'] == 2
+
+                    page.goto(f'{host.url}/visualizer?report={report_ids[3]}', wait_until='domcontentloaded'); ready(page)
+                    ambiguous = page.evaluate('''() => ({
+                      a:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.['cap-a'],
+                      b:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.['cap-b'],
+                    })''')
+                    for result in (ambiguous['a'], ambiguous['b']):
+                        assert result['ok'] is False
+                        assert result['errors'][0]['code'] == 'SESSION_CONVERGENCE'
+                        assert result['derived_statistics'] == {}
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    page.close()
+                    browser.close()
+
+
 def test_native_request_generations_guard_bootstrap_error_and_report_switch(tmp_path: Path):
     """The real Editor receiver keeps one logical generation across projections."""
     playwright = pytest.importorskip('playwright.sync_api')

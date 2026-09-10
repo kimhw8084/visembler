@@ -167,10 +167,23 @@ function migrateLegacyItems(source) {
   return value;
 }
 
-let store = new EditorStore(parseCanonical(withSuggestedRoles(migrateLegacyItems(bootstrap.model || {
+function filterStatePatch(filters = []) {
+  const next = Array.isArray(filters) ? structuredClone(filters) : [];
+  return { crossFilters: next, crossFilter: next[0] || null };
+}
+
+function canonicalFilterModel(value = {}) {
+  const filters = Array.isArray(value.crossFilters)
+    ? value.crossFilters
+    : (value.crossFilter ? [value.crossFilter] : []);
+  return { ...value, ...filterStatePatch(filters) };
+}
+
+const initialModel = canonicalFilterModel(withSuggestedRoles(migrateLegacyItems(bootstrap.model || {
   schema_version: 1,
-  items: structuredClone(initialItems), groups: {}, mode: 'smart', layoutPreset: 'editorial', crossFilter: null, canvas: DEFAULT_CANVAS_SIZE, nextId: 20,
-}))), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
+  items: structuredClone(initialItems), groups: {}, mode: 'smart', layoutPreset: 'editorial', crossFilter: null, crossFilters: [], canvas: DEFAULT_CANVAS_SIZE, nextId: 20,
+})));
+let store = new EditorStore(parseCanonical(initialModel), { revision: Number.isInteger(bootstrap.revision) ? bootstrap.revision : 1 });
 
 const ui = {
   zoom: 1,
@@ -559,7 +572,7 @@ function replaceFromServer(payload, reason='Server synchronization', { preserveL
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
   if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();
   cancelPointerSession('report-switch'); clearTransientInteractionVisuals('report-switch');
-  store=new EditorStore(parseCanonical(withSuggestedRoles(migrateLegacyItems(payload.model))),{revision:payload.revision});
+  store=new EditorStore(parseCanonical(canonicalFilterModel(withSuggestedRoles(migrateLegacyItems(payload.model)))),{revision:payload.revision});
   ui.datasetResults=Object.create(null);
   ui.authoritativeAnalyses=structuredClone(payload.analysis_results||{});
   ui.datasetRequests=Object.create(null);
@@ -779,7 +792,7 @@ function clearActiveCrossFilter(removeIndex=null) {
   const dataset=model().datasets.find(value=>value.resource_id);
   const current=activeCrossFilters(),next=removeIndex===null?[]:current.filter((_,index)=>index!==removeIndex);
   if(removeIndex===null){const host=$('#activeFilters');if(host){host.hidden=true;host.innerHTML='';}}
-  const accepted=commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
+  const accepted=commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:filterStatePatch(next)}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
   if(dataset&&accepted){if(next.length)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
 }
 function tableMarkup(entry) {
@@ -1251,9 +1264,9 @@ function commitDataset(entry, label, nextDataset, nextMapping=entry.mapping||{})
 }
 function replaceDataset(entry, label, nextDataset, nextMapping=entry.mapping||{}) {
   if(!entry||entry.locked)return toast('Unlock the selected visual before replacing data');
-  const existing=selectedDataset(entry); if(existing&&datasetConsumers(existing.id).length>1){const detached={...nextDataset,id:nextDataset.id===existing.id?datasetId():nextDataset.id,revision:1},recipe=entry.transform_recipe?.source_dataset_id?{...entry.transform_recipe,source_dataset_id:detached.id}:entry.transform_recipe;return commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,detached],crossFilter:null}},{op:'item.patch',id:entry.id,patch:{dataset_id:detached.id,mapping:nextMapping,...(recipe?{transform_recipe:recipe}:{})}}]);}
+  const existing=selectedDataset(entry); if(existing&&datasetConsumers(existing.id).length>1){const detached={...nextDataset,id:nextDataset.id===existing.id?datasetId():nextDataset.id,revision:1},recipe=entry.transform_recipe?.source_dataset_id?{...entry.transform_recipe,source_dataset_id:detached.id}:entry.transform_recipe;return commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,detached],...filterStatePatch([])}},{op:'item.patch',id:entry.id,patch:{dataset_id:detached.id,mapping:nextMapping,...(recipe?{transform_recipe:recipe}:{})}}]);}
   if(model().datasets.some(dataset=>dataset.id===nextDataset.id))return commitDataset(entry,label,nextDataset,nextMapping);
-  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,nextDataset],crossFilter:null}},{op:'item.patch',id:entry.id,patch:{dataset_id:nextDataset.id,mapping:nextMapping}}]);if(accepted)stageDRememberDataset(nextDataset);return accepted;
+  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,nextDataset],...filterStatePatch([])}},{op:'item.patch',id:entry.id,patch:{dataset_id:nextDataset.id,mapping:nextMapping}}]);if(accepted)stageDRememberDataset(nextDataset);return accepted;
 }
 function datasetConsumers(datasetId){return model().items.filter(candidate=>candidate.dataset_id===datasetId);}
 function commitDatasetRefresh(entry,intake,selectedOnly=false){
@@ -1267,7 +1280,7 @@ function commitDatasetRefresh(entry,intake,selectedOnly=false){
   }
   const nextId=selectedOnly&&plan.consumers.length>1?datasetId():dataset.id;
   const next={...datasetFromIntake(intake,nextId,dataset.name),revision:nextId===dataset.id?(dataset.revision||0)+1:1,metadata:{...(dataset.metadata||{}),refresh:{count:((dataset.metadata?.refresh?.count)||0)+1,previous_revision:dataset.revision||0,previous_row_count:(dataset.rows||[]).length,new_row_count:(intake.rows||[]).length,schema_signature:plan.schema_signature}}};
-  const ops=[nextId===dataset.id?{op:'model.patch',patch:{datasets:model().datasets.map(value=>value.id===dataset.id?next:value),crossFilter:null}}:{op:'model.patch',patch:{datasets:[...model().datasets,next],crossFilter:null}}];
+  const ops=[nextId===dataset.id?{op:'model.patch',patch:{datasets:model().datasets.map(value=>value.id===dataset.id?next:value),...filterStatePatch([])}}:{op:'model.patch',patch:{datasets:[...model().datasets,next],...filterStatePatch([])}}];
   for(const rebound of plan.mappings){
     const patch={mapping:rebound.mapping};
     if(nextId!==dataset.id)patch.dataset_id=nextId;
@@ -2221,7 +2234,7 @@ function showDropGhost(e) {
 
 function toggleChartPoint(entry, k, selection = {}) {
   const cross = entry.cross === k ? null : k, dataset=selectedDataset(entry), fieldId=selection.field||entry.mapping?.category||entry.mapping?.label||entry.mapping?.time||entry.mapping?.x||dataset?.fields?.[0]?.id, fieldName=fieldById(dataset,fieldId)?.name||fieldId||'Selection', selectedValue=cross == null ? null : (selection.value ?? chartData(entry)[cross]?.[0]), crossFilter = cross == null ? null : {field:fieldId,label:fieldName,value:selectedValue,source:entry.title||entry.element||'chart',source_entry:entry.id};
-  const accepted=commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
+  const accepted=commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: filterStatePatch(cross == null ? [] : [crossFilter]) }]);
   if(!accepted)return;
   if(dataset?.resource_id){
     if(cross==null)dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
@@ -2232,7 +2245,7 @@ function toggleChartCompoundFilter(entry, selection = {}) {
   const dataset=selectedDataset(entry),fields=String(selection.fields||'').split(',').map(value=>value.trim()).filter(Boolean),values=String(selection.values||'').split('|');
   if(!dataset?.resource_id||fields.length!==values.length||!fields.length)return;
   const next=fields.map((field,index)=>({field,label:fieldById(dataset,field)?.name||field,value:values[index],source:entry.title||entry.element||'chart',source_entry:entry.id}));
-  const accepted=commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
+  const accepted=commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:filterStatePatch(next)}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
   if(accepted)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
 }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
@@ -2313,7 +2326,7 @@ function createDataFirstVisual(plan, label='Create visual from data') {
   if(!plan?.valid)return false;
   const id=`c${model().nextId}`,entry=dataFirstEntry(plan,id),startSmart=model().mode==='guided'&&!model().items.length,geometry=startSmart?null:initialManualGeometry(entry);
   if(!startSmart&&!geometry){toast('No free space in Guided mode. Increase page size or switch to Free.');return false;}if(geometry)Object.assign(entry,geometry);
-  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,plan.dataset],nextId:model().nextId+1,crossFilter:null,...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:entry}],{announce:`Created ${entry.element}`});
+  const accepted=commitOps(label,[{op:'model.patch',patch:{datasets:[...model().datasets,plan.dataset],nextId:model().nextId+1,...filterStatePatch([]),...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:entry}],{announce:`Created ${entry.element}`});
   if(accepted){stageDRememberDataset(plan.dataset);ui.selected=new Set([id]);renderAll();}
   return !!accepted;
 }
@@ -2378,7 +2391,7 @@ function createRecipeAnalysis(state,plan) {
   const startSmart=model().mode==='guided'&&!model().items.length,mode=startSmart?'smart':model().mode,staged={...model(),mode,items:[...model().items,...entries],datasets:[...model().datasets,dataset],nextId:model().nextId+entries.length};
   const layout=layoutOperations(staged,{action:'clean',mode});
   const currentCanvas=canvasSize(),requiredHeight=Math.min(MAX_CANVAS_H,Math.max(currentCanvas.height,900+Math.max(0,entries.length-2)*260)),canvasPatch=requiredHeight>currentCanvas.height?{canvas:{...currentCanvas,height:requiredHeight}}:{};
-  const accepted=commitOps(`Apply ${plan.recipe.name}`,[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,crossFilter:null,...canvasPatch,...(startSmart?{mode:'smart'}:{})}},...entries.map(entry=>({op:'item.add',item:entry})),...layout],{announce:`${plan.recipe.name} applied · ${entries.length} linked visuals`});
+  const accepted=commitOps(`Apply ${plan.recipe.name}`,[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,...filterStatePatch([]),...canvasPatch,...(startSmart?{mode:'smart'}:{})}},...entries.map(entry=>({op:'item.add',item:entry})),...layout],{announce:`${plan.recipe.name} applied · ${entries.length} linked visuals`});
   if(accepted){stageDRememberDataset(dataset);ui.selected=new Set(entries.map(entry=>entry.id));renderAll();}
   return !!accepted;
 }
@@ -2618,7 +2631,7 @@ function stageDCreateFullReport() {
   for(const entry of [visual,headline,takeaway]){const geometry=initialManualGeometry(entry);if(geometry)Object.assign(entry,geometry);}
   const startSmart=model().mode==='guided'&&!model().items.length,stageMode=startSmart?'smart':model().mode,staged={...model(),mode:stageMode,items:[...model().items,headline,visual,takeaway],datasets:[...model().datasets,plan.dataset],nextId:model().nextId+3};
   const layout=layoutOperations(staged,{action:'clean',mode:stageMode});
-  const accepted=commitOps('Create report from pasted data',[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,crossFilter:null,...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:headline},{op:'item.add',item:visual},{op:'item.add',item:takeaway},...layout],{announce:'Report structure created'});
+  const accepted=commitOps('Create report from pasted data',[{op:'model.patch',patch:{datasets:staged.datasets,nextId:staged.nextId,...filterStatePatch([]),...(startSmart?{mode:'smart'}:{})}},{op:'item.add',item:headline},{op:'item.add',item:visual},{op:'item.add',item:takeaway},...layout],{announce:'Report structure created'});
   if(accepted){stageDRememberDataset(plan.dataset);ui.selected=new Set([visualId]);renderAll();}stageDClose();return !!accepted;
 }
 function stageDCreateHeadline() { const entry={id:`c${model().nextId}`,type:'text',element:'Hero Title',engine:'TextEngine',title:'Hero Title',showTitle:false,text:'Write the report message here.',body:'Write the report message here.',message_role:'Headline',emphasis:'hero',weight:typeDefaults.text.weight,order:model().items.length,locked:false,groupId:null,z:Math.max(0,...model().items.map(x=>x.z||0))+1};const accepted=commitOps('Add report headline',[{op:'item.add',item:entry},{op:'model.patch',patch:{nextId:model().nextId+1}}],{announce:'Headline added'});if(accepted){ui.selected=new Set([entry.id]);renderAll();}stageDClose();}
