@@ -5,6 +5,7 @@ import { validateGraph } from '../vendor/production_core/core/graph_semantics_en
 import { formatMetricDisplay, metricDisplayUnit, prepareChartRows } from './authoring_format.mjs';
 import { CHART_TYPES, renderChartStudioElement } from './authoring_chart_studio.mjs';
 import { renderDiagramSvg } from './authoring_diagram_studio.mjs';
+import { statisticalAnalysisError } from './statistical_presentation.mjs';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const slug=value=>String(value).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -460,7 +461,8 @@ function infrastructure(entry){
 }
 
 export function renderIntegratedElement(entry){
-  if(entry?.analysis_error||entry?.analysis_semantics?.ok===false) return shell(entry,`<div class="analysis-needs-attention" role="alert"><b>Analysis needs attention</b><span>${esc(entry.analysis_error||entry.analysis_semantics?.errors?.[0]?.message||'The statistical analysis could not be validated.')}</span></div>`,'Analysis');
+  const analysisError=statisticalAnalysisError(entry);
+  if(analysisError) return shell(entry,`<div class="analysis-needs-attention" role="alert"><b>Analysis needs attention</b><span>${esc(analysisError)}</span></div>`,'Analysis');
   if(['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)&&CHART_TYPES.includes(entry?.element)) return renderChartStudioElement(entry,entry._resolved_dataset||{});
   switch(entry.engine){
     case 'TextEngine': return text(entry);

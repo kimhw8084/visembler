@@ -18,6 +18,7 @@ from company_ui.products.visualizer.dataset_resources import DatasetResourceStor
 from company_ui.products.visualizer.domain import ReportNotFoundError, VisualizerContractError, canonical_model
 from company_ui.products.visualizer.governance import ReportAccessCatalog, ScopedReportRepository
 from company_ui.products.visualizer.ppt_service import export_pptx
+from company_ui.products.visualizer.page import _apply_data_session_filters, _candidate_session, _report_thumbnail_markup
 from company_ui.products.visualizer.repository import ReportRepository
 from company_ui.products.visualizer.statistical_analysis import analyze_statistical_items, require_valid_statistical_results
 from company_ui.security import AuthorizationModel, Principal
@@ -44,11 +45,11 @@ def _cap_item(item_id='capability'):
     return {'id': item_id, 'engine': 'MetricEngine', 'type': 'metric', 'mapping': mapping, 'analysis_recipe': {'id': 'process-capability', 'mapping': mapping}}
 
 
-def _analyze(fields, rows, item, *, source_total=None, filtered_total=None, revision=1, dataset_id='d1'):
+def _analyze(fields, rows, item, *, source_total=None, filtered_total=None, revision=1, dataset_id='d1', filters=()):
     return analyze_statistical_items(
         report_id='report-1', dataset_id=dataset_id, resource_id='resource-1', revision=revision,
         fields=fields, rows=rows, items=[item], session_id='session-1',
-        source_total=len(rows) if source_total is None else source_total,
+        filters=filters, source_total=len(rows) if source_total is None else source_total,
         filtered_total=len(rows) if filtered_total is None else filtered_total,
     )[item['id']]
 
@@ -165,12 +166,27 @@ const populated=renderChartSvg({...xbar,statistical_result:{n:2,means:[1,2],rang
 const empty=renderChartSvg(xbar,{width:760,height:500});
 const error=renderChartSvg({...xbar,analysis_error:'bad'}, {width:760,height:500});
 const card=renderIntegratedElement({...invalidEntry,value:84.2,statistical_result:{means:[84.2]}});
-console.log(JSON.stringify({populated:viewBox(populated),empty:viewBox(empty),error:viewBox(error),card,hasDemo:/(84\.2|Baseline|Pilot|Validation)/.test(card)}));
+const invalidCapability=renderIntegratedElement({engine:'MetricEngine',element:'Hero KPI',title:'Capability',analysis_recipe:{id:'process-capability'},authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'Conflicting LSL values'}]},value:84.2,capability_summary:{cpk:1.7},statistical_result:{cpk:1.7}});
+const invalidDoe=renderIntegratedElement({engine:'EngineeringChartEngine',element:'DOE Interaction Plot',title:'DOE',analysis_recipe:{id:'doe-response-review'},authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'Missing interaction cell'}]},statistical_result:{interaction:{cells:[[99]]}}});
+const invalidChart=renderChartSvg({...xbar,authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'bad Xbar'}]},statistical_result:{means:[84.2]}},{width:760,height:500});
+console.log(JSON.stringify({populated:viewBox(populated),empty:viewBox(empty),error:viewBox(error),card,invalidCapability,invalidDoe,invalidChart,hasDemo:/(84\.2|Baseline|Pilot|Validation|1\.7|99)/.test(card+invalidCapability+invalidDoe+invalidChart)}));
 ''')
     for key in ('populated', 'empty', 'error'):
         assert payload[key]['finite'] is True
     assert 'Analysis needs attention' in payload['card']
+    assert 'Analysis needs attention' in payload['invalidCapability']
+    assert 'Analysis needs attention' in payload['invalidDoe']
+    assert 'Analysis needs attention' in payload['invalidChart']
     assert payload['hasDemo'] is False
+
+    thumb=_report_thumbnail_markup(
+        {'items':[{'id':'cap','engine':'MetricEngine','element':'Hero KPI','value':84.2,'analysis_recipe':{'id':'process-capability'}}]},
+        'Invalid capability',
+        {'cap':{'ok':False,'population':{'complete':False},'errors':[{'message':'Conflicting LSL values'}]}},
+    )
+    assert 'Analysis needs attention' in thumb
+    assert '84.2' not in thumb
+    assert 'Baseline' not in thumb and 'Pilot' not in thumb
 
 
 def test_ppt_statistical_primitives_match_authoritative_editor_result():
@@ -211,6 +227,12 @@ def test_ppt_statistical_primitives_match_authoritative_editor_result():
     assert x_values == [x_result['derived_statistics']['stats']['means'], x_result['derived_statistics']['stats']['ranges']]
     expected_doe = [[cell['mean'] for cell in row] for row in d_result['derived_statistics']['interaction']['cells']]
     assert doe_values == expected_doe
+    invalid_model = canonical_model({'items': [{**cap_item, 'order': 0, 'x': 0, 'y': 0, 'w': 300, 'h': 150, 'value': 84.2, 'authoritative_analysis': {'ok': False, 'population': {'complete': False}, 'errors': [{'message': 'Conflicting LSL values'}]}}], 'datasets': []})
+    with pytest.raises(VisualizerContractError, match='Conflicting LSL values'):
+        export_pptx(None, invalid_model)
+    stale_model = canonical_model({'items': [{**cap_item, 'order': 0, 'x': 0, 'y': 0, 'w': 300, 'h': 150, 'analysis_error': 'Historical analysis needs attention', 'authoritative_analysis': cap_result}], 'datasets': []})
+    with pytest.raises(VisualizerContractError, match='Historical analysis needs attention'):
+        export_pptx(None, stale_model)
 
 
 def test_recommendation_validation_is_conservative_and_shared_with_execution():
@@ -221,9 +243,11 @@ const bad=value=>recommendEngineeringRecipes(fields,[['A',value],['A',2],['B',3]
 const doeFields=[{id:'tool',name:'Tool',type:'categorical'},{id:'chamber',name:'Chamber',type:'categorical'},{id:'yield',name:'Yield',type:'number'}];
 const doe=items=>recommendEngineeringRecipes(doeFields,items).some(item=>item.id==='doe-response-review');
 const tagged=[{id:'a',name:'Factor A',type:'categorical',semantic_tags:['factor_a']},{id:'b',name:'Factor B',type:'categorical',semantic_tags:['factor_b']},{id:'r',name:'Response',type:'number',semantic_tags:['response']}];
-console.log(JSON.stringify({null:bad(null),blank:bad(''),whitespace:bad('   '),boolean:bad(true),malformed:bad('abc'),ordinary:doe([['T1','A',90],['T1','B',91],['T2','A',92],['T2','B',93]]),incomplete:recommendEngineeringRecipes(tagged,[['A','L',1],['A','H',2],['B','L',3]]).some(item=>item.id==='doe-response-review')}));
+const capFields=[{id:'m',name:'Measurement',type:'number',semantic_tags:['value']},{id:'low',name:'LSL',type:'number',semantic_tags:['specification_low']},{id:'high',name:'USL',type:'number',semantic_tags:['specification_high']}];
+const capRecipe=rows=>recommendEngineeringRecipes(capFields,rows).some(item=>item.id==='process-capability');
+console.log(JSON.stringify({null:bad(null),blank:bad(''),whitespace:bad('   '),boolean:bad(true),malformed:bad('abc'),ordinary:doe([['T1','A',90],['T1','B',91],['T2','A',92],['T2','B',93]]),incomplete:recommendEngineeringRecipes(tagged,[['A','L',1],['A','H',2],['B','L',3]]).some(item=>item.id==='doe-response-review'),conflictingCapability:capRecipe([[10,9,11],[10,9.5,11]]),zeroVariationCapability:capRecipe([[10,9,11],[10,9,11]])}));
 ''')
-    assert payload == {'null': False, 'blank': False, 'whitespace': False, 'boolean': False, 'malformed': False, 'ordinary': False, 'incomplete': False}
+    assert payload == {'null': False, 'blank': False, 'whitespace': False, 'boolean': False, 'malformed': False, 'ordinary': False, 'incomplete': False, 'conflictingCapability': False, 'zeroVariationCapability': False}
 
 
 def test_cross_report_resource_access_is_denied_and_stale_revision_is_ignored(tmp_path: Path):
@@ -238,9 +262,72 @@ def test_cross_report_resource_access_is_denied_and_stale_revision_is_ignored(tm
     with pytest.raises((PermissionError, ReportNotFoundError)):
         ScopedDatasetRepository(store, scoped).session_for_report('report-b', 'd1')
     assert node_json(r'''
-import {acceptsStatisticalResult} from './company_ui/products/visualizer/assets/statistical_result_guard.mjs';
-console.log(JSON.stringify({same:acceptsStatisticalResult({expectedRevision:2,resultRevision:2}),stale:acceptsStatisticalResult({expectedRevision:2,resultRevision:1}),request:acceptsStatisticalResult({activeRequestId:'new',resultRequestId:'old'})}));
-''') == {'same': True, 'stale': False, 'request': False}
+import {acceptsStatisticalResult,nextRequestId,resultKey} from './company_ui/products/visualizer/assets/statistical_result_guard.mjs';
+const key=resultKey('report-a','d1','session-a'),requests={[key]:{current:9}};
+const request10=nextRequestId(requests,key),request11=nextRequestId(requests,key);
+let state={visibleFilter:'none',population:0};
+const apply=(requestId,filter,population)=>{const expectedFilters=[['product','equals',filter,null,null]],resultFilters=[['product','equals',filter,null,null]];if(acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',expectedSessionId:'session-a',resultSessionId:'session-a',expectedFilters,resultFilters,expectedRevision:4,resultRevision:4,activeRequestId:requests[key].current,resultRequestId:requestId})){state={visibleFilter:filter,population};}};
+apply(request11,'B',2); apply(request10,'A',1);
+console.log(JSON.stringify({same:acceptsStatisticalResult({expectedRevision:2,resultRevision:2}),revision_stale:acceptsStatisticalResult({expectedRevision:2,resultRevision:1}),request_stale:acceptsStatisticalResult({activeRequestId:'new',resultRequestId:'old'}),request10,request11,state,report_switch:acceptsStatisticalResult({expectedReportId:'report-b',resultReportId:'report-a',activeRequestId:1,resultRequestId:1})}));
+    ''') == {'same': True, 'revision_stale': False, 'request_stale': False, 'request10': 10, 'request11': 11, 'state': {'visibleFilter': 'B', 'population': 2}, 'report_switch': False}
+
+
+def test_filter_intent_converges_with_datasession_and_statistical_population(tmp_path: Path):
+    fields=[
+        {'id':'tool','name':'Tool','type':'categorical'},
+        {'id':'product','name':'Product','type':'categorical'},
+        {'id':'chamber','name':'Chamber','type':'categorical'},
+        {'id':'measurement','name':'Measurement','type':'number'},
+        {'id':'lsl','name':'LSL','type':'number'},
+        {'id':'usl','name':'USL','type':'number'},
+    ]
+    rows=[
+        ['ETCH-01','P1','B',1,0,40],['ETCH-01','P1','B',2,0,40],['ETCH-01','P2','B',10,0,40],['ETCH-01','P2','B',11,0,40],
+        ['DEP-02','P2','A',20,0,40],['DEP-02','P2','A',21,0,40],['DEP-02','P1','A',30,0,40],['DEP-02','P1','A',31,0,40],
+    ]
+    item={'id':'capability','analysis_recipe':{'id':'process-capability','mapping':{'value':'measurement','specification_low':'lsl','specification_high':'usl'}}}
+    store=DatasetResourceStore(tmp_path)
+    resource=store.create(owner='alice',name='filter-intent',fields=fields,rows=rows)
+    session=store.session(resource['dataset_id'])
+
+    def apply(values, replace=True):
+        clauses=[FilterClause(field,FilterOperation.EQUALS,value) for field,value in values]
+        _apply_data_session_filters(session,clauses,replace=replace)
+        result=session.query(DataQuery(limit=None))
+        analyzed=_analyze(fields,[[row[field['id']] for field in fields] for row in result.rows],item,source_total=8,filtered_total=result.filtered_total,revision=resource['revision'],dataset_id=resource['dataset_id'],filters=session.filters)
+        return result,analyzed
+
+    result,unfiltered=apply([])
+    assert session.filters==() and result.filtered_total==8 and unfiltered['population']=={'source_total':8,'filtered_total':8,'analyzed_rows':8,'complete':True}
+    assert unfiltered['derived_statistics']['stats']['mean'] == 15.75
+    result,tool=apply([('tool','ETCH-01')])
+    assert [(clause.field,clause.value) for clause in session.filters]==[('tool','ETCH-01')]
+    assert result.filtered_total==4 and tool['population']['analyzed_rows']==4
+    assert tool['derived_statistics']['stats']['mean'] == 6
+    result,product=apply([('product','P2')])
+    assert [(clause.field,clause.value) for clause in session.filters]==[('product','P2')]
+    assert result.filtered_total==4 and product['population']['filtered_total']==4
+    assert product['derived_statistics']['stats']['mean'] == 15.5
+    result,compound=apply([('tool','ETCH-01'),('chamber','B')])
+    assert [(clause.field,clause.value) for clause in session.filters]==[('tool','ETCH-01'),('chamber','B')]
+    assert result.filtered_total==4 and compound['population']['analyzed_rows']==4
+    assert compound['derived_statistics']['stats']['mean'] == 6
+    result,removed=apply([('tool','ETCH-01')])
+    assert [(clause.field,clause.value) for clause in session.filters]==[('tool','ETCH-01')]
+    assert result.filtered_total==4 and removed['session']['filter_fingerprint']!=compound['session']['filter_fingerprint']
+    assert removed['derived_statistics']['stats']['mean'] == 6
+    result,cleared=apply([])
+    assert session.filters==() and result.filtered_total==8 and cleared['population']['analyzed_rows']==8
+    assert cleared['derived_statistics']['stats']['mean'] == 15.75
+
+    candidate=_candidate_session(resource['dataset_id'],fields,rows,resource['revision']+1,[FilterClause('tool',FilterOperation.EQUALS,'ETCH-01')])
+    candidate_result=candidate.query(DataQuery(limit=None))
+    candidate_rows=[[row[field['id']] for field in fields] for row in candidate_result.rows]
+    candidate_analysis=_analyze(fields,candidate_rows,item,source_total=len(rows),filtered_total=candidate_result.filtered_total,revision=resource['revision']+1,dataset_id=resource['dataset_id'],filters=candidate.filters)
+    assert candidate_result.filtered_total==4 and len(candidate_result.rows)==4
+    assert candidate_analysis['population']=={'source_total':8,'filtered_total':4,'analyzed_rows':4,'complete':True}
+    assert candidate_analysis['session']['filter_fingerprint']!=cleared['session']['filter_fingerprint']
+    assert candidate_analysis['derived_statistics']['stats']['mean']==6
 
 
 @pytest.mark.parametrize('viewport_width', [1440, 768, 390])
@@ -501,3 +588,156 @@ def test_native_bound_capability_uses_full_population_after_reopen(tmp_path: Pat
                 finally:
                     context.close()
                     browser.close()
+
+
+def test_native_bound_doe_uses_complete_cells_and_exports(tmp_path: Path):
+    """The shipped Editor must use governed complete-cell DOE results after binding."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import model, panels, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    fields = [
+        {'id': 'factor_a', 'name': 'Factor A', 'type': 'categorical'},
+        {'id': 'factor_b', 'name': 'Factor B', 'type': 'categorical'},
+        {'id': 'response', 'name': 'Response', 'type': 'number'},
+    ]
+    rows = [
+        ['A', 'L', 10], ['A', 'L', 12], ['A', 'H', 14], ['A', 'H', 16],
+        ['B', 'L', 20], ['B', 'L', 22], ['B', 'H', 28], ['B', 'H', 30],
+    ]
+    mapping = {'factor_a': 'factor_a', 'factor_b': 'factor_b', 'response': 'response'}
+    item = {
+        'id': 'doe', 'type': 'chart', 'engine': 'EngineeringChartEngine',
+        'element': 'DOE Interaction Plot', 'title': 'DOE Interaction',
+        'dataset_id': 'd1', 'mapping': mapping,
+        'analysis_recipe': {'id': 'doe-response-review', 'mapping': mapping},
+        'order': 0, 'x': 20, 'y': 20, 'w': 720, 'h': 360,
+    }
+    report_model = canonical_model({'datasets': [{'id': 'd1', 'name': 'DOE source', 'fields': fields, 'rows': rows}], 'items': [item], 'nextId': 2})
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-doe-') as data_dir:
+        with NativeHost(ROOT, Path(data_dir) / 'native-data') as host:
+            report_id = host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                context = browser.new_context(viewport={'width': 1440, 'height': 1000}, accept_downloads=True)
+                page = context.new_page()
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}', wait_until='domcontentloaded')
+                    ready(page)
+                    settled(page)
+                    doe = page.locator('.component[data-id="doe"]')
+                    assert 'Analysis needs attention' not in doe.inner_text()
+                    assert doe.locator('svg').count() > 0
+                    doe.focus()
+                    doe.press('Enter')
+                    panels(page, library=False, inspector=True)
+                    page.locator('[data-dataset-action="bind-resource"]').click()
+                    page.wait_for_function(
+                        '() => window.CompanyUIVisualizerBridge.state().model.datasets.some(dataset => dataset.resource_id)',
+                        timeout=20000,
+                    )
+                    settled(page)
+                    dataset = next(dataset for dataset in model(page)['datasets'] if dataset.get('resource_id'))
+                    assert dataset['row_count'] == 8
+                    assert len(dataset['rows']) == 8
+                    assert 'Analysis needs attention' not in doe.inner_text()
+                    preflight = page.evaluate('() => window.__VIZ_PROD__.preflight()')
+                    assert not preflight['dataIssues'], preflight
+                    page.locator('#exportBtn').click()
+                    if preflight['layoutIssues']:
+                        page.locator('#exportPptAction').click()
+                        assert page.locator('#genericModal.show').count() == 1
+                    else:
+                        with page.expect_download(timeout=20000) as download_info:
+                            page.locator('#exportPptAction').click()
+                        ppt_bytes = Path(download_info.value.path()).read_bytes()
+                        assert len(ppt_bytes) > 1000
+                        deck = Presentation(io.BytesIO(ppt_bytes))
+                        assert any(getattr(shape, 'has_chart', False) for slide in deck.slides for shape in slide.shapes)
+                    assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+                    assert 'NaN' not in page.locator('body').inner_text()
+                    assert 'Infinity' not in page.locator('body').inner_text()
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    context.close()
+                    browser.close()
+
+
+def test_native_invalid_statistical_reports_fail_closed_in_editor_preview_hub_and_export(tmp_path: Path):
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost, load_editor
+        from run_editor_workflows import ready
+    finally:
+        sys.path.remove(scripts)
+
+    cap_fields=_cap_fields()
+    x_fields=[{'id':'subgroup','name':'Subgroup','type':'categorical'},{'id':'measurement','name':'Measurement','type':'number'}]
+    d_fields=[{'id':'factor_a','name':'Factor A','type':'categorical'},{'id':'factor_b','name':'Factor B','type':'categorical'},{'id':'response','name':'Response','type':'number'}]
+    cap_item={**_cap_item('cap'),'type':'metric','engine':'MetricEngine','element':'Hero KPI','title':'Capability','dataset_id':'cap-dataset','order':0,'x':20,'y':20,'w':360,'h':180,'value':84.2}
+    x_mapping={'subgroup':'subgroup','value':'measurement'}
+    x_item={'id':'xbar','type':'chart','engine':'EngineeringChartEngine','element':'Xbar-R Chart','title':'Xbar-R','dataset_id':'x-dataset','mapping':x_mapping,'analysis_recipe':{'id':'xbar-r-process-review','mapping':x_mapping},'order':1,'x':420,'y':20,'w':520,'h':300}
+    d_mapping={'factor_a':'factor_a','factor_b':'factor_b','response':'response'}
+    d_item={'id':'doe','type':'chart','engine':'EngineeringChartEngine','element':'DOE Interaction Plot','title':'DOE Interaction','dataset_id':'d-dataset','mapping':d_mapping,'analysis_recipe':{'id':'doe-response-review','mapping':d_mapping},'order':2,'x':20,'y':340,'w':920,'h':300}
+    report_model=canonical_model({'datasets':[
+        {'id':'cap-dataset','name':'Capability','fields':cap_fields,'rows':[[1,0,10],[1,0,10]]},
+        {'id':'x-dataset','name':'Xbar','fields':x_fields,'rows':[['A',1],['A',2],['B',3],['B',4],['B',5]]},
+        {'id':'d-dataset','name':'DOE','fields':d_fields,'rows':[['A','L',1],['A','H',2],['B','L',3]]},
+    ],'items':[cap_item,x_item,d_item],'nextId':4})
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-invalid-statistical-') as data_dir:
+        with NativeHost(ROOT,Path(data_dir)/'native-data') as host:
+            report_id=host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable=os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options={'headless':True}
+                if executable: options.update(executable_path=executable,args=['--no-sandbox'])
+                browser=instance.chromium.launch(**options); context=browser.new_context(viewport={'width':1440,'height':1000})
+                page=context.new_page(); errors=[]; failed=[]
+                page.on('pageerror',lambda error:errors.append(str(error)))
+                page.on('console',lambda message:errors.append(message.text) if message.type=='error' else None)
+                page.on('requestfailed',lambda request:failed.append((request.url,request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}',wait_until='domcontentloaded'); ready(page); page.wait_for_timeout(700)
+                    body='\n'.join(page.locator('.component').all_inner_texts())
+                    assert body.count('Analysis needs attention')>=3
+                    for forbidden in ('84.2','Baseline','Pilot','Validation','1.7','99'):
+                        assert forbidden not in body
+                    page.locator('#previewBtn').click(); page.wait_for_timeout(300)
+                    preview='\n'.join(page.locator('.component').all_inner_texts())
+                    assert preview.count('Analysis needs attention')>=3
+                    assert '84.2' not in preview and 'Baseline' not in preview and 'Pilot' not in preview
+                    page.locator('#previewExit').click()
+                    page.locator('#exportBtn').click()
+                    page.locator('#exportPptAction').click(); page.wait_for_timeout(300)
+                    assert 'Resolve export-blocking validation issues first' in page.locator('body').inner_text()
+                    page.goto(f'{host.url}/visualizer/reports',wait_until='domcontentloaded'); page.wait_for_timeout(1000)
+                    hub=page.locator('[data-testid="report-card"]').filter(has_text='Analysis needs attention')
+                    assert hub.count()==1, page.locator('body').inner_text()
+                    thumb=hub.locator('.cui-report-thumb').inner_text()
+                    assert 'Analysis needs attention' in thumb
+                    assert '84.2' not in thumb and 'Baseline' not in thumb and 'Pilot' not in thumb
+                    assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+                    assert not errors, errors
+                    assert not failed, failed
+                finally:
+                    context.close(); browser.close()

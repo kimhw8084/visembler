@@ -21,7 +21,7 @@ from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
 from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
-from company_ui.data_engine import DataQuery, FilterClause, FilterOperation, SortClause
+from company_ui.data_engine import DataQuery, DataSession, Dataset, FilterClause, FilterOperation, SortClause
 
 from .domain import BRIDGE_MAX_BYTES, MODEL_MAX_BYTES, ReportNotFoundError, RevisionConflictError, VisualizerContractError, canonical_model, stable_json
 from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
@@ -48,7 +48,7 @@ MAX_REUSE_RECORDS = 100
 MAX_REUSE_BYTES = 1_000_000
 _ALLOWED_EVENTS = {
     'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested','mapping.preferences_requested','mapping.preferences_save_requested',
-    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.filters_requested','dataset.reset_requested','dataset.export_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
+    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.filters_requested','dataset.reset_requested','analysis.statistical_requested','dataset.export_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
 }
 _MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer','wafer_difference','tool_chamber_matrix','golden_affected_profile','control_affected_distribution'}
 _MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','cohort','reference_value','affected_value','delta','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
@@ -67,6 +67,25 @@ def _dataset_export_bytes(fields: list[Mapping[str, Any]], rows: list[Mapping[st
     for row in rows:
         writer.writerow([row.get(field_id) for field_id in field_ids])
     return output.getvalue().encode('utf-8')
+
+
+def _apply_data_session_filters(session: Any, filters: list[FilterClause], *, replace: bool) -> None:
+    """Apply the complete UI filter intent to the report-owned DataSession."""
+    with session.transaction():
+        if replace:
+            session.clear_filters()
+        for clause in filters:
+            session.set_filter(clause)
+
+
+def _candidate_session(dataset_id: str, fields: list[Mapping[str, Any]], rows: list[list[Any]],
+                       source_revision: int, filters: list[FilterClause]) -> DataSession:
+    """Evaluate a refresh candidate through the same governed DataSession semantics."""
+    field_ids = [str(field.get('id') or '') for field in fields]
+    row_maps = [dict(zip(field_ids, row)) for row in rows]
+    session = DataSession(Dataset(f'refresh:{dataset_id}', row_maps, revision=source_revision))
+    _apply_data_session_filters(session, filters, replace=True)
+    return session
 
 def _normalized_mapping_field(value: Any) -> str:
     import re
@@ -150,7 +169,7 @@ class _VisualizerResourceBoundary:
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','analysis_semantics.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','analysis_semantics.mjs','statistical_presentation.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -371,7 +390,33 @@ def _report_thumbnail_geometry(model: Mapping[str,Any]) -> list[dict[str,Any]]:
     return result
 
 
-def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> str:
+_STATISTICAL_THUMBNAIL_RECIPES=frozenset({'xbar-r-process-review','process-capability','doe-response-review'})
+
+
+def _statistical_thumbnail_error(entry: Mapping[str,Any], analysis_results: Mapping[str,Any] | None) -> str | None:
+    explicit=str(entry.get('analysis_error') or '').strip()
+    if explicit: return explicit
+    semantic=entry.get('analysis_semantics') if isinstance(entry.get('analysis_semantics'),Mapping) else {}
+    if semantic.get('ok') is False:
+        errors=semantic.get('errors') or []
+        return str(errors[0].get('message') if errors and isinstance(errors[0],Mapping) else 'The statistical analysis could not be validated.')
+    recipe=entry.get('analysis_recipe') if isinstance(entry.get('analysis_recipe'),Mapping) else {}
+    authoritative=entry.get('authoritative_analysis') if isinstance(entry.get('authoritative_analysis'),Mapping) else None
+    if str(recipe.get('id') or '') in _STATISTICAL_THUMBNAIL_RECIPES and authoritative is not None:
+        population=authoritative.get('population') if isinstance(authoritative.get('population'),Mapping) else {}
+        if authoritative.get('ok') is not True or population.get('complete') is not True:
+            errors=authoritative.get('errors') or []
+            return str(errors[0].get('message') if errors and isinstance(errors[0],Mapping) else 'The statistical analysis is invalid or incomplete.')
+    result=analysis_results.get(str(entry.get('id'))) if isinstance(analysis_results,Mapping) else None
+    if str(recipe.get('id') or '') in _STATISTICAL_THUMBNAIL_RECIPES and isinstance(result,Mapping):
+        population=result.get('population') if isinstance(result.get('population'),Mapping) else {}
+        if result.get('ok') is not True or population.get('complete') is not True:
+            errors=result.get('errors') or []
+            return str(errors[0].get('message') if errors and isinstance(errors[0],Mapping) else 'The statistical analysis is invalid or incomplete.')
+    return None
+
+
+def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report', analysis_results: Mapping[str,Any] | None=None) -> str:
     """Render a content-derived miniature, never a generic item-count block."""
     items=[entry for entry in model.get('items',[]) if isinstance(entry,Mapping)]
     if not items:
@@ -393,6 +438,11 @@ def _report_thumbnail_markup(model: Mapping[str,Any], title: str='Report') -> st
         entry=geometry['entry'];x=geometry['x'];y=geometry['y'];w=geometry['w'];h=geometry['h']
         engine=str(entry.get('engine') or '');element=str(entry.get('element') or '');family='text'
         outer=f'<rect class="thumb-card" x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" rx="4"/>'
+        analysis_error=_statistical_thumbnail_error(entry,analysis_results)
+        if analysis_error:
+            inner=f'<text class="thumb-copy" x="{x+7:.1f}" y="{y+min(22,max(12,h*.34)):.1f}">Analysis needs attention</text><text class="thumb-copy" x="{x+7:.1f}" y="{y+min(h-7,max(28,h*.58)):.1f}">{html_escape(analysis_error[:72])}</text>'
+            shapes.append(f'<g data-preview-family="analysis-error" data-preview-element="{html_escape(element)}">{outer}{inner}</g>')
+            continue
         if engine in {'CoreChartEngine','EngineeringChartEngine'}:
             family='chart';nums=values(entry) or [2,5,3,7];lo=min(nums);span=max(1e-9,max(nums)-lo);points=' '.join(f'{x+6+i*max(1,w-12)/max(1,len(nums)-1):.1f},{y+h-6-(value-lo)/span*max(6,h-14):.1f}' for i,value in enumerate(nums));inner=f'<path class="thumb-axis" d="M{x+5:.1f} {y+5:.1f}V{y+h-5:.1f}H{x+w-4:.1f}"/><polyline class="thumb-chart-line" points="{points}"/>'
         elif engine=='WaferFabEngine':
@@ -619,11 +669,74 @@ def register_visualizer(
         page_state=NiceGUIStateServices.user_store()
         request=ui.context.client.request
         repository=scoped_repository(request)
+        hub_dataset_repository=ScopedDatasetRepository(dataset_store, repository)
         query_report=str(request.query_params.get('report') or '')
         history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
         can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
         delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; hub_layout='grid'
         share_target={'report_id':None}
+
+        def hub_statistical_results(record_or_model: Any, *, report_id: str | None = None) -> dict[str, dict[str, Any]]:
+            """Resolve thumbnail statistics through the same scoped boundary as the editor."""
+            record = record_or_model if hasattr(record_or_model, 'model') else None
+            model = record.model if record is not None else record_or_model
+            resolved_report_id = str(report_id or (record.report_id if record is not None else ''))
+            results: dict[str, dict[str, Any]] = {}
+            for dataset in model.get('datasets', []) if isinstance(model, Mapping) else []:
+                if not isinstance(dataset, Mapping):
+                    continue
+                dataset_id = str(dataset.get('id') or '')
+                items = [
+                    item for item in model.get('items', [])
+                    if isinstance(item, Mapping) and str(item.get('dataset_id')) == dataset_id
+                ]
+                if not items:
+                    continue
+                try:
+                    if dataset.get('resource_id'):
+                        resource = hub_dataset_repository.get_for_report(resolved_report_id, dataset_id)
+                        session = hub_dataset_repository.session_for_report(resolved_report_id, dataset_id)
+                        full = session.query(DataQuery(limit=None))
+                        fields = resource['fields']
+                        rows = [[row.get(field['id']) for field in fields] for row in full.rows]
+                        results.update(analyze_statistical_items(
+                            report_id=resolved_report_id,
+                            dataset_id=dataset_id,
+                            resource_id=str(resource['resource_id']),
+                            revision=int(resource['revision']),
+                            fields=fields,
+                            rows=rows,
+                            items=items,
+                            session_id=f'report:{resolved_report_id}',
+                            filters=session.filters,
+                            source_total=int(resource['row_count']),
+                            filtered_total=int(full.filtered_total if full.filtered_total is not None else len(rows)),
+                            complete=True,
+                        ))
+                    else:
+                        rows = [list(row) for row in dataset.get('rows') or []]
+                        results.update(analyze_statistical_items(
+                            report_id=resolved_report_id,
+                            dataset_id=dataset_id,
+                            resource_id='',
+                            revision=int(dataset.get('revision') or 0),
+                            fields=list(dataset.get('fields') or []),
+                            rows=rows,
+                            items=items,
+                            session_id=f'report:{resolved_report_id}',
+                            source_total=len(rows),
+                            filtered_total=len(rows),
+                            complete=True,
+                        ))
+                except Exception as exc:
+                    for item in items:
+                        if isinstance(item.get('analysis_recipe'), Mapping):
+                            results[str(item.get('id') or '')] = {
+                                'ok': False,
+                                'errors': [{'code': 'ANALYSIS_RESOLUTION', 'message': str(exc)}],
+                                'population': {'complete': False},
+                            }
+            return results
 
         ui.add_head_html('''<style>
           .cui-report-hub{max-width:1440px;margin:0 auto;padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5)}
@@ -782,7 +895,7 @@ def register_visualizer(
                         with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
                             for record in visible:
                                 with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="active"'):
-                                    ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False)
+                                    ui.html(_report_thumbnail_markup(record.model,record.title,hub_statistical_results(record)),sanitize=False)
                                     projection=repository.capabilities(record.report_id)
                                     if projection.can_rename:
                                         ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
@@ -810,7 +923,7 @@ def register_visualizer(
                         with ui.element('div').classes('cui-report-grid'):
                             for record in visible:
                                 with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="trash"'):
-                                    ui.html(_report_thumbnail_markup(record.model,record.title),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
+                                    ui.html(_report_thumbnail_markup(record.model,record.title,hub_statistical_results(record)),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
                                     with ui.row().classes('cui-report-card-actions'):
                                         projection=repository.capabilities(record.report_id)
                                         if projection.can_restore: ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps data-report-action="restore"')
@@ -844,8 +957,8 @@ def register_visualizer(
                             summary=f'r{entry["revision"]} · {entry.get("updated_at") or "timestamp unavailable"} · {entry.get("label") or "Saved revision"}{" · checkpoint" if entry.get("checkpoint") else ""}'
                             with ui.card().classes('cui-history-card'):
                                 with ui.element('div').classes('cui-history-compare'):
-                                    with ui.element('div'): ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}'),sanitize=False); ui.label(f'r{entry["revision"]}').classes('cui-history-preview-label')
-                                    with ui.element('div'): ui.html(_report_thumbnail_markup(record.model,f'{record.title} current'),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
+                                    with ui.element('div'): ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}',hub_statistical_results(historical,report_id=record.report_id)),sanitize=False); ui.label(f'r{entry["revision"]}').classes('cui-history-preview-label')
+                                    with ui.element('div'): ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
                                 with ui.element('div').classes('cui-history-card-copy'):
                                     ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(historical,record.model)).classes('text-caption')
                                     with ui.row().classes('cui-history-actions'):
@@ -941,7 +1054,20 @@ def register_visualizer(
         def session_key(dataset_id: str, raw_session_id: str) -> str:
             return f'{raw_session_id}:{dataset_id}'
 
-        def bound_analysis(dataset_id: str, *, session: Any = None, record: Any = None) -> dict[str, dict[str, Any]]:
+        def session_filter_payload(session: Any) -> list[dict[str, Any]]:
+            return [
+                {
+                    'field': clause.field,
+                    'operation': clause.operation.value,
+                    'value': clause.value,
+                    'value2': clause.value2,
+                    'filter_id': clause.filter_id,
+                }
+                for clause in session.filters
+            ]
+
+        def bound_analysis(dataset_id: str, *, session: Any = None, record: Any = None,
+                           session_id: str | None = None, request_id: Any = None) -> dict[str, dict[str, Any]]:
             target_record = record or current
             resource = dataset_repository.get_for_report(target_record.report_id, dataset_id)
             active_session = session or dataset_repository.session_for_report(target_record.report_id, dataset_id)
@@ -949,7 +1075,7 @@ def register_visualizer(
             fields = resource['fields']
             rows = [[row.get(field['id']) for field in fields] for row in full.rows]
             items = [item for item in target_record.model.get('items', []) if isinstance(item, Mapping) and str(item.get('dataset_id')) == str(dataset_id)]
-            return analyze_statistical_items(
+            results = analyze_statistical_items(
                 report_id=target_record.report_id,
                 dataset_id=dataset_id,
                 resource_id=str(resource['resource_id']),
@@ -957,23 +1083,47 @@ def register_visualizer(
                 fields=fields,
                 rows=rows,
                 items=items,
-                session_id=f'report:{target_record.report_id}',
+                session_id=str(session_id or f'report:{target_record.report_id}'),
                 filters=active_session.filters,
                 source_total=int(resource['row_count']),
                 filtered_total=int(full.filtered_total if full.filtered_total is not None else len(rows)),
                 complete=True,
             )
+            for result in results.values():
+                result['session_filters'] = session_filter_payload(active_session)
+                if request_id is not None:
+                    result['request_id'] = int(request_id)
+            return results
 
         def report_statistical_results(record: Any) -> dict[str, dict[str, Any]]:
             results: dict[str, dict[str, Any]] = {}
             for dataset in record.model.get('datasets', []) if isinstance(record.model, Mapping) else []:
-                if not isinstance(dataset, Mapping) or not dataset.get('resource_id'):
+                if not isinstance(dataset, Mapping):
                     continue
-                results.update(bound_analysis(str(dataset.get('id')), record=record))
+                dataset_id=str(dataset.get('id') or '')
+                if dataset.get('resource_id'):
+                    results.update(bound_analysis(dataset_id, record=record))
+                    continue
+                items=[item for item in record.model.get('items',[]) if isinstance(item,Mapping) and str(item.get('dataset_id'))==dataset_id]
+                if not items: continue
+                results.update(analyze_statistical_items(
+                    report_id=record.report_id, dataset_id=dataset_id, resource_id='', revision=int(dataset.get('revision') or 0),
+                    fields=list(dataset.get('fields') or []), rows=[list(row) for row in dataset.get('rows') or []], items=items,
+                    session_id=f'report:{record.report_id}', source_total=len(dataset.get('rows') or []),
+                    filtered_total=len(dataset.get('rows') or []), complete=True,
+                ))
             return results
 
         def export_model(record: Any) -> dict[str, Any]:
             model = json.loads(stable_json(record.model))
+            for item in model.get('items', []):
+                if not isinstance(item, Mapping):
+                    continue
+                recipe = item.get('analysis_recipe') if isinstance(item.get('analysis_recipe'), Mapping) else {}
+                if str(recipe.get('id') or '') in _STATISTICAL_THUMBNAIL_RECIPES:
+                    persisted_error = _statistical_thumbnail_error(item, None)
+                    if persisted_error:
+                        raise VisualizerContractError(persisted_error)
             results: dict[str, dict[str, Any]] = {}
             for dataset in model.get('datasets', []):
                 if not isinstance(dataset, Mapping):
@@ -1023,9 +1173,7 @@ def register_visualizer(
                     filters.append(FilterClause(str(value.get('field') or ''), FilterOperation(str(value.get('operation') or 'equals')), value.get('value'), value.get('value2'), str(value.get('filter_id') or '') or None))
                 except (TypeError, ValueError):
                     raise VisualizerContractError('invalid dataset filter')
-            with session.transaction():
-                for clause in filters:
-                    session.set_filter(clause)
+            _apply_data_session_filters(session,filters,replace=bool(raw.get('replace_filters')))
             sorts=[]
             for value in raw.get('sorts', ()) if isinstance(raw.get('sorts'), list) else ():
                 if isinstance(value, Mapping) and value.get('key'):
@@ -1117,7 +1265,7 @@ def register_visualizer(
                     latest=repository.export(current.report_id); output=export_pptx(ppt_template['content'],export_model(latest),asset_data_url=lambda asset_id: repository.asset_data_url(latest.report_id,asset_id))
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
-                if kind=='dataset.binding_requested':
+                if kind in {'dataset.binding_requested','analysis.statistical_requested'}:
                     dataset_id=str(payload.get('dataset_id') or '')
                     if not dataset_id: raise VisualizerContractError('dataset_id is required')
                     session_id=str(payload.get('session_id') or dataset_id)
@@ -1128,7 +1276,7 @@ def register_visualizer(
                         data_sessions[key]=session
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
                     result=data_query(session,payload)
-                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'resource_id':resource['resource_id'],'schema':resource['schema'],'row_count':resource['row_count'],'analysis_results':bound_analysis(dataset_id,session=session),'result':result}); return
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'request_id':payload.get('request_id'),'session_filters':session_filter_payload(session),'resource_id':resource['resource_id'],'schema':resource['schema'],'row_count':resource['row_count'],'analysis_results':bound_analysis(dataset_id,session=session,session_id=session_id,request_id=payload.get('request_id')),'result':result}); return
                 if kind=='dataset.filter_requested':
                     dataset_id=str(payload.get('dataset_id') or '')
                     session_id=str(payload.get('session_id') or dataset_id)
@@ -1138,8 +1286,8 @@ def register_visualizer(
                     filter_value=payload.get('filter')
                     if not isinstance(filter_value, Mapping): raise VisualizerContractError('dataset filter is required')
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
-                    result=data_query(session,{'filters':[filter_value],'offset':payload.get('offset',0),'limit':payload.get('limit')})
-                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'analysis_results':bound_analysis(dataset_id,session=session),'result':result,'request_id':payload.get('request_id')}); return
+                    result=data_query(session,{'filters':[filter_value],'replace_filters':True,'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'session_filters':session_filter_payload(session),'analysis_results':bound_analysis(dataset_id,session=session,session_id=session_id,request_id=payload.get('request_id')),'result':result,'request_id':payload.get('request_id')}); return
                 if kind=='dataset.filters_requested':
                     dataset_id=str(payload.get('dataset_id') or '')
                     session_id=str(payload.get('session_id') or dataset_id)
@@ -1148,20 +1296,19 @@ def register_visualizer(
                     filters=payload.get('filters')
                     if not isinstance(filters,list): raise VisualizerContractError('dataset filters are required')
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
-                    with session.transaction():
-                        session.clear_filters()
-                    result=data_query(session,{'filters':filters,'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    result=data_query(session,{'filters':filters,'replace_filters':True,'offset':payload.get('offset',0),'limit':payload.get('limit')})
                     data_sessions[key]=session
-                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'analysis_results':bound_analysis(dataset_id,session=session),'result':result,'request_id':payload.get('request_id')}); return
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'session_filters':session_filter_payload(session),'analysis_results':bound_analysis(dataset_id,session=session,session_id=session_id,request_id=payload.get('request_id')),'result':result,'request_id':payload.get('request_id')}); return
                 if kind=='dataset.reset_requested':
                     dataset_id=str(payload.get('dataset_id') or '')
                     session_id=str(payload.get('session_id') or dataset_id)
                     key=session_key(dataset_id, session_id)
                     session=data_sessions.get(key) or dataset_repository.session_for_report(current.report_id,dataset_id)
-                    session.clear_filters(); data_sessions[key]=session
+                    with session.transaction(): session.clear_filters()
+                    data_sessions[key]=session
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
                     result=data_query(session,{'offset':payload.get('offset',0),'limit':payload.get('limit')})
-                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'analysis_results':bound_analysis(dataset_id,session=session),'result':result,'request_id':payload.get('request_id')}); return
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'session_filters':session_filter_payload(session),'analysis_results':bound_analysis(dataset_id,session=session,session_id=session_id,request_id=payload.get('request_id')),'result':result,'request_id':payload.get('request_id')}); return
                 if kind=='dataset.export_requested':
                     repository.require_export(current.report_id)
                     dataset_id=str(payload.get('dataset_id') or '')
@@ -1208,8 +1355,8 @@ def register_visualizer(
                         dataset_store.delete(resource['dataset_id'])
                         raise
                     current=record; data_sessions.clear()
-                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
-                    await send('report.bootstrap',report_payload(record)); return
+                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint'],'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{current.report_id}')})
+                    await send('report.bootstrap',{**report_payload(record),'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{record.report_id}')}); return
                 if kind=='dataset.resource_refresh_requested':
                     dataset_id=str(payload.get('dataset_id') or '')
                     dataset_value=payload.get('dataset')
@@ -1222,7 +1369,10 @@ def register_visualizer(
                     candidate_fields=list(dataset_value.get('fields') or [])
                     candidate_rows=[list(row) for row in dataset_value.get('rows') or []]
                     consumers=[value for value in current.model.get('items',[]) if isinstance(value,Mapping) and str(value.get('dataset_id'))==dataset_id]
-                    candidate_results=analyze_statistical_items(report_id=current.report_id,dataset_id=dataset_id,resource_id=str(resource_before['resource_id']),revision=int(resource_before['revision'])+1,fields=candidate_fields,rows=candidate_rows,items=consumers,session_id=f'report:{current.report_id}',filters=refresh_session.filters,source_total=len(candidate_rows),filtered_total=len(candidate_rows),complete=True)
+                    candidate_session=_candidate_session(dataset_id,candidate_fields,candidate_rows,int(resource_before['revision'])+1,list(refresh_session.filters))
+                    candidate_full=candidate_session.query(DataQuery(limit=None))
+                    candidate_filtered_rows=[[row.get(field['id']) for field in candidate_fields] for row in candidate_full.rows]
+                    candidate_results=analyze_statistical_items(report_id=current.report_id,dataset_id=dataset_id,resource_id=str(resource_before['resource_id']),revision=int(resource_before['revision'])+1,fields=candidate_fields,rows=candidate_filtered_rows,items=consumers,session_id=f'report:{current.report_id}',filters=candidate_session.filters,source_total=len(candidate_rows),filtered_total=int(candidate_full.filtered_total if candidate_full.filtered_total is not None else len(candidate_filtered_rows)),complete=True)
                     require_valid_statistical_results(candidate_results)
                     resource=dataset_repository.replace_for_report(current.report_id,dataset_id,fields=dataset_value.get('fields') or [],rows=dataset_value.get('rows') or [],expected_revision=payload.get('expected_revision'),provenance=str((dataset_value.get('source') or {}).get('label') if isinstance(dataset_value.get('source'),Mapping) else ''),source_metadata=dataset_value.get('source') if isinstance(dataset_value.get('source'),Mapping) else {})
                     try:
@@ -1235,14 +1385,18 @@ def register_visualizer(
                         # retained for deterministic operator recovery.
                         raise
                     current=record; data_sessions.clear()
-                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
-                    await send('report.bootstrap',report_payload(record)); return
+                    preserved_session=dataset_repository.session_for_report(current.report_id,dataset_id)
+                    _apply_data_session_filters(preserved_session,list(refresh_session.filters),replace=True)
+                    data_sessions[refresh_key]=preserved_session
+                    data_sessions[session_key(dataset_id,f'report:{current.report_id}')]=preserved_session
+                    await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint'],'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{current.report_id}')})
+                    await send('report.bootstrap',{**report_payload(record),'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{record.report_id}')}); return
             except RevisionConflictError:
                 latest=repository.get(current.report_id); await send('report.conflict',{**report_payload(latest),'rejected_commit_id':str(payload.get('commit_id') or '')})
             except Exception as exc:
                 try: latest=repository.get(current.report_id); record_payload=report_payload(latest)
                 except Exception: record_payload=None
-                await send('report.error',{'message':str(exc)[:400],'commit_id':str(payload.get('commit_id') or ''),**({'report':record_payload} if record_payload else {})})
+                await send('report.error',{'message':str(exc)[:400],'commit_id':str(payload.get('commit_id') or ''),'request_id':payload.get('request_id'),'request_dataset_id':payload.get('dataset_id'),'request_session_id':payload.get('session_id'),**({'report':record_payload} if record_payload else {})})
 
         async def create_report(template_id: str) -> None:
             spec=REPORT_TEMPLATES.get(template_id); title='New report' if template_id=='blank' else str(spec['name'])

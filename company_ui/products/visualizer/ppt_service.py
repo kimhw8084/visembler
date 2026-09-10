@@ -41,6 +41,12 @@ def _kind(entry: Mapping[str, Any]) -> str:
 
 def _statistical_export_projection(entry: dict[str, Any], result: Mapping[str, Any]) -> None:
     """Project the canonical statistical result into editable PPT primitives."""
+    explicit_error=str(entry.get('analysis_error') or '').strip()
+    semantic=entry.get('analysis_semantics') if isinstance(entry.get('analysis_semantics'),Mapping) else {}
+    if explicit_error or semantic.get('ok') is False:
+        errors=semantic.get('errors') or []
+        message=explicit_error or (errors[0].get('message') if errors and isinstance(errors[0],Mapping) else 'The statistical analysis could not be validated.')
+        raise VisualizerContractError(str(message))
     if result.get('ok') is not True or (result.get('population') or {}).get('complete') is not True:
         errors=result.get('errors') or []
         message=errors[0].get('message') if isinstance(errors[0],Mapping) else 'Statistical analysis is not valid for export.' if errors else 'Statistical analysis is not valid for export.'

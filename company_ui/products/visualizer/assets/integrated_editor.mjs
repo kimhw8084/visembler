@@ -10,7 +10,8 @@ import { renderIntegratedElement } from './element_renderer.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { engineeringRecipeCandidates, recommendEngineeringRecipes, recipeExecutionPlan, recipeRoleLabel } from './engineering_recipes.mjs';
 import { semanticDatasetForEntry, semanticResultFromAuthoritative } from './analysis_semantics.mjs';
-import { acceptsStatisticalResult } from './statistical_result_guard.mjs';
+import { acceptsStatisticalResult, nextRequestId, resultKey } from './statistical_result_guard.mjs';
+import { statisticalAnalysisError } from './statistical_presentation.mjs';
 import { applyRecipe } from './authoring_transforms.mjs';
 import { clampMovementDelta, chooseSnap, distributeRects, resizeRect, resizeRectByKeyboard } from './authoring_geometry.mjs';
 import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDiagramEdges } from './authoring_diagram.mjs';
@@ -466,6 +467,26 @@ function dispatchSemantic(type, payload={}) {
   debugEvent('outbound',type,`Sent ${new Blob([encoded]).size.toLocaleString()} bytes`);
   return true;
 }
+function requestSessionId(payload={}) { return String(payload.session_id || `report:${bootstrap.report_id || 'default'}`); }
+function requestFilterList(filters=[]) {
+  return (Array.isArray(filters) ? filters : []).map(filter => [
+    String(filter?.field || ''), String(filter?.operation || 'equals'), filter?.value ?? null,
+    filter?.value2 ?? null, filter?.filter_id ?? null,
+  ]);
+}
+function visibleFilterList() {
+  return requestFilterList(activeCrossFilters().map(filter => ({field:filter.field,operation:'equals',value:filter.value})));
+}
+function dispatchDatasetRequest(type, payload={}) {
+  const datasetId=String(payload.dataset_id || '');
+  const sessionId=requestSessionId(payload);
+  if(!datasetId) return dispatchSemantic(type,payload);
+  const key=resultKey(bootstrap.report_id||'default',datasetId,sessionId);
+  const requestId=nextRequestId(ui.datasetRequests,key);
+  const filters=type==='dataset.filter_requested' ? requestFilterList([payload.filter]) : requestFilterList(payload.filters||[]);
+  ui.datasetRequests[key]={current:requestId,report_id:String(bootstrap.report_id||'default'),dataset_id:datasetId,session_id:sessionId,filters,checkVisible:['dataset.filter_requested','dataset.filters_requested','dataset.reset_requested'].includes(type)};
+  return dispatchSemantic(type,{...payload,session_id:sessionId,request_id:requestId});
+}
 function prospectiveModel(ops,label='Edit') {
   const probe=new EditorStore(parseCanonical(store.serialize()),{revision:store.revision});
   probe.commit(probe.command(ops,label,'probe')); return parseCanonical(probe.serialize());
@@ -553,22 +574,46 @@ window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message===
 const receiveBridgeMessage = window.CompanyUIVisualizerBridge.receive;
 window.CompanyUIVisualizerBridge.receive = message => {
   const value = typeof message === 'string' ? JSON.parse(message) : message;
+  const payload = value?.payload || {};
   if (value?.type === 'dataset.binding_result') {
-    const payload = value.payload || {};
     const dataset = model().datasets.find(item => String(item.id) === String(payload.dataset_id));
+    const sessionId=String(payload.session_id || `report:${bootstrap.report_id||'default'}`);
+    const key=resultKey(bootstrap.report_id||'default',payload.dataset_id,sessionId);
+    const request=ui.datasetRequests[key];
+    const firstResult=Object.values(payload.analysis_results||{})[0] || {};
     const expected = Number(dataset?.revision || 0);
-    const actual = Number(payload.result?.source_revision || payload.result?.revision || 0);
-    if (!acceptsStatisticalResult({expectedRevision:expected,resultRevision:actual})) {
-      debugEvent('warn', 'Ignored stale dataset revision', `${actual} while ${expected} is current`);
+    const actual = Number(payload.result?.source_revision || payload.result?.revision || firstResult.source?.dataset_revision || 0);
+    const resultFilters=requestFilterList(payload.session_filters || firstResult.session_filters || []);
+    const accepted=acceptsStatisticalResult({
+      expectedReportId:bootstrap.report_id||'default', resultReportId:payload.report_id,
+      expectedDatasetId:dataset?.id, resultDatasetId:payload.dataset_id,
+      expectedSessionId:request?.session_id || sessionId, resultSessionId:payload.session_id || firstResult.session?.session_id || sessionId,
+      expectedFilters:request?.filters, resultFilters,
+      expectedRevision:expected, resultRevision:actual,
+      activeRequestId:request?.current, resultRequestId:payload.request_id || firstResult.request_id,
+    });
+    const visibleMatches=!request?.checkVisible || JSON.stringify(visibleFilterList())===JSON.stringify(request.filters||[]);
+    if (!accepted || !visibleMatches) {
+      debugEvent('warn', 'Ignored stale dataset statistical result', `request ${payload.request_id||'missing'} for ${key}`);
       return;
     }
     receiveBridgeMessage(message);
+    if(dataset&&ui.datasetResults[dataset.id]) Object.assign(ui.datasetResults[dataset.id],{source_revision:payload.result?.source_revision,request_id:payload.request_id,session_id:payload.session_id,filters:payload.session_filters||[]});
     if (dataset && payload.analysis_results) {
       ui.authoritativeAnalyses = {...ui.authoritativeAnalyses, ...payload.analysis_results};
       invalidateResolvedData();
       renderAll();
     }
     return;
+  }
+  if(value?.type==='report.bootstrap' && payload.request_id){
+    const datasetId=payload.request_dataset_id,sessionId=payload.request_session_id;
+    if(datasetId&&sessionId){
+      const key=resultKey(bootstrap.report_id||'default',datasetId,sessionId),request=ui.datasetRequests[key];
+      if(!acceptsStatisticalResult({expectedReportId:bootstrap.report_id||'default',resultReportId:payload.report_id,expectedDatasetId:datasetId,resultDatasetId:payload.request_dataset_id,activeRequestId:request?.current,resultRequestId:payload.request_id})){
+        debugEvent('warn','Ignored stale statistical report bootstrap',`request ${payload.request_id}`);return;
+      }
+    }
   }
   receiveBridgeMessage(message);
 };
@@ -606,6 +651,8 @@ function authoritativeAnalysisFor(entry, dataset) {
   const result=ui.authoritativeAnalyses?.[entry.id];
   if(!result) return {stale:true,message:'The complete resource-backed population has not been resolved yet.'};
   const source=result.source||{},population=result.population||result.provenance||{};
+  const request=ui.datasetRequests[resultKey(bootstrap.report_id||'default',dataset.id,result.session?.session_id||`report:${bootstrap.report_id||'default'}`)];
+  if(request?.current!=null && String(result.request_id||'')!==String(request.current)) return {stale:true,message:'The resource-backed statistical result is stale or incomplete.'};
   if(String(source.report_id||'')!==String(bootstrap.report_id||'')||String(source.dataset_id||'')!==String(dataset.id)||Number(source.dataset_revision||0)!==Number(dataset.revision||0)||population.complete!==true) return {stale:true,message:'The resource-backed statistical result is stale or incomplete.'};
   return result;
 }
@@ -685,7 +732,7 @@ function clearActiveCrossFilter(removeIndex=null) {
   const dataset=model().datasets.find(value=>value.resource_id);
   const current=activeCrossFilters(),next=removeIndex===null?[]:current.filter((_,index)=>index!==removeIndex);
   if(removeIndex===null){const host=$('#activeFilters');if(host){host.hidden=true;host.innerHTML='';}}
-  if(dataset){if(next.length)dispatchSemantic('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
+  if(dataset){if(next.length)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
   commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
 }
 function tableMarkup(entry) {
@@ -718,6 +765,7 @@ function semanticallyEmpty(entry){
   return false;
 }
 function emptyStateMarkup(entry){
+  if(statisticalAnalysisError(entry))return '';
   if(!semanticallyEmpty(entry))return '';
   const engine=entry.engine;
   if(engine==='CoreChartEngine')return '<div class="author-empty-state"><b>Add chart data</b><span>Paste from a spreadsheet or enter values.</span><div class="empty-state-actions"><button type="button" data-empty-action="paste">Paste data</button><button type="button" data-empty-action="enter">Enter data</button></div></div>';
@@ -1168,7 +1216,7 @@ function commitDatasetRefresh(entry,intake,selectedOnly=false){
   if(!plan.valid){toast(plan.reason);return false;}
   if(dataset.resource_id){
     if(selectedOnly&&plan.consumers.length>1)return toast('Refresh the linked bound dataset together so every consumer stays consistent');
-    return dispatchSemantic('dataset.resource_refresh_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,dataset:{...dataset,fields:intake.fields,rows:intake.rows,source:intake.source||dataset.source},expected_revision:dataset.revision||1,base_revision:store.revision,commit_id:localCommitId('dataset-refresh',store.revision),selected_only:selectedOnly});
+    return dispatchDatasetRequest('dataset.resource_refresh_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,dataset:{...dataset,fields:intake.fields,rows:intake.rows,source:intake.source||dataset.source},expected_revision:dataset.revision||1,base_revision:store.revision,commit_id:localCommitId('dataset-refresh',store.revision),selected_only:selectedOnly});
   }
   const nextId=selectedOnly&&plan.consumers.length>1?datasetId():dataset.id;
   const next={...datasetFromIntake(intake,nextId,dataset.name),revision:nextId===dataset.id?(dataset.revision||0)+1:1,metadata:{...(dataset.metadata||{}),refresh:{count:((dataset.metadata?.refresh?.count)||0)+1,previous_revision:dataset.revision||0,previous_row_count:(dataset.rows||[]).length,new_row_count:(intake.rows||[]).length,schema_signature:plan.schema_signature}}};
@@ -1207,7 +1255,7 @@ function bindDataDock(entry) {
   const dataset=selectedDataset(entry); if(!dataset)return;
   renderVirtualDataDock(entry,dataset);
   $('[data-refresh-dataset]')?.addEventListener('click',()=>openDatasetRefresh(entry));
-  $('[data-dataset-action="bind-resource"]')?.addEventListener('click',()=>dispatchSemantic('dataset.resource_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,dataset:structuredClone(dataset),base_revision:store.revision,commit_id:localCommitId('dataset-bind',store.revision)}));
+  $('[data-dataset-action="bind-resource"]')?.addEventListener('click',()=>dispatchDatasetRequest('dataset.resource_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,dataset:structuredClone(dataset),base_revision:store.revision,commit_id:localCommitId('dataset-bind',store.revision)}));
   const update=(label,mutate,mapping=entry.mapping||{})=>{if(entry.locked)return toast('Unlock the selected visual before editing data');const next={...dataset,fields:(dataset.fields||[]).map(field=>({...field})),rows:[...(dataset.rows||[])]};mutate(next);next.revision=(dataset.revision||0)+1;commitDataset(entry,label,next,mapping);};
   $('#dataDockFind')?.addEventListener('input',event=>{ui.dataDockFilter=event.target.value;renderVirtualDataDock(entry,dataset);});
   $('[data-review-mapping]')?.addEventListener('click',()=>$('.mapping-chips select')?.focus());
@@ -1557,7 +1605,8 @@ function preflight() {
   const inset=model().mode==='free'?0:CANVAS.gap;
   for (let a = 0; a < R.length; a += 1) {
     const entry = item(R[a].id); if(!entry)continue; const resolved=resolvedEntry(entry); const policy=semanticPolicy(entry);
-    if(resolved.analysis_error||resolved.analysis_semantics?.ok===false) addIssue('analysis',entry.id,resolved.analysis_error||resolved.analysis_semantics?.errors?.[0]?.message||'Analysis needs attention.','data');
+    const analysisError=statisticalAnalysisError(resolved);
+    if(analysisError) addIssue('analysis',entry.id,analysisError,'data');
     if (R[a].w < policy.minW-.1 || R[a].h < policy.minH-.1){pf.min += 1;addIssue('intrinsic-size',entry.id,`${entry.title} is below its readable ${Math.ceil(policy.minW)}×${Math.ceil(policy.minH)} minimum.`);}
     if (R[a].x < inset-.1 || R[a].y < inset-.1 || R[a].x + R[a].w > CANVAS.w-inset+.1 || R[a].y + R[a].h > CANVAS.h-inset+.1){pf.out += 1;addIssue('safe-hull',entry.id,`${entry.title} extends outside the document safe hull.`);}
     for (let b = a + 1; b < R.length; b += 1) if (overlap(R[a], R[b], 1)){pf.overlaps += 1;addIssue('overlap',entry.id,`${entry.title} overlaps ${item(R[b].id)?.title||'another element'}.`);}
@@ -2126,8 +2175,8 @@ function showDropGhost(e) {
 function toggleChartPoint(entry, k, selection = {}) {
   const cross = entry.cross === k ? null : k, dataset=selectedDataset(entry), fieldId=selection.field||entry.mapping?.category||entry.mapping?.label||entry.mapping?.time||entry.mapping?.x||dataset?.fields?.[0]?.id, fieldName=fieldById(dataset,fieldId)?.name||fieldId||'Selection', selectedValue=cross == null ? null : (selection.value ?? chartData(entry)[cross]?.[0]), crossFilter = cross == null ? null : {field:fieldId,label:fieldName,value:selectedValue,source:entry.title||entry.element||'chart',source_entry:entry.id};
   if(dataset?.resource_id){
-    if(cross==null)dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
-    else if(fieldId)dispatchSemantic('dataset.filter_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filter:{field:fieldId,operation:'equals',value:selectedValue},limit:10000});
+    if(cross==null)dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
+    else if(fieldId)dispatchDatasetRequest('dataset.filter_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filter:{field:fieldId,operation:'equals',value:selectedValue},limit:10000});
   }
   commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
 }
@@ -2135,7 +2184,7 @@ function toggleChartCompoundFilter(entry, selection = {}) {
   const dataset=selectedDataset(entry),fields=String(selection.fields||'').split(',').map(value=>value.trim()).filter(Boolean),values=String(selection.values||'').split('|');
   if(!dataset?.resource_id||fields.length!==values.length||!fields.length)return;
   const next=fields.map((field,index)=>({field,label:fieldById(dataset,field)?.name||field,value:values[index],source:entry.title||entry.element||'chart',source_entry:entry.id}));
-  dispatchSemantic('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
+  dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
   commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
 }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
