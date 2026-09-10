@@ -779,6 +779,13 @@ def test_native_filtered_resource_refresh_bootstrap_preserves_session_population
                     assert 'n=4' in result['text'] and 'Cpu 5.485' in result['text']
                     assert 'mean 15.5' not in result['text']
 
+                    export_model = json.loads(json.dumps(model(page)))
+                    export_item = next(item for item in export_model['items'] if item['id'] == 'cap')
+                    export_item['authoritative_analysis'] = result['analysis']
+                    deck = Presentation(io.BytesIO(export_pptx(None, canonical_model(export_model))))
+                    export_text = '\n'.join(shape.text for slide in deck.slides for shape in slide.shapes if getattr(shape, 'has_text_frame', False))
+                    assert str(result['analysis']['derived_statistics']['stats']['cpk']) in export_text
+
                     assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
                     assert 'NaN' not in page.locator('body').inner_text()
                     assert 'Infinity' not in page.locator('body').inner_text()
