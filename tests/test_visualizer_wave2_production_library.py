@@ -27,12 +27,12 @@ const missing=entries.filter(entry=>!(ELEMENTS_BY_ENGINE[entry.engine]||[]).incl
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,families:Object.keys(PRODUCTION_LIBRARY).length,missing,keys:entries.map(entry=>`${entry.engine}::${entry.element}`),descriptionsOk:entries.every(entry=>typeof entry.description==='string'&&entry.description.trim().length>10)}));
 """)
     payload = json.loads(output)
-    assert payload['count'] == 45
+    assert payload['count'] == 49
     assert payload['families'] == 13
     assert payload['missing'] == []
     assert payload['descriptionsOk'] is True
     visible = set(payload['keys'])
-    for hidden in ('CoreChartEngine::Bubble Plot','CoreChartEngine::Sankey','TableEngine::Pivot Grid','MatrixEngine::Correlation Matrix','DiagramEngine::Decision Tree','WaferFabEngine::Wafer Difference Map','EngineeringChartEngine::Response Surface'):
+    for hidden in ('CoreChartEngine::Bubble Plot','CoreChartEngine::Sankey','TableEngine::Pivot Grid','MatrixEngine::Correlation Matrix','DiagramEngine::Decision Tree','EngineeringChartEngine::Response Surface'):
         assert hidden not in visible
 
 

@@ -36,9 +36,9 @@ const rendered=entries.map(spec=>({key:`${spec.engine}::${spec.element}`, markup
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT, entries, rendered,
   hidden:isProductionElement('CoreChartEngine','Bubble Plot'), legacy:renderIntegratedElement({...base,engine:'CoreChartEngine',element:'Bubble Plot'})}));
 """)
-    assert audit["count"] == len(audit["entries"]) == 45
+    assert audit["count"] == len(audit["entries"]) == 49
     keys = [f"{entry['engine']}::{entry['element']}" for entry in audit["entries"]]
-    assert len(keys) == len(set(keys)) == 45
+    assert len(keys) == len(set(keys)) == 49
     assert audit["hidden"] is False
     assert "<article" in audit["legacy"]  # hidden reports remain renderer-compatible
     for rendered in audit["rendered"]:

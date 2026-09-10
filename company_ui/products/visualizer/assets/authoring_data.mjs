@@ -55,7 +55,7 @@ export function inferMappings(fields) {
   const byTag=tag=>fields.find(field=>field.semantic_tags?.includes(tag)); const numericFields=fields.filter(field=>['integer','number'].includes(field.type)); const category=fields.find(field=>['categorical','identifier','string'].includes(field.type));
   const mapping={}; const set=(role,field)=>{if(field)mapping[role]=field.id;};
   set('source',byTag('source')); set('target',byTag('target')); set('weight',byTag('weight')); set('time',byTag('time')); set('x',byTag('die_x')||byTag('time')||numericFields[0]); set('y',byTag('die_y')||numericFields[1]||byTag('value')); set('value',byTag('value')||numericFields.find(field=>field.id!==mapping.x)||numericFields[0]); set('category',category); set('series',fields.find(field=>field!==category && ['categorical','identifier'].includes(field.type))); set('die_x',byTag('die_x')); set('die_y',byTag('die_y')); ['lot_id','wafer_id','tool','chamber','recipe','process','product','route','cohort','status','reference_value','affected_value','subgroup','specification_low','specification_high'].forEach(role=>set(role,byTag(role)));
-  const contracts=['bar','line','scatter','multi_line','regression_scatter','distribution','pareto','table','timeline','diagram_flow','engineering','wafer'];
+  const contracts=['bar','line','scatter','multi_line','regression_scatter','distribution','pareto','table','timeline','diagram_flow','engineering','wafer','wafer_difference','tool_chamber_matrix','golden_affected_profile','control_affected_distribution'];
   return contracts.map(view=>{const validation=contractFor(view).validate(mapping,fields);return {view,mapping,confidence:Math.min(1,Object.keys(mapping).length/Math.max(1,fields.length)),unresolved:validation.missing,incompatible:validation.incompatible};}).sort((a,b)=>(a.unresolved.length+a.incompatible.length)-(b.unresolved.length+b.incompatible.length));
 }
 const contractView=view=>({diagram:'diagram_flow',histogram:'distribution',box:'distribution',regression:'regression_scatter'}[view]||view);
@@ -74,6 +74,10 @@ const PRODUCTION_VIEW_TARGETS=Object.freeze({
   diagram_flow:{engine:'DiagramEngine',element:'Data Flow'},
   engineering:{engine:'EngineeringChartEngine',element:'SPC Control Chart'},
   wafer:{engine:'WaferFabEngine',element:'Wafer Map'},
+  wafer_difference:{engine:'WaferFabEngine',element:'Wafer Difference Map'},
+  tool_chamber_matrix:{engine:'WaferFabEngine',element:'Tool × Chamber Matrix'},
+  golden_affected_profile:{engine:'WaferFabEngine',element:'Golden vs Affected Profile'},
+  control_affected_distribution:{engine:'WaferFabEngine',element:'Control vs Affected Distribution'},
 });
 export function productionTargetForView(view) {
   const target=PRODUCTION_VIEW_TARGETS[view];
@@ -85,7 +89,13 @@ export function candidateForView(result, view) {
 export function recommendViews(fields, candidates=inferMappings(fields)) {
   const mapping=candidateForView({candidate_mappings:candidates},'bar')?.mapping||{}, tags=new Set(fields.flatMap(field=>field.semantic_tags||[])), numeric=fields.filter(field=>['integer','number'].includes(field.type)); const out=[];
   const add=(view,reason,confidence)=>{const candidate=candidateForView({candidate_mappings:candidates},view);if(candidate&&!candidate.unresolved.length&&!candidate.incompatible.length)out.push({view,contract_view:candidate.view,mapping:{...candidate.mapping},unresolved:[...candidate.unresolved],incompatible:[...candidate.incompatible],reason,confidence});};
-  if(mapping.die_x&&mapping.die_y&&mapping.value)add('wafer','Die coordinates and a measured value were recognized.',.98);
+  if(mapping.die_x&&mapping.die_y&&mapping.reference_value&&mapping.affected_value) {
+    add('wafer_difference','Die coordinates and reference/affected measurements support a signed wafer difference.',.995);
+  } else if(mapping.die_x&&mapping.die_y&&mapping.value) add('wafer','Die coordinates and a measured value were recognized.',.98);
+  if(mapping.tool&&mapping.chamber&&mapping.value)add('tool_chamber_matrix','Tool, chamber, and a measurement support a cell-level equipment comparison.',.99);
+  if(mapping.x&&mapping.reference_value&&mapping.affected_value)add('golden_affected_profile','An ordered axis with reference and affected measurements supports a shared profile.',.99);
+  if(mapping.x&&mapping.cohort&&mapping.value)add('golden_affected_profile','An ordered axis with cohort and measurement fields supports a shared profile.',.97);
+  if(mapping.cohort&&mapping.value&&fields.some(field=>field.id===mapping.cohort))add('control_affected_distribution','A cohort and measurement support an observed control-versus-affected distribution.',.96);
   if(mapping.source&&mapping.target)add('diagram','Source and target fields were recognized.',.95);
   if(mapping.time&&numeric.length)add('line','Time and measurement fields were recognized.',.97);
   if(mapping.time&&mapping.category&&!numeric.length)add('timeline','A time field and event label were recognized.',.86);

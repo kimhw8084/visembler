@@ -158,7 +158,7 @@ def main()->int:
           else:
             check('C089','Stage A acceptance',lambda:None,reason='prior Stage A gate intentionally reused with --skip-regressions')
             check('C090','Stage B acceptance',lambda:None,reason='prior Stage B gate intentionally reused with --skip-regressions')
-          check('C091','production library 45',lambda:assert_true(production_count()==45,'production count changed'))
+          check('C091','production library 49',lambda:assert_true(production_count()==49,'production count changed'))
           check('C092','product-contract audit',lambda:assert_true(subprocess.run([sys.executable,'-m','pytest','-q','tests/test_visualizer_authoring_p0.py','tests/test_visualizer_product_completion_p0.py','tests/test_visualizer_chart_studio.py'],cwd=ROOT,timeout=120,capture_output=True).returncode==0,'product contract tests failed'))
           check('C093','no unexpected console/page/network errors',lambda:assert_true(not receipt['unexpected_errors'],str(receipt['unexpected_errors'][:3])))
           check('C094','frozen connector unchanged',lambda:assert_true(hashlib.sha256((ROOT/'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js').read_bytes()).hexdigest()=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e','frozen hash changed'))

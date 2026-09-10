@@ -1,6 +1,6 @@
 # Visembler authoring productivity matrix
 
-This is the maintained product-engineering matrix for the 45 production
+This is the maintained product-engineering matrix for the 49 production
 elements. It records the shared authoring contract rather than pretending that
 each element needs a bespoke editor.
 
@@ -58,6 +58,10 @@ clipboard/direct-edit improvement in this wave.
 | CUSUM Chart | Sustained shifts | Engineering Data First | DF observations/params | I/CS engineering | S + fit | Parameters visible | fit + KB | Baseline | Parameter defaults need context | DF, chart adapter | P0 | engineering tests |
 | EWMA Chart | Small shifts | Engineering Data First | DF observations/params | I/CS engineering | S + fit | Parameters visible | fit + KB | Baseline | Parameter defaults need context | DF, chart adapter | P0 | engineering tests |
 | Wafer Map | Spatial wafer evidence | Wafer Data First | DF coordinates/value/identity | I/Chart Studio | S + fit | Outline, legend, identity | fit + KB | Baseline | Filtering/selection is specialized | DF, wafer adapter | P0 | wafer/chart acceptance |
+| Wafer Difference Map | Signed affected-minus-reference die comparison | Data First recommendation | DF coordinates/reference/affected mapping | I/Chart Studio | S + fit | Zero-centered delta, source-value tooltip | fit + KB | Promoted | Duplicate die policy and missing pairs remain explicit | DF, wafer adapter | P0 | fab semantic fixtures |
+| Tool × Chamber Matrix | Equipment/module measurement comparison | Data First recommendation | DF tool/chamber/value mapping | I/Chart Studio | S + fit | Shared scale, aggregation, missing cells | fit + KB | Promoted | Matrix selection requires compound filters when bound | DF, wafer adapter | P0 | fab semantic fixtures |
+| Golden vs Affected Profile | Reference versus affected process profile | Data First recommendation | DF ordered-X/reference-affected or cohort-value mapping | I/Chart Studio | S + fit | Shared domain, explicit legend, no interpolation | fit + KB | Promoted | Missing positions remain gaps | DF, wafer adapter | P0 | fab semantic fixtures |
+| Control vs Affected Distribution | Observed cohort distribution comparison | Data First recommendation | DF cohort/value mapping | I/Chart Studio | S + fit | Shared scale, counts, observed box summaries | fit + KB | Promoted | No significance/capability claim without a statistic | DF, wafer adapter | P0 | fab semantic fixtures |
 
 ## Wave result
 

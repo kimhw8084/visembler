@@ -76,6 +76,10 @@ export const PRODUCTION_LIBRARY = Object.freeze({
   ]),
   WaferFabEngine: freezeItems([
     {element:'Wafer Map', description:'Spatial wafer measurements with fab identity context.'},
+    {element:'Wafer Difference Map', description:'Signed affected-minus-reference die differences on a zero-centered spatial scale.'},
+    {element:'Tool × Chamber Matrix', description:'Tool-by-chamber measurement aggregation with missing combinations kept explicit.'},
+    {element:'Golden vs Affected Profile', description:'Reference and affected profiles on one ordered, shared scale.'},
+    {element:'Control vs Affected Distribution', description:'Observed control and affected populations on one shared measurement scale.'},
   ]),
 });
 
@@ -92,6 +96,10 @@ export const PRODUCTION_RECOMMENDED = Object.freeze([
   'DiagramEngine::Process Flow',
   'EngineeringChartEngine::SPC Control Chart',
   'WaferFabEngine::Wafer Map',
+  'WaferFabEngine::Wafer Difference Map',
+  'WaferFabEngine::Tool × Chamber Matrix',
+  'WaferFabEngine::Golden vs Affected Profile',
+  'WaferFabEngine::Control vs Affected Distribution',
 ]);
 
 export function productionEntries() {

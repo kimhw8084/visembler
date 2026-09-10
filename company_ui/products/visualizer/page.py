@@ -47,10 +47,10 @@ MAX_REUSE_RECORDS = 100
 MAX_REUSE_BYTES = 1_000_000
 _ALLOWED_EVENTS = {
     'report.commit','report.save_requested','preset.preferences_requested','preset.preferences_save_requested','mapping.preferences_requested','mapping.preferences_save_requested',
-    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.reset_requested','dataset.export_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
+    'ppt.export_requested','dataset.binding_requested','dataset.filter_requested','dataset.filters_requested','dataset.reset_requested','dataset.export_requested','dataset.resource_requested','dataset.resource_refresh_requested','reuse.preferences_requested','reuse.preferences_save_requested','report.history_requested',
 }
-_MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer'}
-_MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
+_MAPPING_VIEWS={'bar','line','table','timeline','diagram','diagram_flow','engineering','wafer','wafer_difference','tool_chamber_matrix','golden_affected_profile','control_affected_distribution'}
+_MAPPING_ROLES={'category','value','x','y','series','time','source','target','weight','subgroup','cohort','reference_value','affected_value','delta','specification_low','specification_high','lower_limit','upper_limit','die_x','die_y','wafer_id','lot_id','tool','chamber','recipe','process','product','bin','label','size','color','tooltip'}
 
 
 def _safe_download_stem(value: Any, fallback: str = 'visembler-dataset') -> str:
@@ -149,7 +149,7 @@ class _VisualizerResourceBoundary:
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','analysis_semantics.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -1066,6 +1066,18 @@ def register_visualizer(
                     if not isinstance(filter_value, Mapping): raise VisualizerContractError('dataset filter is required')
                     resource=dataset_repository.get_for_report(current.report_id,dataset_id)
                     result=data_query(session,{'filters':[filter_value],'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
+                if kind=='dataset.filters_requested':
+                    dataset_id=str(payload.get('dataset_id') or '')
+                    session_id=str(payload.get('session_id') or dataset_id)
+                    session=data_sessions.get(session_id) or dataset_repository.session_for_report(current.report_id,dataset_id)
+                    filters=payload.get('filters')
+                    if not isinstance(filters,list): raise VisualizerContractError('dataset filters are required')
+                    resource=dataset_repository.get_for_report(current.report_id,dataset_id)
+                    with session.transaction():
+                        session.clear_filters()
+                    result=data_query(session,{'filters':filters,'offset':payload.get('offset',0),'limit':payload.get('limit')})
+                    data_sessions[session_id]=session
                     await send('dataset.binding_result',{'report_id':current.report_id,'dataset_id':dataset_id,'session_id':session_id,'schema':resource['schema'],'row_count':resource['row_count'],'result':result}); return
                 if kind=='dataset.reset_requested':
                     dataset_id=str(payload.get('dataset_id') or '')

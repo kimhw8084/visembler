@@ -42,7 +42,7 @@ const base=chartModelFromEntry({engine:'CoreChartEngine',element:'Line Chart',ti
 const switched=switchChartType(base,'Regression Scatter'),switchedEntry=chartToEntry({engine:'CoreChartEngine',element:'Line Chart',title:'Yield trend'},switched);
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEntries().length,promoted,promotedProduction:promoted.map(element=>isProductionElement('CoreChartEngine',element)),chartTypes:promoted.map(element=>CHART_TYPES.includes(element)),rendered,switch:{type:switched.chart_type,dataset:switched.dataset.id,revision:switched.dataset.revision,title:switchedEntry.title,mapping:switched.mapping}}));
 ''')
-    assert payload["count"] == payload["entries"] == 45
+    assert payload["count"] == payload["entries"] == 49
     assert all(payload["promotedProduction"])
     assert all(payload["chartTypes"])
     assert all(item["hasSvg"] and item["safe"] for item in payload["rendered"])
@@ -110,7 +110,7 @@ console.log(JSON.stringify({ids:recipes.map(recipe=>recipe.id),ready:recipes.eve
 ''')
     assert "tool-chamber-matching" in payload["ids"]
     assert "spc-excursion" in payload["ids"]
-    assert all(item in {"Hero KPI", "Key Takeaway", "Line Chart", "Clean Table", "SPC Control Chart", "Horizontal Bar", "Executive Statement", "Before/After KPI", "Box Plot", "Histogram", "Wafer Map"} for item in payload["visuals"])
+    assert all(item in {"Hero KPI", "Key Takeaway", "Line Chart", "Clean Table", "SPC Control Chart", "Horizontal Bar", "Executive Statement", "Before/After KPI", "Box Plot", "Histogram", "Wafer Map", "Wafer Difference Map", "Tool × Chamber Matrix", "Golden vs Affected Profile", "Control vs Affected Distribution"} for item in payload["visuals"])
 
 
 def test_recipe_execution_is_an_atomic_multi_visual_production_plan():
@@ -276,17 +276,17 @@ def test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo(recipe_
         (
             'tool-chamber-matching',
             'Tool\tChamber\tMeasurement\nETCH-01\tA\t10\nETCH-01\tB\t12\nETCH-02\tA\t8',
-            ['Horizontal Bar', 'Clean Table'],
+            ['Tool × Chamber Matrix', 'Clean Table'],
         ),
         (
             'golden-affected',
             'Cohort\tProcess Position\tReference Value\tAffected Value\nGolden\t1\t10\t11\nAffected\t2\t10\t13\nGolden\t3\t12\t12',
-            ['Line Chart', 'Box Plot', 'Clean Table'],
+            ['Golden vs Affected Profile', 'Box Plot', 'Clean Table'],
         ),
         (
             'wafer-difference',
             'Die X\tDie Y\tReference Value\tAffected Value\n1\t1\t10\t11\n2\t1\t10\t9\n1\t2\t10\t15',
-            ['Wafer Map', 'Clean Table'],
+            ['Wafer Difference Map', 'Clean Table'],
         ),
         (
             'pre-post-change',
@@ -349,6 +349,56 @@ def test_native_supported_recipe_workflows_create_linked_production_analysis(
                 assert '12' in rendered and '16' in rendered
             elif recipe_id == 'distribution-review':
                 assert '10.00' in rendered and '13.00' in rendered
+            assert not page_errors, page_errors
+        finally:
+            context.close()
+
+
+@pytest.mark.parametrize('viewport_width', [1440, 768, 390])
+@pytest.mark.parametrize(
+    ('recipe_id', 'source_text', 'expected_element', 'evidence'),
+    [
+        ('tool-chamber-matching', 'Tool\tChamber\tMeasurement\nETCH-01\tA\t10\nETCH-01\tA\t14\nETCH-01\tB\t20\nETCH-02\tA\t8', 'Tool × Chamber Matrix', 'ETCH-01 · A'),
+        ('golden-affected', 'Position\tReference\tAffected\n1\t10\t11\n2\t15\t9\n3\t12\t14', 'Golden vs Affected Profile', 'Golden'),
+        ('wafer-difference', 'Die X\tDie Y\tReference\tAffected\n1\t1\t10\t11\n2\t1\t10\t15\n3\t1\t10\t9', 'Wafer Difference Map', 'Delta'),
+        ('distribution-comparison', 'Cohort\tMeasurement\nControl\t10\nControl\t12\nAffected\t30\nAffected\t34', 'Control vs Affected Distribution', 'Control'),
+    ],
+)
+def test_dedicated_fab_recipe_browser_matrix_has_real_data_and_no_layout_errors(
+    recipe_browser, tmp_path, viewport_width, recipe_id, source_text, expected_element, evidence
+):
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import EditorHost, load_editor
+        from run_editor_workflows import model, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    with EditorHost(ROOT, tmp_path / f'{recipe_id}-{viewport_width}') as host:
+        report_id = host.create()
+        context = recipe_browser.new_context(viewport={'width': viewport_width, 'height': 900})
+        page_errors = []
+        page = context.new_page()
+        page.on('pageerror', lambda error: page_errors.append(str(error)))
+        page.on('console', lambda message: page_errors.append(message.text) if message.type == 'error' else None)
+        try:
+            load_editor(page, host, report_id)
+            ready(page)
+            if page.locator('#libraryToggle').get_attribute('aria-pressed') != 'true':
+                page.locator('#libraryToggle').click()
+            page.locator('#pasteDataBtn').scroll_into_view_if_needed()
+            page.locator('#pasteDataBtn').click()
+            page.locator('#dataFirstText').fill(source_text)
+            page.locator(f'[data-data-first-recipe="{recipe_id}"]').click()
+            page.locator('#dataFirstApplyRecipe').click()
+            settled(page)
+            applied = model(page)
+            assert applied['items'][0]['element'] == expected_element
+            rendered = page.locator('.cs-static-chart').evaluate_all('(nodes) => nodes.map(node => node.innerHTML).join("\\n")')
+            assert evidence in rendered
+            assert 'NaN' not in rendered and 'Infinity' not in rendered
+            assert page.evaluate('() => document.body.scrollWidth <= window.innerWidth + 1')
             assert not page_errors, page_errors
         finally:
             context.close()

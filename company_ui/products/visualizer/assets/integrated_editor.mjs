@@ -624,20 +624,28 @@ function activeCrossFilter() {
   if(typeof raw==='object')return {field:raw.field||'',label:raw.label||raw.field||'Field',value:raw.value,source:raw.source||raw.source_entry||''};
   return {field:'',label:'Selection',value:raw,source:'chart'};
 }
+function activeCrossFilters() {
+  const current=model();
+  if(Array.isArray(current.crossFilters)&&current.crossFilters.length)return current.crossFilters.map(value=>({field:value.field||'',label:value.label||value.field||'Field',value:value.value,source:value.source||value.source_entry||''}));
+  const single=activeCrossFilter();
+  return single?[single]:[];
+}
 function renderActiveFilters() {
   const host=$('#activeFilters'); if(!host)return;
-  const filter=activeCrossFilter();
-  if(!filter){host.hidden=true;host.innerHTML='';return;}
+  const filters=activeCrossFilters();
+  if(!filters.length){host.hidden=true;host.innerHTML='';return;}
   host.hidden=false;
-  host.innerHTML=`<span class="active-filters-label">Active filter</span><span class="active-filter-chip"><span>${esc(filter.label)} = <b>${esc(filter.value)}</b>${filter.source?` · ${esc(filter.source)}`:''}</span><button type="button" data-clear-active-filter aria-label="Remove active filter">×</button></span><button type="button" class="active-filter-clear" data-clear-all-filters>Clear all</button>`;
-  $('[data-clear-active-filter]',host)?.addEventListener('click',clearActiveCrossFilter);
-  $('[data-clear-all-filters]',host)?.addEventListener('click',clearActiveCrossFilter);
+  host.innerHTML=`<span class="active-filters-label">Active filters</span>${filters.map((filter,index)=>`<span class="active-filter-chip"><span>${esc(filter.label)} = <b>${esc(filter.value)}</b>${filter.source?` · ${esc(filter.source)}`:''}</span><button type="button" data-clear-active-filter="${index}" aria-label="Remove ${esc(filter.label)} filter">×</button></span>`).join('')}<button type="button" class="active-filter-clear" data-clear-all-filters>Clear all</button>`;
+  $$('[data-clear-active-filter]',host).forEach(node=>node.addEventListener('click',()=>clearActiveCrossFilter(Number(node.dataset.clearActiveFilter))));
+  $('[data-clear-all-filters]',host)?.addEventListener('click',()=>clearActiveCrossFilter());
 }
-function clearActiveCrossFilter() {
+function clearActiveCrossFilter(removeIndex=null) {
   const ops=model().items.filter(entry=>entry.cross!==null&&entry.cross!==undefined).map(entry=>({op:'item.patch',id:entry.id,patch:{cross:null}}));
   const dataset=model().datasets.find(value=>value.resource_id);
-  if(dataset)dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
-  commitOps('Clear active filters',[...ops,{op:'model.patch',patch:{crossFilter:null}}],{announce:'Active filters cleared'});
+  const current=activeCrossFilters(),next=removeIndex===null?[]:current.filter((_,index)=>index!==removeIndex);
+  if(removeIndex===null){const host=$('#activeFilters');if(host){host.hidden=true;host.innerHTML='';}}
+  if(dataset){if(next.length)dispatchSemantic('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchSemantic('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
+  commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
 }
 function tableMarkup(entry) {
   if (entry.customTable) {
@@ -1211,6 +1219,7 @@ const VISUAL_TYPE_FAMILIES=Object.freeze({
   TimelineEngine:['Event Timeline','Milestone Rail','Sequence Strip'],
   DiagramEngine:['Process Flow','Data Flow'],
   EngineeringChartEngine:['SPC Control Chart','I-MR Chart','CUSUM Chart','EWMA Chart'],
+  WaferFabEngine:['Wafer Map','Wafer Difference Map','Tool × Chamber Matrix','Golden vs Affected Profile','Control vs Affected Distribution'],
 });
 const ENGINEERING_VARIANT_FIELDS=Object.freeze({
   'SPC Control Chart':[],
@@ -1232,7 +1241,7 @@ function semanticInspectorMarkup(entry) {
   }
   return visualTypeSwitcherMarkup(entry)+legacySemanticInspectorMarkup(entry);
 }
-const VISUAL_TYPE_VIEWS=Object.freeze({'Vertical Bar':'bar','Horizontal Bar':'bar','Line Chart':'line','Area Chart':'line','Event Timeline':'timeline','Milestone Rail':'timeline','Sequence Strip':'timeline','Process Flow':'diagram','Data Flow':'diagram','SPC Control Chart':'engineering','I-MR Chart':'engineering','CUSUM Chart':'engineering','EWMA Chart':'engineering'});
+const VISUAL_TYPE_VIEWS=Object.freeze({'Vertical Bar':'bar','Horizontal Bar':'bar','Line Chart':'line','Area Chart':'line','Event Timeline':'timeline','Milestone Rail':'timeline','Sequence Strip':'timeline','Process Flow':'diagram','Data Flow':'diagram','SPC Control Chart':'engineering','I-MR Chart':'engineering','CUSUM Chart':'engineering','EWMA Chart':'engineering','Wafer Map':'wafer','Wafer Difference Map':'wafer_difference','Tool × Chamber Matrix':'tool_chamber_matrix','Golden vs Affected Profile':'golden_affected_profile','Control vs Affected Distribution':'control_affected_distribution'});
 function switchVisualType(entry,value){
   const [engine,element]=String(value||'').split('::');
   if(engine!==entry.engine||!VISUAL_TYPE_FAMILIES[engine]?.includes(element))return toast('Choose a compatible visual type');
@@ -2079,6 +2088,13 @@ function toggleChartPoint(entry, k, selection = {}) {
   }
   commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
 }
+function toggleChartCompoundFilter(entry, selection = {}) {
+  const dataset=selectedDataset(entry),fields=String(selection.fields||'').split(',').map(value=>value.trim()).filter(Boolean),values=String(selection.values||'').split('|');
+  if(!dataset?.resource_id||fields.length!==values.length||!fields.length)return;
+  const next=fields.map((field,index)=>({field,label:fieldById(dataset,field)?.name||field,value:values[index],source:entry.title||entry.element||'chart',source_entry:entry.id}));
+  dispatchSemantic('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
+  commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
+}
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
 function setBrushByKeyboard(entry, kind, delta) { const D = chartData(entry); const next = [...(entry.brush || [0, D.length - 1])]; if (kind === 'start') next[0] = clamp(next[0] + delta, 0, next[1]); else next[1] = clamp(next[1] + delta, next[0], D.length - 1); if (next[0] !== entry.brush[0] || next[1] !== entry.brush[1]) commitOps('Adjust brush range', [{ op: 'item.patch', id: entry.id, patch: { brush: next } }]); }
 function parsePaste(txt) { const result=intakeText(txt); return result.rows.length ? result : null; }
@@ -2122,7 +2138,7 @@ function canonicalPatch(entry, dataset, mapping) {
   }
   return patch;
 }
-function viewContractForEntry(entry) { if(entry?.view_type)return entry.view_type; if(entry?.engine==='TableEngine')return 'table';if(entry?.engine==='TimelineEngine')return 'timeline';if(entry?.engine==='DiagramEngine')return 'diagram';if(entry?.engine==='EngineeringChartEngine')return 'engineering';if(entry?.engine==='WaferFabEngine')return 'wafer';if(entry?.engine==='CoreChartEngine'){const name=String(entry.element||'').toLowerCase();if(name.includes('histogram'))return 'histogram';if(name.includes('box plot'))return 'box';if(name.includes('regression'))return 'regression_scatter';if(name.includes('scatter'))return 'scatter';if(name.includes('pareto'))return 'pareto';if(name.includes('line'))return name.includes('multi')?'multi_line':'line';}return 'bar'; }
+function viewContractForEntry(entry) { if(entry?.view_type)return entry.view_type; if(entry?.engine==='TableEngine')return 'table';if(entry?.engine==='TimelineEngine')return 'timeline';if(entry?.engine==='DiagramEngine')return 'diagram';if(entry?.engine==='EngineeringChartEngine')return 'engineering';if(entry?.engine==='WaferFabEngine'){const name=String(entry.element||'');if(name==='Wafer Difference Map')return 'wafer_difference';if(name==='Tool × Chamber Matrix')return 'tool_chamber_matrix';if(name==='Golden vs Affected Profile')return 'golden_affected_profile';if(name==='Control vs Affected Distribution')return 'control_affected_distribution';return 'wafer';}if(entry?.engine==='CoreChartEngine'){const name=String(entry.element||'').toLowerCase();if(name.includes('histogram'))return 'histogram';if(name.includes('box plot'))return 'box';if(name.includes('regression'))return 'regression_scatter';if(name.includes('scatter'))return 'scatter';if(name.includes('pareto'))return 'pareto';if(name.includes('line'))return name.includes('multi')?'multi_line':'line';}return 'bar'; }
 function mappingProblem(validation={}) { const incompatible=Array.isArray(validation.incompatible)?validation.incompatible:[],missing=Array.isArray(validation.missing)?validation.missing:Array.isArray(validation.unresolved)?validation.unresolved:[]; return incompatible.length?`Cannot bind: incompatible field for ${incompatible.join(', ')}.`:missing.length?`Cannot bind: map ${missing.join(', ')} first.`:'Cannot bind this data to the selected visual.'; }
 function mappingFor(result, view) { const candidate=candidateForView(result,view);if(!candidate)return {error:`No ${view} mapping candidate is available.`};if(candidate.unresolved.length||candidate.incompatible.length)return {error:mappingProblem(candidate)};return {mapping:structuredClone(candidate.mapping),candidate}; }
 function dataFirstEntry(plan, id) {
@@ -2825,7 +2841,7 @@ async function handleEmptyAction(entry,action){
 }
 function onHullClick(e) {
   if(ui.preview)return;
-  const interactive = e.target.closest('[data-action], [data-tab], [data-tm], [data-point], [data-behavior-point], [data-chart-point], [data-ctx], [data-empty-action], .brush-handle');
+  const interactive = e.target.closest('[data-action], [data-tab], [data-tm], [data-point], [data-behavior-point], [data-chart-point], [data-filter-fields], [data-ctx], [data-empty-action], .brush-handle');
   const comp = e.target.closest('.component');
   if (interactive) {
     e.stopPropagation();
@@ -2840,6 +2856,7 @@ function onHullClick(e) {
     else if (interactive.dataset.tab) commitOps('Switch tab', [{ op: 'item.patch', id: entry.id, patch: { tab: interactive.dataset.tab } }]);
     else if (interactive.dataset.tm != null) commitOps('Select timeline milestone', [{ op: 'item.patch', id: entry.id, patch: { tm: +interactive.dataset.tm } }]);
     else if (interactive.dataset.point != null) toggleChartPoint(entry, +interactive.dataset.point);
+    else if (interactive.dataset.filterFields) toggleChartCompoundFilter(entry, {fields:interactive.dataset.filterFields,values:interactive.dataset.filterValues});
     else if ((interactive.dataset.behaviorPoint != null || interactive.dataset.chartPoint != null) && entry.behaviors?.cross_filter!==false) toggleChartPoint(entry, +(interactive.dataset.behaviorPoint ?? interactive.dataset.chartPoint), {field:interactive.dataset.filterField, value:interactive.dataset.filterValue});
     return;
   }
@@ -2896,7 +2913,7 @@ function onHullPointerDown(e) {
 }
 function onHullKeyDown(e) {
   if(ui.preview)return;
-  const point = e.target.closest('[data-point], [data-chart-point], [data-behavior-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggleChartPoint(item(point.closest('.component').dataset.id), +(point.dataset.point ?? point.dataset.behaviorPoint ?? point.dataset.chartPoint), {field:point.dataset.filterField, value:point.dataset.filterValue}); return; }
+  const point = e.target.closest('[data-filter-fields], [data-point], [data-chart-point], [data-behavior-point]'); if (point && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const entry=item(point.closest('.component').dataset.id); if(point.dataset.filterFields)return toggleChartCompoundFilter(entry,{fields:point.dataset.filterFields,values:point.dataset.filterValues}); toggleChartPoint(entry, +(point.dataset.point ?? point.dataset.behaviorPoint ?? point.dataset.chartPoint), {field:point.dataset.filterField, value:point.dataset.filterValue}); return; }
   const brush = e.target.closest('.brush-handle'); if (brush && ['ArrowLeft', 'ArrowRight'].includes(e.key)) { e.preventDefault(); setBrushByKeyboard(item(brush.closest('.component').dataset.id), brush.dataset.brush, e.key === 'ArrowLeft' ? -1 : 1); return; }
   const comp = e.target.closest('.component'); if (comp && e.target === comp && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const id = comp.dataset.id; if (isAdditiveSelectionGesture(e)) ui.selected.has(id) ? ui.selected.delete(id) : ui.selected.add(id); else { ui.selected.clear(); ui.selected.add(id); } reconcileCanvas({ content: false }); renderInspector(); }
 }

@@ -6,7 +6,7 @@ Visembler uses two deliberate data paths.
 
 Small, portable datasets remain in the canonical report JSON. This preserves
 editable JSON exchange, existing reports, copy/paste, history, and the current
-45-element contract (the original 39-element set remains backward-compatible).
+49-element contract (the original 39-element set remains backward-compatible).
 
 ## Bound dataset resources
 

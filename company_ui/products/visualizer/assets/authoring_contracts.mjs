@@ -17,6 +17,10 @@ export const DATA_CONTRACTS=Object.freeze({
   diagram_flow:contract('diagram_flow',['source','target'],['weight','label'],['table','timeline']),
   engineering:contract('engineering',['value'],['time','subgroup','category','series','specification_low','specification_high','lower_limit','upper_limit'],['line','table']),
   wafer:contract('wafer',['die_x','die_y','value'],['wafer_id','lot_id','tool','chamber','recipe','process','product','bin'],['table','engineering']),
+  wafer_difference:contract('wafer_difference',['die_x','die_y','reference_value','affected_value'],['value','lot_id','wafer_id','tool','chamber','recipe','process','product'],['table'],{reference_value:numeric,affected_value:numeric}),
+  tool_chamber_matrix:contract('tool_chamber_matrix',['tool','chamber','value'],['lot_id','wafer_id','recipe','process','product'],['table'],{value:numeric}),
+  golden_affected_profile:contract('golden_affected_profile',['x'],['reference_value','affected_value','cohort','value','tool','chamber','recipe','process'],['line','table'],{x:new Set([...numeric,...temporal])}),
+  control_affected_distribution:contract('control_affected_distribution',['cohort','value'],['tool','chamber','recipe','process'],['table'],{value:numeric}),
 });
 export const LEGACY_VIEW_ALIASES=Object.freeze({chart:'line',matrix:'matrix_heatmap',diagram:'diagram_flow',wafer_fab:'wafer',engineering_chart:'engineering',histogram:'distribution',box:'distribution',regression:'regression_scatter'});
 export function contractFor(view){return DATA_CONTRACTS[LEGACY_VIEW_ALIASES[view]||view]||DATA_CONTRACTS.table;}

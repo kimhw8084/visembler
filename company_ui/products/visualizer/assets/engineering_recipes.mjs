@@ -31,16 +31,16 @@ export const RECIPE_TARGETS = Object.freeze({
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
   'tool-chamber-matching': Object.freeze([
-    {engine: 'CoreChartEngine', element: 'Horizontal Bar', view: 'bar', role: 'primary'},
+    {engine: 'WaferFabEngine', element: 'Tool × Chamber Matrix', view: 'tool_chamber_matrix', role: 'primary'},
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
   'golden-affected': Object.freeze([
-    {engine: 'CoreChartEngine', element: 'Line Chart', view: 'line', role: 'primary'},
+    {engine: 'WaferFabEngine', element: 'Golden vs Affected Profile', view: 'golden_affected_profile', role: 'primary'},
     {engine: 'CoreChartEngine', element: 'Box Plot', view: 'box', role: 'distribution'},
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
   'wafer-difference': Object.freeze([
-    {engine: 'WaferFabEngine', element: 'Wafer Map', view: 'wafer', role: 'primary'},
+    {engine: 'WaferFabEngine', element: 'Wafer Difference Map', view: 'wafer_difference', role: 'primary'},
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
   'pre-post-change': Object.freeze([
@@ -49,7 +49,7 @@ export const RECIPE_TARGETS = Object.freeze({
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
   'distribution-comparison': Object.freeze([
-    {engine: 'CoreChartEngine', element: 'Box Plot', view: 'box', role: 'primary'},
+    {engine: 'WaferFabEngine', element: 'Control vs Affected Distribution', view: 'control_affected_distribution', role: 'primary'},
     {engine: 'CoreChartEngine', element: 'Histogram', view: 'histogram', role: 'distribution'},
     {engine: 'TableEngine', element: 'Clean Table', view: 'table', role: 'evidence'},
   ]),
@@ -72,11 +72,11 @@ const recipe = (id, name, reason, visuals, role_sets) => Object.freeze({id, vers
 export const ENGINEERING_RECIPES = Object.freeze([
   recipe('yield-pareto', 'Yield Pareto', 'Grouped contribution ranked with cumulative loss makes the largest yield drivers obvious.', ['Pareto', 'Clean Table', 'Hero KPI'], [['category', 'value']]),
   recipe('spc-excursion', 'SPC Excursion Review', 'Ordered measurements can be reviewed without relying on clipboard row order.', ['SPC Control Chart', 'Clean Table'], [['time', 'value']]),
-  recipe('tool-chamber-matching', 'Tool / Chamber Matching', 'Tool, chamber, and a governed aggregation make cell-level equipment differences visible.', ['Horizontal Bar', 'Clean Table'], [['tool', 'chamber', 'value']]),
-  recipe('golden-affected', 'Golden vs Affected', 'A wide reference/affected pair or long cohort schema creates two aligned populations.', ['Line Chart', 'Box Plot', 'Clean Table'], [['x', 'reference_value', 'affected_value'], ['x', 'cohort', 'value']]),
-  recipe('wafer-difference', 'Wafer Difference Investigation', 'Matched die coordinates compute signed affected-minus-reference deltas on a zero-centered scale.', ['Wafer Map', 'Clean Table'], [['die_x', 'die_y', 'reference_value', 'affected_value']]),
+  recipe('tool-chamber-matching', 'Tool / Chamber Matching', 'Tool, chamber, and a governed aggregation make cell-level equipment differences visible.', ['Tool × Chamber Matrix', 'Clean Table'], [['tool', 'chamber', 'value']]),
+  recipe('golden-affected', 'Golden vs Affected', 'A wide reference/affected pair or long cohort schema creates two aligned populations.', ['Golden vs Affected Profile', 'Box Plot', 'Clean Table'], [['x', 'reference_value', 'affected_value'], ['x', 'cohort', 'value']]),
+  recipe('wafer-difference', 'Wafer Difference Investigation', 'Matched die coordinates compute signed affected-minus-reference deltas on a zero-centered scale.', ['Wafer Difference Map', 'Clean Table'], [['die_x', 'die_y', 'reference_value', 'affected_value']]),
   recipe('pre-post-change', 'Pre / Post Process Change', 'Pre and Post populations are compared using explicit cohort means.', ['Before/After KPI', 'Line Chart', 'Clean Table'], [['cohort', 'value']]),
-  recipe('distribution-comparison', 'Distribution Comparison', 'Two or more cohorts are compared on one shared measurement scale without an implied significance claim.', ['Box Plot', 'Histogram', 'Clean Table'], [['cohort', 'value']]),
+  recipe('distribution-comparison', 'Distribution Comparison', 'Two or more cohorts are compared on one shared measurement scale without an implied significance claim.', ['Control vs Affected Distribution', 'Histogram', 'Clean Table'], [['cohort', 'value']]),
   recipe('distribution-review', 'Distribution Review', 'One numeric population is profiled for spread, outliers, and distribution shape.', ['Box Plot', 'Histogram', 'Clean Table'], [['value']]),
 ]);
 
@@ -169,13 +169,15 @@ function targetMapping(recipeId, target, mapping) {
     if (target.view === 'pareto') return {category: '__category', value: '__contribution'};
     if (target.view === 'metric') return {value: '__contribution', category: '__category'};
   }
-  if (recipeId === 'tool-chamber-matching' && target.view === 'bar') return {category: '__tool_chamber', value: '__value', tool: '__tool', chamber: '__chamber'};
+  if (recipeId === 'tool-chamber-matching' && target.view === 'tool_chamber_matrix') return {tool: '__tool', chamber: '__chamber', value: '__value'};
   if (recipeId === 'golden-affected' && target.view === 'line') return {x: '__x', y: '__value', value: '__value', series: '__cohort'};
+  if (recipeId === 'golden-affected' && target.view === 'golden_affected_profile') return {x: '__x', cohort: '__cohort', value: '__value'};
   if (recipeId === 'golden-affected' && (target.view === 'box' || target.view === 'histogram')) return {value: '__value', category: '__cohort'};
-  if (recipeId === 'wafer-difference' && target.view === 'wafer') return {die_x: '__die_x', die_y: '__die_y', value: '__delta', reference_value: '__reference', affected_value: '__affected'};
+  if (recipeId === 'wafer-difference' && target.view === 'wafer_difference') return {die_x: '__die_x', die_y: '__die_y', value: '__delta', delta: '__delta', reference_value: '__reference', affected_value: '__affected'};
   if (recipeId === 'pre-post-change' && target.view === 'comparison') return {before: '__pre_mean', after: '__post_mean'};
   if (recipeId === 'pre-post-change' && target.view === 'line') return {x: '__cohort', y: '__mean', value: '__mean', category: '__cohort'};
   if ((recipeId === 'distribution-comparison' || recipeId === 'distribution-review') && (target.view === 'box' || target.view === 'histogram')) return {value: '__value', category: recipeId === 'distribution-comparison' ? '__cohort' : undefined};
+  if (recipeId === 'distribution-comparison' && target.view === 'control_affected_distribution') return {cohort: '__cohort', value: '__value'};
   if (target.view === 'bar') return {category: mapping.category || mapping.tool || mapping.chamber, value: mapping.value, series: mapping.chamber || mapping.tool};
   if (target.view === 'line') return {x: mapping.x || mapping.time, y: mapping.value, series: mapping.cohort};
   if (target.view === 'box' || target.view === 'histogram') return {value: mapping.value || mapping.affected_value || mapping.reference_value, category: mapping.cohort};

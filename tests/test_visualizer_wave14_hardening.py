@@ -70,6 +70,6 @@ import {selectionActionEligibility} from './company_ui/products/visualizer/asset
 const model={mode:'guided',groups:{g:{items:['a','b']}},items:[{id:'a',locked:true,groupId:'g'},{id:'b',locked:false,groupId:'g'}]};
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEntries().length,state:selectionActionEligibility(model,['a','b'])}));
 """)
-    assert output["count"] == output["entries"] == 45
+    assert output["count"] == output["entries"] == 49
     assert output["state"]["group"]["reason"] == "Locked members prevent an atomic structural action"
     assert output["state"]["delete"] == {"enabled": True, "reason": "", "partial": True}

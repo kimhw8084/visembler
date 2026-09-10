@@ -58,7 +58,7 @@ const engineering=element=>renderIntegratedElement({id:element,engine:'Engineeri
 const image=element=>renderIntegratedElement({id:element,engine:'ImageMediaEngine',element,title:element,showTitle:false,src:'',caption:'',alt:''});
 console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEntries().length,cusum:engineering('CUSUM Chart'),ewma:engineering('EWMA Chart'),caption:image('Image + Caption'),shot:image('Screenshot Frame')}));
 """)
-    assert output["count"] == output["entries"] == 45
+    assert output["count"] == output["entries"] == 49
     assert all("<svg" in output[name] and "<polygon" not in output[name] for name in ("cusum", "ewma"))
     assert "Caption: describe the image" in output["caption"]
     assert "Add screenshot or mockup" in output["shot"]
