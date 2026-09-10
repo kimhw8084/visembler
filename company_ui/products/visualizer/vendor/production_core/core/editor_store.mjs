@@ -61,6 +61,10 @@ export function canonicalModel(input = {}) {
     canvas: canonicalCanvas(input.canvas),
     nextId: Number.isInteger(input.nextId) ? input.nextId : inferNextId(items),
   };
+  // Compound filters are an additive projection of the v1 model.  Keep the
+  // field optional so historical single-filter reports serialize identically,
+  // while compound filter state survives a server bootstrap/refresh.
+  if (Array.isArray(input.crossFilters)) model.crossFilters = clone(input.crossFilters);
   validateModel(model);
   return model;
 }
@@ -223,7 +227,7 @@ function applyOp(model, op) {
 
   if (op.op === 'model.patch') {
     if (!isPlainObject(op.patch)) throw new CommandValidationError('model.patch requires patch object.');
-    const allowed = new Set(['mode', 'layoutPreset', 'crossFilter', 'canvas', 'nextId', 'datasets', 'authoring_schema']);
+    const allowed = new Set(['mode', 'layoutPreset', 'crossFilter', 'crossFilters', 'canvas', 'nextId', 'datasets', 'authoring_schema']);
     const before = {};
     for (const [key, value] of Object.entries(op.patch)) {
       if (!allowed.has(key)) throw new CommandValidationError(`model.patch cannot modify ${key}`);

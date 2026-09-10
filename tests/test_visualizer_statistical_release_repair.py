@@ -789,6 +789,128 @@ def test_native_filtered_resource_refresh_bootstrap_preserves_session_population
                     browser.close()
 
 
+def test_native_compound_filtered_resource_refresh_and_post_refresh_convergence(tmp_path: Path):
+    """Compound refresh, remove-one, and clear-all keep the same population."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import model, panels, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    fields = [
+        {'id': 'measurement', 'name': 'Measurement', 'type': 'number'},
+        {'id': 'lsl', 'name': 'LSL', 'type': 'number'},
+        {'id': 'usl', 'name': 'USL', 'type': 'number'},
+        {'id': 'tool', 'name': 'Tool', 'type': 'categorical'},
+        {'id': 'chamber', 'name': 'Chamber', 'type': 'categorical'},
+    ]
+    rows = [[10, 0, 100, 'ETCH-01', 'B'], [11, 0, 100, 'ETCH-01', 'B'],
+            [12, 0, 100, 'ETCH-01', 'A'], [13, 0, 100, 'ETCH-01', 'A'],
+            [1, 0, 100, 'DEP-02', 'B'], [2, 0, 100, 'DEP-02', 'B'],
+            [3, 0, 100, 'DEP-02', 'A'], [4, 0, 100, 'DEP-02', 'A']]
+    cap = {
+        **_cap_item('cap'), 'type': 'metric', 'engine': 'MetricEngine', 'element': 'Hero KPI',
+        'title': 'Capability', 'dataset_id': 'd1', 'order': 0, 'x': 20, 'y': 20, 'w': 360, 'h': 180,
+        'mapping': {'value': 'measurement', 'specification_low': 'lsl', 'specification_high': 'usl'},
+    }
+    compound = [
+        {'field': 'tool', 'label': 'Tool', 'value': 'ETCH-01', 'source': 'Capability', 'source_entry': 'cap'},
+        {'field': 'chamber', 'label': 'Chamber', 'value': 'B', 'source': 'Capability', 'source_entry': 'cap'},
+    ]
+    report_model = canonical_model({
+        'datasets': [{'id': 'd1', 'name': 'Compound refresh source', 'fields': fields, 'rows': rows}],
+        'items': [cap], 'crossFilter': compound[0], 'crossFilters': compound, 'nextId': 2,
+    })
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-compound-refresh-') as data_dir:
+        with NativeHost(ROOT, Path(data_dir) / 'native-data') as host:
+            report_id = host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                context = browser.new_context(viewport={'width': 1440, 'height': 1000})
+                page = context.new_page()
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}', wait_until='domcontentloaded')
+                    ready(page)
+                    assert page.locator('#activeFilters').inner_text().count('=') == 2
+                    cap_node = page.locator('.component[data-id="cap"]')
+                    cap_node.focus(); cap_node.press('Enter'); panels(page, library=False, inspector=True)
+                    page.locator('[data-dataset-action="bind-resource"]').click()
+                    page.wait_for_function('() => window.CompanyUIVisualizerBridge.state().model.datasets.some(dataset => dataset.resource_id)', timeout=20000)
+                    settled(page)
+
+                    # Establish the compound session through the real resource
+                    # request boundary before refreshing the resource.
+                    page.evaluate('''() => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      const message={bridge_version:1,type:'dataset.filters_requested',payload:{report_id:state.report_id,dataset_id:'d1',session_id:`report:${state.report_id}`,filters:[{field:'tool',operation:'equals',value:'ETCH-01'},{field:'chamber',operation:'equals',value:'B'}]}};
+                      document.querySelector('.cui-visualizer-root').dispatchEvent(new CustomEvent('visualizer_bridge',{bubbles:true,detail:JSON.stringify(message)}));
+                    }''')
+                    page.wait_for_function('''() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap?.population?.filtered_total === 2''', timeout=20000)
+                    settled(page)
+
+                    refreshed = 'Measurement\tLSL\tUSL\tTool\tChamber\n40\t0\t100\tETCH-01\tB\n41\t0\t100\tETCH-01\tB\n42\t0\t100\tETCH-01\tA\n43\t0\t100\tETCH-01\tA\n1\t0\t100\tDEP-02\tB\n2\t0\t100\tDEP-02\tB\n3\t0\t100\tDEP-02\tA\n4\t0\t100\tDEP-02\tA'
+                    page.evaluate('''(rowsText) => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      const rows=rowsText.split('\\n').slice(1).map(row=>row.split('\\t').map(value=>/^[-+]?\\d+(\\.\\d+)?$/.test(value)?Number(value):value));
+                      const fields=[{id:'measurement',name:'Measurement',type:'number'},{id:'lsl',name:'LSL',type:'number'},{id:'usl',name:'USL',type:'number'},{id:'tool',name:'Tool',type:'categorical'},{id:'chamber',name:'Chamber',type:'categorical'}];
+                      const message={bridge_version:1,type:'dataset.resource_refresh_requested',payload:{report_id:state.report_id,dataset_id:'d1',session_id:`report:${state.report_id}`,dataset:{id:'d1',name:'Compound refresh source',fields,rows},expected_revision:1,base_revision:state.revision,commit_id:'native-compound-refresh',selected_only:false}};
+                      document.querySelector('.cui-visualizer-root').dispatchEvent(new CustomEvent('visualizer_bridge',{bubbles:true,detail:JSON.stringify(message)}));
+                    }''', refreshed)
+                    page.wait_for_function('() => window.CompanyUIVisualizerBridge.state().model.datasets.find(dataset => dataset.resource_id)?.revision === 2', timeout=20000)
+                    settled(page)
+                    result = page.evaluate('''() => ({
+                      filters:window.CompanyUIVisualizerBridge.state().model.crossFilters||[],
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap,
+                    })''')
+                    assert [(value['field'], value['value']) for value in result['filters']] == [('tool', 'ETCH-01'), ('chamber', 'B')]
+                    assert result['analysis']['population'] == {'source_total': 8, 'filtered_total': 2, 'analyzed_rows': 2, 'complete': True}
+                    assert result['analysis']['derived_statistics']['stats']['mean'] == 40.5
+
+                    page.evaluate("document.querySelector('#activeFilters [data-clear-active-filter=\\\"1\\\"]')?.dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true}))")
+                    page.wait_for_timeout(500)
+                    after_remove_state = page.evaluate('''() => ({
+                      filters:window.CompanyUIVisualizerBridge.state().model.crossFilters||[],
+                      analysis:window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap,
+                      buttons:[...document.querySelectorAll('#activeFilters [data-clear-active-filter]')].map(node=>node.getAttribute('data-clear-active-filter')),
+                    })''')
+                    assert [(value['field'], value['value']) for value in after_remove_state['filters']] == [('tool', 'ETCH-01')], after_remove_state
+                    settled(page)
+                    removed = page.evaluate('''() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap''')
+                    assert removed['population'] == {'source_total': 8, 'filtered_total': 4, 'analyzed_rows': 4, 'complete': True}
+                    assert removed['derived_statistics']['stats']['mean'] == 41.5
+
+                    page.locator('[data-clear-all-filters]').click()
+                    page.wait_for_function('''() => {
+                      const filters=window.CompanyUIVisualizerBridge.state().model.crossFilters||[];
+                      return !filters.length && window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap?.population?.filtered_total === 8;
+                    }''', timeout=20000)
+                    settled(page)
+                    cleared = page.evaluate('''() => window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap''')
+                    assert cleared['population'] == {'source_total': 8, 'filtered_total': 8, 'analyzed_rows': 8, 'complete': True}
+                    assert cleared['derived_statistics']['stats']['mean'] == 22
+                    assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+                    assert 'NaN' not in page.locator('body').inner_text()
+                    assert 'Infinity' not in page.locator('body').inner_text()
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    context.close()
+                    browser.close()
+
+
 def test_native_request_generations_guard_bootstrap_error_and_report_switch(tmp_path: Path):
     """The real Editor receiver keeps one logical generation across projections."""
     playwright = pytest.importorskip('playwright.sync_api')

@@ -65,6 +65,11 @@ def canonical_model(value: Mapping[str, Any] | None = None) -> dict[str, Any]:
             dataset.setdefault('row_count', len(dataset.get('rows') or []))
     canvas=_canonical_canvas(src.get('canvas'))
     model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':datasets,'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'canvas':canvas,'nextId':next_id}
+    # Compound filters are an additive v1 projection.  Preserve them when
+    # present so a server bootstrap cannot collapse a visible compound
+    # session to the first predicate while retaining the full DataSession.
+    if isinstance(src.get('crossFilters'), list):
+        model['crossFilters'] = json.loads(json.dumps(src['crossFilters']))
     validate_model(model)
     encoded=stable_json(model).encode('utf-8')
     if len(encoded) > MODEL_MAX_BYTES: raise VisualizerContractError(f'report model exceeds {MODEL_MAX_BYTES} bytes')
