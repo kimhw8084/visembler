@@ -268,8 +268,14 @@ const request10=nextRequestId(requests,key),request11=nextRequestId(requests,key
 let state={visibleFilter:'none',population:0};
 const apply=(requestId,filter,population)=>{const expectedFilters=[['product','equals',filter,null,null]],resultFilters=[['product','equals',filter,null,null]];if(acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',expectedSessionId:'session-a',resultSessionId:'session-a',expectedFilters,resultFilters,expectedRevision:4,resultRevision:4,activeRequestId:requests[key].current,resultRequestId:requestId})){state={visibleFilter:filter,population};}};
 apply(request11,'B',2); apply(request10,'A',1);
-console.log(JSON.stringify({same:acceptsStatisticalResult({expectedRevision:2,resultRevision:2}),revision_stale:acceptsStatisticalResult({expectedRevision:2,resultRevision:1}),request_stale:acceptsStatisticalResult({activeRequestId:'new',resultRequestId:'old'}),request10,request11,state,report_switch:acceptsStatisticalResult({expectedReportId:'report-b',resultReportId:'report-a',activeRequestId:1,resultRequestId:1})}));
-    ''') == {'same': True, 'revision_stale': False, 'request_stale': False, 'request10': 10, 'request11': 11, 'state': {'visibleFilter': 'B', 'population': 2}, 'report_switch': False}
+const bootstrap20=20,bootstrap21=21;requests[key].current=bootstrap21;let disposable={};
+const bootstrap=(requestId)=>{const accepted=!!requests[key]&&acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',activeRequestId:requests[key].current,resultRequestId:requestId});if(accepted){disposable={};state.bootstrap=requestId;}return accepted;};
+const bootstrap21Accepted=bootstrap(bootstrap21),bootstrap20Rejected=!bootstrap(bootstrap20);
+const generationAfterBootstrap=nextRequestId(requests,key),numericCollisionRejected=!acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',activeRequestId:generationAfterBootstrap,resultRequestId:1});
+requests[key].current=31;const currentErrorAccepted=acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',activeRequestId:31,resultRequestId:31}),staleErrorRejected=!acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',activeRequestId:31,resultRequestId:30});
+const emptyGeneration={};const unknownTaggedRejected=!emptyGeneration[key] || !acceptsStatisticalResult({expectedReportId:'report-a',resultReportId:'report-a',expectedDatasetId:'d1',resultDatasetId:'d1',activeRequestId:emptyGeneration[key]?.current,resultRequestId:20});
+console.log(JSON.stringify({same:acceptsStatisticalResult({expectedRevision:2,resultRevision:2}),revision_stale:acceptsStatisticalResult({expectedRevision:2,resultRevision:1}),request_stale:acceptsStatisticalResult({activeRequestId:'new',resultRequestId:'old'}),request10,request11,state,bootstrap21Accepted,bootstrap20Rejected,generationAfterBootstrap,numericCollisionRejected,currentErrorAccepted,staleErrorRejected,unknownTaggedRejected,report_switch:acceptsStatisticalResult({expectedReportId:'report-b',resultReportId:'report-a',activeRequestId:1,resultRequestId:1})}));
+    ''') == {'same': True, 'revision_stale': False, 'request_stale': False, 'request10': 10, 'request11': 11, 'state': {'visibleFilter': 'B', 'population': 2, 'bootstrap': 21}, 'bootstrap21Accepted': True, 'bootstrap20Rejected': True, 'generationAfterBootstrap': 22, 'numericCollisionRejected': True, 'currentErrorAccepted': True, 'staleErrorRejected': True, 'unknownTaggedRejected': True, 'report_switch': False}
 
 
 def test_filter_intent_converges_with_datasession_and_statistical_population(tmp_path: Path):
@@ -320,12 +326,13 @@ def test_filter_intent_converges_with_datasession_and_statistical_population(tmp
     assert session.filters==() and result.filtered_total==8 and cleared['population']['analyzed_rows']==8
     assert cleared['derived_statistics']['stats']['mean'] == 15.75
 
-    candidate=_candidate_session(resource['dataset_id'],fields,rows,resource['revision']+1,[FilterClause('tool',FilterOperation.EQUALS,'ETCH-01')])
+    candidate=_candidate_session(resource['dataset_id'],fields,rows,resource['revision']+1,[FilterClause('tool',FilterOperation.EQUALS,'ETCH-01'),FilterClause('chamber',FilterOperation.EQUALS,'B')])
     candidate_result=candidate.query(DataQuery(limit=None))
     candidate_rows=[[row[field['id']] for field in fields] for row in candidate_result.rows]
     candidate_analysis=_analyze(fields,candidate_rows,item,source_total=len(rows),filtered_total=candidate_result.filtered_total,revision=resource['revision']+1,dataset_id=resource['dataset_id'],filters=candidate.filters)
     assert candidate_result.filtered_total==4 and len(candidate_result.rows)==4
     assert candidate_analysis['population']=={'source_total':8,'filtered_total':4,'analyzed_rows':4,'complete':True}
+    assert [(clause.field,clause.value) for clause in candidate.filters]==[('tool','ETCH-01'),('chamber','B')]
     assert candidate_analysis['session']['filter_fingerprint']!=cleared['session']['filter_fingerprint']
     assert candidate_analysis['derived_statistics']['stats']['mean']==6
 
@@ -672,6 +679,188 @@ def test_native_bound_doe_uses_complete_cells_and_exports(tmp_path: Path):
                     assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
                     assert 'NaN' not in page.locator('body').inner_text()
                     assert 'Infinity' not in page.locator('body').inner_text()
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    context.close()
+                    browser.close()
+
+
+def test_native_filtered_resource_refresh_bootstrap_preserves_session_population(tmp_path: Path):
+    """A successful refresh must bootstrap the preserved filtered session."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import model, panels, ready, settled
+    finally:
+        sys.path.remove(scripts)
+
+    fields = [
+        {'id': 'measurement', 'name': 'Measurement', 'type': 'number'},
+        {'id': 'lsl', 'name': 'LSL', 'type': 'number'},
+        {'id': 'usl', 'name': 'USL', 'type': 'number'},
+        {'id': 'product', 'name': 'Product', 'type': 'categorical'},
+    ]
+    rows = [[20, 0, 40, 'P2'], [21, 0, 40, 'P2'], [20, 0, 40, 'P2'], [21, 0, 40, 'P2'],
+            [1, 0, 40, 'P1'], [2, 0, 40, 'P1'], [1, 0, 40, 'P1'], [2, 0, 40, 'P1']]
+    cap_mapping = {'value': 'measurement', 'specification_low': 'lsl', 'specification_high': 'usl'}
+    cap = {
+        **_cap_item('cap'), 'type': 'metric', 'engine': 'MetricEngine', 'element': 'Hero KPI',
+        'title': 'Capability', 'dataset_id': 'd1', 'order': 0, 'x': 20, 'y': 20, 'w': 360, 'h': 180,
+        'mapping': cap_mapping,
+    }
+    persisted_filter = {'field': 'product', 'label': 'Product', 'value': 'P2', 'source': 'Capability', 'source_entry': 'cap'}
+    report_model = canonical_model({'datasets': [{'id': 'd1', 'name': 'Refresh source', 'fields': fields, 'rows': rows}], 'items': [cap], 'crossFilter': persisted_filter, 'crossFilters': [persisted_filter], 'nextId': 2})
+
+    with tempfile.TemporaryDirectory(prefix='visembler-native-filtered-refresh-') as data_dir:
+        with NativeHost(ROOT, Path(data_dir) / 'native-data') as host:
+            report_id = host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                context = browser.new_context(viewport={'width': 1440, 'height': 1000}, accept_downloads=True)
+                page = context.new_page()
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}', wait_until='domcontentloaded')
+                    ready(page)
+                    cap_node = page.locator('.component[data-id="cap"]')
+                    cap_node.focus(); cap_node.press('Enter'); panels(page, library=False, inspector=True)
+                    page.locator('[data-dataset-action="bind-resource"]').click()
+                    page.wait_for_function('() => window.CompanyUIVisualizerBridge.state().model.datasets.some(dataset => dataset.resource_id)', timeout=20000)
+                    settled(page)
+
+                    page.evaluate('''() => {
+                      const reportId=window.CompanyUIVisualizerBridge.state().report_id;
+                      const message={bridge_version:1,type:'dataset.filters_requested',payload:{report_id:reportId,dataset_id:'d1',session_id:`report:${reportId}`,filters:[{field:'product',operation:'equals',value:'P2'}]}};
+                      document.querySelector('.cui-visualizer-root').dispatchEvent(new CustomEvent('visualizer_bridge',{bubbles:true,detail:JSON.stringify(message)}));
+                    }''')
+                    page.locator('#activeFilters').wait_for(state='visible', timeout=20000)
+                    assert 'P2' in page.locator('#activeFilters').inner_text()
+                    settled(page)
+                    filtered_before = page.evaluate('''() => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      return {revision:state.revision, filters:state.model.crossFilters||((state.model.crossFilter&&[state.model.crossFilter])||[]), text:document.querySelector('.component[data-id="cap"]')?.innerText||''};
+                    }''')
+                    assert filtered_before['filters'] and filtered_before['filters'][0]['value'] == 'P2'
+                    assert 'n=4' in filtered_before['text']
+
+                    refreshed = 'Measurement\tLSL\tUSL\tProduct\n30\t0\t40\tP2\n31\t0\t40\tP2\n30\t0\t40\tP2\n31\t0\t40\tP2\n1\t0\t40\tP1\n2\t0\t40\tP1\n1\t0\t40\tP1\n2\t0\t40\tP1'
+                    page.evaluate('''(rowsText) => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      const reportId=state.report_id;
+                      const rows=rowsText.split('\\n').slice(1).map(row=>row.split('\\t').map(value=>/^[-+]?\\d+(\\.\\d+)?$/.test(value)?Number(value):value));
+                      const fields=[{id:'measurement',name:'Measurement',type:'number'},{id:'lsl',name:'LSL',type:'number'},{id:'usl',name:'USL',type:'number'},{id:'product',name:'Product',type:'categorical'}];
+                      const message={bridge_version:1,type:'dataset.resource_refresh_requested',payload:{report_id:reportId,dataset_id:'d1',session_id:`report:${reportId}`,dataset:{id:'d1',name:'Refresh source',fields,rows},expected_revision:1,base_revision:state.revision,commit_id:'native-filtered-refresh',selected_only:false}};
+                      document.querySelector('.cui-visualizer-root').dispatchEvent(new CustomEvent('visualizer_bridge',{bubbles:true,detail:JSON.stringify(message)}));
+                    }''', refreshed)
+                    page.wait_for_function('() => window.CompanyUIVisualizerBridge.state().model.datasets.find(dataset => dataset.resource_id)?.revision === 2', timeout=20000)
+                    settled(page)
+                    result = page.evaluate('''() => {
+                      const state=window.CompanyUIVisualizerBridge.state();
+                      const analysis=window.__VIZ_PROD__?.ui?.authoritativeAnalyses?.cap;
+                      return {revision:state.model.datasets.find(dataset=>dataset.resource_id)?.revision, filters:state.model.crossFilters||((state.model.crossFilter&&[state.model.crossFilter])||[]), analysis, text:document.querySelector('.component[data-id="cap"]')?.innerText||''};
+                    }''')
+                    assert result['revision'] == 2
+                    assert [(value['field'], value['value']) for value in result['filters']] == [('product', 'P2')]
+                    assert result['analysis']['population'] == {'source_total': 8, 'filtered_total': 4, 'analyzed_rows': 4, 'complete': True}
+                    assert result['analysis']['session']['filter_fingerprint']
+                    assert result['analysis']['derived_statistics']['stats']['mean'] == 30.5
+                    assert result['analysis']['derived_statistics']['stats']['cpk'] == pytest.approx(5.484827557301445)
+                    assert 'n=4' in result['text'] and 'Cpu 5.485' in result['text']
+                    assert 'mean 15.5' not in result['text']
+
+                    assert page.evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1')
+                    assert 'NaN' not in page.locator('body').inner_text()
+                    assert 'Infinity' not in page.locator('body').inner_text()
+                    assert not errors, errors
+                    assert not failed_requests, failed_requests
+                finally:
+                    context.close()
+                    browser.close()
+
+
+def test_native_request_generations_guard_bootstrap_error_and_report_switch(tmp_path: Path):
+    """The real Editor receiver keeps one logical generation across projections."""
+    playwright = pytest.importorskip('playwright.sync_api')
+    scripts = str(ROOT / 'scripts' / 'release_checks')
+    import sys
+    sys.path.insert(0, scripts)
+    try:
+        from editor_host import NativeHost
+        from run_editor_workflows import ready
+    finally:
+        sys.path.remove(scripts)
+
+    fields = [{'id': 'value', 'name': 'Value', 'type': 'number'}]
+    report_model = canonical_model({
+        'datasets': [{'id': 'd1', 'name': 'Generation source', 'fields': fields, 'rows': [[1], [2]], 'revision': 1}],
+        'items': [], 'nextId': 1,
+    })
+    with tempfile.TemporaryDirectory(prefix='visembler-native-generations-') as data_dir:
+        with NativeHost(ROOT, Path(data_dir) / 'native-data') as host:
+            report_id = host.create(model=report_model)
+            with playwright.sync_playwright() as instance:
+                executable = os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+                options = {'headless': True}
+                if executable:
+                    options.update(executable_path=executable, args=['--no-sandbox'])
+                browser = instance.chromium.launch(**options)
+                context = browser.new_context(viewport={'width': 1440, 'height': 1000})
+                page = context.new_page()
+                errors, failed_requests = [], []
+                page.on('pageerror', lambda error: errors.append(str(error)))
+                page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+                page.on('requestfailed', lambda request: failed_requests.append((request.url, request.failure)))
+                try:
+                    page.goto(f'{host.url}/visualizer?report={report_id}', wait_until='domcontentloaded')
+                    ready(page)
+                    evidence = page.evaluate('''() => {
+                      const bridge=window.CompanyUIVisualizerBridge, prod=window.__VIZ_PROD__;
+                      const initial=bridge.state(), reportA=initial.report_id, session=`report:${reportA}`;
+                      const key=JSON.stringify([reportA,'d1',session]);
+                      prod.ui.requestGenerations[key]={current:21,report_id:reportA,dataset_id:'d1',session_id:session,filters:[],checkVisible:false};
+                      const bootstrap=(requestId,reportId=reportA,revision=2,filterValue='B')=>{
+                        const model=structuredClone(initial.model); model.datasets[0].revision=revision;
+                        model.crossFilter={field:'value',label:'Value',value:filterValue,source_entry:'none'};
+                        model.crossFilters=[model.crossFilter];
+                        return {bridge_version:1,type:'report.bootstrap',payload:{report_id:reportId,revision,model,analysis_results:{},request_id:requestId,request_dataset_id:'d1',request_session_id:session}};
+                      };
+                      bridge.receive(bootstrap(21));
+                      const accepted={revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value,disposableRequests:Object.keys(prod.ui.datasetRequests).length};
+                      bridge.receive(bootstrap(20,reportA,2,'A'));
+                      const afterOldBootstrap={revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value};
+                      bridge.receive({bridge_version:1,type:'dataset.binding_result',payload:{report_id:reportA,dataset_id:'d1',session_id:session,request_id:1,result:{rows:[[9]],revision:2,source_revision:2},analysis_results:{}}});
+                      const collision={revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value};
+                      bridge.receive({bridge_version:1,type:'report.error',payload:{report_id:reportA,dataset_id:'d1',session_id:session,request_dataset_id:'d1',request_session_id:session,request_id:20,message:'stale diagnostic'}});
+                      const staleError={revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value,persistence:prod.ui.persistenceFailure?.message||null};
+                      bridge.receive({bridge_version:1,type:'report.error',payload:{report_id:reportA,dataset_id:'d1',session_id:session,request_dataset_id:'d1',request_session_id:session,request_id:21,message:'current diagnostic'}});
+                      const currentError={revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value,persistence:prod.ui.persistenceFailure?.message||null};
+                      const reportBModel=structuredClone(initial.model);
+                      bridge.receive({bridge_version:1,type:'report.bootstrap',payload:{report_id:'report-b',revision:3,model:reportBModel,analysis_results:{}}});
+                      const switched={report:bridge.state().report_id,revision:bridge.state().revision};
+                      bridge.receive(bootstrap(21,reportA,2,'A'));
+                      const lateAfterSwitch={report:bridge.state().report_id,revision:bridge.state().revision,filter:bridge.state().model.crossFilter?.value??null};
+                      return {accepted,afterOldBootstrap,collision,staleError,currentError,switched,lateAfterSwitch};
+                    }''')
+                    assert evidence == {
+                        'accepted': {'revision': 2, 'filter': 'B', 'disposableRequests': 0},
+                        'afterOldBootstrap': {'revision': 2, 'filter': 'B'},
+                        'collision': {'revision': 2, 'filter': 'B'},
+                        'staleError': {'revision': 2, 'filter': 'B', 'persistence': None},
+                        'currentError': {'revision': 2, 'filter': 'B', 'persistence': 'current diagnostic'},
+                        'switched': {'report': 'report-b', 'revision': 3},
+                        'lateAfterSwitch': {'report': 'report-b', 'revision': 3, 'filter': None},
+                    }
                     assert not errors, errors
                     assert not failed_requests, failed_requests
                 finally:

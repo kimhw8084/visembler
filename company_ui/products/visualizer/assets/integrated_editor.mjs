@@ -226,6 +226,10 @@ const ui = {
   // The initial native bootstrap is also an authoritative result boundary.
   // Reopen must not wait for a bounded preview query before rendering stats.
   authoritativeAnalyses: structuredClone(bootstrap.analysis_results || {}),
+  // Request generations outlive disposable row/analysis projections.  A
+  // request-tagged bootstrap or error with no durable generation is stale,
+  // never implicitly current.
+  requestGenerations: Object.create(null),
   datasetRequests: Object.create(null),
   dataFirst: null,
   mappingPresetsLoaded: false,
@@ -482,9 +486,11 @@ function dispatchDatasetRequest(type, payload={}) {
   const sessionId=requestSessionId(payload);
   if(!datasetId) return dispatchSemantic(type,payload);
   const key=resultKey(bootstrap.report_id||'default',datasetId,sessionId);
-  const requestId=nextRequestId(ui.datasetRequests,key);
+  const requestId=nextRequestId(ui.requestGenerations,key);
   const filters=type==='dataset.filter_requested' ? requestFilterList([payload.filter]) : requestFilterList(payload.filters||[]);
-  ui.datasetRequests[key]={current:requestId,report_id:String(bootstrap.report_id||'default'),dataset_id:datasetId,session_id:sessionId,filters,checkVisible:['dataset.filter_requested','dataset.filters_requested','dataset.reset_requested'].includes(type)};
+  const requestState={current:requestId,report_id:String(bootstrap.report_id||'default'),dataset_id:datasetId,session_id:sessionId,filters,checkVisible:['dataset.filter_requested','dataset.filters_requested','dataset.reset_requested'].includes(type)};
+  ui.requestGenerations[key]={...(ui.requestGenerations[key]||{}),...requestState};
+  ui.datasetRequests[key]=requestState;
   return dispatchSemantic(type,{...payload,session_id:sessionId,request_id:requestId});
 }
 function prospectiveModel(ops,label='Edit') {
@@ -541,6 +547,14 @@ function restorePersistedRecovery(payload) {
 function replaceFromServer(payload, reason='Server synchronization', { preserveLocal=false, restorePersisted=false }={}) {
   if (!payload?.model || !Number.isInteger(payload.revision)) return;
   const reportChanged=String(payload.report_id||bootstrap.report_id||'default')!==String(bootstrap.report_id||'default');
+  if(reportChanged){
+    // Report generations are transient and must not survive a report switch.
+    // Delete them only after the active report has changed; tagged late
+    // replies still fail the report identity check, while the registry stays
+    // bounded to the active report.
+    const oldReport=String(bootstrap.report_id||'default');
+    Object.keys(ui.requestGenerations).forEach(key=>{try{if(String(JSON.parse(key)[0])===oldReport)delete ui.requestGenerations[key];}catch{delete ui.requestGenerations[key];}});
+  }
   if(reportChanged&&!preserveLocal){retainLocalRecovery('Report switched before save confirmation');ui.recovery=null;ui.persistenceFailure=null;}
   if(preserveLocal)retainLocalRecovery(reason); if(restorePersisted)restorePersistedRecovery(payload);
   if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();
@@ -572,6 +586,32 @@ window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message===
 // Dataset replies are asynchronous. Keep older resource revisions out of the
 // current statistical projection before the generic bridge applies row state.
 const receiveBridgeMessage = window.CompanyUIVisualizerBridge.receive;
+function taggedOperationAccepted(payload, resultReportId=payload?.report_id, { checkRevision=true }={}) {
+  const requestId=payload?.request_id;
+  if(requestId==null||String(requestId)==='') return true;
+  const datasetId=String(payload?.request_dataset_id||payload?.dataset_id||'');
+  const sessionId=String(payload?.request_session_id||payload?.session_id||'');
+  if(!datasetId||!sessionId) return false;
+  const key=resultKey(bootstrap.report_id||'default',datasetId,sessionId);
+  const request=ui.requestGenerations[key];
+  if(!request||request.current==null) return false;
+  const dataset=model().datasets.find(item=>String(item.id)===datasetId);
+  const responseDataset=Array.isArray(payload?.model?.datasets)
+    ? payload.model.datasets.find(item=>String(item?.id||'')===datasetId) : null;
+  const responseRevision=Number(responseDataset?.revision||payload?.analysis_results&&Object.values(payload.analysis_results)[0]?.source?.dataset_revision||payload?.result?.source_revision||0);
+  // A successful resource refresh advances the revision, so the request that
+  // initiated it cannot require equality with the browser's pre-refresh
+  // revision.  It must, however, never move the projection backwards.
+  if(checkRevision&&Number(dataset?.revision||0)>0&&responseRevision>0&&responseRevision<Number(dataset.revision)) return false;
+  return acceptsStatisticalResult({
+    expectedReportId:bootstrap.report_id||'default', resultReportId,
+    expectedDatasetId:dataset?.id||datasetId, resultDatasetId:datasetId,
+    expectedSessionId:request.session_id||sessionId, resultSessionId:sessionId,
+    expectedRevision:0,
+    resultRevision:responseRevision,
+    activeRequestId:request.current, resultRequestId:requestId,
+  });
+}
 window.CompanyUIVisualizerBridge.receive = message => {
   const value = typeof message === 'string' ? JSON.parse(message) : message;
   const payload = value?.payload || {};
@@ -579,18 +619,20 @@ window.CompanyUIVisualizerBridge.receive = message => {
     const dataset = model().datasets.find(item => String(item.id) === String(payload.dataset_id));
     const sessionId=String(payload.session_id || `report:${bootstrap.report_id||'default'}`);
     const key=resultKey(bootstrap.report_id||'default',payload.dataset_id,sessionId);
-    const request=ui.datasetRequests[key];
+    const request=ui.requestGenerations[key];
     const firstResult=Object.values(payload.analysis_results||{})[0] || {};
     const expected = Number(dataset?.revision || 0);
     const actual = Number(payload.result?.source_revision || payload.result?.revision || firstResult.source?.dataset_revision || 0);
     const resultFilters=requestFilterList(payload.session_filters || firstResult.session_filters || []);
-    const accepted=acceptsStatisticalResult({
+    const resultRequestId=payload.request_id || firstResult.request_id;
+    const requestTagged=resultRequestId!=null&&String(resultRequestId)!=='';
+    const accepted=(!requestTagged||!!request) && acceptsStatisticalResult({
       expectedReportId:bootstrap.report_id||'default', resultReportId:payload.report_id,
       expectedDatasetId:dataset?.id, resultDatasetId:payload.dataset_id,
       expectedSessionId:request?.session_id || sessionId, resultSessionId:payload.session_id || firstResult.session?.session_id || sessionId,
       expectedFilters:request?.filters, resultFilters,
       expectedRevision:expected, resultRevision:actual,
-      activeRequestId:request?.current, resultRequestId:payload.request_id || firstResult.request_id,
+      activeRequestId:request?.current, resultRequestId,
     });
     const visibleMatches=!request?.checkVisible || JSON.stringify(visibleFilterList())===JSON.stringify(request.filters||[]);
     if (!accepted || !visibleMatches) {
@@ -606,13 +648,18 @@ window.CompanyUIVisualizerBridge.receive = message => {
     }
     return;
   }
-  if(value?.type==='report.bootstrap' && payload.request_id){
+  if(value?.type==='report.bootstrap' && payload.request_id!=null && String(payload.request_id)!==''){
     const datasetId=payload.request_dataset_id,sessionId=payload.request_session_id;
     if(datasetId&&sessionId){
-      const key=resultKey(bootstrap.report_id||'default',datasetId,sessionId),request=ui.datasetRequests[key];
-      if(!acceptsStatisticalResult({expectedReportId:bootstrap.report_id||'default',resultReportId:payload.report_id,expectedDatasetId:datasetId,resultDatasetId:payload.request_dataset_id,activeRequestId:request?.current,resultRequestId:payload.request_id})){
+      if(!taggedOperationAccepted(payload)){
         debugEvent('warn','Ignored stale statistical report bootstrap',`request ${payload.request_id}`);return;
       }
+    } else { debugEvent('warn','Ignored unscoped statistical report bootstrap',`request ${payload.request_id}`);return;
+    }
+  }
+  if(value?.type==='report.error' && payload.request_id!=null && String(payload.request_id)!==''){
+    if(!taggedOperationAccepted(payload, payload.report?.report_id||payload.report_id, {checkRevision:false})){
+      debugEvent('warn','Ignored stale statistical report error',`request ${payload.request_id}`);return;
     }
   }
   receiveBridgeMessage(message);
@@ -732,8 +779,8 @@ function clearActiveCrossFilter(removeIndex=null) {
   const dataset=model().datasets.find(value=>value.resource_id);
   const current=activeCrossFilters(),next=removeIndex===null?[]:current.filter((_,index)=>index!==removeIndex);
   if(removeIndex===null){const host=$('#activeFilters');if(host){host.hidden=true;host.innerHTML='';}}
-  if(dataset){if(next.length)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
-  commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
+  const accepted=commitOps(removeIndex===null?'Clear active filters':'Remove active filter',[...ops,{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:removeIndex===null?'Active filters cleared':'Active filter removed'});
+  if(dataset&&accepted){if(next.length)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});else dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});}
 }
 function tableMarkup(entry) {
   if (entry.customTable) {
@@ -2174,18 +2221,19 @@ function showDropGhost(e) {
 
 function toggleChartPoint(entry, k, selection = {}) {
   const cross = entry.cross === k ? null : k, dataset=selectedDataset(entry), fieldId=selection.field||entry.mapping?.category||entry.mapping?.label||entry.mapping?.time||entry.mapping?.x||dataset?.fields?.[0]?.id, fieldName=fieldById(dataset,fieldId)?.name||fieldId||'Selection', selectedValue=cross == null ? null : (selection.value ?? chartData(entry)[cross]?.[0]), crossFilter = cross == null ? null : {field:fieldId,label:fieldName,value:selectedValue,source:entry.title||entry.element||'chart',source_entry:entry.id};
+  const accepted=commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
+  if(!accepted)return;
   if(dataset?.resource_id){
     if(cross==null)dispatchDatasetRequest('dataset.reset_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`});
     else if(fieldId)dispatchDatasetRequest('dataset.filter_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filter:{field:fieldId,operation:'equals',value:selectedValue},limit:10000});
   }
-  commitOps('Toggle chart cross-filter', [{ op: 'item.patch', id: entry.id, patch: { cross } }, { op: 'model.patch', patch: { crossFilter } }]);
 }
 function toggleChartCompoundFilter(entry, selection = {}) {
   const dataset=selectedDataset(entry),fields=String(selection.fields||'').split(',').map(value=>value.trim()).filter(Boolean),values=String(selection.values||'').split('|');
   if(!dataset?.resource_id||fields.length!==values.length||!fields.length)return;
   const next=fields.map((field,index)=>({field,label:fieldById(dataset,field)?.name||field,value:values[index],source:entry.title||entry.element||'chart',source_entry:entry.id}));
-  dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
-  commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
+  const accepted=commitOps('Apply compound chart filter',[{op:'item.patch',id:entry.id,patch:{cross:null}},{op:'model.patch',patch:{crossFilters:next,crossFilter:next[0]||null}}],{announce:`Filtered by ${next.map(filter=>`${filter.label} ${filter.value}`).join(' and ')}`});
+  if(accepted)dispatchDatasetRequest('dataset.filters_requested',{report_id:String(bootstrap.report_id||''),dataset_id:dataset.id,session_id:`report:${bootstrap.report_id||'default'}`,filters:next.map(filter=>({field:filter.field,operation:'equals',value:filter.value})),limit:10000});
 }
 function drillChartPoint(entry, k) { commitOps('Drill chart point', [{ op: 'item.patch', id: entry.id, patch: { drill: k } }]); }
 function setBrushByKeyboard(entry, kind, delta) { const D = chartData(entry); const next = [...(entry.brush || [0, D.length - 1])]; if (kind === 'start') next[0] = clamp(next[0] + delta, 0, next[1]); else next[1] = clamp(next[1] + delta, next[0], D.length - 1); if (next[0] !== entry.brush[0] || next[1] !== entry.brush[1]) commitOps('Adjust brush range', [{ op: 'item.patch', id: entry.id, patch: { brush: next } }]); }

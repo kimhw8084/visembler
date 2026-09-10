@@ -1095,14 +1095,103 @@ def register_visualizer(
                     result['request_id'] = int(request_id)
             return results
 
-        def report_statistical_results(record: Any) -> dict[str, dict[str, Any]]:
+        def persisted_statistical_sessions(record: Any) -> tuple[dict[str, Any], set[str]]:
+            """Rebind resource analyses to filters persisted in the report model.
+
+            ``crossFilters`` is the durable representation of the visible
+            filter surface.  A report reopen must not pair those predicates
+            with a fresh unfiltered DataSession.  Newer filters carry
+            ``source_entry``; the title/element lookup is retained for older
+            reports that only persisted the display source.
+            """
+            raw_filters = record.model.get('crossFilters') if isinstance(record.model, Mapping) else None
+            if not isinstance(raw_filters, list) or not raw_filters:
+                single = record.model.get('crossFilter') if isinstance(record.model, Mapping) else None
+                raw_filters = [single] if isinstance(single, Mapping) else []
+            items = [item for item in record.model.get('items', []) if isinstance(item, Mapping)]
+            resource_ids = {
+                str(dataset.get('id') or '') for dataset in record.model.get('datasets', [])
+                if isinstance(dataset, Mapping) and dataset.get('resource_id')
+            }
+            grouped: dict[str, list[FilterClause]] = {}
+            unresolved: set[str] = set()
+            for value in raw_filters:
+                if not isinstance(value, Mapping) or not str(value.get('field') or '').strip():
+                    continue
+                source = str(value.get('source_entry') or '').strip()
+                if not source:
+                    source = str(value.get('source') or '').strip()
+                matches = [item for item in items if source and source in {
+                    str(item.get('id') or ''), str(item.get('title') or ''), str(item.get('element') or '')
+                }]
+                dataset_ids = {str(item.get('dataset_id') or '') for item in matches if str(item.get('dataset_id') or '') in resource_ids}
+                if not dataset_ids and len(resource_ids) == 1:
+                    dataset_ids = set(resource_ids)
+                if len(dataset_ids) != 1:
+                    # An old ambiguous filter cannot be safely assigned to a
+                    # resource dataset.  Mark every resource dataset affected
+                    # so reopen fails closed instead of inventing an
+                    # unfiltered result.
+                    unresolved.update(resource_ids)
+                    continue
+                try:
+                    clause = FilterClause(
+                        str(value.get('field') or ''), FilterOperation(str(value.get('operation') or 'equals')),
+                        value.get('value'), value.get('value2'), str(value.get('filter_id') or '') or None,
+                    )
+                except (TypeError, ValueError):
+                    unresolved.update(dataset_ids or resource_ids)
+                    continue
+                grouped.setdefault(next(iter(dataset_ids)), []).append(clause)
+            sessions: dict[str, Any] = {}
+            for dataset_id, filters in grouped.items():
+                session = dataset_repository.session_for_report(record.report_id, dataset_id)
+                _apply_data_session_filters(session, filters, replace=True)
+                sessions[dataset_id] = session
+            return sessions, unresolved
+
+        def session_convergence_error(record: Any, dataset_id: str, message: str) -> dict[str, dict[str, Any]]:
+            """Return canonical non-authoritative results for an unsafe reopen."""
+            resource = dataset_repository.get_for_report(record.report_id, dataset_id)
+            items = [item for item in record.model.get('items', []) if isinstance(item, Mapping) and str(item.get('dataset_id')) == dataset_id]
+            results = analyze_statistical_items(
+                report_id=record.report_id, dataset_id=dataset_id, resource_id=str(resource['resource_id']),
+                revision=int(resource['revision']), fields=list(resource['fields']), rows=[], items=items,
+                session_id=f'report:{record.report_id}', source_total=int(resource['row_count']), filtered_total=0,
+                complete=False,
+            )
+            for result in results.values():
+                result['ok'] = False
+                result['errors'] = [{'code': 'SESSION_CONVERGENCE', 'message': message}]
+                result['derived_statistics'] = {}
+                result['renderer_ready'] = {'dataset': {'fields': [], 'rows': []}}
+                result['analysis_error'] = message
+                result['session_filters'] = []
+            return results
+
+        def report_statistical_results(record: Any, *, session_overrides: Mapping[str, Any] | None = None,
+                                       session_id_overrides: Mapping[str, str] | None = None) -> dict[str, dict[str, Any]]:
             results: dict[str, dict[str, Any]] = {}
+            persisted_sessions, unresolved = persisted_statistical_sessions(record)
+            sessions = dict(persisted_sessions)
+            sessions.update(dict(session_overrides or {}))
+            session_ids = dict(session_id_overrides or {})
             for dataset in record.model.get('datasets', []) if isinstance(record.model, Mapping) else []:
                 if not isinstance(dataset, Mapping):
                     continue
                 dataset_id=str(dataset.get('id') or '')
                 if dataset.get('resource_id'):
-                    results.update(bound_analysis(dataset_id, record=record))
+                    if dataset_id in unresolved:
+                        results.update(session_convergence_error(
+                            record, dataset_id,
+                            'Visible filters cannot be safely rebound to this resource dataset. Reapply the filters before analysis.',
+                        ))
+                        continue
+                    active_session = sessions.get(dataset_id)
+                    results.update(bound_analysis(
+                        dataset_id, record=record, session=active_session,
+                        session_id=session_ids.get(dataset_id),
+                    ))
                     continue
                 items=[item for item in record.model.get('items',[]) if isinstance(item,Mapping) and str(item.get('dataset_id'))==dataset_id]
                 if not items: continue
@@ -1156,12 +1245,16 @@ def register_visualizer(
                     item['authoritative_analysis'] = results[item['id']]
             return model
 
-        def report_payload(record: Any) -> dict[str, Any]:
+        def report_payload(record: Any, *, statistical_sessions: Mapping[str, Any] | None = None,
+                           statistical_session_ids: Mapping[str, str] | None = None) -> dict[str, Any]:
             model = dataset_repository.hydrate_model(record.report_id, record.model)
             return {
                 **_payload(record,lambda asset_id:f'{STATIC_ROUTE}/report-assets/{asset_id}', model_override=model),
                 'capabilities': repository.capabilities(record.report_id).to_dict(),
-                'analysis_results': report_statistical_results(record),
+                'analysis_results': report_statistical_results(
+                    record, session_overrides=statistical_sessions,
+                    session_id_overrides=statistical_session_ids,
+                ),
             }
 
         def data_query(session: Any, raw: Mapping[str, Any]) -> dict[str, Any]:
@@ -1389,8 +1482,9 @@ def register_visualizer(
                     _apply_data_session_filters(preserved_session,list(refresh_session.filters),replace=True)
                     data_sessions[refresh_key]=preserved_session
                     data_sessions[session_key(dataset_id,f'report:{current.report_id}')]=preserved_session
+                    request_session_id=str(payload.get('session_id') or f'report:{current.report_id}')
                     await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint'],'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{current.report_id}')})
-                    await send('report.bootstrap',{**report_payload(record),'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{record.report_id}')}); return
+                    await send('report.bootstrap',{**report_payload(record,statistical_sessions={dataset_id:preserved_session},statistical_session_ids={dataset_id:request_session_id}),'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':request_session_id}); return
             except RevisionConflictError:
                 latest=repository.get(current.report_id); await send('report.conflict',{**report_payload(latest),'rejected_commit_id':str(payload.get('commit_id') or '')})
             except Exception as exc:
