@@ -83,6 +83,7 @@ def main() -> int:
                                    '--output', str(output / 'company-readiness-local.json')], 180)
     run('company-capacity', [sys.executable, 'scripts/release_checks/run_company_capacity.py',
                              '--output', str(output / 'company-capacity.json')], 300)
+    run('element-coverage', [sys.executable, 'scripts/release_checks/verify_element_coverage.py', '--json'], 60)
 
     run('delivery-tests', [sys.executable, '-m', 'pytest', 'tests/test_visualizer_completion_delivery.py',
                           'tests/test_visualizer_production_closeout.py', '--tb=short',
@@ -116,6 +117,7 @@ def main() -> int:
     ]
     if args.host_mode == 'native':
         browser_checks.extend([
+            ('chart-studio', 'run_chart_studio_acceptance.py', 900),
             ('report-hub-browser-errors', 'run_report_hub_browser_error_gate.py', 600),
             ('native-recovery', 'run_native_recovery.py', 600),
             ('worker-lifecycle', 'run_worker_lifecycle.py', 600),
@@ -137,12 +139,12 @@ def main() -> int:
     required_names={
         'delivery-tests','full-tests','syntax-integrated_editor.mjs','syntax-element_renderer.mjs',
         'syntax-authoring_dataset_refresh.mjs','syntax-authoring_portability.mjs','syntax-authoring_intake_client.mjs',
-        'repository-contracts','company-boundary-model','company-boundary-browser','company-readiness-local','company-capacity',
+        'repository-contracts','company-boundary-model','company-boundary-browser','company-readiness-local','company-capacity','element-coverage',
         'persistence-source-probe','elements','data','performance','source-stability','frozen-connector',
     }
     if ROOT.joinpath('.git').exists(): required_names.add('git-diff-check')
     if args.host_mode=='native':
-        required_names.update({'report-hub-browser-errors','native-recovery','worker-lifecycle','operations-drill','native-acceptance'})
+        required_names.update({'chart-studio','report-hub-browser-errors','native-recovery','worker-lifecycle','operations-drill','native-acceptance'})
     by_name={row['name']:row for row in results}
     missing=sorted(required_names-set(by_name))
     failing=sorted(name for name in required_names if by_name.get(name,{}).get('status')!='PASS')
