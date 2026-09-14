@@ -1,0 +1,448 @@
+{
+  "accepted_at": "2026-09-14T04:48:12Z",
+  "changed_files": [
+    {
+      "additions": 8,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/OPERATIONS.md",
+      "status": "M"
+    },
+    {
+      "additions": 194,
+      "deletions": 0,
+      "path": "scripts/release_checks/production_element_coverage.json",
+      "status": "A"
+    },
+    {
+      "additions": 27,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 134,
+      "deletions": 0,
+      "path": "scripts/release_checks/verify_element_coverage.py",
+      "status": "A"
+    },
+    {
+      "additions": 4,
+      "deletions": 2,
+      "path": "scripts/verify_release.py",
+      "status": "M"
+    },
+    {
+      "additions": 22,
+      "deletions": 0,
+      "path": "tests/test_visualizer_element_coverage.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'for f in tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_statistical_quality_wave.py tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_fab_visuals.py tests/test_visualizer_chart_studio.py; do echo \"=== $f ===\"; rg -n \"''^(def |async def |class )|pytest.mark|playwright|chromium|browser|page'\"\\\\.|render|svg|locator|assert .*element|Multi-Line|Scatter Plot|Regression Scatter|Histogram|Box Plot|Pareto|Xbar-R Chart|DOE Main Effects|DOE Interaction Plot|Wafer Difference Map|Tool × Chamber Matrix|Golden vs Affected Profile|Control vs Affected Distribution|PRODUCTION_LIBRARY_COUNT|specialized|release\\\" \\\"\"'$f\"; done'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 47741,
+        "output_sha256": "9fb72b85c0820d53856dfec628832f2e61a10624ebb93339b419901d4f3fc4cc",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,260p' tests/test_visualizer_semiconductor_analytics_wave.py && sed -n '260,540p' tests/test_visualizer_semiconductor_analytics_wave.py && sed -n '1,260p' tests/test_visualizer_fab_visuals.py && sed -n '1,260p' tests/test_visualizer_statistical_quality_wave.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '240,560p' tests/test_visualizer_semiconductor_analytics_wave.py && sed -n '1,180p' tests/test_visualizer_fab_visuals.py && sed -n '300,540p' tests/test_visualizer_semiconductor_analytics_wave.py && sed -n '300,760p' tests/test_visualizer_statistical_release_repair.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,320p' scripts/verify_release.py && sed -n '1,280p' scripts/release_checks/run_stage_a_acceptance.py && rg -n \\\"run_editor_workflows|element_fixtures|49 production|production-element workflows|production element|generic\\\" scripts tests company_ui docs --glob '*.py' --glob '*.md' --glob '*.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,240p' scripts/release_checks/run_chart_studio_acceptance.py && sed -n '240,440p' scripts/release_checks/run_chart_studio_acceptance.py && sed -n '1,240p' tests/test_visualizer_chart_studio.py && rg -n \\\"chart-type|chart_type|Scatter|Regression|Histogram|Box Plot|Pareto|Multi-Line\\\" scripts/release_checks/run_chart_studio_acceptance.py company_ui/products/visualizer/assets tests/test_visualizer_chart_studio.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"nl -ba scripts/release_checks/run_chart_studio_acceptance.py | sed -n '120,310p' && nl -ba scripts/release_checks/run_chart_studio_acceptance.py | sed -n '310,430p' && rg -n \\\"CHART_TYPES|const CHART_TYPES|Multi-Line|Scatter Plot|Regression Scatter|Histogram|Box Plot|Pareto|Wafer Difference|Tool ×|Golden vs|Control vs\\\" company_ui/products/visualizer/assets/*.mjs scripts/release_checks/*.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,140p' tests/test_visualizer_chart_studio.py && rg -n \\\"['\\\\\\\"]Multi-Line|['\\\\\\\"]Scatter Plot|['\\\\\\\"]Regression Scatter|['\\\\\\\"]Histogram|['\\\\\\\"]Box Plot|['\\\\\\\"]Pareto|chart_type.*(Multi|Scatter|Regression|Histogram|Box|Pareto)|select_option\\\\([\"'^'\"\\\\n]*(Multi|Scatter|Regression|Histogram|Box|Pareto)\\\" tests scripts/release_checks --glob '*.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rg -n \"''^export const (CHART_TYPES|CORE_TYPES|ENGINEERING_TYPES|FAB_TYPES)|CHART_TYPES\" company_ui/products/visualizer/assets/authoring_chart_studio.mjs company_ui/products/visualizer/assets/*.mjs | head -30 && sed -n '\"'1,120p' company_ui/products/visualizer/assets/authoring_chart_studio.mjs && sed -n '1,190p' company_ui/products/visualizer/assets/engineering_recipes.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'for f in tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_fab_visuals.py tests/test_visualizer_statistical_quality_wave.py; do echo \"=== $f ===\"; rg -n '\"'\"'^def test|''^async def test'\"' \\\"\"'$f\"; done'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git log -1 --oneline --decorate && rtk git remote -v && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"nl -ba tests/test_visualizer_statistical_release_repair.py | sed -n '330,485p' && nl -ba tests/test_visualizer_statistical_release_repair.py | sed -n '485,690p' && nl -ba tests/test_visualizer_semiconductor_analytics_wave.py | sed -n '180,335p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rg -n \\\"function chartFamily|const chartFamily\\\" company_ui/products/visualizer/assets/chart_studio.mjs company_ui/products/visualizer/assets/authoring_chart_studio.mjs && sed -n '15,45p' company_ui/products/visualizer/assets/chart_studio.mjs && sed -n '120,185p' company_ui/products/visualizer/assets/chart_studio.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && nl -ba company_ui/products/visualizer/OPERATIONS.md | sed -n '44,58p' && nl -ba scripts/verify_release.py | sed -n '62,150p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/verify_element_coverage.py --json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --stat && rtk git diff --check && rtk node --check scripts/release_checks/run_chart_studio_acceptance.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk python -m py_compile scripts/release_checks/verify_element_coverage.py scripts/release_checks/run_chart_studio_acceptance.py tests/test_visualizer_element_coverage.py && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_element_coverage.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_fab_visuals.py tests/test_visualizer_statistical_quality_wave.py tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_chart_studio.py --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 160,
+        "output_sha256": "09efabbe841d5a8f293aba74741670e19f3bd0993cd9cbbc9f6011f34f0a683e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.MND1HEvyyW/chart-studio'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.checks[] | select(.id==\\\"C097\\\")' /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.MND1HEvyyW/chart-studio/chart-studio-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'},{id:'series',name:'Series',type:'categorical'},{id:'category',name:'Category',type:'categorical'},{id:'value',name:'Value',type:'number'}],rows:[[1,5,'Run A','Particle',10],[2,8,'Run A','Scratch',7],[3,13,'Run B','Particle',3],[4,11,'Run B','Void',1]]}; const s=renderChartSvg(chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y',series:'series',category:'category',value:'value'}},d)); console.log(s.match(/<svg[\"'^>]*>|data-[''^=]+/g)?.slice(0,30));\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'},{id:'series',name:'Series',type:'categorical'}],rows:[[1,5,'Run A'],[2,8,'Run A'],[3,13,'Run B'],[4,11,'Run B']]}; const s=renderChartSvg(chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y',series:'series'}},d)); console.log(JSON.stringify({svg:s.slice(0,200),circles:(s.match(/<circle/g)||[]).length,points:(s.match(/data-chart-point/g)||[]).length,paths:(s.match(/<path/g)||[]).length}));\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rg -n \\\"function renderAnalyticalSvg|function renderGroupedDistributionSvg|Regression Scatter|cohort comparison|renderAdvanced\\\" company_ui/products/visualizer/assets/authoring_chart_studio.mjs company_ui/products/visualizer/vendor/production_core/core/advanced_chart_engine.mjs | head -80 && sed -n '330,380p' company_ui/products/visualizer/assets/authoring_chart_studio.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'},{id:'series',name:'Series',type:'categorical'}],rows:[[1,5,'Run A'],[2,8,'Run A'],[3,13,'Run B'],[4,11,'Run B']]}; const s=renderChartSvg(chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y',series:'series'}},d)); console.log(s);\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'},{id:'series',name:'Series',type:'categorical'}],rows:[[1,5,'Run A'],[2,8,'Run A'],[3,13,'Run B'],[4,11,'Run B']]}; console.log(JSON.stringify(chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y',series:'series'}},d).mapping));\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'}],rows:[[1,5],[2,8],[3,13],[4,11]]}; const m=chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y'}},d); console.log(JSON.stringify({mapping:m.mapping,svg:renderChartSvg(m).slice(0,500)}));\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'}],rows:[[1,5],[2,8],[3,13],[4,11]]}; for (const e of ['Multi-Line','Scatter Plot','Regression Scatter']) {const s=renderChartSvg(chartModelFromEntry({element:e,engine:'CoreChartEngine',mapping:{x:'x',y:'y'}},d)); console.log(e,JSON.stringify({svg:s.includes('<svg'),points:(s.match(/data-chart-point/g)||[]).length,advanced:s.includes('data-chart-type=\\\\\\\"regression\\\\\\\"'),summary:s.slice(0,100)}));}\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk node --input-type=module -e \\\"import {chartModelFromEntry,renderChartSvg} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs'; const d={fields:[{id:'x',name:'X',type:'number'},{id:'y',name:'Y',type:'number'}],rows:[[1,5],[2,8],[3,13],[4,11]]}; const s=renderChartSvg(chartModelFromEntry({element:'Regression Scatter',engine:'CoreChartEngine',mapping:{x:'x',y:'y'}},d)); console.log(JSON.stringify({circles:(s.match(/<circle/g)||[]).length,lines:(s.match(/<line/g)||[]).length,paths:(s.match(/<path/g)||[]).length,rects:(s.match(/<rect/g)||[]).length,labels:(s.match(/Regression|R²|R2/g)||[])}));\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.emMCWGcyc2/chart-studio'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"nl -ba scripts/release_checks/run_chart_studio_acceptance.py | sed -n '210,228p' && rtk git diff --check && rtk git status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q -ra tests/test_visualizer_element_coverage.py tests/test_visualizer_chart_studio.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_fab_visuals.py tests/test_visualizer_statistical_quality_wave.py tests/test_visualizer_statistical_release_repair.py --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 160,
+        "output_sha256": "09efabbe841d5a8f293aba74741670e19f3bd0993cd9cbbc9f6011f34f0a683e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import importlib.metadata, shutil; print('nicegui', importlib.metadata.version('nicegui')); print('chromium', shutil.which('chromium'))\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_editor_workflows.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.LwBZbrZncD/generic-elements --native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,passed,total,browser,unexpected_errors}' /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.LwBZbrZncD/generic-elements/workflows.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{pass,applicable,not_applicable,failed:[.checks[] | select(.status \"'!= \"PASS\") | {id,name,status,error}]}'\"' /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.emMCWGcyc2/chart-studio/chart-studio-acceptance.json && rtk python scripts/release_checks/verify_element_coverage.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/verify_element_coverage.py --json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_element_coverage.py tests/test_visualizer_chart_studio.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "c4b808d34f4db00b333696dec1f3a43a2887d8bfe0cb7af07a3cb98ff43a7830",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- company_ui/products/visualizer/OPERATIONS.md scripts/release_checks/run_chart_studio_acceptance.py scripts/verify_release.py tests/test_visualizer_element_coverage.py scripts/release_checks/verify_element_coverage.py scripts/release_checks/production_element_coverage.json && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/tmp.8pzWrHP5Qd/chart-studio'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/products/visualizer/OPERATIONS.md scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/production_element_coverage.json scripts/release_checks/verify_element_coverage.py scripts/verify_release.py tests/test_visualizer_element_coverage.py && rtk git diff --cached --check && rtk git diff --cached --stat && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"49 production|49 .*element|production-element workflows|52 maintained|generic fixture workflows|specialized proofs\" company_ui/products/visualizer/OPERATIONS.md scripts/release_checks/production_element_coverage.json scripts/release_checks/verify_element_coverage.py scripts/verify_release.py tests/test_visualizer_element_coverage.py && rtk git diff --cached --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git commit -m \"fix(visembler): reconcile production element coverage\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git log -1 --oneline --decorate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:codex/CHG-10-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git ls-remote --heads origin codex/CHG-10-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 144,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.59,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 17521664,
+      "fresh_input_tokens": 250866,
+      "input_tokens": 17772530,
+      "non_reasoning_output_tokens": 27716,
+      "output_tokens": 44165,
+      "reasoning_output_tokens": 16449,
+      "total_processed_tokens": 17816695
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "ef359fad1f4471e1668e2c1ff65f16ebde2ef868",
+      "subject": "fix(visembler): reconcile production element coverage"
+    }
+  ],
+  "diff": {
+    "additions": 389,
+    "changed_files": 6,
+    "commit_count": 1,
+    "deletions": 7
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 3006,
+        "path": "company_ui/products/visualizer/OPERATIONS.md",
+        "sha256": "85ac574ccaf059187da6d992660e655c6cdfd3f81b9d18dfa189ecc4135266a9"
+      },
+      {
+        "bytes": 13128,
+        "path": "scripts/release_checks/production_element_coverage.json",
+        "sha256": "0d4394d20895f8261fc7486ee0f12d8aacabb03028682ada3b8ad30ee5fc9cf5"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.0",
+  "failure_class": null,
+  "finished_at": "2026-09-14T05:24:40Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "branch": "codex/CHG-10-r1",
+    "head_sha": "ef359fad1f4471e1668e2c1ff65f16ebde2ef868",
+    "remote_exact_head": true,
+    "remote_head_sha": "ef359fad1f4471e1668e2c1ff65f16ebde2ef868",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "work_branch": "codex/CHG-10-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-de0812f85c5e6e2ccf7e988f",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-10-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-10-r1"
+  },
+  "operation": "BUILD",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.0",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "d451ccb651c509e6183df4e160260392f8d1f69bb702574fb3c5490728e212bc"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": false
+  },
+  "request": "CHG-10-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-14T04:48:12Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 2188,
+    "queue_seconds": 0,
+    "total_seconds": 2188
+  },
+  "transport": {
+    "bytes": 3575,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3300,
+    "prompt_sha256": "76471b269a886e41a07834d4fbc71858d6c98ce0375607d2b3ec1a4ca67578ad",
+    "sha256": "de0812f85c5e6e2ccf7e988f0c45f291c61535b94421db7d4e808c4af9d8edec"
+  }
+}
