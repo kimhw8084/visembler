@@ -1,0 +1,171 @@
+{
+  "accepted_at": "2026-09-15T12:36:21Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- git identity ---' && git rev-parse HEAD && git status --short --branch && printf '%s\\\\n' '--- remotes ---' && git remote -v && printf '%s\\\\n' '--- worktree ---' && git diff --stat && git diff --name-only && printf '%s\\\\n' '--- instruction refs ---' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,260p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-remote origin refs/heads/main && printf '%s\\\\n' '--- refs ---' && rtk git show-ref --heads --dereference && printf '%s\\\\n' '--- manifest/release candidates ---' && rtk rg --files -g 'construction_manifest.json' -g '*release*' -g '*verify*' -g 'APP_PATTERNS.md' -g 'DESIGN_CONSTITUTION_V1_6.md' | sort | head -200\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- construction manifest ---' && rtk sed -n '1,260p' company_ui/ai/construction_manifest.json && printf '%s\\\\n' '--- release authority ---' && rtk sed -n '1,320p' company_ui/release_authority.json && printf '%s\\\\n' '--- release contract ---' && rtk sed -n '1,360p' company_ui/governance/release_contract.py && printf '%s\\\\n' '--- verifier ---' && rtk sed -n '1,420p' scripts/verify_release.py && printf '%s\\\\n' '--- app patterns ---' && rtk sed -n '1,220p' docs/APP_PATTERNS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- native recovery references ---' && rtk rg -n -C 3 \\\"native-recovery|run_native_recovery|process|restart|cleanup|returncode|error\\\" scripts/release_checks/run_native_recovery.py scripts/release_checks scripts/verify_release.py | head -320 && printf '%s\\\\n' '--- verifier runtime prerequisites ---' && rtk rg -n \\\"nicegui|pytest|playwright|requirements\\\" pyproject.toml requirements.txt requirements-certification.txt setup.sh scripts/release_checks/run_native_recovery.py | head -220 && printf '%s\\\\n' '--- RTK ---' && rtk --version\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 32882,
+        "output_sha256": "48a0c80461cfbf61978c40f10b6e9eb659fb4f2385bb2a1dd93144a1d387ce22",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d /tmp/visembler-chg19-r2.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg19-r2.h3TtNG'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- report summary ---' && rtk jq '{release_status,checks_status,host_mode,required_gate_count:(.required_gates|length),required_gates,remaining_release_validation,git_status_at_start,source_editor_sha256,source_page_sha256}' /tmp/visembler-chg19-r2.h3TtNG/report.json && printf '%s\\\\n' '--- all required gate statuses ---' && rtk jq -r '.required_gates[] as \"'$g | (.checks[] | select(.name==$g) | \"'\"\\\\(\"'$g)'\"\\\\t\\\\(.status)\\\\treturncode=\\\\(.returncode // \\\"NA\\\")\\\\terror=\\\\(.error // \\\"\\\")\\\\tlog=\\\\(.log // \\\"\\\")\\\")' /tmp/visembler-chg19-r2.h3TtNG/report.json && printf '%s\\\\n' '--- source stability/frozen ---' && rtk jq '.checks[] | select(.name==\\\"source-stability\\\" or .name==\\\"frozen-connector\\\")' /tmp/visembler-chg19-r2.h3TtNG/report.json && printf '%s\\\\n' '--- native recovery ---' && rtk jq '{status,passed,total,harness_error,unexpected_errors,expected_fault_events,cases}' /tmp/visembler-chg19-r2.h3TtNG/native-recovery/native-recovery.json && printf '%s\\\\n' '--- progress tail ---' && rtk tail -80 /tmp/visembler-chg19-r2.h3TtNG/progress.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD\nrtk git rev-parse HEAD''^{tree}\nrtk git ls-remote origin refs/heads/main\nrtk git status --porcelain=v1 --branch\nrtk git diff --check\nrtk git diff --name-only\nrtk jq -c '\"'.required_gates[] as \"'$g | (.checks[] | select(.name==$g) | {name,status,returncode:(.returncode // null),error:(.error // null),log:(.log // null)})'\"' /tmp/visembler-chg19-r2.h3TtNG/report.json\nrtk jq -c '.cases[] | {name,status,steps,error:(.error // null)}' /tmp/visembler-chg19-r2.h3TtNG/native-recovery/native-recovery.json\nrtk python -c 'import importlib.util,json; spec=importlib.util.spec_from_file_location(\\\"vr\\\",\\\"scripts/verify_release.py\\\"); mod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); recorded=json.loads(open(\\\"/tmp/visembler-chg19-r2.h3TtNG/source-manifest.json\\\",encoding=\\\"utf-8\\\").read()); actual=mod.source_manifest(); print(json.dumps({\\\"source_manifest_equal\\\":actual==recorded,\\\"recorded_entries\\\":len(recorded),\\\"actual_entries\\\":len(actual),\\\"source_stability\\\":json.loads(open(\\\"/tmp/visembler-chg19-r2.h3TtNG/report.json\\\",encoding=\\\"utf-8\\\").read())[\\\"checks\\\"][-2]}))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.cases[] | [.name,.status,(.steps|join(\\\" -> \\\")),(.error // \\\"none\\\")] | @tsv' /tmp/visembler-chg19-r2.h3TtNG/native-recovery/native-recovery.json\nrtk jq -r '\\\"status=\\\\(.status) passed=\\\\(.passed)/\\\\(.total) harness_error=\\\\(.harness_error // \\\"none\\\") unexpected_errors=\\\\(.unexpected_errors|length)\\\"' /tmp/visembler-chg19-r2.h3TtNG/native-recovery/native-recovery.json\nrtk git status --short\nrtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy printf '%s\\\\n' '{\\\"request\\\":\\\"Verify Visembler CHG-19 R2\\\",\\\"exact_source\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"full_verifier_exit\\\":0,\\\"release_status\\\":\\\"PASS_LOCAL_INTERNAL_PILOT\\\",\\\"checks_status\\\":\\\"PASS\\\",\\\"host_mode\\\":\\\"native\\\",\\\"required_gate_count\\\":26,\\\"required_nonpass\\\":[],\\\"decisive_failure\\\":null,\\\"source_manifest_equal\\\":true,\\\"classification\\\":\\\"full_canonical_native_pass\\\",\\\"pass_local_internal_pilot\\\":true}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 32,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 92.23,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1129984,
+      "fresh_input_tokens": 95206,
+      "input_tokens": 1225190,
+      "non_reasoning_output_tokens": 4168,
+      "output_tokens": 9935,
+      "reasoning_output_tokens": 5767,
+      "total_processed_tokens": 1235125
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T12:43:43Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "verify/visembler-chg19-native-blocker-r2",
+    "head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "remote_exact_head": true,
+    "remote_head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "verify/visembler-chg19-native-blocker-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-e9343caa05fd6a79564d3480",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-19-r2-durable-native-blocker",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-19-r2-durable-native-blocker"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "17d7db01a654a693b57af2b6fce2f676b1f883ea97564a690894b5f96df49aaa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-19-r2-durable-native-blocker",
+  "schema_version": 1,
+  "started_at": "2026-09-15T12:36:21Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 442,
+    "queue_seconds": 0,
+    "total_seconds": 442
+  },
+  "transport": {
+    "bytes": 3333,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3009,
+    "prompt_sha256": "386b974ce5a0be226a31be1b61d4b765d67ae69365fc33d660f5c6caf80fd1b6",
+    "sha256": "e9343caa05fd6a79564d3480cf30b67d7389dd919ffa2d67b1f6e62d68c888c2"
+  }
+}
