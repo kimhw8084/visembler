@@ -144,7 +144,7 @@ def main() -> int:
     }
     if ROOT.joinpath('.git').exists(): required_names.add('git-diff-check')
     if args.host_mode=='native':
-        required_names.update({'chart-studio','report-hub-browser-errors','native-recovery','worker-lifecycle','operations-drill','native-acceptance'})
+        required_names.update({'report-hub-browser-errors','chart-studio','native-recovery','worker-lifecycle','operations-drill','native-acceptance'})
     by_name={row['name']:row for row in results}
     missing=sorted(required_names-set(by_name))
     failing=sorted(name for name in required_names if by_name.get(name,{}).get('status')!='PASS')
