@@ -1,0 +1,334 @@
+{
+  "accepted_at": "2026-09-15T13:06:02Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"git status --short --branch && git rev-parse HEAD && git diff --stat && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,240p' /Users/haewonkim/.codex/law.md && sed -n '1,260p' company_ui/ai/construction_manifest.json && sed -n '1,320p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"company|boundary|receipt|manifest|fingerprint|browser|capacity|integrity|READY_FOR_COMPANY|validate_local_receipt\" scripts/release_checks tests pyproject.toml requirements*.txt README* docs .github/workflows/quality.yml | head -n 500 && rtk find scripts/release_checks tests -maxdepth 2 -type f -print | sort'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/release_checks/run_repository_contracts.py; rtk sed -n '1,260p' scripts/release_checks/run_company_source_stability.py; rtk sed -n '1,360p' scripts/release_checks/run_company_production_readiness.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,340p' scripts/release_checks/run_company_capacity.py; rtk sed -n '1,360p' scripts/release_checks/run_company_user_acceptance.py; rtk sed -n '1,420p' scripts/release_checks/run_company_user_browser_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,340p' scripts/release_checks/source_identity.py; rtk sed -n '1,420p' scripts/release_checks/run_company_release_aggregator.py; rtk sed -n '1,260p' README.md; rtk sed -n '1,240p' requirements.txt; rtk sed -n '1,240p' requirements-test.txt; rtk sed -n '1,240p' requirements-certification.txt\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport importlib.metadata as m\nfor name in ('nicegui','Pillow','python-pptx','pytest','playwright'):\n    try:\n        print(name, m.version(name))\n    except Exception as exc:\n        print(name, type(exc).__name__)\nfor mod in ('nicegui','PIL','pptx','playwright'):\n    try:\n        module=__import__(mod)\n        print('import', mod, 'PASS', getattr(module,'__version__',''))\n    except Exception as exc:\n        print('import', mod, 'FAIL', type(exc).__name__, str(exc)[:160])\nPY\nrtk python -m playwright --version\nrtk which chromium || true\nrtk which google-chrome || true\nrtk which chromium-browser || true\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 190,
+        "output_sha256": "699260bea6bdc5e146a824d47b398322174d88eb59639e19662322729e521ef8",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md; rtk sed -n '1,360p' docs/COMPANY_CERTIFICATION_CHECKLIST.md; rtk sed -n '1,260p' scripts/release_checks/run_company_boundary_browser_gate.py; rtk rg -n \\\"run_company_boundary_browser_gate|run_company_source_stability|run_repository_contracts|company_production_readiness|company_user_browser|company_user_acceptance\\\" .github scripts tests docs | head -n 300\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/verify_release.py; rtk sed -n '1,280p' tests/test_visualizer_company_release_authority.py; rtk sed -n '1,180p' tests/test_visualizer_release_closure.py; rtk sed -n '1,260p' docs/VISSEMBLER_COMPANY_OPERATIONS.md; rtk sed -n '1,260p' docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import tempfile; print(tempfile.mkdtemp(prefix=\\\"visembler-chg20-r1-\\\"))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate . --warnings-as-errors'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest tests/test_visualizer_company_boundary.py tests/test_visualizer_application_hardening.py --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 44,
+          "warnings": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 531,
+        "output_sha256": "ef0d3596c1badfc08b8569a459011856c92af7822580ff1feb7a3f3d20eb204b",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest tests/test_visualizer_authoring_p0.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_performance.py --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 20
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 99,
+        "output_sha256": "b91b5024fd7e19fb54af5c875d904d854dd59971e68245d9a789a71e768bf484",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, subprocess, tempfile, tomllib\nfrom zipfile import ZipFile\nroot=Path('.')\nreq=[line.strip() for line in (root/'requirements.txt').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')]\ndeps=tomllib.loads((root/'pyproject.toml').read_text())['project']['dependencies']\nassert req == deps, (req,deps)\nassert '-r requirements.txt' in (root/'requirements-test.txt').read_text()\nexpected='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'\nfrozen=hashlib.sha256((root/'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js').read_bytes()).hexdigest()\nassert frozen == expected, frozen\nwheel_dir=Path(tempfile.mkdtemp(prefix='visembler-chg20-wheel-'))\nsubprocess.run(['python','-m','pip','wheel','--no-deps','--wheel-dir',str(wheel_dir),'.'],check=True)\nwheel=next(wheel_dir.glob('company_ui-*.whl'))\nwith ZipFile(wheel) as archive: names=set(archive.namelist())\nrequired={'company_ui/products/visualizer/assets/integrated_editor.mjs','company_ui/products/visualizer/assets/integrated_editor.html','company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json','company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'}\nassert not (required-names), required-names\nprint({'requirements_equal':True,'test_requirements_include_production':True,'frozen_connector_sha256':frozen,'wheel':str(wheel),'package_required_present':True})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1105,
+          "warnings": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1744,
+        "output_sha256": "cf0e4cf240eaca34b7e6c09153502edd60671a565729742d5c3364806c8048f2",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/source-stability.json'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_user_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-user-acceptance.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_production_readiness.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-readiness.json --data-dir /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/readiness-data'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport os, tempfile\nfrom company_ui.products.visualizer.cli import build_application\nwith tempfile.TemporaryDirectory(prefix='visembler-chg20-startup-') as data:\n    os.environ.update({'COMPANY_UI_ENVIRONMENT':'test','COMPANY_UI_VISUALIZER_DATA_DIR':data,'COMPANY_UI_STORAGE_SECRET':'ci-visembler-storage-secret-0123456789','COMPANY_UI_HOST':'127.0.0.1','COMPANY_UI_PORT':'8123'})\n    _, environment, repository = build_application(os.environ)\n    assert repository.list()\n    assert environment['COMPANY_UI_ENVIRONMENT']=='test'\n    print({'status':'PASS','environment':environment['COMPANY_UI_ENVIRONMENT'],'repository_nonempty':True})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && rtk git diff --stat && rtk git diff --name-only && rtk find certification_output -maxdepth 3 -type f 2>/dev/null | head -n 100 && rtk find . -maxdepth 2 -type d -name '__pycache__' -o -name '.pytest_cache' -o -name 'dist'\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 260,
+        "output_sha256": "1b901b3b08e5b14ee3514e6ff9992432b14057764bc0dc409bf0d2e80f528d4e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg --files build certification_output company_ui.egg-info 2>/dev/null | head -n 200 && rtk du -sh build certification_output company_ui.egg-info 2>/dev/null'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_capacity.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-capacity.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf -- build certification_output company_ui.egg-info && rtk git status --short && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-boundary-browser.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk env VIZ_BROWSER_SMOKE_OUTPUT_DIR=/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/browser-smoke rtk python company_ui/products/visualizer/vendor/production_core/tests/browser_smoke.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python scripts/release_checks/run_company_source_stability.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/source-stability-final.json\nrtk python - <<'PY'\nimport hashlib, json\nfrom pathlib import Path\nfrom scripts.release_checks.run_company_production_readiness import candidate_sha, dependency_fingerprint, source_manifest, validate_local_receipt\nout=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-readiness.json')\nreceipt=json.loads(out.read_text())\nsha=candidate_sha(); manifest,_=source_manifest(); deps=dependency_fingerprint()\nvalid,errors=validate_local_receipt(receipt,sha=sha,manifest_hash=manifest,dependency_hash=deps)\nartifact_ok=True\nfor name,digest in receipt.get('artifact_manifest',{}).items():\n    path=Path(name)\n    artifact_ok = artifact_ok and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==digest\nprint(json.dumps({'local_receipt_valid':valid,'local_receipt_errors':errors,'receipt_status':receipt.get('status'),'receipt_candidate_sha':receipt.get('candidate_sha'),'candidate_sha':sha,'source_manifest_hash':manifest,'source_manifest_equal':receipt.get('source_manifest_hash')==manifest,'production_dependency_fingerprint':deps,'dependency_binding':receipt.get('production_dependency_fingerprint')==deps,'artifact_binding':artifact_ok,'artifact_manifest':receipt.get('artifact_manifest'),'local_checks':receipt.get('local_checks'),'target':receipt.get('target'),'remaining_target_requirements':receipt.get('remaining_target_requirements')},sort_keys=True))\nraise SystemExit(0 if valid and artifact_ok else 1)\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python scripts/release_checks/run_company_production_readiness.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-readiness-final.json --data-dir /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/readiness-data-final\nrtk python - <<'PY'\nimport hashlib, json\nfrom pathlib import Path\nfrom scripts.release_checks.run_company_production_readiness import candidate_sha, dependency_fingerprint, source_manifest, validate_local_receipt\nout=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/company-readiness-final.json')\nreceipt=json.loads(out.read_text())\nsha=candidate_sha(); manifest,_=source_manifest(); deps=dependency_fingerprint()\nvalid,errors=validate_local_receipt(receipt,sha=sha,manifest_hash=manifest,dependency_hash=deps)\nartifact_ok=True\nfor name,digest in receipt.get('artifact_manifest',{}).items():\n    path=Path(name)\n    artifact_ok = artifact_ok and path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest()==digest\nprint(json.dumps({'local_receipt_valid':valid,'local_receipt_errors':errors,'receipt_status':receipt.get('status'),'candidate_sha':sha,'source_manifest_hash':manifest,'source_manifest_equal':receipt.get('source_manifest_hash')==manifest,'production_dependency_fingerprint':deps,'dependency_binding':receipt.get('production_dependency_fingerprint')==deps,'artifact_binding':artifact_ok,'artifact_manifest':receipt.get('artifact_manifest'),'local_checks':receipt.get('local_checks'),'target':receipt.get('target'),'remaining_target_requirements':receipt.get('remaining_target_requirements')},sort_keys=True))\nraise SystemExit(0 if valid and artifact_ok else 1)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/canonical-native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/canonical-native/report.json')\nr=json.loads(p.read_text())\nprint(json.dumps({'release_status':r.get('release_status'),'checks_status':r.get('checks_status'),'company_boundary_status':r.get('company_boundary_status'),'managed_target_status':r.get('managed_target_status'),'required_gate_count':len(r.get('required_gates',[])),'failed_or_incomplete':[x for x in r.get('checks',[]) if x.get('status')\"'!='\"'PASS'],'git_status_at_start':r.get('git_status_at_start'),'supported_scope':r.get('supported_scope')},sort_keys=True))\nPY\nrtk python scripts/release_checks/run_company_source_stability.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu/source-stability-post-native.json\nrtk git status --short\nrtk git diff --check\nrtk git rev-parse HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nbase=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu')\nfor filename in ('company-boundary-browser.json','company-user-acceptance.json','company-readiness-final.json','source-stability-post-native.json'):\n    value=json.loads((base/filename).read_text())\n    if filename=='company-boundary-browser.json':\n        summary={'file':filename,'status':value.get('status'),'browser_mode':value.get('browser_mode'),'checks':[(c.get('id'),c.get('status')) for c in value.get('checks',[])],'browser_console_errors':value.get('browser_console_errors'),'created':value.get('created'),'cleaned':value.get('cleaned'),'remaining':value.get('remaining'),'child_returncode':value.get('child_returncode'),'cleanup':value.get('cleanup')}\n    elif filename=='company-user-acceptance.json':\n        summary={'file':filename,'status':value.get('status'),'browser_mode':value.get('browser_mode'),'passed':value.get('passed'),'failed':value.get('failed'),'checks':[(c.get('id'),c.get('status')) for c in value.get('checks',[])]}\n    elif filename=='company-readiness-final.json':\n        summary={'file':filename,'status':value.get('status'),'candidate_sha':value.get('candidate_sha'),'source_manifest_hash':value.get('source_manifest_hash'),'production_dependency_fingerprint':value.get('production_dependency_fingerprint'),'local_checks':value.get('local_checks'),'target':value.get('target'),'artifact_manifest':value.get('artifact_manifest')}\n    else:\n        summary={'file':filename,'status':value.get('status'),'checks':value.get('checks'),'working_tree':value.get('working_tree')}\n    print(json.dumps(summary,sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nfrom scripts.release_checks.run_company_production_readiness import candidate_sha, dependency_fingerprint, source_manifest, validate_local_receipt\nroot=Path('.')\nevidence=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/visembler-chg20-r1-0rqoicfu')\nsha=candidate_sha(); manifest,_=source_manifest(); deps=dependency_fingerprint()\nreadiness=json.loads((evidence/'company-readiness-final.json').read_text())\nvalid,errors=validate_local_receipt(readiness,sha=sha,manifest_hash=manifest,dependency_hash=deps)\ncontracts=json.loads((evidence/'repository-contracts.json').read_text())\nusers=json.loads((evidence/'company-user-acceptance.json').read_text())\nbrowser=json.loads((evidence/'company-boundary-browser.json').read_text())\ncapacity=json.loads((evidence/'company-capacity.json').read_text())\nstability=json.loads((evidence/'source-stability-post-native.json').read_text())\ncanonical=json.loads((evidence/'canonical-native/report.json').read_text())\nartifact_ok=all(Path(name).is_file() and hashlib.sha256(Path(name).read_bytes()).hexdigest()==digest for name,digest in readiness['artifact_manifest'].items())\nclean=not subprocess.check_output(['git','status','--short'],text=True).strip()\nall_checks_pass=(contracts['status']=='PASS' and all(x['status']=='PASS' for x in contracts['checks'].values()) and users['status']=='PASS' and browser['status']=='PASS' and capacity['status']=='PASS' and stability['status']=='PASS' and canonical['checks_status']=='PASS' and valid and artifact_ok and clean)\nprint(json.dumps({'all_checks_pass':all_checks_pass,'candidate_sha':sha,'source_manifest_hash':manifest,'dependency_fingerprint':deps,'repository_contracts':contracts['status'],'user_model':users['status'],'browser_boundary':browser['status'],'capacity':capacity['status'],'source_stability':stability['status'],'canonical_local':canonical['release_status'],'canonical_company_boundary':canonical['company_boundary_status'],'managed_target_status':canonical['managed_target_status'],'local_receipt_valid':valid,'local_receipt_errors':errors,'artifact_binding':artifact_ok,'working_tree_clean':clean},sort_keys=True))\nraise SystemExit(0 if all_checks_pass else 1)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import sys; print(sys.argv[1])' '{\\\"request\\\":\\\"Verify Visembler CHG-20 R1 on exact provided integrated main\\\",\\\"exact_source\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"repository_contracts\\\":\\\"PASS\\\",\\\"authorization_boundary\\\":\\\"PASS (44/44 hardening tests; 20/20 model acceptance)\\\",\\\"browser_boundary\\\":\\\"PASS (Playwright; 15/15 checks; 0 console errors; cleanup=0)\\\",\\\"production_readiness_status\\\":\\\"READY_FOR_COMPANY_TARGET_CERTIFICATION\\\",\\\"capacity_status\\\":\\\"PASS (10/100/1000 reports)\\\",\\\"source_manifest_equal\\\":true,\\\"dependency_binding\\\":true,\\\"artifact_binding\\\":true,\\\"local_receipt_valid\\\":true,\\\"local_receipt_errors\\\":[],\\\"classification\\\":\\\"CHG-20 PASS locally; company-target certification pending\\\",\\\"ready_for_company_target_certification\\\":true,\\\"source_changed\\\":false,\\\"source_manifest_hash\\\":\\\"7bc89159a84d342718063df7781f98c2e4374f12fd85622f7eb44a6e5cad040a\\\",\\\"production_dependency_fingerprint\\\":\\\"889312a0df44d3e2cdef28f570507f1cbe9989ba9dae7776fae8971b5cf229aa\\\",\\\"target_receipt\\\":\\\"PENDING (missing company-managed evidence; expected)\\\",\\\"integrity\\\":\\\"PASS\\\",\\\"source_stability\\\":\\\"PASS\\\",\\\"full_native_verifier\\\":\\\"PASS_LOCAL_INTERNAL_PILOT (26/26 required gates)\\\",\\\"managed_production_claim\\\":false,\\\"ancillary_validator\\\":\\\"NON_BOUNDARY_WARNINGS_ONLY (exit 1; 0 errors; 93 warnings)\\\"}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 84,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.23,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 3949056,
+      "fresh_input_tokens": 112585,
+      "input_tokens": 4061641,
+      "non_reasoning_output_tokens": 10841,
+      "output_tokens": 21085,
+      "reasoning_output_tokens": 10244,
+      "total_processed_tokens": 4082726
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T13:47:36Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "verify/visembler-chg20-company-boundary-r1",
+    "head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "remote_exact_head": true,
+    "remote_head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "verify/visembler-chg20-company-boundary-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-256c959c9d880205ee888105",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-20-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-20-r1"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "17d7db01a654a693b57af2b6fce2f676b1f883ea97564a690894b5f96df49aaa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-20-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-15T13:34:38Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 778,
+    "queue_seconds": 1716,
+    "total_seconds": 2494
+  },
+  "transport": {
+    "bytes": 3623,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3320,
+    "prompt_sha256": "aba2df7824d4a9536887b4921222f3fed2c8a551ce68c51ef1a8527542005c2c",
+    "sha256": "256c959c9d880205ee88810598c8b360014544d5183542b11eafce89dd798b66"
+  }
+}
