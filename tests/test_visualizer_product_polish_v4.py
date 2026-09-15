@@ -1,5 +1,6 @@
 from pathlib import Path
 import hashlib
+from company_ui.design.contrast import contrast_ratio
 ROOT=Path(__file__).resolve().parents[1]
 ASSETS=ROOT/'company_ui/products/visualizer/assets'
 def test_v4_polish_contracts():
@@ -16,3 +17,15 @@ def test_v4_polish_contracts():
  assert '[data-library="open"] .bottom .statusline,.cui-visualizer-root[data-inspector="open"] .bottom .statusline{visibility:hidden}' in css
  connector=ROOT/'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'
  assert hashlib.sha256(connector.read_bytes()).hexdigest()=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'
+
+
+def test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes():
+ tokens=(ASSETS/'tokens.css').read_text()
+ css=(ASSETS/'integrated_editor.css').read_text()
+ assert '--viz-accent: #0064c8;' in tokens
+ assert '--viz-accent: #0064c8;' in css
+ assert '.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }' in css
+ assert '.cui-visualizer-reportbar .q-btn.bg-primary .q-btn__content' in css
+ assert contrast_ratio('#0071E3','#FFFFFF') >= 4.5
+ assert contrast_ratio('#0064C8','#F2F2F4') >= 4.5
+ assert contrast_ratio('#5EA6FF','#18181B') >= 4.5

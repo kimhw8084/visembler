@@ -165,13 +165,14 @@ const invalidEntry={engine:'EngineeringChartEngine',element:'Xbar-R Chart',title
 const populated=renderChartSvg({...xbar,statistical_result:{n:2,means:[1,2],ranges:[1,1],xbarLimits:{lcl:0,center:1.5,ucl:3},rLimits:{lcl:0,center:1,ucl:2},rules:{signals:[]}}},{width:760,height:500});
 const empty=renderChartSvg(xbar,{width:760,height:500});
 const error=renderChartSvg({...xbar,analysis_error:'bad'}, {width:760,height:500});
+const emptyDoe=renderChartSvg({engine:'EngineeringChartEngine',element:'DOE Main Effects',chart_type:'DOE Main Effects',dataset:{fields:[],rows:[]},mapping:{},statistical_result:null},{width:680,height:330});
 const card=renderIntegratedElement({...invalidEntry,value:84.2,statistical_result:{means:[84.2]}});
 const invalidCapability=renderIntegratedElement({engine:'MetricEngine',element:'Hero KPI',title:'Capability',analysis_recipe:{id:'process-capability'},authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'Conflicting LSL values'}]},value:84.2,capability_summary:{cpk:1.7},statistical_result:{cpk:1.7}});
 const invalidDoe=renderIntegratedElement({engine:'EngineeringChartEngine',element:'DOE Interaction Plot',title:'DOE',analysis_recipe:{id:'doe-response-review'},authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'Missing interaction cell'}]},statistical_result:{interaction:{cells:[[99]]}}});
 const invalidChart=renderChartSvg({...xbar,authoritative_analysis:{ok:false,population:{complete:false},errors:[{message:'bad Xbar'}]},statistical_result:{means:[84.2]}},{width:760,height:500});
-console.log(JSON.stringify({populated:viewBox(populated),empty:viewBox(empty),error:viewBox(error),card,invalidCapability,invalidDoe,invalidChart,hasDemo:/(84\.2|Baseline|Pilot|Validation|1\.7|99)/.test(card+invalidCapability+invalidDoe+invalidChart)}));
+console.log(JSON.stringify({populated:viewBox(populated),empty:viewBox(empty),error:viewBox(error),emptyDoe:viewBox(emptyDoe),card,invalidCapability,invalidDoe,invalidChart,hasDemo:/(84\.2|Baseline|Pilot|Validation|1\.7|99)/.test(card+invalidCapability+invalidDoe+invalidChart)}));
 ''')
-    for key in ('populated', 'empty', 'error'):
+    for key in ('populated', 'empty', 'error', 'emptyDoe'):
         assert payload[key]['finite'] is True
     assert 'Analysis needs attention' in payload['card']
     assert 'Analysis needs attention' in payload['invalidCapability']
