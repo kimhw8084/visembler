@@ -1,0 +1,484 @@
+{
+  "accepted_at": "2026-09-15T02:55:29Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 8,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/OPERATIONS.md",
+      "status": "M"
+    },
+    {
+      "additions": 194,
+      "deletions": 0,
+      "path": "scripts/release_checks/production_element_coverage.json",
+      "status": "A"
+    },
+    {
+      "additions": 27,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 134,
+      "deletions": 0,
+      "path": "scripts/release_checks/verify_element_coverage.py",
+      "status": "A"
+    },
+    {
+      "additions": 4,
+      "deletions": 2,
+      "path": "scripts/verify_release.py",
+      "status": "M"
+    },
+    {
+      "additions": 22,
+      "deletions": 0,
+      "path": "tests/test_visualizer_element_coverage.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"git status --short --branch && git log --oneline --decorate -8 && printf '%s\\\\n' '--- AGENTS refs ---' && sed -n '1,220p' AGENTS.md && printf '%s\\\\n' '--- RTK ---' && sed -n '1,260p' /Users/haewonkim/.codex/RTK.md && printf '%s\\\\n' '--- law ---' && sed -n '1,260p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git cat-file -t ef359fad1f4471e1668e2c1ff65f16ebde2ef868 && rtk git show -s --format='%H%n%P%n%s' ef359fad1f4471e1668e2c1ff65f16ebde2ef868 && rtk git merge-base --is-ancestor 21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284 ef359fad1f4471e1668e2c1ff65f16ebde2ef868; test \"'$? -eq 0 && rtk git merge --ff-only ef359fad1f4471e1668e2c1ff65f16ebde2ef868 && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' company_ui/ai/construction_manifest.json && rtk git diff --stat 21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284..ef359fad1f4471e1668e2c1ff65f16ebde2ef868 && rtk git diff --name-status 21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284..ef359fad1f4471e1668e2c1ff65f16ebde2ef868 && rg -n --hidden -g '\"'!*.pyc'\"' 'automated_tests|certification_manifest|report-hub-browser-errors|chart-studio|required_names|native required|manifest' .\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '90,180p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/release_checks/run_repository_contracts.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' company_ui/governance/source_evidence.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 8 'test_repository_contract_receipt_proves_current_checkout|test_native_release_requires_report_hub_browser_error_gate|report-hub-browser-errors|chart-studio' tests/test_visualizer_release_closure.py tests/test_visualizer_report_thumbnail_geometry.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' scripts/release_checks/verify_element_coverage.py && rtk sed -n '1,260p' scripts/release_checks/production_element_coverage.json && rtk sed -n '1,180p' tests/test_visualizer_element_coverage.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,140p' company_ui/certification/certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '130,170p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,90p' tests/test_visualizer_release_closure.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,130p' tests/test_visualizer_report_thumbnail_geometry.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'source_evidence|generate_source_evidence|_sync_packaged_certification_manifest|certification_manifest' scripts tests company_ui/governance | head -180\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '[.. | objects | select(has(\\\"automated_tests\\\")) | .automated_tests] | group_by(.) | map({count:length,value:.[0]})' company_ui/certification/certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 3 'automated_tests|phase_32_v2_release_candidate|phase_35_v2_source_completion|phase_38_v200rc5_p0_hardening|phase_46_v300a1_application_platform' company_ui/certification/certification_manifest.json | tail -180\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,145p' tests/test_phase35_v200_single_token_authority.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,150p' tests/test_phase34_v200_release_sync.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest --collect-only -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout tests/test_visualizer_report_thumbnail_geometry.py::test_native_release_requires_report_hub_browser_error_gate'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 102,
+        "output_sha256": "8aef031167a96c1ab4240b9caa13584f676b3ccbe977a08908ced8f7cf10910a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 7873,
+        "output_sha256": "d075d7e59b48a6f95b545ca30329e8a384873eee61991cb206e2bc66b35cea11",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout tests/test_visualizer_report_thumbnail_geometry.py::test_native_release_requires_report_hub_browser_error_gate'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout",
+          "tests/test_visualizer_report_thumbnail_geometry.py::test_native_release_requires_report_hub_browser_error_gate"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 2603,
+        "output_sha256": "a2e8b426049ba193a98c334bd58e5d12ade126ad04d56889ea9f84767af15e81",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check ef359fad1f4471e1668e2c1ff65f16ebde2ef868..HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/verify_element_coverage.py --json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only 2>&1 | rtk tail -n 3'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 131,
+        "output_sha256": "8b63610e92688283b217201e81f32591459a8c5df1cadd4ac91bd858e3f9dcc0",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/verify_element_coverage.py --json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- company_ui/certification/certification_manifest.json scripts/verify_release.py && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg10-r2-repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout tests/test_visualizer_report_thumbnail_geometry.py::test_native_release_requires_report_hub_browser_error_gate'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "99db33d5c94c6f7da021687c7391181685cc33299c5435b1c861e2db3be3ec87",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "df5651a12d233a877e8e9f14eaa921e1188e67d138d0e779cb6846aa1b5ffd4d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.automated_tests' company_ui/certification/certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/verify_element_coverage.py --json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --stat && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only 2>&1 | rtk tail -n 1'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 30,
+        "output_sha256": "86287f5a566964b5c2acdf9c80a142d9ccb62ce5ee0003eea3745c636decf5f7",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg10-r2-repository-contracts-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/certification/certification_manifest.json scripts/verify_release.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --cached --check && rtk git diff --cached --stat && rtk git commit -m 'fix(visembler): close CHG-10 R2 release regressions'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push -u origin codex/CHG-10-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git merge-base --is-ancestor 21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284 ef359fad1f4471e1668e2c1ff65f16ebde2ef868'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show --stat --oneline --decorate HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --quiet origin/codex/CHG-10-r2 HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git merge-base --is-ancestor ef359fad1f4471e1668e2c1ff65f16ebde2ef868 HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 108,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 87.95,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 874752,
+      "fresh_input_tokens": 119839,
+      "input_tokens": 994591,
+      "non_reasoning_output_tokens": 4512,
+      "output_tokens": 10811,
+      "reasoning_output_tokens": 6299,
+      "total_processed_tokens": 1005402
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "e792f2c6b55efdb648871dca54733311190e7d63",
+      "subject": "fix(visembler): close CHG-10 R2 release regressions"
+    },
+    {
+      "sha": "ef359fad1f4471e1668e2c1ff65f16ebde2ef868",
+      "subject": "fix(visembler): reconcile production element coverage"
+    }
+  ],
+  "diff": {
+    "additions": 390,
+    "changed_files": 7,
+    "commit_count": 2,
+    "deletions": 8
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 3,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "cd58ca263c6bfcb22ef32a9cb54d731ef5fbb58444a476c766787abe6cc7bbff"
+      },
+      {
+        "bytes": 3006,
+        "path": "company_ui/products/visualizer/OPERATIONS.md",
+        "sha256": "85ac574ccaf059187da6d992660e655c6cdfd3f81b9d18dfa189ecc4135266a9"
+      },
+      {
+        "bytes": 13128,
+        "path": "scripts/release_checks/production_element_coverage.json",
+        "sha256": "0d4394d20895f8261fc7486ee0f12d8aacabb03028682ada3b8ad30ee5fc9cf5"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T03:39:39Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "branch": "codex/CHG-10-r2",
+    "head_sha": "e792f2c6b55efdb648871dca54733311190e7d63",
+    "remote_exact_head": true,
+    "remote_head_sha": "e792f2c6b55efdb648871dca54733311190e7d63",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "work_branch": "codex/CHG-10-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-82e970051717497e14fd2056",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-10-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-10-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "17d7db01a654a693b57af2b6fce2f676b1f883ea97564a690894b5f96df49aaa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-10-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-15T03:33:43Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 356,
+    "queue_seconds": 2294,
+    "total_seconds": 2650
+  },
+  "transport": {
+    "bytes": 4204,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3931,
+    "prompt_sha256": "886a5f1e4beb477726ebfc33ee2d3d0b1e5690e306a654bcc7ea3c95ab312871",
+    "sha256": "82e970051717497e14fd2056e86d573d1a1e4912178090a805490b8b0b1bc115"
+  }
+}
