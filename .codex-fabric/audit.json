@@ -1,0 +1,293 @@
+{
+  "accepted_at": "2026-09-15T14:37:23Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,240p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,260p' company_ui/ai/construction_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"git show-ref --heads --dereference && git log -1 --format='%H%n%P%n%s' HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rg --files -g 'AGENTS.md' -g 'docs/**' -g 'scripts/release_checks/**' -g '*readiness*' -g '*receipt*' -g 'requirements*.txt' -g '.openai/**' | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'git status --short --branch && git rev-parse HEAD && git branch --show-current && git remote -v'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk --version && which rtk'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' docs/COMPANY_ENVIRONMENT.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git config --get-regexp '\"'^(branch|remote)'\"\\\\.'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,360p' scripts/release_checks/run_company_production_readiness.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,360p' docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i 'target|receipt|managed|identity_boundary|trusted_proxy|protected_routes|storage_durability|backup_restore|reverse_proxy_websocket|session|browser_matrix|recovery|configuration fingerprint|source-manifest|dependency fingerprint' scripts/release_checks/run_company_production_readiness.py docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md docs/COMPANY_ENVIRONMENT.md docs/COMPANY_CERTIFICATION_CHECKLIST.md docs/GOLD_PROMOTION_HARNESS.md docs/PRODUCTION_COMPLETION_GUIDE.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-remote origin 'refs/heads/main' 'refs/heads/verify/visembler-chg21-managed-target-r1' 'refs/heads/verify/visembler-chg20-company-boundary-r1'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -uu -g '*.json' -g '*.receipt' -g '*receipt*' -g '*evidence*' -g '*certif*' -g '\"'!*.pyc'\"' | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sh -c 'for key in VISSEMBLER_COMPANY_TARGET_RECEIPT COMPANY_UI_ENVIRONMENT COMPANY_UI_HOST COMPANY_UI_PORT COMPANY_UI_STORAGE_SECRET COMPANY_UI_VISUALIZER_DATA_DIR COMPANY_UI_AUTH_MODE COMPANY_UI_PROXY_ENABLED COMPANY_UI_TRUSTED_PROXIES COMPANY_UI_ROOT_PATH COMPANY_UI_EXPECTED_REPLICAS COMPANY_UI_AUTH_ASSERTION_SECRET; do if [ -n \\\"\"'${!key+x}\" ]; then printf \"%s=present'\"\\\\n\\\" \\\"\"'$key\"; else printf \"%s=absent'\"\\\\n\\\" \\\"\"'$key\"; fi; done'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' scripts/release_checks/source_identity.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i 'VISSEMBLER_COMPANY_TARGET_RECEIPT|validate_target_receipt|target receipt|target-certification|company-managed|configuration_fingerprint|artifact_manifest' -g '\"'!company_ui/**/vendor/**'\"' -g '\"'!*.pyc'\"' .\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, sys\nsys.path.insert(0, 'scripts/release_checks')\nfrom source_identity import candidate_sha, source_manifest\nroot = Path('.')\nmanifest_hash, manifest = source_manifest(root)\nprint('candidate_sha=' + candidate_sha(root))\nprint('source_manifest_hash=' + manifest_hash)\nprint('manifest_entries=' + str(len(manifest)))\ndigest = hashlib.sha256()\nfor name in ('requirements.txt','requirements-test.txt','requirements-certification.txt','pyproject.toml'):\n    p = root / name\n    if p.exists():\n        digest.update(name.encode()); digest.update(p.read_bytes())\nprint('production_dependency_fingerprint=' + digest.hexdigest())\nfor name in ('company_ui/products/visualizer/page.py','company_ui/products/visualizer/assets/integrated_editor.mjs','company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'):\n    p = root / name\n    print('artifact:' + name + '=' + hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else 'artifact_missing:' + name)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse main && rtk git rev-parse origin/main && rtk git rev-parse origin/verify/visembler-chg20-company-boundary-r1 2>&1 || true && rtk git rev-parse --verify origin/verify/visembler-chg21-managed-target-r1 2>&1 || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' docs/VISSEMBLER_COMPANY_OPERATIONS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'status|classification|candidate_sha|source_manifest_hash|production_dependency_fingerprint|created_at|target|company|managed|historical|PASS|BLOCKED|READY' -g '*.json' -g '*.md' -g '\"'!company_ui/products/visualizer/vendor/**'\"' -g '\"'!evidence_history/**'\"' . | head -n 500\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' docs/COMPANY_CERTIFICATION_CHECKLIST.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' PRODUCTION_CLOSEOUT_STATE.json && rtk sed -n '1,300p' TARGET_RUNTIME_GATE_ATTEMPT.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git branch -avv && rtk git log --all --decorate --oneline -20 && rtk git diff --stat main...HEAD && rtk git diff --stat origin/main...HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp /var/tmp /Users/haewonkim/Downloads -maxdepth 3 -type f \\\\( -name '*company*receipt*.json' -o -name '*target*receipt*.json' -o -name 'GOLD_CERTIFICATION_EVIDENCE.json' \\\\) -print 2>/dev/null\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-files --stage company_ui/products/visualizer/page.py company_ui/products/visualizer/assets/integrated_editor.mjs company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js scripts/release_checks/run_company_production_readiness.py docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 4 'VISSEMBLER_COMPANY_TARGET_RECEIPT|actual company-managed|fresh receipt|target environment|company-managed target|external evidence|BLOCKED|READY_FOR_COMPANY_TARGET_CERTIFICATION|PASS_COMPANY_MANAGED_PRODUCTION_CANDIDATE' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md docs/VISSEMBLER_COMPANY_OPERATIONS.md scripts/release_checks/run_company_production_readiness.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --porcelain=v1 --untracked-files=all && rtk git diff --quiet HEAD && rtk git diff --cached --quiet HEAD && rtk git status --ignored --short | head -n 80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d /tmp/visembler-chg21-readiness.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_production_readiness.py --output /tmp/visembler-chg21-readiness.B3vjaJ/readiness.json --data-dir /tmp/visembler-chg21-readiness.B3vjaJ/data'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /tmp/visembler-chg21-readiness.B3vjaJ/readiness.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk sha256sum company_ui/products/visualizer/page.py company_ui/products/visualizer/assets/integrated_editor.mjs company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sh -c 'for key in VISSEMBLER_COMPANY_TARGET_RECEIPT COMPANY_UI_ENVIRONMENT COMPANY_UI_AUTH_MODE COMPANY_UI_PROXY_ENABLED COMPANY_UI_TRUSTED_PROXIES COMPANY_UI_VISUALIZER_DATA_DIR; do if [ -n \\\"\"'${!key+x}\" ]; then printf \"%s=present'\"\\\\n\\\" \\\"\"'$key\"; else printf \"%s=absent'\"\\\\n\\\" \\\"\"'$key\"; fi; done'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, sys\nsys.path.insert(0, 'scripts/release_checks')\nfrom source_identity import candidate_sha, source_manifest\nroot=Path('.')\nmanifest_hash,_=source_manifest(root)\nd=hashlib.sha256()\nfor name in ('requirements.txt','requirements-test.txt','requirements-certification.txt','pyproject.toml'):\n p=root/name\n if p.exists(): d.update(name.encode()); d.update(p.read_bytes())\nprint(candidate_sha(root))\nprint(manifest_hash)\nprint(d.hexdigest())\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git diff --quiet HEAD && rtk git diff --cached --quiet HEAD && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git rev-parse origin/verify/visembler-chg20-company-boundary-r1 && rtk git rev-parse --verify origin/verify/visembler-chg21-managed-target-r1'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '{\\\"request\\\":\\\"Verify Visembler CHG-21 R1 managed-production target certification\\\",\\\"exact_source\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"source_manifest_hash\\\":\\\"7bc89159a84d342718063df7781f98c2e4374f12fd85622f7eb44a6e5cad040a\\\",\\\"production_dependency_fingerprint\\\":\\\"889312a0df44d3e2cdef28f570507f1cbe9989ba9dae7776fae8971b5cf229aa\\\",\\\"local_head\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"remote_main\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"remote_work_branch\\\":\\\"absent\\\",\\\"target_access_present\\\":false,\\\"target_receipt_present\\\":false,\\\"target_receipt_fresh\\\":false,\\\"target_receipt_valid\\\":false,\\\"target_receipt_errors\\\":[\\\"target_access_not_configured\\\",\\\"fresh_real_target_receipt_missing\\\"],\\\"exact_candidate_bound\\\":true,\\\"source_manifest_bound\\\":true,\\\"dependency_bound\\\":true,\\\"artifact_binding\\\":false,\\\"observed_artifact_hashes\\\":{\\\"company_ui/products/visualizer/page.py\\\":\\\"79359411116988641b4118bc4286a2a9ae4ebd8400a6585d5fa51166f7c2142e\\\",\\\"company_ui/products/visualizer/assets/integrated_editor.mjs\\\":\\\"0007f49a3599cf8ec24078131d801aca2db627304c3052866dab391302aa6331\\\",\\\"company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js\\\":\\\"d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e\\\"},\\\"target_gates_passed\\\":[],\\\"target_gates_failed\\\":[\\\"identity_boundary\\\",\\\"trusted_proxy\\\",\\\"protected_routes\\\",\\\"storage_durability\\\",\\\"backup_restore\\\",\\\"reverse_proxy_websocket\\\",\\\"session\\\",\\\"browser_matrix\\\",\\\"recovery\\\"],\\\"classification\\\":\\\"BLOCKED / external missing proof for managed-production certification\\\",\\\"pass_company_managed_production_candidate\\\":false,\\\"source_changed\\\":false}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 81,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 88.61,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 460800,
+      "fresh_input_tokens": 59247,
+      "input_tokens": 520047,
+      "non_reasoning_output_tokens": 5259,
+      "output_tokens": 14653,
+      "reasoning_output_tokens": 9394,
+      "total_processed_tokens": 534700
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T14:43:14Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "verify/visembler-chg21-managed-target-r1",
+    "head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "remote_exact_head": true,
+    "remote_head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "verify/visembler-chg21-managed-target-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-aa6f2602b1e1b7bbba6fe9f3",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-21-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-21-r1"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "17d7db01a654a693b57af2b6fce2f676b1f883ea97564a690894b5f96df49aaa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-21-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-15T14:37:23Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 351,
+    "queue_seconds": 0,
+    "total_seconds": 351
+  },
+  "transport": {
+    "bytes": 3923,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3622,
+    "prompt_sha256": "6efc4d4d708c5165763b99f6df093904d9694da2dd82246f78a7f693ee3c3aa8",
+    "sha256": "aa6f2602b1e1b7bbba6fe9f3e0a21397176b4ec801af601f4c45eb3d168a3f44"
+  }
+}
