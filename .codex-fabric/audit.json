@@ -1,0 +1,448 @@
+{
+  "accepted_at": "2026-09-15T22:35:16Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/tokens.css",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 0,
+      "path": "tests/test_visualizer_product_polish_v4.py",
+      "status": "M"
+    },
+    {
+      "additions": 3,
+      "deletions": 2,
+      "path": "tests/test_visualizer_statistical_release_repair.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -vv tests/test_visualizer_product_polish_v4.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_product_polish_v4.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "99db33d5c94c6f7da021687c7391181685cc33299c5435b1c861e2db3be3ec87",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_wave4_report_lifecycle.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "a4ba55c7ec7daeede2ecfea3dda9a793665ee142066911215af4f033a9e8412a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg70-r1-fixed-vr --skip-regressions --skip-benchmark'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,unexpected_errors,failures: [.checks[] | select(.status==\\\"FAIL\\\")]}' /tmp/visembler-chg70-r1-fixed-vr/final-visual-remediation-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,sys,tempfile\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs,BrowserEvents\nfrom playwright.sync_api import sync_playwright\n\nprobe = r'''()=>{\n const parse=value=>{const m=value.match(/rgba?\\\\\\\\(([\"'^)]+)'\"\\\\\\\\)/);if(\"'!m)return null;const p=m[1].split('\"',').map(v=>Number(v.trim()));return {r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1};};\n const composite=(top,bottom)=>{if(\"'!top||top.a===0)return bottom;const a=top.a+(1-top.a)*bottom.a;return {r:(top.r*top.a+bottom.r*bottom.a*(1-top.a))/a,g:(top.g*top.a+bottom.g*bottom.a*(1-top.a))/a,b:(top.b*top.a+bottom.b*bottom.a*(1-top.a))/a,a};};\n const bg=node=>{const chain=[];for(let n=node;n;n=n.parentElement)chain.push(n);let value=parse(getComputedStyle(document.documentElement).backgroundColor)||{r:255,g:255,b:255,a:1};for(const n of chain.reverse())value=composite(parse(getComputedStyle(n).backgroundColor),value);return `rgb(${Math.round(value.r)}, ${Math.round(value.g)}, ${Math.round(value.b)})`;};\n const lum=value=>{const c=parse(value);const f=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};return .2126*f(c.r)+.7152*f(c.g)+.0722*f(c.b)};\n const ratio=(fg,bg)=>{const a=lum(fg),b=lum(bg);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};\n const metrics=(node,name)=>{const s=getComputedStyle(node),fontSize=parseFloat(s.fontSize),weight=parseInt(s.fontWeight,10)||400,large=fontSize>=24||(fontSize>=18.66&&weight>=700),foreground=s.color,background=bg(node),threshold=large?3:4.5;return {name,foreground,background,font_size_px:fontSize,font_weight:weight,large_text:large,threshold,contrast:Number(ratio(foreground,background).toFixed(4)),count:1};};\n const items=[];\n for(const name of ['\"'New report','Duplicate','Manage']){const nodes=[...document.querySelectorAll('.cui-visualizer-reportbar button')].filter(n=>n.textContent.trim()===name);if(nodes[0])items.push(metrics(nodes[0],name));}\n for(const value of ['84.2','42.8']){const nodes=[...document.querySelectorAll('.library-thumb .thumb-value')].filter(n=>n.textContent.trim()===value);if(nodes[0]){const row=metrics(nodes[0],\"'`KPI thumbnail ${value}`);row.count=nodes.length;items.push(row);}}\n const palette=[...document.querySelectorAll('\"'.pal-metric .pal-visual i')].filter(n=>n.textContent.trim()==='42.8')[0];if(palette)items.push(metrics(palette,'KPI quick-add 42.8'));\n return {theme:document.documentElement.dataset.theme||'system',items,reportbar_background:getComputedStyle(document.querySelector('.cui-visualizer-reportbar')).backgroundColor,root_accent:getComputedStyle(document.querySelector('.cui-visualizer-root')).getPropertyValue('--viz-accent').trim(),cui_accent:getComputedStyle(document.documentElement).getPropertyValue('--cui-accent').trim()};\n}'''\nwith tempfile.TemporaryDirectory(prefix='visembler-contrast-after-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='contrast-after')\n with sync_playwright() as pw:\n  browser=pw.chromium.launch(**browser_kwargs()); context=browser.new_context(); page=context.new_page(); events=BrowserEvents(); events.attach(page)\n  results=[]\n  for width,height in [(1440,1000),(390,844)]:\n   page.set_viewport_size({'width':width,'height':height});page.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(page,require_settled=True)\n   for theme in ('light','dark'):\n    page.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);page.wait_for_timeout(120); row=page.evaluate(probe);row['viewport']={'width':width,'height':height};results.append(row)\n  print(json.dumps({'results':results,'browser_errors':events.unexpected},indent=2));browser.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,sys,tempfile\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs,BrowserEvents\nfrom playwright.sync_api import sync_playwright\nprobe = r'''()=>{\n const parse=value=>{const m=value.match(/rgba?\\\\(([\"'^)]+)'\"\\\\)/);if(\"'!m)return null;const p=m[1].split('\"',').map(v=>Number(v.trim()));return {r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1};};\n const composite=(top,bottom)=>{if(\"'!top||top.a===0)return bottom;const a=top.a+(1-top.a)*bottom.a;return {r:(top.r*top.a+bottom.r*bottom.a*(1-top.a))/a,g:(top.g*top.a+bottom.g*bottom.a*(1-top.a))/a,b:(top.b*top.a+bottom.b*bottom.a*(1-top.a))/a,a};};\n const bg=node=>{const chain=[];for(let n=node;n;n=n.parentElement)chain.push(n);let value=parse(getComputedStyle(document.documentElement).backgroundColor)||{r:255,g:255,b:255,a:1};for(const n of chain.reverse())value=composite(parse(getComputedStyle(n).backgroundColor),value);return `rgb(${Math.round(value.r)}, ${Math.round(value.g)}, ${Math.round(value.b)})`;};\n const lum=value=>{const c=parse(value);const f=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};return .2126*f(c.r)+.7152*f(c.g)+.0722*f(c.b)};\n const ratio=(fg,bg)=>{const a=lum(fg),b=lum(bg);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};\n const metrics=(node,name)=>{const s=getComputedStyle(node),fontSize=parseFloat(s.fontSize),weight=parseInt(s.fontWeight,10)||400,large=fontSize>=24||(fontSize>=18.66&&weight>=700),foreground=s.color,background=bg(node),threshold=large?3:4.5;return {name,foreground,background,font_size_px:fontSize,font_weight:weight,large_text:large,threshold,contrast:Number(ratio(foreground,background).toFixed(4)),count:1};};\n const items=[];\n for(const name of ['\"'New report','Duplicate','Manage']){const nodes=[...document.querySelectorAll('.cui-visualizer-reportbar button')].filter(n=>n.textContent.trim()===name);if(nodes[0])items.push(metrics(nodes[0],name));}\n for(const value of ['84.2','42.8']){const nodes=[...document.querySelectorAll('.library-thumb .thumb-value')].filter(n=>n.textContent.trim()===value);if(nodes[0]){const row=metrics(nodes[0],\"'`KPI thumbnail ${value}`);row.count=nodes.length;items.push(row);}}\n const palette=[...document.querySelectorAll('\"'.pal-metric .pal-visual i')].filter(n=>n.textContent.trim()==='42.8')[0];if(palette)items.push(metrics(palette,'KPI quick-add 42.8'));\n return {theme:document.documentElement.dataset.theme||'system',items,reportbar_background:getComputedStyle(document.querySelector('.cui-visualizer-reportbar')).backgroundColor,root_accent:getComputedStyle(document.querySelector('.cui-visualizer-root')).getPropertyValue('--viz-accent').trim(),cui_accent:getComputedStyle(document.documentElement).getPropertyValue('--cui-accent').trim()};\n}'''\nwith tempfile.TemporaryDirectory(prefix='visembler-contrast-after-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='contrast-after')\n with sync_playwright() as pw:\n  browser=pw.chromium.launch(**browser_kwargs()); context=browser.new_context(); page=context.new_page(); events=BrowserEvents(); events.attach(page); results=[]\n  for width,height in [(1440,1000),(390,844)]:\n   page.set_viewport_size({'width':width,'height':height});page.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(page,require_settled=True)\n   for theme in ('light','dark'):\n    page.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);page.wait_for_timeout(120); row=page.evaluate(probe);row['viewport']={'width':width,'height':height};results.append(row)\n  print(json.dumps({'results':results,'browser_errors':events.unexpected},indent=2));browser.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-order-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='order')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const rules=[];for(const [si,sheet] of [...document.styleSheets].entries()){try{for(const rule of [...sheet.cssRules]){if(rule.selectorText&&n.matches(rule.selectorText)&&(rule.selectorText.includes('bg-primary')||rule.selectorText.includes('reportbar')||rule.selectorText.includes('text-primary')||rule.selectorText==='.q-btn--unelevated'))rules.push({si,href:sheet.href,selector:rule.selectorText,css:rule.cssText})}}catch(e){}}return {styleSheets:[...document.styleSheets].map((s,i)=>({i,href:s.href,cssRules:(()=>{try{return s.cssRules.length}catch(e){return -1}})()})),rules,computed:{bg:getComputedStyle(n).backgroundColor,color:getComputedStyle(n).color,important:n.getAttribute('style')}}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-rule-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='rule')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const all=[];for(const [si,sheet] of [...document.styleSheets].entries()){try{for(const rule of [...sheet.cssRules]){if(rule.cssText.includes('5898d4')||rule.cssText.includes('bg-primary')||rule.cssText.includes('text-primary'))all.push({si,selector:rule.selectorText||'',css:rule.cssText.slice(0,500)})}}catch(e){}}const n=document.querySelector('.cui-visualizer-reportbar button');return {all,styles:{background:getComputedStyle(n).background,backgroundColor:getComputedStyle(n).backgroundColor,color:getComputedStyle(n).color,cssText:n.style.cssText,class:n.className}}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-cascade-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='cascade')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button'),out=[];const walk=(rules,si)=>{for(const r of rules){if(r.cssRules)walk(r.cssRules,si);else if(r.selectorText&&n.matches(r.selectorText)){const bg=r.style.getPropertyValue('background'),bgc=r.style.getPropertyValue('background-color'),col=r.style.getPropertyValue('color');if(bg||bgc||col)out.push({si,selector:r.selectorText,bg,bgi:r.style.getPropertyPriority('background'),bgc,bgci:r.style.getPropertyPriority('background-color'),col,coli:r.style.getPropertyPriority('color')})}}};for(const [si,s] of [...document.styleSheets].entries()){try{walk(s.cssRules,si)}catch(e){}}return {out,computed:{bg:getComputedStyle(n).background,bgc:getComputedStyle(n).backgroundColor,col:getComputedStyle(n).color}}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-debug-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='debug')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const s=[...document.styleSheets].find(s=>s.href?.includes('integrated_editor'));const rules=[...s.cssRules].filter(r=>r.cssText.includes('bg-primary')||r.cssText.includes('q-btn {'));return {match:n.matches('.cui-visualizer-reportbar .q-btn.bg-primary'),rules:rules.map(r=>({type:r.type,sel:r.selectorText,css:r.cssText,style:r.style?.cssText,bg:r.style?.getPropertyValue('background')})),href:s.href}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-inline-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='inline')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const before={bg:getComputedStyle(n).backgroundColor,accent:getComputedStyle(n).getPropertyValue('--cui-accent')};const st=document.createElement('style');st.textContent='.cui-visualizer-reportbar .q-btn.bg-primary{background-color:rgb(1,2,3)\"'!important;color:rgb(4,5,6)!important}'\"';document.head.append(st);const after={bg:getComputedStyle(n).backgroundColor,col:getComputedStyle(n).color};return {before,after,style:st.sheet.cssRules[0].cssText}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-direct-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='direct')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const before={bg:getComputedStyle(n).backgroundColor,root:n.getRootNode().toString(),parent:n.parentElement?.outerHTML.slice(0,500)};n.style.backgroundColor='rgb(1,2,3)';n.style.color='rgb(4,5,6)';const after={bg:getComputedStyle(n).backgroundColor,col:getComputedStyle(n).color,style:n.getAttribute('style')};return {before,after}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-display-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='display')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const x={id:n.id,pre:{display:getComputedStyle(n).display,bg:getComputedStyle(n).backgroundColor},matches:n.matches('.cui-visualizer-reportbar .q-btn.bg-primary')};n.style.display='none';n.style.backgroundColor='rgb(1,2,3)';return {x,post:{display:getComputedStyle(n).display,bg:getComputedStyle(n).backgroundColor,style:n.getAttribute('style')}}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-bg-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='bg')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const props=['background','background-color','color','opacity','filter','mix-blend-mode','-webkit-text-fill-color'];const read=()=>Object.fromEntries(props.map(k=>[k,getComputedStyle(n).getPropertyValue(k)]));const pre=read();n.style.setProperty('background','rgb(1,2,3)','important');n.style.setProperty('color','rgb(4,5,6)','important');const post=read();return {pre,post,style:n.getAttribute('style')}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-css-specific-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='specific')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');const test=(css)=>{const s=document.createElement('style');s.textContent=css;document.head.append(s);return {css,computed:getComputedStyle(n).background,style:s.sheet.cssRules[0].cssText}};return [test('.cui-visualizer-reportbar .q-btn.bg-primary{background:rgb(1,2,3)\"'!important}'\"'),test('.cui-visualizer-reportbar .q-btn.q-btn--unelevated.bg-primary{background:rgb(4,5,6)\"'!important}'\"'),test('body .cui-visualizer-reportbar button.q-btn.bg-primary{background:rgb(7,8,9)\"'!important}'\"'),test('#'+n.id+'{background:rgb(10,11,12)\"'!important}'\"')] }''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-cdp-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='cdp')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  cdp=p.context.new_cdp_session(p);cdp.send('DOM.enable');cdp.send('CSS.enable');doc=cdp.send('DOM.getDocument');node=cdp.send('DOM.querySelector',{'nodeId':doc['root']['nodeId'],'selector':'.cui-visualizer-reportbar button'})['nodeId'];out=cdp.send('CSS.getMatchedStylesForNode',{'nodeId':node});\n  rows=[]\n  for group in ('matchedCSSRules','inherited','inlineStyle','attributesStyle'):\n   value=out.get(group)\n   if isinstance(value,list):\n    for item in value:\n     rule=item.get('rule',item)\n     css=rule.get('selectorList',{}).get('text') if isinstance(rule,dict) else None\n     style=rule.get('style',{}) if isinstance(rule,dict) else {}\n     props=style.get('cssProperties',[]) if isinstance(style,dict) else []\n     if css and any(x.get('name') in ('background','background-color','color') for x in props): rows.append({'group':group,'selector':css,'props':[x for x in props if x.get('name') in ('background','background-color','color')]})\n  print(json.dumps({'rows':rows,'inline':out.get('inlineStyle'), 'computed':p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button');return {bg:getComputedStyle(n).background,color:getComputedStyle(n).color}}''')},indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-reportbar-fix-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='bar-fix')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  for theme in ('light','dark'):\n   p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(120)\n   out=p.evaluate('''()=>[...document.querySelectorAll('.cui-visualizer-reportbar button')].filter(n=>['New report','Duplicate','Manage'].includes(n.textContent.trim())).map(n=>({name:n.textContent.trim(),fg:getComputedStyle(n).color,bg:getComputedStyle(n).backgroundColor,q:getComputedStyle(n).getPropertyValue('--q-primary').trim(),cui:getComputedStyle(n).getPropertyValue('--cui-accent').trim()}))''')\n   print(theme,json.dumps(out))\n  b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-text-debug-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='text-debug')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True);p.evaluate(\\\"()=>__VIZ_PROD__.setTheme('dark')\\\");p.wait_for_timeout(100)\n  out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button'),c=n.querySelector('.q-btn__content'),s=n.querySelector('.block');const read=x=>({color:getComputedStyle(x).color,fill:getComputedStyle(x).fill,style:x.getAttribute('style')});const pre={n:read(n),c:read(c),s:read(s)};c.style.setProperty('color','rgb(4,5,6)','important');s.style.setProperty('color','rgb(7,8,9)','important');return {pre,post:{n:read(n),c:read(c),s:read(s)}}}''')\n  print(json.dumps(out,indent=2));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='visembler-reportbar-text-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='bar-text')\n with sync_playwright() as pw:\n  b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':1000});p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n  for theme in ('light','dark'):\n   p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(120)\n   out=p.evaluate('''()=>{const n=document.querySelector('.cui-visualizer-reportbar button'),c=n.querySelector('.q-btn__content'),s=n.querySelector('.block');const g=x=>({color:getComputedStyle(x).color,fill:getComputedStyle(x).webkitTextFillColor,bg:getComputedStyle(x).backgroundColor});return {button:g(n),content:g(c),span:g(s),vars:{accent:getComputedStyle(n).getPropertyValue('--q-primary').trim(),inverse:getComputedStyle(n).getPropertyValue('--cui-text-inverse').trim()}}}''')\n   print(theme,json.dumps(out))\n  b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,sys,tempfile\nfrom pathlib import Path\nsys.path.insert(0,'scripts/release_checks')\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,ready,browser_kwargs,BrowserEvents\nfrom playwright.sync_api import sync_playwright\nprobe = r'''()=>{\n const parse=value=>{const m=value.match(/rgba?\\\\(([\"'^)]+)'\"\\\\)/);if(\"'!m)return null;const p=m[1].split('\"',').map(v=>Number(v.trim()));return {r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1};};\n const composite=(top,bottom)=>{if(\"'!top||top.a===0)return bottom;const a=top.a+(1-top.a)*bottom.a;return {r:(top.r*top.a+bottom.r*bottom.a*(1-top.a))/a,g:(top.g*top.a+bottom.g*bottom.a*(1-top.a))/a,b:(top.b*top.a+bottom.b*bottom.a*(1-top.a))/a,a};};\n const bg=node=>{const chain=[];for(let n=node;n;n=n.parentElement)chain.push(n);let value=parse(getComputedStyle(document.documentElement).backgroundColor)||{r:255,g:255,b:255,a:1};for(const n of chain.reverse())value=composite(parse(getComputedStyle(n).backgroundColor),value);return `rgb(${Math.round(value.r)}, ${Math.round(value.g)}, ${Math.round(value.b)})`;};\n const lum=value=>{const c=parse(value);const f=x=>{x/=255;return x<=.03928?x/12.92:Math.pow((x+.055)/1.055,2.4)};return .2126*f(c.r)+.7152*f(c.g)+.0722*f(c.b)};\n const ratio=(fg,bg)=>{const a=lum(fg),b=lum(bg);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05)};\n const metrics=(node,name,count=1)=>{const s=getComputedStyle(node),fontSize=parseFloat(s.fontSize),weight=parseInt(s.fontWeight,10)||400,large=fontSize>=24||(fontSize>=18.66&&weight>=700),foreground=s.color,background=bg(node),threshold=large?3:4.5;return {name,foreground,background,font_size_px:fontSize,font_weight:weight,large_text:large,threshold,contrast:Number(ratio(foreground,background).toFixed(4)),count};};\n const items=[];\n for(const name of ['\"'New report','Duplicate','Manage']){const nodes=[...document.querySelectorAll('.cui-visualizer-reportbar button')].filter(n=>n.textContent.trim()===name);if(nodes[0])items.push(metrics(nodes[0].querySelector('.block')||nodes[0],name));}\n for(const value of ['84.2','42.8']){const nodes=[...document.querySelectorAll('.library-thumb .thumb-value')].filter(n=>n.textContent.trim()===value);if(nodes[0])items.push(metrics(nodes[0],\"'`KPI thumbnail ${value}`,nodes.length));}\n const palette=[...document.querySelectorAll('\"'.pal-metric .pal-visual i')].find(n=>n.textContent.trim()==='42.8');if(palette)items.push(metrics(palette,'KPI quick-add 42.8'));\n return {theme:document.documentElement.dataset.theme||'system',items,reportbar_background:getComputedStyle(document.querySelector('.cui-visualizer-reportbar')).backgroundColor,root_accent:getComputedStyle(document.querySelector('.cui-visualizer-root')).getPropertyValue('--viz-accent').trim(),cui_accent:getComputedStyle(document.documentElement).getPropertyValue('--cui-accent').trim()};\n}'''\nwith tempfile.TemporaryDirectory(prefix='visembler-contrast-final-') as td,NativeHost(Path.cwd(),Path(td)/'data') as host:\n host.create(model=acceptance_model(),name='contrast-final')\n with sync_playwright() as pw:\n  browser=pw.chromium.launch(**browser_kwargs());context=browser.new_context();page=context.new_page();events=BrowserEvents();events.attach(page);results=[]\n  for width,height in [(1440,1000),(390,844)]:\n   page.set_viewport_size({'width':width,'height':height});page.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(page,require_settled=True)\n   for theme in ('light','dark'):\n    page.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);page.wait_for_timeout(120);row=page.evaluate(probe);row['viewport']={'width':width,'height':height};results.append(row)\n  print(json.dumps({'results':results,'browser_errors':events.unexpected},indent=2));browser.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /tmp/visembler-chg70-r1-native-acceptance'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg70-r1-final-vr --skip-regressions --skip-benchmark'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,unexpected_errors,failures: [.checks[] | select(.status==\\\"FAIL\\\")], out_of_scope: [.checks[] | select(.id|IN(\\\"VR041\\\",\\\"VR042\\\",\\\"VR043\\\",\\\"VR044\\\",\\\"VR045\\\",\\\"VR047\\\"))]}' /tmp/visembler-chg70-r1-final-vr/final-visual-remediation-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/visembler-chg70-r1-final-cleanup --skip-regressions --skip-benchmark'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg70-r1-chart-studio --skip-regressions'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg70-r1-diagram-studio --skip-regressions'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg70-r1-diagram-studio'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg70-r1-full-vr --skip-regressions'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,unexpected_errors,failures: [.checks[] | select(.status==\\\"FAIL\\\")], benchmark: [.tasks[] | {task,status,visual_quality: {empty_error_state_count: .checks.visual_quality.empty_error_state_count, wafer_dies: .checks.visual_quality.wafer_dies, occupied_area_ratio: .checks.visual_quality.occupied_area_ratio}}]}' /tmp/visembler-chg70-r1-full-vr/final-visual-remediation-acceptance.json /tmp/visembler-chg70-r1-full-vr/benchmark/stage-d-benchmark.json\"",
+      "exit_code": 5,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,unexpected_errors,failures: [.checks[] | select(.status==\\\"FAIL\\\")]}' /tmp/visembler-chg70-r1-full-vr/final-visual-remediation-acceptance.json && rtk jq '{status, tasks: [.tasks[] | {task,status,checks: (.checks | keys)}]}' /tmp/visembler-chg70-r1-full-vr/benchmark/stage-d-benchmark.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.tasks[] | {task,status,visual_quality: .checks.visual_quality}' /tmp/visembler-chg70-r1-full-vr/benchmark/stage-d-benchmark.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.tasks[] | {task,status,occupied_area_ratio:.checks.visual_quality.occupied_area_ratio,wafer_dies:.checks.visual_quality.wafer_dies,empty_error_state_count:.checks.visual_quality.empty_error_state_count,element_count:.checks.visual_quality.element_count}' /tmp/visembler-chg70-r1-full-vr/benchmark/stage-d-benchmark.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg70-r1-final-vr-regressions --skip-benchmark'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,unexpected_errors,failures: [.checks[] | select(.status==\\\"FAIL\\\")], regression: {stage_a: \\\"PASS\\\", stage_b: \\\"PASS\\\", stage_c: \\\"PASS\\\", stage_d: \\\"PASS\\\"}}' /tmp/visembler-chg70-r1-final-vr-regressions/final-visual-remediation-acceptance.json && rtk jq '{status,passed,total,unexpected_errors}' /tmp/visembler-chg70-r1-final-vr-regressions/run_stage_d_acceptance/stage-d-acceptance.json && rtk jq '{status,passed,total,unexpected_errors}' /tmp/visembler-chg70-r1-final-vr-regressions/run_chart_studio_acceptance/chart-studio-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_product_polish_v4.py tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_chart_studio.py tests/test_visualizer_diagram_studio.py tests/test_visualizer_final_visual_remediation.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "23814bd54c3f40e10907bbb3fbbf634b818152cf7afb3d0013ebceb07460326b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --name-status 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'viewBox=' company_ui/products/visualizer/assets/authoring_chart_studio.mjs && rtk git diff --unified=3 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f -- company_ui/products/visualizer/assets/authoring_chart_studio.mjs company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/assets/tokens.css tests/test_visualizer_product_polish_v4.py tests/test_visualizer_statistical_release_repair.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/visembler-chg70-r1-final-cleanup-verified --skip-regressions --skip-benchmark'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git diff --check 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && rtk git diff --stat 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && rtk git diff --name-only 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find certification_output -maxdepth 2 -type f -print | head -40'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mv certification_output /private/tmp/visembler-chg70-r1-runtime-smoke-certification-output'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git diff --check 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && rtk git diff --name-only 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && rtk git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import sys;print(sys.argv[1])' '{\\\"request\\\":\\\"Visembler CHG-70 R1\\\",\\\"exact_base\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"candidate_head\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"candidate_state\\\":\\\"working_tree_changes_uncommitted\\\",\\\"invalid_viewbox_reproduced\\\":true,\\\"invalid_viewbox_root\\\":\\\"company_ui/products/visualizer/assets/authoring_chart_studio.mjs:renderDoeMainSvg empty-effects branch\\\",\\\"invalid_viewbox_fixed\\\":true,\\\"browser_error_after_fix\\\":[],\\\"contrast_samples_before\\\":{\\\"New report\\\":3.0626,\\\"Duplicate\\\":3.0626,\\\"Manage\\\":3.0626,\\\"KPI thumbnail 84.2\\\":4.4249,\\\"KPI thumbnail 42.8\\\":4.4249,\\\"KPI quick-add 42.8\\\":16.83},\\\"contrast_font_metrics\\\":{\\\"New report\\\":{\\\"font_size_px\\\":12,\\\"font_weight\\\":500,\\\"large_text\\\":false},\\\"Duplicate\\\":{\\\"font_size_px\\\":12,\\\"font_weight\\\":500,\\\"large_text\\\":false},\\\"Manage\\\":{\\\"font_size_px\\\":12,\\\"font_weight\\\":500,\\\"large_text\\\":false},\\\"KPI thumbnail 84.2\\\":{\\\"font_size_px\\\":13,\\\"font_weight\\\":850,\\\"large_text\\\":false},\\\"KPI thumbnail 42.8\\\":{\\\"font_size_px\\\":13,\\\"font_weight\\\":850,\\\"large_text\\\":false},\\\"KPI quick-add 42.8\\\":{\\\"font_size_px\\\":20,\\\"font_weight\\\":820,\\\"large_text\\\":true}},\\\"contrast_applicable_thresholds\\\":{\\\"New report\\\":4.5,\\\"Duplicate\\\":4.5,\\\"Manage\\\":4.5,\\\"KPI thumbnail 84.2\\\":4.5,\\\"KPI thumbnail 42.8\\\":4.5,\\\"KPI quick-add 42.8\\\":3.0},\\\"contrast_samples_after\\\":{\\\"light\\\":{\\\"New report\\\":4.6967,\\\"Duplicate\\\":4.6967,\\\"Manage\\\":4.6967,\\\"KPI thumbnail 84.2\\\":5.1362,\\\"KPI thumbnail 42.8\\\":5.1362,\\\"KPI quick-add 42.8\\\":16.83},\\\"dark\\\":{\\\"New report\\\":7.6358,\\\"Duplicate\\\":6.2441,\\\"Manage\\\":6.2441,\\\"KPI thumbnail 84.2\\\":4.7097,\\\"KPI thumbnail 42.8\\\":4.7097,\\\"KPI quick-add 42.8\\\":13.2927}},\\\"contrast_failures_remaining\\\":[],\\\"dark_mode_regression\\\":{\\\"desktop_and_390px\\\":\\\"PASS\\\",\\\"native_acceptance\\\":\\\"12/12 PASS\\\",\\\"minimum_reportbar_ratio\\\":6.2441,\\\"minimum_kpi_thumbnail_ratio\\\":4.7097,\\\"browser_errors\\\":[]},\\\"targeted_tests\\\":[\\\"focused pytest: PASS\\\",\\\"Chart Studio acceptance: 95/95 applicable PASS\\\",\\\"Diagram Studio acceptance: 16/16 PASS\\\",\\\"native responsive/editor acceptance: 12/12 PASS\\\",\\\"Company UI validator: 0 errors\\\",\\\"runtime-contract: PASS\\\",\\\"runtime-smoke: 22/22 PASS\\\"],\\\"maintained_visual_regression\\\":{\\\"native_editor\\\":\\\"PASS 12/12\\\",\\\"final_visual_cleanup\\\":\\\"PASS 25/25 applicable\\\",\\\"final_visual_remediation_svg_gate\\\":\\\"PASS VR055; zero unexpected browser errors\\\",\\\"stage_regressions\\\":\\\"Stage A-D PASS\\\",\\\"remaining_preexisting\\\":\\\"VR004 wafer geometry; full benchmark F-002/VR041+VR047 unchanged\\\"},\\\"out_of_scope_wafer_changed\\\":false,\\\"changed_files\\\":[\\\"company_ui/products/visualizer/assets/authoring_chart_studio.mjs\\\",\\\"company_ui/products/visualizer/assets/integrated_editor.css\\\",\\\"company_ui/products/visualizer/assets/tokens.css\\\",\\\"tests/test_visualizer_product_polish_v4.py\\\",\\\"tests/test_visualizer_statistical_release_repair.py\\\"],\\\"classification\\\":\\\"bounded-source-fix\\\",\\\"source_changed\\\":true}'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2718,
+        "output_sha256": "fe2ab3ceef852dba3fc409d3df79a3d344a7b76e156239c480b1777d31f46c43",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 227,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.24,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 18828544,
+      "fresh_input_tokens": 533570,
+      "input_tokens": 19362114,
+      "non_reasoning_output_tokens": 31368,
+      "output_tokens": 55675,
+      "reasoning_output_tokens": 24307,
+      "total_processed_tokens": 19417789
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "9876eb585f673c5c14ecdca1de07b87dacb8bff8",
+      "subject": "fabric: capture completed model changes [CF-58d5362a3b8e3ed0e286cfc6]"
+    }
+  ],
+  "diff": {
+    "additions": 23,
+    "changed_files": 5,
+    "commit_count": 1,
+    "deletions": 5
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-58d5362a3b8e3ed0e286cfc6]",
+    "commit_sha": "9876eb585f673c5c14ecdca1de07b87dacb8bff8",
+    "paths_before": 5,
+    "status_before": [
+      " M company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      " M company_ui/products/visualizer/assets/integrated_editor.css",
+      " M company_ui/products/visualizer/assets/tokens.css",
+      " M tests/test_visualizer_product_polish_v4.py",
+      " M tests/test_visualizer_statistical_release_repair.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T23:19:52Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "fix/visembler-chg70-ui-hard-gates-r1",
+    "head_sha": "9876eb585f673c5c14ecdca1de07b87dacb8bff8",
+    "remote_exact_head": true,
+    "remote_head_sha": "9876eb585f673c5c14ecdca1de07b87dacb8bff8",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "fix/visembler-chg70-ui-hard-gates-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-58d5362a3b8e3ed0e286cfc6",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-70-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-70-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "ac9bd8dedb364d22fc9c0fc6a50334cbf5b7f53a5a0602aa17553d680a87690e"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-70-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-15T22:35:16Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 2676,
+    "queue_seconds": 0,
+    "total_seconds": 2676
+  },
+  "transport": {
+    "bytes": 5230,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4936,
+    "prompt_sha256": "205bff080ce6cbf43ed19e05ea508e20e0c6ff8ecbaf7e4cfa1eb1f048086c6c",
+    "sha256": "58d5362a3b8e3ed0e286cfc65236aa3b0768669e9afa1fa985cee80996dc46a1"
+  }
+}
