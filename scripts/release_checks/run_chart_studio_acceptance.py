@@ -47,6 +47,24 @@ def wafer_model():
     return canonical_model({'items':[item('chart-1','Wafer Map','WaferFabEngine',dataset_id='wafer-data',mapping={'die_x':'x','die_y':'y','value':'v'})],'datasets':[{'id':'wafer-data','name':'Wafer observations','revision':1,'fields':fields,'rows':rows,'warnings':[],'metadata':{}}],'groups':{},'mode':'smart','layoutPreset':'technical','canvas':{'width':1600,'height':900},'nextId':2})
 
 
+def analytics_model():
+    fields=[
+        {'id':'x','name':'X','type':'number'},
+        {'id':'y','name':'Y','type':'number'},
+        {'id':'series','name':'Series','type':'categorical'},
+        {'id':'category','name':'Category','type':'categorical'},
+        {'id':'value','name':'Value','type':'number'},
+    ]
+    rows=[[1,5,'Run A','Particle',10],[2,8,'Run A','Scratch',7],[3,13,'Run B','Particle',3],[4,11,'Run B','Void',1]]
+    return canonical_model({'items':[item('chart-1','Multi-Line','CoreChartEngine',dataset_id='analytics-data',mapping={'x':'x','y':'y','series':'series','category':'category','value':'value'})],'datasets':[{'id':'analytics-data','name':'Analytics observations','revision':1,'fields':fields,'rows':rows,'warnings':[],'metadata':{}}],'groups':{},'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})
+
+
+def regression_model():
+    fields=[{'id':'x','name':'X','type':'number'},{'id':'y','name':'Y','type':'number'}]
+    rows=[[1,5],[2,8],[3,13],[4,11]]
+    return canonical_model({'items':[item('chart-1','Regression Scatter','CoreChartEngine',dataset_id='regression-data',mapping={'x':'x','y':'y'})],'datasets':[{'id':'regression-data','name':'Regression observations','revision':1,'fields':fields,'rows':rows,'warnings':[],'metadata':{}}],'groups':{},'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})
+
+
 def state(page):
     return page.evaluate('()=>JSON.parse(JSON.stringify(window.CompanyUIChartStudio.state))')
 
@@ -87,7 +105,7 @@ def main()->int:
     try:
       with tempfile.TemporaryDirectory(prefix='visembler-chart-studio-') as td:
         with NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:
-          line_id=host.create(model=line_model(),name='chart-studio-line');eng_id=host.create(model=engineering_model(),name='chart-studio-engineering');wafer_id=host.create(model=wafer_model(),name='chart-studio-wafer')
+          line_id=host.create(model=line_model(),name='chart-studio-line');eng_id=host.create(model=engineering_model(),name='chart-studio-engineering');wafer_id=host.create(model=wafer_model(),name='chart-studio-wafer');analytics_id=host.create(model=analytics_model(),name='chart-studio-analytics');regression_id=host.create(model=regression_model(),name='chart-studio-regression')
           browser=pw.chromium.launch(**browser_kwargs());context=browser.new_context(accept_downloads=True,viewport={'width':1440,'height':900});page=context.new_page();page.set_default_timeout(7000);events=BrowserEvents();events.attach(page)
           page.on('dialog',lambda dialog:dialog.accept('Acceptance recipe'))
           load_studio(page,host,line_id);initial_hash=page.evaluate('()=>CompanyUIChartStudio.hash()')
@@ -151,7 +169,7 @@ def main()->int:
               page.locator('[data-action="export-svg"]').click()
           download_info.value.save_as(str(output/'chart.svg'));check('C084','standalone SVG',lambda:assert_true((output/'chart.svg').read_text().find('<svg')>=0,'SVG export missing'))
           page.locator('[data-action="preview"]').click();check('C085','preview',lambda:assert_true('studio-preview' in (page.locator('#chart-studio').get_attribute('class') or ''),'preview did not enter reading mode'));page.locator('[data-action="preview-close"]').click();page.locator('[data-action="toggle-theme"]').click();check('C086','light/dark',lambda:assert_true(page.evaluate('()=>document.documentElement.getAttribute("data-theme")==="dark"'),'dark theme missing'));started=time.perf_counter();page.set_viewport_size({'width':768,'height':800});page.wait_for_timeout(100);resize_ms=(time.perf_counter()-started)*1000;check('C087','resize/content fit',lambda:assert_true(page.locator('#cs-canvas').bounding_box()['width']>0,'resize lost chart'));page.set_viewport_size({'width':390,'height':844});check('C088','responsive acceptance',lambda:assert_true(page.evaluate('()=>document.documentElement.scrollWidth<=innerWidth+1'),'responsive overflow'));receipt['performance']['repeated_resize_ms']=round(resize_ms,2)
-          receipt['performance']['10k_line_and_2500_wafer']=run_perf_fixture();receipt['unexpected_errors']=events.unexpected
+          receipt['performance']['10k_line_and_2500_wafer']=run_perf_fixture()
           if not args.skip_regressions:
             for cid,script,name in [('C089','run_stage_a_acceptance.py','Stage A acceptance'),('C090','run_diagram_studio_acceptance.py','Stage B acceptance')]:
               check(cid,name,lambda script=script:assert_true(subprocess.run([sys.executable,str(ROOT/'scripts/release_checks'/script),'--output',str(output/script.replace('.py',''))],cwd=ROOT,timeout=180).returncode==0,f'{script} failed'))
@@ -160,8 +178,13 @@ def main()->int:
             check('C090','Stage B acceptance',lambda:None,reason='prior Stage B gate intentionally reused with --skip-regressions')
           check('C091','production library 52',lambda:assert_true(production_count()==52,'production count changed'))
           check('C092','product-contract audit',lambda:assert_true(subprocess.run([sys.executable,'-m','pytest','-q','tests/test_visualizer_authoring_p0.py','tests/test_visualizer_product_completion_p0.py','tests/test_visualizer_chart_studio.py'],cwd=ROOT,timeout=120,capture_output=True).returncode==0,'product contract tests failed'))
-          check('C093','no unexpected console/page/network errors',lambda:assert_true(not receipt['unexpected_errors'],str(receipt['unexpected_errors'][:3])))
           check('C094','frozen connector unchanged',lambda:assert_true(hashlib.sha256((ROOT/'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js').read_bytes()).hexdigest()=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e','frozen hash changed'))
+          load_studio(page,host,analytics_id)
+          page.locator('#cs-chart-type').select_option('Multi-Line');check('C095','Multi-Line browser render',lambda:assert_plotted(page,'Multi-Line'))
+          page.locator('#cs-chart-type').select_option('Scatter Plot');check('C096','Scatter Plot browser render',lambda:assert_plotted(page,'Scatter Plot'))
+          load_studio(page,host,regression_id);page.locator('#cs-chart-type').select_option('Regression Scatter');check('C097','Regression Scatter browser render',lambda:assert_plotted(page,'Regression Scatter'))
+          receipt['unexpected_errors']=events.unexpected
+          check('C093','no unexpected console/page/network errors',lambda:assert_true(not receipt['unexpected_errors'],str(receipt['unexpected_errors'][:3])))
           context.close();browser.close()
     except Exception as exc: receipt['harness_error']=str(exc);receipt['traceback']=traceback.format_exc()
     receipt['pass']=sum(row['status']=='PASS' for row in receipt['checks']);receipt['applicable']=sum(row['status']!='NOT_APPLICABLE' for row in receipt['checks']);receipt['not_applicable']=sum(row['status']=='NOT_APPLICABLE' for row in receipt['checks']);write_json(output/'chart-studio-acceptance.json',receipt);print(json.dumps({'pass':receipt['pass'],'applicable':receipt['applicable'],'not_applicable':receipt['not_applicable'],'path':str(output/'chart-studio-acceptance.json')}));return 0 if receipt['pass']==receipt['applicable'] and not receipt.get('harness_error') else 1
@@ -177,6 +200,7 @@ def assert_plotted(page,typ,expected_rows=None):
     current=model(page); summary=page.locator('#cs-summary').inner_text(); markup=page.locator('#cs-canvas').inner_html()
     assert_true(current['dataset']['rows'] and 'X unmapped' not in summary and 'Y unmapped' not in summary,'compatible non-empty data remained unmapped')
     marks=page.locator('#cs-canvas [data-chart-point],#cs-canvas [data-wafer-die]').count()
+    if typ=='Regression Scatter': marks=page.locator('#cs-canvas circle').count()
     assert_true(marks>0 or typ in {'CUSUM Chart','EWMA Chart'},'non-empty chart rendered no plotted marks')
     if expected_rows is not None: assert_true(len(current['dataset']['rows'])==expected_rows,f'expected {expected_rows} hydrated rows, got {len(current["dataset"]["rows"])}')
     if typ=='Wafer Map':

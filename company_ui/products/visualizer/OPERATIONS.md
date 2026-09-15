@@ -48,8 +48,14 @@ python scripts/verify_release.py --host-mode native \
 ```
 
 A bounded local/internal-pilot candidate is accepted only when `report.json`
-records `PASS_LOCAL_INTERNAL_PILOT`. The verifier executes the full test suite,
-49 production-element workflows, data/portability checks, performance timing,
+records `PASS_LOCAL_INTERNAL_PILOT`. The verifier executes the full test suite
+and derives the production coverage counts from
+`docs/VISSEMBLER_AUTHORING_PRODUCTIVITY_MATRIX.md`,
+`scripts/release_checks/element_fixtures.json`, and
+`scripts/release_checks/production_element_coverage.json` via
+`scripts/release_checks/verify_element_coverage.py` (currently 52 maintained,
+39 generic fixture workflows, and 13 specialized proofs), plus data/portability
+checks and performance timing,
 native disconnect/restart recovery, real browser module-worker failure/retry,
 the backup/restore drill, and responsive/keyboard visual acceptance on one
 stable source manifest. Missing or failed gates keep the result blocked.
