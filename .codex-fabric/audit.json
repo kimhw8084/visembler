@@ -1,0 +1,313 @@
+{
+  "accepted_at": "2026-09-15T04:14:58Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,260p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,260p' company_ui/ai/construction_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rg --files -g 'AGENTS.md' -g '*APP_PATTERNS*' -g '*COMPONENT_CATALOG*' -g '*DESIGN_CONSTITUTION*' -g '*RELEASE*' -g '*release*' -g '*verify_release*' -g '*Visembler*' -g '*visembler*' -g 'scripts/*' | sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'git rev-parse --show-toplevel && git status --short --branch && git rev-parse HEAD && git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' docs/V200RC1_RELEASE_CANDIDATE.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,360p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 3 -- '--host-mode|output-dir|evidence|report.json|PASS_LOCAL_INTERNAL_PILOT|native|manifest' scripts/verify_release.py docs docs/V200RC1_RELEASE_CANDIDATE.md README.md AGENTS.md 2>/dev/null | sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' company_ui/release_authority.json && rtk sed -n '1,260p' RELEASE_MANIFEST.json && rtk sed -n '1,260p' PHASE_32_V200RC1_RELEASE_CANDIDATE_REPORT.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 2 'CHG-19|Visembler|visembler|local/internal|internal pilot|native verification|verify_release.py' . --glob '\"'!**/.git/**'\"' | sed -n '1,420p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files docs scripts | rg -i '(visembler|release|pilot|certif|verify)' | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 4 'PASS_LOCAL_INTERNAL_PILOT|READY_FOR_COMPANY_TARGET_CERTIFICATION|CHG-19|local single-instance|native local|evidence.*manifest|report.json' --glob '*.md' --glob '*.json' --glob '*.py' --glob '*.sh' . | sed -n '1,520p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md 2>/dev/null || true; rtk sed -n '1,320p' docs/VISSEMBLER_RELEASE_CONTRACT.md 2>/dev/null || true; rtk sed -n '1,320p' docs/VISSEMBLER_LOCAL_INTERNAL_PILOT.md 2>/dev/null || true; rtk sed -n '1,320p' docs/RELEASE_CONTRACT.md 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' PRODUCTION_CLOSEOUT_STATE.json; rtk sed -n '1,220p' docs/VISSEMBLER_COMPANY_OPERATIONS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' company_ui/products/visualizer/OPERATIONS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python --version && rtk python -c \\\"import importlib.metadata as m; print('nicegui', m.version('nicegui')); print('playwright', m.version('playwright'))\\\" && rtk git diff --check && rtk git status --short --branch && rtk git branch --show-current && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d /tmp/visembler-chg19-native-XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /tmp/visembler-chg19-native-ecrz0Y/progress.json 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -n 80 /tmp/visembler-chg19-native-ecrz0Y/progress.json; rtk ps -p 33172 -o pid=,etime=,stat=,command= 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -n 120 /tmp/visembler-chg19-native-ecrz0Y/logs/native-recovery.log 2>/dev/null || true; rtk tail -n 80 /tmp/visembler-chg19-native-ecrz0Y/logs/native-recovery.log 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk pgrep -af 'run_native_recovery|verify_release|launch_visembler|nicegui' 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ps -axo pid,ppid,etime,stat,command | rtk rg '26429|26430|30910|33499|33500|run_native_recovery|verify_release|launch_visembler|nicegui' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,stat,command | rtk proxy rg '26429|26430|30910|33499|33500|run_native_recovery|verify_release|launch_visembler|nicegui' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,stat,command | rtk proxy rg 'run_native_recovery|verify_release.py --host-mode native|company_ui.products.visualizer.cli' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' scripts/release_checks/run_native_recovery.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 6 'class NativeHost|def stop|def restart|wait_for' scripts/release_checks/editor_host.py | sed -n '1,280p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,stat,command | rtk proxy rg 'run_native_recovery|verify_release.py --host-mode native|company_ui.products.visualizer.cli' || true; rtk ls -la /tmp/visembler-chg19-native-ecrz0Y/native-recovery 2>/dev/null || true; rtk wc -c /tmp/visembler-chg19-native-ecrz0Y/logs/native-recovery.log 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,stat,command | rtk proxy rg 'run_native_recovery|verify_release.py --host-mode native' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg19-native-ecrz0Y'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp/visembler-chg19-native-ecrz0Y -maxdepth 2 -type f -print | sort | sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; p=json.load(open('/tmp/visembler-chg19-native-ecrz0Y/report.json')); print('release_status=',p['release_status']); print('checks_status=',p['checks_status']); print('host_mode=',p['host_mode']); print('source_editor_sha256=',p['source_editor_sha256']); print('source_page_sha256=',p['source_page_sha256']); print('git_status_at_start=',p['git_status_at_start']); print('required_gates=',len(p['required_gates'])); print('remaining=',p['remaining_release_validation']); print('checks:'); [print(f\\\\\\\"{c['name']}|{c['status']}|{c.get('returncode','')}|{c.get('elapsed_seconds','')}|{c.get('error','')}|{c.get('log','')}\\\\\\\") for c in p['checks']]\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; p=json.load(open('/tmp/visembler-chg19-native-ecrz0Y/progress.json')); [print(f\\\\\\\"{c['name']}|{c['status']}|{c.get('returncode','')}|{c.get('elapsed_seconds','')}|{' '.join(c['command'])}\\\\\\\") for c in p]\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' /tmp/visembler-chg19-native-ecrz0Y/logs/native-recovery.log; rtk find /tmp/visembler-chg19-native-ecrz0Y/native-recovery -maxdepth 3 -type f -print 2>/dev/null | sort; rtk ls -la /tmp/visembler-chg19-native-ecrz0Y/native-recovery 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch; rtk git branch --show-current; rtk git rev-parse HEAD; rtk git rev-parse HEAD''^{tree}; rtk git diff --check; rtk git diff --name-status; rtk git diff --cached --name-status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; from scripts.verify_release import source_manifest; expected=json.load(open('/tmp/visembler-chg19-native-ecrz0Y/source-manifest.json')); actual=source_manifest(); changed=sorted(set(expected)\"'^set(actual)); changed.extend(k for k in sorted(set(expected)&set(actual)) if expected[k]!=actual[k]); print('\"'source_manifest_equal=', expected==actual); print('source_manifest_entries=', len(actual)); print('source_manifest_changed=', changed)\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -l /tmp/visembler-chg19-native-ecrz0Y/report.json /tmp/visembler-chg19-native-ecrz0Y/artifact-sha256.json /tmp/visembler-chg19-native-ecrz0Y.zip; rtk sed -n '1,160p' /tmp/visembler-chg19-native-ecrz0Y/release-manifest.json; rtk sed -n '1,80p' /tmp/visembler-chg19-native-ecrz0Y/logs/git-diff-check.log; rtk sed -n '1,100p' /tmp/visembler-chg19-native-ecrz0Y/logs/native-recovery.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; p='/tmp/visembler-chg19-native-ecrz0Y/artifact-sha256.json'; print('artifact_count=', len(json.load(open(p))))\\\"; rtk find /tmp/visembler-chg19-native-ecrz0Y/native-recovery -type f 2>/dev/null | rtk sort; rtk ls -la /tmp/visembler-chg19-native-ecrz0Y/native-recovery/screenshots 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; p=json.load(open('/tmp/visembler-chg19-native-ecrz0Y/report.json')); req=set(p['required_gates']); by={x['name']:x.get('status') for x in p['checks']}; print('required_pass=', sum(by.get(x)=='PASS' for x in req), 'required_total=', len(req)); print('required_nonpass=', sorted((x,by.get(x)) for x in req if by.get(x)\"'!='\"'PASS'))\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,stat,command | rtk proxy rg 'visembler-chg19-native-ecrz0Y|run_native_recovery.py|verify_release.py --host-mode native' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /tmp/visembler-chg19-native-ecrz0Y.zip; rtk shasum -a 256 /tmp/visembler-chg19-native-ecrz0Y/report.json; rtk shasum -a 256 /tmp/visembler-chg19-native-ecrz0Y/artifact-sha256.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 96,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.21,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 3751424,
+      "fresh_input_tokens": 107479,
+      "input_tokens": 3858903,
+      "non_reasoning_output_tokens": 9622,
+      "output_tokens": 16783,
+      "reasoning_output_tokens": 7161,
+      "total_processed_tokens": 3875686
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-15T04:39:23Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "verify/visembler-chg19-exact-main-native-pilot-v1",
+    "head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "remote_exact_head": true,
+    "remote_head_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "verify/visembler-chg19-exact-main-native-pilot-v1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-381241275359c5d955919700",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-19-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-19-r1"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "3778fba0755dd2f6b00268f73b7a589f93317203cc0603df2feff4e6d9c759f6",
+    "registry_sha256": "17d7db01a654a693b57af2b6fce2f676b1f883ea97564a690894b5f96df49aaa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-19-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-15T04:20:33Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 1130,
+    "queue_seconds": 335,
+    "total_seconds": 1465
+  },
+  "transport": {
+    "bytes": 3287,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2977,
+    "prompt_sha256": "848f1c76ed1473d3435637266599720ca7c477ab0a9447ec39a7a6e773a44afa",
+    "sha256": "381241275359c5d955919700e53011d2b50256377183f4e5a9c45d4a6e80452f"
+  }
+}
