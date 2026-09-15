@@ -1,0 +1,19 @@
+# Exact candidate and release authority
+rtk git status --short --branch
+rtk git rev-parse HEAD
+rtk git ls-remote origin refs/heads/main
+
+# Maintained native verifier
+rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg40-r1-release
+rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg40-r1-diagram
+rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/visembler-chg40-r1-final-visual
+
+# Maintained performance authorities (one verifier run plus three capacity repetitions)
+rtk python scripts/release_checks/measure_editor.py --native --output /tmp/visembler-chg40-r1-release/performance
+rtk python scripts/release_checks/run_company_capacity.py --output /tmp/visembler-chg40-r1-capacity-1.json
+rtk python scripts/release_checks/run_company_capacity.py --output /tmp/visembler-chg40-r1-capacity-2.json
+rtk python scripts/release_checks/run_company_capacity.py --output /tmp/visembler-chg40-r1-capacity-3.json
+
+# Temporary run-owned repeat/audit harnesses; source snapshots are preserved beside this file
+rtk python /tmp/visembler-chg40-r1-editor-repeat.py
+rtk python /tmp/visembler-chg40-r1-browser-audit.py

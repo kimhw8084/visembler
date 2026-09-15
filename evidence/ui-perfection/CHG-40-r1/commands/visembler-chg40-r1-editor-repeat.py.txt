@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+"""Temporary run-owned repeat benchmark for CHG-40 R1."""
+from __future__ import annotations
+import hashlib, json, os, shutil, statistics, sys, tempfile, time
+from pathlib import Path
+ROOT=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-90ab85d8ed306ef189fd1889')
+sys.path[:0]=[str(ROOT),str(ROOT/'scripts/release_checks')]
+from editor_host import NativeHost, load_editor
+from run_editor_workflows import ready, settled
+from playwright.sync_api import sync_playwright
+
+OUT=Path('/tmp/visembler-chg40-r1-editor-repeat')
+OUT.mkdir(parents=True,exist_ok=True)
+
+def pct(values,p):
+    if not values:return None
+    values=sorted(values); idx=(len(values)-1)*p/100; lo=int(idx); hi=min(lo+1,len(values)-1); frac=idx-lo
+    return values[lo]+(values[hi]-values[lo])*frac
+def summary(values):return {'n':len(values),'raw_ms':[round(v,3) for v in values],'p50_ms':round(statistics.median(values),3),'p95_ms':round(pct(values,95),3),'min_ms':round(min(values),3),'max_ms':round(max(values),3)}
+def model(count):
+    return {'mode':'free','items':[{'id':f'p{i}','type':'metric','engine':'MetricEngine','element':'Hero KPI','title':f'KPI {i}','value':i,'order':i,'x':(i%5)*300,'y':(i//5)*150,'w':280,'h':140,'locked':False,'z':i} for i in range(count)]}
+def measure(fn,n=7):
+    values=[]
+    for _ in range(n):
+        t=time.perf_counter();fn();values.append((time.perf_counter()-t)*1000)
+    return values
+def settle(p):
+    p.wait_for_function('()=>{const s=window.CompanyUIVisualizerBridge.state();return s.pending===0&&!s.inflight}',timeout=15000)
+def run_count(host,b,count):
+    rid=host.create(model(count)); ctx=b.new_context(viewport={'width':1440,'height':1000},accept_downloads=True,permissions=['clipboard-read','clipboard-write']); p=ctx.new_page();p.set_default_timeout(8000)
+    cold=[]; warm=[]
+    for _ in range(2):
+        t=time.perf_counter();load_editor(p,host,rid);ready(p);cold.append((time.perf_counter()-t)*1000);p.reload(wait_until='domcontentloaded');ready(p)
+    for _ in range(5):
+        p.reload(wait_until='domcontentloaded');ready(p)
+    for _ in range(7):
+        t=time.perf_counter();p.reload(wait_until='domcontentloaded');ready(p);warm.append((time.perf_counter()-t)*1000)
+    timings={'editor_ready_cold':summary(cold),'editor_ready_warm':summary(warm)}
+    p.locator('#libraryToggle').click() if p.locator('#libraryToggle').get_attribute('aria-pressed')!='true' else None
+    p.locator('#componentSearch').fill('Hero KPI'); search=measure(lambda:p.locator('#fullLibrary .library-item').count());timings['library_search']=summary(search);p.locator('#componentSearch').fill('');
+    if count<=20:
+        insert=[]
+        for _ in range(7):
+            t=time.perf_counter();p.locator('#componentSearch').fill('Hero KPI');p.locator('#fullLibrary .library-item[data-element="Hero KPI"] .library-insert').click();settle(p);insert.append((time.perf_counter()-t)*1000);p.locator('#componentSearch').fill('')
+        timings['element_insertion_settled']=summary(insert)
+        p.locator('.component').first.click();settle(p)
+        sel=measure(lambda:(p.locator('.component').first.click(),settle(p)));timings['selection_to_inspector']=summary(sel)
+        field=p.locator('#iTitle');
+        direct=[]
+        for i in range(7):
+            t=time.perf_counter();field.fill(f'Edited {i}');field.press('Tab');settle(p);direct.append((time.perf_counter()-t)*1000)
+        timings['direct_edit_settled']=summary(direct)
+        undo=measure(lambda:(p.locator('#undo').click(),settle(p)));redo=measure(lambda:(p.locator('#redo').click(),settle(p)));timings['undo']=summary(undo);timings['redo']=summary(redo)
+        prev=[]
+        for _ in range(7):
+            t=time.perf_counter();p.locator('#previewBtn').click();p.locator('.cui-visualizer-root.preview-mode').wait_for();p.locator('#previewExit').click();p.wait_for_function('()=>!document.querySelector(".cui-visualizer-root")?.classList.contains("preview-mode")');prev.append((time.perf_counter()-t)*1000)
+        timings['preview_entry_exit']=summary(prev)
+    ctx.close();return timings
+
+with tempfile.TemporaryDirectory(prefix='visembler-chg40-repeat-') as td, sync_playwright() as pw, NativeHost(ROOT,Path(td)/'data') as host:
+    kw={'headless':True};exe=os.environ.get('VISEMBLER_BROWSER') or shutil.which('chromium')
+    if exe:kw.update(executable_path=exe,args=['--no-sandbox'])
+    b=pw.chromium.launch(**kw);result={'schema_version':1,'candidate_sha':'5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f','host':'native NiceGUI','browser':b.version,'viewport':{'width':1440,'height':1000},'warmups':5,'measured_iterations':7,'counts':{}}
+    for count in (1,20,100):result['counts'][str(count)]=run_count(host,b,count)
+    b.close()
+result['source_sha256']=hashlib.sha256((ROOT/'company_ui/products/visualizer/assets/integrated_editor.mjs').read_bytes()).hexdigest();(OUT/'performance-repeat.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

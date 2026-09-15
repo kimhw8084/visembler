@@ -1,0 +1,877 @@
+{
+  "schema_version": 1,
+  "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+  "environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "cpu_count": 12,
+    "cpu_model": "arm",
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "chromium": "151.0.7922.34",
+    "headless": true,
+    "editor_viewport": "1440x1000",
+    "native_host": true
+  },
+  "maintained_measure_editor": {
+    "host": "native",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu_count": 12,
+    "measurements": [
+      {
+        "elements": 1,
+        "ready_ms": 346.34162500151433,
+        "geometry_ms": [
+          0.19999998807907104,
+          0,
+          0,
+          0.09999999403953552,
+          0,
+          0,
+          0,
+          0.10000002384185791,
+          0.09999999403953552,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "full_render_ms": [
+          1.0999999940395355,
+          1.0999999940395355,
+          0.7000000178813934,
+          0.5999999940395355,
+          0.4000000059604645
+        ],
+        "cache_entries": 0
+      },
+      {
+        "elements": 20,
+        "ready_ms": 363.1118329940364,
+        "geometry_ms": [
+          0.19999998807907104,
+          0.09999999403953552,
+          0.09999999403953552,
+          0.10000002384185791,
+          0.09999999403953552,
+          0.09999999403953552,
+          0.09999999403953552,
+          0.09999999403953552,
+          0,
+          0.10000002384185791,
+          0.09999999403953552,
+          0.19999998807907104,
+          0.09999999403953552,
+          0,
+          0.10000002384185791,
+          0.09999999403953552,
+          0,
+          0.19999998807907104,
+          0,
+          0.09999999403953552
+        ],
+        "full_render_ms": [
+          1.7000000178813934,
+          4.4000000059604645,
+          1.2999999821186066,
+          1.800000011920929,
+          1.199999988079071
+        ],
+        "cache_entries": 0
+      },
+      {
+        "elements": 100,
+        "ready_ms": 415.08387500653043,
+        "geometry_ms": [
+          0.4000000059604645,
+          0.19999998807907104,
+          0.4000000059604645,
+          1,
+          0.09999999403953552,
+          0.30000001192092896,
+          0.09999999403953552,
+          0.29999998211860657,
+          0.10000002384185791,
+          0.19999998807907104,
+          0.19999998807907104,
+          0.10000002384185791,
+          0.09999999403953552,
+          0.19999998807907104,
+          0.20000001788139343,
+          0.09999999403953552,
+          0.4000000059604645,
+          0.09999999403953552,
+          0.19999998807907104,
+          0.09999999403953552
+        ],
+        "full_render_ms": [
+          5.4000000059604645,
+          18.700000017881393,
+          4.4000000059604645,
+          4.299999982118607,
+          4.4000000059604645
+        ],
+        "cache_entries": 0
+      }
+    ],
+    "interpretation": "Observed timings only, not a deployment SLA or a complete memory/load test.",
+    "browser": "151.0.7922.34"
+  },
+  "editor_repeat": {
+    "schema_version": 1,
+    "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "host": "native NiceGUI",
+    "browser": "151.0.7922.34",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "warmups": 5,
+    "measured_iterations": 7,
+    "counts": {
+      "1": {
+        "editor_ready_cold": {
+          "n": 2,
+          "raw_ms": [
+            1161.338,
+            449.757
+          ],
+          "p50_ms": 805.547,
+          "p95_ms": 1125.759,
+          "min_ms": 449.757,
+          "max_ms": 1161.338
+        },
+        "editor_ready_warm": {
+          "n": 7,
+          "raw_ms": [
+            452.932,
+            447.172,
+            465.342,
+            421.536,
+            404.607,
+            465.226,
+            434.139
+          ],
+          "p50_ms": 447.172,
+          "p95_ms": 465.307,
+          "min_ms": 404.607,
+          "max_ms": 465.342
+        },
+        "library_search": {
+          "n": 7,
+          "raw_ms": [
+            2.129,
+            1.824,
+            2.127,
+            2.995,
+            2.076,
+            1.809,
+            2.001
+          ],
+          "p50_ms": 2.076,
+          "p95_ms": 2.735,
+          "min_ms": 1.809,
+          "max_ms": 2.995
+        },
+        "element_insertion_settled": {
+          "n": 7,
+          "raw_ms": [
+            91.651,
+            47.686,
+            68.674,
+            65.943,
+            59.405,
+            75.278,
+            75.211
+          ],
+          "p50_ms": 68.674,
+          "p95_ms": 86.739,
+          "min_ms": 47.686,
+          "max_ms": 91.651
+        },
+        "selection_to_inspector": {
+          "n": 7,
+          "raw_ms": [
+            28.978,
+            38.911,
+            28.323,
+            36.328,
+            32.37,
+            23.405,
+            21.87
+          ],
+          "p50_ms": 28.978,
+          "p95_ms": 38.136,
+          "min_ms": 21.87,
+          "max_ms": 38.911
+        },
+        "direct_edit_settled": {
+          "n": 7,
+          "raw_ms": [
+            32.85,
+            34.65,
+            51.429,
+            62.723,
+            48.75,
+            33.975,
+            33.324
+          ],
+          "p50_ms": 34.65,
+          "p95_ms": 59.335,
+          "min_ms": 32.85,
+          "max_ms": 62.723
+        },
+        "undo": {
+          "n": 7,
+          "raw_ms": [
+            40.257,
+            40.435,
+            38.2,
+            44.251,
+            46.512,
+            41.225,
+            41.733
+          ],
+          "p50_ms": 41.225,
+          "p95_ms": 45.833,
+          "min_ms": 38.2,
+          "max_ms": 46.512
+        },
+        "redo": {
+          "n": 7,
+          "raw_ms": [
+            52.847,
+            37.664,
+            41.862,
+            36.447,
+            41.908,
+            35.302,
+            43.437
+          ],
+          "p50_ms": 41.862,
+          "p95_ms": 50.024,
+          "min_ms": 35.302,
+          "max_ms": 52.847
+        },
+        "preview_entry_exit": {
+          "n": 7,
+          "raw_ms": [
+            95.889,
+            168.035,
+            163.503,
+            208.707,
+            139.619,
+            90.157,
+            158.802
+          ],
+          "p50_ms": 158.802,
+          "p95_ms": 196.505,
+          "min_ms": 90.157,
+          "max_ms": 208.707
+        }
+      },
+      "20": {
+        "editor_ready_cold": {
+          "n": 2,
+          "raw_ms": [
+            785.166,
+            440.765
+          ],
+          "p50_ms": 612.965,
+          "p95_ms": 767.946,
+          "min_ms": 440.765,
+          "max_ms": 785.166
+        },
+        "editor_ready_warm": {
+          "n": 7,
+          "raw_ms": [
+            409.828,
+            474.805,
+            481.91,
+            427.755,
+            461.731,
+            459.345,
+            545.437
+          ],
+          "p50_ms": 461.731,
+          "p95_ms": 526.379,
+          "min_ms": 409.828,
+          "max_ms": 545.437
+        },
+        "library_search": {
+          "n": 7,
+          "raw_ms": [
+            4.31,
+            2.674,
+            3.701,
+            3.46,
+            2.985,
+            2.949,
+            3.489
+          ],
+          "p50_ms": 3.46,
+          "p95_ms": 4.127,
+          "min_ms": 2.674,
+          "max_ms": 4.31
+        },
+        "element_insertion_settled": {
+          "n": 7,
+          "raw_ms": [
+            116.099,
+            64.41,
+            81.127,
+            49.226,
+            49.072,
+            46.59,
+            44.579
+          ],
+          "p50_ms": 49.226,
+          "p95_ms": 105.608,
+          "min_ms": 44.579,
+          "max_ms": 116.099
+        },
+        "selection_to_inspector": {
+          "n": 7,
+          "raw_ms": [
+            34.589,
+            32.133,
+            30.97,
+            24.589,
+            24.809,
+            24.858,
+            23.055
+          ],
+          "p50_ms": 24.858,
+          "p95_ms": 33.853,
+          "min_ms": 23.055,
+          "max_ms": 34.589
+        },
+        "direct_edit_settled": {
+          "n": 7,
+          "raw_ms": [
+            33.604,
+            25.818,
+            24.867,
+            27.216,
+            37.158,
+            18.376,
+            24.35
+          ],
+          "p50_ms": 25.818,
+          "p95_ms": 36.091,
+          "min_ms": 18.376,
+          "max_ms": 37.158
+        },
+        "undo": {
+          "n": 7,
+          "raw_ms": [
+            35.757,
+            31.456,
+            28.4,
+            25.539,
+            29.177,
+            28.042,
+            25.081
+          ],
+          "p50_ms": 28.4,
+          "p95_ms": 34.467,
+          "min_ms": 25.081,
+          "max_ms": 35.757
+        },
+        "redo": {
+          "n": 7,
+          "raw_ms": [
+            24.925,
+            30.263,
+            27.777,
+            30.88,
+            28.344,
+            25.324,
+            29.479
+          ],
+          "p50_ms": 28.344,
+          "p95_ms": 30.695,
+          "min_ms": 24.925,
+          "max_ms": 30.88
+        },
+        "preview_entry_exit": {
+          "n": 7,
+          "raw_ms": [
+            93.123,
+            117.121,
+            114.737,
+            127.728,
+            143.459,
+            132.778,
+            123.071
+          ],
+          "p50_ms": 123.071,
+          "p95_ms": 140.255,
+          "min_ms": 93.123,
+          "max_ms": 143.459
+        }
+      },
+      "100": {
+        "editor_ready_cold": {
+          "n": 2,
+          "raw_ms": [
+            582.846,
+            413.896
+          ],
+          "p50_ms": 498.371,
+          "p95_ms": 574.398,
+          "min_ms": 413.896,
+          "max_ms": 582.846
+        },
+        "editor_ready_warm": {
+          "n": 7,
+          "raw_ms": [
+            424.266,
+            422.946,
+            422.161,
+            442.39,
+            427.937,
+            480.9,
+            422.925
+          ],
+          "p50_ms": 424.266,
+          "p95_ms": 469.347,
+          "min_ms": 422.161,
+          "max_ms": 480.9
+        },
+        "library_search": {
+          "n": 7,
+          "raw_ms": [
+            2.868,
+            1.743,
+            2.39,
+            1.578,
+            1.655,
+            1.782,
+            1.604
+          ],
+          "p50_ms": 1.743,
+          "p95_ms": 2.724,
+          "min_ms": 1.578,
+          "max_ms": 2.868
+        }
+      }
+    },
+    "source_sha256": "0007f49a3599cf8ec24078131d801aca2db627304c3052866dab391302aa6331"
+  },
+  "capacity_maintained": {
+    "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "created_at": "2026-09-15T16:19:32.029619+00:00",
+    "listing_projection": "rebuildable governance summary metadata; canonical report JSON remains authoritative",
+    "method": "non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation",
+    "results": [
+      {
+        "asset_authorization_ms": 0.256,
+        "asset_reference_count": 1,
+        "create_ms": 16.385,
+        "history_ms": 0.291,
+        "image_items_per_report": 1,
+        "listed": 10,
+        "open_ms": 0.209,
+        "rename_ms": 1.077,
+        "reports": 10,
+        "scoped_list_ms": 1.978
+      },
+      {
+        "asset_authorization_ms": 0.545,
+        "asset_reference_count": 1,
+        "create_ms": 318.144,
+        "history_ms": 0.749,
+        "image_items_per_report": 5,
+        "listed": 100,
+        "open_ms": 0.548,
+        "rename_ms": 2.271,
+        "reports": 100,
+        "scoped_list_ms": 48.951
+      },
+      {
+        "asset_authorization_ms": 2.171,
+        "asset_reference_count": 1,
+        "create_ms": 17765.713,
+        "history_ms": 3.283,
+        "image_items_per_report": 10,
+        "listed": 1000,
+        "open_ms": 2.235,
+        "rename_ms": 18.057,
+        "reports": 1000,
+        "scoped_list_ms": 2240.594
+      }
+    ],
+    "schema_version": 1,
+    "status": "PASS"
+  },
+  "capacity_repetitions": [
+    {
+      "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+      "created_at": "2026-09-15T16:34:36.855980+00:00",
+      "listing_projection": "rebuildable governance summary metadata; canonical report JSON remains authoritative",
+      "method": "non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation",
+      "results": [
+        {
+          "asset_authorization_ms": 0.295,
+          "asset_reference_count": 1,
+          "create_ms": 27.557,
+          "history_ms": 0.388,
+          "image_items_per_report": 1,
+          "listed": 10,
+          "open_ms": 0.258,
+          "rename_ms": 1.857,
+          "reports": 10,
+          "scoped_list_ms": 2.502
+        },
+        {
+          "asset_authorization_ms": 0.659,
+          "asset_reference_count": 1,
+          "create_ms": 559.286,
+          "history_ms": 0.906,
+          "image_items_per_report": 5,
+          "listed": 100,
+          "open_ms": 0.756,
+          "rename_ms": 3.226,
+          "reports": 100,
+          "scoped_list_ms": 100.272
+        },
+        {
+          "asset_authorization_ms": 2.624,
+          "asset_reference_count": 1,
+          "create_ms": 24731.574,
+          "history_ms": 4.117,
+          "image_items_per_report": 10,
+          "listed": 1000,
+          "open_ms": 2.652,
+          "rename_ms": 21.331,
+          "reports": 1000,
+          "scoped_list_ms": 2692.277
+        }
+      ],
+      "schema_version": 1,
+      "status": "PASS"
+    },
+    {
+      "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+      "created_at": "2026-09-15T16:34:36.771633+00:00",
+      "listing_projection": "rebuildable governance summary metadata; canonical report JSON remains authoritative",
+      "method": "non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation",
+      "results": [
+        {
+          "asset_authorization_ms": 0.341,
+          "asset_reference_count": 1,
+          "create_ms": 29.26,
+          "history_ms": 0.439,
+          "image_items_per_report": 1,
+          "listed": 10,
+          "open_ms": 0.262,
+          "rename_ms": 2.026,
+          "reports": 10,
+          "scoped_list_ms": 2.576
+        },
+        {
+          "asset_authorization_ms": 0.947,
+          "asset_reference_count": 1,
+          "create_ms": 551.136,
+          "history_ms": 2.835,
+          "image_items_per_report": 5,
+          "listed": 100,
+          "open_ms": 2.259,
+          "rename_ms": 3.476,
+          "reports": 100,
+          "scoped_list_ms": 91.571
+        },
+        {
+          "asset_authorization_ms": 2.64,
+          "asset_reference_count": 1,
+          "create_ms": 24671.592,
+          "history_ms": 5.185,
+          "image_items_per_report": 10,
+          "listed": 1000,
+          "open_ms": 2.546,
+          "rename_ms": 22.099,
+          "reports": 1000,
+          "scoped_list_ms": 2689.041
+        }
+      ],
+      "schema_version": 1,
+      "status": "PASS"
+    },
+    {
+      "candidate_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+      "created_at": "2026-09-15T16:34:36.883587+00:00",
+      "listing_projection": "rebuildable governance summary metadata; canonical report JSON remains authoritative",
+      "method": "non-empty report models with shared validated image asset and text evidence; no blank-report extrapolation",
+      "results": [
+        {
+          "asset_authorization_ms": 0.307,
+          "asset_reference_count": 1,
+          "create_ms": 28.782,
+          "history_ms": 0.386,
+          "image_items_per_report": 1,
+          "listed": 10,
+          "open_ms": 0.268,
+          "rename_ms": 3.068,
+          "reports": 10,
+          "scoped_list_ms": 2.664
+        },
+        {
+          "asset_authorization_ms": 0.698,
+          "asset_reference_count": 1,
+          "create_ms": 548.763,
+          "history_ms": 0.969,
+          "image_items_per_report": 5,
+          "listed": 100,
+          "open_ms": 0.884,
+          "rename_ms": 3.298,
+          "reports": 100,
+          "scoped_list_ms": 85.611
+        },
+        {
+          "asset_authorization_ms": 2.78,
+          "asset_reference_count": 1,
+          "create_ms": 24795.979,
+          "history_ms": 4.613,
+          "image_items_per_report": 10,
+          "listed": 1000,
+          "open_ms": 2.725,
+          "rename_ms": 21.334,
+          "reports": 1000,
+          "scoped_list_ms": 2679.278
+        }
+      ],
+      "schema_version": 1,
+      "status": "PASS"
+    }
+  ],
+  "capacity_summary": {
+    "10": {
+      "create_ms": {
+        "raw_ms": [
+          27.557,
+          29.26,
+          28.782
+        ],
+        "p50_ms": 28.782,
+        "min_ms": 27.557,
+        "max_ms": 29.26,
+        "range_ms": 1.703
+      },
+      "scoped_list_ms": {
+        "raw_ms": [
+          2.502,
+          2.576,
+          2.664
+        ],
+        "p50_ms": 2.576,
+        "min_ms": 2.502,
+        "max_ms": 2.664,
+        "range_ms": 0.162
+      },
+      "open_ms": {
+        "raw_ms": [
+          0.258,
+          0.262,
+          0.268
+        ],
+        "p50_ms": 0.262,
+        "min_ms": 0.258,
+        "max_ms": 0.268,
+        "range_ms": 0.01
+      },
+      "history_ms": {
+        "raw_ms": [
+          0.388,
+          0.439,
+          0.386
+        ],
+        "p50_ms": 0.388,
+        "min_ms": 0.386,
+        "max_ms": 0.439,
+        "range_ms": 0.053
+      },
+      "asset_authorization_ms": {
+        "raw_ms": [
+          0.295,
+          0.341,
+          0.307
+        ],
+        "p50_ms": 0.307,
+        "min_ms": 0.295,
+        "max_ms": 0.341,
+        "range_ms": 0.046
+      },
+      "rename_ms": {
+        "raw_ms": [
+          1.857,
+          2.026,
+          3.068
+        ],
+        "p50_ms": 2.026,
+        "min_ms": 1.857,
+        "max_ms": 3.068,
+        "range_ms": 1.211
+      }
+    },
+    "100": {
+      "create_ms": {
+        "raw_ms": [
+          559.286,
+          551.136,
+          548.763
+        ],
+        "p50_ms": 551.136,
+        "min_ms": 548.763,
+        "max_ms": 559.286,
+        "range_ms": 10.523
+      },
+      "scoped_list_ms": {
+        "raw_ms": [
+          100.272,
+          91.571,
+          85.611
+        ],
+        "p50_ms": 91.571,
+        "min_ms": 85.611,
+        "max_ms": 100.272,
+        "range_ms": 14.661
+      },
+      "open_ms": {
+        "raw_ms": [
+          0.756,
+          2.259,
+          0.884
+        ],
+        "p50_ms": 0.884,
+        "min_ms": 0.756,
+        "max_ms": 2.259,
+        "range_ms": 1.503
+      },
+      "history_ms": {
+        "raw_ms": [
+          0.906,
+          2.835,
+          0.969
+        ],
+        "p50_ms": 0.969,
+        "min_ms": 0.906,
+        "max_ms": 2.835,
+        "range_ms": 1.929
+      },
+      "asset_authorization_ms": {
+        "raw_ms": [
+          0.659,
+          0.947,
+          0.698
+        ],
+        "p50_ms": 0.698,
+        "min_ms": 0.659,
+        "max_ms": 0.947,
+        "range_ms": 0.288
+      },
+      "rename_ms": {
+        "raw_ms": [
+          3.226,
+          3.476,
+          3.298
+        ],
+        "p50_ms": 3.298,
+        "min_ms": 3.226,
+        "max_ms": 3.476,
+        "range_ms": 0.25
+      }
+    },
+    "1000": {
+      "create_ms": {
+        "raw_ms": [
+          24731.574,
+          24671.592,
+          24795.979
+        ],
+        "p50_ms": 24731.574,
+        "min_ms": 24671.592,
+        "max_ms": 24795.979,
+        "range_ms": 124.387
+      },
+      "scoped_list_ms": {
+        "raw_ms": [
+          2692.277,
+          2689.041,
+          2679.278
+        ],
+        "p50_ms": 2689.041,
+        "min_ms": 2679.278,
+        "max_ms": 2692.277,
+        "range_ms": 12.999
+      },
+      "open_ms": {
+        "raw_ms": [
+          2.652,
+          2.546,
+          2.725
+        ],
+        "p50_ms": 2.652,
+        "min_ms": 2.546,
+        "max_ms": 2.725,
+        "range_ms": 0.179
+      },
+      "history_ms": {
+        "raw_ms": [
+          4.117,
+          5.185,
+          4.613
+        ],
+        "p50_ms": 4.613,
+        "min_ms": 4.117,
+        "max_ms": 5.185,
+        "range_ms": 1.068
+      },
+      "asset_authorization_ms": {
+        "raw_ms": [
+          2.624,
+          2.64,
+          2.78
+        ],
+        "p50_ms": 2.64,
+        "min_ms": 2.624,
+        "max_ms": 2.78,
+        "range_ms": 0.156
+      },
+      "rename_ms": {
+        "raw_ms": [
+          21.331,
+          22.099,
+          21.334
+        ],
+        "p50_ms": 21.334,
+        "min_ms": 21.331,
+        "max_ms": 22.099,
+        "range_ms": 0.768
+      }
+    }
+  },
+  "workflow_context": {
+    "generic_editor_cases": 39,
+    "data_workflow_cases": 10,
+    "chart_studio_applicable_checks": 95,
+    "diagram_studio_checks": 16,
+    "native_acceptance_cases": 12,
+    "stage_d_benchmark_tasks": 5,
+    "stage_d_benchmark_passed": 4
+  },
+  "interpretation": "Observed timings on this exact local environment only; not a hardware-independent certification or universal SLA. Capacity scaling shows nonlinear create and scoped-list growth at 1000 reports; editor warm readiness remained approximately 404-545 ms in the repeat sample. Failed visual benchmark checks are reported as findings, not hidden by performance aggregates.",
+  "limitations": [
+    "The maintained editor benchmark measures geometry/full render arrays but not all authoring interactions; the temporary repeat harness adds interaction samples for 1/20 elements and search-only coverage at 100 elements.",
+    "Cold editor samples are n=2; warm samples are n=7 after 5 warmups.",
+    "No reliable RSS/memory measurement was added."
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "planned_dimensions": {
+    "workflows": [
+      "report discovery/opening",
+      "Data First intake",
+      "element library/search/insertion",
+      "text and metric editing",
+      "table/data editing",
+      "selection/move/resize/arrange",
+      "Inspector",
+      "Chart Studio",
+      "Diagram Studio",
+      "image/evidence",
+      "keyboard/clipboard",
+      "undo/redo",
+      "save/persistence/reload",
+      "preview",
+      "export",
+      "statistical and fab visuals"
+    ],
+    "states": [
+      "normal/populated",
+      "loading/progress",
+      "empty/no-results/first-run",
+      "validation/error/retry",
+      "permission/read-only/unauthorized",
+      "hover/focus-visible/selected/expanded/disabled",
+      "create/edit/save/saving/saved/conflict/undo-redo",
+      "destructive confirmation/recovery",
+      "overlays/dialogs/menus/drawers/tooltips",
+      "dense/pathological",
+      "long labels/truncation",
+      "responsive/narrow",
+      "product-specific critical"
+    ],
+    "environments": [
+      "light",
+      "dark",
+      "1440-class desktop",
+      "materially narrow 390/360",
+      "keyboard traversal",
+      "accessibility semantics",
+      "200% zoom/reflow",
+      "reduced motion"
+    ],
+    "roles": [
+      "author/owner",
+      "editor",
+      "viewer/read-only",
+      "anonymous/unauthorized"
+    ],
+    "data_shapes": [
+      "single text/metric",
+      "tables and typed values",
+      "line/chart series",
+      "statistical/engineering/fab data",
+      "images/evidence",
+      "dense 30,000-row grid",
+      "100-node/150-edge diagram",
+      "1000-report repository",
+      "long/pathological strings"
+    ]
+  },
+  "executed_or_observed": [
+    {
+      "dimension": "workflows",
+      "coverage": "executed",
+      "evidence": [
+        "reports/editor-workflows.json",
+        "reports/data-workflows.json",
+        "reports/chart-studio-acceptance.json",
+        "reports/diagram-studio-acceptance.json",
+        "reports/native-acceptance.json",
+        "reports/final-visual-cleanup-acceptance.json"
+      ]
+    },
+    {
+      "dimension": "states",
+      "coverage": "executed where maintained receipts name the state; unsupported/unreachable rows remain explicit below",
+      "evidence": [
+        "reports/data-workflows.json",
+        "reports/worker-lifecycle.json",
+        "reports/native-recovery.json",
+        "reports/company-boundary-browser.json",
+        "reports/stage-d-benchmark.json"
+      ]
+    },
+    {
+      "dimension": "environments",
+      "coverage": "light/dark, desktop/narrow, keyboard and reduced-motion audit executed; high-contrast and 200% zoom not executed",
+      "evidence": [
+        "reports/native-acceptance.json",
+        "reports/browser-audit.json"
+      ]
+    },
+    {
+      "dimension": "roles",
+      "coverage": "owner/editor/viewer/anonymous executed in company browser boundary; author role used in editor workflows",
+      "evidence": [
+        "reports/company-boundary-browser.json"
+      ]
+    },
+    {
+      "dimension": "data_shapes",
+      "coverage": "synthetic typed tables, chart/statistical/fab data, images, 30k rows, 100/150 diagram, 1000 reports executed; long-label/200% zoom not separately executed",
+      "evidence": [
+        "reports/data-workflows.json",
+        "reports/chart-studio-acceptance.json",
+        "reports/diagram-studio-acceptance.json",
+        "reports/capacity-maintained.json"
+      ]
+    }
+  ],
+  "not_executed_or_not_supported_by_receipts": [
+    {
+      "state": "high-contrast mode",
+      "reason": "no maintained product mode or receipt found; not synthesized"
+    },
+    {
+      "state": "200% zoom/reflow",
+      "reason": "not separately executed"
+    },
+    {
+      "state": "longest credible labels/error strings",
+      "reason": "not separately executed as a dedicated boundary case"
+    },
+    {
+      "state": "general accessibility-tree snapshot",
+      "reason": "maintained semantic/keyboard assertions ran, but no independent full tree snapshot was captured"
+    },
+    {
+      "state": "full WCAG contrast conformance",
+      "reason": "bounded computed sample only; human review remains required"
+    },
+    {
+      "state": "full reduced-motion animation inventory",
+      "reason": "bounded reduced-motion computed-style audit only"
+    }
+  ]
+}

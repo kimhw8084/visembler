@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+import json, os, shutil, sys, tempfile, time
+from pathlib import Path
+ROOT=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-90ab85d8ed306ef189fd1889')
+sys.path[:0]=[str(ROOT),str(ROOT/'scripts/release_checks')]
+from editor_host import NativeHost
+from native_common import acceptance_model, browser_kwargs, ready
+from playwright.sync_api import sync_playwright
+
+OUT=Path('/tmp/visembler-chg40-r1-browser-audit');OUT.mkdir(parents=True,exist_ok=True)
+JS=r'''()=>{
+ const vis=n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0};
+ const name=n=>n.getAttribute('aria-label')||n.getAttribute('title')||n.getAttribute('alt')||((n.getAttribute('aria-labelledby')||'').split(/\s+/).map(id=>document.getElementById(id)?.innerText||'').join(' ').trim())||n.innerText?.trim()||n.value||'';
+ const rgb=s=>{const m=s.match(/rgba?\(([^)]+)\)/);if(!m)return null;const v=m[1].split(',').map(Number);return [v[0],v[1],v[2],v[3]===undefined?1:v[3]]};
+ const lum=c=>{const a=c.slice(0,3).map(v=>v/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*a[0]+.7152*a[1]+.0722*a[2]};
+ const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ const bg=n=>{for(let x=n;x&&x!==document.documentElement;x=x.parentElement){const c=rgb(getComputedStyle(x).backgroundColor);if(c&&c[3]>.01)return c}return [255,255,255,1]};
+ const controls=[...document.querySelectorAll('button,input,select,textarea,[role="button"],[role="combobox"],[role="menuitem"]')].filter(vis);
+ const missing=controls.filter(n=>!name(n)).map(n=>({tag:n.tagName,id:n.id,role:n.getAttribute('role'),text:n.innerText?.trim()}));
+ const outside=controls.map(n=>{const r=n.getBoundingClientRect();return {name:name(n),left:r.left,right:r.right,top:r.top,bottom:r.bottom}}).filter(r=>r.left<-1||r.right>innerWidth+1||r.top<-1||r.bottom>innerHeight+1);
+ const textNodes=[...document.querySelectorAll('body *')].filter(n=>vis(n)&&n.children.length===0&&n.innerText?.trim());
+ const contrastRows=[];for(const n of textNodes.slice(0,250)){const fg=rgb(getComputedStyle(n).color),back=bg(n);if(!fg||!back)continue;const ratio=contrast(fg,back),fs=parseFloat(getComputedStyle(n).fontSize)||16;const threshold=fs>=24?3:4.5;if(ratio<threshold)contrastRows.push({text:n.innerText.trim().slice(0,80),ratio:+ratio.toFixed(2),threshold,selector:n.tagName.toLowerCase()+(n.id?'#'+n.id:'')})}
+ const motion=[...document.querySelectorAll('*')].filter(vis).map(n=>{const s=getComputedStyle(n);return {tag:n.tagName,id:n.id,animation:s.animationDuration,transition:s.transitionDuration}}).filter(x=>x.animation!=='0s'&&x.transition!=='0s').slice(0,50);
+ const broken=[...document.images].filter(n=>vis(n)&&(!n.complete||n.naturalWidth===0)).map(n=>n.src);
+ const focused=document.activeElement;const fr=focused?.getBoundingClientRect();
+ const dup={};for(const n of controls){const k=name(n);if(k)dup[k]=(dup[k]||0)+1}
+ return {viewport:{width:innerWidth,height:innerHeight},document_scroll_width:document.documentElement.scrollWidth,document_scroll_height:document.documentElement.scrollHeight,control_count:controls.length,missing_accessible_names:missing,controls_outside_viewport:outside,contrast_failures:contrastRows,visible_motion_candidates:motion,broken_images:broken,focused:{tag:focused?.tagName,id:focused?.id,name:focused?name(focused):'',rect:fr&&{left:fr.left,right:fr.right,top:fr.top,bottom:fr.bottom}},duplicate_visible_control_names:Object.fromEntries(Object.entries(dup).filter(([,v])=>v>1))};
+}'''
+with tempfile.TemporaryDirectory(prefix='visembler-chg40-audit-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:
+    rid=host.create(model=acceptance_model(),name='audit-report');b=pw.chromium.launch(**browser_kwargs());rows=[]
+    for width,height,motion in ((1440,1000,None),(390,900,'reduce')):
+        ctx=b.new_context(viewport={'width':width,'height':height},reduced_motion=motion);p=ctx.new_page();errors=[]
+        p.on('pageerror',lambda e:errors.append({'kind':'pageerror','message':str(e)}));p.on('console',lambda m:errors.append({'kind':'console','message':m.text}) if m.type=='error' else None);p.on('requestfailed',lambda r:errors.append({'kind':'requestfailed','url':r.url,'failure':r.failure}))
+        p.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded');ready(p,require_settled=True);p.screenshot(path=str(OUT/f'audit-{width}-{motion or "normal"}.png'));p.keyboard.press('Tab');p.wait_for_timeout(40)
+        rows.append({'state_id':f'audit-editor-{width}-'+(motion or 'normal'),'theme':'light','motion':motion or 'normal','diagnostics':p.evaluate(JS),'browser_events':errors})
+        ctx.close()
+    b.close()
+(OUT/'browser-audit.json').write_text(json.dumps({'candidate_sha':'5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f','browser':'151.0.7922.34','states':rows},indent=2)+'\n');print(json.dumps({'states':len(rows),'output':str(OUT/'browser-audit.json')}))

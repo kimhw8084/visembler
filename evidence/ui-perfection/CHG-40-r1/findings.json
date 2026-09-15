@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "findings": [
+    {
+      "id": "F-001",
+      "severity": "P1",
+      "status": "OBSERVED",
+      "title": "Final visual remediation logs an invalid SVG viewBox",
+      "affected_states": [
+        "VR055",
+        "FV036"
+      ],
+      "evidence_files": [
+        "reports/final-visual-remediation.json",
+        "reports/final-visual-cleanup-acceptance.json"
+      ],
+      "user_consequence": "A real Chromium run emitted a console error while exercising the maintained visual remediation path; malformed SVG geometry or noisy runtime feedback may affect trust and rendering diagnostics.",
+      "suspected_root_authority": "Component-generated SVG viewBox serialization in the maintained visual remediation path; exact renderer source not proven by this inspection.",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-002",
+      "severity": "P1",
+      "status": "OBSERVED",
+      "title": "Process Health from Data First produced an empty wafer evidence region in the maintained Stage D benchmark",
+      "affected_states": [
+        "stage-d-benchmark/process-health-from-data",
+        "FV024"
+      ],
+      "evidence_files": [
+        "reports/stage-d-benchmark.json",
+        "reports/process-health-from-data.json",
+        "screenshots/BENCH-failure.png"
+      ],
+      "user_consequence": "The synthetic engineering workflow rendered zero wafer dies and no primary evidence area, causing the benchmark assertion to fail despite no browser errors; a user could reach a visually empty critical evidence region.",
+      "suspected_root_authority": "Data First mapping/fixture-to-WaferFabEngine hydration or renderer fallback; direct data-backed wafer acceptance passes, so scope is localized and root cause is not established.",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-003",
+      "severity": "P2",
+      "status": "OBSERVED",
+      "title": "Promoted WaferFab entries fail the maintained generic visual-utilization gate",
+      "affected_states": [
+        "VR004",
+        "FV015"
+      ],
+      "evidence_files": [
+        "reports/final-visual-remediation.json",
+        "reports/final-visual-cleanup-acceptance.json"
+      ],
+      "user_consequence": "The generic final-remediation fixture produced zero marks for four promoted WaferFab entries; those fixture states fail family utilization and could present as empty visuals without compatible data.",
+      "suspected_root_authority": "Maintained generic fixture coverage for promoted fab elements versus the renderer\u2019s data contract; specialized real-data Chart Studio checks pass.",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-004",
+      "severity": "P2",
+      "status": "OBSERVED",
+      "title": "Bounded computed contrast sample contains below-threshold text",
+      "affected_states": [
+        "audit-editor-1440-normal",
+        "audit-editor-390-reduce"
+      ],
+      "evidence_files": [
+        "reports/browser-audit.json",
+        "screenshots/AUDIT-audit-1440-normal.png",
+        "screenshots/AUDIT-audit-390-reduce.png"
+      ],
+      "user_consequence": "The audit measured 3.06:1 for New report/Duplicate/Manage and 4.42:1 for sampled KPI values against the bounded 4.5:1 small-text threshold; some users may experience weaker text legibility.",
+      "suspected_root_authority": "Computed text/surface token pairing in the light editor shell or metric styling; this is not a complete WCAG conformance result.",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-005",
+      "severity": "P3",
+      "status": "OBSERVED_FRICTION",
+      "title": "Data First benchmark records an explicit creation-choice step after profiling",
+      "affected_states": [
+        "stage-d-benchmark/process-health-from-data"
+      ],
+      "evidence_files": [
+        "reports/stage-d-benchmark.json",
+        "reports/process-health-from-data.json"
+      ],
+      "user_consequence": "The maintained benchmark records this as top friction, adding a deliberate choice after profiling; this may increase novice working-memory load, while preserving explicit user control.",
+      "suspected_root_authority": "Maintained Data First flow interaction design; no universal task-time SLA or comparator was applied.",
+      "independent_visual_review_required": true
+    }
+  ],
+  "aesthetic_go_status": "NOT_ASSIGNED",
+  "reason": "Screenshots require independent human visual review."
+}

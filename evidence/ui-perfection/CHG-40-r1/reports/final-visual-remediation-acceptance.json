@@ -1,0 +1,1619 @@
+{
+  "scope": "final visual remediation",
+  "checks": [
+    {
+      "id": "VR001",
+      "name": "all 52 production elements enumerated",
+      "status": "PASS"
+    },
+    {
+      "id": "VR002",
+      "name": "solo core chart uses family minimum",
+      "status": "PASS"
+    },
+    {
+      "id": "VR003",
+      "name": "solo timeline uses family minimum",
+      "status": "PASS"
+    },
+    {
+      "id": "VR004",
+      "name": "solo wafer uses family minimum",
+      "status": "FAIL",
+      "error": "[{'engine': 'WaferFabEngine', 'logical': {'id': 'item-48', 'x': 242.48000000000002, 'y': 14, 'w': 715.04, 'h': 715.04, 'growth': 'square', 'contentFit': True, 'role': 'Primary Evidence'}, 'card_area_share': 0.4734094459259259, 'width_share': 0.5958666666666667, 'internal_selector': '.cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]', 'internal_area_share': 0.42598332584666826, 'dominant_axis_share': 0.6526740897768585, 'marks': 4, 'overflow': False, 'stage': {'width': 626.1289672851562, 'height': 469.5967712402344}, 'key': 'WaferFabEngine::Wafer Map'}, {'engine': 'WaferFabEngine', 'logical':"
+    },
+    {
+      "id": "VR005",
+      "name": "solo diagram uses family minimum",
+      "status": "PASS"
+    },
+    {
+      "id": "VR006",
+      "name": "text/metric content-fit is not a centered island",
+      "status": "PASS"
+    },
+    {
+      "id": "VR007",
+      "name": "multi-card growth favors visual families",
+      "status": "PASS"
+    },
+    {
+      "id": "VR008",
+      "name": "no giant blank composite/timeline rows",
+      "status": "PASS"
+    },
+    {
+      "id": "VR009",
+      "name": "Free geometry survives internal responsiveness",
+      "status": "PASS",
+      "error": "({'top-right': (880, 40, 280, 130), 'bottom-left': (30, 620, 430, 240)}, {'top-right': (880, 40, 280, 130), 'bottom-left': (30, 620, 430, 240)})"
+    },
+    {
+      "id": "VR010",
+      "name": "legacy array edges render",
+      "status": "PASS"
+    },
+    {
+      "id": "VR011",
+      "name": "from/to/label edges render",
+      "status": "PASS"
+    },
+    {
+      "id": "VR012",
+      "name": "source/target edges render",
+      "status": "PASS"
+    },
+    {
+      "id": "VR013",
+      "name": "canonical diagram studio renders",
+      "status": "PASS"
+    },
+    {
+      "id": "VR014",
+      "name": "Preview has no diagram error",
+      "status": "PASS"
+    },
+    {
+      "id": "VR015",
+      "name": "SVG contains nodes and labels",
+      "status": "PASS"
+    },
+    {
+      "id": "VR016",
+      "name": "Diagram Studio auto-fits on open",
+      "status": "PASS"
+    },
+    {
+      "id": "VR017",
+      "name": "768 shape palette drawer available",
+      "status": "PASS"
+    },
+    {
+      "id": "VR018",
+      "name": "768 inspector drawer available",
+      "status": "PASS"
+    },
+    {
+      "id": "VR019",
+      "name": "legacy category/value Line opens mapped",
+      "status": "PASS"
+    },
+    {
+      "id": "VR020",
+      "name": "chart preview has plotted marks",
+      "status": "PASS"
+    },
+    {
+      "id": "VR021",
+      "name": "obvious schema has no unmapped summary",
+      "status": "PASS"
+    },
+    {
+      "id": "VR022",
+      "name": "saved/reopened chart remains plotted",
+      "status": "PASS"
+    },
+    {
+      "id": "VR023",
+      "name": "legacy Wafer observations hydrate",
+      "status": "PASS"
+    },
+    {
+      "id": "VR024",
+      "name": "Wafer die count matches observations",
+      "status": "PASS"
+    },
+    {
+      "id": "VR025",
+      "name": "Wafer min/max is non-placeholder",
+      "status": "PASS"
+    },
+    {
+      "id": "VR026",
+      "name": "engineering route hydrates data",
+      "status": "PASS"
+    },
+    {
+      "id": "VR027",
+      "name": "Stage C rejects unmapped non-empty SVG",
+      "status": "PASS"
+    },
+    {
+      "id": "VR028",
+      "name": "context toolbar adjacent at 40 percent",
+      "status": "PASS",
+      "error": "distance 5.1px"
+    },
+    {
+      "id": "VR029",
+      "name": "context toolbar adjacent at 55 percent",
+      "status": "PASS",
+      "error": "distance 8.0px"
+    },
+    {
+      "id": "VR030",
+      "name": "context toolbar adjacent at 100 percent",
+      "status": "PASS",
+      "error": "distance 8.0px"
+    },
+    {
+      "id": "VR031",
+      "name": "panel reflow keeps toolbar attached",
+      "status": "PASS",
+      "error": "distance 8.0px"
+    },
+    {
+      "id": "VR032",
+      "name": "report thumbnails are semantic miniatures",
+      "status": "PASS"
+    },
+    {
+      "id": "VR033",
+      "name": "chart/wafer/diagram/text thumbnails differ",
+      "status": "PASS"
+    },
+    {
+      "id": "VR034",
+      "name": "revision comparison has real miniatures",
+      "status": "PASS"
+    },
+    {
+      "id": "VR035",
+      "name": "content edit summary detected",
+      "status": "PASS"
+    },
+    {
+      "id": "VR036",
+      "name": "geometry edit summary detected",
+      "status": "PASS"
+    },
+    {
+      "id": "VR037",
+      "name": "mapping edit summary detected",
+      "status": "PASS"
+    },
+    {
+      "id": "VR038",
+      "name": "chart config edit summary detected",
+      "status": "PASS"
+    },
+    {
+      "id": "VR039",
+      "name": "diagram config edit summary detected",
+      "status": "PASS"
+    },
+    {
+      "id": "VR040",
+      "name": "checkpoint cannot silently fail",
+      "status": "PASS"
+    },
+    {
+      "id": "VR041",
+      "name": "Process Health has bounded blank area",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR042",
+      "name": "Wafer Investigation wafer is materially sized",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR043",
+      "name": "RCA has no diagram error",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR044",
+      "name": "Executive Summary has no empty chart",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR045",
+      "name": "Executive Summary toolbar is attached",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR046",
+      "name": "Weekly checkpoint exists",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR047",
+      "name": "five reports have zero product empty/error states",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development run"
+    },
+    {
+      "id": "VR048",
+      "name": "Stage A regression",
+      "status": "NOT_APPLICABLE",
+      "reason": "run_stage_a_acceptance.py intentionally deferred to final run"
+    },
+    {
+      "id": "VR049",
+      "name": "Stage B regression",
+      "status": "NOT_APPLICABLE",
+      "reason": "run_diagram_studio_acceptance.py intentionally deferred to final run"
+    },
+    {
+      "id": "VR050",
+      "name": "Stage C regression",
+      "status": "NOT_APPLICABLE",
+      "reason": "run_chart_studio_acceptance.py intentionally deferred to final run"
+    },
+    {
+      "id": "VR051",
+      "name": "Stage D regression",
+      "status": "NOT_APPLICABLE",
+      "reason": "run_stage_d_acceptance.py intentionally deferred to final run"
+    },
+    {
+      "id": "VR052",
+      "name": "52 production elements",
+      "status": "PASS"
+    },
+    {
+      "id": "VR053",
+      "name": "data workflows",
+      "status": "PASS",
+      "error": "pytest exit 0"
+    },
+    {
+      "id": "VR054",
+      "name": "product contract",
+      "status": "PASS",
+      "error": "pytest exit 0"
+    },
+    {
+      "id": "VR055",
+      "name": "no unexpected browser errors",
+      "status": "FAIL",
+      "error": "[{'kind': 'console', 'detail': 'Error: <svg> attribute viewBox: Unexpected end of attribute. Expected number, \"0 680 330\".'}]"
+    },
+    {
+      "id": "VR056",
+      "name": "frozen connector unchanged",
+      "status": "PASS",
+      "error": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e"
+    }
+  ],
+  "visual_utilization": [
+    {
+      "engine": "TextEngine",
+      "logical": {
+        "id": "item-1",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 179.20000000000002,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.14779354074074078,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.13779938947165618,
+      "dominant_axis_share": 0.9618284726425969,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "TextEngine::Hero Title"
+    },
+    {
+      "engine": "TextEngine",
+      "logical": {
+        "id": "item-2",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 100,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.08247407407407407,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.18274759515872355,
+      "dominant_axis_share": 0.9618284726425969,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "TextEngine::Section Heading"
+    },
+    {
+      "engine": "TextEngine",
+      "logical": {
+        "id": "item-3",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 184.8,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.1524120888888889,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.11134114939164177,
+      "dominant_axis_share": 0.9528469869298997,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "TextEngine::Executive Statement"
+    },
+    {
+      "engine": "TextEngine",
+      "logical": {
+        "id": "item-4",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 240,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.1979377777777778,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.0781487661438746,
+      "dominant_axis_share": 0.961828569852637,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "TextEngine::Body Narrative"
+    },
+    {
+      "engine": "TextEngine",
+      "logical": {
+        "id": "item-5",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 165,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.13608222222222224,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.279804724457864,
+      "dominant_axis_share": 0.961828569852637,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "TextEngine::Key Takeaway"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-6",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.2337041509670252,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Hero KPI"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-7",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "MetricEngine::Metric + Delta"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-8",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.14883220046820866,
+      "dominant_axis_share": 0.9677661599379037,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "MetricEngine::Target vs Actual"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-9",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.14883202753147312,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Progress Metric"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-10",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.7947578873607551,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Status Metric"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-11",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Capacity Metric"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-12",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Rate Metric"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-13",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.1488324093782273,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Threshold Metric"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-14",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0.14883202753147312,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "MetricEngine::Metric with Sparkline"
+    },
+    {
+      "engine": "MetricEngine",
+      "logical": {
+        "id": "item-15",
+        "x": 286.08,
+        "y": 14,
+        "w": 627.84,
+        "h": 627.84,
+        "growth": "square",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.36498432000000003,
+      "width_share": 0.5232,
+      "internal_selector": ".metric-value,.hero-kpi,.status-hero,.metric-ring-live",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "MetricEngine::Metric Ring"
+    },
+    {
+      "engine": "ComparisonEngine",
+      "logical": {
+        "id": "item-16",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.23503049566768272,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ComparisonEngine::As-Is → To-Be"
+    },
+    {
+      "engine": "ComparisonEngine",
+      "logical": {
+        "id": "item-17",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.2676734291425949,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ComparisonEngine::Before/After KPI"
+    },
+    {
+      "engine": "ComparisonEngine",
+      "logical": {
+        "id": "item-18",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.23503049566768272,
+      "dominant_axis_share": 0.9677663512099998,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ComparisonEngine::Time Compression"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-19",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 1,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Vertical Bar"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-20",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 1,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Horizontal Bar"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-21",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Line Chart"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-22",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Area Chart"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-23",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7810070326010394,
+      "dominant_axis_share": 0.9691376767405193,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "CoreChartEngine::Multi-Line"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-24",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Scatter Plot"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-25",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Regression Scatter"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-26",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Histogram"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-27",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Box Plot"
+    },
+    {
+      "engine": "CoreChartEngine",
+      "logical": {
+        "id": "item-28",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "CoreChartEngine::Pareto"
+    },
+    {
+      "engine": "TableEngine",
+      "logical": {
+        "id": "item-29",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "data",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".table-frame,.table-wrap",
+      "internal_area_share": 0.21147808235189872,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "TableEngine::Clean Table"
+    },
+    {
+      "engine": "TimelineEngine",
+      "logical": {
+        "id": "item-30",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": "[data-timeline-event]",
+      "internal_area_share": 0.17597609840182132,
+      "dominant_axis_share": 0.8995067062482768,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "TimelineEngine::Event Timeline"
+    },
+    {
+      "engine": "TimelineEngine",
+      "logical": {
+        "id": "item-31",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": "[data-timeline-event]",
+      "internal_area_share": 0.21598782257107027,
+      "dominant_axis_share": 0.8995067422319498,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "TimelineEngine::Milestone Rail"
+    },
+    {
+      "engine": "TimelineEngine",
+      "logical": {
+        "id": "item-32",
+        "x": 72.60000000000002,
+        "y": 14,
+        "w": 1054.8,
+        "h": 296.48,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.2895621333333333,
+      "width_share": 0.879,
+      "internal_selector": "[data-timeline-event]",
+      "internal_area_share": 0.20024863330971407,
+      "dominant_axis_share": 0.8995067422319498,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "TimelineEngine::Sequence Strip"
+    },
+    {
+      "engine": "DiagramEngine",
+      "logical": {
+        "id": "item-33",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 366.24,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.3735919288888888,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]",
+      "internal_area_share": 0.21654604908927422,
+      "dominant_axis_share": 0.9109065010673806,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "DiagramEngine::Process Flow"
+    },
+    {
+      "engine": "DiagramEngine",
+      "logical": {
+        "id": "item-34",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 366.24,
+        "growth": "horizontal",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.3735919288888888,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]",
+      "internal_area_share": 0.21654604908927422,
+      "dominant_axis_share": 0.9109065010673806,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "DiagramEngine::Data Flow"
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "logical": {
+        "id": "item-35",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "media",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".image-stage,.captioned-image-live,.screenshot-frame-live",
+      "internal_area_share": 0.8836348289626106,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ImageMediaEngine::Image"
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "logical": {
+        "id": "item-36",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "media",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".image-stage,.captioned-image-live,.screenshot-frame-live",
+      "internal_area_share": 0.19604172268079995,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ImageMediaEngine::Image + Caption"
+    },
+    {
+      "engine": "ImageMediaEngine",
+      "logical": {
+        "id": "item-37",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "media",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".image-stage,.captioned-image-live,.screenshot-frame-live",
+      "internal_area_share": 0.18832355435968748,
+      "dominant_axis_share": 0.9691376767405193,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "ImageMediaEngine::Screenshot Frame"
+    },
+    {
+      "engine": "EvidenceCompositeEngine",
+      "logical": {
+        "id": "item-38",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 220,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.18144296296296294,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.47387838093990786,
+      "dominant_axis_share": 0.961828569852637,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EvidenceCompositeEngine::Evidence Card"
+    },
+    {
+      "engine": "DecisionCompositeEngine",
+      "logical": {
+        "id": "item-39",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 220,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.18144296296296294,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.2666890294858891,
+      "dominant_axis_share": 0.961828569852637,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "DecisionCompositeEngine::Risk Callout"
+    },
+    {
+      "engine": "ProjectCompositeEngine",
+      "logical": {
+        "id": "item-40",
+        "x": 154.64,
+        "y": 14,
+        "w": 890.72,
+        "h": 220,
+        "growth": "text",
+        "contentFit": true,
+        "role": "Supporting Evidence"
+      },
+      "card_area_share": 0.18144296296296294,
+      "width_share": 0.7422666666666667,
+      "internal_selector": ".card-body>*",
+      "internal_area_share": 0.24831316249545002,
+      "dominant_axis_share": 0.961828569852637,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "ProjectCompositeEngine::Project Card"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-41",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 10,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::SPC Control Chart"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-42",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::I-MR Chart"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-43",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::CUSUM Chart"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-44",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::EWMA Chart"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-45",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7810070326010394,
+      "dominant_axis_share": 0.9691376767405193,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "EngineeringChartEngine::Xbar-R Chart"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-46",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::DOE Main Effects"
+    },
+    {
+      "engine": "EngineeringChartEngine",
+      "logical": {
+        "id": "item-47",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-chart-svg",
+      "internal_area_share": 0.7808383791162725,
+      "dominant_axis_share": 0.9691378611932684,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "EngineeringChartEngine::DOE Interaction Plot"
+    },
+    {
+      "engine": "WaferFabEngine",
+      "logical": {
+        "id": "item-48",
+        "x": 242.48000000000002,
+        "y": 14,
+        "w": 715.04,
+        "h": 715.04,
+        "growth": "square",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.4734094459259259,
+      "width_share": 0.5958666666666667,
+      "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+      "internal_area_share": 0.42598332584666826,
+      "dominant_axis_share": 0.6526740897768585,
+      "marks": 4,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "WaferFabEngine::Wafer Map"
+    },
+    {
+      "engine": "WaferFabEngine",
+      "logical": {
+        "id": "item-49",
+        "x": 242.48000000000002,
+        "y": 14,
+        "w": 715.04,
+        "h": 715.04,
+        "growth": "square",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.4734094459259259,
+      "width_share": 0.5958666666666667,
+      "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "WaferFabEngine::Wafer Difference Map"
+    },
+    {
+      "engine": "WaferFabEngine",
+      "logical": {
+        "id": "item-50",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "WaferFabEngine::Tool × Chamber Matrix"
+    },
+    {
+      "engine": "WaferFabEngine",
+      "logical": {
+        "id": "item-51",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 626.1289672851562,
+        "height": 469.5967712402344
+      },
+      "key": "WaferFabEngine::Golden vs Affected Profile"
+    },
+    {
+      "engine": "WaferFabEngine",
+      "logical": {
+        "id": "item-52",
+        "x": 49.16000000000008,
+        "y": 14,
+        "w": 1101.6799999999998,
+        "h": 627.84,
+        "growth": "plot",
+        "contentFit": true,
+        "role": "Primary Evidence"
+      },
+      "card_area_share": 0.6404433066666666,
+      "width_share": 0.9180666666666665,
+      "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+      "internal_area_share": 0,
+      "dominant_axis_share": 0,
+      "marks": 0,
+      "overflow": false,
+      "stage": {
+        "width": 627.0967407226562,
+        "height": 470.32257080078125
+      },
+      "key": "WaferFabEngine::Control vs Affected Distribution"
+    }
+  ],
+  "unexpected_errors": [
+    {
+      "kind": "console",
+      "detail": "Error: <svg> attribute viewBox: Unexpected end of attribute. Expected number, \"0 680 330\"."
+    }
+  ],
+  "navigation_retries": [],
+  "pass": 43,
+  "applicable": 45,
+  "not_applicable": 11,
+  "status": "FAIL"
+}
