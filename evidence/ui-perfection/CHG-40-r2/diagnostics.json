@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "candidate_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "r1_source": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+  "objective_gate_results": [
+    {
+      "gate": "source equality/product-source invariant",
+      "status": "PASS pending final hash check",
+      "evidence": [
+        "source-identity.json",
+        "source-manifest.json"
+      ]
+    },
+    {
+      "gate": "repository validator",
+      "status": "PASS (0 errors, 95 warnings)",
+      "command": "python -m company_ui.validate ."
+    },
+    {
+      "gate": "runtime contract",
+      "status": "PASS",
+      "command": "company-ui runtime-contract"
+    },
+    {
+      "gate": "runtime smoke",
+      "status": "PASS all maintained routes",
+      "command": "company-ui runtime-smoke"
+    },
+    {
+      "gate": "maintained native release verifier",
+      "status": "PASS_LOCAL_INTERNAL_PILOT",
+      "evidence": [
+        "report.json",
+        "progress.json"
+      ]
+    },
+    {
+      "gate": "malformed SVG viewBox/browser errors",
+      "status": "PASS / R1 class closed",
+      "evidence": [
+        "final-remediation/final-visual-remediation-acceptance.json",
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "gate": "editor/reportbar bounded contrast",
+      "status": "PASS / R1 class closed",
+      "detail": "R1 9 desktop + 3 narrow failures → R2 0 + 0; exact New/Duplicate/Manage and KPI/reportbar metrics recorded in regression-comparison.json",
+      "evidence": [
+        "browser-audit/broad-r2-browser-audit.json",
+        "regression-comparison.json"
+      ]
+    },
+    {
+      "gate": "report-hub thumbnail/action contrast",
+      "status": "FAIL bounded sample",
+      "detail": "dark KPI thumbnail 1.089:1; Duplicate 3.063:1; light Duplicate 3.063:1",
+      "evidence": [
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "gate": "viewport/reflow/containment",
+      "status": "PASS page overflow checks; library controls outside viewport are within its scroll region",
+      "evidence": [
+        "browser-audit/browser-audit.json",
+        "holdout-results.json",
+        "native-acceptance/native-acceptance.json"
+      ]
+    },
+    {
+      "gate": "accessible names/semantics",
+      "status": "PASS bounded browser audit; no missing names; maintained semantic/keyboard gates pass",
+      "evidence": [
+        "browser-audit/browser-audit.json",
+        "company-boundary-browser.json"
+      ]
+    },
+    {
+      "gate": "forced colors",
+      "status": "PASS browser emulation",
+      "detail": "Playwright Chromium forced_colors=active; matchMedia true; sampled ratios 21; native OS mode unavailable",
+      "evidence": [
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "gate": "200% zoom/reflow",
+      "status": "PASS effective-layout probe",
+      "detail": "CDP setDeviceMetricsOverride 720x500 CSS viewport; no page overflow/missing names/bad SVG; headless UI zoom could not be changed",
+      "evidence": [
+        "browser-audit/browser-audit.json",
+        "browser-audit/screenshots/AUDIT-r2-720x500-200pct-equivalent.png"
+      ]
+    },
+    {
+      "gate": "reduced motion",
+      "status": "PASS bounded computed-style probe",
+      "evidence": [
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "gate": "Data First/Wafer rooting",
+      "status": "RESOLVED AS VERIFIER DEFECT",
+      "evidence": [
+        "data-first/data-first-trace.json",
+        "regression-comparison.json"
+      ]
+    },
+    {
+      "gate": "reserved holdout",
+      "status": "PASS; no new material failure class",
+      "evidence": [
+        "holdout-results.json"
+      ]
+    },
+    {
+      "gate": "independent visual review",
+      "status": "PENDING REQUIRED",
+      "evidence": [
+        "contact-sheet.html",
+        "contact-sheet.png",
+        "review-pack/"
+      ]
+    }
+  ],
+  "maintained_unexpected_error_counts": {
+    "release_verifier": "0 unexpected browser errors in maintained PASS suites; final visual receipts retain expected gate failures",
+    "supplemental_browser_audit": 0,
+    "malformed_svg_viewboxes": 0
+  },
+  "supplemental_browser_audit": {
+    "states": 16,
+    "desktop_light_editor_contrast_failures": 0,
+    "narrow_editor_contrast_failures": 0,
+    "r1_desktop_contrast_failures": 9,
+    "r1_narrow_contrast_failures": 3,
+    "missing_accessible_names": 0,
+    "bad_svg_viewboxes": 0,
+    "horizontal_overflow_states": 0,
+    "forced_colors_states": 2,
+    "reduced_motion_states": 1,
+    "effective_zoom_state": "AUDIT-r2-720x500-200pct-equivalent"
+  },
+  "limitations": [
+    "Forced-colors is standards-defined Chromium browser emulation, not native macOS high-contrast evidence.",
+    "Headless Chromium did not honor keyboard/browser-UI zoom; CDP CSS viewport override changes effective layout and is labeled a 200% equivalent reflow probe.",
+    "Report Hub dark theme was set via html[data-theme=dark] in the audit because the shell exposes no visible theme switch; this is browser DOM emulation.",
+    "Final visual acceptance retains generic WaferFab fixture/probe failures; Data First trace proves the specific process-health red result is a verifier selector mismatch.",
+    "A bounded computed contrast sample is not complete WCAG conformance.",
+    "Independent pixel-level and cognitive review remains required; this package does not self-certify aesthetic quality."
+  ]
+}

@@ -1,0 +1,18 @@
+from __future__ import annotations
+import json,sys,tempfile,time,traceback
+from pathlib import Path
+sys.path[:0]=['.','scripts/release_checks']
+from editor_host import NativeHost
+from native_common import browser_kwargs,ready
+from playwright.sync_api import sync_playwright
+ROOT=Path('.').resolve();OUT=Path('/tmp/visembler-chg40-r2-datafirst-trace');OUT.mkdir(exist_ok=True)
+text='LOT\tTOOL\tCHAMBER\tTIMESTAMP\tMEASUREMENT\tTARGET\tSTATUS\nL001\tETCH-01\tC1\t2026-08-01\t98.2\t100\tRUN\nL002\tETCH-01\tC1\t2026-08-02\t97.8\t100\tRUN\nL003\tETCH-02\tC2\t2026-08-03\t101.1\t100\tHOLD\nL004\tETCH-02\tC2\t2026-08-04\t99.4\t100\tRUN'
+result={'candidate_sha':'4701410c79d9803b0d156d6e0b2a568992387dbc','fixture':{'delimiter':'TAB','headers':text.splitlines()[0].split('\t'),'rows':len(text.splitlines())-1,'raw':text},'steps':[]}
+with tempfile.TemporaryDirectory(prefix='visembler-r2-datafirst-trace-') as td,NativeHost(ROOT,Path(td)/'data') as host,sync_playwright() as pw:
+ rid=host.create(model={'schema_version':1,'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':1},name='data-first-trace');b=pw.chromium.launch(**browser_kwargs());p=b.new_page(viewport={'width':1440,'height':900});p.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded');ready(p,require_settled=True)
+ result['steps'].append({'step':'initial','bridge_state':p.evaluate('()=>CompanyUIVisualizerBridge.state()')})
+ p.locator('#stageDIntakeBtn').click();p.locator('#stageDText').fill(text);p.locator('[data-stage-d-action="full-report"]').wait_for();result['steps'].append({'step':'profiled','profile_dom':p.locator('#stageDModal').inner_text() if p.locator('#stageDModal').count() else None,'bridge_state':p.evaluate('()=>CompanyUIVisualizerBridge.state()')})
+ p.locator('[data-stage-d-action="full-report"]').click();p.wait_for_function('()=>{const s=window.CompanyUIVisualizerBridge.state();return s.pending===0&&!s.inflight}',timeout=20000);p.wait_for_timeout(180)
+ state=p.evaluate('()=>CompanyUIVisualizerBridge.state()');result['steps'].append({'step':'full-report-accepted','bridge_state':state,'renderer_dom':p.evaluate("()=>[...document.querySelectorAll('.component')].map(n=>({id:n.dataset.id,engine:n.dataset.engine,element:n.dataset.element,html:n.innerHTML.slice(0,1200),wafer_svg:n.querySelector('.cs-wafer-svg')?.outerHTML||null}))")})
+ p.screenshot(path=str(OUT/'data-first-empty-wafer.png'));result['screenshot']='data-first-empty-wafer.png';b.close()
+(OUT/'data-first-trace.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n');print(json.dumps({'output':str(OUT/'data-first-trace.json'),'screenshot':str(OUT/'data-first-empty-wafer.png')}))

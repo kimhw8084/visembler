@@ -1,0 +1,27 @@
+from __future__ import annotations
+import json,sys,tempfile,time,statistics,os
+from pathlib import Path
+sys.path[:0]=['.','scripts/release_checks']
+from editor_host import NativeHost
+from native_common import acceptance_model,browser_kwargs,ready
+from playwright.sync_api import sync_playwright
+try:
+ import psutil
+except Exception as e:
+ print(json.dumps({'status':'UNAVAILABLE','error':str(e)}));raise SystemExit(0)
+ROOT=Path('.').resolve();OUT=Path('/tmp/visembler-chg40-r2-memory');OUT.mkdir(exist_ok=True)
+def model(n):
+ return {'schema_version':1,'items':[{'id':f'p{i}','type':'metric','engine':'MetricEngine','element':'Hero KPI','title':f'KPI {i}','value':i,'order':i,'x':(i%5)*300,'y':(i//5)*150,'w':280,'h':140,'locked':False,'z':i} for i in range(n)],'groups':{},'datasets':[],'mode':'free','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':n+1}
+def rss(proc):
+ try:return proc.memory_info().rss
+ except Exception:return None
+rows=[]
+with tempfile.TemporaryDirectory(prefix='visembler-r2-memory-') as td,NativeHost(ROOT,Path(td)/'data') as host,sync_playwright() as pw:
+ proc=psutil.Process(host.process.pid)
+ rows.append({'state':'idle','pid':proc.pid,'rss_samples_bytes':[rss(proc) for _ in range(3)]})
+ b=pw.chromium.launch(**browser_kwargs())
+ for count,label in [(1,'one-element'),(100,'100-element'),(100,'dense-representative-100-element')]:
+  rid=host.create(model=model(count),name=f'memory-{label.replace("-","_")}');ctx=b.new_context(viewport={'width':1440,'height':1000});p=ctx.new_page();p.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded');ready(p,require_settled=True);p.wait_for_timeout(250);samples=[rss(proc) for _ in range(5)];rows.append({'state':label,'elements':count,'pid':proc.pid,'rss_samples_bytes':samples,'rss_median_bytes':statistics.median(samples)});ctx.close()
+ b.close()
+result={'schema_version':1,'candidate_sha':'4701410c79d9803b0d156d6e0b2a568992387dbc','method':'psutil.Process(host.process.pid).memory_info().rss sampled after native NiceGUI settle; OS-reported resident set, noninvasive','status':'PASS','reliable':all(row.get('rss_samples_bytes') and all(isinstance(x,int) for x in row['rss_samples_bytes']) for row in rows),'rows':rows,'limitations':['RSS includes the Python/NiceGUI process and allocator state; browser renderer is a separate process and is not included.','Dense representative uses 100 metric items because the maintained 100-element editor fixture is the comparable stable case.']}
+(OUT/'memory-rss.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2))

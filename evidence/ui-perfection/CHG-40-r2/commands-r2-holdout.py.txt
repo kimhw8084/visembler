@@ -1,0 +1,40 @@
+from __future__ import annotations
+import json,sys,tempfile,time,traceback
+from pathlib import Path
+sys.path[:0]=['.','scripts/release_checks']
+from editor_host import NativeHost
+from native_common import browser_kwargs,ready
+from company_ui.products.visualizer.domain import canonical_model
+from playwright.sync_api import sync_playwright
+ROOT=Path('.').resolve();OUT=Path('/tmp/visembler-chg40-r2-holdout');OUT.mkdir(exist_ok=True);(OUT/'screenshots').mkdir(exist_ok=True)
+LONG='Process-health investigation title with credible but unusually long lot, chamber, measurement, confidence and recovery wording — '+('X'*180)
+def base(items):return canonical_model({'schema_version':1,'items':items,'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':len(items)+1})
+long_model=base([
+ {'id':'c1','type':'text','engine':'TextEngine','element':'Executive Statement','title':LONG,'text':LONG,'body':LONG,'order':0,'x':14,'y':14,'w':900,'h':220,'locked':False,'z':1},
+ {'id':'c2','type':'metric','engine':'MetricEngine','element':'Metric + Delta','title':'Measurement with a long unit label','value':42.8,'unit':'millimeters per second (calibrated)','order':1,'x':14,'y':260,'w':420,'h':180,'locked':False,'z':2},
+ {'id':'c3','type':'chart','engine':'CoreChartEngine','element':'Line Chart','title':'Long label chart '+('Y'*80),'data':[['2026-08-01 long label',1],['2026-08-02 long label',3],['2026-08-03 long label',2]],'rows':[{'label':'2026-08-01 long label','value':1},{'label':'2026-08-02 long label','value':3},{'label':'2026-08-03 long label','value':2}],'order':2,'x':460,'y':260,'w':900,'h':360,'locked':False,'z':3},
+])
+dense_items=[]
+for i in range(30): dense_items.append({'id':f'c{i+1}','type':'metric','engine':'MetricEngine','element':'Hero KPI','title':f'KPI {i+1} · '+('Long status label ' if i%3==0 else ''), 'value':42.8+i/10,'unit':'%','order':i,'x':(i%5)*300,'y':(i//5)*150,'w':280,'h':140,'locked':False,'z':i+1})
+dense_model=base(dense_items)
+results=[]
+def inspect(page,case,viewport,method=None):
+ d=page.evaluate("""()=>{const vis=n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return s.display!='none'&&s.visibility!='hidden'&&r.width>0&&r.height>0};const c=[...document.querySelectorAll('button,input,select,textarea,[role=button]')].filter(vis).map(n=>{const r=n.getBoundingClientRect();return {name:n.getAttribute('aria-label')||n.innerText||n.value||'',left:r.left,right:r.right,top:r.top,bottom:r.bottom}});return {viewport:{width:innerWidth,height:innerHeight},scrollWidth:document.documentElement.scrollWidth,scrollHeight:document.documentElement.scrollHeight,horizontalOverflow:document.documentElement.scrollWidth>innerWidth+1,controlsOutside:c.filter(r=>r.left<-1||r.right>innerWidth+1||r.top<-1||r.bottom>innerHeight+1),missingNames:c.filter(r=>!String(r.name).trim()).length,components:[...document.querySelectorAll('.component')].map(n=>({id:n.dataset.id,scrollWidth:n.scrollWidth,clientWidth:n.clientWidth,scrollHeight:n.scrollHeight,clientHeight:n.clientHeight,overflow:n.scrollWidth>n.clientWidth+1||n.scrollHeight>n.clientHeight+1}))}}""")
+ d.update({'case':case,'method':method,'screenshot':f'screenshots/{case}.png'}); page.screenshot(path=str(OUT/'screenshots'/f'{case}.png')); return d
+with tempfile.TemporaryDirectory(prefix='visembler-r2-holdout-') as td,NativeHost(ROOT,Path(td)/'data') as host,sync_playwright() as pw:
+ ids={'long':host.create(model=long_model,name='holdout-long'),'dense':host.create(model=dense_model,name='holdout-dense'),'base':host.create(model=base([]),name='holdout-persist')}
+ b=pw.chromium.launch(**browser_kwargs())
+ # long labels at desktop, narrow and narrow+200 equivalent
+ for case,vp,kind in [('long-1440',(1440,1000),'normal'),('long-390',(390,900),'normal'),('long-195-200pct',(195,450),'CDP effective CSS viewport 195x450, 50% of 390 baseline; 200% zoom-equivalent reflow')]:
+  ctx=b.new_context(viewport={'width':vp[0],'height':vp[1]});p=ctx.new_page();p.goto(f'{host.url}/visualizer?report={ids["long"]}',wait_until='domcontentloaded');ready(p,require_settled=True)
+  if case.endswith('200pct'):
+   c=ctx.new_cdp_session(p);c.send('Emulation.setDeviceMetricsOverride',{'width':195,'height':450,'deviceScaleFactor':1,'mobile':False});p.wait_for_timeout(180)
+  results.append(inspect(p,case,vp,kind));ctx.close()
+ # dense mobile
+ ctx=b.new_context(viewport={'width':390,'height':900});p=ctx.new_page();p.goto(f'{host.url}/visualizer?report={ids["dense"]}',wait_until='domcontentloaded');ready(p,require_settled=True);results.append(inspect(p,'dense-390', (390,900),'novel 30-element mixed-density stress'));ctx.close()
+ # nested overlay and focus restoration
+ ctx=b.new_context(viewport={'width':1440,'height':1000});p=ctx.new_page();p.goto(f'{host.url}/visualizer?report={ids["base"]}',wait_until='domcontentloaded');ready(p,require_settled=True);newb=p.get_by_role('button',name='New report',exact=True);newb.focus();newb.click();p.locator('.q-dialog:visible').wait_for();focus_open=p.evaluate("()=>({tag:document.activeElement?.tagName,id:document.activeElement?.id,name:document.activeElement?.getAttribute('aria-label')||document.activeElement?.innerText||''})");p.keyboard.press('Escape');p.wait_for_timeout(180);focus_close=p.evaluate("()=>({dialog:!!document.querySelector('.q-dialog')?.offsetParent,tag:document.activeElement?.tagName,id:document.activeElement?.id,name:document.activeElement?.getAttribute('aria-label')||document.activeElement?.innerText||''})");results.append({'case':'nested-overlay-focus-restoration','method':'New report dialog open -> Escape','focus_open':focus_open,'focus_after_escape':focus_close,'dialog_closed':not focus_close['dialog'],'screenshot':'screenshots/nested-overlay-focus-restoration.png'});p.screenshot(path=str(OUT/'screenshots/nested-overlay-focus-restoration.png'));ctx.close()
+ # persistence reload
+ ctx=b.new_context(viewport={'width':1440,'height':1000});p=ctx.new_page();p.goto(f'{host.url}/visualizer?report={ids["base"]}',wait_until='domcontentloaded');ready(p,require_settled=True);p.locator('#stageDIntakeBtn').click();p.locator('#stageDText').fill('Holdout persistence recovery text');p.locator('[data-stage-d-action="create"]').click();p.wait_for_function('()=>{const s=window.CompanyUIVisualizerBridge.state();return s.pending===0&&!s.inflight}',timeout=20000);p.wait_for_timeout(250);before=p.evaluate('()=>CompanyUIVisualizerBridge.state().model.items.map(x=>x.text||x.body||"")');p.reload(wait_until='domcontentloaded');ready(p,require_settled=True);after=p.evaluate('()=>CompanyUIVisualizerBridge.state().model.items.map(x=>x.text||x.body||"")');results.append({'case':'reload-persistence-holdout','before_texts':before,'after_texts':after,'persisted':before==after,'screenshot':'screenshots/reload-persistence-holdout.png'});p.screenshot(path=str(OUT/'screenshots/reload-persistence-holdout.png'));ctx.close();b.close()
+result={'schema_version':1,'candidate_sha':'4701410c79d9803b0d156d6e0b2a568992387dbc','reserved_before_execution':True,'cases':results,'new_failure_classes':[],'status':'PASS' if all(x.get('persisted',True) and not x.get('horizontalOverflow',False) and x.get('missingNames',0)==0 for x in results) else 'FAIL'}
+(OUT/'holdout-results.json').write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n');print(json.dumps({'status':result['status'],'cases':len(results),'output':str(OUT/'holdout-results.json')}))

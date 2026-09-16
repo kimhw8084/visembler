@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "r1_source": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+  "r2_source": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "hard_gate_regressions": [
+    {
+      "class": "malformed SVG viewBox",
+      "r1": "VR055 FAIL: invalid viewBox “0 680 330”",
+      "r2": "VR055 PASS; supplemental browser audit bad_svg_viewboxes=0 across 16 states; no unexpected browser errors",
+      "status": "closed",
+      "evidence": [
+        "final-remediation/final-visual-remediation-acceptance.json",
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "class": "editor/reportbar computed contrast",
+      "r1": "9 desktop and 3 narrow failures; New/Duplicate/Manage 3.06:1; KPI sample 4.42:1",
+      "r2": "0 desktop and 0 narrow failures in replay; reportbar exact values meet 4.5:1 threshold",
+      "status": "closed",
+      "evidence": [
+        "browser-audit/broad-r2-browser-audit.json",
+        "browser-audit/browser-audit.json"
+      ]
+    },
+    {
+      "class": "report hub thumbnail/action contrast",
+      "r1": "R1 authority did not cover dark report-hub thumbnails; R1 replay found same light action ratio 3.063 and dark thumbnail ratio 1.089",
+      "r2": "light KPI thumbnails 16.83, dark KPI thumbnails 1.089; Duplicate 3.063 in both themes",
+      "status": "open persistent/newly evidenced objective class",
+      "evidence": [
+        "browser-audit/browser-audit.json",
+        "browser-audit/screenshots/AUDIT-r2-hub-1440-dark.png"
+      ]
+    }
+  ],
+  "contrast_samples": [
+    {
+      "sample": "New report",
+      "r1_authority_light_ratio": 3.06,
+      "r2_light_ratio": 4.697,
+      "r2_dark_ratio": 7.636,
+      "threshold": 4.5,
+      "status": "closed in editor/reportbar"
+    },
+    {
+      "sample": "Duplicate",
+      "r1_authority_light_ratio": 3.06,
+      "r2_light_ratio": 4.697,
+      "r2_dark_ratio": 6.244,
+      "threshold": 4.5,
+      "status": "closed in editor/reportbar; report hub action remains 3.063"
+    },
+    {
+      "sample": "Manage",
+      "r1_authority_light_ratio": 3.06,
+      "r2_light_ratio": 4.697,
+      "r2_dark_ratio": 6.244,
+      "threshold": 4.5,
+      "status": "closed in editor/reportbar"
+    },
+    {
+      "sample": "KPI thumbnail 84.2",
+      "r1_replay_light_ratio": 16.83,
+      "r1_replay_dark_ratio": 1.089,
+      "r2_light_ratio": 16.83,
+      "r2_dark_ratio": 1.089,
+      "threshold": 4.5,
+      "status": "dark report hub remains below threshold"
+    },
+    {
+      "sample": "KPI thumbnail 42.8",
+      "r1_authority_light_ratio": 4.42,
+      "r1_replay_light_ratio": 16.83,
+      "r1_replay_dark_ratio": 1.089,
+      "r2_light_ratio": 16.83,
+      "r2_dark_ratio": 1.089,
+      "threshold": 4.5,
+      "status": "editor bounded sample closed; dark report hub remains below threshold"
+    },
+    {
+      "sample": "quick-add Insert Hero KPI",
+      "r1_light_ratio": 16.83,
+      "r1_dark_ratio": 13.293,
+      "r2_light_ratio": 16.83,
+      "r2_dark_ratio": 13.293,
+      "font_size_px": 12,
+      "font_weight": "400",
+      "threshold": 4.5,
+      "status": "pass; control is in scrollable library region",
+      "r1_narrow_light_ratio": 16.83,
+      "r1_narrow_dark_ratio": 13.293,
+      "r2_narrow_light_ratio": 16.83,
+      "r2_narrow_dark_ratio": 13.293,
+      "narrow_font_size_px": 12,
+      "narrow_font_weight": "400",
+      "evidence": [
+        "browser-audit/quickadd-narrow-r1.json",
+        "browser-audit/quickadd-narrow-r2.json"
+      ]
+    }
+  ],
+  "data_first_wafer": {
+    "r1_observation": "Process Health Data First reported zero wafer dies and empty critical evidence.",
+    "r2_observation": "Trace has 4 typed rows, populated WaferFabEngine mapping, 4 observations, and 4 rendered fab-matrix data-chart-point rectangles; wafer-die selector returns zero.",
+    "classification": "verifier_defect",
+    "root": "Maintained benchmark selector counts .cs-wafer-svg circles/data-wafer-die and misses .cs-fab-matrix [data-chart-point].",
+    "minimum_next_action": "Extend verifier coverage for WaferFabEngine fab-matrix marks; no product source change."
+  },
+  "visual_comparison": {
+    "r1_states_replayed": 103,
+    "r2_states_comparable": 103,
+    "r2_supplemental_a11y_states": 16,
+    "r2_holdouts": 6,
+    "material_regression_found": "report-hub dark thumbnail/action contrast remains below AA and is now directly evidenced",
+    "independent_pixel_review": "required"
+  }
+}

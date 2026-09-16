@@ -1,0 +1,128 @@
+{
+  "schema_version": 1,
+  "candidate_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "r1_source": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+  "aesthetic_go_status": "PENDING_INDEPENDENT_REVIEW",
+  "independent_visual_review_required": true,
+  "findings": [
+    {
+      "id": "F-101",
+      "severity": "P1",
+      "status": "OBSERVED",
+      "title": "Report Hub KPI thumbnails and Duplicate actions fail the bounded AA contrast sample in dark/light report-hub contexts",
+      "affected_state_ids": [
+        "AUDIT-r2-hub-1440-dark",
+        "AUDIT-r2-hub-390-dark",
+        "AUDIT-r2-hub-1440-light",
+        "AUDIT-r2-hub-390-light"
+      ],
+      "user_consequence": "KPI values in dark thumbnails are 1.089:1 against their white thumbnail fill and Duplicate action text is 3.063:1 against white; this can hide decision-critical values/actions for low-vision users.",
+      "evidence_paths": [
+        "browser-audit/browser-audit.json",
+        "browser-audit/screenshots/AUDIT-r2-hub-1440-dark.png",
+        "browser-audit/screenshots/AUDIT-r2-hub-390-dark.png"
+      ],
+      "suspected_root_authority": "company_ui/products/visualizer/page.py report-hub thumbnail SVG/CSS and report-hub action styling; unchanged in R2.",
+      "baseline_comparison": "Not in R1 authoritative broad audit; same ratios observed in the R1 custom replay, so the class persists and is newly made explicit for R2.",
+      "executed_vs_inferred": "executed",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-102",
+      "severity": "P2",
+      "status": "VERIFIER_DEFECT",
+      "title": "Data First wafer-die probe does not recognize populated fab-matrix cells",
+      "affected_state_ids": [
+        "BENCH-failure",
+        "HOLDOUT-reload-persistence-holdout"
+      ],
+      "user_consequence": "The maintained gate reports zero wafer dies and fails a critical evidence check even though the rendered Data First matrix has four cells; this produces a false red verification result.",
+      "evidence_paths": [
+        "data-first/data-first-trace.json",
+        "data-first/data-first-empty-wafer.png",
+        "stage-d/stage-d-benchmark.json",
+        "final-remediation/final-visual-remediation-acceptance.json"
+      ],
+      "suspected_root_authority": "Maintained benchmark selector .cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]; rendered WaferFabEngine uses .cs-fab-matrix [data-chart-point].",
+      "baseline_comparison": "R1 reported the same zero-die/empty-wafer observation; R2 trace proves populated model→renderer state, narrowing the class to verifier coverage.",
+      "executed_vs_inferred": "executed",
+      "classification": "verifier_defect; no product defect proven",
+      "minimum_next_action": "Update acceptance probe to count the renderer’s fab-matrix marks; keep product source unchanged.",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-103",
+      "severity": "P2",
+      "status": "OBSERVED",
+      "title": "Generic promoted WaferFab fixture coverage fails visual-utilization gates",
+      "affected_state_ids": [
+        "BENCH-wafer-investigation-1440",
+        "BENCH-wafer-investigation-390",
+        "BENCH-wafer-investigation-768"
+      ],
+      "user_consequence": "Four generic WaferFab entries render zero marks in the generic utilization gate, so fixture-based family coverage presents as empty even though specialized real-data wafer/chart checks pass.",
+      "evidence_paths": [
+        "final-remediation/final-visual-remediation-acceptance.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json",
+        "final-cleanup/benchmark/wafer-investigation/wafer-investigation-1440.png"
+      ],
+      "suspected_root_authority": "Maintained generic fixture/renderer data contract and visual-utilization selector; not changed in R2.",
+      "baseline_comparison": "Same VR004/FV015 class as R1; no R2 regression or product fix inferred.",
+      "executed_vs_inferred": "executed",
+      "classification": "fixture/verifier coverage mismatch; unresolved for generic gate",
+      "independent_visual_review_required": true
+    },
+    {
+      "id": "F-104",
+      "severity": "P3",
+      "status": "OBSERVED_FRICTION",
+      "title": "Data First retains an explicit creation-choice step after profiling",
+      "affected_state_ids": [
+        "BENCH-failure"
+      ],
+      "user_consequence": "The maintained benchmark records a deliberate choice after profiling as top friction, adding a novice decision point while preserving user control.",
+      "evidence_paths": [
+        "stage-d/stage-d-benchmark.json",
+        "final-cleanup/benchmark/process-health-from-data/receipt.json"
+      ],
+      "suspected_root_authority": "Maintained Data First flow interaction design.",
+      "baseline_comparison": "Persists from R1; no task-time SLA or comparator applied.",
+      "executed_vs_inferred": "executed",
+      "independent_visual_review_required": true
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "R-001",
+      "r1_class": "Malformed SVG viewBox VR055",
+      "r1_status": "FAIL",
+      "r2_status": "PASS",
+      "proof": [
+        "final-remediation/final-visual-remediation-acceptance.json",
+        "browser-audit/browser-audit.json"
+      ],
+      "comparison": "No malformed viewBox/browser errors in affected R2 path or 16-state supplemental audit."
+    },
+    {
+      "id": "R-002",
+      "r1_class": "Editor/reportbar contrast F-004",
+      "r1_status": "9 desktop + 3 narrow failures",
+      "r2_status": "0 desktop + 0 narrow failures",
+      "proof": [
+        "browser-audit/broad-r2-browser-audit.json",
+        "browser-audit/browser-audit.json"
+      ],
+      "comparison": "R2 theme/reportbar token correction closes the bounded editor sample; report-hub thumbnail/action class remains separately open."
+    }
+  ],
+  "objective_counts": {
+    "P0": 0,
+    "P1": 1,
+    "P2": 2,
+    "P3": 1
+  },
+  "new_failure_classes": [
+    "Report Hub dark thumbnail/action contrast is directly evidenced as a core-state objective class; it was not in R1 broad authority."
+  ],
+  "reason": "Objective qualification is not complete while F-101 remains. Aesthetic/craftsmanship judgment is explicitly deferred to independent multimodal review."
+}

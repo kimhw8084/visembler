@@ -1,0 +1,95 @@
+from __future__ import annotations
+import json, os, re, sys, tempfile, hashlib, traceback, statistics
+from pathlib import Path
+sys.path[:0]=['.','scripts/release_checks']
+from editor_host import NativeHost
+from native_common import acceptance_model,browser_kwargs,ready
+from company_ui.products.visualizer.domain import canonical_model
+from playwright.sync_api import sync_playwright
+
+ROOT=Path('.').resolve(); OUT=Path(os.environ.get('AUDIT_OUT','/tmp/visembler-chg40-r2-audit')); OUT.mkdir(parents=True,exist_ok=True); (OUT/'screenshots').mkdir(exist_ok=True)
+
+def metric_model(value=42.8, element='Metric + Delta'):
+ return canonical_model({'schema_version':1,'items':[{'id':'c1','type':'metric','engine':'MetricEngine','element':element,'title':element,'value':value,'unit':'%','order':0,'locked':False,'z':1}], 'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':2})
+
+JS=r'''()=>{
+ const vis=n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return s.display!=='none'&&s.visibility!=='hidden'&&parseFloat(s.opacity||'1')>0&&r.width>0&&r.height>0};
+ const name=n=>n.getAttribute('aria-label')||n.getAttribute('title')||n.getAttribute('alt')||((n.getAttribute('aria-labelledby')||'').split(/\s+/).map(id=>document.getElementById(id)?.innerText||'').join(' ').trim())||n.innerText?.trim()||n.textContent?.trim()||n.value||'';
+ const rgb=s=>{if(!s)return null;const m=s.match(/rgba?\(([^)]+)\)/);if(!m)return null;const v=m[1].split(',').map(Number);return [v[0],v[1],v[2],v[3]===undefined?1:v[3]]};
+ const lum=c=>{const a=c.slice(0,3).map(v=>v/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*a[0]+.7152*a[1]+.0722*a[2]};
+ const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};
+ const bg=n=>{for(let x=n;x&&x!==document.documentElement;x=x.parentElement){const c=rgb(getComputedStyle(x).backgroundColor);if(c&&c[3]>.01)return c}return [255,255,255,1]};
+ const exactTexts=[...document.querySelectorAll('body *')].filter(n=>vis(n)&&n.children.length===0&&['New report','Duplicate','Manage','84.2','42.8'].includes((n.innerText||n.textContent||'').trim()));
+ const rows=exactTexts.map(n=>{const s=getComputedStyle(n),f=rgb(s.color),b=bg(n),r=f&&b?contrast(f,b):null;return {text:(n.innerText||n.textContent||'').trim(),selector:n.tagName.toLowerCase()+(n.id?'#'+n.id:''),foreground:s.color,background:`rgb(${b[0]}, ${b[1]}, ${b[2]})`,ratio:r&&+r.toFixed(3),font_size_px:parseFloat(s.fontSize),font_weight:s.fontWeight,threshold:parseFloat(s.fontSize)>=24?3:4.5}});
+ const controls=[...document.querySelectorAll('button,input,select,textarea,[role="button"],[role="combobox"],[role="menuitem"]')].filter(vis);
+ const missing=controls.filter(n=>!name(n)).map(n=>({tag:n.tagName,id:n.id,role:n.getAttribute('role'),text:(n.innerText||'').trim()}));
+ const outside=controls.map(n=>{const r=n.getBoundingClientRect();return {name:name(n),left:+r.left.toFixed(1),right:+r.right.toFixed(1),top:+r.top.toFixed(1),bottom:+r.bottom.toFixed(1)}}).filter(r=>r.left<-1||r.right>innerWidth+1||r.top<-1||r.bottom>innerHeight+1);
+ const badViewboxes=[...document.querySelectorAll('svg')].map(n=>({raw:n.getAttribute('viewBox'),aria:name(n)})).filter(x=>{if(!x.raw)return false;const v=x.raw.trim().split(/\s+/).map(Number);return v.length!==4||v.some(x=>!Number.isFinite(x))||v.some(x=>x<0)});
+ const focus=document.activeElement,fr=focus?.getBoundingClientRect();
+ const sticky=[...document.querySelectorAll('*')].filter(vis).map(n=>{const s=getComputedStyle(n);const r=n.getBoundingClientRect();return {tag:n.tagName,id:n.id,position:s.position,left:r.left,right:r.right,top:r.top,bottom:r.bottom}}).filter(x=>['fixed','sticky'].includes(x.position));
+ const fonts=[...new Set([...document.querySelectorAll('body *')].filter(vis).map(n=>getComputedStyle(n).fontSize))];
+ return {viewport:{width:innerWidth,height:innerHeight},visual_viewport:{width:visualViewport?.width,height:visualViewport?.height,scale:visualViewport?.scale},device_pixel_ratio:devicePixelRatio,scroll:{width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight,horizontal_overflow:document.documentElement.scrollWidth>innerWidth+1},control_count:controls.length,missing_accessible_names:missing,controls_outside_viewport:outside,exact_text_metrics:rows,bad_svg_viewboxes:badViewboxes,focused:{tag:focus?.tagName,id:focus?.id,name:focus?name(focus):'',rect:fr&&{left:fr.left,right:fr.right,top:fr.top,bottom:fr.bottom}},sticky_or_fixed:sticky.slice(0,30),font_sizes:fonts,forced_colors:matchMedia('(forced-colors: active)').matches,reduced_motion:matchMedia('(prefers-reduced-motion: reduce)').matches,semantic_counts:{buttons:document.querySelectorAll('button').length,inputs:document.querySelectorAll('input').length,images:document.querySelectorAll('img').length,svg:document.querySelectorAll('svg').length,landmarks:document.querySelectorAll('main,nav,header,footer,[role="main"],[role="navigation"]').length}};
+}'''
+
+def audit_page(page, state_id, viewport, theme, motion, model_kind, events, method=None):
+ page.goto(f'{host.url}/visualizer?report={report_ids[model_kind]}',wait_until='domcontentloaded'); ready(page,require_settled=True)
+ page.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme); page.wait_for_timeout(180)
+ # open library for quick-add evidence in editor states
+ if model_kind=='editor' and viewport[0] >= 700:
+  try:
+   if page.locator('#libraryToggle').get_attribute('aria-pressed')!='true': page.locator('#libraryToggle').click(); page.wait_for_timeout(120)
+  except Exception: pass
+ page.keyboard.press('Tab'); page.wait_for_timeout(80)
+ d=page.evaluate(JS)
+ try:
+  d['aria_snapshot']=page.locator('body').aria_snapshot(timeout=3000)
+ except Exception as e:
+  d['aria_snapshot_error']=str(e)
+ d.update({'state_id':state_id,'theme':theme,'motion':motion,'model_kind':model_kind,'method':method,'browser_events':list(events)})
+ fn=OUT/'screenshots'/f'{state_id}.png'; page.screenshot(path=str(fn),full_page=False); d['screenshot']=str(fn); return d
+
+results=[]
+with tempfile.TemporaryDirectory(prefix='visembler-chg40-r2-audit-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:
+ report_ids={}
+ report_ids['editor']=host.create(model=acceptance_model(),name='audit-editor')
+ report_ids['kpi']=host.create(model=acceptance_model(),name='audit-kpi' )
+ report_ids['metric']=host.create(model=metric_model(),name='audit-metric')
+ browser=pw.chromium.launch(**browser_kwargs())
+ cases=[
+  ('AUDIT-r2-1440-light', (1440,1000), 'light','normal','editor',None),
+  ('AUDIT-r2-1440-dark', (1440,1000), 'dark','normal','editor',None),
+  ('AUDIT-r2-390-light', (390,900), 'light','normal','editor',None),
+  ('AUDIT-r2-390-dark', (390,900), 'dark','normal','editor',None),
+  ('AUDIT-r2-1440-reduce', (1440,1000), 'light','reduce','editor',None),
+  ('AUDIT-r2-720x500-200pct-equivalent', (720,500), 'light','normal','editor','CDP Emulation.setDeviceMetricsOverride width=720 height=500 CSS viewport (50% of 1440 baseline; 200% zoom-equivalent reflow; effective layout changed)'),
+  ('AUDIT-r2-forced-colors-1440', (1440,1000), 'light','normal','editor','Playwright Chromium forced_colors=active emulation (standards media query)'),
+  ('AUDIT-r2-forced-colors-390', (390,900), 'light','normal','editor','Playwright Chromium forced_colors=active emulation (standards media query)'),
+  ('AUDIT-r2-reportbar-1440-light', (1440,1000), 'light','normal','editor',None),
+  ('AUDIT-r2-reportbar-1440-dark', (1440,1000), 'dark','normal','editor',None),
+  ('AUDIT-r2-kpi-thumb-84.2-1440-light', (1440,1000), 'light','normal','kpi',None),
+  ('AUDIT-r2-kpi-thumb-42.8-1440-light', (1440,1000), 'light','normal','metric',None),
+ ]
+ for state_id,vp,theme,motion,kind,method in cases:
+  opts={'viewport':{'width':vp[0],'height':vp[1]},'accept_downloads':True}
+  if motion=='reduce': opts['reduced_motion']='reduce'
+  if 'forced_colors' in (method or ''): opts['forced_colors']='active'
+  ctx=browser.new_context(**opts); page=ctx.new_page(); ev=[]
+  page.on('pageerror',lambda e:ev.append({'kind':'pageerror','message':str(e)})); page.on('console',lambda m:ev.append({'kind':'console','message':m.text}) if m.type=='error' else None); page.on('requestfailed',lambda r:ev.append({'kind':'requestfailed','url':r.url,'failure':r.failure}))
+  try: results.append(audit_page(page,state_id,vp,theme,motion,kind,ev,method))
+  except Exception as e: results.append({'state_id':state_id,'error':f'{type(e).__name__}: {e}','traceback':traceback.format_exc(),'browser_events':ev})
+  ctx.close()
+ browser.close()
+# report hub thumbnail run: create isolated hub and inspect exact 84.2/42.8 in cards
+with tempfile.TemporaryDirectory(prefix='visembler-chg40-r2-hub-') as td, NativeHost(ROOT,Path(td)/'data') as hub, sync_playwright() as pw:
+ ids=[]
+ ids.append(hub.create(model=acceptance_model(),name='thumb-kpi'))
+ ids.append(hub.create(model=metric_model(),name='thumb-metric'))
+ b=pw.chromium.launch(**browser_kwargs());
+ for width,theme in [(1440,'light'),(1440,'dark'),(390,'light'),(390,'dark')]:
+  ctx=b.new_context(viewport={'width':width,'height':900 if width>500 else 844});p=ctx.new_page();ev=[]
+  p.on('pageerror',lambda e:ev.append({'kind':'pageerror','message':str(e)}));p.on('console',lambda m:ev.append({'kind':'console','message':m.text}) if m.type=='error' else None);p.on('requestfailed',lambda r:ev.append({'kind':'requestfailed','url':r.url,'failure':r.failure}))
+  p.goto(f'{hub.url}/visualizer/reports?report={ids[0]}',wait_until='domcontentloaded');p.locator('[data-testid="report-hub"]').wait_for(timeout=20000);p.wait_for_timeout(180);p.evaluate('(t)=>document.documentElement.setAttribute("data-theme",t)',theme);p.wait_for_timeout(150)
+  d=p.evaluate(JS); d.update({'state_id':f'AUDIT-r2-hub-{width}-{theme}','theme':theme,'motion':'normal','model_kind':'report-hub','method':None,'browser_events':ev}); fn=OUT/'screenshots'/f'{d["state_id"]}.png';p.screenshot(path=str(fn));d['screenshot']=str(fn);results.append(d);ctx.close()
+ b.close()
+(OUT/'browser-audit.json').write_text(json.dumps({'candidate_sha':os.environ.get('AUDIT_SHA','4701410c79d9803b0d156d6e0b2a568992387dbc'),'browser':'151.0.7922.34','states':results},indent=2)+'\n')
+print(json.dumps({'states':len(results),'output':str(OUT/'browser-audit.json'),'screenshots':len(list((OUT/'screenshots').glob('*.png')))}))

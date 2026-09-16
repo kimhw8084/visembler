@@ -1,0 +1,2533 @@
+{
+  "schema_version": 1,
+  "r1_authority": {
+    "branch": "verify/visembler-chg40-ui-perfection-benchmark-r1",
+    "source_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "locator": "evidence/ui-perfection/CHG-40-r1/",
+    "files": [
+      "manifest.json",
+      "diagnostics.json",
+      "findings.json",
+      "performance.json",
+      "contact-sheet.html",
+      "contact-sheet.png",
+      "state-matrix.json",
+      "commands/commands.txt"
+    ]
+  },
+  "r2_source_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "planned_dimensions": {
+    "workflows": [
+      "report discovery/opening",
+      "Data First intake",
+      "element library/search/insertion",
+      "text and metric editing",
+      "table/data editing",
+      "selection/move/resize/arrange",
+      "Inspector",
+      "Chart Studio",
+      "Diagram Studio",
+      "image/evidence",
+      "keyboard/clipboard",
+      "undo/redo",
+      "save/persistence/reload",
+      "preview",
+      "export",
+      "statistical and fab visuals"
+    ],
+    "states": [
+      "normal/populated",
+      "loading/progress",
+      "empty/no-results/first-run",
+      "validation/error/retry",
+      "permission/read-only/unauthorized",
+      "hover/focus-visible/selected/expanded/disabled",
+      "create/edit/save/saving/saved/conflict/undo-redo",
+      "destructive confirmation/recovery",
+      "overlays/dialogs/menus/drawers/tooltips",
+      "dense/pathological",
+      "long labels/truncation",
+      "responsive/narrow",
+      "product-specific critical"
+    ],
+    "environments": [
+      "light",
+      "dark",
+      "1440-class desktop",
+      "materially narrow 390/360",
+      "keyboard traversal",
+      "accessibility semantics",
+      "200% zoom/reflow",
+      "reduced motion"
+    ],
+    "roles": [
+      "author/owner",
+      "editor",
+      "viewer/read-only",
+      "anonymous/unauthorized"
+    ],
+    "data_shapes": [
+      "single text/metric",
+      "tables and typed values",
+      "line/chart series",
+      "statistical/engineering/fab data",
+      "images/evidence",
+      "dense 30,000-row grid",
+      "100-node/150-edge diagram",
+      "1000-report repository",
+      "long/pathological strings"
+    ]
+  },
+  "executed_dimensions": {
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "viewports": [
+      "1440x1000",
+      "1024x1000",
+      "768x1000",
+      "480x900",
+      "390x900",
+      "360x900",
+      "720x500 effective CSS reflow"
+    ],
+    "roles": [
+      "author/editor/viewer/anonymous via company boundary"
+    ],
+    "motion": [
+      "normal",
+      "reduced"
+    ],
+    "accessibility": [
+      "keyboard/focus/name/semantic bounded audit",
+      "forced-colors browser emulation",
+      "200% equivalent effective-layout probe"
+    ],
+    "data_shapes": [
+      "39 maintained production elements",
+      "typed tables/images/charts/fab",
+      "30k-row grid",
+      "100-node/150-edge diagram",
+      "1000 reports",
+      "long/pathological holdout strings"
+    ]
+  },
+  "mapping_summary": {
+    "r1_states": 103,
+    "re_executed_comparable": 103,
+    "intentionally_superseded": 0,
+    "unsupported_or_unreachable": 0,
+    "blocked": 0,
+    "supplemental_r2_states": 16,
+    "reserved_holdout_states": 6
+  },
+  "state_records": [
+    {
+      "state_id": "EL-01-hero-title-preview",
+      "r1_state_id": "EL-01-hero-title-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Hero Title",
+      "r1_screenshot": "screenshots/EL-01-hero-title-preview.png",
+      "r2_screenshot": "screenshots/EL-01-hero-title-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-02-section-heading-preview",
+      "r1_state_id": "EL-02-section-heading-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Section Heading",
+      "r1_screenshot": "screenshots/EL-02-section-heading-preview.png",
+      "r2_screenshot": "screenshots/EL-02-section-heading-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-03-executive-statement-preview",
+      "r1_state_id": "EL-03-executive-statement-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Executive Statement",
+      "r1_screenshot": "screenshots/EL-03-executive-statement-preview.png",
+      "r2_screenshot": "screenshots/EL-03-executive-statement-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-04-body-narrative-preview",
+      "r1_state_id": "EL-04-body-narrative-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Body Narrative",
+      "r1_screenshot": "screenshots/EL-04-body-narrative-preview.png",
+      "r2_screenshot": "screenshots/EL-04-body-narrative-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-05-key-takeaway-preview",
+      "r1_state_id": "EL-05-key-takeaway-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Key Takeaway",
+      "r1_screenshot": "screenshots/EL-05-key-takeaway-preview.png",
+      "r2_screenshot": "screenshots/EL-05-key-takeaway-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-06-hero-kpi-preview",
+      "r1_state_id": "EL-06-hero-kpi-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Hero KPI",
+      "r1_screenshot": "screenshots/EL-06-hero-kpi-preview.png",
+      "r2_screenshot": "screenshots/EL-06-hero-kpi-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-07-metric---delta-preview",
+      "r1_state_id": "EL-07-metric---delta-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Metric + Delta",
+      "r1_screenshot": "screenshots/EL-07-metric---delta-preview.png",
+      "r2_screenshot": "screenshots/EL-07-metric---delta-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-08-target-vs-actual-preview",
+      "r1_state_id": "EL-08-target-vs-actual-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Target vs Actual",
+      "r1_screenshot": "screenshots/EL-08-target-vs-actual-preview.png",
+      "r2_screenshot": "screenshots/EL-08-target-vs-actual-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-09-progress-metric-preview",
+      "r1_state_id": "EL-09-progress-metric-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Progress Metric",
+      "r1_screenshot": "screenshots/EL-09-progress-metric-preview.png",
+      "r2_screenshot": "screenshots/EL-09-progress-metric-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-10-status-metric-preview",
+      "r1_state_id": "EL-10-status-metric-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Status Metric",
+      "r1_screenshot": "screenshots/EL-10-status-metric-preview.png",
+      "r2_screenshot": "screenshots/EL-10-status-metric-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-11-capacity-metric-preview",
+      "r1_state_id": "EL-11-capacity-metric-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Capacity Metric",
+      "r1_screenshot": "screenshots/EL-11-capacity-metric-preview.png",
+      "r2_screenshot": "screenshots/EL-11-capacity-metric-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-12-rate-metric-preview",
+      "r1_state_id": "EL-12-rate-metric-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Rate Metric",
+      "r1_screenshot": "screenshots/EL-12-rate-metric-preview.png",
+      "r2_screenshot": "screenshots/EL-12-rate-metric-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-13-threshold-metric-preview",
+      "r1_state_id": "EL-13-threshold-metric-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Threshold Metric",
+      "r1_screenshot": "screenshots/EL-13-threshold-metric-preview.png",
+      "r2_screenshot": "screenshots/EL-13-threshold-metric-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-14-metric-with-sparkline-preview",
+      "r1_state_id": "EL-14-metric-with-sparkline-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Metric with Sparkline",
+      "r1_screenshot": "screenshots/EL-14-metric-with-sparkline-preview.png",
+      "r2_screenshot": "screenshots/EL-14-metric-with-sparkline-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-15-metric-ring-preview",
+      "r1_state_id": "EL-15-metric-ring-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Metric Ring",
+      "r1_screenshot": "screenshots/EL-15-metric-ring-preview.png",
+      "r2_screenshot": "screenshots/EL-15-metric-ring-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-16-as-is---to-be-preview",
+      "r1_state_id": "EL-16-as-is---to-be-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: As-Is → To-Be",
+      "r1_screenshot": "screenshots/EL-16-as-is---to-be-preview.png",
+      "r2_screenshot": "screenshots/EL-16-as-is---to-be-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-17-before-after-kpi-preview",
+      "r1_state_id": "EL-17-before-after-kpi-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Before/After KPI",
+      "r1_screenshot": "screenshots/EL-17-before-after-kpi-preview.png",
+      "r2_screenshot": "screenshots/EL-17-before-after-kpi-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-18-time-compression-preview",
+      "r1_state_id": "EL-18-time-compression-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Time Compression",
+      "r1_screenshot": "screenshots/EL-18-time-compression-preview.png",
+      "r2_screenshot": "screenshots/EL-18-time-compression-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-19-vertical-bar-preview",
+      "r1_state_id": "EL-19-vertical-bar-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Vertical Bar",
+      "r1_screenshot": "screenshots/EL-19-vertical-bar-preview.png",
+      "r2_screenshot": "screenshots/EL-19-vertical-bar-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-20-horizontal-bar-preview",
+      "r1_state_id": "EL-20-horizontal-bar-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Horizontal Bar",
+      "r1_screenshot": "screenshots/EL-20-horizontal-bar-preview.png",
+      "r2_screenshot": "screenshots/EL-20-horizontal-bar-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-21-line-chart-preview",
+      "r1_state_id": "EL-21-line-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Line Chart",
+      "r1_screenshot": "screenshots/EL-21-line-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-21-line-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-22-area-chart-preview",
+      "r1_state_id": "EL-22-area-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Area Chart",
+      "r1_screenshot": "screenshots/EL-22-area-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-22-area-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-23-clean-table-preview",
+      "r1_state_id": "EL-23-clean-table-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Clean Table",
+      "r1_screenshot": "screenshots/EL-23-clean-table-preview.png",
+      "r2_screenshot": "screenshots/EL-23-clean-table-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-24-event-timeline-preview",
+      "r1_state_id": "EL-24-event-timeline-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Event Timeline",
+      "r1_screenshot": "screenshots/EL-24-event-timeline-preview.png",
+      "r2_screenshot": "screenshots/EL-24-event-timeline-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-25-milestone-rail-preview",
+      "r1_state_id": "EL-25-milestone-rail-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Milestone Rail",
+      "r1_screenshot": "screenshots/EL-25-milestone-rail-preview.png",
+      "r2_screenshot": "screenshots/EL-25-milestone-rail-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-26-sequence-strip-preview",
+      "r1_state_id": "EL-26-sequence-strip-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Sequence Strip",
+      "r1_screenshot": "screenshots/EL-26-sequence-strip-preview.png",
+      "r2_screenshot": "screenshots/EL-26-sequence-strip-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-27-process-flow-preview",
+      "r1_state_id": "EL-27-process-flow-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Process Flow",
+      "r1_screenshot": "screenshots/EL-27-process-flow-preview.png",
+      "r2_screenshot": "screenshots/EL-27-process-flow-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-28-data-flow-preview",
+      "r1_state_id": "EL-28-data-flow-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Data Flow",
+      "r1_screenshot": "screenshots/EL-28-data-flow-preview.png",
+      "r2_screenshot": "screenshots/EL-28-data-flow-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-29-image-preview",
+      "r1_state_id": "EL-29-image-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Image",
+      "r1_screenshot": "screenshots/EL-29-image-preview.png",
+      "r2_screenshot": "screenshots/EL-29-image-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-30-image---caption-preview",
+      "r1_state_id": "EL-30-image---caption-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Image + Caption",
+      "r1_screenshot": "screenshots/EL-30-image---caption-preview.png",
+      "r2_screenshot": "screenshots/EL-30-image---caption-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-31-screenshot-frame-preview",
+      "r1_state_id": "EL-31-screenshot-frame-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Screenshot Frame",
+      "r1_screenshot": "screenshots/EL-31-screenshot-frame-preview.png",
+      "r2_screenshot": "screenshots/EL-31-screenshot-frame-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-32-evidence-card-preview",
+      "r1_state_id": "EL-32-evidence-card-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Evidence Card",
+      "r1_screenshot": "screenshots/EL-32-evidence-card-preview.png",
+      "r2_screenshot": "screenshots/EL-32-evidence-card-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-33-risk-callout-preview",
+      "r1_state_id": "EL-33-risk-callout-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Risk Callout",
+      "r1_screenshot": "screenshots/EL-33-risk-callout-preview.png",
+      "r2_screenshot": "screenshots/EL-33-risk-callout-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-34-project-card-preview",
+      "r1_state_id": "EL-34-project-card-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Project Card",
+      "r1_screenshot": "screenshots/EL-34-project-card-preview.png",
+      "r2_screenshot": "screenshots/EL-34-project-card-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-35-spc-control-chart-preview",
+      "r1_state_id": "EL-35-spc-control-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: SPC Control Chart",
+      "r1_screenshot": "screenshots/EL-35-spc-control-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-35-spc-control-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-36-i-mr-chart-preview",
+      "r1_state_id": "EL-36-i-mr-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: I-MR Chart",
+      "r1_screenshot": "screenshots/EL-36-i-mr-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-36-i-mr-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-37-cusum-chart-preview",
+      "r1_state_id": "EL-37-cusum-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: CUSUM Chart",
+      "r1_screenshot": "screenshots/EL-37-cusum-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-37-cusum-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-38-ewma-chart-preview",
+      "r1_state_id": "EL-38-ewma-chart-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: EWMA Chart",
+      "r1_screenshot": "screenshots/EL-38-ewma-chart-preview.png",
+      "r2_screenshot": "screenshots/EL-38-ewma-chart-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "EL-39-wafer-map-preview",
+      "r1_state_id": "EL-39-wafer-map-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "element create/edit/undo/redo/copy-paste/save-reload/preview/export",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained fixture: Wafer Map",
+      "r1_screenshot": "screenshots/EL-39-wafer-map-preview.png",
+      "r2_screenshot": "screenshots/EL-39-wafer-map-preview.png",
+      "evidence_files": [
+        "elements/workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-desktop-1024-dark",
+      "r1_state_id": "ENV-desktop-1024-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "desktop 1024",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-desktop-1024-dark.png",
+      "r2_screenshot": "screenshots/ENV-desktop-1024-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-desktop-1024-light",
+      "r1_state_id": "ENV-desktop-1024-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "desktop 1024",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-desktop-1024-light.png",
+      "r2_screenshot": "screenshots/ENV-desktop-1024-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-desktop-1440-dark-dialog",
+      "r1_state_id": "ENV-desktop-1440-dark-dialog",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "desktop 1440 dialog",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-desktop-1440-dark-dialog.png",
+      "r2_screenshot": "screenshots/ENV-desktop-1440-dark-dialog.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-desktop-1440-dark",
+      "r1_state_id": "ENV-desktop-1440-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "desktop 1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-desktop-1440-dark.png",
+      "r2_screenshot": "screenshots/ENV-desktop-1440-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-desktop-1440-light",
+      "r1_state_id": "ENV-desktop-1440-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "desktop 1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-desktop-1440-light.png",
+      "r2_screenshot": "screenshots/ENV-desktop-1440-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-360-dark",
+      "r1_state_id": "ENV-mobile-360-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 360",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-360-dark.png",
+      "r2_screenshot": "screenshots/ENV-mobile-360-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-360-light",
+      "r1_state_id": "ENV-mobile-360-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 360",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-360-light.png",
+      "r2_screenshot": "screenshots/ENV-mobile-360-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-390-dark",
+      "r1_state_id": "ENV-mobile-390-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-390-dark.png",
+      "r2_screenshot": "screenshots/ENV-mobile-390-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-390-light",
+      "r1_state_id": "ENV-mobile-390-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-390-light.png",
+      "r2_screenshot": "screenshots/ENV-mobile-390-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-480-dark",
+      "r1_state_id": "ENV-mobile-480-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 480",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-480-dark.png",
+      "r2_screenshot": "screenshots/ENV-mobile-480-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-mobile-480-light",
+      "r1_state_id": "ENV-mobile-480-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "mobile 480",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-mobile-480-light.png",
+      "r2_screenshot": "screenshots/ENV-mobile-480-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-tablet-768-dark",
+      "r1_state_id": "ENV-tablet-768-dark",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "tablet 768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-tablet-768-dark.png",
+      "r2_screenshot": "screenshots/ENV-tablet-768-dark.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "ENV-tablet-768-light",
+      "r1_state_id": "ENV-tablet-768-light",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "responsive shell/keyboard/selection/drawer acceptance",
+      "viewport": "tablet 768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "acceptance model",
+      "r1_screenshot": "screenshots/ENV-tablet-768-light.png",
+      "r2_screenshot": "screenshots/ENV-tablet-768-light.png",
+      "evidence_files": [
+        "native-acceptance/native-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-editor-manage-selected-390",
+      "r1_state_id": "HUB-editor-manage-selected-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-editor-manage-selected-390.png",
+      "r2_screenshot": "screenshots/HUB-editor-manage-selected-390.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-editor-manage-selected-768",
+      "r1_state_id": "HUB-editor-manage-selected-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-editor-manage-selected-768.png",
+      "r2_screenshot": "screenshots/HUB-editor-manage-selected-768.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-editor-manage-unselected-1440",
+      "r1_state_id": "HUB-editor-manage-unselected-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-editor-manage-unselected-1440.png",
+      "r2_screenshot": "screenshots/HUB-editor-manage-unselected-1440.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-report-hub-create-open-trash-1440",
+      "r1_state_id": "HUB-report-hub-create-open-trash-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-report-hub-create-open-trash-1440.png",
+      "r2_screenshot": "screenshots/HUB-report-hub-create-open-trash-1440.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-report-hub-grid-list-thumbnails-1440",
+      "r1_state_id": "HUB-report-hub-grid-list-thumbnails-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-1440.png",
+      "r2_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-1440.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-report-hub-grid-list-thumbnails-390",
+      "r1_state_id": "HUB-report-hub-grid-list-thumbnails-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-390.png",
+      "r2_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-390.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HUB-report-hub-grid-list-thumbnails-768",
+      "r1_state_id": "HUB-report-hub-grid-list-thumbnails-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "report discovery/open/list/grid/detail/trash lifecycle",
+      "viewport": "responsive per filename",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report repository",
+      "r1_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-768.png",
+      "r2_screenshot": "screenshots/HUB-report-hub-grid-list-thumbnails-768.png",
+      "evidence_files": [
+        "report-hub-browser-errors/report-hub-browser-error-gate.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-destination-imported-image",
+      "r1_state_id": "DATA-destination-imported-image",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-destination-imported-image.png",
+      "r2_screenshot": "screenshots/DATA-destination-imported-image.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-destination-reloaded-image",
+      "r1_state_id": "DATA-destination-reloaded-image",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-destination-reloaded-image.png",
+      "r2_screenshot": "screenshots/DATA-destination-reloaded-image.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-displayed-line-preview",
+      "r1_state_id": "DATA-displayed-line-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-displayed-line-preview.png",
+      "r2_screenshot": "screenshots/DATA-displayed-line-preview.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-displayed-table-preview",
+      "r1_state_id": "DATA-displayed-table-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-displayed-table-preview.png",
+      "r2_screenshot": "screenshots/DATA-displayed-table-preview.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-displayed-wafer-preview",
+      "r1_state_id": "DATA-displayed-wafer-preview",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-displayed-wafer-preview.png",
+      "r2_screenshot": "screenshots/DATA-displayed-wafer-preview.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-native-import-activated",
+      "r1_state_id": "DATA-native-import-activated",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-native-import-activated.png",
+      "r2_screenshot": "screenshots/DATA-native-import-activated.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-native-import-queued",
+      "r1_state_id": "DATA-native-import-queued",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-native-import-queued.png",
+      "r2_screenshot": "screenshots/DATA-native-import-queued.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-portable-dark-offline",
+      "r1_state_id": "DATA-portable-dark-offline",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-portable-dark-offline.png",
+      "r2_screenshot": "screenshots/DATA-portable-dark-offline.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-source-initial-reload-image",
+      "r1_state_id": "DATA-source-initial-reload-image",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-source-initial-reload-image.png",
+      "r2_screenshot": "screenshots/DATA-source-initial-reload-image.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-source-replacement-reload-image",
+      "r1_state_id": "DATA-source-replacement-reload-image",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-source-replacement-reload-image.png",
+      "r2_screenshot": "screenshots/DATA-source-replacement-reload-image.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DATA-two-session-conflict",
+      "r1_state_id": "DATA-two-session-conflict",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First/refresh/conflict/portable image workflow",
+      "viewport": "1440x1000 or responsive per receipt",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic tabular/image data",
+      "r1_screenshot": "screenshots/DATA-two-session-conflict.png",
+      "r2_screenshot": "screenshots/DATA-two-session-conflict.png",
+      "evidence_files": [
+        "data/data-workflows.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "REC-01-offline-draft",
+      "r1_state_id": "REC-01-offline-draft",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "offline/restart journal recovery",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic text report",
+      "r1_screenshot": "screenshots/REC-01-offline-draft.png",
+      "r2_screenshot": "screenshots/REC-01-offline-draft.png",
+      "evidence_files": [
+        "native-recovery/native-recovery.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "REC-02-offline-recovered",
+      "r1_state_id": "REC-02-offline-recovered",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "offline/restart journal recovery",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic text report",
+      "r1_screenshot": "screenshots/REC-02-offline-recovered.png",
+      "r2_screenshot": "screenshots/REC-02-offline-recovered.png",
+      "evidence_files": [
+        "native-recovery/native-recovery.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "REC-03-server-down-draft",
+      "r1_state_id": "REC-03-server-down-draft",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "offline/restart journal recovery",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic text report",
+      "r1_screenshot": "screenshots/REC-03-server-down-draft.png",
+      "r2_screenshot": "screenshots/REC-03-server-down-draft.png",
+      "evidence_files": [
+        "native-recovery/native-recovery.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "REC-04-restart-recovered",
+      "r1_state_id": "REC-04-restart-recovered",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "offline/restart journal recovery",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic text report",
+      "r1_screenshot": "screenshots/REC-04-restart-recovered.png",
+      "r2_screenshot": "screenshots/REC-04-restart-recovered.png",
+      "evidence_files": [
+        "native-recovery/native-recovery.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "WORKER-01-worker-failure",
+      "r1_state_id": "WORKER-01-worker-failure",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First worker failure/retry/cancel",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "30,000-row synthetic grid",
+      "r1_screenshot": "screenshots/WORKER-01-worker-failure.png",
+      "r2_screenshot": "screenshots/WORKER-01-worker-failure.png",
+      "evidence_files": [
+        "worker-lifecycle/worker-lifecycle.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "WORKER-02-worker-retry-success",
+      "r1_state_id": "WORKER-02-worker-retry-success",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First worker failure/retry/cancel",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "30,000-row synthetic grid",
+      "r1_screenshot": "screenshots/WORKER-02-worker-retry-success.png",
+      "r2_screenshot": "screenshots/WORKER-02-worker-retry-success.png",
+      "evidence_files": [
+        "worker-lifecycle/worker-lifecycle.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "WORKER-03-worker-cancelled",
+      "r1_state_id": "WORKER-03-worker-cancelled",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First worker failure/retry/cancel",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "30,000-row synthetic grid",
+      "r1_screenshot": "screenshots/WORKER-03-worker-cancelled.png",
+      "r2_screenshot": "screenshots/WORKER-03-worker-cancelled.png",
+      "evidence_files": [
+        "worker-lifecycle/worker-lifecycle.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "WORKER-04-worker-post-cancel-success",
+      "r1_state_id": "WORKER-04-worker-post-cancel-success",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Data First worker failure/retry/cancel",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "30,000-row synthetic grid",
+      "r1_screenshot": "screenshots/WORKER-04-worker-post-cancel-success.png",
+      "r2_screenshot": "screenshots/WORKER-04-worker-post-cancel-success.png",
+      "evidence_files": [
+        "worker-lifecycle/worker-lifecycle.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "OPS-01-source-before-backup",
+      "r1_state_id": "OPS-01-source-before-backup",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "backup/restore and production startup drill",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic image + history report",
+      "r1_screenshot": "screenshots/OPS-01-source-before-backup.png",
+      "r2_screenshot": "screenshots/OPS-01-source-before-backup.png",
+      "evidence_files": [
+        "operations-drill/operations-drill.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "OPS-02-restored-data",
+      "r1_state_id": "OPS-02-restored-data",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "backup/restore and production startup drill",
+      "viewport": "1280x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic image + history report",
+      "r1_screenshot": "screenshots/OPS-02-restored-data.png",
+      "r2_screenshot": "screenshots/OPS-02-restored-data.png",
+      "evidence_files": [
+        "operations-drill/operations-drill.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "STAGE-A-preview-1024",
+      "r1_state_id": "STAGE-A-preview-1024",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "workspace/report-hub acceptance",
+      "viewport": "1024",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report",
+      "r1_screenshot": "screenshots/STAGE-A-preview-1024.png",
+      "r2_screenshot": "screenshots/STAGE-A-preview-1024.png",
+      "evidence_files": [
+        "chart-studio/run_stage_a_acceptance/stage-a-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "STAGE-A-preview-1440",
+      "r1_state_id": "STAGE-A-preview-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "workspace/report-hub acceptance",
+      "viewport": "1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report",
+      "r1_screenshot": "screenshots/STAGE-A-preview-1440.png",
+      "r2_screenshot": "screenshots/STAGE-A-preview-1440.png",
+      "evidence_files": [
+        "chart-studio/run_stage_a_acceptance/stage-a-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "STAGE-A-preview-390",
+      "r1_state_id": "STAGE-A-preview-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "workspace/report-hub acceptance",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report",
+      "r1_screenshot": "screenshots/STAGE-A-preview-390.png",
+      "r2_screenshot": "screenshots/STAGE-A-preview-390.png",
+      "evidence_files": [
+        "chart-studio/run_stage_a_acceptance/stage-a-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "STAGE-A-preview-768",
+      "r1_state_id": "STAGE-A-preview-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "workspace/report-hub acceptance",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "owner",
+      "data_shape": "synthetic report",
+      "r1_screenshot": "screenshots/STAGE-A-preview-768.png",
+      "r2_screenshot": "screenshots/STAGE-A-preview-768.png",
+      "evidence_files": [
+        "chart-studio/run_stage_a_acceptance/stage-a-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-executive-summary-1440",
+      "r1_state_id": "BENCH-executive-summary-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-executive-summary-1440.png",
+      "r2_screenshot": "screenshots/BENCH-executive-summary-1440.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-executive-summary-390",
+      "r1_state_id": "BENCH-executive-summary-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-executive-summary-390.png",
+      "r2_screenshot": "screenshots/BENCH-executive-summary-390.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-executive-summary-768",
+      "r1_state_id": "BENCH-executive-summary-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-executive-summary-768.png",
+      "r2_screenshot": "screenshots/BENCH-executive-summary-768.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-failure",
+      "r1_state_id": "BENCH-failure",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-failure.png",
+      "r2_screenshot": "screenshots/BENCH-failure.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-rca-evidence-report-1440",
+      "r1_state_id": "BENCH-rca-evidence-report-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-rca-evidence-report-1440.png",
+      "r2_screenshot": "screenshots/BENCH-rca-evidence-report-1440.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-rca-evidence-report-390",
+      "r1_state_id": "BENCH-rca-evidence-report-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-rca-evidence-report-390.png",
+      "r2_screenshot": "screenshots/BENCH-rca-evidence-report-390.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-rca-evidence-report-768",
+      "r1_state_id": "BENCH-rca-evidence-report-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-rca-evidence-report-768.png",
+      "r2_screenshot": "screenshots/BENCH-rca-evidence-report-768.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-repeat-weekly-operations-1440",
+      "r1_state_id": "BENCH-repeat-weekly-operations-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-repeat-weekly-operations-1440.png",
+      "r2_screenshot": "screenshots/BENCH-repeat-weekly-operations-1440.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-repeat-weekly-operations-390",
+      "r1_state_id": "BENCH-repeat-weekly-operations-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-repeat-weekly-operations-390.png",
+      "r2_screenshot": "screenshots/BENCH-repeat-weekly-operations-390.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-repeat-weekly-operations-768",
+      "r1_state_id": "BENCH-repeat-weekly-operations-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-repeat-weekly-operations-768.png",
+      "r2_screenshot": "screenshots/BENCH-repeat-weekly-operations-768.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-native-import-activated",
+      "r1_state_id": "BENCH-native-import-activated",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-native-import-activated.png",
+      "r2_screenshot": "screenshots/BENCH-native-import-activated.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-native-import-queued",
+      "r1_state_id": "BENCH-native-import-queued",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-native-import-queued.png",
+      "r2_screenshot": "screenshots/BENCH-native-import-queued.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-wafer-investigation-1440",
+      "r1_state_id": "BENCH-wafer-investigation-1440",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "1440",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-wafer-investigation-1440.png",
+      "r2_screenshot": "screenshots/BENCH-wafer-investigation-1440.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-wafer-investigation-390",
+      "r1_state_id": "BENCH-wafer-investigation-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-wafer-investigation-390.png",
+      "r2_screenshot": "screenshots/BENCH-wafer-investigation-390.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "BENCH-wafer-investigation-768",
+      "r1_state_id": "BENCH-wafer-investigation-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Stage D expert workflow benchmark",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic product workflow fixture",
+      "r1_screenshot": "screenshots/BENCH-wafer-investigation-768.png",
+      "r2_screenshot": "screenshots/BENCH-wafer-investigation-768.png",
+      "evidence_files": [
+        "final-cleanup/benchmark/stage-d-benchmark.json",
+        "final-cleanup/final-visual-cleanup-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DIAGRAM-diagram-studio-390",
+      "r1_state_id": "DIAGRAM-diagram-studio-390",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Diagram Studio responsive drawer/keyboard acceptance",
+      "viewport": "390",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic process flow",
+      "r1_screenshot": "screenshots/DIAGRAM-diagram-studio-390.png",
+      "r2_screenshot": "screenshots/DIAGRAM-diagram-studio-390.png",
+      "evidence_files": [
+        "diagram/diagram-studio-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "DIAGRAM-diagram-studio-768",
+      "r1_state_id": "DIAGRAM-diagram-studio-768",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "Diagram Studio responsive drawer/keyboard acceptance",
+      "viewport": "768",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic process flow",
+      "r1_screenshot": "screenshots/DIAGRAM-diagram-studio-768.png",
+      "r2_screenshot": "screenshots/DIAGRAM-diagram-studio-768.png",
+      "evidence_files": [
+        "diagram/diagram-studio-acceptance.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-audit-1440-normal",
+      "r1_state_id": "AUDIT-audit-1440-normal",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "bounded computed browser UI audit",
+      "viewport": "1440x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "synthetic fixture",
+      "r1_screenshot": "screenshots/AUDIT-audit-1440-normal.png",
+      "r2_screenshot": "screenshots/AUDIT-audit-1440-normal.png",
+      "evidence_files": [
+        "browser-audit/broad-r2-browser-audit.json",
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-audit-390-reduce",
+      "r1_state_id": "AUDIT-audit-390-reduce",
+      "comparison_status": "re-executed comparable",
+      "mapping_reason": "Same maintained workflow/state ID replayed on the integrated R2 source.",
+      "workflow": "bounded computed browser UI audit",
+      "viewport": "390x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "reduce",
+      "role": "author",
+      "data_shape": "synthetic fixture",
+      "r1_screenshot": "screenshots/AUDIT-audit-390-reduce.png",
+      "r2_screenshot": "screenshots/AUDIT-audit-390-reduce.png",
+      "evidence_files": [
+        "browser-audit/broad-r2-browser-audit.json",
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-1440-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-1440-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-1440-dark",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-1440-dark.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-390-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "390x900",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-390-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-390-dark",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "390x900",
+      "browser": "151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-390-dark.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-1440-reduce",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "reduce",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-1440-reduce.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-720x500-200pct-equivalent",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "720x500",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-720x500-200pct-equivalent.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-forced-colors-1440",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-forced-colors-1440.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-forced-colors-390",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "390x900",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-forced-colors-390.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-reportbar-1440-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-reportbar-1440-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-reportbar-1440-dark",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-reportbar-1440-dark.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-kpi-thumb-84.2-1440-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-kpi-thumb-84.2-1440-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-kpi-thumb-42.8-1440-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x1000",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-kpi-thumb-42.8-1440-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-hub-1440-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x900",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-hub-1440-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-hub-1440-dark",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "1440x900",
+      "browser": "151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-hub-1440-dark.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-hub-390-light",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "390x844",
+      "browser": "151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-hub-390-light.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "AUDIT-r2-hub-390-dark",
+      "r1_state_id": null,
+      "comparison_status": "supplemental R2 state",
+      "mapping_reason": "New R2 browser audit state for explicit theme, forced-colors, reduced-motion, or effective-viewport coverage.",
+      "workflow": "browser objective/a11y audit",
+      "viewport": "390x844",
+      "browser": "151.0.7922.34",
+      "theme": "dark",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "maintained editor/report-hub fixture",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/AUDIT-r2-hub-390-dark.png",
+      "evidence_files": [
+        "browser-audit/browser-audit.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-long-1440",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "long-1440",
+      "viewport": "1440x1000",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-long-1440.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-long-390",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "long-390",
+      "viewport": "390x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-long-390.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-long-195-200pct",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "long-195-200pct",
+      "viewport": "195x450",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-long-195-200pct.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-dense-390",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "dense-390",
+      "viewport": "390x900",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-dense-390.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-nested-overlay-focus-restoration",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "nested-overlay-focus-restoration",
+      "viewport": "NonexNone",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-nested-overlay-focus-restoration.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    },
+    {
+      "state_id": "HOLDOUT-reload-persistence-holdout",
+      "r1_state_id": null,
+      "comparison_status": "reserved holdout executed after initial comparison",
+      "mapping_reason": "Novel scenario withheld until after initial R1↔R2 comparison.",
+      "workflow": "reload-persistence-holdout",
+      "viewport": "NonexNone",
+      "browser": "Chromium 151.0.7922.34",
+      "theme": "light",
+      "motion": "normal",
+      "role": "author",
+      "data_shape": "holdout mutation",
+      "r1_screenshot": null,
+      "r2_screenshot": "screenshots/HOLDOUT-reload-persistence-holdout.png",
+      "evidence_files": [
+        "holdout/holdout-results.json"
+      ],
+      "executed_vs_inferred": "executed"
+    }
+  ],
+  "not_executed_or_limited": [
+    {
+      "state": "native OS high-contrast",
+      "reason": "Unavailable in environment; standards-defined Chromium forced-colors emulation executed and labeled."
+    },
+    {
+      "state": "browser UI 200% zoom",
+      "reason": "Headless browser UI zoom did not change CSS layout; effective 720x500 CSS viewport equivalent executed."
+    },
+    {
+      "state": "full WCAG/aesthetic certification",
+      "reason": "Bounded computed samples and independent review package only; no self-certification."
+    }
+  ]
+}

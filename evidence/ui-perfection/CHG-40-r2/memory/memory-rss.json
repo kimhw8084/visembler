@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "candidate_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "method": "psutil.Process(host.process.pid).memory_info().rss sampled after native NiceGUI settle; OS-reported resident set, noninvasive",
+  "status": "PASS",
+  "reliable": true,
+  "rows": [
+    {
+      "state": "idle",
+      "pid": 80448,
+      "rss_samples_bytes": [
+        137691136,
+        137691136,
+        137691136
+      ]
+    },
+    {
+      "state": "one-element",
+      "elements": 1,
+      "pid": 80448,
+      "rss_samples_bytes": [
+        143867904,
+        143867904,
+        143867904,
+        143867904,
+        143867904
+      ],
+      "rss_median_bytes": 143867904
+    },
+    {
+      "state": "100-element",
+      "elements": 100,
+      "pid": 80448,
+      "rss_samples_bytes": [
+        147210240,
+        147210240,
+        147210240,
+        147210240,
+        147210240
+      ],
+      "rss_median_bytes": 147210240
+    },
+    {
+      "state": "dense-representative-100-element",
+      "elements": 100,
+      "pid": 80448,
+      "rss_samples_bytes": [
+        148684800,
+        148684800,
+        148684800,
+        148684800,
+        148684800
+      ],
+      "rss_median_bytes": 148684800
+    }
+  ],
+  "limitations": [
+    "RSS includes the Python/NiceGUI process and allocator state; browser renderer is a separate process and is not included.",
+    "Dense representative uses 100 metric items because the maintained 100-element editor fixture is the comparable stable case."
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "candidate_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+  "fixture": {
+    "delimiter": "TAB",
+    "headers": [
+      "LOT",
+      "TOOL",
+      "CHAMBER",
+      "TIMESTAMP",
+      "MEASUREMENT",
+      "TARGET",
+      "STATUS"
+    ],
+    "rows": 4,
+    "raw": "LOT\tTOOL\tCHAMBER\tTIMESTAMP\tMEASUREMENT\tTARGET\tSTATUS\nL001\tETCH-01\tC1\t2026-08-01\t98.2\t100\tRUN\nL002\tETCH-01\tC1\t2026-08-02\t97.8\t100\tRUN\nL003\tETCH-02\tC2\t2026-08-03\t101.1\t100\tHOLD\nL004\tETCH-02\tC2\t2026-08-04\t99.4\t100\tRUN"
+  },
+  "steps": [
+    {
+      "step": "initial",
+      "bridge_state": {
+        "editor_ready": true,
+        "report_id": "data-first-trace",
+        "revision": 1,
+        "model": {
+          "schema_version": 1,
+          "authoring_schema": "authoring-p0-v1",
+          "datasets": [],
+          "items": [],
+          "groups": {},
+          "mode": "smart",
+          "layoutPreset": "editorial",
+          "crossFilter": null,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "nextId": 1,
+          "crossFilters": []
+        },
+        "pending": 0,
+        "inflight": null,
+        "recovery": false
+      }
+    },
+    {
+      "step": "profiled",
+      "profile_dom": "Start with content\nClose\nPaste content or evidence\nVisembler keeps your source content intact. Suggestions are deterministic and editable.\nData shape recognized · 4 rows · 7 columns\nSuggested starting points\nLine Chart\nTime and numeric measurements define a trend.\nRecommended\nSPC Control Chart\nMeasurement-like fields support a process-health visual.\nAlternative\nClean Table\nKeep every source column available as evidence.\nAlternative\nUse a blueprint\nBuild report from data\nCancel\nCreate selected",
+      "bridge_state": {
+        "editor_ready": true,
+        "report_id": "data-first-trace",
+        "revision": 1,
+        "model": {
+          "schema_version": 1,
+          "authoring_schema": "authoring-p0-v1",
+          "datasets": [],
+          "items": [],
+          "groups": {},
+          "mode": "smart",
+          "layoutPreset": "editorial",
+          "crossFilter": null,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "nextId": 1,
+          "crossFilters": []
+        },
+        "pending": 0,
+        "inflight": null,
+        "recovery": false
+      }
+    },
+    {
+      "step": "full-report-accepted",
+      "bridge_state": {
+        "editor_ready": true,
+        "report_id": "data-first-trace",
+        "revision": 2,
+        "model": {
+          "schema_version": 1,
+          "authoring_schema": "authoring-p0-v1",
+          "datasets": [
+            {
+              "fields": [
+                {
+                  "id": "lot_1",
+                  "name": "LOT",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 4,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "lot_id"
+                  ],
+                  "type": "identifier"
+                },
+                {
+                  "id": "tool_2",
+                  "name": "TOOL",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 2,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "tool"
+                  ],
+                  "type": "categorical"
+                },
+                {
+                  "id": "chamber_3",
+                  "name": "CHAMBER",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 2,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "chamber"
+                  ],
+                  "type": "categorical"
+                },
+                {
+                  "id": "timestamp_4",
+                  "name": "TIMESTAMP",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 4,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "time"
+                  ],
+                  "type": "date"
+                },
+                {
+                  "id": "measurement_5",
+                  "name": "MEASUREMENT",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 4,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "value"
+                  ],
+                  "type": "number"
+                },
+                {
+                  "id": "target_6",
+                  "name": "TARGET",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 1,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "target"
+                  ],
+                  "type": "categorical"
+                },
+                {
+                  "id": "status_7",
+                  "name": "STATUS",
+                  "nullable": false,
+                  "profile": {
+                    "distinct": 2,
+                    "missing": 0
+                  },
+                  "semantic_tags": [
+                    "cohort",
+                    "status"
+                  ],
+                  "type": "categorical"
+                }
+              ],
+              "id": "dataset-mu464d9l-6od2ib",
+              "metadata": {
+                "header": {
+                  "confidence": 1,
+                  "present": true,
+                  "source_row": 0
+                }
+              },
+              "name": "Pasted report data",
+              "revision": 1,
+              "rows": [
+                [
+                  "L001",
+                  "ETCH-01",
+                  "C1",
+                  "2026-08-01",
+                  98.2,
+                  "100",
+                  "RUN"
+                ],
+                [
+                  "L002",
+                  "ETCH-01",
+                  "C1",
+                  "2026-08-02",
+                  97.8,
+                  "100",
+                  "RUN"
+                ],
+                [
+                  "L003",
+                  "ETCH-02",
+                  "C2",
+                  "2026-08-03",
+                  101.1,
+                  "100",
+                  "HOLD"
+                ],
+                [
+                  "L004",
+                  "ETCH-02",
+                  "C2",
+                  "2026-08-04",
+                  99.4,
+                  "100",
+                  "RUN"
+                ]
+              ],
+              "source": {
+                "imported_at": "2026-09-16T14:00:26.409Z",
+                "kind": "clipboard",
+                "label": "TSV"
+              },
+              "warnings": []
+            }
+          ],
+          "items": [
+            {
+              "body": "Tool × Chamber Matrix · report summary",
+              "element": "Hero Title",
+              "emphasis": "hero",
+              "engine": "TextEngine",
+              "groupId": null,
+              "h": 150,
+              "id": "c2",
+              "locked": false,
+              "message_role": "Headline",
+              "order": 0,
+              "showTitle": false,
+              "text": "Tool × Chamber Matrix · report summary",
+              "title": "Process health report",
+              "type": "text",
+              "w": 1572,
+              "weight": 1.1,
+              "x": 14,
+              "y": 14,
+              "z": 2
+            },
+            {
+              "chamber": "B",
+              "dataset_id": "dataset-mu464d9l-6od2ib",
+              "element": "Tool × Chamber Matrix",
+              "engine": "WaferFabEngine",
+              "groupId": null,
+              "h": 156,
+              "id": "c1",
+              "locked": false,
+              "lot": "24-118",
+              "mapping": {
+                "category": "lot_1",
+                "chamber": "chamber_3",
+                "cohort": "status_7",
+                "lot_id": "lot_1",
+                "series": "tool_2",
+                "status": "status_7",
+                "target": "target_6",
+                "time": "timestamp_4",
+                "tool": "tool_2",
+                "value": "measurement_5",
+                "x": "timestamp_4",
+                "y": "measurement_5"
+              },
+              "message_role": "Supporting Evidence",
+              "observations": [
+                {
+                  "value": 98.4,
+                  "x": 1,
+                  "y": 1
+                },
+                {
+                  "value": 98.8,
+                  "x": 2,
+                  "y": 1
+                },
+                {
+                  "value": 97.9,
+                  "x": 3,
+                  "y": 2
+                },
+                {
+                  "value": 98.6,
+                  "x": 2,
+                  "y": 3
+                }
+              ],
+              "order": 1,
+              "route": "ETCH → MET",
+              "showTitle": false,
+              "textAlign": "left",
+              "title": "Tool × Chamber Matrix",
+              "tool": "ETCH-04",
+              "type": "wafer",
+              "view_type": "tool_chamber_matrix",
+              "w": 560,
+              "weight": 1.5,
+              "x": 14,
+              "y": 178,
+              "z": 1
+            },
+            {
+              "body": "Review the primary evidence and record the next action.",
+              "element": "Key Takeaway",
+              "emphasis": "standard",
+              "engine": "TextEngine",
+              "groupId": null,
+              "h": 150,
+              "id": "c3",
+              "locked": false,
+              "message_role": "Action",
+              "order": 2,
+              "showTitle": false,
+              "text": "Review the primary evidence and record the next action.",
+              "title": "Key Takeaway",
+              "type": "text",
+              "w": 580,
+              "weight": 1.1,
+              "x": 588,
+              "y": 178,
+              "z": 3
+            }
+          ],
+          "groups": {},
+          "mode": "smart",
+          "layoutPreset": "editorial",
+          "crossFilter": null,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "nextId": 4,
+          "crossFilters": []
+        },
+        "pending": 0,
+        "inflight": null,
+        "recovery": false
+      },
+      "renderer_dom": [
+        {
+          "id": "c2",
+          "engine": null,
+          "element": null,
+          "html": "<button type=\"button\" class=\"c-head\" aria-label=\"Move Process health report\"><span class=\"c-grip\" aria-hidden=\"true\"></span></button><div class=\"c-content\"><div class=\"integrated-element-content\"><article class=\"gallery-card integrated-variant title-hidden align-left engine-textengine variant-hero-title\" data-element=\"Hero Title\" data-engine=\"TextEngine\" data-variant=\"hero-title\"><div class=\"card-body\"><div class=\"hero-copy\">Tool × Chamber Matrix · report summary</div></div></article></div></div><button type=\"button\" class=\"resize-h resize-h--n\" data-resize=\"n\" aria-label=\"Resize Process health report from n\"></button><button type=\"button\" class=\"resize-h resize-h--ne\" data-resize=\"ne\" aria-label=\"Resize Process health report from ne\"></button><button type=\"button\" class=\"resize-h resize-h--e\" data-resize=\"e\" aria-label=\"Resize Process health report from e\"></button><button type=\"button\" class=\"resize-h resize-h--se\" data-resize=\"se\" aria-label=\"Resize Process health report from se\"></button><button type=\"button\" class=\"resize-h resize-h--s\" data-resize=\"s\" aria-label=\"Resize Process health report from s\"></button><button type=\"button\" class=\"resize-h resize-h--sw\" data-resize=\"sw\"",
+          "wafer_svg": null
+        },
+        {
+          "id": "c1",
+          "engine": null,
+          "element": null,
+          "html": "<button type=\"button\" class=\"c-head\" aria-label=\"Move Tool × Chamber Matrix\"><span class=\"c-grip\" aria-hidden=\"true\"></span></button><div class=\"c-content\"><div class=\"integrated-element-content\"><article class=\"gallery-card integrated-variant chart-studio-render chart-studio-tool-chamber-matrix title-hidden\" data-element=\"Tool × Chamber Matrix\" data-engine=\"WaferFabEngine\" data-chart-rows=\"4\"><div class=\"card-body\"><div class=\"cs-static-chart\"><svg class=\"cs-chart-svg cs-fab-matrix\" viewBox=\"0 0 680 440\" role=\"grid\" aria-label=\"Tool × Chamber Matrix\"><rect width=\"680\" height=\"440\" fill=\"#fff\"></rect><text x=\"150\" y=\"24\" fill=\"#152338\" class=\"cs-chart-title\">Tool × Chamber Matrix · mean measurement</text><text x=\"275.5\" y=\"46\" text-anchor=\"middle\" fill=\"#152338\" class=\"cs-axis-label\">C1</text><text x=\"526.5\" y=\"46\" text-anchor=\"middle\" fill=\"#152338\" class=\"cs-axis-label\">C2</text><text x=\"140\" y=\"101\" text-anchor=\"end\" fill=\"#152338\" class=\"cs-axis-label\">ETCH-01</text><rect x=\"152\" y=\"68\" width=\"247\" height=\"56\" rx=\"4\" fill=\"#1769d1\" fill-opacity=\"0.8300692383778439\" stroke=\"#d8e0ea\" data-filter-fields=\"tool_2,chamber_3\" data-filter-values=\"ETCH-01|C1\" data-chart-point=\"0\" role=\"",
+          "wafer_svg": null
+        },
+        {
+          "id": "c3",
+          "engine": null,
+          "element": null,
+          "html": "<button type=\"button\" class=\"c-head\" aria-label=\"Move Key Takeaway\"><span class=\"c-grip\" aria-hidden=\"true\"></span></button><div class=\"c-content\"><div class=\"integrated-element-content\"><article class=\"gallery-card integrated-variant title-hidden align-left engine-textengine variant-key-takeaway\" data-element=\"Key Takeaway\" data-engine=\"TextEngine\" data-variant=\"key-takeaway\"><div class=\"card-body\"><div class=\"takeaway-render\"><i>✓</i><strong>Review the primary evidence and record the next action.</strong></div></div></article></div></div><button type=\"button\" class=\"resize-h resize-h--n\" data-resize=\"n\" aria-label=\"Resize Key Takeaway from n\"></button><button type=\"button\" class=\"resize-h resize-h--ne\" data-resize=\"ne\" aria-label=\"Resize Key Takeaway from ne\"></button><button type=\"button\" class=\"resize-h resize-h--e\" data-resize=\"e\" aria-label=\"Resize Key Takeaway from e\"></button><button type=\"button\" class=\"resize-h resize-h--se\" data-resize=\"se\" aria-label=\"Resize Key Takeaway from se\"></button><button type=\"button\" class=\"resize-h resize-h--s\" data-resize=\"s\" aria-label=\"Resize Key Takeaway from s\"></button><button type=\"button\" class=\"resize-h resize-h--sw\" data-resize=\"sw\"",
+          "wafer_svg": null
+        }
+      ]
+    }
+  ],
+  "screenshot": "data-first-empty-wafer.png"
+}
