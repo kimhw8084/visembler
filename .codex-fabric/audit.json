@@ -1,0 +1,488 @@
+{
+  "accepted_at": "2026-09-16T12:19:02Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/tokens.css",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 0,
+      "path": "tests/test_visualizer_product_polish_v4.py",
+      "status": "M"
+    },
+    {
+      "additions": 3,
+      "deletions": 2,
+      "path": "tests/test_visualizer_statistical_release_repair.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk tail -80 scripts/release_checks/run_chart_studio_acceptance.py && printf '%s\\\\n' '--- diagram tail ---' && rtk tail -70 scripts/release_checks/run_diagram_studio_acceptance.py && printf '%s\\\\n' '--- native acceptance tail ---' && rtk tail -100 scripts/release_checks/run_native_acceptance.py && printf '%s\\\\n' '--- final remediation tail ---' && rtk tail -100 scripts/release_checks/run_final_visual_remediation_acceptance.py && printf '%s\\\\n' '--- editor workflows args ---' && rtk tail -70 scripts/release_checks/run_editor_workflows.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"ArgumentParser|add_argument\" scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py scripts/release_checks/run_native_acceptance.py scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_editor_workflows.py scripts/release_checks/run_native_recovery.py | tail -100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk which chromium || true; rtk python - <<'PY'\nimport importlib.util, importlib.metadata\nprint('playwright', bool(importlib.util.find_spec('playwright')))\ntry: print('nicegui', importlib.metadata.version('nicegui'))\nexcept Exception as e: print('nicegui', type(e).__name__)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-chart-studio-final && rtk proxy python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/chg70-chart-studio-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-diagram-studio-final && rtk proxy python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/chg70-diagram-studio-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-native-acceptance-final && rtk proxy python scripts/release_checks/run_native_acceptance.py --output /tmp/chg70-native-acceptance-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-editor-workflows-native-final && rtk proxy python scripts/release_checks/run_editor_workflows.py --output /tmp/chg70-editor-workflows-native-final --native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np=json.load(open('/tmp/chg70-editor-workflows-native-final/workflows.json'))\nprint({k:p.get(k) for k in ('host','browser','passed','total','status','unexpected_errors')})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-final-visual-remediation-final && rtk proxy python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/chg70-final-visual-remediation-final'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nfor path in [Path('/tmp/chg70-final-visual-remediation-final/benchmark/stage-d-benchmark.json'),Path('/tmp/chg70-final-visual-remediation-final/final-visual-remediation-acceptance.json')]:\n print('\\\\n###',path)\n p=json.loads(path.read_text())\n if 'tasks' in p:\n  print('status',p.get('status'),'tasks',[(t.get('task'),t.get('status'),t.get('error')) for t in p['tasks']])\n  for t in p['tasks']:\n   if t.get('status')\"'!='\"'PASS': print(json.dumps(t,indent=2)[:12000])\n else:\n  print('status',p.get('status'),'pass',p.get('pass'),'applicable',p.get('applicable'),'not',p.get('not_applicable'))\n  print('harness',p.get('harness_error'))\n  print('fails',[(r.get('id'),r.get('name'),r.get('status'),r.get('detail'),r.get('reason')) for r in p.get('checks',[]) if r.get('status')\"'!='\"'PASS'])\n  print('unexpected',p.get('unexpected_errors'))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np=json.load(open('/tmp/chg70-final-visual-remediation-final/final-visual-remediation-acceptance.json'))\nfor r in p['checks']:\n if r['id'] in {'VR004','VR019','VR020','VR021','VR022','VR023','VR024','VR025','VR026','VR041','VR047','VR055'}:\n  print(r)\nprint('summary',p['status'],p['pass'],p['applicable'],p['not_applicable'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"ArgumentParser|VR055|viewBox|malformed|browser error|unexpected\" scripts/release_checks/run_report_hub_browser_error_gate.py | head -160 && rtk tail -60 scripts/release_checks/run_report_hub_browser_error_gate.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '100,135p' scripts/release_checks/run_report_hub_browser_error_gate.py && rtk rg -n \\\"_invalid_svg_geometry|viewBox\\\" scripts/release_checks/run_report_hub_browser_error_gate.py | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-report-hub-browser-final && rtk proxy python scripts/release_checks/run_report_hub_browser_error_gate.py --output /tmp/chg70-report-hub-browser-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"ArgumentParser|add_argument|status|checks\\\" scripts/release_checks/run_final_visual_cleanup_acceptance.py | tail -80 && rtk sed -n '280,340p' scripts/release_checks/run_final_visual_cleanup_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"84\\\\.2|42\\\\.8|New report|Duplicate|Manage|quick.?add|contrast\\\" tests scripts/release_checks company_ui/products/visualizer | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"reportbar|thumbnail|contrast_ratio|contrast|New report|Quick|quick|42\\\\.8|84\\\\.2\\\" scripts/release_checks tests -g '*.py' | head -300\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"getComputedStyle|contrast|#0071E3|#0064C8|#5EA6FF|q-primary|text-inverse|reportbar\\\" scripts tests -g '*.py' | head -320\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' scripts/release_checks/native_common.py && rtk sed -n '1,130p' scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '1,130p' scripts/release_checks/run_native_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page();host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n    print(p.locator('.cui-visualizer-reportbar').inner_text())\n    print(p.locator('.cui-visualizer-reportbar').inner_html()[:12000])\n    print('buttons',p.locator('.cui-visualizer-reportbar button').count())\n    print(p.evaluate(\\\"\\\"\\\"()=>[...document.querySelectorAll('.cui-visualizer-reportbar button')].map(n=>({text:n.innerText,cls:n.className,style:{color:getComputedStyle(n).color,bg:getComputedStyle(n).backgroundColor,fill:getComputedStyle(n).fill},content:n.querySelector('.q-btn__content')&&{color:getComputedStyle(n.querySelector('.q-btn__content')).color,fill:getComputedStyle(n.querySelector('.q-btn__content')).webkitTextFillColor}}))\\\"\\\"\\\"))\n    browser.close();ctx.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json,re\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\n\ndef inspect(p, theme, width):\n p.set_viewport_size({'width':width,'height':900});p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(150)\n return p.evaluate(\\\"\\\"\\\"()=>{\n const root=document.querySelector('.cui-visualizer-root'); const bar=document.querySelector('.cui-visualizer-reportbar');\n const btns=[...document.querySelectorAll('.cui-visualizer-reportbar button')].map(n=>{const q=n.querySelector('.q-btn__content')||n;const s=getComputedStyle(q), ns=getComputedStyle(n);return {text:n.innerText.trim(),button_color:ns.color,button_bg:ns.backgroundColor,content_color:s.color,content_fill:s.webkitTextFillColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:n.getBoundingClientRect().toJSON()};});\n const k=document.querySelector('.component[data-id=\\\"c2\\\"]');\n const kEls=k?[...k.querySelectorAll('*')].filter(n=>{const t=n.textContent.trim();return t==='84.2'||t==='84.2%';}).map(n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return {tag:n.tagName,cls:n.className,text:n.textContent.trim(),color:s.color,fill:s.fill,bg:s.backgroundColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:r.toJSON()};}):[];\n const pal=document.querySelector('.pal-metric');\n const palEls=pal?[...pal.querySelectorAll('*')].filter(n=>n.textContent.trim()==='42.8'||n.textContent.trim()==='+6.4%').map(n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return {tag:n.tagName,cls:n.className,text:n.textContent.trim(),color:s.color,fill:s.fill,bg:s.backgroundColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:r.toJSON()};}):[];\n return {theme,width,root_bg:getComputedStyle(root).backgroundColor,bar_bg:getComputedStyle(bar).backgroundColor,bar_color:getComputedStyle(bar).color,buttons:btns,kpi:kEls,palette:palEls,bar_html:bar?.innerHTML.slice(0,5000),kpi_html:k?.innerHTML.slice(0,5000),palette_html:pal?.innerHTML.slice(0,3000)};\n }\\\"\\\"\\\")\n\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page(); rid=host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n for theme in ('light','dark'):\n  for width in (1440,390):\n   d=inspect(p,theme,width);print(json.dumps(d,ensure_ascii=False))\n # hub\n p.set_viewport_size({'width':1440,'height':900});p.goto(host.url+f'/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('.cui-report-hub').wait_for(timeout=20000);p.wait_for_timeout(200)\n print(json.dumps(p.evaluate(\\\"\\\"\\\"()=>({body:getComputedStyle(document.body).backgroundColor, cards:[...document.querySelectorAll('[data-testid=report-card]')].slice(0,3).map(card=>({text:card.innerText,html:card.innerHTML.slice(0,8000),bg:getComputedStyle(card).backgroundColor,svg:[...card.querySelectorAll('svg')].map(s=>s.outerHTML.slice(0,12000))}))})\\\"\\\"\\\"),ensure_ascii=False))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\n\ndef inspect(p, theme, width):\n p.set_viewport_size({'width':width,'height':900});p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(150)\n d=p.evaluate(\\\"\\\"\\\"()=>{\n const root=document.querySelector('.cui-visualizer-root'); const bar=document.querySelector('.cui-visualizer-reportbar');\n const btns=[...document.querySelectorAll('.cui-visualizer-reportbar button')].map(n=>{const q=n.querySelector('.q-btn__content')||n;const s=getComputedStyle(q), ns=getComputedStyle(n);return {text:n.innerText.trim(),button_color:ns.color,button_bg:ns.backgroundColor,content_color:s.color,content_fill:s.webkitTextFillColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:n.getBoundingClientRect().toJSON()};});\n const k=document.querySelector('.component[data-id=\\\"c2\\\"]');\n const kEls=k?[...k.querySelectorAll('*')].filter(n=>{const t=n.textContent.trim();return t==='84.2'||t==='84.2%';}).map(n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return {tag:n.tagName,cls:n.className,text:n.textContent.trim(),color:s.color,fill:s.fill,bg:s.backgroundColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:r.toJSON()};}):[];\n const pal=document.querySelector('.pal-metric');\n const palEls=pal?[...pal.querySelectorAll('*')].filter(n=>n.textContent.trim()==='42.8'||n.textContent.trim()==='+6.4%').map(n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return {tag:n.tagName,cls:n.className,text:n.textContent.trim(),color:s.color,fill:s.fill,bg:s.backgroundColor,font:s.font,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,rect:r.toJSON()};}):[];\n return {root_bg:getComputedStyle(root).backgroundColor,bar_bg:getComputedStyle(bar).backgroundColor,bar_color:getComputedStyle(bar).color,buttons:btns,kpi:kEls,palette:palEls,bar_html:bar?.innerHTML.slice(0,5000),kpi_html:k?.innerHTML.slice(0,5000),palette_html:pal?.innerHTML.slice(0,3000)};\n }\\\"\\\"\\\")\n d.update(theme=theme,width=width);return d\n\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page(); rid=host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n for theme in ('light','dark'):\n  for width in (1440,390):\n   d=inspect(p,theme,width);print(json.dumps(d,ensure_ascii=False))\n p.set_viewport_size({'width':1440,'height':900});p.goto(host.url+f'/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('.cui-report-hub').wait_for(timeout=20000);p.wait_for_timeout(200)\n print(json.dumps(p.evaluate(\\\"\\\"\\\"()=>({body:getComputedStyle(document.body).backgroundColor, cards:[...document.querySelectorAll('[data-testid=report-card]')].slice(0,3).map(card=>({text:card.innerText,html:card.innerHTML.slice(0,8000),bg:getComputedStyle(card).backgroundColor,svg:[...card.querySelectorAll('svg')].map(s=>s.outerHTML.slice(0,12000))}))})\\\"\\\"\\\"),ensure_ascii=False))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\n\nJS=\\\"\\\"\\\"(theme)=>{const parse=(v)=>{const m=v.match(/rgba?\\\\\\\\(([\"'^)]+)'\"\\\\\\\\)/);if(\"'!m)return v;return m[1].split('\"',').map(x=>x.trim()).join(',')}; const bgChain=(n)=>{const a=[];for(let x=n;x&&a.length<8;x=x.parentElement){const s=getComputedStyle(x);if(s.backgroundColor\"'!=='\"'rgba(0, 0, 0, 0)')a.push({tag:x.tagName,cls:String(x.className),bg:s.backgroundColor});}return a};const one=(n)=>{if(\"'!n)return null;const s=getComputedStyle(n),q=n.closest('\"'.q-btn__content')||n;const sq=getComputedStyle(q);return {text:n.innerText?.trim(),color:s.color,fill:sq.webkitTextFillColor,font:s.font,size:s.fontSize,weight:s.fontWeight,line:s.lineHeight,bg:bgChain(n),rect:n.getBoundingClientRect().toJSON()}}; const k=document.querySelector('.component[data-id=\\\"c2\\\"]'),p=document.querySelector('.pal-metric'),bar=document.querySelector('.cui-visualizer-reportbar'); return {theme,doc:document.documentElement.getAttribute('data-theme'),bar:one(bar),buttons:[...document.querySelectorAll('.cui-visualizer-reportbar button')].map(one),kpi:one(k?.querySelector('.metric-value')),palette:[...p?.querySelectorAll('i,em')||[]].map(one),ancestors:k?[...Array.from({length:6},(_,i)=>{let n=k;for(let j=0;j<i;j++)n=n?.parentElement;return n}).filter(Boolean).map(n=>({tag:n.tagName,cls:String(n.className),bg:getComputedStyle(n).backgroundColor,color:getComputedStyle(n).color}))]:[]};}\\\"\\\"\\\"\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-measure-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page();host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n for theme in ('light','dark'):\n  for width in (1440,390):\n   p.set_viewport_size({'width':width,'height':900});p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(120);print(json.dumps(p.evaluate(JS,theme),ensure_ascii=False))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\nJS=\\\"\\\"\\\"(theme)=>{document.documentElement.setAttribute('data-theme',theme);document.body.classList.remove('body--light','body--dark');document.body.classList.add('body--'+theme); return {doc:document.documentElement.getAttribute('data-theme'),body:document.body.className,cards:[...document.querySelectorAll('[data-testid=report-card]')].slice(0,1).map(card=>{const svg=card.querySelector('svg'),metric=svg?.querySelector('.thumb-metric'),rect=metric?.closest('g')?.querySelector('.thumb-card'),t=metric?getComputedStyle(metric):null,rs=rect?getComputedStyle(rect):null;return {card_bg:getComputedStyle(card).backgroundColor,svg_bg:getComputedStyle(svg).backgroundColor,metric:{text:metric?.textContent,fill:t?.fill,color:t?.color,font:t?.font,fontSize:t?.fontSize,fontWeight:t?.fontWeight},rect:{fill:rs?.fill,stroke:rs?.stroke},outer:svg?.outerHTML};})};}\\\"\\\"\\\"\nwith tempfile.TemporaryDirectory(prefix='chg70-thumb-contrast-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page();rid=host.create(model=acceptance_model());p.goto(host.url+f'/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('.cui-report-hub').wait_for(timeout=20000);p.wait_for_timeout(150)\n for theme in ('light','dark'):\n  for w in (1440,390):\n   p.set_viewport_size({'width':w,'height':900});print(json.dumps(p.evaluate(JS,theme),ensure_ascii=False))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json,re\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom company_ui.design.contrast import contrast_ratio\nfrom playwright.sync_api import sync_playwright\n\ndef rgb(v):\n m=re.match(r'rgba?\\\\\\\\(([\"'^)]+)'\"\\\\\\\\)',v)\n if not m: raise ValueError(v)\n vals=[float(x.strip()) for x in m.group(1).split(',')[:3]]\n return '#'+''.join(f'{round(x):02X}' for x in vals)\ndef ratio(fg,bg): return round(contrast_ratio(fg,bg),3)\nEDITOR_JS=\\\"\\\"\\\"()=>{const chain=n=>{for(let x=n;x;x=x.parentElement){const b=getComputedStyle(x).backgroundColor;if(b\"'!=='\"'rgba(0, 0, 0, 0)')return b}return null};const style=(n,ancestor)=>{const q=n.querySelector('.q-btn__content')||n,s=getComputedStyle(q),ns=getComputedStyle(n);return {fg:s.webkitTextFillColor||s.color,bg:ancestor?chain(n):ns.backgroundColor,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,fontFamily:s.fontFamily}};const buttons=[...document.querySelectorAll('.cui-visualizer-reportbar button')];const by=t=>buttons.find(n=>n.innerText.trim()===t);const k=document.querySelector('.component[data-id=\\\"c2\\\"] .metric-value'),p=document.querySelector('.pal-metric i'),delta=document.querySelector('.pal-metric em');return {barBg:getComputedStyle(document.querySelector('.cui-visualizer-reportbar')).backgroundColor,newReport:style(by('New report')),duplicate:style(by('Duplicate'),true),manage:style(by('Manage'),true),kpi84_2:style(k,true),quickAdd42_8:style(p,true),quickAddDelta:style(delta,true)};}\\\"\\\"\\\"\nHUB_JS=\\\"\\\"\\\"(theme)=>{document.documentElement.setAttribute('data-theme',theme);document.body.classList.remove('body--light','body--dark');document.body.classList.add('body--'+theme);const card=document.querySelector('[data-testid=report-card]'),m=card?.querySelector('.thumb-metric'),r=m?.closest('g')?.querySelector('.thumb-card'),s=m&&getComputedStyle(m),rs=r&&getComputedStyle(r);return {cardBg:getComputedStyle(card).backgroundColor,metric84_2:m?{fg:s.fill,bg:rs.fill,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,fontFamily:s.fontFamily}:null};}\\\"\\\"\\\"\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-final-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page();rid=host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n out={'threshold':4.5,'editor':{},'thumbnail':{}}\n for theme in ('light','dark'):\n  for width in (1440,390):\n   p.set_viewport_size({'width':width,'height':900});p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(120);d=p.evaluate(EDITOR_JS);key=f'{theme}-{width}';\n   for name in ('newReport','duplicate','manage','kpi84_2','quickAdd42_8','quickAddDelta'):\n    item=d.get(name)\n    if item:\n     fg,bg=rgb(item['fg']),rgb(item['bg']);item.update(fg=fg,bg=bg,ratio=ratio(fg,bg))\n   d['barBg']=rgb(d['barBg']);out['editor'][key]=d\n p.set_viewport_size({'width':1440,'height':900});p.goto(host.url+f'/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('.cui-report-hub').wait_for(timeout=20000);p.wait_for_timeout(150)\n for theme in ('light','dark'):\n  for width in (1440,390):\n   p.set_viewport_size({'width':width,'height':900});d=p.evaluate(HUB_JS,theme);item=d['metric84_2'];fg,bg=rgb(item['fg']),rgb(item['bg']);item.update(fg=fg,bg=bg,ratio=ratio(fg,bg));d['cardBg']=rgb(d['cardBg']);out['thumbnail'][f'{theme}-{width}']=d\n print(json.dumps(out,sort_keys=True))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys,tempfile,json\nfrom pathlib import Path\nROOT=Path('.')\nsys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom editor_host import NativeHost\nfrom native_common import acceptance_model,browser_kwargs,ready\nfrom company_ui.design.contrast import contrast_ratio\nfrom playwright.sync_api import sync_playwright\n\ndef rgb(v):\n vals=[float(x.strip()) for x in v[v.find('(')+1:v.rfind(')')].split(',')[:3]]\n return '#'+''.join(f'{round(x):02X}' for x in vals)\ndef ratio(fg,bg): return round(contrast_ratio(fg,bg),3)\nEDITOR_JS=\\\"\\\"\\\"()=>{const chain=n=>{for(let x=n;x;x=x.parentElement){const b=getComputedStyle(x).backgroundColor;if(b\"'!=='\"'rgba(0, 0, 0, 0)')return b}return null};const style=(n,ancestor)=>{const q=n.querySelector('.q-btn__content')||n,s=getComputedStyle(q),ns=getComputedStyle(n);return {fg:s.webkitTextFillColor||s.color,bg:ancestor?chain(n):ns.backgroundColor,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,fontFamily:s.fontFamily}};const buttons=[...document.querySelectorAll('.cui-visualizer-reportbar button')];const by=t=>buttons.find(n=>n.innerText.trim()===t);const k=document.querySelector('.component[data-id=\\\"c2\\\"] .metric-value'),p=document.querySelector('.pal-metric i'),delta=document.querySelector('.pal-metric em');return {barBg:getComputedStyle(document.querySelector('.cui-visualizer-reportbar')).backgroundColor,newReport:style(by('New report')),duplicate:style(by('Duplicate'),true),manage:style(by('Manage'),true),kpi84_2:style(k,true),quickAdd42_8:style(p,true),quickAddDelta:style(delta,true)};}\\\"\\\"\\\"\nHUB_JS=\\\"\\\"\\\"(theme)=>{document.documentElement.setAttribute('data-theme',theme);document.body.classList.remove('body--light','body--dark');document.body.classList.add('body--'+theme);const card=document.querySelector('[data-testid=report-card]'),m=card?.querySelector('.thumb-metric'),r=m?.closest('g')?.querySelector('.thumb-card'),s=m&&getComputedStyle(m),rs=r&&getComputedStyle(r);return {cardBg:getComputedStyle(card).backgroundColor,metric84_2:m?{fg:s.fill,bg:rs.fill,fontSize:s.fontSize,fontWeight:s.fontWeight,lineHeight:s.lineHeight,fontFamily:s.fontFamily}:null};}\\\"\\\"\\\"\nwith tempfile.TemporaryDirectory(prefix='chg70-contrast-final-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n browser=pw.chromium.launch(**browser_kwargs());ctx=browser.new_context(viewport={'width':1440,'height':900});p=ctx.new_page();rid=host.create(model=acceptance_model());p.goto(host.url+'/visualizer',wait_until='domcontentloaded');ready(p,require_settled=True)\n out={'threshold':4.5,'editor':{},'thumbnail':{}}\n for theme in ('light','dark'):\n  for width in (1440,390):\n   p.set_viewport_size({'width':width,'height':900});p.evaluate('(t)=>__VIZ_PROD__.setTheme(t)',theme);p.wait_for_timeout(120);d=p.evaluate(EDITOR_JS);key=f'{theme}-{width}'\n   for name in ('newReport','duplicate','manage','kpi84_2','quickAdd42_8','quickAddDelta'):\n    item=d.get(name)\n    if item:\n     fg,bg=rgb(item['fg']),rgb(item['bg']);item.update(fg=fg,bg=bg,ratio=ratio(fg,bg))\n   d['barBg']=rgb(d['barBg']);out['editor'][key]=d\n p.set_viewport_size({'width':1440,'height':900});p.goto(host.url+f'/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('.cui-report-hub').wait_for(timeout=20000);p.wait_for_timeout(150)\n for theme in ('light','dark'):\n  for width in (1440,390):\n   p.set_viewport_size({'width':width,'height':900});d=p.evaluate(HUB_JS,theme);item=d['metric84_2'];fg,bg=rgb(item['fg']),rgb(item['bg']);item.update(fg=fg,bg=bg,ratio=ratio(fg,bg));d['cardBg']=rgb(d['cardBg']);out['thumbnail'][f'{theme}-{width}']=d\n print(json.dumps(out,sort_keys=True))\n browser.close();ctx.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --check && rtk git diff --no-ext-diff 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f -- company_ui/products/visualizer/assets/authoring_chart_studio.mjs company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/assets/tokens.css tests/test_visualizer_product_polish_v4.py tests/test_visualizer_statistical_release_repair.py company_ui/certification/certification_manifest.json && printf '%s\\\\n' '--- changed names ---' && rtk git diff --name-only 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && printf '%s\\\\n' '--- status ---' && rtk git status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk which company-ui || true; rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-final-visual-cleanup-focused && rtk proxy python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/chg70-final-visual-cleanup-focused --skip-benchmark --skip-regressions'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf /tmp/chg70-final-visual-remediation-focused && rtk proxy python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/chg70-final-visual-remediation-focused --skip-benchmark --skip-regressions'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np=json.load(open('/tmp/chg70-final-visual-remediation-focused/final-visual-remediation-acceptance.json'))\nprint([(r['id'],r['name'],r['status'],r.get('error')) for r in p['checks'] if r['status']\"'!='\"'PASS'])\nprint({r['id']:r['status'] for r in p['checks'] if r['id'] in {'VR019','VR020','VR021','VR022','VR023','VR024','VR025','VR026','VR055'}})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --no-ext-diff 9876eb585f673c5c14ecdca1de07b87dacb8bff8 -- company_ui/products/visualizer/assets/authoring_chart_studio.mjs company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/assets/tokens.css tests/test_visualizer_product_polish_v4.py tests/test_visualizer_statistical_release_repair.py > /tmp/chg70-r1-equivalence.diff && rtk wc -c /tmp/chg70-r1-equivalence.diff && rtk git diff --name-status 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -f /tmp/chg70-repository-contracts-final-rerun.json && rtk proxy python scripts/release_checks/run_repository_contracts.py --output /tmp/chg70-repository-contracts-final-rerun.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np=json.load(open('/tmp/chg70-repository-contracts-final-rerun.json'))\nprint(json.dumps({'status':p['status'],'candidate_sha':p['candidate_sha'],'working_tree':p['working_tree'],'certification_manifest':p['checks']['certification_manifest'],'combined_css_bytes':p['checks']['certification_manifest'].get('combined_css_bytes'),'framework_version':p['checks']['certification_manifest'].get('framework_version')},sort_keys=True))\nPY\nrtk git rev-parse HEAD\nrtk git diff --check\nrtk git status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rm -rf certification_output && rtk git status --short && rtk proxy rm -f /tmp/chg70-repository-contracts-final-rerun.json && rtk proxy python scripts/release_checks/run_repository_contracts.py --output /tmp/chg70-repository-contracts-final-rerun.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nfrom company_ui.certification.engine import combined_css\nfrom company_ui.version import FRAMEWORK_VERSION\nbase='5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f'; r1='9876eb585f673c5c14ecdca1de07b87dacb8bff8'\nmanifest=json.loads(Path('company_ui/certification/certification_manifest.json').read_text())\nprint(json.dumps({\n 'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),\n 'base_matches':subprocess.check_output(['git','merge-base','--is-ancestor',base,'HEAD'],text=True) is not None,\n 'manifest_top':manifest['automated_tests'],\n 'manifest_nested':{k:manifest[k]['automated_tests'] for k in ('phase_32_v2_release_candidate','phase_35_v2_source_completion','phase_38_v200rc5_p0_hardening','phase_46_v300a1_application_platform')},\n 'combined_css_manifest':manifest['combined_css_bytes'],\n 'combined_css_actual':len(combined_css().encode()),\n 'framework_manifest':manifest['framework_version'],\n 'framework_actual':FRAMEWORK_VERSION,\n 'r1_source_diff_bytes':Path('/tmp/chg70-r1-equivalence.diff').stat().st_size,\n 'changed':subprocess.check_output(['git','diff','--name-only',base],text=True).splitlines(),\n},sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout > /tmp/chg70-closure-final.txt 2>&1 && rtk tail -8 /tmp/chg70-closure-final.txt && rtk git status --short --branch'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 475,
+        "output_sha256": "6551ccc55f94b2e4ec8c6b1bfd19af656906e126a0c8fb1c90510296fd1bd380",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git log --all --oneline --decorate -- company_ui/certification/certification_manifest.json | head -30 && rtk git log --all -S'\\\"automated_tests\\\": 1105' --oneline -- company_ui/certification/certification_manifest.json | head -20\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show --stat --oneline e792f2c && rtk git show --no-ext-diff e792f2c -- company_ui/certification/certification_manifest.json | head -180'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show e792f2c''^:company_ui/governance/source_evidence.py | rg -n \"_sync_packaged|phase_32|phase_35|automated_tests\" | head -40 && rtk git show e792f2c''^:company_ui/certification/certification_manifest.json | sed -n '\"'1,5p;3058,3095p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\np=Path('company_ui/certification/certification_manifest.json')\ns=p.read_text()\nfor section in ('phase_32_v2_release_candidate','phase_35_v2_source_completion','phase_38_v200rc5_p0_hardening','phase_46_v300a1_application_platform'):\n    marker=f'  \\\"{section}\\\": {{\\\\n    \\\"automated_tests\\\": 1106,'\n    replacement=f'  \\\"{section}\\\": {{\\\\n    \\\"automated_tests\\\": 1099,'\n    assert s.count(marker)==1, (section,s.count(marker))\n    s=s.replace(marker,replacement)\np.write_text(s)\nPY\nrtk git diff -- company_ui/certification/certification_manifest.json && rtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\np=Path('company_ui/certification/certification_manifest.json')\ns=p.read_text()\nfor section in ('phase_32_v2_release_candidate','phase_35_v2_source_completion','phase_38_v200rc5_p0_hardening','phase_46_v300a1_application_platform'):\n    start=s.index(f'  \\\"{section}\\\": {{')\n    end=s.index('\\\\n  },',start)\n    segment=s[start:end]\n    assert segment.count('\\\"automated_tests\\\": 1106')==1,(section,segment.count('\\\"automated_tests\\\": 1106'))\n    segment=segment.replace('\\\"automated_tests\\\": 1106','\\\"automated_tests\\\": 1099',1)\n    s=s[:start]+segment+s[end:]\np.write_text(s)\nPY\nrtk git diff -- company_ui/certification/certification_manifest.json && rtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout && rtk proxy rm -f /tmp/chg70-repository-contracts-final-minimal.json && rtk proxy python scripts/release_checks/run_repository_contracts.py --output /tmp/chg70-repository-contracts-final-minimal.json && rtk python - <<'PY'\nimport json\np=json.load(open('/tmp/chg70-repository-contracts-final-minimal.json'))\nprint(json.dumps({'status':p['status'],'manifest':p['checks']['certification_manifest'],'checks':{k:v.get('status') for k,v in p['checks'].items()}},sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 515,
+        "output_sha256": "8bbc62afb23e6a59fca45014b5506960e422c0505b21fb7da81ecde656b98710",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m pytest > /tmp/chg70-full-pytest-final-minimal.txt 2>&1'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -12 /tmp/chg70-full-pytest-final-minimal.txt && rtk rg -n \"passed|failed|collected\" /tmp/chg70-full-pytest-final-minimal.txt | tail -5 && rtk git status --short --branch'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1106,
+          "warnings": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1287,
+        "output_sha256": "b78f46e8414b35bd82b33c1a4678738bade0c5e4f1b6f2da7e4c634f7c560c02",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m pytest tests/test_visualizer_product_polish_v4.py::test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes tests/test_visualizer_statistical_release_repair.py::test_invalid_persisted_analysis_is_explicitly_failed_closed_and_svg_is_finite'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 2
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 98,
+        "output_sha256": "7d8791a9bb72e65283b3c0e607dd407e50bce3050f811bc7cf9b37f38c330fda",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m pytest --collect-only > /tmp/chg70-collect-final.txt 2>&1 && rtk rg -n \"tests collected\" /tmp/chg70-collect-final.txt && rtk git diff --check && rtk git diff --stat 5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f && rtk git status --short --branch'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 895,
+        "output_sha256": "3350d81053f66f7f64072b5ae7fea5f6d7daa5a6291123949afcf7a591963a7d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '{\\\"request\\\":\\\"Fix Visembler CHG-70 R2\\\",\\\"exact_base\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"candidate_head\\\":\\\"5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f\\\",\\\"r1_reference_head\\\":\\\"9876eb585f673c5c14ecdca1de07b87dacb8bff8\\\",\\\"collected_tests_before_manifest_repair\\\":1106,\\\"manifest_automated_tests_before\\\":1105,\\\"repository_contract_failure_reproduced\\\":true,\\\"certification_manifest_fields_changed\\\":[\\\"automated_tests\\\"],\\\"collected_tests_final\\\":1106,\\\"manifest_automated_tests_final\\\":1106,\\\"repository_contract_status\\\":\\\"PASS\\\",\\\"full_pytest_status\\\":\\\"PASS\\\",\\\"full_pytest_passed\\\":1106,\\\"full_pytest_failed\\\":0,\\\"svg_viewbox_status\\\":\\\"PASS\\\",\\\"contrast_status\\\":\\\"PASS\\\",\\\"contrast_failures_remaining\\\":0,\\\"maintained_visual_regression\\\":\\\"PASS:ChartStudio97/97,DiagramStudio16/16,NativeAcceptance12/12,EditorWorkflows39/39,FinalCleanup25/25,ReportHub7/7;CHG70FinalRemediationChecksPASS;pre-existing VR004/VR041/VR047 remain\\\",\\\"out_of_scope_wafer_changed\\\":false,\\\"changed_files\\\":[\\\"company_ui/certification/certification_manifest.json\\\",\\\"company_ui/products/visualizer/assets/authoring_chart_studio.mjs\\\",\\\"company_ui/products/visualizer/assets/integrated_editor.css\\\",\\\"company_ui/products/visualizer/assets/tokens.css\\\",\\\"tests/test_visualizer_product_polish_v4.py\\\",\\\"tests/test_visualizer_statistical_release_repair.py\\\"],\\\"classification\\\":\\\"bounded CHG-70 R2 UI hard-gate carry-forward plus minimal certification count repair\\\",\\\"source_changed\\\":true,\\\"combined_css_bytes\\\":259922,\\\"framework_version\\\":\\\"3.0.0a1\\\"}'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1462,
+        "output_sha256": "20ed15b28bf481b5f8ae2775bbb529c864a998c7bf1b3558fbbdc3a7a5c8fcdd",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 168,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.57,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 9467136,
+      "fresh_input_tokens": 236129,
+      "input_tokens": 9703265,
+      "non_reasoning_output_tokens": 19946,
+      "output_tokens": 36239,
+      "reasoning_output_tokens": 16293,
+      "total_processed_tokens": 9739504
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "afd2b60b89e27ecd90f33949bd85d9181d4b3a05",
+      "subject": "fabric: capture completed model changes [CF-8197b15f9a3953c35d09a200]"
+    }
+  ],
+  "diff": {
+    "additions": 24,
+    "changed_files": 6,
+    "commit_count": 1,
+    "deletions": 6
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "1745a8f7eef6a9bfbb593383554064b2d24aed298a87e76caf748cb580f8b741"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.2",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-8197b15f9a3953c35d09a200]",
+    "commit_sha": "afd2b60b89e27ecd90f33949bd85d9181d4b3a05",
+    "paths_before": 6,
+    "status_before": [
+      " M company_ui/certification/certification_manifest.json",
+      " M company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      " M company_ui/products/visualizer/assets/integrated_editor.css",
+      " M company_ui/products/visualizer/assets/tokens.css",
+      " M tests/test_visualizer_product_polish_v4.py",
+      " M tests/test_visualizer_statistical_release_repair.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.2",
+  "failure_class": null,
+  "finished_at": "2026-09-16T12:39:26Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "branch": "fix/visembler-chg70-ci-manifest-r2",
+    "head_sha": "afd2b60b89e27ecd90f33949bd85d9181d4b3a05",
+    "remote_exact_head": true,
+    "remote_head_sha": "afd2b60b89e27ecd90f33949bd85d9181d4b3a05",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5ee3ffae1d0ed5a4844510a8807c3fef3ea1491f",
+    "work_branch": "fix/visembler-chg70-ci-manifest-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-8197b15f9a3953c35d09a200",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-70-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-70-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.2",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "6316fd785c456db605cb8cd3f359ac0b65cfd957f2546ebe5d596f3115bd2a61"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-70-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-16T12:19:02Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1224,
+    "queue_seconds": 0,
+    "total_seconds": 1224
+  },
+  "transport": {
+    "bytes": 5979,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 5687,
+    "prompt_sha256": "c4d5b235300eba2e31b109ac195310643f532283290eafc7a1447fc049a672b2",
+    "sha256": "8197b15f9a3953c35d09a2007fe9abf971a892e2347f3ea208c24c57d21cc945"
+  }
+}
