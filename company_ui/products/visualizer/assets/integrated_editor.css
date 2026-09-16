@@ -10,7 +10,7 @@
   --viz-muted: #6e6e73;
   --viz-line: #d9d9de;
   --viz-line-soft: #ececef;
-  --viz-accent: #006fd6;
+  --viz-accent: #0064c8;
   --viz-on-accent: #ffffff;
   --viz-accent-soft: rgba(10, 132, 255, 0.14);
   --viz-good: #1f754e;
@@ -951,6 +951,10 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-visualizer-reportbar .q-field__control { min-height:38px!important; height:38px!important; border-radius:8px!important; }
 .cui-visualizer-reportbar .q-field__native,.cui-visualizer-reportbar .q-field__input { font-size:13px!important; font-weight:650; }
 .cui-visualizer-reportbar .q-btn { min-height:38px!important; font-size:12px!important; border-radius:8px!important; }
+/* The native reportbar buttons keep NiceGUI event semantics but resolve the
+   Quasar color utility through the Company theme instead of its default. */
+.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }
+.cui-visualizer-reportbar .q-btn.bg-primary .q-btn__content { color:var(--cui-text-inverse)!important; -webkit-text-fill-color:var(--cui-text-inverse)!important; }
 .cui-visualizer-host { display:flex; flex:1 1 0; min-height:0; overflow:hidden; }
 .cui-app-sidebar .cui-sidebar-owner::after { content:"v0.4.26"; display:block; margin-top:4px; color:#7b828d; font-size:11px; font-variant-numeric:tabular-nums; }
 .minimap { display:none; }
