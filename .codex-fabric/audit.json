@@ -1,0 +1,428 @@
+{
+  "accepted_at": "2026-09-17T10:58:13Z",
+  "changed_files": [
+    {
+      "additions": 10,
+      "deletions": 9,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"text-primary|text-secondary|text-tertiary|surface-elevated|accent\" company_ui/design/tokens.py docs/DESIGN_CONSTITUTION_V1_6.md | head -160'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"build_css\\\\(|build_visual_normalization_css|add_head_html|report-hub\\\" tests/test_* -g '*.py' | head -220\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '1,180p' tests/test_visualizer_native_asset_bootstrap.py; rtk proxy sed -n '1,220p' tests/test_visualizer_report_thumbnail_geometry.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -- \\\"background:#fff|fill:#69717d|cui-report-hub \\\\.q-btn|thumb-metric|cui-report-thumb text\\\" company_ui/products/visualizer/page.py tests/test_visualizer_report_thumbnail_geometry.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git diff --stat && rtk git diff -- company_ui/products/visualizer/page.py tests/test_visualizer_report_thumbnail_geometry.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_report_thumbnail_geometry.py tests/test_visualizer_product_polish_v4.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport json, tempfile\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model, browser_kwargs\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom playwright.sync_api import sync_playwright\n\nROOT=Path('.').resolve(); OUT=Path('/tmp/visembler-chg70-r3-after'); OUT.mkdir(parents=True, exist_ok=True); (OUT/'screenshots').mkdir(exist_ok=True)\n\ndef metric_model(value=42.8):\n    return canonical_model({'schema_version':1,'items':[{'id':'c1','type':'metric','engine':'MetricEngine','element':'Metric + Delta','title':'Metric + Delta','value':value,'unit':'%','order':0,'locked':False,'z':1}], 'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':2})\nJS=r'''()=>{\n const vis=n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return s.display\"'!=='\"'none'&&s.visibility\"'!=='\"'hidden'&&parseFloat(s.opacity||'1')>0&&r.width>0&&r.height>0};\n const rgb=s=>{if(\"'!s)return null;const m=s.match(/rgba?'\"\\\\(([\"'^)]+)'\"\\\\)/);if(\"'!m)return null;const v=m[1].split('\"',').map(Number);return [v[0],v[1],v[2],v[3]===undefined?1:v[3]]};\n const lum=c=>{const a=c.slice(0,3).map(v=>v/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*a[0]+.7152*a[1]+.0722*a[2]};\n const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};\n const bg=n=>{for(let x=n;x&&x\"'!==document.documentElement;x=x.parentElement){const c=rgb(getComputedStyle(x).backgroundColor);if(c&&c[3]>.01)return c}return [255,255,255,1]};\n const exact=[...document.querySelectorAll('\"'body *')].filter(n=>vis(n)&&n.children.length===0&&['Duplicate','42.8','84.2'].includes((n.innerText||n.textContent||'').trim()));\n return {viewport:{width:innerWidth,height:innerHeight},theme:document.documentElement.dataset.theme,exact_text_metrics:exact.map(n=>{const s=getComputedStyle(n),f=rgb(s.color),b=bg(n);return {text:(n.innerText||n.textContent||'').trim(),selector:n.tagName.toLowerCase(),foreground:s.color,fill:s.fill,background:\"'`rgb(${b[0]}, ${b[1]}, ${b[2]})`,ratio:f&&b?+contrast(f,b).toFixed(3):null,font_size_px:parseFloat(s.fontSize),font_weight:s.fontWeight}}),horizontal_overflow:document.documentElement.scrollWidth>innerWidth+1,report_cards:document.querySelectorAll('\"'.cui-report-card').length,thumbs:document.querySelectorAll('.cui-report-thumb').length};\n}'''\nresults=[]\nwith tempfile.TemporaryDirectory(prefix='visembler-chg70-r3-after-') as td, NativeHost(ROOT, Path(td)/'data') as host, sync_playwright() as pw:\n    kpi=host.create(model=acceptance_model(),name='r3-kpi')\n    browser=pw.chromium.launch(**browser_kwargs())\n    for width,theme in [(1440,'light'),(1440,'dark'),(390,'light'),(390,'dark')]:\n        context=browser.new_context(viewport={'width':width,'height':900 if width>=800 else 844})\n        page=context.new_page(); errors=[]\n        page.on('pageerror',lambda e:errors.append(f'pageerror:{e}'))\n        page.on('console',lambda m:errors.append(f'console:{m.text}') if m.type=='error' else None)\n        page.on('requestfailed',lambda r:errors.append(f'requestfailed:{r.url}::{r.failure}'))\n        page.goto(f'{host.url}/visualizer/reports?report={kpi}',wait_until='domcontentloaded')\n        page.locator('[data-testid=\\\"report-hub\\\"]').wait_for(timeout=20000); page.wait_for_timeout(180)\n        page.evaluate('(t)=>document.documentElement.setAttribute(\\\"data-theme\\\",t)',theme); page.wait_for_timeout(150)\n        data=page.evaluate(JS); data.update({'state_id':f'after-hub-{width}-{theme}','browser_errors':errors})\n        page.screenshot(path=str(OUT/'screenshots'/f'{data[\\\"state_id\\\"]}.png'), full_page=False)\n        results.append(data); context.close()\n    browser.close()\n(OUT/'report-hub-after.json').write_text(json.dumps({'base_sha':'4701410c79d9803b0d156d6e0b2a568992387dbc','states':results},indent=2)+'\\\\n')\nprint(json.dumps({'output':str(OUT/'report-hub-after.json'),'states':results},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n p.evaluate('()=>document.documentElement.setAttribute(\\\"data-theme\\\",\\\"light\\\")');p.wait_for_timeout(100)\n print(p.locator('.cui-report-card-actions .q-btn').first.evaluate(\\\"n=>({outer:n.outerHTML,classes:n.className,child:n.querySelector('.q-btn__content')?.outerHTML,childColor:getComputedStyle(n.querySelector('.q-btn__content')).color,spanColor:getComputedStyle(n.querySelector('.q-btn__content span')).color,buttonColor:getComputedStyle(n).color,matched:[...document.styleSheets].flatMap(s=>{try{return [...s.cssRules]}catch(_){return []}}).filter(r=>r.selectorText?.includes('cui-report-hub')).map(r=>r.cssText)})\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n dup=p.locator('.cui-report-card-actions .q-btn').filter(has_text='Duplicate').first\n print(dup.evaluate(\\\"n=>({outer:n.outerHTML,classes:n.className,buttonColor:getComputedStyle(n).color,contentColor:getComputedStyle(n.querySelector('.q-btn__content')).color,spanColor:getComputedStyle(n.querySelector('.q-btn__content span')).color})\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n print(p.evaluate(\\\"\\\"\\\"()=>{const out=[];for(const s of document.styleSheets){let rs;try{rs=[...s.cssRules]}catch(_){continue}for(const r of rs){if(r.cssText?.includes('text-primary')||r.cssText?.includes('q-btn--flat'))out.push(r.cssText)}}return out.slice(-30)}\\\"\\\"\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n print(p.evaluate(\\\"\\\"\\\"()=>{const out=[];const walk=rs=>{for(const r of rs){if(r.cssRules)walk(r.cssRules);else if(r.selectorText?.includes('text-primary'))out.push(r.cssText)}};for(const s of document.styleSheets){try{walk(s.cssRules)}catch(_){}}return out} \\\"\\\"\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n print(p.evaluate(\\\"\\\"\\\"()=>{const n=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Duplicate');const cs=getComputedStyle(n);return {inline:n.getAttribute('style'),vars:{qprimary:cs.getPropertyValue('--q-primary'),cui:cs.getPropertyValue('--cui-accent')},css:[...document.styleSheets].flatMap(s=>{try{return [...s.cssRules]}catch(_){return []}}).map(r=>r.cssText).filter(x=>x.includes('5898')||x.includes('primary')||x.includes('q-btn')).slice(-100)}}\\\"\\\"\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n print(p.evaluate(\\\"\\\"\\\"()=>{const n=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Duplicate');return {matches:n.matches('.cui-report-hub .q-btn.q-btn--flat'),ancestors:[...function*(){let x=n;while(x){yield x;x=x.parentElement}}()].slice(0,8).map(x=>x.className),important:[...document.styleSheets].flatMap(s=>{try{return [...s.cssRules]}catch(_){return []}}).filter(r=>r.selectorText&&n.matches(r.selectorText)).map(r=>({sel:r.selectorText,css:r.style.cssText,prio:r.style.getPropertyPriority('color')})).filter(x=>x.css.includes('color')).slice(-20),computed:{color:getComputedStyle(n).color,content:getComputedStyle(n.querySelector('.q-btn__content')).color}}}\\\"\\\"\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve()\nwith __import__('tempfile').TemporaryDirectory(prefix='visembler-chg70-r3-inspect-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n rid=host.create(model=acceptance_model(),name='inspect')\n b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':1440,'height':900}); p=c.new_page()\n p.goto(f'{host.url}/visualizer/reports?report={rid}',wait_until='domcontentloaded');p.locator('[data-testid=\\\"report-hub\\\"]').wait_for();p.wait_for_timeout(180)\n print(p.evaluate(\\\"\\\"\\\"()=>{const n=[...document.querySelectorAll('button')].find(x=>x.textContent.trim()==='Duplicate');const chain=[];for(let x=n;x;x=x.parentElement){const s=getComputedStyle(x);chain.push({tag:x.tagName,cls:x.className,inline:x.getAttribute('style'),q:s.getPropertyValue('--q-primary'),c:s.getPropertyValue('--cui-accent'),color:s.color})}return chain.slice(0,8)}\\\"\\\"\\\"))\n c.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport json, tempfile\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model, browser_kwargs\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom playwright.sync_api import sync_playwright\nROOT=Path('.').resolve(); OUT=Path('/tmp/visembler-chg70-r3-after'); OUT.mkdir(parents=True,exist_ok=True); (OUT/'screenshots').mkdir(exist_ok=True)\ndef metric_model(value=42.8):\n return canonical_model({'schema_version':1,'items':[{'id':'c1','type':'metric','engine':'MetricEngine','element':'Metric + Delta','title':'Metric + Delta','value':value,'unit':'%','order':0,'locked':False,'z':1}], 'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','crossFilter':None,'canvas':{'width':1600,'height':900},'nextId':2})\nJS=r'''()=>{const vis=n=>{const s=getComputedStyle(n),r=n.getBoundingClientRect();return s.display\"'!=='\"'none'&&s.visibility\"'!=='\"'hidden'&&parseFloat(s.opacity||'1')>0&&r.width>0&&r.height>0};const rgb=s=>{const m=s?.match(/rgba?\\\\(([\"'^)]+)'\"\\\\)/);if(\"'!m)return null;const v=m[1].split('\"',').map(Number);return [v[0],v[1],v[2],v[3]??1]};const lum=c=>{const a=c.slice(0,3).map(v=>v/255).map(v=>v<=.03928?v/12.92:((v+.055)/1.055)**2.4);return .2126*a[0]+.7152*a[1]+.0722*a[2]};const contrast=(a,b)=>{const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)};const bg=n=>{for(let x=n;x&&x\"'!==document.documentElement;x=x.parentElement){const c=rgb(getComputedStyle(x).backgroundColor);if(c&&c[3]>.01)return c}return [255,255,255,1]};const exact=[...document.querySelectorAll('\"'body *')].filter(n=>vis(n)&&n.children.length===0&&['Duplicate','42.8','84.2'].includes((n.innerText||n.textContent||'').trim()));return {viewport:{width:innerWidth,height:innerHeight},theme:document.documentElement.dataset.theme,exact_text_metrics:exact.map(n=>{const s=getComputedStyle(n),f=rgb(s.color),b=bg(n);return {text:(n.innerText||n.textContent||'').trim(),selector:n.tagName.toLowerCase(),foreground:s.color,fill:s.fill,background:\"'`rgb(${b[0]}, ${b[1]}, ${b[2]})`,ratio:f&&b?+contrast(f,b).toFixed(3):null,font_size_px:parseFloat(s.fontSize),font_weight:s.fontWeight}}),horizontal_overflow:document.documentElement.scrollWidth>innerWidth+1,report_cards:document.querySelectorAll('\"'.cui-report-card').length,thumbs:document.querySelectorAll('.cui-report-thumb').length};}'''\nresults=[]\nwith tempfile.TemporaryDirectory(prefix='visembler-chg70-r3-after-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n kpi=host.create(model=acceptance_model(),name='r3-kpi'); metric=host.create(model=metric_model(),name='r3-metric')\n browser=pw.chromium.launch(**browser_kwargs())\n for width,theme in [(1440,'light'),(1440,'dark'),(390,'light'),(390,'dark')]:\n  context=browser.new_context(viewport={'width':width,'height':900 if width>=800 else 844}); page=context.new_page();errors=[]\n  page.on('pageerror',lambda e:errors.append(f'pageerror:{e}'));page.on('console',lambda m:errors.append(f'console:{m.text}') if m.type=='error' else None);page.on('requestfailed',lambda r:errors.append(f'requestfailed:{r.url}::{r.failure}'))\n  page.goto(f'{host.url}/visualizer/reports?report={kpi}',wait_until='domcontentloaded');page.locator('[data-testid=\\\"report-hub\\\"]').wait_for(timeout=20000);page.wait_for_timeout(180);page.evaluate('(t)=>document.documentElement.setAttribute(\\\"data-theme\\\",t)',theme);page.wait_for_timeout(150)\n  data=page.evaluate(JS);data.update({'state_id':f'after-hub-{width}-{theme}','browser_errors':errors});page.screenshot(path=str(OUT/'screenshots'/f'{data[\\\"state_id\\\"]}.png'),full_page=False);results.append(data);context.close()\n browser.close()\n(OUT/'report-hub-after.json').write_text(json.dumps({'base_sha':'4701410c79d9803b0d156d6e0b2a568992387dbc','states':results},indent=2)+'\\\\n')\nprint(json.dumps({'output':str(OUT/'report-hub-after.json'),'states':results},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_product_polish_v4.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_report_thumbnail_geometry.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_product_polish_v4.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "99db33d5c94c6f7da021687c7391181685cc33299c5435b1c861e2db3be3ec87",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_report_thumbnail_geometry.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "cf426ab35f3b06fccef8290fde5325d90af130a79da1d1752031518df77c4236",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '1,240p' scripts/release_checks/run_report_hub_browser_error_gate.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"ArgumentParser|add_argument|if __name__\" scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_final_visual_cleanup_acceptance.py scripts/release_checks/run_native_acceptance.py scripts/release_checks/run_company_boundary_browser_gate.py scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py | head -240'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '1,120p' scripts/verify_release.py; rtk rg -n \\\"required_names|report-hub-browser|run_.*acceptance\\\" scripts/verify_release.py | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --numstat && rtk git status --short --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /tmp/visembler-chg70-r3-report-hub-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg70-r3-diagram-studio'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /tmp/visembler-chg70-r3-native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg70-r3-chart-studio'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files scripts/release_checks | rtk rg 'boundary|final_visual|visual_remediation|editor|release'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --help && rtk python scripts/release_checks/run_company_boundary_browser_gate.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /tmp/visembler-chg70-r3-company-boundary'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg70-r3-final-remediation --skip-benchmark'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.checks // .cases // .' /tmp/visembler-chg70-r3-final-remediation/final-visual-remediation-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.checks[] | select(.id==\\\"VR004\\\") | .error' /tmp/visembler-chg70-r3-final-remediation/final-visual-remediation-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; p=\\\"/tmp/visembler-chg70-r3-final-remediation/final-visual-remediation-acceptance.json\\\"; d=json.load(open(p)); c=next(x for x in d[\\\"checks\\\"] if x[\\\"id\\\"]==\\\"VR004\\\"); print(c[\\\"status\\\"]); print(c[\\\"error\\\"])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json,pprint; d=json.load(open(\\\"/tmp/visembler-chg70-r3-final-remediation/final-visual-remediation-acceptance.json\\\")); c=next(x for x in d[\\\"checks\\\"] if x[\\\"id\\\"]==\\\"VR004\\\"); print(\\\"error_count\\\",len(c[\\\"error\\\"])); pprint.pp(c[\\\"error\\\"], width=140)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n --hidden --glob '\"'!*.pyc'\"' 'VR004|solo wafer uses family minimum|WaferFabEngine::Wafer Map' . /tmp/visembler-chg70-r3-final-remediation 2>/dev/null | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --help && rtk python scripts/release_checks/run_company_release_aggregator.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --untracked-files=all && rtk git diff --check && rtk git diff --stat && rtk git diff -- company_ui/products/visualizer/page.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files tests | rtk rg 'visualizer|report' | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_report_thumbnail_geometry.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_wave4_report_lifecycle.py tests/test_visualizer_company_boundary.py tests/test_visualizer_final_native_closeout.py tests/test_visualizer_r14_release.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "b2c6720453f06d35157bf6fc9703ffce184bf1d11bc189b38e5a9b17338d728b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -f certification_output/runtime_smoke/RUNTIME_SMOKE_REPORT.json certification_output/runtime_smoke/RUNTIME_SMOKE_SERVER.log && rtk git status --short --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfor label, path in [('before','/tmp/visembler-chg70-r3-before/report-hub-before.json'),('after','/tmp/visembler-chg70-r3-after/report-hub-after.json')]:\n    data=json.load(open(path))\n    print(label, data.keys())\n    for state in data.get('states', []):\n        print(state.get('theme'), state.get('viewport'), state.keys())\n        print(state)\n        break\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfor label, path in [('before','/tmp/visembler-chg70-r3-before/report-hub-before.json'),('after','/tmp/visembler-chg70-r3-after/report-hub-after.json')]:\n    data=json.load(open(path))\n    print(label)\n    for state in data['states']:\n        metrics={}\n        for m in state['exact_text_metrics']:\n            if m['text'] in {'Duplicate','42.8','84.2'}:\n                metrics.setdefault(m['text'], (m['foreground'],m['background'],m['ratio'],m['font_size_px'],m['font_weight']))\n        print(state['theme'], state['viewport']['width'], metrics, 'overflow=',state['horizontal_overflow'], 'cards=',state['report_cards'], 'thumbs=',state['thumbs'], 'errors=',state.get('browser_errors', []))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\\\\.cui-report-hub|thumb-metric|cui-report-thumb text|q-btn--flat' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git branch --show-current && rtk git rev-parse HEAD && rtk git diff --name-only 4701410c79d9803b0d156d6e0b2a568992387dbc && rtk git status --short --untracked-files=all && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 240,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 95.6,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 6824960,
+      "fresh_input_tokens": 313862,
+      "input_tokens": 7138822,
+      "non_reasoning_output_tokens": 23991,
+      "output_tokens": 39116,
+      "reasoning_output_tokens": 15125,
+      "total_processed_tokens": 7177938
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "3e0796d95ff3d3a656f6852f8c399488fd8a43db",
+      "subject": "fabric: capture completed model changes [CF-a129d522f13769693416d693]"
+    }
+  ],
+  "diff": {
+    "additions": 10,
+    "changed_files": 1,
+    "commit_count": 1,
+    "deletions": 9
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-a129d522f13769693416d693]",
+    "commit_sha": "3e0796d95ff3d3a656f6852f8c399488fd8a43db",
+    "paths_before": 1,
+    "status_before": [
+      " M company_ui/products/visualizer/page.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-17T11:14:41Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+    "branch": "fix/visembler-chg70-report-hub-contrast-r3",
+    "head_sha": "3e0796d95ff3d3a656f6852f8c399488fd8a43db",
+    "remote_exact_head": true,
+    "remote_head_sha": "3e0796d95ff3d3a656f6852f8c399488fd8a43db",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "4701410c79d9803b0d156d6e0b2a568992387dbc",
+    "work_branch": "fix/visembler-chg70-report-hub-contrast-r3",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-a129d522f13769693416d693",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-70-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-70-r3"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-70-r3",
+  "schema_version": 1,
+  "started_at": "2026-09-17T10:58:13Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 988,
+    "queue_seconds": 0,
+    "total_seconds": 988
+  },
+  "transport": {
+    "bytes": 3306,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3006,
+    "prompt_sha256": "84e3031d558e64520566ff57e75cd55ac3971ccc7746a07299f73b83f88defc0",
+    "sha256": "a129d522f13769693416d693f48e54599764c659ad3e9e83ea06af8f048c5fbe"
+  }
+}
