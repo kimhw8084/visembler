@@ -1,0 +1,363 @@
+{
+  "accepted_at": "2026-09-17T18:12:32Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify/screenshots -type f -name '*.png' -exec stat -f '%m %N' {} \\\\; | sort -n | tail -5\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'from pathlib import Path; print(len(list(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify/screenshots\\\").glob(\\\"*.png\\\"))))' && rtk tail -1 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify/live_lab.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui certify --root . --output /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify --no-edge --exhaustive --format json'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; p=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify/LIVE_CERTIFICATION_REPORT.json\\\"); d=json.loads(p.read_text()); print(json.dumps({\\\"passed\\\":d[\\\"passed\\\"],\\\"preflight_ok\\\":d[\\\"preflight_ok\\\"],\\\"live_ok\\\":d[\\\"live_ok\\\"],\\\"browser_ok\\\":d[\\\"browser_ok\\\"],\\\"browser_summary\\\":{k:sum(1 for x in d[\\\"browser\\\"][\\\"results\\\"] if x[\\\"status\\\"]==k) for k in [\\\"pass\\\",\\\"fail\\\",\\\"warning\\\"]},\\\"coverage_uncovered\\\":d[\\\"coverage\\\"].get(\\\"uncovered\\\"),\\\"baseline\\\":d[\\\"baseline_detail\\\"]},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json,collections; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-ui-certify/LIVE_CERTIFICATION_REPORT.json\\\").read_text()); fails=[x for x in d[\\\"browser\\\"][\\\"results\\\"] if x[\\\"status\\\"]==\\\"fail\\\"]; kinds=collections.Counter(); interactions=collections.Counter(); routes=collections.Counter(); scenarios=collections.Counter();\nfor x in fails:\n routes[x[\\\"route\\\"]]+=1; scenarios[x[\\\"scenario\\\"]]+=1\n for s in x.get(\\\"audit\\\",{}).get(\\\"geometryViolationSamples\\\",[]): kinds[s.get(\\\"kind\\\")]+=1\n for s in x.get(\\\"audit\\\",{}).get(\\\"interactionIssues\\\",[]): interactions[s.split(\\\":\\\",1)[0]]+=1\nprint(\\\"kinds\\\",kinds); print(\\\"interactions\\\",interactions); print(\\\"top_routes\\\",routes.most_common(30)); print(\\\"scenarios\\\",scenarios)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"ArgumentParser|add_argument|native|output|json\\\" scripts/release_checks/measure_editor.py | tail -80 && rtk sed -n '1,220p' scripts/release_checks/measure_editor.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/perf-observations/observations.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/perf-observations/cold-process-1/rss.txt && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/perf-observations -maxdepth 2 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/perf-observations/observations.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; p=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/ui-matrix-probe.json\\\"); d=json.loads(p.read_text()); out={\\\"hub\\\":{},\\\"focus\\\":d[\\\"focus_summary\\\"],\\\"data_first\\\":d[\\\"data_first\\\"],\\\"waferfab\\\":{},\\\"media\\\":d[\\\"media_reflow\\\"],\\\"browser_diagnostics\\\":d[\\\"browser_diagnostics\\\"]};\nfor t,v in d[\\\"report_hub\\\"].items(): out[\\\"hub\\\"][t]={\\\"action\\\":v[\\\"action_contrast\\\"],\\\"kpi\\\":v[\\\"kpi_contrast\\\"],\\\"bad_viewboxes\\\":len(v[\\\"svg\\\"][\\\"bad_viewboxes\\\"]),\\\"overflow\\\":v[\\\"svg\\\"][\\\"overflow\\\"],\\\"visible_violations\\\":len(v[\\\"visible_control_violations\\\"])}\nfor e,v in d[\\\"waferfab_studio\\\"].items(): out[\\\"waferfab\\\"][e]={\\\"area\\\":v[\\\"counts\\\"][\\\"area\\\"],\\\"marks\\\":v[\\\"counts\\\"][\\\"marks\\\"],\\\"bad_viewboxes\\\":len(v[\\\"svg\\\"][\\\"bad_viewboxes\\\"]),\\\"overflow\\\":v[\\\"counts\\\"][\\\"overflow\\\"]}\nprint(json.dumps(out,indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; paths=list(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks\\\").rglob(\\\"final-visual-remediation-acceptance.json\\\"))+list(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks\\\").rglob(\\\"final-visual-cleanup-acceptance.json\\\"));\nfor p in paths:\n d=json.loads(p.read_text()); print(\\\"FILE\\\",p); print(\\\"VR004\\\",[x for x in d.get(\\\"checks\\\",[]) if x.get(\\\"id\\\")==\\\"VR004\\\"]); print(\\\"dist\\\",[x for x in d.get(\\\"visual_utilization\\\",[]) if x.get(\\\"element\\\")==\\\"Control vs Affected Distribution\\\"][:2])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from pathlib import Path; print(Path('/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/probe.py').read_text().splitlines()[128])\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/probe.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '124,134p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/probe.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/probe.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/ui-matrix-probe/ui-matrix-probe.json\\\").read_text()); print(\\\"HUB\\\");\nfor t,v in d[\\\"report_hub\\\"].items(): print(t,\\\"action\\\",v[\\\"action_contrast\\\"][\\\"contrast_ratio\\\"],v[\\\"action_contrast\\\"][\\\"pass\\\"],\\\"kpi\\\",v[\\\"kpi_contrast\\\"][\\\"contrast_ratio\\\"],v[\\\"kpi_contrast\\\"][\\\"pass\\\"],\\\"bad_svg\\\",len(v[\\\"svg\\\"][\\\"bad_viewboxes\\\"]),\\\"x_overflow\\\",v[\\\"svg\\\"][\\\"overflow\\\"][\\\"document_scroll_width\\\"]-v[\\\"svg\\\"][\\\"overflow\\\"][\\\"viewport_width\\\"],\\\"control_x\\\",len(v[\\\"visible_control_violations\\\"]))\nprint(\\\"FOCUS\\\",d[\\\"focus_summary\\\"])\nprint(\\\"DATA\\\",{k:d[\\\"data_first\\\"][\\\"state\\\"].get(k) for k in [\\\"item_count\\\",\\\"dataset_count\\\",\\\"pending\\\",\\\"inflight\\\"]},d[\\\"data_first\\\"][\\\"state\\\"][\\\"items\\\"])\nprint(\\\"WAFER\\\");\nfor e,v in d[\\\"waferfab_studio\\\"].items(): print(e,v[\\\"counts\\\"],\\\"bad_svg\\\",len(v[\\\"svg\\\"][\\\"bad_viewboxes\\\"]))\nprint(\\\"MEDIA\\\",d[\\\"media_reflow\\\"][\\\"forced_colors\\\"],d[\\\"media_reflow\\\"][\\\"viewport_720_equivalent_200\\\"][\\\"preflight\\\"])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls scripts/release_checks | rg 'stability|source|repository|capacity|data|report|stage' && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks -maxdepth 3 -type f | head -140\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/source-stability-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root -maxdepth 2 -type f && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release -maxdepth 2 -type f | head -100 && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-remediation -maxdepth 3 -type f | head -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/runtime-smoke -maxdepth 4 -type f 2>/dev/null && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-cleanup -maxdepth 3 -type f | head -100 && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/stage-d-benchmark -maxdepth 3 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path\nfor f in [Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/stage-d-benchmark/benchmark/stage-d-benchmark.json\\\"),Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-remediation/benchmark/stage-d-benchmark.json\\\"),Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-remediation/final-visual-remediation-acceptance.json\\\"),Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-cleanup/final-visual-cleanup-acceptance.json\\\")]:\n if f.exists():\n  d=json.loads(f.read_text()); print(f.name, {k:d.get(k) for k in [\\\"status\\\",\\\"pass\\\",\\\"passed\\\",\\\"applicable\\\",\\\"not_applicable\\\",\\\"elapsed_ms\\\",\\\"duration_ms\\\"]});\n  if \\\"tasks\\\" in d: print([(x.get(\\\"name\\\"),x.get(\\\"status\\\"),x.get(\\\"elapsed_ms\\\"),x.get(\\\"duration_ms\\\")) for x in d[\\\"tasks\\\"]])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/stage-d-benchmark/benchmark/stage-d-benchmark.json\\\").read_text()); print(json.dumps(d,indent=2)[:12000])'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; p=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/stage-d-benchmark/stage-d-benchmark.json\\\"); d=json.loads(p.read_text()); print(json.dumps(d,indent=2)[:12000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/p2-benchmark -maxdepth 3 -type f 2>/dev/null && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release -maxdepth 2 -type f | rg 'report|release|browser|native|data|capacity|source|full-tests|repository' | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release -type f | rg 'report-hub|data-workflows|native-acceptance|run.*json|browser' | head -80 && rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/native-acceptance-rerun -maxdepth 2 -type f\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release -type f | rg 'report|hub|browser-error' | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'report-hub|report hub|browser-errors' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-remediation -g '*.json' | head -60\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path\nfor p in [Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/data/data-workflows.json\\\"),Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-cleanup/final-visual-cleanup-acceptance.json\\\"),Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/report-hub-browser-errors/report-hub-browser-error-gate.json\\\")]:\n print(\\\"FILE\\\",p.name)\n d=json.loads(p.read_text()); print(list(d)[:25]); print(json.dumps({k:d[k] for k in d if k in [\\\"status\\\",\\\"pass\\\",\\\"passed\\\",\\\"applicable\\\",\\\"checks\\\",\\\"workflows\\\",\\\"browser_errors\\\",\\\"summary\\\"]},indent=2)[:5000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'from pathlib import Path; import json,hashlib; root=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root\\\"); files=[p for p in root.rglob(\\\"*\\\") if p.is_file()]; print(json.dumps({\\\"file_count\\\":len(files),\\\"total_bytes\\\":sum(p.stat().st_size for p in files),\\\"has_rejected_ar3_named_file\\\":any(\\\"ar3\\\" in p.name.lower() for p in files),\\\"manifest_sha\\\":hashlib.sha256((root/\\\"artifact-manifest.json\\\").read_bytes()).hexdigest()},indent=2))' && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/local-stage-receipt.json && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-manifest.json.sha256 && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-bundle.zip.sha256\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import xml.etree.ElementTree as ET; from pathlib import Path; p=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/full-tests.xml\\\"); r=ET.parse(p).getroot(); print({k:r.attrib.get(k) for k in [\\\"tests\\\",\\\"errors\\\",\\\"failures\\\",\\\"skipped\\\",\\\"time\\\"]})' && rtk python -c 'import json; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/report.json\\\").read_text()); print(json.dumps({\\\"status\\\":d.get(\\\"status\\\"),\\\"passed\\\":d.get(\\\"passed\\\"),\\\"failed\\\":d.get(\\\"failed\\\"),\\\"remaining\\\":d.get(\\\"remaining\\\"),\\\"source\\\":d.get(\\\"source\\\")},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk head -60 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/full-tests.xml && rtk head -80 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/report.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path\np=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/perf-observations/observations.json\\\"); d=json.loads(p.read_text()); print(\\\"PERF aggregate\\\",json.dumps(d[\\\"aggregate_by_metric\\\"],indent=2)); print(\\\"RSS\\\",[(x[\\\"run\\\"],x[\\\"process_rss_max\\\"]) for x in d[\\\"runs\\\"]])\np=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-capacity/company-capacity.json\\\"); d=json.loads(p.read_text()); print(\\\"CAPACITY\\\",[(x.get(\\\"reports\\\"),x.get(\\\"create_ms\\\"),x.get(\\\"scoped_list_ms\\\"),x.get(\\\"open_ms\\\"),x.get(\\\"history_ms\\\"),x.get(\\\"asset_authorization_ms\\\"),x.get(\\\"rename_ms\\\")) for x in d.get(\\\"cases\\\",[])])\np=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/stage-d-benchmark/stage-d-benchmark.json\\\"); d=json.loads(p.read_text()); print(\\\"STAGE_D\\\",[(x[\\\"task\\\"],x[\\\"status\\\"],x[\\\"metrics\\\"][\\\"elapsed_seconds\\\"],x[\\\"metrics\\\"][\\\"primary_clicks\\\"]) for x in d[\\\"tasks\\\"]])' && rtk git status --short --untracked-files=all && rtk git diff --quiet 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git rev-parse main\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk head -80 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-capacity/company-capacity.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat scripts/release_checks/source_identity.py | head -160 && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/source-stability-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk head -60 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/source-manifest.json && rtk head -60 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release/release-manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path\np=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/company-capacity/company-capacity.json\\\"); print(json.dumps({\\\"status\\\":json.loads(p.read_text())[\\\"status\\\"],\\\"results\\\":json.loads(p.read_text())[\\\"results\\\"]},indent=2))\np=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/p2-benchmark/p2-benchmark.json\\\"); d=json.loads(p.read_text()); print(\\\"P2\\\",json.dumps({k:d.get(k) for k in [\\\"status\\\",\\\"passed\\\",\\\"total\\\",\\\"tasks\\\"]},indent=2)[:6000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"verify-release/report-hub|verify-release-final/report-hub\" /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from pathlib import Path; p=Path('/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'); print(p.read_text().splitlines()[98])\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/build_artifact_bundle.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json,xml.etree.ElementTree as ET; from pathlib import Path\nbase=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release-final\\\"); d=json.loads((base/\\\"report.json\\\").read_text()); xml=ET.parse(base/\\\"full-tests.xml\\\").getroot(); s=xml.find(\\\"testsuite\\\"); print(json.dumps({\\\"release_status\\\":d[\\\"release_status\\\"],\\\"checks_status\\\":d[\\\"checks_status\\\"],\\\"remaining\\\":d[\\\"remaining\\\"],\\\"full_tests\\\":{\\\"tests\\\":s.attrib.get(\\\"tests\\\"),\\\"errors\\\":s.attrib.get(\\\"errors\\\"),\\\"failures\\\":s.attrib.get(\\\"failures\\\"),\\\"skipped\\\":s.attrib.get(\\\"skipped\\\"),\\\"time\\\":s.attrib.get(\\\"time\\\")}},indent=2))' && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/source-stability-final.json && rtk git status --short --untracked-files=all && rtk git diff --quiet 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git rev-parse --abbrev-ref HEAD\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk head -30 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release-final/report.json && rtk python -c 'import json,xml.etree.ElementTree as ET; from pathlib import Path\nbase=Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release-final\\\"); d=json.loads((base/\\\"report.json\\\").read_text()); xml=ET.parse(base/\\\"full-tests.xml\\\").getroot(); s=xml.find(\\\"testsuite\\\"); print(json.dumps({\\\"keys\\\":list(d)[:20],\\\"full_tests\\\":s.attrib},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/verify-release-final/report.json\\\").read_text()); print(json.dumps({k:d.get(k) for k in [\\\"checks_status\\\",\\\"release_status\\\",\\\"remaining_release_validation\\\",\\\"company_boundary_status\\\",\\\"managed_target_status\\\",\\\"git_status_at_start\\\"]},indent=2))' && rtk cat /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/source-stability-final.json && rtk git status --short --untracked-files=all && rtk git diff --quiet 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git rev-parse --abbrev-ref HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; from pathlib import Path; d=json.loads(Path(\\\"/Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks/final-visual-remediation/final-visual-remediation-acceptance.json\\\").read_text());\nfor x in d[\\\"visual_utilization\\\"]:\n if x.get(\\\"engine\\\")==\\\"WaferFabEngine\\\": print(x[\\\"element\\\"],x.get(\\\"renderer_contract\\\"),x.get(\\\"marks\\\"),x.get(\\\"internal_area_share\\\"),x.get(\\\"overflow\\\"),x.get(\\\"legacy_assumption_marks\\\"))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find . -type f -maxdepth 3 | sort'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 346,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.12,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 33212800,
+      "fresh_input_tokens": 985248,
+      "input_tokens": 34198048,
+      "non_reasoning_output_tokens": 53131,
+      "output_tokens": 87388,
+      "reasoning_output_tokens": 34257,
+      "total_processed_tokens": 34285436
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-17T19:17:58Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "branch": "verify/visembler-chg40-ui-perfection-r3",
+    "head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "remote_exact_head": true,
+    "remote_head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "work_branch": "verify/visembler-chg40-ui-perfection-r3",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-e6e0c8d630c9c1ec91dd9934",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-40-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-40-r3"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-40-r3",
+  "schema_version": 1,
+  "started_at": "2026-09-17T18:12:32Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 3926,
+    "queue_seconds": 0,
+    "total_seconds": 3926
+  },
+  "transport": {
+    "bytes": 4967,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4667,
+    "prompt_sha256": "86e80bcdf8adf1342cf6990c1088f9e7205c5b310f781c114d9ecd1aadf8812d",
+    "sha256": "e6e0c8d630c9c1ec91dd9934ae9cbd6db3551242f9574524f5136fa1446a6d37"
+  }
+}
