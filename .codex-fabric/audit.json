@@ -1,0 +1,426 @@
+{
+  "accepted_at": "2026-09-17T14:13:15Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 61,
+      "deletions": 6,
+      "path": "scripts/release_checks/run_final_visual_remediation_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 15,
+      "deletions": 6,
+      "path": "scripts/release_checks/run_stage_d_benchmark.py",
+      "status": "M"
+    },
+    {
+      "additions": 36,
+      "deletions": 0,
+      "path": "scripts/release_checks/waferfab_visual_contracts.py",
+      "status": "A"
+    },
+    {
+      "additions": 53,
+      "deletions": 1,
+      "path": "tests/test_visualizer_final_visual_remediation.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && git status --short --branch && git rev-parse HEAD && git merge-base --is-ancestor 04071f1767eedc17e9704be6551f59ac8ec04bff HEAD; printf 'ANCESTRY_EXIT=%s\\\\n' \\\"\"'$?\" && sed -n '\"'1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,240p' /Users/haewonkim/.codex/law.md && sed -n '1,240p' company_ui/ai/construction_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' docs/APP_PATTERNS.md && rtk sed -n '1,220p' docs/COMPONENT_CATALOG.md && rtk rg -n \\\"run_repository_contracts|automated_tests|repository_contract_receipt|CHG-42|WaferFab\\\" . --glob '\"'!*.pyc'\"' --glob '\"'!__pycache__/*'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files | rtk rg '(\"'^|/)(run_repository_contracts'\"\\\\.py|certification_manifest\\\\.json|test_visualizer_release_closure\\\\.py)\"'$|(''^|/)tests/test_.*(wafer|visual|stage_d).*'\"\\\\.py\"'$'\"' && rtk git log --oneline --decorate --all --max-count=20 && rtk git branch --all --contains 3ef090f25949e49ecd241db45de6983d8d2feed4 && rtk git show --stat --oneline --summary 3ef090f25949e49ecd241db45de6983d8d2feed4\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/release_checks/run_repository_contracts.py && rtk sed -n '1,220p' company_ui/certification/certification_manifest.json && rtk sed -n '1,260p' tests/test_visualizer_release_closure.py && rtk git diff --no-ext-diff 04071f1767eedc17e9704be6551f59ac8ec04bff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_stage_d_benchmark.py scripts/release_checks/waferfab_visual_contracts.py tests/test_visualizer_final_visual_remediation.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' scripts/release_checks/source_identity.py && rtk python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout -q\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "423b1d0e014eb1eab96f4420f7b344c2615be505dd574b756ac884826ca74f2d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'repro_dir=$(mktemp -d /tmp/visembler-chg42-r1-repro.XXXXXX)\nprintf '\"'%s\\\\n' \\\"\"'$repro_dir\"\nrtk git worktree add --detach \"$repro_dir\" 3ef090f25949e49ecd241db45de6983d8d2feed4\nset +e\nrtk python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout -q\nrepro_status=$?\nset -e\nprintf '\"'REPRO_EXIT=%s\\\\n' \\\"\"'$repro_status\"\nrtk git status --short --branch\nexit \"$repro_status\"'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 161,
+        "output_sha256": "87c2fd31f249dbfbc13b9e508163f0c3cc0da42dc41e855c16f0707a8ec93aa7",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -m pytest --collect-only -q 2>&1 | tail -n 8\nrtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg42-r1-repro.HbqlNv/repository-contracts.json\nrtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/visembler-chg42-r1-repro.HbqlNv/repository-contracts.json')\nprint(json.dumps(json.loads(p.read_text())['checks']['certification_manifest'], sort_keys=True))\nPY\"",
+      "exit_code": 127,
+      "test_result": {
+        "exit_code": 127,
+        "framework": "pytest",
+        "outcome": "nonzero",
+        "output_bytes": 138,
+        "output_sha256": "425d7684bab6605782fe04cb5b8f9425fba51cc2c48668b407d920982e853dfa",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pwd\nrtk git status --short --branch\nrtk python -m pytest --collect-only -q 2>&1 | tail -n 8'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 93,
+        "output_sha256": "8a6a11c240c3293f46e7950f951c807d505570eddc805b1d9a443151ed95506c",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk which python\nrtk python --version\nrtk ls -l\nrtk ls -l .venv/bin/python 2>/dev/null || true\nrtk env | rtk rg '\"'^(PATH|VIRTUAL_ENV)='\"'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la | rtk head -n 20\nrtk command -v python\nrtk command -v python3\nrtk env | rtk rg '\"'^(PATH|VIRTUAL_ENV)='\"'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python3 -m pytest --collect-only -q 2>&1 | tail -n 8\nset +e\nrtk python3 -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout -q\nrepro_status=$?\nset -e\nprintf '\"'REPRO_EXIT=%s\\\\n' \\\"\"'$repro_status\"\nexit \"$repro_status\"'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 82,
+        "output_sha256": "de0ba7d3eda38b2078cc37bbdf574eb738e1bdada05e436a2b63a45e3240d87e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk command -v python\nrtk command -v python3\nrtk python --version\nrtk python3 --version\nrtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python -m pytest --collect-only -q 2>&1 | tail -n 8\nset +e\nrtk /opt/anaconda3/bin/python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout -q\nrepro_status=$?\nset -e\nprintf '\"'REPRO_EXIT=%s\\\\n' \\\"\"'$repro_status\"\nexit \"$repro_status\"'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1975,
+        "output_sha256": "91e1d83f6f8dbca9acac436146a745f3cc543dafd4b268d68c2f1ff065493b7e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python -m pytest --collect-only -q 2>&1 | rtk rg 'collected|tests/test_visualizer_final_visual_remediation|tests/test_visualizer_release_closure' || true\nrtk /opt/anaconda3/bin/python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg42-r1-repro.HbqlNv/repository-contracts.json || true\nrtk /opt/anaconda3/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/visembler-chg42-r1-repro.HbqlNv/repository-contracts.json')\nreceipt=json.loads(p.read_text())\nprint(json.dumps(receipt['checks']['certification_manifest'], sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 328,
+        "output_sha256": "37282d4edb5f7c0395ee4d00268cffdc2b1b1dc1e0c0a777b778696d9924db17",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --no-ext-diff 04071f1767eedc17e9704be6551f59ac8ec04bff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_final_visual_remediation_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --no-ext-diff 04071f1767eedc17e9704be6551f59ac8ec04bff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_final_visual_remediation_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --no-ext-diff 04071f1767eedc17e9704be6551f59ac8ec04bff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_stage_d_benchmark.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,90p' scripts/release_checks/run_stage_d_benchmark.py && rtk sed -n '210,275p' scripts/release_checks/run_stage_d_benchmark.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --no-ext-diff 04071f1767eedc17e9704be6551f59ac8ec04bff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- tests/test_visualizer_final_visual_remediation.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --exit-code --no-ext-diff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_stage_d_benchmark.py scripts/release_checks/waferfab_visual_contracts.py tests/test_visualizer_final_visual_remediation.py\ncompare_status=$?\nprintf '\"'R1_SOURCE_DIFF_MATCH_EXIT=%s\\\\n' \\\"\"'$compare_status\"\nrtk git status --short\nrtk git diff --check\nexit \"$compare_status\"'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --no-ext-diff 3ef090f25949e49ecd241db45de6983d8d2feed4 -- scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_stage_d_benchmark.py scripts/release_checks/waferfab_visual_contracts.py tests/test_visualizer_final_visual_remediation.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show 3ef090f25949e49ecd241db45de6983d8d2feed4:scripts/release_checks/waferfab_visual_contracts.py | rtk cmp - scripts/release_checks/waferfab_visual_contracts.py\ncmp_status=$?\nprintf '\"'R1_CONTRACT_FILE_MATCH_EXIT=%s\\\\n' \\\"\"'$cmp_status\"\nexit \"$cmp_status\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport importlib.util\nfrom pathlib import Path\npath=Path('scripts/release_checks/run_repository_contracts.py')\nspec=importlib.util.spec_from_file_location('repository_contracts', path)\nmodule=importlib.util.module_from_spec(spec)\nassert spec and spec.loader\nspec.loader.exec_module(module)\nprint(module._manifest_check())\nPY\nset +e\nrtk python -m pytest tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout -q\nfailure_status=\"'$?\nset -e\nprintf '\"'CURRENT_PRE_REPAIR_EXIT=%s\\\\n' \\\"\"'$failure_status\"\nexit \"$failure_status\"'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1747,
+        "output_sha256": "94807189411b05efd9600ba54b7484b0561175b43f0d2d50d3b050bc7d02cf75",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'contract_receipt=$(mktemp /tmp/visembler-chg42-r2-contracts.XXXXXX.json)\nrtk python scripts/release_checks/run_repository_contracts.py --output \"$contract_receipt\"\nrtk python - <<PY\nimport json\nfrom pathlib import Path\nreceipt=json.loads(Path(\"$contract_receipt\").read_text())\ncheck=receipt[\"checks\"][\"certification_manifest\"]\nprint(json.dumps({\"receipt_status\": receipt[\"status\"], \"manifest_check\": check, \"managed_target_status\": receipt[\"managed_target_status\"]}, sort_keys=True))\nPY\nrtk rg -n '\"'\"'^def test_'\"' tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_fab_visuals.py tests/test_visualizer_stage_d.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_stage_d.py tests/test_visualizer_fab_visuals.py -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "cfc14fd2dc11c362cccf5421245ca5ab0e9d286b54a604a80bd2dd5522f6feb9",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "2f1cd78f8d3cd7ad53e7f2054d11f39a9c884d7905486344fe44c714df1ede61",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\\\\[tool.pytest|addopts|testpaths|python_files' pyproject.toml pytest.ini setup.cfg 2>/dev/null || true\nrtk git diff --name-status\nrtk git diff --stat\nrtk git diff --check\nrtk git status --short --branch\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 321,
+        "output_sha256": "6800954d3d8da3a98482bfc9db489b9a6197edebcc7a9cdc0c3f05e33c6dc22d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nimport subprocess\nimport sys\nfrom pathlib import Path\n\nbase = '04071f1767eedc17e9704be6551f59ac8ec04bff'\nr1 = '3ef090f25949e49ecd241db45de6983d8d2feed4'\nmanifest = 'company_ui/certification/certification_manifest.json'\nr1_files = [\n    'scripts/release_checks/run_final_visual_remediation_acceptance.py',\n    'scripts/release_checks/run_stage_d_benchmark.py',\n    'scripts/release_checks/waferfab_visual_contracts.py',\n    'tests/test_visualizer_final_visual_remediation.py',\n]\nallowed = set(r1_files + [manifest])\nstatus_lines = subprocess.check_output(['git', 'status', '--porcelain'], text=True).splitlines()\nstatus_paths = {line[3:] for line in status_lines}\nsource_matches = {}\nfor path in r1_files:\n    expected = subprocess.check_output(['git', 'show', f'{r1}:{path}'])\n    source_matches[path] = Path(path).read_bytes() == expected\ncollection = subprocess.run([sys.executable, '-m', 'pytest', '--collect-only'], text=True, capture_output=True, check=False)\nimport re\nmatch = re.search(r'(\\\\d+) tests collected', collection.stdout + collection.stderr)\nmanifest_diff = subprocess.check_output(['git', 'diff', '--unified=0', '--', manifest], text=True)\nprint(json.dumps({\n    'base': base,\n    'head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),\n    'base_is_ancestor': subprocess.run(['git', 'merge-base', '--is-ancestor', base, 'HEAD']).returncode == 0,\n    'status_paths': sorted(status_paths),\n    'scope_exact': status_paths == allowed,\n    'r1_source_bytes_match': all(source_matches.values()),\n    'r1_source_match_details': source_matches,\n    'live_collected_tests': int(match.group(1)) if match else None,\n    'manifest_diff': manifest_diff,\n}, indent=2, sort_keys=True))\nif status_paths \"'!= allowed or not all(source_matches.values()) or not match or int(match.group(1)) != 1108:\n    raise SystemExit(1)\nPY\nrtk git diff --check\nrtk proxy git diff --no-ext-diff --unified=0 -- company_ui/certification/certification_manifest.json'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1567,
+        "output_sha256": "5930115528a6b2e930d85a74d6734acd9e48b51fc1a5b936720dd5f7439d085e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove /tmp/visembler-chg42-r1-repro.HbqlNv\nrtk git worktree list\nrtk git status --short --branch\nrtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short\nrtk git worktree remove --force /tmp/visembler-chg42-r1-repro.HbqlNv\nrtk git worktree list\nrtk git status --short --branch\nrtk git diff --check'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree list\nrtk git status --short --branch\nrtk git diff --check\ncontract_receipt=$(mktemp /tmp/visembler-chg42-r2-final-contracts.XXXXXX.json)\nrtk python scripts/release_checks/run_repository_contracts.py --output \"$contract_receipt\"\nrtk python - <<PY\nimport json\nfrom pathlib import Path\nreceipt=json.loads(Path(\"$contract_receipt\").read_text())\nprint(json.dumps({\"status\":receipt[\"status\"],\"automated_tests\":receipt[\"checks\"][\"certification_manifest\"][\"automated_tests\"],\"collected_tests\":receipt[\"checks\"][\"certification_manifest\"][\"collected_tests\"],\"managed_target_status\":receipt[\"managed_target_status\"]}, sort_keys=True))\nPY'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 92,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.13,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 4120832,
+      "fresh_input_tokens": 121663,
+      "input_tokens": 4242495,
+      "non_reasoning_output_tokens": 17526,
+      "output_tokens": 25726,
+      "reasoning_output_tokens": 8200,
+      "total_processed_tokens": 4268221
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "3a59cc5542479e78c8e6e09a0e23e633fe7560de",
+      "subject": "fabric: capture completed model changes [CF-9063923d48c973b47a856c7c]"
+    }
+  ],
+  "diff": {
+    "additions": 166,
+    "changed_files": 5,
+    "commit_count": 1,
+    "deletions": 14
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "3b6573d9377785bb9f797f0dabe17d805213ce79326f14a0b9ce5b34e72f4b25"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-9063923d48c973b47a856c7c]",
+    "commit_sha": "3a59cc5542479e78c8e6e09a0e23e633fe7560de",
+    "paths_before": 5,
+    "status_before": [
+      " M company_ui/certification/certification_manifest.json",
+      " M scripts/release_checks/run_final_visual_remediation_acceptance.py",
+      " M scripts/release_checks/run_stage_d_benchmark.py",
+      " M tests/test_visualizer_final_visual_remediation.py",
+      "?? scripts/release_checks/waferfab_visual_contracts.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-17T14:23:41Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "04071f1767eedc17e9704be6551f59ac8ec04bff",
+    "branch": "fix/visembler-chg42-ci-manifest-r2",
+    "head_sha": "3a59cc5542479e78c8e6e09a0e23e633fe7560de",
+    "remote_exact_head": true,
+    "remote_head_sha": "3a59cc5542479e78c8e6e09a0e23e633fe7560de",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "04071f1767eedc17e9704be6551f59ac8ec04bff",
+    "work_branch": "fix/visembler-chg42-ci-manifest-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-9063923d48c973b47a856c7c",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-42-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-42-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-42-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-17T14:13:15Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 626,
+    "queue_seconds": 0,
+    "total_seconds": 626
+  },
+  "transport": {
+    "bytes": 3166,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2874,
+    "prompt_sha256": "c507ef6ad90742a1733fd9db968e3b72ed78a8944e4d744d5963276d723ca326",
+    "sha256": "9063923d48c973b47a856c7cb1aa676b439c3a388a0c878ff809ccbaf475738f"
+  }
+}
