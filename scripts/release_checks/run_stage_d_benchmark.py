@@ -47,6 +47,10 @@ from run_p2_benchmark import (  # noqa: E402
     task_e,
     viewport_probe,
 )
+from waferfab_visual_contracts import (  # noqa: E402
+    LEGACY_WAFERFAB_SELECTOR,
+    WAFERFAB_RENDERER_CONTRACTS,
+)
 
 
 def task_1(page, metrics, out, image_path):
@@ -66,7 +70,10 @@ def task_1(page, metrics, out, image_path):
     settled(page)
     current = model(page)
     assert len(current["datasets"]) == 1 and len(current["items"]) >= 3
-    assert any(item.get("element") in {"Line Chart", "SPC Control Chart", "Vertical Bar"} for item in current["items"])
+    # This typed source has TOOL + CHAMBER + MEASUREMENT roles, so the
+    # maintained Data First blueprint may legitimately choose the populated
+    # Tool × Chamber Matrix renderer instead of a generic chart.
+    assert any(item.get("element") in {"Line Chart", "SPC Control Chart", "Vertical Bar", "Tool × Chamber Matrix"} for item in current["items"])
     export = export_current(page, metrics, out, "task-1-process-health")
     reload_and_assert(page, {}, None)
     return {"export": export, "profiled_and_structured": True, "raw_json_edits": 0}
@@ -218,19 +225,19 @@ TASKS = {
 
 def visual_quality(page):
     """Measure product-visible quality; wrappers alone do not count as content."""
-    return page.evaluate(r"""()=>{
+    return page.evaluate(r"""({contracts,legacySelector})=>{
       const root=document.querySelector('.cui-visualizer-root');
       if(!root)return {surface:'report-hub',occupied_area_ratio:null,elements:[],empty_error_state_count:0,clipping_overflow_count:0,primary_evidence_area_share:null,context_toolbar:null};
       const hull=document.querySelector('#hull'),nodes=[...document.querySelectorAll('.component')],hullRect=hull?.getBoundingClientRect();
       const area=r=>Math.max(0,r.width)*Math.max(0,r.height),union=rects=>rects.reduce((a,r)=>a?({left:Math.min(a.left,r.left),top:Math.min(a.top,r.top),right:Math.max(a.right,r.right),bottom:Math.max(a.bottom,r.bottom),width:Math.max(a.right,r.right)-Math.min(a.left,r.left),height:Math.max(a.bottom,r.bottom)-Math.min(a.top,r.top)}):r,null);
-      const selector=engine=>engine==='CoreChartEngine'||engine==='EngineeringChartEngine'?'.cs-chart-svg':engine==='WaferFabEngine'?'.cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]':engine==='DiagramEngine'?'.diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]':engine==='TimelineEngine'?'[data-timeline-event]':engine==='ImageMediaEngine'?'.image-stage,.captioned-image-live,.screenshot-frame-live':engine==='TableEngine'?'.table-frame,.table-wrap':engine==='MetricEngine'?'.metric-value,.hero-kpi,.status-hero,.metric-ring-live':'.card-body>*';
-      const elements=nodes.map(node=>{const card=node.getBoundingClientRect(),contentRoot=node.querySelector('.c-content')||node,engine=node.querySelector('[data-engine]')?.dataset.engine||'',parts=[...node.querySelectorAll(selector(engine))].map(value=>value.getBoundingClientRect()).filter(value=>value.width>0&&value.height>0),inside=union(parts),role=window.CompanyUIVisualizerBridge.state().model.items.find(item=>item.id===node.dataset.id)?.message_role||'',box=value=>{const rect=value?.getBoundingClientRect();return rect?{width:rect.width,height:rect.height}:null;},offenders=[...contentRoot.querySelectorAll('*')].filter(value=>value.scrollWidth>value.clientWidth+1||value.scrollHeight>value.clientHeight+1).slice(0,6).map(value=>({tag:value.tagName,class:value.className?.baseVal??value.className,client_width:value.clientWidth,scroll_width:value.scrollWidth,client_height:value.clientHeight,scroll_height:value.scrollHeight})),dominant=inside?Math.max(inside.width/Math.max(1,card.width),inside.height/Math.max(1,card.height)):0;return {id:node.dataset.id,engine,role,card_area:area(card),visual_area:inside?area(inside):0,visual_utilization:inside?area(inside)/Math.max(1,area(card)):0,dominant_axis_share:dominant,overflow:contentRoot.scrollWidth>contentRoot.clientWidth+1||contentRoot.scrollHeight>contentRoot.clientHeight+1,overflow_metrics:{client_width:contentRoot.clientWidth,scroll_width:contentRoot.scrollWidth,client_height:contentRoot.clientHeight,scroll_height:contentRoot.scrollHeight},overflow_offenders:offenders,renderer_boxes:{content:box(node.querySelector('.integrated-element-content')),body:box(node.querySelector('.card-body')),plot:box(node.querySelector('.cs-static-chart')),svg:box(node.querySelector('.cs-chart-svg')),meaningful:inside?{width:inside.width,height:inside.height}:null}};});
+      const selector=(engine,element)=>engine==='CoreChartEngine'||engine==='EngineeringChartEngine'?'.cs-chart-svg':engine==='WaferFabEngine'&&contracts[element]?contracts[element].area_selector:engine==='WaferFabEngine'?'.cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]':engine==='DiagramEngine'?'.diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]':engine==='TimelineEngine'?'[data-timeline-event]':engine==='ImageMediaEngine'?'.image-stage,.captioned-image-live,.screenshot-frame-live':engine==='TableEngine'?'.table-frame,.table-wrap':engine==='MetricEngine'?'.metric-value,.hero-kpi,.status-hero,.metric-ring-live':'.card-body>*';
+      const elements=nodes.map(node=>{const card=node.getBoundingClientRect(),contentRoot=node.querySelector('.c-content')||node,renderer=node.querySelector('[data-engine]'),engine=renderer?.dataset.engine||'',element=renderer?.dataset.element||'',contract=engine==='WaferFabEngine'?contracts[element]:null,internalSelector=selector(engine,element),markSelector=contract?.mark_selector||'[data-chart-point],[data-wafer-die],[data-diagram-node],[data-timeline-event]',parts=[...node.querySelectorAll(internalSelector)].map(value=>value.getBoundingClientRect()).filter(value=>value.width>0&&value.height>0),inside=union(parts),role=window.CompanyUIVisualizerBridge.state().model.items.find(item=>item.id===node.dataset.id)?.message_role||'',box=value=>{const rect=value?.getBoundingClientRect();return rect?{width:rect.width,height:rect.height}:null;},offenders=[...contentRoot.querySelectorAll('*')].filter(value=>value.scrollWidth>value.clientWidth+1||value.scrollHeight>value.clientHeight+1).slice(0,6).map(value=>({tag:value.tagName,class:value.className?.baseVal??value.className,client_width:value.clientWidth,scroll_width:value.scrollWidth,client_height:value.clientHeight,scroll_height:value.scrollHeight})),dominant=inside?Math.max(inside.width/Math.max(1,card.width),inside.height/Math.max(1,card.height)):0;return {id:node.dataset.id,engine,element,renderer_contract:contract?.id||null,renderer_kind:contract?.renderer||null,internal_selector:internalSelector,mark_selector:markSelector,marks:node.querySelectorAll(markSelector).length,legacy_assumption_selector:engine==='WaferFabEngine'?legacySelector:null,legacy_assumption_marks:engine==='WaferFabEngine'?node.querySelectorAll(legacySelector).length:null,card_area:area(card),visual_area:inside?area(inside):0,visual_utilization:inside?area(inside)/Math.max(1,area(card)):0,dominant_axis_share:dominant,overflow:contentRoot.scrollWidth>contentRoot.clientWidth+1||contentRoot.scrollHeight>contentRoot.clientHeight+1,overflow_metrics:{client_width:contentRoot.clientWidth,scroll_width:contentRoot.scrollWidth,client_height:contentRoot.clientHeight,scroll_height:contentRoot.scrollHeight},overflow_offenders:offenders,renderer_boxes:{content:box(node.querySelector('.integrated-element-content')),body:box(node.querySelector('.card-body')),plot:box(node.querySelector('.cs-static-chart')),svg:box(node.querySelector('.cs-chart-svg')),meaningful:inside?{width:inside.width,height:inside.height}:null}};});
       const occupied=elements.reduce((sum,value)=>sum+value.card_area,0)/Math.max(1,area(hullRect||{width:1,height:1}));
       const text=document.querySelector('#componentLayer')?.innerText||'',empty=(text.match(/Add chart data|Diagram data needs review|X unmapped|Y unmapped|No mapped dies/gi)||[]).length;
       const primary=elements.filter(value=>value.role==='Primary Evidence'),occupiedCards=elements.reduce((sum,value)=>sum+value.card_area,0),primaryShare=primary.length?primary.reduce((sum,value)=>sum+value.card_area,0)/Math.max(1,occupiedCards):null,primaryUtilization=primary.length?Math.min(...primary.map(value=>value.visual_utilization)):null;
       const context=document.querySelector('#context.show'),selected=document.querySelector('.component.selected');let contextToolbar=null;if(context&&selected){const a=context.getBoundingClientRect(),b=selected.getBoundingClientRect(),dx=Math.max(0,b.left-a.right,a.left-b.right),dy=Math.max(0,b.top-a.bottom,a.top-b.bottom);contextToolbar={distance:Math.hypot(dx,dy),visible:a.width>0&&a.height>0};}
-      return {surface:'editor',occupied_area_ratio:occupied,element_count:elements.length,elements,empty_error_state_count:empty,clipping_overflow_count:elements.filter(value=>value.overflow).length,primary_evidence_area_share:primaryShare,primary_evidence_min_visual_utilization:primaryUtilization,plotted_marks:document.querySelectorAll('[data-chart-point]').length,wafer_dies:document.querySelectorAll('[data-wafer-die]').length,diagram_errors:(text.match(/Diagram data needs review/gi)||[]).length,context_toolbar:contextToolbar};
-    }""")
+      return {surface:'editor',occupied_area_ratio:occupied,element_count:elements.length,elements,empty_error_state_count:empty,clipping_overflow_count:elements.filter(value=>value.overflow).length,primary_evidence_area_share:primaryShare,primary_evidence_min_visual_utilization:primaryUtilization,plotted_marks:document.querySelectorAll('[data-chart-point],[data-wafer-die]').length,wafer_dies:document.querySelectorAll('[data-wafer-die]').length,diagram_errors:(text.match(/Diagram data needs review/gi)||[]).length,context_toolbar:contextToolbar};
+    }""", {'contracts': WAFERFAB_RENDERER_CONTRACTS, 'legacySelector': LEGACY_WAFERFAB_SELECTOR})
 
 
 def assert_quality(name, quality, checkpoint_exists):
@@ -247,6 +254,8 @@ def assert_quality(name, quality, checkpoint_exists):
     if quality['primary_evidence_min_visual_utilization'] is not None and quality['primary_evidence_min_visual_utilization'] < .28:
         raise AssertionError(f"primary evidence does not use its allocated card: {quality['primary_evidence_min_visual_utilization']:.3f} < 0.28")
     for element in quality.get('elements', []):
+        if element['engine']=='WaferFabEngine' and (element.get('renderer_contract') is None or element.get('marks', 0) < 1):
+            raise AssertionError(f"WaferFab renderer contract/marks missing for {element.get('element')}: {element}")
         if element['engine']=='WaferFabEngine' and element['visual_utilization'] < .24:
             raise AssertionError(f"wafer visual utilization {element['visual_utilization']:.3f} < 0.24")
         if element['engine']=='DiagramEngine' and element['visual_utilization'] < .22 and element['dominant_axis_share'] < .70:
