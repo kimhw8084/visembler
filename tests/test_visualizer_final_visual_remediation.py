@@ -11,7 +11,8 @@ from playwright.sync_api import Error as PlaywrightError
 
 from company_ui.products.visualizer.page import _history_diff_summary, _report_thumbnail_markup
 from company_ui.products.visualizer.repository import ReportRepository
-from scripts.release_checks.run_final_visual_remediation_acceptance import goto_local_route
+from scripts.release_checks.run_final_visual_remediation_acceptance import fixture, goto_local_route
+from scripts.release_checks.waferfab_visual_contracts import LEGACY_WAFERFAB_SELECTOR, WAFERFAB_RENDERER_CONTRACTS
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -116,6 +117,57 @@ console.log(JSON.stringify({
     assert "91 → 95" in result["wafer"]["svg"]
     assert result["engineering"]["rows"] == result["engineering"]["marks"] == 2
     assert result["reopened"]["rows"] == result["reopened"]["marks"] == 2
+
+
+def test_final_visual_verifier_fixtures_match_each_waferfab_renderer_contract() -> None:
+    elements = [
+        "Wafer Map",
+        "Wafer Difference Map",
+        "Tool × Chamber Matrix",
+        "Golden vs Affected Profile",
+        "Control vs Affected Distribution",
+    ]
+    entries = [fixture("WaferFabEngine", element, index) for index, element in enumerate(elements, 1)]
+    source = f"""
+import {{chartModelFromEntry,renderChartSvg}} from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs';
+const entries={json.dumps(entries, ensure_ascii=False)};
+const rendered=entries.map(entry=>{{
+  const model=chartModelFromEntry(entry),svg=renderChartSvg(model,{{width:680,height:330}});
+  return {{element:entry.element,rows:model.dataset.rows.length,mapping:model.mapping,svg,
+    waferDies:(svg.match(/data-wafer-die=/g)||[]).length,
+    chartPoints:(svg.match(/data-chart-point=/g)||[]).length}};
+}});
+console.log(JSON.stringify(rendered));
+"""
+    rendered = node_json(source)
+    by_element = {item["element"]: item for item in rendered}
+    assert by_element["Wafer Map"]["rows"] == by_element["Wafer Map"]["waferDies"] == 4
+    assert by_element["Wafer Difference Map"]["rows"] == by_element["Wafer Difference Map"]["waferDies"] == 3
+    assert by_element["Wafer Difference Map"]["mapping"]["value"] == "__delta"
+    assert by_element["Tool × Chamber Matrix"]["rows"] == 4
+    assert by_element["Tool × Chamber Matrix"]["chartPoints"] == 4
+    assert "ETCH-01 · A · mean measurement 12" in by_element["Tool × Chamber Matrix"]["svg"]
+    assert "cs-fab-profile" in by_element["Golden vs Affected Profile"]["svg"]
+    assert all(token in by_element["Golden vs Affected Profile"]["svg"] for token in ("10", "15", "9"))
+    assert all(token in by_element["Control vs Affected Distribution"]["svg"] for token in ("Control", "Affected", "n=2"))
+
+
+def test_final_visual_verifier_keeps_old_probe_evidence_and_element_contracts() -> None:
+    source = (ROOT / "scripts/release_checks/run_final_visual_remediation_acceptance.py").read_text(encoding="utf-8")
+    benchmark = (ROOT / "scripts/release_checks/run_stage_d_benchmark.py").read_text(encoding="utf-8")
+    assert set(WAFERFAB_RENDERER_CONTRACTS) == {
+        "Wafer Map",
+        "Wafer Difference Map",
+        "Tool × Chamber Matrix",
+        "Golden vs Affected Profile",
+        "Control vs Affected Distribution",
+    }
+    contracts_source = (ROOT / "scripts/release_checks/waferfab_visual_contracts.py").read_text(encoding="utf-8")
+    assert LEGACY_WAFERFAB_SELECTOR in contracts_source
+    assert "WAFERFAB_RENDERER_CONTRACTS" in source
+    assert "WAFERFAB_RENDERER_CONTRACTS" in benchmark
+    assert "legacy_assumption_marks" in source
+    assert "value['renderer_contract'] is None or value['marks']<1" in source
 
 
 def test_layout_selection_and_tablet_contracts_are_explicit() -> None:

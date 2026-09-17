@@ -25,6 +25,10 @@ from company_ui.products.visualizer.domain import canonical_model  # noqa: E402
 from company_ui.products.visualizer.page import _history_diff_summary,_report_thumbnail_markup  # noqa: E402
 from editor_host import NativeHost  # noqa: E402
 from native_common import BrowserEvents,browser_kwargs,ready,write_json  # noqa: E402
+from waferfab_visual_contracts import (  # noqa: E402
+    LEGACY_WAFERFAB_SELECTOR,
+    WAFERFAB_RENDERER_CONTRACTS,
+)
 
 FROZEN='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'
 TRANSIENT_NAVIGATION_ERRORS=('ERR_ABORTED','ERR_NETWORK_IO_SUSPENDED','ERR_NETWORK_CHANGED','ERR_CONNECTION_RESET')
@@ -71,16 +75,67 @@ def fixture(engine,element,index=1):
     entry={'id':f'item-{index}','type':'text','engine':engine,'element':element,'title':element,'showTitle':False,'order':index-1,'weight':1.4,'locked':False,'z':index,'message_role':'Primary Evidence' if engine in {'CoreChartEngine','EngineeringChartEngine','WaferFabEngine','DiagramEngine','ImageMediaEngine','TableEngine'} else 'Supporting Evidence'}
     entry.update({'text':'Observed process behavior and the recommended action.','statement':'Observed process behavior','detail':'Evidence supports the current action.','status':'Ready','value':98.4,'unit':'%','delta':1.2,'target':99,'actual':98.4,'current':75,'max':100,'capacity':100,'numerator':98,'denominator':100,'warning':96,'critical':92,'period':'Week 36','caption':'Observed chamber condition','alt':'Chamber evidence image','milestones':[{'label':'Detect','date':'Sep 1'},{'label':'Analyze','date':'Sep 2'},{'label':'Verify','date':'Sep 3'},{'label':'Release','date':'Sep 4'}],'data':[['Mon',96],['Tue',98],['Wed',97],['Thu',99]],'customTable':{'headers':['Lot','Tool','Yield'],'rows':[['L1','ETCH-1',98],['L2','ETCH-2',97],['L3','ETCH-1',99]]},'nodes':['Detect','Analyze','Verify','Release'],'edges':[{'from':'Detect','to':'Analyze','label':'handoff'},{'source':'Analyze','target':'Verify','label':'evidence'},{'source':'Verify','target':'Release','label':'approve'}],'direction':'right','edge_label':'handoff','observations':[{'x':0,'y':0,'value':91,'lot':'L1','tool':'ETCH-1'},{'x':1,'y':0,'value':95,'lot':'L1','tool':'ETCH-1'},{'x':0,'y':1,'value':93,'lot':'L1','tool':'ETCH-1'},{'x':1,'y':1,'value':97,'lot':'L1','tool':'ETCH-1'}]})
     if engine=='EngineeringChartEngine': entry['observations']=[{'label':str(i+1),'value':10+(i%4)} for i in range(10)]
+    if engine=='WaferFabEngine':
+        entry.update(fab_fixture(element))
     return entry
 
+
+def typed_dataset(dataset_id,fields,rows,name):
+    return {'id':dataset_id,'name':name,'revision':1,'fields':fields,'rows':rows,'warnings':[],'metadata':{'fixture_contract':'maintained WaferFab renderer'}}
+
+
+def fab_fixture(element):
+    """Use the maintained data contract for each non-wafer spatial renderer.
+
+    Wafer Map intentionally keeps the legacy observation fixture above. The
+    other promoted WaferFab forms are Data First visuals and need their typed
+    roles, otherwise their production renderers correctly show empty states.
+    """
+    if element=='Wafer Difference Map':
+        fields=[
+            {'id':'__die_x','name':'Die X','type':'number','nullable':True,'semantic_tags':['die_x']},
+            {'id':'__die_y','name':'Die Y','type':'number','nullable':True,'semantic_tags':['die_y']},
+            {'id':'__reference','name':'Reference','type':'number','nullable':True,'semantic_tags':['reference_value']},
+            {'id':'__affected','name':'Affected','type':'number','nullable':True,'semantic_tags':['affected_value']},
+            {'id':'__delta','name':'Delta (Affected − Reference)','type':'number','nullable':True,'semantic_tags':['value','delta']},
+        ]
+        dataset=typed_dataset('vr-wafer-difference',fields,[[1,1,10,11,1],[2,1,10,15,5],[3,1,10,9,-1]],element)
+        dataset['metadata']={'analysis_recipe':'wafer-difference','semantic_version':'v2','max_abs_delta':5}
+        return {'chart_studio':{'chart_type':element,'dataset':dataset,'mapping':{'die_x':'__die_x','die_y':'__die_y','value':'__delta','reference_value':'__reference','affected_value':'__affected'}}}
+    if element=='Tool × Chamber Matrix':
+        fields=[
+            {'id':'tool','name':'Tool','type':'categorical','semantic_tags':['tool','identifier']},
+            {'id':'chamber','name':'Chamber','type':'categorical','semantic_tags':['chamber','identifier']},
+            {'id':'measurement','name':'Measurement','type':'number','semantic_tags':['value']},
+        ]
+        return {'chart_studio':{'chart_type':element,'dataset':typed_dataset('vr-tool-chamber',fields,[['ETCH-01','A',10],['ETCH-01','A',14],['ETCH-01','B',20],['ETCH-02','A',8]],element),'mapping':{'tool':'tool','chamber':'chamber','value':'measurement'}}}
+    if element=='Golden vs Affected Profile':
+        fields=[
+            {'id':'position','name':'Position','type':'number','semantic_tags':['x']},
+            {'id':'reference','name':'Reference','type':'number','semantic_tags':['reference_value']},
+            {'id':'affected','name':'Affected','type':'number','semantic_tags':['affected_value']},
+        ]
+        return {'chart_studio':{'chart_type':element,'dataset':typed_dataset('vr-golden-affected',fields,[[1,10,11],[2,15,9],[3,12,14]],element),'mapping':{'x':'position','reference_value':'reference','affected_value':'affected'}}}
+    if element=='Control vs Affected Distribution':
+        fields=[
+            {'id':'cohort','name':'Cohort','type':'categorical','semantic_tags':['cohort']},
+            {'id':'measurement','name':'Measurement','type':'number','semantic_tags':['value']},
+        ]
+        return {'chart_studio':{'chart_type':element,'dataset':typed_dataset('vr-control-affected',fields,[['Control',10],['Control',12],['Affected',30],['Affected',34]],element),'mapping':{'cohort':'cohort','value':'measurement'}}}
+    return {}
+
 def visual_probe(page):
-    return page.evaluate(r"""()=>{
+    return page.evaluate(r"""({contracts,legacySelector})=>{
       const node=document.querySelector('.component'),hull=document.querySelector('#hull');if(!node||!hull)return null;
-      const card=node.getBoundingClientRect(),stage=hull.getBoundingClientRect(),engine=node.querySelector('[data-engine]')?.dataset.engine||'';
-      const selector=engine==='CoreChartEngine'||engine==='EngineeringChartEngine'?'.cs-chart-svg':engine==='WaferFabEngine'?'.cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]':engine==='DiagramEngine'?'.diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]':engine==='TimelineEngine'?'[data-timeline-event]':engine==='ImageMediaEngine'?'.image-stage,.captioned-image-live,.screenshot-frame-live':engine==='TableEngine'?'.table-frame,.table-wrap':engine==='MetricEngine'?'.metric-value,.hero-kpi,.status-hero,.metric-ring-live':'.card-body>*';
+      const card=node.getBoundingClientRect(),stage=hull.getBoundingClientRect(),renderer=node.querySelector('[data-engine]'),engine=renderer?.dataset.engine||'',element=renderer?.dataset.element||'';
+      // These are maintained renderer contracts, not a shared WaferFab guess:
+      // spatial cells, signed-difference cells, matrix cells, profile
+      // traces/points, and cohort box marks have different semantics.
+      const contract=engine==='WaferFabEngine'?contracts[element]:null;
+      const selector=contract?.area_selector||(engine==='CoreChartEngine'||engine==='EngineeringChartEngine'?'.cs-chart-svg':engine==='DiagramEngine'?'.diagram-studio-static [data-diagram-node],.diagram-studio-static [data-diagram-edge]':engine==='TimelineEngine'?'[data-timeline-event]':engine==='ImageMediaEngine'?'.image-stage,.captioned-image-live,.screenshot-frame-live':engine==='TableEngine'?'.table-frame,.table-wrap':engine==='MetricEngine'?'.metric-value,.hero-kpi,.status-hero,.metric-ring-live':'.card-body>*');
       const parts=[...node.querySelectorAll(selector)].map(value=>value.getBoundingClientRect()).filter(value=>value.width>0&&value.height>0);const union=parts.reduce((a,r)=>a?{left:Math.min(a.left,r.left),top:Math.min(a.top,r.top),right:Math.max(a.right,r.right),bottom:Math.max(a.bottom,r.bottom)}:{left:r.left,top:r.top,right:r.right,bottom:r.bottom},null);const area=r=>Math.max(0,(r.right??r.width)-(r.left??0))*Math.max(0,(r.bottom??r.height)-(r.top??0));
-      const logical=window.__VIZ_PROD__.layoutRects()[0],meaningful=union?{width:union.right-union.left,height:union.bottom-union.top}:null;return {engine,logical,card_area_share:logical.w*logical.h/(1200*900),width_share:logical.w/1200,internal_selector:selector,internal_area_share:union?area(union)/(card.width*card.height):0,dominant_axis_share:meaningful?Math.max(meaningful.width/card.width,meaningful.height/card.height):0,marks:node.querySelectorAll('[data-chart-point],[data-wafer-die],[data-diagram-node],[data-timeline-event]').length,overflow:node.scrollWidth>node.clientWidth+1||node.scrollHeight>node.clientHeight+1,stage:{width:stage.width,height:stage.height}};
-    }""")
+      const logical=window.__VIZ_PROD__.layoutRects()[0],meaningful=union?{width:union.right-union.left,height:union.bottom-union.top}:null,markSelector=contract?.mark_selector||'[data-chart-point],[data-wafer-die],[data-diagram-node],[data-timeline-event]',legacyAssumptionSelector=engine==='WaferFabEngine'?legacySelector:null;return {engine,element,renderer_contract:contract?.id||null,renderer_kind:contract?.renderer||null,logical,card_area_share:logical.w*logical.h/(1200*900),width_share:logical.w/1200,internal_selector:selector,mark_selector:markSelector,internal_area_share:union?area(union)/(card.width*card.height):0,dominant_axis_share:meaningful?Math.max(meaningful.width/card.width,meaningful.height/card.height):0,marks:node.querySelectorAll(markSelector).length,legacy_assumption_selector:legacyAssumptionSelector,legacy_assumption_marks:legacyAssumptionSelector?node.querySelectorAll(legacyAssumptionSelector).length:null,overflow:node.scrollWidth>node.clientWidth+1||node.scrollHeight>node.clientHeight+1,stage:{width:stage.width,height:stage.height}};
+    }""", {'contracts': WAFERFAB_RENDERER_CONTRACTS, 'legacySelector': LEGACY_WAFERFAB_SELECTOR})
 
 def toolbar_distance(page,item_id):
     page.locator(f'.component[data-id="{item_id}"]').click();page.wait_for_timeout(60)
@@ -144,7 +199,7 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEnt
                     navigate(f'{host.url}/visualizer?report={quote(rid)}');ready(page,require_settled=True);page.wait_for_timeout(80);probe=visual_probe(page);probe['key']=key;receipt['visual_utilization'].append(probe)
                 def family_ok(engine,min_area,min_width,min_internal=.04):
                     values=[value for value in receipt['visual_utilization'] if value['engine']==engine]
-                    if not values or min(value['card_area_share'] for value in values)<min_area or min(value['width_share'] for value in values)<min_width or min(value['internal_area_share'] for value in values)<min_internal: raise AssertionError(values)
+                    if not values or min(value['card_area_share'] for value in values)<min_area or min(value['width_share'] for value in values)<min_width or min(value['internal_area_share'] for value in values)<min_internal or (engine=='WaferFabEngine' and any(value['renderer_contract'] is None or value['marks']<1 for value in values)): raise AssertionError(values)
                 attempt('VR002',lambda:family_ok('CoreChartEngine',.42,.82,.35));attempt('VR003',lambda: (_ for _ in ()).throw(AssertionError([value for value in receipt['visual_utilization'] if value['engine']=='TimelineEngine'])) if min(value['dominant_axis_share'] for value in receipt['visual_utilization'] if value['engine']=='TimelineEngine')<.70 else None);attempt('VR004',lambda:family_ok('WaferFabEngine',.28,.58,.24));attempt('VR005',lambda: (_ for _ in ()).throw(AssertionError([value for value in receipt['visual_utilization'] if value['engine']=='DiagramEngine'])) if any(value['internal_area_share']<.22 and value['dominant_axis_share']<.70 for value in receipt['visual_utilization'] if value['engine']=='DiagramEngine') else None)
                 attempt('VR006',lambda:family_ok('TextEngine',.08,.65,.02))
                 all_good=all(value['card_area_share']>=({'TextEngine':.08,'MetricEngine':.08,'EvidenceCompositeEngine':.08,'DecisionCompositeEngine':.08,'ProjectCompositeEngine':.08}.get(value['engine'],.18)) and not value['overflow'] for value in receipt['visual_utilization'])
