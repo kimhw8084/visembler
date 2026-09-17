@@ -1,0 +1,117 @@
+{
+  "accepted_at": "2026-09-17T12:36:34Z",
+  "changed_files": [],
+  "checks": [],
+  "codex": {
+    "cli_version": null,
+    "configured_model": null,
+    "event_count": null,
+    "provider_reported_model": null,
+    "reasoning_effort": null,
+    "terminal_type": null,
+    "usage": {},
+    "warnings": [
+      "artifact evidence publication only; source job remains RUNNING"
+    ]
+  },
+  "commits": [],
+  "diff": {
+    "commit_count": 0,
+    "deletions": 0,
+    "files_changed": 0,
+    "insertions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "artifact_bridge": {
+      "archive_sha256": "e2dfcfc6218359d11ea4ab986948b7a861e5df8a5583ecb9516a9376c0688365",
+      "artifact_run_id": "3dec564c-8d04-8129-b6cc-eee8d83f798a",
+      "artifact_run_url": "https://app.notion.com/p/Project-OS-Artifact-Bridge-AR-3-model-free-qualification-3dec564c8d048129b6cceee8d83f798a",
+      "bundle_sha256": "1b88d0c6f76300228d6b1b1ab7c86d6f4b204a0aa12feff453a4fed4ee83f6ee",
+      "manifest_sha256": "b030940d5b8ed60c76dcbff14cb1473095f7003df25ba5d9c0c5e79a079c4a2c",
+      "postflight_backbone_match": true,
+      "postflight_product_repo_modified": false,
+      "reader_block_count": 5,
+      "reader_hashes_verified": true,
+      "signed_url_count": 5,
+      "status": "STAGED"
+    },
+    "count": 5,
+    "items": [
+      {
+        "kind": "artifact-evidence-index",
+        "path": "FABRIC_ARTIFACT_EVIDENCE.json",
+        "sha256": "9f5621f07e6b7bdcff6c2eefb44667f1436601bdd1976a4d7f678342c421ad4a"
+      },
+      {
+        "kind": "machine-stage-receipt",
+        "path": "bridge-stage-ar3-live-baseline/PROJECT_OS_AR2_RECEIPT.json",
+        "sha256": "827d63b319c5b4213dfe12a30cfd8585f6c0f505697bb52e7e14c2d310e3b59f"
+      },
+      {
+        "kind": "pre-fix-verifier-report",
+        "path": "pre/old-verifier/final-visual-remediation-acceptance.json",
+        "sha256": "ff76388a734d20f8d4746372d037a2259994b0ae25b1ec1cfd822797e5964a35"
+      },
+      {
+        "kind": "post-fix-verifier-report",
+        "path": "checks/final-visual-remediation-fixed/final-visual-remediation-acceptance.json",
+        "sha256": "cadc7ff1075a03251fce3891efc42a07efc17eba7845ee08c7dc9c56055b6328"
+      },
+      {
+        "kind": "acceptance-visual-evidence",
+        "path": "checks/final-visual-remediation-fixed/benchmark/process-health-from-data/process-health-from-data-1440.png",
+        "sha256": "dd877187f306559aac192ba70839b79be9a1643ae3f91700774898c8dc313810"
+      }
+    ],
+    "scope": "CHG-42 R1 Artifact Bridge evidence; source acceptance remains with the live Fabric job",
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": null,
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-17T13:11:37Z",
+  "git": {
+    "artifact_evidence_only": true,
+    "base_is_ancestor": true,
+    "base_sha": "04071f1767eedc17e9704be6551f59ac8ec04bff",
+    "branch": "fix/visembler-chg42-wafer-verifier-r1",
+    "head_sha": "04071f1767eedc17e9704be6551f59ac8ec04bff",
+    "target_branch": "main",
+    "tree_sha": "184a90b76b1705f3cde520e11f5ad0b043393162",
+    "work_branch": "fix/visembler-chg42-wafer-verifier-r1",
+    "worktree_clean": false
+  },
+  "instructions": "Machine-verified Artifact Bridge receipt recorded separately from source acceptance.",
+  "job_id": "CF-f0bb6d7fb18d28ea986c37a9",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-42-r1-artifact-stage",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-42-r1-artifact-stage"
+  },
+  "operation": "FIX",
+  "policy": {
+    "evidence_mode": "artifact-stage-only",
+    "source_acceptance": "pending live Fabric completion"
+  },
+  "project_id": "visembler",
+  "recovery": {},
+  "request": "CHG-42-r1-artifact-stage",
+  "schema_version": 1,
+  "started_at": "2026-09-17T12:36:34Z",
+  "status": "ARTIFACT_STAGE_VERIFIED",
+  "timing": {
+    "execution_seconds": 0,
+    "queue_seconds": 0,
+    "total_seconds": 0
+  },
+  "transport": {
+    "bytes": 3593,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3298,
+    "prompt_sha256": "2c00eec71495333bcf7088c54884dcbd0bd0554faba4c19f5e6010f094815776",
+    "sha256": "f0bb6d7fb18d28ea986c37a9166bb655702324cedc1c5e654e5cf61b0fc1d7a9"
+  }
+}
