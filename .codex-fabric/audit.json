@@ -1,0 +1,363 @@
+{
+  "accepted_at": "2026-09-17T22:58:19Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '[.browser.results[]?|.status] | group_by(.) | .[] | [.[0],length] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/company-ui-live-certification.json; rtk jq -r '.coverage | to_entries[] | [.key,(.value|tostring)] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/company-ui-live-certification.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.waferfab_studio | to_entries[] | \\\"\\\\(.key): counts=\\\\(.value.counts) svg=\\\\(.value.svg)\\\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json | sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '{data_first:.data_first}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json | sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.media_reflow | {forced_colors,viewport_720_equivalent_200,focus_summary}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.browser.results[] | select(.status==\\\"fail\\\") | [.route,.scenario,((.audit.geometryViolationSamples|map(.kind)|unique)|join(\\\",\\\")),((.audit.interactionIssues|map(split(\\\":\\\")[0])|unique)|join(\\\",\\\"))] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/company-ui-live-certification.json | sed -n '1,220p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '.visual_utilization[] | select(.element|test(\\\"Control vs Affected Distribution|Wafer|Tool × Chamber\\\";\\\"i\\\"))' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-remediation.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '.method, .aggregate_by_metric.ready_ms, .aggregate_by_metric.geometry_ms, .aggregate_by_metric.full_render_ms' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/performance-observations.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '.data_first.svg, .data_first.state.items, .data_first.state.items|map(select(.element|test(\\\"Tool|Process\\\";\\\"i\\\")))' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 5,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '.results' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/company-capacity-10-100-1000.json | sed -n '1,160p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.visual_utilization[] | select(.element|test(\\\"Control vs Affected Distribution|Wafer|Tool × Chamber\\\";\\\"i\\\")) | [.element,.renderer_contract,.renderer_kind,(.area//null),(.marks//null),(.contract_area//null),(.contract_marks//null),(.fallback_used//null),(.utilization//null),(.status//null),(.reason//null)] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-remediation.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.results[] | [.reports,(.image_items_per_report//null),(.asset_reference_count//null),(.create_ms//null),(.history_ms//null),(.listed//null),(.open_ms//null),(.rename_ms//null),(.scoped_list_ms//null)] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/company-capacity-10-100-1000.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.data_first.svg | to_entries[] | [.key,(.value|tostring)]|@tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json; rtk jq -r '.data_first.state.items[] | [.id,.engine,.element,.marks] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.runs[] | keys_unsorted[]' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/performance-observations.json | sort -u; rtk jq -r '.runs[] | [.name,.category,.status,(.metrics|tostring),(.samples|tostring)] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/performance-observations.json | sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/company-capacity-10-100-1000.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/p2-benchmark-observation.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/performance/performance-observations.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.results[] | select(.status==\\\"FAIL\\\") | [.key,.task,.error] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/p2-benchmark-observation.json; rtk jq -r '.tasks[] | [.key,.task,.status,((.error//\\\"\\\")|split(\\\"\\\\n\\\")[0])] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/p2-benchmark-observation.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{status,checks:(.checks|map({id,status}))}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-remediation.json; rtk jq -c '{status,keys:keys}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-cleanup.json; rtk jq -c '{status,checks:(.checks//null),cases:(.cases//null),summary:(.summary//null)}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/stage-d-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{status,checks,top_level_keys:keys}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json; rtk jq -c '{status,keys:keys,summary:(.summary//null),checks:(.checks//null)}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/data-workflows.json; rtk jq -c '{status,keys:keys,summary:(.summary//null),cases:(.cases//null)}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/native-acceptance-rerun.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"for f in /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-remediation.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-cleanup.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/stage-a-acceptance.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/stage-d-acceptance.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/data-workflows.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/native-acceptance-rerun.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json; do rtk jq -c '[input_filename, .status, .ok, .passed, (.checks|type), ((.checks//[])|map(select(.status==\\\"FAIL\\\" or .status==\\\"fail\\\"))|length), ((.tasks//[])|map(select(.status==\\\"FAIL\\\" or .status==\\\"fail\\\"))|length), ((.cases//[])|map(select(.status==\\\"FAIL\\\" or .status==\\\"fail\\\"))|length)]' \\\"\"'$f\"; done'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{passed,total,status,unexpected_errors,cases:(.cases|map({name,status,steps:(.steps|length)}))}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/native-acceptance-rerun.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{status,passed,total,unexpected_errors,cases:(.cases|map({name,status}))}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json\"",
+      "exit_code": 5,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{pass,checks:(.checks|map({id,status,name})) ,preview,diagram_tablet}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/stage-d-acceptance.json | sed -n '1,220p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{status,pass,checks:(.checks|map({id,status,name}))}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/stage-a-acceptance.json; rtk jq -c '{status,pass,checks:(.checks|map({id,status,name}))}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/data-workflows.json\"",
+      "exit_code": 5,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.projectos/qualifications/visembler-chg40-r4-helper-attempt 2>/dev/null || true; rtk rg --files -uu /Users/haewonkim/.projectos/qualifications/visembler-chg40-r4-helper-attempt 2>/dev/null | sed -n '1,80p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.projectos/sidecars/artifact-bridge-v1-ar2-candidate/projectos-artifact-stage && rtk /opt/anaconda3/bin/python --version 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk shasum -a 256 /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/artifact-manifest.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-bundle.zip /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/local-stage-receipt.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/artifact-bridge-status.json && rtk jq -c '{candidate_head,artifact_root_type,artifact_count,local_bytes}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/artifact-manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git diff --check && rtk git diff --stat && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg40-ui-perfection-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk env PROJECT_OS_BRIDGE_PROJECT=visembler PROJECT_OS_BRIDGE_REQUEST=CHG-40-r3 PROJECT_OS_BRIDGE_OPERATION=VERIFY PROJECT_OS_BRIDGE_FABRIC_JOB=CF-e6e0c8d630c9c1ec91dd9934 PROJECT_OS_BRIDGE_TARGET_BRANCH=main PROJECT_OS_BRIDGE_SOURCE_SHA=60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 PROJECT_OS_BRIDGE_TREE_SHA=2c2c76c715d5aed1493db3fe37306922f257e6d3 /opt/anaconda3/bin/python /Users/haewonkim/.projectos/sidecars/artifact-bridge-v1-ar2-candidate/projectos-artifact-stage --artifact-root /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root --output-dir /Users/haewonkim/.projectos/qualifications/visembler-chg40-r4-helper-attempt'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -f /tmp/chg40-r3-manifest-view.json && rtk test ! -e /tmp/chg40-r3-manifest-view.json && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git ls-remote origin refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rm -f /tmp/chg40-r3-manifest-view.json && rtk proxy test '\"'!'\"' -e /tmp/chg40-r3-manifest-view.json && rtk git status --short --branch && rtk git rev-parse HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '[.files[]|select(.path|startswith(\\\"screenshots/\\\"))|.path] | \\\"count=\\\" + (length|tostring), (.[]|.)' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/artifact-manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '.report_hub | to_entries[] | {theme:.key,action:.value.action_contrast,kpi:.value.kpi_contrast}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.report_hub | to_entries[] | .key as \"'$t | ([$t, (.value.action_contrast|keys_unsorted|join(\",\")), (.value.kpi_contrast|keys_unsorted|join(\",\"))] | @tsv)'\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.report_hub | to_entries[] | [.key, .value.action_contrast.color, .value.action_contrast.backgroundColor, .value.action_contrast.font_size_px, .value.action_contrast.font_weight, .value.action_contrast.wcag_aa_threshold, .value.action_contrast.contrast_ratio, .value.action_contrast.pass, .value.kpi_contrast.color, .value.kpi_contrast.backgroundColor, .value.kpi_contrast.font_size_px, .value.kpi_contrast.font_weight, .value.kpi_contrast.wcag_aa_threshold, .value.kpi_contrast.contrast_ratio, .value.kpi_contrast.pass] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 5,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.report_hub | to_entries[] | [.key, (.value.action_contrast.color|tostring), (.value.action_contrast.backgroundColor|tostring), .value.action_contrast.font_size_px, .value.action_contrast.font_weight, .value.action_contrast.wcag_aa_threshold, .value.action_contrast.contrast_ratio, .value.action_contrast.pass, (.value.kpi_contrast.color|tostring), (.value.kpi_contrast.backgroundColor|tostring), .value.kpi_contrast.font_size_px, .value.kpi_contrast.font_weight, .value.kpi_contrast.wcag_aa_threshold, .value.kpi_contrast.contrast_ratio, .value.kpi_contrast.pass] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.report_hub | to_entries[] | .key as \"'$t | [$t,\"action\",.value.action_contrast.color,(.value.action_contrast.backgroundColor|tojson),(.value.action_contrast.font_size_px|tostring),(.value.action_contrast.font_weight|tostring),(.value.action_contrast.wcag_aa_threshold|tostring),(.value.action_contrast.contrast_ratio|tostring),(.value.action_contrast.pass|tostring)], [$t,\"kpi\",.value.kpi_contrast.color,(.value.kpi_contrast.backgroundColor|tojson),(.value.kpi_contrast.font_size_px|tostring),(.value.kpi_contrast.font_weight|tostring),(.value.kpi_contrast.wcag_aa_threshold|tostring),(.value.kpi_contrast.contrast_ratio|tostring),(.value.kpi_contrast.pass|tostring)] | @tsv'\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/ui-matrix-probe.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,120p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/repository-contracts.json && rtk sed -n '1,120p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/native-acceptance-rerun.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/stage-d-acceptance.json && rtk sed -n '1,140p' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/stage-a-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{passed,preflight_ok,live_ok,browser_ok,browser_counts:([.browser.results[]?|.status]|group_by(.)|map({status:.[0],count:length})),coverage_summary:{required:.coverage.required_visual_components,covered:.coverage.covered_visual_components,uncovered:.coverage.uncovered}}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/company-ui-live-certification.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{check_statuses:(.checks|map(.status)|group_by(.)|map({status:.[0],count:length})), nonpass:(.checks|map(select(.status\"'!=\"PASS\"))|map({name,status,returncode}))}'\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{status,passed,total,failures:(.cases|map(select(.status\"'!=\"PASS\"))|map({name,status,error}))}'\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/p2-benchmark-observation.json; rtk jq -c '{status,passed,total,failures:(.tasks|map(select(.status\"'!=\"PASS\"))|map({key,task,status,error}))}'\"' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/p2-benchmark-observation.json 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{checks:(.checks|map(.status)|group_by(.)|map({status:.[0],count:length})), pass, status}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/stage-d-acceptance.json; rtk jq -c '{checks:(.checks|map(.status)|group_by(.)|map({status:.[0],count:length})), pass, status}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/data-workflows.json; rtk jq -c '{checks:(.checks|map(.status)|group_by(.)|map({status:.[0],count:length})), pass, status}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/visual/final-visual-remediation.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{keys:keys, statuses:(..|objects|select(has(\\\"status\\\"))|.status|select(type==\\\"string\\\")|.)}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/report-hub-browser-error-gate.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/runtime-smoke.json | sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{checks_type:(.checks|type), checks:(if (.checks|type)==\\\"array\\\" then (.checks|map(.status)|group_by(.)|map({status:.[0],count:length})) else .checks end), pass, status}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/data/data-workflows.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -c '{keys:keys, status, ok, result:(.result//null), pass:(.pass//null), unexpected_errors:(.unexpected_errors//null)}' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/runtime-smoke.json /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/browser/report-hub-browser-error-gate.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i -e 'runtime-contract' -e 'company_ui.validate' -e 'warnings-as-errors' -e 'validate' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root 2>/dev/null | sed -n '1,220p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.checks[] | select(.name|test(\\\"company|runtime|validate|test|contract\\\";\\\"i\\\")) | [.name,.returncode,.status] | @tsv' /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/artifact-root/release/verify-release-report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.projectos/qualifications/visembler-chg40-r3/checks | rg -i 'runtime|validate|doctor|smoke|certif' | sed -n '1,180p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 285,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 94.71,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 8126976,
+      "fresh_input_tokens": 454153,
+      "input_tokens": 8581129,
+      "non_reasoning_output_tokens": 25048,
+      "output_tokens": 41448,
+      "reasoning_output_tokens": 16400,
+      "total_processed_tokens": 8622577
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-17T23:14:02Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "branch": "verify/visembler-chg40-ui-perfection-r4",
+    "head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "remote_exact_head": true,
+    "remote_head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "work_branch": "verify/visembler-chg40-ui-perfection-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-dfb01f420952975b0ae588bb",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-40-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-40-r4"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-40-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-17T22:58:20Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 942,
+    "queue_seconds": 1,
+    "total_seconds": 943
+  },
+  "transport": {
+    "bytes": 4881,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4581,
+    "prompt_sha256": "e1b903756adea6472cc35adbe0ccb0662d1d6803a3b5cfe7463756a995bbb62b",
+    "sha256": "dfb01f420952975b0ae588bbca40b7501d052960ef4e6dc0de79497d3290be06"
+  }
+}
