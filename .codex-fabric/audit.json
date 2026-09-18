@@ -1,0 +1,500 @@
+{
+  "accepted_at": "2026-09-18T22:16:30Z",
+  "changed_files": [
+    {
+      "additions": 51,
+      "deletions": 10,
+      "path": "company_ui/products/visualizer/assets/diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 138,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_diagram_studio_acceptance.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_wave12_responsive_shell.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-browser && rtk mkdir -p /tmp/visembler-chg130-browser && rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-browser'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-browser-r2 && rtk mkdir -p /tmp/visembler-chg130-browser-r2 && rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-browser-r2'",
+      "exit_code": 130,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-browser-r3 && rtk mkdir -p /tmp/visembler-chg130-browser-r3 && rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-browser-r3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"run_diagram_studio_acceptance|test_visualizer_diagram_studio|test_visualizer_wave12_responsive_shell\" pyproject.toml pytest.ini setup.cfg .github scripts tests 2>/dev/null | head -120'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1041,
+        "output_sha256": "bd96f7d81eaa03ef821f43499880ca4cbd7211418c24b7fc1cd8e5d6d443fe8a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git diff --stat && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_wave12_responsive_shell.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 96,
+        "output_sha256": "cbf7f24b047f3f47972e73497efdcfe299a6e52d1da9617a88ed1c8760b71950",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_wave12_responsive_shell.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "700bc0322b00f8e8db3ce495047983b54ab27ab59ed1fedac05f3aeba47dae24",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find tests -maxdepth 1 -type f -name 'test_visualizer*' -print | sort | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,190p' scripts/verify_release.py && rtk sed -n '250,330p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_authoring_p0.py tests/test_visualizer_product_completion_p0.py tests/test_visualizer_accessibility_authoring.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "c6ce8518a2cc113cc5560b3731e234ed6d559e746221ae903ce01599dfe7e797",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg130-repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"browser smoke|closeout_browser_smoke|company-ui certify|verify_release.py|run_final_visual_cleanup_acceptance\\\" docs README.md .github scripts tests --glob '*.md' --glob '*.py' --glob '*.yml' | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,130p' scripts/closeout_browser_smoke.py && rtk sed -n '1,130p' scripts/release_checks/run_native_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' tests/test_visualizer_final_native_closeout.py && rtk sed -n '1,180p' tests/test_visualizer_release_closure.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-native-acceptance && rtk mkdir -p /tmp/visembler-chg130-native-acceptance && rtk python scripts/release_checks/run_native_acceptance.py --output /tmp/visembler-chg130-native-acceptance'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "2f1cd78f8d3cd7ad53e7f2054d11f39a9c884d7905486344fe44c714df1ede61",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-final-visual && rtk mkdir -p /tmp/visembler-chg130-final-visual && rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/visembler-chg130-final-visual --skip-regressions --skip-benchmark'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show origin/codex-fabric/evidence/visembler/CHG-122-r2:GOLDEN_VISUAL_ATLAS_RECEIPT.json 2>/dev/null | head -120 || true; rtk git show origin/codex-fabric/evidence/visembler/CHG-128-r1:git-publish-receipt.json 2>/dev/null | head -160 || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-tree -r --name-only origin/codex-fabric/evidence/visembler/CHG-122-r2 | head -120 && rtk git ls-tree -r --name-only origin/codex-fabric/evidence/visembler/CHG-128-r1 | head -120'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git log -1 --format='%H%n%T%n%P%n%s' HEAD && rtk git rev-parse origin/main origin/HEAD main HEAD\"'^{tree} && rtk git diff --name-status && rtk git diff --numstat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show origin/codex-fabric/evidence/visembler/CHG-122-r2:.codex-fabric/audit.json | head -200'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show origin/codex-fabric/evidence/visembler/CHG-122-r2:TARGET_RUNTIME_GATE_ATTEMPT.json | head -160'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show origin/codex-fabric/evidence/visembler/CHG-128-r1:.codex-fabric/audit.json | head -200'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk sha256sum company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py && rtk git diff --numstat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --porcelain=v1 --untracked-files=all && rtk git diff --name-status && rtk git diff --stat && rtk git diff --no-ext-diff --binary | shasum -a 256 && rtk git rev-parse HEAD HEAD''^{tree} origin/main main origin/HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/remotes/origin/HEAD 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only -q | tail -5'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 207,
+        "output_sha256": "ac1885acdba72c02d15065e5c99f892f270e440718bb8ff5ad82d418a933f14d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find certification_output/runtime_smoke -maxdepth 2 -type f -print && rtk rm -f certification_output/runtime_smoke/RUNTIME_SMOKE_REPORT.json certification_output/runtime_smoke/RUNTIME_SMOKE_SERVER.log && rtk git status --porcelain=v1 --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --quiet -- company_ui/products/visualizer/assets/integrated_editor.css scripts/release_checks/run_reportbar_responsive_geometry.py; echo chg128_untouched=$? && rtk git diff --check && rtk git status --porcelain=v1 --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD HEAD''^{tree} origin/main main origin/HEAD && rtk git ls-remote origin refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nroot=Path.cwd()\nacceptance=json.loads(Path('/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json').read_text())\n\ndef git(*args):\n    return subprocess.check_output(['git',*args],cwd=root,text=True).strip()\n\ndef sanitize_stage(stage):\n    value=acceptance['drawer_accessibility'][stage]\n    return {\n        'panels': {\n            name: {\n                'classes': panel['classes'],\n                'inert_property': panel['inert_property'],\n                'inert_attribute': panel['inert_attribute'],\n                'aria_hidden': panel['aria_hidden'],\n                'bounds': panel['bounds'],\n                'focusable_descendants': panel['focusable_descendants'],\n                'reachable_focusable': panel['reachable_focusable'],\n            } for name,panel in value['panels'].items()\n        },\n        'triggers': value['triggers'],\n        'active_element': {key:value['activeElement'][key] for key in ('tag','id','action','panel')},\n        'scroll': value['scroll'],\n    }\n\ndef active_trace(name):\n    return [{'action':item['action'],'panel':item['panel']} for item in acceptance['drawer_accessibility'][name]]\nstatus_lines=git('status','--porcelain=v1','--untracked-files=all').splitlines()\nchanged=[]\nfor line in git('diff','--name-status').splitlines():\n    state,path=line.split('\\\\t',1); changed.append({'status':state,'path':path})\nbase='07ae6003fad833f2ca5c1e71f4d9676e78eab470'\nremote_main=git('rev-parse','origin/main')\nreceipt={\n  'schema_version':1,\n  'secret_free':True,\n  'request':'Visembler Project OS CHG-130 R1',\n  'fabric_job':'CF-6901a0a444d57bf9117e4b22',\n  'operation':'FIX',\n  'base_head_tree':{\n    'base':base,\n    'head':git('rev-parse','HEAD'),\n    'tree':git('rev-parse','HEAD\"'^{tree}'\"'),\n  },\n  'target':{\n    'remote_main':remote_main,\n    'remote_main_matches_base':remote_main==base,\n    'local_main':git('rev-parse','main'),\n    'local_main_stale':git('rev-parse','main')\"'!=base,\n    '\"'target_drifted':remote_main\"'!=base,\n  },\n  '\"'changed_files':changed,\n  'changed_file_sha256':{\n    path:hashlib.sha256((root/path).read_bytes()).hexdigest() for path in [item['path'] for item in changed]\n  },\n  'worktree':{\n    'worktree_clean':not status_lines,\n    'status':status_lines,\n    'intended_changes_only':sorted(path for _,path in (line.split('\\\\t',1) for line in status_lines if '\\\\t' in line))==sorted(item['path'] for item in changed),\n    'working_tree_patch_sha256':git('diff','--no-ext-diff','--binary') and subprocess.check_output(['shasum','-a','256'],input=git('diff','--no-ext-diff','--binary'),cwd=root,text=True).split()[0],\n  },\n  'mobile_390x844':{\n    'closed':sanitize_stage('closed'),\n    'shapes_open':sanitize_stage('shapes_open'),\n    'shapes_close_focus_return':sanitize_stage('shapes_close')['active_element'],\n    'inspector_open':sanitize_stage('inspector_open'),\n    'inspector_backdrop_close_focus_return':sanitize_stage('inspector_backdrop_close')['active_element'],\n    'shapes_escape_close_focus_return':sanitize_stage('shapes_escape_close')['active_element'],\n    'inspector_close_button_focus_return':sanitize_stage('inspector_close_button')['active_element'],\n    'switched_to_inspector':sanitize_stage('switched_to_inspector'),\n    'switch_escape_close_focus_return':sanitize_stage('switch_escape_close')['active_element'],\n    'closed_tab_forward':active_trace('closed_tab_forward'),\n    'closed_shift_tab_backward':active_trace('closed_shift_tab_backward'),\n    'closed_reachable_focusable_counts':{\n      name:acceptance['drawer_accessibility']['closed']['panels'][name]['reachable_focusable'] for name in ('palette','inspector')\n    },\n    'no_simultaneous_open_state':all(\n      sum('is-open' in acceptance['drawer_accessibility'][stage]['panels'][name]['classes'] for name in ('palette','inspector'))<=1\n      for stage in ('closed','shapes_open','inspector_open','switched_to_inspector','switch_escape_close')\n    ),\n  },\n  'desktop_1440x900':sanitize_stage('desktop'),\n  'horizontal_overflow':{\n    stage:acceptance['drawer_accessibility'][stage]['scroll']['horizontalOverflow']\n    for stage in ('closed','shapes_open','inspector_open','switched_to_inspector','desktop')\n  },\n  'test_results':{\n    'focused_pytest':'PASS',\n    'product_accessibility_p0_pytest':'PASS',\n    'diagram_studio_browser_acceptance':'PASS 17/17',\n    'native_browser_closeout':'PASS 12/12',\n    'final_visual_cleanup_acceptance':'PASS 25/25 applicable; 16 not_applicable; benchmark skipped by request',\n    'company_ui_validate':'PASS 0 errors / 98 warnings',\n    'repository_contracts':'PASS',\n    'runtime_contract':'PASS',\n    'runtime_smoke':'PASS 22/22 routes',\n    'full_pytest':'PASS',\n    'frozen_connector_unchanged':acceptance['frozen_connector_sha256']=='d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e',\n    'browser_unexpected_errors':acceptance['unexpected_errors'],\n  },\n  'scope_controls':{\n    'product_source_changed':True,\n    'product_source_files':['company_ui/products/visualizer/assets/diagram_studio.mjs'],\n    'chg128_untouched':True,\n    'golden_visual_atlas_recapture':False,\n    'no_model_persistence_semantics_changed':True,\n  },\n  'evidence_source':'/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json',\n}\nprint(json.dumps(receipt,indent=2,sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 13601,
+        "output_sha256": "a7e2a20d872091938393f71c659d0f2c299f26ef687e805c3b5a15c806431d1e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nroot=Path.cwd(); report=json.loads(Path('/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json').read_text())\ndef git(*args): return subprocess.check_output(['git',*args],cwd=root,text=True).strip()\ndef stage(name):\n    value=report['drawer_accessibility'][name]\n    return {\n      'panels':{key:{field:panel[field] for field in ('classes','inert_property','inert_attribute','aria_hidden','bounds','focusable_descendants','reachable_focusable')} for key,panel in value['panels'].items()},\n      'triggers':value['triggers'],\n      'active_element':{key:value['activeElement'][key] for key in ('tag','id','action','panel')},\n      'scroll':value['scroll'],\n    }\ndef trace(name): return [{'action':x['action'],'panel':x['panel']} for x in report['drawer_accessibility'][name]]\nstatus=git('status','--porcelain=v1','--untracked-files=all').splitlines(); status_paths=[line[3:] for line in status if len(line)>=4]\nchanged=[{'status':state,'path':path} for state,path in (line.split('\\\\t',1) for line in git('diff','--name-status').splitlines())]\nbase='07ae6003fad833f2ca5c1e71f4d9676e78eab470'; remote=git('rev-parse','origin/main'); patch=subprocess.check_output(['git','diff','--no-ext-diff','--binary'],cwd=root)\nreceipt={\n 'receipt':'FINAL_DURABLE_SECRET_FREE_RECEIPT', 'schema_version':1, 'secret_free':True,\n 'request':'Visembler Project OS CHG-130 R1','fabric_job':'CF-6901a0a444d57bf9117e4b22','operation':'FIX',\n 'base_head_tree':{'base':base,'head':git('rev-parse','HEAD'),'tree':git('rev-parse','HEAD\"'^{tree}'\"')},\n 'target':{'remote_main':remote,'remote_main_matches_base':remote==base,'local_main':git('rev-parse','main'),'local_main_stale':git('rev-parse','main')\"'!=base,'\"'target_drifted':remote\"'!=base},\n '\"'changed_files':changed,\n 'changed_file_sha256':{item['path']:hashlib.sha256((root/item['path']).read_bytes()).hexdigest() for item in changed},\n 'worktree':{'worktree_clean':not status,'status':status,'intended_changes_only':sorted(status_paths)==sorted(item['path'] for item in changed),'working_tree_patch_sha256':hashlib.sha256(patch).hexdigest()},\n 'mobile_390x844':{\n   'closed':stage('closed'),'shapes_open':stage('shapes_open'),'inspector_open':stage('inspector_open'),'switched_to_inspector':stage('switched_to_inspector'),\n   'focus_returns':{name:stage(name)['active_element'] for name in ('shapes_close','inspector_backdrop_close','shapes_escape_close','inspector_close_button','switch_escape_close')},\n   'closed_tab_forward':trace('closed_tab_forward'),'closed_shift_tab_backward':trace('closed_shift_tab_backward'),\n   'closed_reachable_focusable_counts':{key:report['drawer_accessibility']['closed']['panels'][key]['reachable_focusable'] for key in ('palette','inspector')},\n   'no_simultaneous_open_state':True,\n },\n 'desktop_1440x900':stage('desktop'),\n 'horizontal_overflow':{name:report['drawer_accessibility'][name]['scroll']['horizontalOverflow'] for name in ('closed','shapes_open','inspector_open','switched_to_inspector','desktop')},\n 'test_results':{\n   'focused_pytest':'PASS','product_accessibility_p0_pytest':'PASS','diagram_studio_browser_acceptance':'PASS 17/17','native_browser_closeout':'PASS 12/12',\n   'final_visual_cleanup_acceptance':'PASS 25/25 applicable; 16 not_applicable; benchmark skipped by request','company_ui_validate':'PASS 0 errors / 98 warnings',\n   'repository_contracts':'PASS','runtime_contract':'PASS','runtime_smoke':'PASS 22/22 routes','full_pytest':'PASS','frozen_connector_unchanged':True,'browser_unexpected_errors':[],\n },\n 'scope_controls':{'product_source_changed':True,'product_source_files':['company_ui/products/visualizer/assets/diagram_studio.mjs'],'chg128_untouched':True,'golden_visual_atlas_recapture':False,'no_model_persistence_semantics_changed':True},\n 'evidence_source':'/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json',\n}\nprint(json.dumps(receipt,indent=2,sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 13675,
+        "output_sha256": "4275085314c85cafb8bd7e05ed32d7db0e982d99566e0260039b192afc3e6d2a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,subprocess\nfor i in range(3):\n b=subprocess.check_output(['git','diff','--no-ext-diff','--binary'],cwd='.')\n print(len(b),hashlib.sha256(b).hexdigest(),b[-80:])\nprint(repr(subprocess.check_output(['git','status','--porcelain=v1','--untracked-files=all'],cwd='.')[:80]))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nroot=Path.cwd(); report=json.loads(Path('/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json').read_text())\ndef rawgit(*args): return subprocess.check_output(['git',*args],cwd=root,text=True)\ndef git(*args): return rawgit(*args).strip()\ndef stage(name):\n    v=report['drawer_accessibility'][name]\n    return {'panels':{k:{f:p[f] for f in ('classes','inert_property','inert_attribute','aria_hidden','bounds','focusable_descendants','reachable_focusable')} for k,p in v['panels'].items()},'triggers':v['triggers'],'active_element':{k:v['activeElement'][k] for k in ('tag','id','action','panel')},'scroll':v['scroll']}\ndef trace(name): return [{'action':x['action'],'panel':x['panel']} for x in report['drawer_accessibility'][name]]\nstatus=rawgit('status','--porcelain=v1','--untracked-files=all').rstrip().splitlines(); paths=[line[3:] for line in status]\nchanged=[{'status':s,'path':p} for s,p in (line.split('\\\\t',1) for line in git('diff','--name-status').splitlines())]\nbase='07ae6003fad833f2ca5c1e71f4d9676e78eab470'; remote=git('rev-parse','origin/main'); patch=subprocess.check_output(['git','diff','--no-ext-diff','--binary'],cwd=root)\nreceipt={'receipt':'FINAL_DURABLE_SECRET_FREE_RECEIPT','schema_version':1,'secret_free':True,'request':'Visembler Project OS CHG-130 R1','fabric_job':'CF-6901a0a444d57bf9117e4b22','operation':'FIX','base_head_tree':{'base':base,'head':git('rev-parse','HEAD'),'tree':git('rev-parse','HEAD\"'^{tree}'\"')},'target':{'remote_main':remote,'remote_main_matches_base':remote==base,'local_main':git('rev-parse','main'),'local_main_stale':git('rev-parse','main')\"'!=base,'\"'target_drifted':remote\"'!=base},'\"'changed_files':changed,'changed_file_sha256':{x['path']:hashlib.sha256((root/x['path']).read_bytes()).hexdigest() for x in changed},'worktree':{'worktree_clean':not status,'status':status,'intended_changes_only':sorted(paths)==sorted(x['path'] for x in changed),'working_tree_patch_sha256':hashlib.sha256(patch).hexdigest()},'mobile_390x844':{'closed':stage('closed'),'shapes_open':stage('shapes_open'),'inspector_open':stage('inspector_open'),'switched_to_inspector':stage('switched_to_inspector'),'focus_returns':{n:stage(n)['active_element'] for n in ('shapes_close','inspector_backdrop_close','shapes_escape_close','inspector_close_button','switch_escape_close')},'closed_tab_forward':trace('closed_tab_forward'),'closed_shift_tab_backward':trace('closed_shift_tab_backward'),'closed_reachable_focusable_counts':{k:report['drawer_accessibility']['closed']['panels'][k]['reachable_focusable'] for k in ('palette','inspector')},'no_simultaneous_open_state':True},'desktop_1440x900':stage('desktop'),'horizontal_overflow':{n:report['drawer_accessibility'][n]['scroll']['horizontalOverflow'] for n in ('closed','shapes_open','inspector_open','switched_to_inspector','desktop')},'test_results':{'focused_pytest':'PASS','product_accessibility_p0_pytest':'PASS','diagram_studio_browser_acceptance':'PASS 17/17','native_browser_closeout':'PASS 12/12','final_visual_cleanup_acceptance':'PASS 25/25 applicable; 16 not_applicable; benchmark skipped by request','company_ui_validate':'PASS 0 errors / 98 warnings','repository_contracts':'PASS','runtime_contract':'PASS','runtime_smoke':'PASS 22/22 routes','full_pytest':'PASS','frozen_connector_unchanged':True,'browser_unexpected_errors':[]},'scope_controls':{'product_source_changed':True,'product_source_files':['company_ui/products/visualizer/assets/diagram_studio.mjs'],'chg128_untouched':True,'golden_visual_atlas_recapture':False,'no_model_persistence_semantics_changed':True},'evidence_source':'/tmp/visembler-chg130-browser-r3/diagram-studio-acceptance.json'}\nprint(json.dumps(receipt,indent=2,sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 13675,
+        "output_sha256": "fdb356cbfda0ab33eaa8d266d6e6d5e8ed987da04fa3e86e13baddc16b8683d9",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/diagram_studio.mjs && rtk python -m py_compile scripts/release_checks/run_diagram_studio_acceptance.py && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "06955fb47f16312e5d13266c774a2aa4648c46e423cbe6564a92e25b68e39131",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg130-browser-r4 && rtk mkdir -p /tmp/visembler-chg130-browser-r4 && rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-browser-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git status --porcelain=v1 --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q --tb=short'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "2f1cd78f8d3cd7ad53e7f2054d11f39a9c884d7905486344fe44c714df1ede61",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nroot=Path.cwd(); report=json.loads(Path('/tmp/visembler-chg130-browser-r4/diagram-studio-acceptance.json').read_text())\ndef rawgit(*args): return subprocess.check_output(['git',*args],cwd=root,text=True)\ndef git(*args): return rawgit(*args).strip()\ndef stage(name):\n v=report['drawer_accessibility'][name]\n return {'panels':{k:{f:p[f] for f in ('classes','inert_property','inert_attribute','aria_hidden','bounds','focusable_descendants','reachable_focusable')} for k,p in v['panels'].items()},'triggers':v['triggers'],'activeElement':{k:v['activeElement'][k] for k in ('tag','id','action','shape','panel')},'scroll':v['scroll']}\ndef focus_trace(name): return [{'action':x['action'],'panel':x['panel']} for x in report['drawer_accessibility'][name]]\nstatus=rawgit('status','--porcelain=v1','--untracked-files=all').rstrip().splitlines(); paths=[line[3:] for line in status]\nchanged=[{'status':s,'path':p} for s,p in (line.split('\\\\t',1) for line in git('diff','--name-status').splitlines())]\nbase='07ae6003fad833f2ca5c1e71f4d9676e78eab470'; remote=git('rev-parse','origin/main'); patch=subprocess.check_output(['git','diff','--no-ext-diff','--binary'],cwd=root)\nreceipt={'receipt':'FINAL_DURABLE_SECRET_FREE_RECEIPT','schema_version':1,'secret_free':True,'request':'Visembler Project OS CHG-130 R1','fabric_job':'CF-6901a0a444d57bf9117e4b22','operation':'FIX','base_head_tree':{'base':base,'head':git('rev-parse','HEAD'),'tree':git('rev-parse','HEAD\"'^{tree}'\"')},'target':{'remote_main':remote,'remote_main_matches_base':remote==base,'local_main':git('rev-parse','main'),'local_main_stale':git('rev-parse','main')\"'!=base,'\"'target_drifted':remote\"'!=base},'\"'changed_files':changed,'changed_file_sha256':{x['path']:hashlib.sha256((root/x['path']).read_bytes()).hexdigest() for x in changed},'worktree':{'worktree_clean':not status,'status':status,'intended_changes_only':sorted(paths)==sorted(x['path'] for x in changed),'working_tree_patch_sha256':hashlib.sha256(patch).hexdigest()},'mobile_390x844':{'closed':stage('closed'),'shapes_open':stage('shapes_open'),'inspector_open':stage('inspector_open'),'switched_to_inspector':stage('switched_to_inspector'),'focus_return_after_close_backdrop_escape_switch':{n:stage(n)['activeElement'] for n in ('shapes_close','inspector_backdrop_close','shapes_escape_close','inspector_close_button','switch_escape_close')},'sequential_focus_closed':{'tab_forward':focus_trace('closed_tab_forward'),'shift_tab_backward':focus_trace('closed_shift_tab_backward')},'closed_reachable_focusable_counts':{k:report['drawer_accessibility']['closed']['panels'][k]['reachable_focusable'] for k in ('palette','inspector')},'no_simultaneous_open_state':True},'desktop_1440x900':stage('desktop'),'horizontal_overflow':{n:report['drawer_accessibility'][n]['scroll']['horizontalOverflow'] for n in ('closed','shapes_open','inspector_open','switched_to_inspector','desktop')},'test_results':{'focused_pytest':'PASS','product_accessibility_p0_pytest':'PASS','diagram_studio_browser_acceptance':'PASS 17/17','native_browser_closeout':'PASS 12/12','final_visual_cleanup_acceptance':'PASS 25/25 applicable; 16 not_applicable; benchmark skipped by request','company_ui_validate':'PASS 0 errors / 98 warnings','repository_contracts':'PASS','runtime_contract':'PASS','runtime_smoke':'PASS 22/22 routes','full_pytest':'PASS','frozen_connector_unchanged':True,'browser_unexpected_errors':[]},'scope_controls':{'product_source_changed':True,'product_source_files':['company_ui/products/visualizer/assets/diagram_studio.mjs'],'chg128_untouched':True,'golden_visual_atlas_recapture':False,'no_model_persistence_semantics_changed':True},'evidence_source':'/tmp/visembler-chg130-browser-r4/diagram-studio-acceptance.json'}\nprint(json.dumps(receipt,indent=2,sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 14246,
+        "output_sha256": "d5cb328b395719e20cd6dacb4bb173cee655acb62dd5b0a19091abf1e019cdae",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, hashlib, subprocess\nfrom pathlib import Path\np=Path('/tmp/visembler-chg130-browser-r4/diagram-studio-acceptance.json')\ndata=json.loads(p.read_text())\n\ndef pick(*keys, default=None):\n    x=data\n    for k in keys:\n        if isinstance(x, dict) and k in x:\n            x=x[k]\n        else:\n            return default\n    return x\n\ndef clean_probe(x):\n    if not isinstance(x, dict): return x\n    out={}\n    for k in ('classes','inert_property','inert_attribute','aria_hidden','bounds','focusable_descendants','reachable_focusable','activeElement','scrollWidth','clientWidth','innerWidth','horizontalOverflow'):\n        if k in x: out[k]=x[k]\n    return out\n\ndef find_probe(label):\n    # acceptance schema has changed across revisions; locate the first dict containing panel probes.\n    if isinstance(data, dict):\n        for container_key in ('evidence','results','cases','probes','scenarios'):\n            c=data.get(container_key)\n            if isinstance(c, dict) and label in c: return c[label]\n    return None\n\n# Use the final browser evidence's known case names when present.\ncase = None\nfor v in data.values() if isinstance(data, dict) else []:\n    if isinstance(v, dict) and ('mobile drawer accessibility' in str(v.get('name','')).lower() or 'mobile drawer' in str(v.get('title','')).lower()):\n        case=v; break\n\n# Print only the stable top-level evidence and compact case payload; no trace arrays.\nreceipt={\n 'receipt':'FINAL_DURABLE_SECRET_FREE_RECEIPT',\n 'request':'Visembler Project OS CHG-130 R1',\n 'fabric_job':'CF-6901a0a444d57bf9117e4b22',\n 'operation':'FIX',\n 'base_head_tree':{\n   'base':'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n   'head':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),\n   'tree':subprocess.check_output(['git','write-tree'],text=True).strip(),\n },\n 'target':{\n   'remote_main':subprocess.check_output(['git','rev-parse','origin/main'],text=True).strip(),\n   'local_main':subprocess.check_output(['git','rev-parse','main'],text=True).strip(),\n   'target_drifted':subprocess.check_output(['git','rev-parse','origin/main'],text=True).strip()\"'!='\"'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n   'local_main_stale':subprocess.check_output(['git','rev-parse','main'],text=True).strip()\"'!='\"'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n },\n 'changed_files':[\n  'company_ui/products/visualizer/assets/diagram_studio.mjs',\n  'scripts/release_checks/run_diagram_studio_acceptance.py',\n ],\n 'worktree_clean':False,\n 'intended_changes_only':True,\n 'product_source_changed':True,\n 'evidence_source':str(p),\n 'browser_summary':{\n   'diagram_studio_acceptance':'17/17 passed',\n   'native_acceptance':'12/12 passed',\n   'final_visual_cleanup':'25/25 applicable passed; 16 not_applicable; benchmark skipped',\n },\n 'scope_controls':{\n   'chg128_untouched':subprocess.run(['git','diff','--quiet','--','company_ui/products/visualizer/assets/integrated_editor.css','scripts/release_checks/run_reportbar_responsive_geometry.py']).returncode==0,\n   'golden_visual_atlas_recapture':False,\n   'model_persistence_semantics_changed':False,\n },\n}\n# Include the small stable evidence subset by recursively finding the named case.\ndef walk(x):\n    if isinstance(x, dict):\n        if 'name' in x and 'mobile drawer' in str(x['name']).lower(): return x\n        if 'title' in x and 'mobile drawer' in str(x['title']).lower(): return x\n        for v in x.values():\n            z=walk(v)\n            if z is not None: return z\n    elif isinstance(x, list):\n        for v in x:\n            z=walk(v)\n            if z is not None: return z\n    return None\ncase=walk(data)\nif case:\n    compact={}\n    for k in ('name','status','passed','result','mobile_closed','shapes_open','inspector_open','desktop','focus_return','sequential_focus','overflow'):\n        if k in case: compact[k]=case[k]\n    receipt['browser_case']=compact\nprint(json.dumps(receipt,sort_keys=True,separators=(',',':')))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, subprocess\nfrom pathlib import Path\nroot=Path('.')\nfiles=['company_ui/products/visualizer/assets/diagram_studio.mjs','scripts/release_checks/run_diagram_studio_acceptance.py']\nraw=subprocess.check_output(['git','diff','--binary'])\nprint(json.dumps({\n 'file_sha256':{f:hashlib.sha256((root/f).read_bytes()).hexdigest() for f in files},\n 'working_tree_patch_sha256':hashlib.sha256(raw).hexdigest(),\n 'git_status_porcelain':subprocess.check_output(['git','status','--porcelain'],text=True).splitlines(),\n},sort_keys=True,separators=(',',':')))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nreceipt={\n  'receipt':'FINAL_DURABLE_SECRET_FREE_RECEIPT',\n  'request':'Visembler Project OS CHG-130 R1',\n  'fabric_job':'CF-6901a0a444d57bf9117e4b22',\n  'operation':'FIX',\n  'base_head_tree':{\n    'base':'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n    'head':'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n    'tree':'c6851b042d94954134b000640700211fd9353ba7'\n  },\n  'target':{\n    'remote_main':'07ae6003fad833f2ca5c1e71f4d9676e78eab470',\n    'local_main':'21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284',\n    'target_drifted':False,\n    'local_main_stale':True\n  },\n  'changed_files':[\n    'company_ui/products/visualizer/assets/diagram_studio.mjs',\n    'scripts/release_checks/run_diagram_studio_acceptance.py'\n  ],\n  'changed_file_sha256':{\n    'company_ui/products/visualizer/assets/diagram_studio.mjs':'944505ac9af4fb95a54b1b6a546452b8382b024e2986589979367381ee067fb2',\n    'scripts/release_checks/run_diagram_studio_acceptance.py':'2cca6ef5363294d0d0bf6a15c473cbd2e6b50cd88d20139e18bda2f25e1721ab'\n  },\n  'working_tree_patch_sha256':'cf61cf02fc53f795ab3f8bdae50aa7ae3536aaf697b96c48db8b5736368bb9cd',\n  'worktree_clean':False,\n  'intended_changes_only':True,\n  'product_source_changed':True,\n  'mobile_390x844':{\n    'closed':{\n      'palette':{\n        'classes':'ds-palette','inert_property':True,'inert_attribute':True,'aria_hidden':'true',\n        'bounds':{'left':-357,'right':-17,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':29,'reachable_focusable':0\n      },\n      'inspector':{\n        'classes':'ds-inspector','inert_property':True,'inert_attribute':True,'aria_hidden':'true',\n        'bounds':{'left':407,'right':747,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':27,'reachable_focusable':0\n      },\n      'triggers':{\n        'palette':{'aria_expanded':'false','aria_controls':'ds-shape-panel'},\n        'inspector':{'aria_expanded':'false','aria_controls':'ds-inspector-panel'}\n      },\n      'scroll':{'scrollWidth':390,'clientWidth':390,'innerWidth':390,'horizontalOverflow':False}\n    },\n    'shapes_open':{\n      'palette':{\n        'classes':'ds-palette is-open','inert_property':False,'inert_attribute':False,'aria_hidden':'false',\n        'bounds':{'left':0,'right':340,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':29,'reachable_focusable':29,\n        'activeElement':{'tag':'button','shape':'start','panel':'palette','label':'Add Start'}\n      },\n      'inspector':{\n        'classes':'ds-inspector','inert_property':True,'inert_attribute':True,'aria_hidden':'true',\n        'bounds':{'left':407,'right':747,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':27,'reachable_focusable':0\n      },\n      'triggers':{\n        'palette':{'aria_expanded':'true','aria_controls':'ds-shape-panel'},\n        'inspector':{'aria_expanded':'false','aria_controls':'ds-inspector-panel'}\n      },\n      'only_one_open':True\n    },\n    'inspector_open':{\n      'palette':{\n        'classes':'ds-palette','inert_property':True,'inert_attribute':True,'aria_hidden':'true',\n        'bounds':{'left':-357,'right':-17,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':29,'reachable_focusable':0\n      },\n      'inspector':{\n        'classes':'ds-inspector is-open','inert_property':False,'inert_attribute':False,'aria_hidden':'false',\n        'bounds':{'left':50,'right':390,'top':56,'bottom':844,'width':340,'height':788},\n        'focusable_descendants':27,'reachable_focusable':27,\n        'activeElement':{'tag':'button','panel':'inspector','label':'Clear selection'}\n      },\n      'triggers':{\n        'palette':{'aria_expanded':'false','aria_controls':'ds-shape-panel'},\n        'inspector':{'aria_expanded':'true','aria_controls':'ds-inspector-panel'}\n      },\n      'only_one_open':True\n    },\n    'sequential_focus':{\n      'tab_forward_enters_drawer':False,\n      'shift_tab_backward_enters_drawer':False,\n      'sampled_closed_drawer_panel_values':['null']\n    },\n    'focus_return':{\n      'shapes_close_button':'toggle-palette',\n      'inspector_backdrop':'toggle-inspector',\n      'shapes_escape':'toggle-palette',\n      'inspector_close_button':'toggle-inspector',\n      'switch_to_inspector_then_escape':'toggle-inspector'\n    }\n  },\n  'desktop_1440x900':{\n    'palette':{\n      'classes':'ds-palette','inert_property':False,'inert_attribute':False,'aria_hidden':None,\n      'bounds':{'left':84,'right':328,'top':148,'bottom':920,'width':244,'height':772},\n      'focusable_descendants':29,'reachable_focusable':29\n    },\n    'inspector':{\n      'classes':'ds-inspector','inert_property':False,'inert_attribute':False,'aria_hidden':None,\n      'bounds':{'left':1110,'right':1420,'top':148,'bottom':920,'width':310,'height':772},\n      'focusable_descendants':27,'reachable_focusable':27\n    },\n    'triggers':{\n      'palette':{'aria_expanded':'false','aria_controls':'ds-shape-panel'},\n      'inspector':{'aria_expanded':'false','aria_controls':'ds-inspector-panel'}\n    },\n    'scroll':{'scrollWidth':1440,'clientWidth':1440,'innerWidth':1440,'horizontalOverflow':False}\n  },\n  'test_results':{\n    'focused_pytest':'8 passed',\n    'full_pytest':'passed 100%',\n    'company_ui_validate':'0 errors, 98 warnings',\n    'repository_contracts':'PASS',\n    'runtime_contract':'PASS (NiceGUI 3.15.0)',\n    'runtime_smoke':'PASS (22/22 routes)',\n    'diagram_studio_browser':'PASS (17/17)',\n    'native_browser_smoke':'PASS (12/12)',\n    'maintained_release_checks':'PASS (25/25 applicable; 16 not_applicable; benchmark skipped)'\n  },\n  'scope_controls':{\n    'chg128_untouched':True,\n    'golden_visual_atlas_recapture':False,\n    'model_persistence_semantics_changed':False,\n    'broader_architecture_defect_found':False\n  },\n  'evidence_source':'/tmp/visembler-chg130-browser-r4/diagram-studio-acceptance.json'\n}\nprint(json.dumps(receipt,sort_keys=True,separators=(',',':')))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 5112,
+        "output_sha256": "91049e2003411b369554b1d2a2ea3216308f26f2695bbe4dd128256d516be11b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"panelReturnFocus|syncPanelSemantics|mobile drawer accessibility\" company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 253,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.17,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 15308288,
+      "fresh_input_tokens": 285663,
+      "input_tokens": 15593951,
+      "non_reasoning_output_tokens": 31410,
+      "output_tokens": 54293,
+      "reasoning_output_tokens": 22883,
+      "total_processed_tokens": 15648244
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "70265bcb27f6b0d82cb1f4f33dc3cdc96bfac7e7",
+      "subject": "fabric: capture completed model changes [CF-6901a0a444d57bf9117e4b22]"
+    }
+  ],
+  "diff": {
+    "additions": 189,
+    "changed_files": 2,
+    "commit_count": 1,
+    "deletions": 11
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-6901a0a444d57bf9117e4b22]",
+    "commit_sha": "70265bcb27f6b0d82cb1f4f33dc3cdc96bfac7e7",
+    "paths_before": 2,
+    "status_before": [
+      " M company_ui/products/visualizer/assets/diagram_studio.mjs",
+      " M scripts/release_checks/run_diagram_studio_acceptance.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-18T22:40:41Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "07ae6003fad833f2ca5c1e71f4d9676e78eab470",
+    "branch": "fix/visembler-chg130-diagram-mobile-drawers-r1",
+    "detached_verify": false,
+    "head_sha": "70265bcb27f6b0d82cb1f4f33dc3cdc96bfac7e7",
+    "remote_exact_head": true,
+    "remote_head_sha": "70265bcb27f6b0d82cb1f4f33dc3cdc96bfac7e7",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "07ae6003fad833f2ca5c1e71f4d9676e78eab470",
+    "work_branch": "fix/visembler-chg130-diagram-mobile-drawers-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-6901a0a444d57bf9117e4b22",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-130-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-130-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-130-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-18T22:16:30Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1451,
+    "queue_seconds": 0,
+    "total_seconds": 1451
+  },
+  "transport": {
+    "bytes": 5226,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4921,
+    "prompt_sha256": "3d28c856d2a9c050b8e8d037278a4e6ab21bdeb5dc0cbf8bf8f937b685b44d0e",
+    "sha256": "6901a0a444d57bf9117e4b22ed44bc06008e754590256f6fc3e09aa713149489"
+  }
+}
