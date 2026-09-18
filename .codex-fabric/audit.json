@@ -1,0 +1,265 @@
+{
+  "accepted_at": "2026-09-18T14:16:14Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- AGENT refs ---' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && printf '%s\\\\n' '--- law ---' && sed -n '1,260p' /Users/haewonkim/.codex/law.md && printf '%s\\\\n' '--- root files ---' && rg --files -g 'AGENTS.md' -g 'construction_manifest.json' -g 'APP_PATTERNS.md' -g 'COMPONENT_CATALOG.md' -g 'DESIGN_CONSTITUTION_V1_6.md' -g 'requirements*.txt' -g 'setup.sh' -g 'run_lab.sh' -g '*verify*' -g '*certif*' -g '*readiness*' -g '*boundary*' -g '*CHG-20*' -g '*CHG-19*' -g '*AR-11*' -g '*AR-7*' | sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git rev-parse HEAD && rtk git show -s --format='%H%n%P%n%an%n%ad%n%s' 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 && printf '%s\\\\n' '--- manifest ---' && rtk sed -n '1,260p' company_ui/ai/construction_manifest.json && printf '%s\\\\n' '--- relevant references ---' && rtk rg -n -i --hidden --glob '\"'!*.pyc'\"' --glob '\"'!node_modules'\"' 'CHG-20|CHG-19|R2|R3|company.boundary|company boundary|ready.for.company|READY_FOR_COMPANY|local readiness|managed_target|target_drifted|source_stability|artifact binding|authorization.*lifecycle|model acceptance' . .codex 2>/dev/null | sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- README ---' && rtk sed -n '1,240p' README.md && printf '%s\\\\n' '--- current product status ---' && rtk sed -n '1,260p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md && printf '%s\\\\n' '--- operations ---' && rtk sed -n '1,280p' docs/VISSEMBLER_COMPANY_OPERATIONS.md && printf '%s\\\\n' '--- production runbook ---' && rtk sed -n '1,320p' docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md && printf '%s\\\\n' '--- verify_release.py ---' && rtk sed -n '1,280p' scripts/verify_release.py && printf '%s\\\\n' '--- release checks ---' && rtk find scripts/release_checks -maxdepth 1 -type f -print | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- control-plane references ---' && rtk rg -n -i --hidden --glob '\"'!*.pyc'\"' --glob '\"'!node_modules'\"' 'CODEX_VERSION|control.?plane|pre.?model|Fabric|CF-ed1ba|CHG-20|job ' /Users/haewonkim/.codex-fabric/worktrees /Users/haewonkim/.codex 2>/dev/null | sed -n '1,320p' && printf '%s\\\\n' '--- company boundary workflow ---' && rtk sed -n '60,235p' .github/workflows/quality.yml && printf '%s\\\\n' '--- company user acceptance ---' && rtk sed -n '1,320p' scripts/release_checks/run_company_user_acceptance.py && printf '%s\\\\n' '--- company browser gate ---' && rtk sed -n '1,380p' scripts/release_checks/run_company_boundary_browser_gate.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- top-level evidence/config files ---' && rtk rg --files -g '\"'!company_ui/**'\"' -g '\"'!node_modules/**'\"' -g '\"'!*.pyc'\"' | sed -n '1,260p' && printf '%s\\\\n' '--- current-worktree gate references ---' && rtk rg -n -i --hidden --glob '\"'!*.pyc'\"' --glob '\"'!node_modules'\"' 'company[-_ ]boundary|company_boundary|company readiness|capacity|artifact|dependency|source stability|authoring|console|runtime diagnostics|10/100/1000|1000 reports|receipt' . | sed -n '1,520p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- release closure test ---' && rtk sed -n '1,240p' tests/test_visualizer_release_closure.py && printf '%s\\\\n' '--- repository contracts ---' && rtk sed -n '1,340p' scripts/release_checks/run_repository_contracts.py && printf '%s\\\\n' '--- local readiness script ---' && rtk sed -n '1,360p' scripts/release_checks/run_company_production_readiness.py && printf '%s\\\\n' '--- capacity script ---' && rtk sed -n '1,420p' scripts/release_checks/run_company_capacity.py && printf '%s\\\\n' '--- source stability script ---' && rtk sed -n '1,300p' scripts/release_checks/run_company_source_stability.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- recent history ---' && rtk git log --oneline --decorate --all -35 && printf '%s\\\\n' '--- browser acceptance ---' && rtk sed -n '1,440p' scripts/release_checks/run_company_user_browser_acceptance.py && printf '%s\\\\n' '--- source identity ---' && rtk sed -n '1,300p' scripts/release_checks/source_identity.py && printf '%s\\\\n' '--- git refs ---' && rtk git branch -a -vv && printf '%s\\\\n' '--- closeout/current receipts ---' && rtk sed -n '1,220p' PRODUCTION_CLOSEOUT_STATE.json && rtk sed -n '1,220p' TARGET_RUNTIME_GATE_ATTEMPT.json && rtk sed -n '1,220p' BUILD_PROVENANCE.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- normal CLI/version preflight ---' && (rtk command -v codex || true) && (rtk codex --version || true) && (rtk command -v fabric || true) && (rtk fabric --version || true) && printf '%s\\\\n' '--- runtime preflight ---' && rtk python --version && rtk python -c 'import importlib.metadata as m; names=(\\\"nicegui\\\",\\\"playwright\\\",\\\"Pillow\\\"); print({n:(m.version(n) if any(d.metadata.get(\\\"Name\\\",\\\"\\\").lower()==n.lower() for d in m.distributions()) else \\\"MISSING\\\") for n in names})' && rtk node --version && printf '%s\\\\n' '--- prior Fabric evidence commit summaries ---' && rtk git show --stat --oneline 7d79f23 && rtk git show --stat --oneline 993f199 && printf '%s\\\\n' '--- prior evidence paths ---' && rtk git ls-tree -r --name-only 7d79f23 | sed -n '1,200p' && printf '%s\\\\n' '--- remote/main identity (read-only) ---' && (rtk git ls-remote origin refs/heads/main || true)\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- prior CHG-20 R1/R2 audit evidence (metadata only) ---' && rtk git show 9dd1da6:.codex-fabric/audit.json | sed -n '1,280p' && printf '%s\\\\n' '--- prior CHG-19 R4 audit evidence ---' && rtk git show 7d79f23:.codex-fabric/audit.json | sed -n '1,300p' && printf '%s\\\\n' '--- local ignored/evidence policy ---' && rtk rg -n --hidden 'evidence|artifact|\\\\.codex-fabric|run-owned|generated' .gitignore docs/VISSEMBLER* .github/workflows/quality.yml | sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d /tmp/visembler-chg20-r3.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg20-r3.okqISD/canonical-native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nbase=Path('/tmp/visembler-chg20-r3.okqISD/canonical-native')\nreport=json.loads((base/'report.json').read_text())\nby={row['name']:row for row in report['checks']}\nfor name in ('repository-contracts','company-boundary-model','company-boundary-browser','company-readiness-local','company-capacity','source-stability','frozen-connector','full-tests','elements','data','performance','chart-studio','report-hub-browser-errors','native-recovery','worker-lifecycle','operations-drill','native-acceptance','git-diff-check'):\n    row=by.get(name,{})\n    print(json.dumps({'name':name,'status':row.get('status'),'returncode':row.get('returncode'),'log':row.get('log')},sort_keys=True))\nfor filename in ('repository-contracts.json','company-boundary-model.json','company-boundary-browser.json','company-readiness-local.json','company-capacity.json'):\n    p=base/filename\n    print('---',filename)\n    data=json.loads(p.read_text())\n    safe={k:data.get(k) for k in ('status','candidate_sha','source_manifest_hash','production_dependency_fingerprint','local_checks','target','created','cleaned','remaining','browser_console_errors','passed','failed','results','checks') if k in data}\n    if filename=='company-boundary-model.json':\n        safe['checks_summary']={'count':len(data.get('checks',[])),'passed':sum(x.get('status')=='PASS' for x in data.get('checks',[])),'failed':sum(x.get('status')=='FAIL' for x in data.get('checks',[]))}\n        safe.pop('checks',None)\n    if filename=='company-boundary-browser.json':\n        safe['checks_summary']={'count':len(data.get('checks',[])),'passed':sum(x.get('status')=='PASS' for x in data.get('checks',[])),'failed':sum(x.get('status')=='FAIL' for x in data.get('checks',[]))}\n        safe.pop('checks',None)\n    print(json.dumps(safe,sort_keys=True,default=str))\nprint('--- report decisive')\nprint(json.dumps({k:report.get(k) for k in ('host_mode','checks_status','release_status','company_boundary_status','managed_target_status','required_gates','remaining_release_validation','git_status_at_start','source_editor_sha256','source_page_sha256')},sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /tmp/visembler-chg20-r3.okqISD/company-source-stability.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest tests/test_visualizer_authoring_p0.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_performance.py --tb=short --junitxml=/tmp/visembler-chg20-r3.okqISD/authoring-acceptance.xml'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 20
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 180,
+        "output_sha256": "f18ae3ad481bd7d1e9cc599e408542d750fe35152e38e26fa9614b480fa8333f",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- integrity workflow authority ---' && rtk sed -n '220,360p' .github/workflows/quality.yml && printf '%s\\\\n' '--- integrity/identity tests ---' && rtk rg -n 'requirements_equal|dependency|frozen|wheel|artifact|integrity|source_manifest|candidate_sha|package content' tests scripts .github/workflows/quality.yml pyproject.toml | sed -n '1,360p' && printf '%s\\\\n' '--- project package declarations ---' && rtk sed -n '1,240p' pyproject.toml && printf '%s\\\\n' '--- current report manifests ---' && rtk find /tmp/visembler-chg20-r3.okqISD/canonical-native -maxdepth 2 -type f | sort | sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib\nimport json\nimport subprocess\nimport tomllib\nfrom zipfile import ZipFile\nroot=Path('.')\nrequirements=[line.strip() for line in (root/'requirements.txt').read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')]\ndependencies=tomllib.loads((root/'pyproject.toml').read_text())['project']['dependencies']\nassert requirements == dependencies, (requirements, dependencies)\nassert '-r requirements.txt' in (root/'requirements-test.txt').read_text()\nfrozen='company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'\nfrozen_sha=hashlib.sha256((root/frozen).read_bytes()).hexdigest()\nassert frozen_sha == 'd8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e'\nprint(json.dumps({'declaration_status':'PASS','requirements_equal_dependencies':True,'test_requirements_include_production':True,'frozen_connector_sha256':frozen_sha},sort_keys=True))\nPY\nrtk python -m pip wheel --no-deps --wheel-dir /tmp/visembler-chg20-r3.okqISD/dist .\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib\nimport json\nfrom zipfile import ZipFile\nwheel=next(Path('/tmp/visembler-chg20-r3.okqISD/dist').glob('company_ui-*.whl'))\nrequired={\n'company_ui/products/visualizer/assets/integrated_editor.mjs',\n'company_ui/products/visualizer/assets/integrated_editor.html',\n'company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json',\n'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js',\n}\nwith ZipFile(wheel) as archive:\n    names=set(archive.namelist())\nmissing=sorted(required-names)\nassert not missing, missing\nprint(json.dumps({'package_integrity_status':'PASS','wheel':str(wheel),'wheel_sha256':hashlib.sha256(wheel.read_bytes()).hexdigest(),'required_package_content_present':True,'missing':missing},sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -ld build company_ui.egg-info dist 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf build company_ui.egg-info && rtk git status --short --branch && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/main && rtk git status --porcelain=v1 && rtk git diff --name-only && rtk git diff --cached --name-only'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib\nimport importlib.util\nimport json\nimport subprocess\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nworktree = Path('.')\nevidence = Path('/tmp/visembler-chg20-r3.okqISD')\ncanonical = evidence / 'canonical-native'\nreport = json.loads((canonical / 'report.json').read_text())\nby_name = {row['name']: row for row in report['checks']}\nmodel = json.loads((canonical / 'company-boundary-model.json').read_text())\nbrowser = json.loads((canonical / 'company-boundary-browser.json').read_text())\nreadiness = json.loads((canonical / 'company-readiness-local.json').read_text())\ncontracts = json.loads((canonical / 'repository-contracts.json').read_text())\ncapacity = json.loads((canonical / 'company-capacity.json').read_text())\nstability = json.loads((evidence / 'company-source-stability.json').read_text())\n\nspec = importlib.util.spec_from_file_location('verify_release_current', worktree / 'scripts/verify_release.py')\nverify = importlib.util.module_from_spec(spec)\nassert spec and spec.loader\nspec.loader.exec_module(verify)\nrecorded_verify_manifest = json.loads((canonical / 'source-manifest.json').read_text())\ncurrent_verify_manifest = verify.source_manifest()\nverifier_manifest_equal = current_verify_manifest == recorded_verify_manifest\n\nfrom scripts.release_checks.run_company_production_readiness import (\n    candidate_sha, dependency_fingerprint, source_manifest, validate_local_receipt,\n)\nsha = candidate_sha(worktree)\nsource_manifest_hash, _ = source_manifest(worktree)\ndependency_hash = dependency_fingerprint()\nlocal_valid, local_errors = validate_local_receipt(\n    readiness, sha=sha, manifest_hash=source_manifest_hash, dependency_hash=dependency_hash,\n)\nartifact_binding = all(\n    (worktree / name).is_file() and hashlib.sha256((worktree / name).read_bytes()).hexdigest() == digest\n    for name, digest in readiness.get('artifact_manifest', {}).items()\n)\n\njunit = ET.parse(evidence / 'authoring-acceptance.xml').getroot()\npytest_suite = junit.find('testsuite')\nauthoring_tests = int(pytest_suite.attrib.get('tests', '0')) if pytest_suite is not None else 0\nauthoring_failures = int(pytest_suite.attrib.get('failures', '0')) if pytest_suite is not None else 0\nauthoring_errors = int(pytest_suite.attrib.get('errors', '0')) if pytest_suite is not None else 0\n\nwheel = next((evidence / 'dist').glob('company_ui-*.whl'))\nwith __import__('zipfile').ZipFile(wheel) as archive:\n    names = set(archive.namelist())\nrequired_package_content = {\n    'company_ui/products/visualizer/assets/integrated_editor.mjs',\n    'company_ui/products/visualizer/assets/integrated_editor.html',\n    'company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json',\n    'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js',\n}\npackage_integrity = not (required_package_content - names)\nrequirements_equal = __import__('tomllib').loads((worktree / 'pyproject.toml').read_text())['project']['dependencies'] == [\n    line.strip() for line in (worktree / 'requirements.txt').read_text().splitlines()\n    if line.strip() and not line.lstrip().startswith('#')\n]\n\nstatus = subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip()\nhead = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()\ntree = subprocess.check_output(['git', 'rev-parse', 'HEAD\"'^{tree}'\"'], text=True).strip()\nremote_main = subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/main'], text=True).split()[0]\nproduct_source_paths = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'company_ui', 'scripts', 'tests', 'requirements.txt', 'requirements-test.txt', 'requirements-certification.txt', 'pyproject.toml'], text=True).splitlines()\n\ncapacity_by_size = {str(item['reports']): item for item in capacity['results']}\nrequired_native = report['required_gates']\nrequired_native_pass = all(by_name.get(name, {}).get('status') == 'PASS' for name in required_native)\n\nsummary = {\n    'request': 'CHG-20-R3',\n    'base': '60d08b6a3c9984c8421e17dc8d1f537d6f0b0761',\n    'head': head,\n    'tree': tree,\n    'remote_main': remote_main,\n    'target_drifted': remote_main \"'!= head,\n    '\"'verifier': {\n        'release_status': report['release_status'],\n        'checks_status': report['checks_status'],\n        'required_gates': f\\\"{sum(by_name.get(name, {}).get('status') == 'PASS' for name in required_native)}/{len(required_native)} PASS\\\",\n        'remaining': report['remaining_release_validation'],\n    },\n    'repository_contracts': {'status': contracts['status'], 'checks': len(contracts['checks'])},\n    'authorization_lifecycle': {'status': model['status'], 'checks': f\\\"{model['passed']}/{model['passed'] + model['failed']} PASS\\\"},\n    'authoring_acceptance': {'status': 'PASS' if authoring_failures == 0 and authoring_errors == 0 else 'FAIL', 'checks': f\\\"{authoring_tests - authoring_failures - authoring_errors}/{authoring_tests} PASS\\\"},\n    'model_acceptance': {'status': model['status'], 'checks': f\\\"{model['passed']}/{model['passed'] + model['failed']} PASS\\\"},\n    'browser_boundary': {'status': browser['status'], 'checks': f\\\"{sum(x['status'] == 'PASS' for x in browser['checks'])}/{len(browser['checks'])} PASS\\\", 'console_runtime_errors': len(browser['browser_console_errors']), 'remaining_fixtures': browser['remaining']},\n    'production_readiness': readiness['status'],\n    'capacity_10_100_1000': {size: {'status': 'PASS' if capacity_by_size[size]['reports'] == int(size) and capacity_by_size[size]['listed'] == int(size) else 'FAIL'} for size in ('10', '100', '1000')},\n    'source_stability': stability['status'],\n    'integrity_dependency_artifact_binding': {\n        'status': 'PASS' if requirements_equal and package_integrity and artifact_binding and by_name['frozen-connector']['status'] == 'PASS' else 'FAIL',\n        'requirements_equal_dependencies': requirements_equal,\n        'production_dependency_fingerprint': dependency_hash,\n        'dependency_receipt_match': readiness.get('production_dependency_fingerprint') == dependency_hash,\n        'artifact_receipt_valid': artifact_binding,\n        'frozen_connector_sha256': readiness.get('artifact_manifest', {}).get('company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'),\n        'wheel_sha256': hashlib.sha256(wheel.read_bytes()).hexdigest(),\n        'package_content_present': package_integrity,\n    },\n    'local_readiness_receipt_valid': local_valid,\n    'local_readiness_receipt_errors': local_errors,\n    'source_manifest_hash': source_manifest_hash,\n    'source_manifest_receipt_match': readiness.get('source_manifest_hash') == source_manifest_hash,\n    'verifier_source_manifest_equal': verifier_manifest_equal,\n    'company_boundary_status': report['company_boundary_status'],\n    'managed_target_status': report['managed_target_status'],\n    'ready_for_company_target_certification': report['company_boundary_status'] == 'READY_FOR_COMPANY_TARGET_CERTIFICATION' and local_valid and required_native_pass,\n    'product_source_changed': bool(product_source_paths),\n    'source_changed': not verifier_manifest_equal,\n    'worktree_clean': not status,\n    'worktree_status': status,\n}\nprint(json.dumps(summary, indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 146,
+        "output_sha256": "ab008f2cad20967f640fe1376e43719c783fe3c5710f78940f0269726f987835",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib\nimport importlib.util\nimport json\nimport subprocess\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nworktree = Path('.')\nevidence = Path('/tmp/visembler-chg20-r3.okqISD')\ncanonical = evidence / 'canonical-native'\nreport = json.loads((canonical / 'report.json').read_text())\nby_name = {row['name']: row for row in report['checks']}\nmodel = json.loads((canonical / 'company-boundary-model.json').read_text())\nbrowser = json.loads((canonical / 'company-boundary-browser.json').read_text())\nreadiness = json.loads((canonical / 'company-readiness-local.json').read_text())\ncontracts = json.loads((canonical / 'repository-contracts.json').read_text())\ncapacity = json.loads((canonical / 'company-capacity.json').read_text())\nstability = json.loads((evidence / 'company-source-stability.json').read_text())\n\nspec = importlib.util.spec_from_file_location('verify_release_current', worktree / 'scripts/verify_release.py')\nverify = importlib.util.module_from_spec(spec)\nassert spec and spec.loader\nspec.loader.exec_module(verify)\nrecorded_verify_manifest = json.loads((canonical / 'source-manifest.json').read_text())\ncurrent_verify_manifest = verify.source_manifest()\nverifier_manifest_equal = current_verify_manifest == recorded_verify_manifest\n\nfrom scripts.release_checks.run_company_production_readiness import (\n    candidate_sha, dependency_fingerprint, source_manifest, validate_local_receipt,\n)\nsha = candidate_sha()\nsource_manifest_hash, _ = source_manifest()\ndependency_hash = dependency_fingerprint()\nlocal_valid, local_errors = validate_local_receipt(\n    readiness, sha=sha, manifest_hash=source_manifest_hash, dependency_hash=dependency_hash,\n)\nartifact_binding = all(\n    (worktree / name).is_file() and hashlib.sha256((worktree / name).read_bytes()).hexdigest() == digest\n    for name, digest in readiness.get('artifact_manifest', {}).items()\n)\n\njunit = ET.parse(evidence / 'authoring-acceptance.xml').getroot()\npytest_suite = junit.find('testsuite')\nauthoring_tests = int(pytest_suite.attrib.get('tests', '0')) if pytest_suite is not None else 0\nauthoring_failures = int(pytest_suite.attrib.get('failures', '0')) if pytest_suite is not None else 0\nauthoring_errors = int(pytest_suite.attrib.get('errors', '0')) if pytest_suite is not None else 0\n\nwheel = next((evidence / 'dist').glob('company_ui-*.whl'))\nwith __import__('zipfile').ZipFile(wheel) as archive:\n    names = set(archive.namelist())\nrequired_package_content = {\n    'company_ui/products/visualizer/assets/integrated_editor.mjs',\n    'company_ui/products/visualizer/assets/integrated_editor.html',\n    'company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json',\n    'company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js',\n}\npackage_integrity = not (required_package_content - names)\nrequirements_equal = __import__('tomllib').loads((worktree / 'pyproject.toml').read_text())['project']['dependencies'] == [\n    line.strip() for line in (worktree / 'requirements.txt').read_text().splitlines()\n    if line.strip() and not line.lstrip().startswith('#')\n]\n\nstatus = subprocess.check_output(['git', 'status', '--porcelain'], text=True).strip()\nhead = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()\ntree = subprocess.check_output(['git', 'rev-parse', 'HEAD\"'^{tree}'\"'], text=True).strip()\nremote_main = subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/main'], text=True).split()[0]\nproduct_source_paths = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'company_ui', 'scripts', 'tests', 'requirements.txt', 'requirements-test.txt', 'requirements-certification.txt', 'pyproject.toml'], text=True).splitlines()\n\ncapacity_by_size = {str(item['reports']): item for item in capacity['results']}\nrequired_native = report['required_gates']\nrequired_native_pass = all(by_name.get(name, {}).get('status') == 'PASS' for name in required_native)\n\nsummary = {\n    'request': 'CHG-20-R3',\n    'base': '60d08b6a3c9984c8421e17dc8d1f537d6f0b0761',\n    'head': head,\n    'tree': tree,\n    'remote_main': remote_main,\n    'target_drifted': remote_main \"'!= head,\n    '\"'verifier': {\n        'release_status': report['release_status'],\n        'checks_status': report['checks_status'],\n        'required_gates': f\\\"{sum(by_name.get(name, {}).get('status') == 'PASS' for name in required_native)}/{len(required_native)} PASS\\\",\n        'remaining': report['remaining_release_validation'],\n    },\n    'repository_contracts': {'status': contracts['status'], 'checks': len(contracts['checks'])},\n    'authorization_lifecycle': {'status': model['status'], 'checks': f\\\"{model['passed']}/{model['passed'] + model['failed']} PASS\\\"},\n    'authoring_acceptance': {'status': 'PASS' if authoring_failures == 0 and authoring_errors == 0 else 'FAIL', 'checks': f\\\"{authoring_tests - authoring_failures - authoring_errors}/{authoring_tests} PASS\\\"},\n    'model_acceptance': {'status': model['status'], 'checks': f\\\"{model['passed']}/{model['passed'] + model['failed']} PASS\\\"},\n    'browser_boundary': {'status': browser['status'], 'checks': f\\\"{sum(x['status'] == 'PASS' for x in browser['checks'])}/{len(browser['checks'])} PASS\\\", 'console_runtime_errors': len(browser['browser_console_errors']), 'remaining_fixtures': browser['remaining']},\n    'production_readiness': readiness['status'],\n    'capacity_10_100_1000': {size: {'status': 'PASS' if capacity_by_size[size]['reports'] == int(size) and capacity_by_size[size]['listed'] == int(size) else 'FAIL'} for size in ('10', '100', '1000')},\n    'source_stability': stability['status'],\n    'integrity_dependency_artifact_binding': {\n        'status': 'PASS' if requirements_equal and package_integrity and artifact_binding and by_name['frozen-connector']['status'] == 'PASS' else 'FAIL',\n        'requirements_equal_dependencies': requirements_equal,\n        'production_dependency_fingerprint': dependency_hash,\n        'dependency_receipt_match': readiness.get('production_dependency_fingerprint') == dependency_hash,\n        'artifact_receipt_valid': artifact_binding,\n        'frozen_connector_sha256': readiness.get('artifact_manifest', {}).get('company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js'),\n        'wheel_sha256': hashlib.sha256(wheel.read_bytes()).hexdigest(),\n        'package_content_present': package_integrity,\n    },\n    'local_readiness_receipt_valid': local_valid,\n    'local_readiness_receipt_errors': local_errors,\n    'source_manifest_hash': source_manifest_hash,\n    'source_manifest_receipt_match': readiness.get('source_manifest_hash') == source_manifest_hash,\n    'verifier_source_manifest_equal': verifier_manifest_equal,\n    'company_boundary_status': report['company_boundary_status'],\n    'managed_target_status': report['managed_target_status'],\n    'ready_for_company_target_certification': report['company_boundary_status'] == 'READY_FOR_COMPANY_TARGET_CERTIFICATION' and local_valid and required_native_pass,\n    'product_source_changed': bool(product_source_paths),\n    'source_changed': not verifier_manifest_equal,\n    'worktree_clean': not status,\n    'worktree_status': status,\n}\nprint(json.dumps(summary, indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2205,
+        "output_sha256": "182afe0f0cd9b180acecaa7ee6e4a1d508de4404dbb59e134bd9d9e4c0fb7337",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -l 'CHG-20-r3|CHG-20 R3|current-main-r3' /Users/haewonkim/.codex-fabric/jobs --glob 'job.json' --glob 'prompt.md' 2>/dev/null | sed -n '1,120p' && printf '%s\\\\n' '--- current worktree metadata ---' && rtk git branch --show-current && rtk git rev-parse --show-toplevel && rtk git remote get-url origin\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{job_id,project_id,request,operation,status,base:(.routes[0].base),head:(.routes[0].head),work_branch:(.routes[0].work_branch),target:(.routes[0].target),remote_name:(.routes[0].remote_name),repo:(.routes[0].repo),fabric_release,started_at,accepted_at}' /Users/haewonkim/.codex-fabric/jobs/CF-a1bd4cb7f23045d4a467f863.running/job.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy printf '%s\\\\n' 'request=CHG-20-R3 fabric_job=CF-a1bd4cb7f23045d4a467f863 source=visembler repo=/Users/haewonkim/.codex-fabric/repos/visembler base=60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 head=60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 tree=2c2c76c715d5aed1493db3fe37306922f257e6d3 repository_contracts=PASS(6/6) authorization_lifecycle=PASS(20/20) authoring_acceptance=PASS(20/20) model_acceptance=PASS(20/20) browser_boundary=PASS(15/15) browser_console_runtime_errors=0 production_readiness=READY_FOR_COMPANY_TARGET_CERTIFICATION capacity_10=PASS capacity_100=PASS capacity_1000=PASS source_stability=PASS integrity_dependency_artifact_binding=PASS dependency_fingerprint=889312a0df44d3e2cdef28f570507f1cbe9989ba9dae7776fae8971b5cf229aa artifact_frozen_connector_sha256=d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e wheel_sha256=f70caaa7f51e5042b7e13602afc07a49a2ea86cda01cbf56371b059b45a8db61 local_readiness_receipt_valid=true company_boundary_status=READY_FOR_COMPANY_TARGET_CERTIFICATION managed_target_status=PENDING ready_for_company_target_certification=true native_verifier=PASS_LOCAL_INTERNAL_PILOT required_native_gates=26/26 product_source_changed=false source_changed=false worktree_clean=true target_drifted=false remote_main=60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 remote_main_unchanged=true evidence_not_committed_to_product_git=true target_receipt=absent_expected_CHG-21 managed_production_claim=false CHG-40=PAUSED_NOT_RERUN evidence_dir=/tmp/visembler-chg20-r3.okqISD report_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/report.json repository_contracts_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/repository-contracts.json model_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/company-boundary-model.json browser_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/company-boundary-browser.json readiness_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/company-readiness-local.json capacity_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/company-capacity.json source_stability_json=/tmp/visembler-chg20-r3.okqISD/company-source-stability.json authoring_junitxml=/tmp/visembler-chg20-r3.okqISD/authoring-acceptance.xml artifact_sha256_json=/tmp/visembler-chg20-r3.okqISD/canonical-native/artifact-sha256.json evidence_zip=/tmp/visembler-chg20-r3.okqISD/canonical-native.zip'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 63,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.48,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 5891840,
+      "fresh_input_tokens": 152020,
+      "input_tokens": 6043860,
+      "non_reasoning_output_tokens": 13202,
+      "output_tokens": 24904,
+      "reasoning_output_tokens": 11702,
+      "total_processed_tokens": 6068764
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-18T14:29:01Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "branch": "verify/visembler-chg20-current-main-r3",
+    "head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "remote_exact_head": true,
+    "remote_head_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "work_branch": "verify/visembler-chg20-current-main-r3",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-a1bd4cb7f23045d4a467f863",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-20-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-20-r3"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-20-r3",
+  "schema_version": 1,
+  "started_at": "2026-09-18T14:16:14Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 767,
+    "queue_seconds": 0,
+    "total_seconds": 767
+  },
+  "transport": {
+    "bytes": 4183,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3884,
+    "prompt_sha256": "789c69dafec92aab63401a333a7a444cc66002ffed6350e6671a7cb96ec00926",
+    "sha256": "a1bd4cb7f23045d4a467f8632b9094279898ffa0ce1acec67756d15395f169f6"
+  }
+}
