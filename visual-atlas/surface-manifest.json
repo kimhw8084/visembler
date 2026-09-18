@@ -1,0 +1,275 @@
+{
+  "schema_version": 2,
+  "project": "visembler",
+  "request": "CHG-122-r2",
+  "operation": "VERIFY",
+  "source_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+  "tree_sha": "2c2c76c715d5aed1493db3fe37306922f257e6d3",
+  "runtime": {
+    "entrypoint": "./run_visembler.sh",
+    "url": "http://127.0.0.1:57813",
+    "python": "/opt/anaconda3/bin/python3",
+    "python_version": "3.11.7",
+    "nicegui_version": "3.15.0",
+    "environment": "test",
+    "auth_mode": "local",
+    "principal": "local-dev",
+    "locale": "en-US",
+    "timezone": "America/Chicago",
+    "theme": "light",
+    "device_scale_factor": 1,
+    "fixture_profile": "CHG-122-r2 run-owned representative populated governed-data fixture",
+    "data_directory": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r2/runtime-data"
+  },
+  "fixture": {
+    "authority": "normal Visembler repository/API/data contracts outside Product source",
+    "reports": [
+      "atlas-editor-r2",
+      "atlas-chart-r2",
+      "atlas-diagram-r2",
+      "atlas-context-r2"
+    ],
+    "active_report_count": 4,
+    "datasets": [
+      {
+        "report_dataset_id": "d-wafer-r2",
+        "governed_resource": "dataset-27986b3e94eb4ba9bf9fcc9f10a0cb03",
+        "rows": 83,
+        "fields": 12,
+        "purpose": "typed populated WaferFab measurements with valid die coordinates and identity context"
+      },
+      {
+        "report_dataset_id": "d-process-r2",
+        "governed_resource": "dataset-79030519b9f3413ba08845ae4a3dcb28",
+        "rows": 12,
+        "fields": 8,
+        "purpose": "typed populated SPC/process measurements and yield trend"
+      }
+    ],
+    "report_history": "atlas-editor-r2 revision 2 with creation, description-update and named checkpoint history; atlas-chart-r2 named mapping checkpoint"
+  },
+  "discovery": {
+    "method": "Product source route registration plus fresh native runtime navigation on the exact bound runtime",
+    "source_routes_verified": [
+      "/",
+      "/visualizer",
+      "/visualizer/reports",
+      "/visualizer/diagram-studio",
+      "/visualizer/chart-studio"
+    ],
+    "runtime_navigation_verified": [
+      "/",
+      "/visualizer?report=atlas-editor-r2",
+      "/visualizer",
+      "/visualizer/reports?report=atlas-editor-r2",
+      "/visualizer/reports?report=atlas-editor-r2&panel=datasets",
+      "/visualizer/diagram-studio?report=atlas-diagram-r2&element=c3",
+      "/visualizer/chart-studio?report=atlas-chart-r2&element=c1"
+    ],
+    "surface_set_frozen_before_canonical_capture": true,
+    "surface_set_sha256": "9506f6238c8a5e514e1a6e1688b78b9c094d5af1b7c925a3d9611e498f4c0e60"
+  },
+  "capture_contract": {
+    "browser_chrome_excluded": true,
+    "full_page": false,
+    "lossless_format": "PNG",
+    "desktop_viewport_css": [
+      1440,
+      900
+    ],
+    "mobile_viewport_css": [
+      390,
+      844
+    ],
+    "dpr": 1,
+    "locale": "en-US",
+    "timezone": "America/Chicago",
+    "theme": "light",
+    "role": "local-dev / visembler.admin",
+    "canonical_anchor_count": 8
+  },
+  "surfaces": [
+    {
+      "surface_key": "visembler-editor",
+      "canonical_route": "/visualizer?report=atlas-editor-r2",
+      "navigation_intent": "Workspace sidebar → Visembler → open the atlas-editor-r2 report",
+      "aliases": [
+        {
+          "route": "/",
+          "behavior": "307 redirect to /visualizer"
+        },
+        {
+          "route": "/visualizer",
+          "behavior": "same editor workspace using persisted report selection"
+        }
+      ],
+      "state": "representative authoring workspace",
+      "subview": "editor canvas with library and inspector open",
+      "role": "local-dev / visembler.admin",
+      "theme": "light",
+      "locale": "en-US",
+      "timezone": "America/Chicago",
+      "runtime_ready_assertion": ".cui-visualizer-root[data-editor-ready=\"true\"] and CompanyUIVisualizerBridge.state().pending == 0 and no inflight request",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-editor--desktop-1440x900.png",
+        "png_sha256": "5257329c8038b7c0047d5d083f7e274d1879326963efaa5fcb2085647bcc6d3b"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-editor--mobile-390x844.png",
+        "png_sha256": "1c3a8ad72d41a9348abb9339bc94eda4b2a770c40fa1b289652876e8a6e87f8b"
+      }
+    },
+    {
+      "surface_key": "visembler-report-hub",
+      "canonical_route": "/visualizer/reports?report=atlas-editor-r2",
+      "navigation_intent": "Workspace sidebar → Reports → inspect the representative report set and atlas-editor-r2 history context",
+      "aliases": [
+        {
+          "route": "/visualizer/reports",
+          "behavior": "same report hub using persisted report selection"
+        },
+        {
+          "route": "/visualizer/reports?report=atlas-editor-r2&panel=datasets",
+          "behavior": "same hub workspace; panel query is not a distinct rendered surface"
+        },
+        {
+          "route": "/visualizer/reports?report=atlas-editor-r2&panel=assets",
+          "behavior": "same hub workspace; panel query is not a distinct rendered surface"
+        },
+        {
+          "route": "/visualizer/reports?report=atlas-editor-r2&panel=blueprints",
+          "behavior": "same hub workspace; panel query is not a distinct rendered surface"
+        }
+      ],
+      "state": "report management workspace",
+      "subview": "active reports grid with history context",
+      "role": "local-dev / visembler.admin",
+      "theme": "light",
+      "locale": "en-US",
+      "timezone": "America/Chicago",
+      "runtime_ready_assertion": "[data-testid=\"report-hub\"] is present with 4 active report cards and history context for atlas-editor-r2",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-report-hub--desktop-1440x900.png",
+        "png_sha256": "849544c9a075615236141d948a6ef5fa68ce1d9430ee87e7e674c72a4d80b7ea"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-report-hub--mobile-390x844.png",
+        "png_sha256": "6fa686271bf0e8ba843366624a81f229b9ac064d54669a8884bf61ad632c8fea"
+      }
+    },
+    {
+      "surface_key": "visembler-diagram-studio",
+      "canonical_route": "/visualizer/diagram-studio?report=atlas-diagram-r2&element=c3",
+      "navigation_intent": "Visembler editor → Process Flow item → Edit Diagram",
+      "aliases": [
+        {
+          "route": "/visualizer/diagram-studio?report=atlas-diagram-r2&element=c3",
+          "behavior": "canonical deep-link for the same persistent studio"
+        },
+        {
+          "route": "/visualizer/diagram-studio",
+          "behavior": "invalid/incomplete deep-link; no separate supported surface"
+        }
+      ],
+      "state": "representative diagram authoring workspace",
+      "subview": "connected process-flow canvas with palette, inspector and layers",
+      "role": "local-dev / visembler.admin",
+      "theme": "light",
+      "locale": "en-US",
+      "timezone": "America/Chicago",
+      "runtime_ready_assertion": "#diagram-studio[data-studio-ready=\"true\"] is present and #ds-diagram-summary reports 6 nodes and 5 connectors",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--desktop-1440x900.png",
+        "png_sha256": "4f7b857e475ab07ecb8f3c2e0109653d92505e93f65b68c72df9598dde8c96a8"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--mobile-390x844.png",
+        "png_sha256": "7d84b53488dd4cb8f47d89c5b60aecc74a97a71196d993f091ea80fcf12096cc"
+      }
+    },
+    {
+      "surface_key": "visembler-chart-studio",
+      "canonical_route": "/visualizer/chart-studio?report=atlas-chart-r2&element=c1",
+      "navigation_intent": "Visembler editor → populated Wafer Map item → Edit chart",
+      "aliases": [
+        {
+          "route": "/visualizer/chart-studio?report=atlas-chart-r2&element=c1",
+          "behavior": "canonical deep-link for the same persistent studio"
+        },
+        {
+          "route": "/visualizer/chart-studio",
+          "behavior": "invalid/incomplete deep-link; no separate supported surface"
+        }
+      ],
+      "state": "representative chart authoring workspace",
+      "subview": "populated Wafer Map chart editor with data, visual and interaction panels",
+      "role": "local-dev / visembler.admin",
+      "theme": "light",
+      "locale": "en-US",
+      "timezone": "America/Chicago",
+      "runtime_ready_assertion": "#chart-studio[data-studio-ready=\"true\"] is present with Data Lab · 83 rows · 12 fields, Mapping ready, and chart summary Wafer Map: 83 rows",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--desktop-1440x900.png",
+        "png_sha256": "b8be28eff37ffbadc8bc00ef9bff9ea743cdebe158549a22989365a62c0558ac"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--mobile-390x844.png",
+        "png_sha256": "42646945eb9dfe8f4cea4f9ccfe9661c4bee8b33b2357000d7c85211e3ee045b"
+      }
+    }
+  ],
+  "capture_binding": {
+    "source_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "tree_sha": "2c2c76c715d5aed1493db3fe37306922f257e6d3",
+    "surface_set_sha256": "9506f6238c8a5e514e1a6e1688b78b9c094d5af1b7c925a3d9611e498f4c0e60",
+    "surface_count": 4,
+    "canonical_screenshot_count": 8,
+    "expected_hashes_from_deterministic_preflight": false,
+    "canonical_hashes_finalized_after_capture": true
+  },
+  "frozen_at_utc": "2026-09-18T19:43:21.062679Z"
+}
