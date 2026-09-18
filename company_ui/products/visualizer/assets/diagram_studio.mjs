@@ -86,6 +86,7 @@ const state = {
   initialFitDone: false,
   paletteOpen: false,
   inspectorOpen: false,
+  panelReturnFocus: null,
 };
 
 function hash(value) {
@@ -147,19 +148,58 @@ function redo() { const command = state.redo.pop(); if (!command) return notify(
 function selectNode(id, additive = false) { if (!additive) { state.selectedNodes.clear(); state.selectedEdges.clear(); } if (additive && state.selectedNodes.has(id)) state.selectedNodes.delete(id); else state.selectedNodes.add(id); renderInspector(); renderCanvas(); }
 function selectEdge(id, additive = false) { if (!additive) state.selectedNodes.clear(); if (additive && state.selectedEdges.has(id)) state.selectedEdges.delete(id); else state.selectedEdges.add(id); renderInspector(); renderCanvas(); }
 function clearSelection() { state.selectedNodes.clear(); state.selectedEdges.clear(); renderInspector(); renderCanvas(); }
+function mobilePanelViewport() { return window.matchMedia?.('(max-width: 800px)').matches === true; }
+function panelFor(kind) { return $(kind === 'palette' ? '#ds-shape-panel' : '#ds-inspector-panel'); }
+function panelTriggerFor(kind) { return $(`[data-action="toggle-${kind === 'palette' ? 'palette' : 'inspector'}"]`); }
+function visibleFocusTarget(node) {
+  if (!node || node.hidden) return false;
+  const style = getComputedStyle(node);
+  return style.display !== 'none' && style.visibility !== 'hidden' && node.getClientRects().length > 0;
+}
+function focusVisible(node) {
+  if (!visibleFocusTarget(node)) return false;
+  node.focus({preventScroll:true});
+  return document.activeElement === node;
+}
+function focusablePanelTarget(kind) {
+  const panel = panelFor(kind);
+  if (!panel) return null;
+  const preferred = kind === 'palette' ? panel.querySelector('.ds-shape-button') : null;
+  if (visibleFocusTarget(preferred)) return preferred;
+  return [...panel.querySelectorAll('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [href], [tabindex]:not([tabindex="-1"])')].find(visibleFocusTarget) || null;
+}
+function focusPanelReturn(kind) {
+  if (focusVisible(panelTriggerFor(kind || 'palette'))) return;
+  focusVisible($('#ds-canvas'));
+}
+function syncPanelSemantics() {
+  const mobile = mobilePanelViewport();
+  [['palette',state.paletteOpen],['inspector',state.inspectorOpen]].forEach(([kind,open])=>{
+    const panel = panelFor(kind), trigger = panelTriggerFor(kind);
+    if (trigger && panel) trigger.setAttribute('aria-controls',panel.id);
+    if (trigger) trigger.setAttribute('aria-expanded',String(Boolean(open)));
+    if (!panel) return;
+    panel.classList.toggle('is-open',Boolean(open));
+    panel.inert = mobile && !open;
+    if (mobile) panel.setAttribute('aria-hidden',String(!open));
+    else panel.removeAttribute('aria-hidden');
+  });
+  const backdrop = $('#ds-panel-backdrop');
+  if (backdrop) backdrop.hidden = !(state.paletteOpen || state.inspectorOpen);
+}
 function closePanels(returnFocus=true) {
+  const returnKind = state.panelReturnFocus || (state.paletteOpen ? 'palette' : state.inspectorOpen ? 'inspector' : 'palette');
   state.paletteOpen=false;state.inspectorOpen=false;
-  $('.ds-palette')?.classList.remove('is-open');$('.ds-inspector')?.classList.remove('is-open');
-  const backdrop=$('#ds-panel-backdrop');if(backdrop)backdrop.hidden=true;
-  $('[data-action="toggle-palette"]')?.setAttribute('aria-expanded','false');$('[data-action="toggle-inspector"]')?.setAttribute('aria-expanded','false');
-  if(returnFocus)$('[data-action="toggle-palette"]')?.focus({preventScroll:true});
+  syncPanelSemantics();
+  if(returnFocus) requestAnimationFrame(()=>focusPanelReturn(returnKind));
 }
 function togglePanel(kind) {
-  const palette=kind==='palette';state.paletteOpen=palette?!state.paletteOpen:false;state.inspectorOpen=palette?false:!state.inspectorOpen;
-  $('.ds-palette')?.classList.toggle('is-open',state.paletteOpen);$('.ds-inspector')?.classList.toggle('is-open',state.inspectorOpen);
-  const backdrop=$('#ds-panel-backdrop');if(backdrop)backdrop.hidden=!(state.paletteOpen||state.inspectorOpen);
-  $('[data-action="toggle-palette"]')?.setAttribute('aria-expanded',String(state.paletteOpen));$('[data-action="toggle-inspector"]')?.setAttribute('aria-expanded',String(state.inspectorOpen));
-  requestAnimationFrame(()=>$(state.paletteOpen?'#ds-shape-palette':state.inspectorOpen?'#ds-inspector-body':'#ds-canvas')?.focus?.({preventScroll:true}));
+  const palette=kind==='palette',open=palette?!state.paletteOpen:!state.inspectorOpen;
+  if(!open)return closePanels(true);
+  state.panelReturnFocus=kind;
+  state.paletteOpen=palette;state.inspectorOpen=!palette;
+  syncPanelSemantics();
+  requestAnimationFrame(()=>focusVisible(focusablePanelTarget(kind)));
 }
 function fitViewport(action='fit-page',manual=true) {
   const wrap=$('#ds-canvas-wrap'),svg=$('#ds-canvas');if(!wrap||!svg)return;
@@ -302,6 +342,7 @@ function moveLabelDrag(event) { if(!state.labelDrag)return;const point=svgPoint(
 function finishLabelDrag(cancel=false) { if(!state.labelDrag)return;const drag=state.labelDrag,edge=state.diagram.edges.find(item=>item.id===drag.edgeId),label=edge?.labels?.[drag.index];if(label&&cancel)label.offset=drag.offset;const final=label?.offset;state.labelDrag=null;if(!cancel&&drag.moved)applyMutation('Move connector label',current=>{const value=normalizeDiagram(current),target=value.edges.find(item=>item.id===drag.edgeId);if(target?.labels?.[drag.index])target.labels[drag.index].offset=final;return value;});else renderCanvas(); }
 
 function bind() {
+  window.addEventListener('resize',syncPanelSemantics);
   root.addEventListener('keydown',event=>{if(event.key==='Escape'&&(state.paletteOpen||state.inspectorOpen)){event.preventDefault();event.stopImmediatePropagation();closePanels();}},true);
   root.addEventListener('click',event=>{const action=event.target.closest('[data-action]')?.dataset.action;if(action)return execute(action,event.target.closest('.ds-shape-button[data-shape]')?.dataset.shape);const shape=event.target.closest('.ds-shape-button[data-shape]');if(shape)return execute('add-shape',shape.dataset.shape,shape.querySelector('b')?.textContent);const nodeTarget=event.target.closest('[data-node-id]');if(nodeTarget){const already=state.pointerSelectedNode===nodeTarget.dataset.nodeId;state.pointerSelectedNode=null;if(already)return;return selectNode(nodeTarget.dataset.nodeId,event.shiftKey||event.metaKey);}const edgeTarget=event.target.closest('[data-edge-id]');if(edgeTarget)return selectEdge(edgeTarget.dataset.edgeId,event.shiftKey||event.metaKey);const layerAction=event.target.closest('[data-layer-action]');if(layerAction){const id=layerAction.dataset.layerId,kind=layerAction.dataset.layerAction,layer=state.diagram.layers.find(item=>item.id===id);if(!layer)return;if(kind==='select'){state.selectedNodes=new Set(state.diagram.nodes.filter(node=>node.layer===id).map(node=>node.id));return render();}if(kind==='rename'){const name=window.prompt('Layer name',layer.name);if(name===null)return;return applyMutation('Rename layer',current=>updateLayer(current,id,{name}));}if(kind==='delete'){if(!window.confirm(`Delete layer “${layer.name}”? Its objects will move to Main diagram.`))return;return applyMutation('Delete layer',current=>removeLayer(current,id));}if(kind==='duplicate')return applyMutation('Duplicate layer',current=>duplicateLayer(current,id).diagram);if(kind==='up'||kind==='down')return applyMutation(`Move layer ${kind}`,current=>reorderLayer(current,id,kind==='up'?-1:1));return applyMutation(`${kind} layer`,current=>updateLayer(current,id,kind==='visibility'?{visible:!current.layers.find(item=>item.id===id)?.visible}:{lock:!current.layers.find(item=>item.id===id)?.lock}));}const laneAction=event.target.closest('[data-lane-action]');if(laneAction){const id=laneAction.dataset.laneId,kind=laneAction.dataset.laneAction,lane=state.diagram.swimlanes.find(item=>item.id===id);if(!lane)return;if(kind==='select'){state.selectedNodes=new Set(state.diagram.nodes.filter(node=>node.lane===id).map(node=>node.id));return render();}if(kind==='rename'){const name=window.prompt('Swimlane name',lane.label);if(name===null)return;return applyMutation('Rename swimlane',current=>updateLane(current,id,{label:name}));}if(kind==='delete'){if(!window.confirm(`Delete swimlane “${lane.label}”? Nodes will become unassigned.`))return;return applyMutation('Delete swimlane',current=>removeLane(current,id));}if(kind==='toggle-orientation')return applyMutation('Change swimlane orientation',current=>updateLane(current,id,{orientation:lane.orientation==='horizontal'?'vertical':'horizontal'}));if(kind==='grow'||kind==='shrink'){const amount=kind==='grow'?24:-24;const dimension=lane.orientation==='horizontal'?'height':'width';return applyMutation(`${kind} swimlane`,current=>updateLane(current,id,{[dimension]:Math.max(dimension==='height'?110:240,lane[dimension]+amount)}));}return applyMutation(`${kind} swimlane`,current=>reorderLane(current,id,kind==='up'?-1:1));}const subflow=event.target.closest('[data-subflow-index]');if(subflow){const value=state.subflows[Number(subflow.dataset.subflowIndex)];const result=insertSubflow(state.diagram,value,{x:80,y:80});const ok=applyMutation('Insert subflow',()=>result.diagram);if(ok)state.selectedNodes=new Set(result.ids);return render();}});
   root.addEventListener('change',event=>{if(event.target.matches('[data-inspect]'))onInspectChange(event);if(event.target.matches('[data-edge-inspect]'))onEdgeInspectChange(event);if(event.target.matches('[data-edge-label],[data-edge-position]'))onLabelChange(event);});
@@ -314,5 +355,5 @@ function bind() {
 }
 function renderPalette() { const host=$('#ds-shape-palette');if(!host)return;let group='';host.innerHTML=SHAPE_CATALOG.map(shape=>{const heading=shape.group!==group?(group=shape.group,`<div class="ds-shape-group">${shape.group}</div>`):'';return `${heading}<button class="ds-shape-button" data-shape="${shape.id}" type="button" aria-label="Add ${escapeHtml(shape.label)}"><span class="ds-shape-icon">${shape.icon}</span><b>${escapeHtml(shape.label)}</b></button>`;}).join(''); }
 function render() { renderCanvas();renderInspector();renderManagers(); }
-function init() { if(!root)return;renderPalette();loadSubflows();bind();render();root.dataset.studioReady='true';notify('Ready');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!state.viewportTouched)fitViewport('fit-page',false);}));if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(()=>{if(!state.viewportTouched)requestAnimationFrame(()=>fitViewport('fit-page',false));});observer.observe($('#ds-canvas-wrap'));window.__VIZ_DIAGRAM_RESIZE_OBSERVER__=observer;} }
+function init() { if(!root)return;renderPalette();loadSubflows();bind();syncPanelSemantics();render();root.dataset.studioReady='true';notify('Ready');requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!state.viewportTouched)fitViewport('fit-page',false);}));if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(()=>{if(!state.viewportTouched)requestAnimationFrame(()=>fitViewport('fit-page',false));});observer.observe($('#ds-canvas-wrap'));window.__VIZ_DIAGRAM_RESIZE_OBSERVER__=observer;} }
 init();
