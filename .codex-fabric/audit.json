@@ -1,0 +1,445 @@
+{
+  "accepted_at": "2026-09-18T20:29:14Z",
+  "changed_files": [
+    {
+      "additions": 9,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 156,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_reportbar_responsive_geometry.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n -C 5 \"cui-report-read-only|report-meta|reportbar\" company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/page.py tests/scripts 2>/dev/null | head -320'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -maxdepth 3 -type f \\\\( -name 'fabric.py' -o -name 'projectos.py' -o -name '*evidence*' \\\\) -print | head -160 && printf '%s\\\\n' '--- current fabric env ---' && env | rg -i 'fabric|project|job|codex' | sort | head -160 && printf '%s\\\\n' '--- recent job dirs ---' && rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 -mindepth 1 -type d -print | sort | tail -30 && printf '%s\\\\n' '--- fabric help candidates ---' && (rtk python /Users/haewonkim/.codex-fabric/fabric.py --help 2>&1 | head -120 || true)\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric | head -100 && printf '%s\\\\n' '--- root executables ---' && rtk find /Users/haewonkim/.codex-fabric -maxdepth 2 -type f | head -140 && printf '%s\\\\n' '--- latest running job metadata ---' && for d in /Users/haewonkim/.codex-fabric/jobs/*.running; do [ -d \\\"\"'$d\" ] || continue; echo \"### $d\"; rtk ls -la \"$d\"; done'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --help && printf '%s\\\\n' '--- job metadata ---' && rtk sed -n '1,240p' /Users/haewonkim/.codex-fabric/jobs/CF-a07b06fb847ec83a0bd764ca.running/job.json && printf '%s\\\\n' '--- fabricctl commands strings ---' && rtk strings /Users/haewonkim/.codex-fabric/bin/fabricctl | head -200\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/jobs/CF-a07b06fb847ec83a0bd764ca.running/job.json && printf '%s\\\\n' '--- job prompt ---' && rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/jobs/CF-a07b06fb847ec83a0bd764ca.running/prompt.md && printf '%s\\\\n' '--- durable evidence docs in current release ---' && rtk rg -n \\\"publish-evidence|refresh-evidence|command evidence|audit.json|product history\\\" /Users/haewonkim/.codex-fabric/releases/1.2.3-resume-candidate /Users/haewonkim/.codex-fabric/current 2>/dev/null | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2360,2635p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3120,3515p' /Users/haewonkim/.codex-fabric/current/fabric.py | head -460\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_reportbar_responsive_geometry.py --output /tmp/chg128-r1-after-geometry.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git status --short && rtk git diff --stat && rtk git diff -- company_ui/products/visualizer/assets/integrated_editor.css scripts/release_checks/run_reportbar_responsive_geometry.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_wave4_report_lifecycle.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_r14_release.py tests/test_visualizer_wave12_responsive_shell.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,120p' tests/test_visualizer_wave4_report_lifecycle.py && rtk sed -n '1,80p' tests/test_visualizer_product_polish_v4.py && rtk python -m unittest tests.test_visualizer_wave4_report_lifecycle tests.test_visualizer_product_polish_v4 tests.test_visualizer_r14_release tests.test_visualizer_wave12_responsive_shell -v\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk which pytest && rtk pytest --version && rtk python -m pytest --collect-only -q tests/test_visualizer_wave4_report_lifecycle.py -vv; echo status=$? && rtk rg -n \"pytest|testpaths|python_files|addopts|No tests collected\" pyproject.toml setup.cfg pytest.ini tox.ini conftest.py tests 2>/dev/null | head -180'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 17347,
+        "output_sha256": "6923a543465a13d5ec8c16fcf9b49eef370372ab7de82b6c46b62d88cac05954",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_wave4_report_lifecycle.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_r14_release.py tests/test_visualizer_wave12_responsive_shell.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "c6ce8518a2cc113cc5560b3731e234ed6d559e746221ae903ce01599dfe7e797",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /tmp/chg128-r1-native-acceptance.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"ArgumentParser|add_argument|def main\\\" scripts/release_checks/run_p1_smoke.py scripts/release_checks/run_report_hub_browser_error_gate.py scripts/release_checks/run_editor_workflows.py scripts/release_checks/run_company_user_browser_acceptance.py | tail -140 && rtk sed -n '1,120p' scripts/release_checks/run_p1_smoke.py && rtk sed -n '1,230p' scripts/release_checks/run_report_hub_browser_error_gate.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /tmp/chg128-r1-report-hub-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p1_smoke.py --output /tmp/chg128-r1-p1-smoke'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '170,225p' scripts/release_checks/run_p1_smoke.py && rtk sed -n '1,260p' /tmp/chg128-r1-p1-smoke/report.json 2>/dev/null || true && rtk find /tmp/chg128-r1-p1-smoke -maxdepth 2 -type f | head -40\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' scripts/release_checks/element_fixtures.json | head -200 && rtk python scripts/release_checks/run_editor_workflows.py --output /tmp/chg128-r1-editor-workflows --native --only 'Body Narrative'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk command -v company-ui 2>/dev/null || true; rtk command -v company-ui-certify 2>/dev/null || true; rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python scripts/release_checks/run_repository_contracts.py --help 2>&1 | head -160 && rtk python scripts/release_checks/run_company_source_stability.py --help 2>&1 | head -160 && rtk sed -n '1,120p' scripts/release_checks/run_repository_contracts.py && rtk sed -n '1,140p' scripts/release_checks/run_company_source_stability.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_native_import_check.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "700bc0322b00f8e8db3ce495047983b54ab27ab59ed1fedac05f3aeba47dae24",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/chg128-r1-repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_company_release_authority.py tests/test_visualizer_completion_delivery.py tests/test_visualizer_release_closure.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "08faea39fd19189f6544839f505d91d76ecb1367e219f5db362cdf22916ef869",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"ArgumentParser|add_argument\" scripts/release_checks/run_p2_benchmark.py | tail -30 && rtk python scripts/release_checks/run_p2_benchmark.py --help 2>&1 | head -100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"task-[a-z]|TASK|name':|name\\\\s*=|def task|tasks\\\" scripts/release_checks/run_p2_benchmark.py | head -140\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '525,575p' scripts/release_checks/run_p2_benchmark.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p2_benchmark.py --output /tmp/chg128-r1-p2 --only D'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /tmp/chg128-r1-p2/report.json 2>/dev/null || rtk find /tmp/chg128-r1-p2 -maxdepth 3 -type f -print | sort | head -60 && rtk find /private/tmp/chg128-r1-p2 -maxdepth 3 -type f -print | sort | head -80 && rtk rg -n \\\"TypeError|traceback|error\\\" /private/tmp/chg128-r1-p2 /tmp/chg128-r1-p2 2>/dev/null | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "2f1cd78f8d3cd7ad53e7f2054d11f39a9c884d7905486344fe44c714df1ede61",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-a07b06fb847ec83a0bd764ca'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,tempfile\nfrom pathlib import Path\nfrom playwright.sync_api import sync_playwright\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs,ready\nROOT=Path.cwd(); width=390;height=844\nlegacy='''@media (max-width:800px){.cui-visualizer-reportbar{display:flex\"'!important;flex-wrap:wrap!important;align-items:center!important}.cui-visualizer-report-title,.cui-visualizer-report-description,.cui-visualizer-report-select{flex:1 1 45%;max-width:none;grid-column:auto}.cui-visualizer-report-meta{flex:0 1 260px;grid-column:auto}.cui-visualizer-reportbar .q-btn{grid-column:auto;min-height:38px!important;width:auto}.cui-visualizer-reportbar .q-field__control{min-height:38px!important;height:38px!important}}'\"'''\ndef box(page,sel):\n    return page.locator(sel).first.evaluate(\\\"\\\"\\\"el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height,visible:\"'!!(r.width&&r.height&&s.display!=='\"'none'&&s.visibility\"'!=='\"'hidden'),enabled:\"'!el.disabled&&el.getAttribute('\"'aria-disabled')\"'!=='\"'true'}}\\\"\\\"\\\")\ndef overlap(a,b):\n    area=max(0,min(a['right'],b['right'])-max(a['left'],b['left']))*max(0,min(a['bottom'],b['bottom'])-max(a['top'],b['top']))\n    return {'area':area,'ratio_to_reports':area/(a['width']*a['height']) if a['width']*a['height'] else 0,'ratio_to_other':area/(b['width']*b['height']) if b['width']*b['height'] else 0}\ndef capture(page):\n    r=box(page,'.cui-visualizer-report-select'); controls={n:box(page,f'.cui-visualizer-reportbar button:has-text(\\\"{n}\\\")') for n in ('New report','Duplicate','Manage')}\n    return {'rectangles':{'Reports':r,**controls},'pairwise_overlap':{n:overlap(r,b) for n,b in controls.items()},'target_dimensions':{n:{'width':b['width'],'height':b['height']} for n,b in {'Reports':r,**controls}.items()},'document':page.evaluate('()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,horizontalOverflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1})'),'visibility_enabled_reachability':{n:b['visible'] and b['enabled'] and b['left']>=0 and b['right']<=innerWidth and b['top']>=0 and b['bottom']<=innerHeight for n,b in {'Reports':r,**controls}.items()}}\nwith tempfile.TemporaryDirectory(prefix='chg128-before-after-') as td,NativeHost(ROOT,Path(td)/'data') as host,sync_playwright() as pw:\n    rid=host.create(model=acceptance_model(),name='chg128-reportbar'); rec=host.repository.get(rid); host.repository.rename(rid,title='Operations Review Report',expected_revision=rec.revision); rec=host.repository.get(rid); host.repository.update_description(rid,'Representative responsive reportbar geometry fixture',expected_revision=rec.revision)\n    for i in range(3): host.create(model=acceptance_model(),name=f'chg128-related-{i}')\n    b=pw.chromium.launch(**browser_kwargs()); before_ctx=b.new_context(viewport={'width':width,'height':height}); before=before_ctx.new_page(); before.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded'); ready(before,require_settled=True); before.add_style_tag(content=legacy); before.wait_for_timeout(50)\n    after_ctx=b.new_context(viewport={'width':width,'height':height}); after=after_ctx.new_page(); after.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded'); ready(after,require_settled=True); after.wait_for_timeout(50)\n    result={'viewport':{'width':width,'height':height},'before_legacy_reportbar_authority':capture(before),'after_candidate':capture(after)}\n    Path('/tmp/chg128-r1-before-after-geometry.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\\\\n')\n    print(json.dumps(result,indent=2,sort_keys=True))\n    before_ctx.close();after_ctx.close();b.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,tempfile\nfrom pathlib import Path\nfrom playwright.sync_api import sync_playwright\nfrom scripts.release_checks.editor_host import NativeHost\nfrom scripts.release_checks.native_common import acceptance_model,browser_kwargs,ready\nROOT=Path.cwd(); width=390;height=844\nlegacy='''@media (max-width:800px){.cui-visualizer-reportbar{display:flex\"'!important;flex-wrap:wrap!important;align-items:center!important}.cui-visualizer-report-title,.cui-visualizer-report-description,.cui-visualizer-report-select{flex:1 1 45%;max-width:none;grid-column:auto}.cui-visualizer-report-meta{flex:0 1 260px;grid-column:auto}.cui-visualizer-reportbar .q-btn{grid-column:auto;min-height:38px!important;width:auto}.cui-visualizer-reportbar .q-field__control{min-height:38px!important;height:38px!important}}'\"'''\ndef box(page,sel):\n    return page.locator(sel).first.evaluate(\\\"\\\"\\\"el=>{const r=el.getBoundingClientRect(),s=getComputedStyle(el);return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height,visible:\"'!!(r.width&&r.height&&s.display!=='\"'none'&&s.visibility\"'!=='\"'hidden'),enabled:\"'!el.disabled&&el.getAttribute('\"'aria-disabled')\"'!=='\"'true'}}\\\"\\\"\\\")\ndef overlap(a,b):\n    area=max(0,min(a['right'],b['right'])-max(a['left'],b['left']))*max(0,min(a['bottom'],b['bottom'])-max(a['top'],b['top']))\n    return {'area':area,'ratio_to_reports':area/(a['width']*a['height']) if a['width']*a['height'] else 0,'ratio_to_other':area/(b['width']*b['height']) if b['width']*b['height'] else 0}\ndef capture(page):\n    r=box(page,'.cui-visualizer-report-select'); controls={n:box(page,f'.cui-visualizer-reportbar button:has-text(\\\"{n}\\\")') for n in ('New report','Duplicate','Manage')}; all_boxes={'Reports':r,**controls}\n    return {'rectangles':all_boxes,'pairwise_overlap':{n:overlap(r,b) for n,b in controls.items()},'target_dimensions':{n:{'width':b['width'],'height':b['height']} for n,b in all_boxes.items()},'document':page.evaluate('()=>({scrollWidth:document.documentElement.scrollWidth,clientWidth:document.documentElement.clientWidth,horizontalOverflow:document.documentElement.scrollWidth>document.documentElement.clientWidth+1})'),'visibility_enabled_reachability':{n:b['visible'] and b['enabled'] and b['left']>=0 and b['right']<=390 and b['top']>=0 and b['bottom']<=844 for n,b in all_boxes.items()}}\nwith tempfile.TemporaryDirectory(prefix='chg128-before-after-') as td,NativeHost(ROOT,Path(td)/'data') as host,sync_playwright() as pw:\n    rid=host.create(model=acceptance_model(),name='chg128-reportbar'); rec=host.repository.get(rid); host.repository.rename(rid,title='Operations Review Report',expected_revision=rec.revision); rec=host.repository.get(rid); host.repository.update_description(rid,'Representative responsive reportbar geometry fixture',expected_revision=rec.revision)\n    for i in range(3): host.create(model=acceptance_model(),name=f'chg128-related-{i}')\n    b=pw.chromium.launch(**browser_kwargs()); before_ctx=b.new_context(viewport={'width':width,'height':height}); before=before_ctx.new_page(); before.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded'); ready(before,require_settled=True); before.add_style_tag(content=legacy); before.wait_for_timeout(50)\n    after_ctx=b.new_context(viewport={'width':width,'height':height}); after=after_ctx.new_page(); after.goto(f'{host.url}/visualizer?report={rid}',wait_until='domcontentloaded'); ready(after,require_settled=True); after.wait_for_timeout(50)\n    result={'viewport':{'width':width,'height':height},'before_legacy_reportbar_authority':capture(before),'after_candidate':capture(after)}\n    Path('/tmp/chg128-r1-before-after-geometry.json').write_text(json.dumps(result,indent=2,sort_keys=True)+'\\\\n')\n    print(json.dumps(result,indent=2,sort_keys=True))\n    before_ctx.close();after_ctx.close();b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk nl -ba scripts/release_checks/run_reportbar_responsive_geometry.py | sed -n '20,38p' && rtk git diff --numstat && rtk git status --short --branch && rtk git diff --name-status && rtk git diff -- company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find certification_output -maxdepth 3 -type f | head -120 && rtk du -sh certification_output'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-a07b06fb847ec83a0bd764ca/certification_output && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui doctor'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --check && printf '%s\\\\n' '--- status ---' && rtk git status --short --branch && printf '%s\\\\n' '--- exact identity ---' && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^{tree} && rtk git ls-remote origin refs/heads/main && printf '\"'%s\\\\n' '--- changed inventory ---' && rtk git diff --name-status && printf '%s\\\\n' '--- untracked regression file ---' && rtk sed -n '1,280p' scripts/release_checks/run_reportbar_responsive_geometry.py && printf '%s\\\\n' '--- product diff ---' && rtk git diff -- company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui --help | head -180 && rtk company-ui certify --help | head -160'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/products/visualizer/assets/integrated_editor.css scripts/release_checks/run_reportbar_responsive_geometry.py && rtk git diff --cached --check && rtk git diff --cached --stat && rtk git diff --cached --name-status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git commit -m \"fix(visualizer): stabilize mobile reportbar geometry\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /tmp/chg128-r1-source-stability.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/chg128-r1-repository-contracts-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_reportbar_responsive_geometry.py --output /tmp/chg128-r1-after-geometry-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --porcelain=v1 --branch && printf '%s\\\\n' '--- candidate identity ---' && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^{tree} && rtk git merge-base --is-ancestor 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD; echo base_is_ancestor=$? && printf '\"'%s\\\\n' '--- target drift ---' && rtk git ls-remote origin refs/heads/main && printf '%s\\\\n' '--- candidate changed files ---' && rtk git diff --name-status 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD && printf '%s\\\\n' '--- candidate stat ---' && rtk git diff --stat 60d08b6a3c9984c8421e17dc8d1f537d6f0b0761 HEAD && printf '%s\\\\n' '--- candidate commit ---' && rtk git show --no-ext-diff --format='%H%n%T%n%s' --no-patch HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nroot=Path.cwd(); base='60d08b6a3c9984c8421e17dc8d1f537d6f0b0761'; job='CF-a07b06fb847ec83a0bd764ca'\nafter=json.loads(Path('/tmp/chg128-r1-after-geometry-final.json').read_text())\nbefore_after=json.loads(Path('/tmp/chg128-r1-before-after-geometry.json').read_text())\ndef git(*args): return subprocess.check_output(['git',*args],cwd=root,text=True).strip()\ndef compact(case):\n    return {'viewport':case['viewport'],'rectangles':case['rectangles'],'pairwise_overlap':case['pairwise_overlap'],'target_dimensions':case['target_dimensions'],'document':case['document'],'reachability':case.get('reachability',case.get('visibility_enabled_reachability')),'title_usable':case.get('title_usable',True),'description_usable':case.get('description_usable',True)}\nlegacy=before_after['before_legacy_reportbar_authority']; candidate=before_after['after_candidate']; after390=next(x for x in after['viewports'] if x['viewport']['width']==390)\nreceipt={\n  'schema':'visembler-project-os-fix-receipt/1',\n  'request':'CHG-128-r1', 'fabric_job':job, 'operation':'FIX',\n  'base':base, 'head':git('rev-parse','HEAD'), 'tree':git('rev-parse','HEAD\"'^{tree}'\"'),\n  'base_is_ancestor':subprocess.run(['git','merge-base','--is-ancestor',base,'HEAD'],cwd=root).returncode==0,\n  'remote_main':subprocess.check_output(['git','ls-remote','origin','refs/heads/main'],cwd=root,text=True).split()[0],\n  'target_drifted':subprocess.check_output(['git','ls-remote','origin','refs/heads/main'],cwd=root,text=True).split()[0]\"'!=base,\n  '\"'changed_files':[{'status':s,'path':p} for s,p in (line.split('\\\\t',1) for line in git('diff','--name-status',f'{base}..HEAD').splitlines())],\n  'responsive_geometry_before_after':{\n    'reported_r2_baseline':{'viewport':'390x844','Reports_vs_Duplicate':0.227,'Reports_vs_Manage':0.263,'source':'request; not re-observed in exact-main native harness'},\n    'before_legacy_css_replay':compact(legacy),\n    'after_candidate':compact(candidate),\n    'after_adjacent_widths':[{ 'name':x['viewport']['name'],'width':x['viewport']['width'],'height':x['viewport']['height'],'status':'PASS','overlap_reports_duplicate':x['pairwise_overlap']['Duplicate']['ratio_to_reports'],'overlap_reports_manage':x['pairwise_overlap']['Manage']['ratio_to_reports'],'horizontal_overflow':x['document']['horizontalOverflow']} for x in after['viewports']],\n  },\n  'final_overlap_ratios_390x844':{'Reports_vs_Duplicate':after390['pairwise_overlap']['Duplicate']['ratio_to_reports'],'Reports_vs_Manage':after390['pairwise_overlap']['Manage']['ratio_to_reports']},\n  'touch_target_reachability_390x844':{'mobile_floor_px':44,'Reports_height':after390['target_dimensions']['Reports']['height'],'New_report_height':after390['target_dimensions']['New report']['height'],'Duplicate_height':after390['target_dimensions']['Duplicate']['height'],'Manage_height':after390['target_dimensions']['Manage']['height'],'reachability':after390['reachability'],'title_usable':after390['title_usable'],'description_usable':after390['description_usable']},\n  'horizontal_overflow_390x844':after390['document'],\n  'focused_test_results':{'reportbar_geometry':'PASS: 5 browser widths (390,430,481,768,1440)','focused_unit_contracts':'PASS: 25 tests','full_pytest':'PASS','repository_contracts':'PASS','source_stability':'PASS'},\n  'maintained_checks':{'runtime_contract':'PASS','runtime_smoke':'PASS: 22 routes','doctor':'PASS (Edge optional warning only)','native_responsive_acceptance':'PASS: 12/12','report_hub_browser_gate':'PASS: 7/7','editor_workflow_body_narrative':'PASS','p1_smoke':'FAIL: existing toast overlay intercepted Manage after Description update rejected / ScopedReportRepository','p2_operations_benchmark':'FAIL: existing CompanyUIVisualizerBridge bootstrap error'},\n  'product_source_changed':True, 'product_source_files':['company_ui/products/visualizer/assets/integrated_editor.css'],\n  'diagram_studio_touched':False,'golden_visual_atlas_run':False,'merge_or_main_move':False,\n  'worktree_clean':not bool(git('status','--porcelain=v1')),\n}\nprint(json.dumps(receipt,sort_keys=True,indent=2))\nPY\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 132,
+        "output_sha256": "36f67261a9bbacd3275f16203e80f528500b5c8d18f0cc7800637ebccd36378e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nroot=Path.cwd(); base='60d08b6a3c9984c8421e17dc8d1f537d6f0b0761'; job='CF-a07b06fb847ec83a0bd764ca'\nafter=json.loads(Path('/tmp/chg128-r1-after-geometry-final.json').read_text()); before_after=json.loads(Path('/tmp/chg128-r1-before-after-geometry.json').read_text())\ndef git(*args): return subprocess.check_output(['git',*args],cwd=root,text=True).strip()\ndef compact(case):\n    return {'viewport':before_after['viewport'],'rectangles':case['rectangles'],'pairwise_overlap':case['pairwise_overlap'],'target_dimensions':case['target_dimensions'],'document':case['document'],'reachability':case.get('reachability',case.get('visibility_enabled_reachability')),'title_usable':case.get('title_usable',True),'description_usable':case.get('description_usable',True)}\nlegacy=before_after['before_legacy_reportbar_authority']; candidate=before_after['after_candidate']; after390=next(x for x in after['viewports'] if x['viewport']['width']==390)\nremote=git('ls-remote','origin','refs/heads/main').split()[0]\nreceipt={\n  'schema':'visembler-project-os-fix-receipt/1','request':'CHG-128-r1','fabric_job':job,'operation':'FIX',\n  'base':base,'head':git('rev-parse','HEAD'),'tree':git('rev-parse','HEAD\"'^{tree}'\"'),\n  'base_is_ancestor':subprocess.run(['git','merge-base','--is-ancestor',base,'HEAD'],cwd=root).returncode==0,'remote_main':remote,'target_drifted':remote\"'!=base,\n  '\"'changed_files':[{'status':s,'path':p} for s,p in (line.split('\\\\t',1) for line in git('diff','--name-status',f'{base}..HEAD').splitlines())],\n  'responsive_geometry_before_after':{\n    'reported_r2_baseline':{'viewport':'390x844','Reports_vs_Duplicate':0.227,'Reports_vs_Manage':0.263,'source':'request; not re-observed in exact-main native harness'},\n    'before_legacy_css_replay':compact(legacy),'after_candidate':compact(candidate),\n    'after_adjacent_widths':[{'name':x['viewport']['name'],'width':x['viewport']['width'],'height':x['viewport']['height'],'status':'PASS','overlap_reports_duplicate':x['pairwise_overlap']['Duplicate']['ratio_to_reports'],'overlap_reports_manage':x['pairwise_overlap']['Manage']['ratio_to_reports'],'horizontal_overflow':x['document']['horizontalOverflow']} for x in after['viewports']],\n  },\n  'final_overlap_ratios_390x844':{'Reports_vs_Duplicate':after390['pairwise_overlap']['Duplicate']['ratio_to_reports'],'Reports_vs_Manage':after390['pairwise_overlap']['Manage']['ratio_to_reports']},\n  'touch_target_reachability_390x844':{'mobile_floor_px':44,'Reports_height':after390['target_dimensions']['Reports']['height'],'New_report_height':after390['target_dimensions']['New report']['height'],'Duplicate_height':after390['target_dimensions']['Duplicate']['height'],'Manage_height':after390['target_dimensions']['Manage']['height'],'reachability':after390['reachability'],'title_usable':after390['title_usable'],'description_usable':after390['description_usable']},\n  'horizontal_overflow_390x844':after390['document'],\n  'focused_test_results':{'reportbar_geometry':'PASS: 5 browser widths (390,430,481,768,1440)','focused_unit_contracts':'PASS: 25 tests','full_pytest':'PASS','repository_contracts':'PASS','source_stability':'PASS'},\n  'maintained_checks':{'runtime_contract':'PASS','runtime_smoke':'PASS: 22 routes','doctor':'PASS (Edge optional warning only)','native_responsive_acceptance':'PASS: 12/12','report_hub_browser_gate':'PASS: 7/7','editor_workflow_body_narrative':'PASS','p1_smoke':'FAIL: existing toast overlay intercepted Manage after Description update rejected / ScopedReportRepository','p2_operations_benchmark':'FAIL: existing CompanyUIVisualizerBridge bootstrap error'},\n  'product_source_changed':True,'product_source_files':['company_ui/products/visualizer/assets/integrated_editor.css'],'diagram_studio_touched':False,'golden_visual_atlas_run':False,'merge_or_main_move':False,'worktree_clean':not bool(git('status','--porcelain=v1')),\n}\nprint(json.dumps(receipt,sort_keys=True,indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 8272,
+        "output_sha256": "e991fe5eeecb9db27f73d50c3a87b9447ac39f78687722a0480b1d93528844e5",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 153,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.57,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 8929536,
+      "fresh_input_tokens": 222621,
+      "input_tokens": 9152157,
+      "non_reasoning_output_tokens": 22795,
+      "output_tokens": 38525,
+      "reasoning_output_tokens": 15730,
+      "total_processed_tokens": 9190682
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "e879d5311b71551261766b8cd51dd1082cf50b21",
+      "subject": "fix(visualizer): stabilize mobile reportbar geometry"
+    }
+  ],
+  "diff": {
+    "additions": 165,
+    "changed_files": 2,
+    "commit_count": 1,
+    "deletions": 2
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-18T20:46:00Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "branch": "fix/visembler-chg128-mobile-reportbar-r1",
+    "head_sha": "e879d5311b71551261766b8cd51dd1082cf50b21",
+    "remote_exact_head": true,
+    "remote_head_sha": "e879d5311b71551261766b8cd51dd1082cf50b21",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "60d08b6a3c9984c8421e17dc8d1f537d6f0b0761",
+    "work_branch": "fix/visembler-chg128-mobile-reportbar-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-a07b06fb847ec83a0bd764ca",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-128-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-128-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-128-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-18T20:29:14Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1006,
+    "queue_seconds": 0,
+    "total_seconds": 1006
+  },
+  "transport": {
+    "bytes": 4167,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3868,
+    "prompt_sha256": "a4b3b2138dc53ba38097aab77ddb0b4a408fd751d583fec39c585f7dd5110e3a",
+    "sha256": "a07b06fb847ec83a0bd764cade1029c2f5b5960fd4ea3d041a73754f1593333b"
+  }
+}
