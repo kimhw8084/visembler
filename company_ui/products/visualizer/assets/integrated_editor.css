@@ -1014,8 +1014,15 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
     .mode-dot { display:none; }
     .minimap { display:none!important; }
   }
-  .cui-visualizer-reportbar { flex-wrap:wrap!important; }
-  .cui-visualizer-report-title,.cui-visualizer-report-description,.cui-visualizer-report-select { flex:1 1 45%; max-width:none; }
+  .cui-visualizer-reportbar {
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    align-items:stretch!important;
+  }
+  .cui-visualizer-report-title,.cui-visualizer-report-description { grid-column:span 3; max-width:none; }
+  .cui-visualizer-report-meta,.cui-visualizer-report-select { grid-column:1 / -1; max-width:none; }
+  .cui-visualizer-reportbar .q-btn { grid-column:span 2; min-width:0; min-height:44px!important; width:100%; }
+  .cui-visualizer-reportbar .q-field__control { min-height:44px!important; height:44px!important; }
 }
 
 /* R13 element-specific production grammars. */
