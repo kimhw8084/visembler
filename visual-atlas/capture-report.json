@@ -1,0 +1,526 @@
+{
+  "schema_version": 2,
+  "project": "visembler",
+  "request": "CHG-122-r3",
+  "operation": "VERIFY",
+  "source_sha": "822902006d599c1ff781108e2a9b3f9190301822",
+  "tree_sha": "9a193c47ae9a4f2f1106feb446d78f5abe4357b1",
+  "runtime": {
+    "entrypoint": "./run_visembler.sh",
+    "url": "http://127.0.0.1:54513",
+    "python": "/opt/anaconda3/bin/python3",
+    "python_version": "3.11.7",
+    "nicegui_version": "3.15.0",
+    "environment": "test",
+    "auth_mode": "local",
+    "principal": "local-dev",
+    "locale": "en-US",
+    "timezone": "America/Chicago",
+    "theme": "light",
+    "device_scale_factor": 1,
+    "fixture_profile": "CHG-122-r3 run-owned representative populated governed-data fixture",
+    "data_directory": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r3/runtime-data"
+  },
+  "fixture": {
+    "authority": "normal Visembler repository/API/data contracts outside Product source",
+    "reports": [
+      "atlas-editor-r3",
+      "atlas-chart-r3",
+      "atlas-diagram-r3",
+      "atlas-context-r3"
+    ],
+    "active_report_count": 4,
+    "datasets": [
+      {
+        "report_dataset_id": "d-wafer-r3",
+        "governed_resource": "dataset-2314b45768e941daa6def3895193e94f",
+        "rows": 83,
+        "fields": 12,
+        "purpose": "typed populated WaferFab measurements with valid die coordinates and identity context"
+      },
+      {
+        "report_dataset_id": "d-process-r3",
+        "governed_resource": "dataset-579c8d621ccb4e718ad6c2e8249e29ac",
+        "rows": 12,
+        "fields": 8,
+        "purpose": "typed populated SPC/process measurements and yield trend"
+      }
+    ],
+    "report_history": "atlas-editor-r3 revision 2 with creation, description-update and named checkpoint history; atlas-chart-r3 named mapping checkpoint"
+  },
+  "frozen_manifest_path": "visual-atlas/surface-manifest.json",
+  "frozen_manifest_sha256": "443a7ecd320a1fa5c4135e23bfb6b82019af19b3bc302ea7a819a280b0922ddf",
+  "ui_probes_path": "visual-atlas/ui-probes.json",
+  "captures": [
+    {
+      "surface_key": "visembler-editor",
+      "viewport": "desktop",
+      "requested_route": "/visualizer?report=atlas-editor-r3",
+      "actual_url": "http://127.0.0.1:54513/visualizer?report=atlas-editor-r3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-editor--desktop-1440x900.png",
+      "png_sha256": "1358aabc49fcdf62d958cbff000d7e2073e84f2d1a5ecf600cf2277130b87af2",
+      "bytes": 150506,
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "ready": {
+        "ready_selector": ".cui-visualizer-root[data-editor-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer?report=atlas-editor-r3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "component_count=7",
+          "Wafer Map",
+          "SPC Control Chart"
+        ],
+        "optional_legitimate_empty_messages": [],
+        "body_fingerprint_text": "Skip to main content Visembler Visual report authoring Report title Description Created 2026-09-18T23:28:17.762014+00:00 · Modified 2026-09-18T23:28:17.771114+00:00 · revision 2 Reports Fab Yield & SPC Review — Representative arrow_drop_down New report Duplicate Manage ↶ ↷ Reflow Group Ungroup Unlock Back Front ⌘K Commands Start with content Delivery checks Library Inspector </> ? Clean layout Fit report Validate Preview Autosaved Export▾ Library Drag or click × Elements Presets Quick add Proven building blocks 42.8 +6.4% Metric Hero KPI Chart Line chart Narrative Key takeaway Table Editable grid Timeline Milestones Image Paste / upload Diagram Process flow ! Decision Risk callout Paste data Excel, CSV, or TSV All production families Text Metric Comparison CoreChart Table Timeline Diagram ImageMedia Evidence Decision Project eringChart WaferFab RECOMMENDED PROVEN STARTING POINTS 84.2 Hero KPI Single headline metric with comparison context. ☆ Key Takeaway Concise highlighted insight. ☆ Line Chart Show an ordered trend over categories or time. ☆ Pareto Prioritize categorical contributors by descending impact and cumulative share. ☆ Scatter Plot Investigate the relationship between two numeric measures. ☆ Histogram Inspect the distribution of one numeric measurement. ☆ Clean Table Fully editable pasted or manually entered data grid. ☆ Event Timeline Ordered events with editable labels and dates. ☆ Image Paste or upload an image with fit and focal controls. ☆ Process Flow Editable nodes and connectors for a process. ☆ SPC Control Chart Process behavior with explicit control/specification limits. ☆ Xbar-R Chart Validated constant-size subgroup means and ranges with explicit control limits. ☆ DOE Main Effects Observed response means by experimental factor level; descriptive, not significance testing. ☆ DOE Interaction Plot Observed response means across two factor dimensions; descriptive interaction evidence. ☆ Wafer Map Spatial wafer measurements with fab identity context. ☆ Wafer Difference Map Signed affected-minus-reference die differences on a zero-centered spatial scale. ☆ Tool × Chamber Matrix Tool-by-chamber measurement aggregation with missing combinations kept explicit. ☆ Golden vs Affected Profile Reference and affected profiles on one ordered, shared scale. ☆ Control vs Affected Distribution Observed control and affected populations on one shared measurement scale. ☆ PRODUCTION ELEMENTS 52 Hero Title Primary report title or headline. ☆ Section Heading Clear section hierarchy and report structure. ☆ Executive Statement Prominent conclusion or recommendation. ☆ Body Narrative Long-form explanation or supporting context. ☆ Key Takeaway Concise highlighted insight. ☆ 84.2 Hero KPI Single headline metric with comparison context. ☆ 42.8 Metric + Delta Metric with period-over-period change. ☆ 42.8 Target vs Actual Actual performance against an explicit target. ☆ Progress Metric Progress toward a bounded goal. ☆ 42.8 Status Metric Metric paired with an operating state. ☆ Capacity Metric Current usage versus available capacity. ☆ 42.8 Rate Metric Numerator/denominator or per-period rate. ☆ Threshold Metric Value against warning and critical thresholds. ☆ Metric with Sparkline KPI with compact trend context. ☆ Metric Ring Bounded value rendered against an explicit maximum. ☆ As-Is → To-Be Current state compared with the intended future state. ☆ Before/After KPI Direct before-versus-after KPI comparison. ☆ Time Compression Cycle-time reduction with explicit before/after values. ☆ Vertical Bar Compare values across categories. ☆ Horizontal Bar Rank or compare categories with longer labels. ☆ Line Chart Show an ordered trend over categories or time. ☆ Area Chart Show an ordered trend with magnitude emphasis. ☆ Multi-Line Compare multiple measured series across a shared ordered axis. ☆ Scatter Plot Investigate the relationship between two numeric measures. ☆ Regression Scatter Assess a numeric relationship with a transparent fitted trend. ☆ Histogram Inspect the distribution of one numeric measurement. ☆ Box Plot Compare numeric spread, median, and outliers. ☆ Pareto Prioritize categorical contributors by descending impact and cumulative share. ☆ Clean Table Fully editable pasted or manually entered data grid. ☆ Event Timeline Ordered events with editable labels and dates. ☆ Milestone Rail Compact milestone progression. ☆ Sequence Strip Simple ordered process or validation sequence. ☆ Process Flow Editable nodes and connectors for a process. ☆ Data Flow Editable nodes and connectors for data movement. ☆ Image Paste or upload an image with fit and focal controls. ☆ Image + Caption Image with editable caption and accessibility text. ☆ Screenshot Frame Application screenshot presentation frame. ☆ Evidence Card Evidence statement, supporting detail, and status. ☆ Risk Callout Editable decision risk statement, detail, and status. ☆ Project Card Project statement, detail, and current status. ☆ SPC Control Chart Process behavior with explicit control/specification limits. ☆ I-MR Chart Individuals and moving-range process monitoring. ☆ CUSUM Chart Cumulative-sum monitoring for sustained process shifts. ☆ EWMA Chart Exponentially weighted monitoring for smaller shifts. ☆ Xbar-R Chart Validated constant-size subgroup means and ranges with explicit control limits. ☆ DOE Main Effects Observed response means by experimental factor level; descriptive, not significance testing. ☆ DOE Interaction Plot Observed response means across two factor dimensions; descriptive interaction evidence. ☆ Wafer Map Spatial wafer measurements with fab identity context. ☆ Show more · 48/52 ✦ Smart ⊞ Guided ↗ Free Page size − 40% + Fit Minimap Wafer Map · W07 Wafer W07 · Lot L240918-07 · Tool ETCH-04 · Chamber CH-A · Recipe RCP-ETCH-19 · Process Etch · Route Route-E · Product PX-7 0.82 → 0.959 Coordinates X -4–3 · Y -4–1 Wafer Map: 12 rows · X Die X · Y Die Y · 12 fields Edit chart SPC Control Chart · Etch CD LCL 9.708 UCL 11.642"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": false,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 138,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 2,
+      "rendered_mark_counts": {
+        "#componentLayer .component": 7,
+        "#componentLayer .component [data-chart-point]": 24,
+        "#componentLayer .component .die": 0,
+        "#componentLayer .component .viz-eng-point": 0,
+        "#componentLayer .component svg": 4
+      },
+      "ui_probe_capture_index": 0
+    },
+    {
+      "surface_key": "visembler-report-hub",
+      "viewport": "desktop",
+      "requested_route": "/visualizer/reports?report=atlas-editor-r3",
+      "actual_url": "http://127.0.0.1:54513/visualizer/reports?report=atlas-editor-r3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-report-hub--desktop-1440x900.png",
+      "png_sha256": "3b739190b97c81eb50407f0f322e35ae50918e45f1e74b1d70bddc458ebc3cf5",
+      "bytes": 132098,
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "ready": {
+        "ready_selector": "[data-testid=\"report-hub\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/reports?report=atlas-editor-r3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "report_card_count=4",
+          "Active reports"
+        ],
+        "optional_legitimate_empty_messages": [],
+        "body_fingerprint_text": "Skip to main content Visembler Report hub Reports Open, organize, and recover reports without covering the authoring canvas. Open editor Dataset library Reusable assets Blueprints Import… Search reports Sort Recently modified arrow_drop_down View Active arrow_drop_down Grid List New report from Blank canvas arrow_drop_down Create report Active reports · 4 Engineering evidence Containment and verification Key Takeaway Title Description Created 2026-09-18T23:28:17.762014+00:00 · Modified 2026-09-18T23:28:17.771114+00:00 · revision 2 · 7 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash 98.7 Key Takeaway Pre vs current yield Risk Callout Title Description Created 2026-09-18T23:28:17.766256+00:00 · Modified 2026-09-18T23:28:17.766256+00:00 · revision 1 · 5 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash Executive Statement Evidence Card Event Timeline Evidence Card Title Description Created 2026-09-18T23:28:17.765314+00:00 · Modified 2026-09-18T23:28:17.765314+00:00 · revision 1 · 5 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash Title Description Created 2026-09-18T23:28:17.764044+00:00 · Modified 2026-09-18T23:28:17.764044+00:00 · revision 1 · 1 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash History · Fab Yield & SPC Review — Representative Each restore is explicit, revisioned, and leaves the prior state in history. Named checkpoint Save checkpoint Engineering evidence Containment and verification Key Takeaway r2 Engineering evidence Containment and verification Key Takeaway Current r2 r2 · 2026-09-18T23:28:17.771114+00:00 · R3 representative normal-state baseline · checkpoint No material model change Restore this revision Duplicate as new report Engineering evidence Containment and verification Key Takeaway r2 Engineering evidence Containment and verification Key Takeaway Current r2 r2 · 2026-09-18T23:28:17.771114+00:00 · Description updated No material model change Restore this revision Duplicate as new report Engineering evidence Containment and verification Key Takeaway r1 Engineering evidence Containment and verification Key Takeaway Current r2 r1 · 2026-09-18T23:28:17.762014+00:00 · Created No material model change Restore this revision Duplicate as new report"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 8,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 2,
+      "rendered_mark_counts": {
+        "[data-testid=\"report-hub\"] [data-testid=\"report-card\"]": 4
+      },
+      "ui_probe_capture_index": 1
+    },
+    {
+      "surface_key": "visembler-diagram-studio",
+      "viewport": "desktop",
+      "requested_route": "/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+      "actual_url": "http://127.0.0.1:54513/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--desktop-1440x900.png",
+      "png_sha256": "41cb07ce6f528b91996b6e4fb731a59b3daa23059cacdeb51598b16feb3458a0",
+      "bytes": 130467,
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "ready": {
+        "ready_selector": "#diagram-studio[data-studio-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "node_count=6",
+          "connector_mark_count=6",
+          "connected process diagram"
+        ],
+        "optional_legitimate_empty_messages": [
+          "No saved subflows yet.",
+          "No swimlanes yet."
+        ],
+        "body_fingerprint_text": "Skip to main content Visembler Diagram Studio ← Report DIAGRAM STUDIO Process diagram Fit diagram · 56% ↶ ↷ Clean Diagram Flow → Flow ↓ Tree Fit width Fit page Fit selection Grid Snap Preview Import JSON Export JSON Export SVG Save diagram BUILD Shapes 0 selected × GENERAL ▶ Start ■ End ▣ Process ◇ Decision ▱ Data ▤ Document ◉ Database / Store ◷ Delay ▥ Subprocess ✎ Note / Callout □ Container / Group MANUFACTURING ⚙ Tool ◌ Chamber ≡ Recipe / Step ◉ Lot / Wafer ⌕ Inspection Ⅱ Hold ✓ Release ! Defect / Risk ⇄ Handoff PROCESS ACCELERATORS Steps · one per line Paste process steps Source Target Label Paste source-target graph Quick branch Insert node on edge REUSABLE SUBFLOWS Subflow name Save selection as subflow No saved subflows yet. Click a shape to add it. Drag nodes to place them. Shift-click or drag a lasso to select multiple objects. 6 nodes · 5 connectors · 0 lanes · 1 layers Imported trigger scope evidence yes no / monitor Excursion detected SPC signal · 2026-09-03 Observed Screen lot L240918-07 Confirm wafer population Verified Inspect ETCH-04 / CH-A Review recipe RCP-ETCH-19 In review Containment required? Compare control limits Decision Adjust chamber recipe Apply controlled correction Planned Verify control lot Release after SPC check Planned INSPECT Selection Clear × Select a node or connector to edit its semantic and visual properties. Shift-click adds to the selection; drag empty canvas for a lasso. LAYERS + Add Main diagram Select Hide Lock Rename Copy ↑ ↓ SWIMLANES From flow + Add No swimlanes yet. SELECTION ACTIONS Group Ungroup Align left Align center Align right Align top Align middle Distribute H Distribute V Equal width Equal height Equal size Duplicate Copy Paste"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 11,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 0,
+      "rendered_mark_counts": {
+        "#ds-scene [role=\"button\"]": 6,
+        "#ds-scene path": 6,
+        "#ds-scene rect": 5,
+        "#ds-scene text": 23
+      },
+      "ui_probe_capture_index": 2
+    },
+    {
+      "surface_key": "visembler-chart-studio",
+      "viewport": "desktop",
+      "requested_route": "/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+      "actual_url": "http://127.0.0.1:54513/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--desktop-1440x900.png",
+      "png_sha256": "fa2139a47ccba02c2d1161cc06d186d8736e6af415f322df5c2d857b643061a8",
+      "bytes": 177679,
+      "dimensions": {
+        "width": 1440,
+        "height": 900
+      },
+      "ready": {
+        "ready_selector": "#chart-studio[data-studio-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "wafer_rect_mark_count=85",
+          "Data Lab",
+          "Mapping ready"
+        ],
+        "optional_legitimate_empty_messages": [
+          "0 ROWS · 0 COLUMNS"
+        ],
+        "body_fingerprint_text": "Skip to main content Visembler Chart Studio ← Report CHART STUDIO Wafer Map Detail — W07 Ready ↶ ↷ CHART TYPE Wafer Map Wafer Difference Map Tool × Chamber Matrix Golden vs Affected Profile Control vs Affected Distribution Best readable axes Clean labels Copy setup Markers Light / dark Fit Preview Import JSON Export JSON Export SVG Save chart Data Fields Visual Interaction Paste or refresh data Paste TSV, CSV, or multiline spreadsheet ranges. Values keep their types; blank, null, numeric 0, and string “0” stay distinct. Profile and use data Clear Data profile Die X number 0 missing 11 distinct · -5–5 Die Y number 0 missing 9 distinct · -4–4 Measurement number 0 missing 51 distinct · 0.82–0.972 Lot identifier 0 missing 1 distinct Wafer identifier 0 missing 1 distinct Tool identifier 0 missing 1 distinct Chamber identifier 0 missing 1 distinct Recipe identifier 0 missing 1 distinct Process Step identifier 0 missing 1 distinct Route identifier 0 missing 1 distinct Product identifier 0 missing 1 distinct Bin categorical 0 missing 2 distinct Data Lab · 83 rows · 12 fields # Die X number Rename ← → Die Y number Rename ← → Measurement number Rename ← → Lot identifier Rename ← → Wafer identifier Rename ← → Tool identifier Rename ← → Chamber identifier Rename ← → Recipe identifier Rename ← → Process Step identifier Rename ← → Route identifier Rename ← → Product identifier Rename ← → Bin categorical Rename ← → 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 Insert row above Insert row below Delete selected rows Add row Insert column left Insert column right Delete selected columns Add column Copy range Paste range Transforms Operation Filter Sort Top N Derive Aggregate Field Die X · number Die Y · number Measurement · number Lot · identifier Wafer · identifier Tool · identifier Chamber · identifier Recipe · identifier Process Step · identifier Route · identifier Product · identifier Bin · categorical Value / new name Direction / N Add transform step Clear steps No transform steps. Add one to keep the recipe visible and ordered. LIVE PREVIEW Wafer Map Mapping ready Wafer W07 · Lot L240918-07 · Tool ETCH-04 · Chamber CH-A · Recipe RCP-ETCH-19 · Process Etch · Route Route-E · Product PX-7 0.82 → 0.972 Coordinates X -5–5 · Y -4–4 Chart summary Wafer Map: 83 rows · X Die X · Y Die Y · 12 fields Tool, chamber, and measurement fields support an aggregated equipment matrix. RECOMMENDATIONS 6 OPTIONS Tool × Chamber Matrix Tool, chamber, and measurement fields support an aggregated equipment matrix. Apply Preview Wafer Map Die coordinates and a measurement were recognized. Apply Preview Line Chart A horizontal field and numeric measure are available. Apply Preview Multi-Line A shared axis can compare multiple runs when a series field is available. Apply Preview Vertical Bar A category and measured value are available. Apply Preview Area Chart The same trend mapping can show accumulated movement. Apply Preview CHART RECIPE Save Save a setup to reuse it on a compatible schema. SELECTED DATA 0 ROWS · 0 COLUMNS Click chart marks or table cells to inspect values."
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 1083,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 0,
+      "rendered_mark_counts": {
+        "#cs-canvas svg": 1,
+        "#cs-canvas [data-chart-point]": 0,
+        "#cs-canvas .cs-wafer-svg circle": 1,
+        "#cs-canvas .cs-wafer-svg rect": 85,
+        "#cs-canvas svg circle": 1,
+        "#cs-canvas svg rect": 85
+      },
+      "ui_probe_capture_index": 3
+    },
+    {
+      "surface_key": "visembler-editor",
+      "viewport": "mobile",
+      "requested_route": "/visualizer?report=atlas-editor-r3",
+      "actual_url": "http://127.0.0.1:54513/visualizer?report=atlas-editor-r3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-editor--mobile-390x844.png",
+      "png_sha256": "7a8839ea73489f74230ea6259eccb778dea735b6b93510528c88aa8e0206a0e4",
+      "bytes": 47560,
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "ready": {
+        "ready_selector": ".cui-visualizer-root[data-editor-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer?report=atlas-editor-r3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "component_count=7",
+          "Wafer Map",
+          "SPC Control Chart"
+        ],
+        "optional_legitimate_empty_messages": [],
+        "body_fingerprint_text": "Skip to main content Visembler Report title Description Created 2026-09-18T23:28:17.762014+00:00 · Modified 2026-09-18T23:28:17.771114+00:00 · revision 2 Reports Fab Yield & SPC Review — Representative arrow_drop_down New report Duplicate Manage ⌘K Library Inspector Preview Autosaved Smart Guided Free − 20% + Fit Wafer Map · W07 Wafer W07 · Lot L240918-07 · Tool ETCH-04 · Chamber CH-A · Recipe RCP-ETCH-19 · Process Etch · Route Route-E · Product PX-7 0.82 → 0.959 Coordinates X -4–3 · Y -4–1 Wafer Map: 12 rows · X Die X · Y Die Y · 12 fields Edit chart SPC Control Chart · Etch CD LCL 9.708 UCL 11.642 Measurement Computed control limits Specification limits SPC Control Chart · computed control limits SPC Control Chart: 12 rows · X Timestamp · Y Measurement · 8 fields Edit chart Wafer Map · Spatial Yield Wafer W07 · Lot L240918-07 · Tool ETCH-04 · Chamber CH-A · Recipe RCP-ETCH-19 · Process Etch · Route Route-E · Product PX-7 0.82 → 0.959 Coordinates X -4–3 · Y -4–1 Wafer Map: 12 rows · X Die X · Y Die Y · 12 fields Edit chart Yield by Day 0 24.675 49.35 74.025 98.7 2026-09-01 2026-09-02 2026-09-03 2026-09-04 2026-09-05 2026-09-06 2026-09-07 2026-09-08 2026-09-09 2026-09-10 2026-09-11 2026-09-12 SG-1 SG-2 SG-3 SG-4 Vertical Bar: 12 rows · X Timestamp · Y Yield % · 8 fields Edit chart Etch CD remains centered while yield recovered across the review window. Lot L240918-07 · W07 · ETCH-04 / CH-A · source: SPC process review Evidence Observed 2026-09-01 2026-09-01 2026-09-02 2026-09-02 2026-09-03 2026-09-03 2026-09-04 2026-09-04 2026-09-05 2026-09-05 2026-09-06 2026-09-06 2026-09-07 2026-09-07 2026-09-08 2026-09-08 2026-09-09 2026-09-09 2026-09-10 2026-09-10 2026-09-11 2026-09-11 2026-09-12 2026-09-12 ✓ Measurement spread is stable inside the review limits; the remaining watch population is localized to two edge dies. Smart Saved automatically"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": false,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 0,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 2,
+      "rendered_mark_counts": {
+        "#componentLayer .component": 7,
+        "#componentLayer .component [data-chart-point]": 24,
+        "#componentLayer .component .die": 0,
+        "#componentLayer .component .viz-eng-point": 0,
+        "#componentLayer .component svg": 4
+      },
+      "ui_probe_capture_index": 4
+    },
+    {
+      "surface_key": "visembler-report-hub",
+      "viewport": "mobile",
+      "requested_route": "/visualizer/reports?report=atlas-editor-r3",
+      "actual_url": "http://127.0.0.1:54513/visualizer/reports?report=atlas-editor-r3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-report-hub--mobile-390x844.png",
+      "png_sha256": "6fa686271bf0e8ba843366624a81f229b9ac064d54669a8884bf61ad632c8fea",
+      "bytes": 50347,
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "ready": {
+        "ready_selector": "[data-testid=\"report-hub\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/reports?report=atlas-editor-r3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "report_card_count=4",
+          "Active reports"
+        ],
+        "optional_legitimate_empty_messages": [],
+        "body_fingerprint_text": "Skip to main content Visembler Reports Open, organize, and recover reports without covering the authoring canvas. Open editor Dataset library Reusable assets Blueprints Import… Search reports Sort Recently modified arrow_drop_down View Active arrow_drop_down Grid List New report from Blank canvas arrow_drop_down Create report Active reports · 4 Engineering evidence Containment and verification Key Takeaway Title Description Created 2026-09-18T23:28:17.762014+00:00 · Modified 2026-09-18T23:28:17.771114+00:00 · revision 2 · 7 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash 98.7 Key Takeaway Pre vs current yield Risk Callout Title Description Created 2026-09-18T23:28:17.766256+00:00 · Modified 2026-09-18T23:28:17.766256+00:00 · revision 1 · 5 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash Executive Statement Evidence Card Event Timeline Evidence Card Title Description Created 2026-09-18T23:28:17.765314+00:00 · Modified 2026-09-18T23:28:17.765314+00:00 · revision 1 · 5 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash Title Description Created 2026-09-18T23:28:17.764044+00:00 · Modified 2026-09-18T23:28:17.764044+00:00 · revision 1 · 1 elements Owner account owner · Access owner Open Duplicate History Export JSON Share Move to trash History · Fab Yield & SPC Review — Representative Each restore is explicit, revisioned, and leaves the prior state in history. Named checkpoint Save checkpoint Engineering evidence Containment and verification Key Takeaway r2 Engineering evidence Containment and verification Key Takeaway Current r2 r2 · 2026-09-18T23:28:17.771114+00:00 · R3 representative normal-state baseline · checkpoint No material model change Restore this revision Duplicate as new report Engineering evidence Containment and verification Key Takeaway r2 Engineering evidence Containment and verification Key Takeaway Current r2 r2 · 2026-09-18T23:28:17.771114+00:00 · Description updated No material model change Restore this revision Duplicate as new report Engineering evidence Containment and verification Key Takeaway r1 Engineering evidence Containment and verification Key Takeaway Current r2 r1 · 2026-09-18T23:28:17.762014+00:00 · Created No material model change Restore this revision Duplicate as new report"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 1,
+      "below_viewport_intended_scroll_count": 40,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 1,
+      "rendered_mark_counts": {
+        "[data-testid=\"report-hub\"] [data-testid=\"report-card\"]": 4
+      },
+      "ui_probe_capture_index": 5
+    },
+    {
+      "surface_key": "visembler-diagram-studio",
+      "viewport": "mobile",
+      "requested_route": "/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+      "actual_url": "http://127.0.0.1:54513/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--mobile-390x844.png",
+      "png_sha256": "7d84b53488dd4cb8f47d89c5b60aecc74a97a71196d993f091ea80fcf12096cc",
+      "bytes": 24183,
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "ready": {
+        "ready_selector": "#diagram-studio[data-studio-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/diagram-studio?report=atlas-diagram-r3&element=c3",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "node_count=6",
+          "connector_mark_count=6",
+          "connected process diagram"
+        ],
+        "optional_legitimate_empty_messages": [
+          "No saved subflows yet.",
+          "No swimlanes yet."
+        ],
+        "body_fingerprint_text": "Skip to main content Visembler ← Report ↶ ↷ Clean Diagram Flow → Shapes Inspector Save diagram BUILD Shapes 0 selected × GENERAL ▶ Start ■ End ▣ Process ◇ Decision ▱ Data ▤ Document ◉ Database / Store ◷ Delay ▥ Subprocess ✎ Note / Callout □ Container / Group MANUFACTURING ⚙ Tool ◌ Chamber ≡ Recipe / Step ◉ Lot / Wafer ⌕ Inspection Ⅱ Hold ✓ Release ! Defect / Risk ⇄ Handoff PROCESS ACCELERATORS Steps · one per line Paste process steps Source Target Label Paste source-target graph Quick branch Insert node on edge REUSABLE SUBFLOWS Subflow name Save selection as subflow No saved subflows yet. Click a shape to add it. Drag nodes to place them. Shift-click or drag a lasso to select multiple objects. 6 nodes · 5 connectors · 0 lanes · 1 layers Imported trigger scope evidence yes no / monitor Excursion detected SPC signal · 2026-09-03 Observed Screen lot L240918-07 Confirm wafer population Verified Inspect ETCH-04 / CH-A Review recipe RCP-ETCH-19 In review Containment required? Compare control limits Decision Adjust chamber recipe Apply controlled correction Planned Verify control lot Release after SPC check Planned INSPECT Selection Clear × Select a node or connector to edit its semantic and visual properties. Shift-click adds to the selection; drag empty canvas for a lasso. LAYERS + Add Main diagram Select Hide Lock Rename Copy ↑ ↓ SWIMLANES From flow + Add No swimlanes yet. SELECTION ACTIONS Group Ungroup Align left Align center Align right Align top Align middle Distribute H Distribute V Equal width Equal height Equal size Duplicate Copy Paste"
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 57,
+      "below_viewport_intended_scroll_count": 0,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 0,
+      "rendered_mark_counts": {
+        "#ds-scene [role=\"button\"]": 6,
+        "#ds-scene path": 6,
+        "#ds-scene rect": 5,
+        "#ds-scene text": 23
+      },
+      "ui_probe_capture_index": 6
+    },
+    {
+      "surface_key": "visembler-chart-studio",
+      "viewport": "mobile",
+      "requested_route": "/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+      "actual_url": "http://127.0.0.1:54513/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+      "status": "captured",
+      "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--mobile-390x844.png",
+      "png_sha256": "42646945eb9dfe8f4cea4f9ccfe9661c4bee8b33b2357000d7c85211e3ee045b",
+      "bytes": 50470,
+      "dimensions": {
+        "width": 390,
+        "height": 844
+      },
+      "ready": {
+        "ready_selector": "#chart-studio[data-studio-ready=\"true\"]",
+        "ready_selector_present": true,
+        "fonts_status": "loaded",
+        "editor_pending": 0,
+        "editor_inflight": false,
+        "actual_url": "http://127.0.0.1:54513/visualizer/chart-studio?report=atlas-chart-r3&element=c1",
+        "title": "Visembler",
+        "browser_errors": [],
+        "failed_requests": []
+      },
+      "primary_content": {
+        "classification": "representative_populated",
+        "evidence": [
+          "wafer_rect_mark_count=85",
+          "Data Lab",
+          "Mapping ready"
+        ],
+        "optional_legitimate_empty_messages": [
+          "0 ROWS · 0 COLUMNS"
+        ],
+        "body_fingerprint_text": "Skip to main content Visembler ← Report CHART STUDIO Wafer Map Detail — W07 Ready ↶ ↷ CHART TYPE Wafer Map Wafer Difference Map Tool × Chamber Matrix Golden vs Affected Profile Control vs Affected Distribution Markers Light / dark Fit Preview Import JSON Export JSON Export SVG Save chart Data Fields Visual Interaction Paste or refresh data Paste TSV, CSV, or multiline spreadsheet ranges. Values keep their types; blank, null, numeric 0, and string “0” stay distinct. Profile and use data Clear Data profile Die X number 0 missing 11 distinct · -5–5 Die Y number 0 missing 9 distinct · -4–4 Measurement number 0 missing 51 distinct · 0.82–0.972 Lot identifier 0 missing 1 distinct Wafer identifier 0 missing 1 distinct Tool identifier 0 missing 1 distinct Chamber identifier 0 missing 1 distinct Recipe identifier 0 missing 1 distinct Process Step identifier 0 missing 1 distinct Route identifier 0 missing 1 distinct Product identifier 0 missing 1 distinct Bin categorical 0 missing 2 distinct Data Lab · 83 rows · 12 fields # Die X number Rename ← → Die Y number Rename ← → Measurement number Rename ← → Lot identifier Rename ← → Wafer identifier Rename ← → Tool identifier Rename ← → Chamber identifier Rename ← → Recipe identifier Rename ← → Process Step identifier Rename ← → Route identifier Rename ← → Product identifier Rename ← → Bin categorical Rename ← → 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 Insert row above Insert row below Delete selected rows Add row Insert column left Insert column right Delete selected columns Add column Copy range Paste range Transforms Operation Filter Sort Top N Derive Aggregate Field Die X · number Die Y · number Measurement · number Lot · identifier Wafer · identifier Tool · identifier Chamber · identifier Recipe · identifier Process Step · identifier Route · identifier Product · identifier Bin · categorical Value / new name Direction / N Add transform step Clear steps No transform steps. Add one to keep the recipe visible and ordered. LIVE PREVIEW Wafer Map Mapping ready Wafer W07 · Lot L240918-07 · Tool ETCH-04 · Chamber CH-A · Recipe RCP-ETCH-19 · Process Etch · Route Route-E · Product PX-7 0.82 → 0.972 Coordinates X -5–5 · Y -4–4 Chart summary Wafer Map: 83 rows · X Die X · Y Die Y · 12 fields Tool, chamber, and measurement fields support an aggregated equipment matrix. RECOMMENDATIONS 6 OPTIONS Tool × Chamber Matrix Tool, chamber, and measurement fields support an aggregated equipment matrix. Apply Preview Wafer Map Die coordinates and a measurement were recognized. Apply Preview Line Chart A horizontal field and numeric measure are available. Apply Preview Multi-Line A shared axis can compare multiple runs when a series field is available. Apply Preview Vertical Bar A category and measured value are available. Apply Preview Area Chart The same trend mapping can show accumulated movement. Apply Preview CHART RECIPE Save Save a setup to reuse it on a compatible schema. SELECTED DATA 0 ROWS · 0 COLUMNS Click chart marks or table cells to inspect values."
+      },
+      "horizontal_overflow": false,
+      "vertical_scroll": true,
+      "out_of_viewport_count": 784,
+      "below_viewport_intended_scroll_count": 380,
+      "overlap_or_occlusion_candidate_count": 0,
+      "text_control_clipping_indicator_count": 0,
+      "rendered_mark_counts": {
+        "#cs-canvas svg": 1,
+        "#cs-canvas [data-chart-point]": 0,
+        "#cs-canvas .cs-wafer-svg circle": 1,
+        "#cs-canvas .cs-wafer-svg rect": 85,
+        "#cs-canvas svg circle": 1,
+        "#cs-canvas svg rect": 85
+      },
+      "ui_probe_capture_index": 7
+    }
+  ],
+  "summary": {
+    "surface_count": 4,
+    "canonical_screenshot_count": 8,
+    "capture_error_count": 0,
+    "browser_error_count": 0,
+    "document_horizontal_overflow_count": 0,
+    "primary_empty_state_count": 0,
+    "optional_legitimate_empty_message_count": 6,
+    "text_control_clipping_indicator_count": 7,
+    "overlap_or_occlusion_candidate_count": 0,
+    "material_out_of_viewport_interactive_count": 847,
+    "defect_observation_count": 854,
+    "empty_or_unseeded_product_state_count": 0,
+    "auth_loading_crash_count": 0,
+    "vertical_scroll_not_counted_as_defect": true,
+    "diagnostic_note": "Factual probe observations only; no Product acceptance or visual-quality decision is made."
+  },
+  "supplemental_diagnostics": {
+    "empty_state_classification_rule": "Primary persistent workspace/material content only; optional legitimate messages do not classify the whole surface.",
+    "normal_state_representative": true,
+    "defect_proof_in_ui_probes": true
+  },
+  "defect_proof_summary": {
+    "mobile_drawer_closed_reachable_focusable_counts": {
+      "#ds-shape-panel": 0,
+      "#ds-inspector-panel": 0
+    },
+    "mobile_drawer_closed_inert": {
+      "#ds-shape-panel": true,
+      "#ds-inspector-panel": true
+    },
+    "mobile_drawer_closed_aria_hidden": {
+      "#ds-shape-panel": "true",
+      "#ds-inspector-panel": "true"
+    },
+    "focus_return": {
+      "Shapes": {
+        "close_button": true,
+        "backdrop": false,
+        "escape": true
+      },
+      "Inspector": {
+        "close_button": true,
+        "backdrop": false,
+        "escape": true
+      }
+    },
+    "desktop_drawers_non_inert": true,
+    "desktop_aria_hidden_absent": true,
+    "mobile_reportbar_reports_duplicate_overlap_ratio": 0,
+    "mobile_reportbar_reports_manage_overlap_ratio": 0,
+    "mobile_reportbar_lifecycle_actions_reachable": true,
+    "mobile_reportbar_target_floor_preserved": true,
+    "mobile_reportbar_horizontal_overflow": false,
+    "diagram_closed_no_sequential_focus_entry": true,
+    "diagram_open_only_active_drawer_non_inert": true,
+    "exact_remaining_material_blocker": "Mobile Diagram Studio backdrop dismissal closes the active drawer but does not return focus to the corresponding visible trigger for Shapes or Inspector; close button and Escape do return focus."
+  },
+  "final_manifest_sha256": "443a7ecd320a1fa5c4135e23bfb6b82019af19b3bc302ea7a819a280b0922ddf",
+  "ui_probes_sha256": "890e987bec63a7391aa5f7e808ae62dc101f72e68f6b0dd19279f465c8da61cf",
+  "review_desktop_sha256": "fe63c2792428108879ae3ef26f7a01db1212dff786b8a909bb44b651cc78f9e6",
+  "review_mobile_sha256": "e6dd86f1b329537b251d2c4fff7f08f46e84132114cc95ca5f78c23b4b755962",
+  "artifact_inventory": [
+    "visual-atlas/surface-manifest.json",
+    "visual-atlas/capture-report.json",
+    "visual-atlas/reader-index.json",
+    "visual-atlas/review-desktop.pdf",
+    "visual-atlas/review-mobile.pdf",
+    "visual-atlas/ui-probes.json",
+    "visual-atlas/screenshots/visembler-editor--desktop-1440x900.png",
+    "visual-atlas/screenshots/visembler-report-hub--desktop-1440x900.png",
+    "visual-atlas/screenshots/visembler-diagram-studio--desktop-1440x900.png",
+    "visual-atlas/screenshots/visembler-chart-studio--desktop-1440x900.png",
+    "visual-atlas/screenshots/visembler-editor--mobile-390x844.png",
+    "visual-atlas/screenshots/visembler-report-hub--mobile-390x844.png",
+    "visual-atlas/screenshots/visembler-diagram-studio--mobile-390x844.png",
+    "visual-atlas/screenshots/visembler-chart-studio--mobile-390x844.png"
+  ]
+}
