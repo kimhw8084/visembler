@@ -97,6 +97,27 @@ def _assert_studio_geometry(page, width: int) -> None:
     assert metrics['wrap']['left'] >= 0 and metrics['wrap']['right'] <= metrics['innerWidth'] + 1, metrics
 
 
+def _drawer_accessibility_probe(page) -> dict:
+    return page.evaluate("""()=>{
+      const selector='a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[contenteditable="true"],[tabindex]:not([tabindex="-1"])';
+      const panelName=node=>node?.closest('#ds-shape-panel')?'palette':node?.closest('#ds-inspector-panel')?'inspector':null;
+      const rect=node=>{const value=node?.getBoundingClientRect();return value&&Object.fromEntries(['left','right','top','bottom','width','height'].map(key=>[key,Number(value[key].toFixed(2))]));};
+      const hiddenBySemantics=node=>{for(let current=node;current&&current!==document.body;current=current.parentElement){const style=getComputedStyle(current);if(current.hidden||current.inert||current.hasAttribute('inert')||current.getAttribute('aria-hidden')==='true'||style.display==='none'||style.visibility==='hidden')return true;}return false;};
+      const panelInfo=id=>{const panel=document.querySelector(id),focusables=[...panel.querySelectorAll(selector)],reachable=focusables.filter(node=>!hiddenBySemantics(node));return {id,classes:panel.className,inert_property:Boolean(panel.inert),inert_attribute:panel.hasAttribute('inert'),aria_hidden:panel.getAttribute('aria-hidden'),bounds:rect(panel),focusable_descendants:focusables.length,reachable_focusable:reachable.length};};
+      const triggerInfo=action=>{const node=document.querySelector(`[data-action="${action}"]`);return {action,aria_expanded:node?.getAttribute('aria-expanded'),aria_controls:node?.getAttribute('aria-controls')};};
+      const active=()=>{const node=document.activeElement;return {tag:node?.tagName?.toLowerCase()||null,id:node?.id||null,action:node?.dataset?.action||null,shape:node?.dataset?.shape||null,panel:panelName(node),label:node?.getAttribute('aria-label')||node?.textContent?.trim().slice(0,80)||null};};
+      const scrollWidth=document.documentElement.scrollWidth,clientWidth=document.documentElement.clientWidth;
+      return {viewport:{width:innerWidth,height:innerHeight},panels:{palette:panelInfo('#ds-shape-panel'),inspector:panelInfo('#ds-inspector-panel')},triggers:{palette:triggerInfo('toggle-palette'),inspector:triggerInfo('toggle-inspector')},activeElement:active(),scroll:{scrollWidth,clientWidth,innerWidth,horizontalOverflow:scrollWidth>clientWidth+1}};
+    }""")
+
+
+def _active_focus_descriptor(page) -> dict:
+    return page.evaluate("""()=>{
+      const node=document.activeElement;
+      return {tag:node?.tagName?.toLowerCase()||null,id:node?.id||null,action:node?.dataset?.action||null,panel:node?.closest('#ds-shape-panel')?'palette':node?.closest('#ds-inspector-panel')?'inspector':null};
+    }""")
+
+
 def _performance_fixture() -> dict:
     script = """
 import {cleanDiagram, normalizeDiagram} from './company_ui/products/visualizer/assets/authoring_diagram_studio.mjs';
@@ -118,7 +139,7 @@ def main() -> int:
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    report = {'scope': 'native Diagram Studio acceptance', 'cases': [], 'unexpected_errors': []}
+    report = {'scope': 'native Diagram Studio acceptance', 'cases': [], 'unexpected_errors': [], 'drawer_accessibility': {}}
 
     def check(name, callback):
         print(f'CHECK {name}', flush=True)
@@ -154,6 +175,122 @@ def main() -> int:
                     assert _studio_state(page)['model']['schema'] == 'visembler.diagram.studio'
 
                 check('open Diagram Studio from Process Flow', open_studio)
+
+                def drawer_accessibility():
+                    page.set_viewport_size({'width': 390, 'height': 844})
+                    page.wait_for_timeout(220)
+                    evidence = {'viewport': {'width': 390, 'height': 844}}
+                    closed = _drawer_accessibility_probe(page)
+                    evidence['closed'] = closed
+                    assert closed['panels']['palette']['inert_property'] and closed['panels']['palette']['inert_attribute'], closed
+                    assert closed['panels']['inspector']['inert_property'] and closed['panels']['inspector']['inert_attribute'], closed
+                    assert closed['panels']['palette']['aria_hidden'] == 'true' and closed['panels']['inspector']['aria_hidden'] == 'true', closed
+                    assert closed['panels']['palette']['reachable_focusable'] == 0 and closed['panels']['inspector']['reachable_focusable'] == 0, closed
+                    assert closed['triggers']['palette']['aria_expanded'] == 'false' and closed['triggers']['inspector']['aria_expanded'] == 'false', closed
+                    assert closed['triggers']['palette']['aria_controls'] == 'ds-shape-panel' and closed['triggers']['inspector']['aria_controls'] == 'ds-inspector-panel', closed
+                    assert not closed['scroll']['horizontalOverflow'], closed
+
+                    page.locator('[data-action="toggle-palette"]').focus()
+                    forward = []
+                    for _ in range(18):
+                        page.keyboard.press('Tab')
+                        forward.append(_active_focus_descriptor(page))
+                    page.locator('[data-action="toggle-inspector"]').focus()
+                    backward = []
+                    for _ in range(18):
+                        page.keyboard.press('Shift+Tab')
+                        backward.append(_active_focus_descriptor(page))
+                    evidence['closed_tab_forward'] = forward
+                    evidence['closed_shift_tab_backward'] = backward
+                    assert all(item['panel'] not in {'palette', 'inspector'} for item in forward + backward), evidence
+
+                    page.locator('[data-action="toggle-palette"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-shape-panel')")
+                    page.wait_for_timeout(220)
+                    shapes_open = _drawer_accessibility_probe(page)
+                    evidence['shapes_open'] = shapes_open
+                    assert 'is-open' in shapes_open['panels']['palette']['classes'] and 'is-open' not in shapes_open['panels']['inspector']['classes'], shapes_open
+                    assert not shapes_open['panels']['palette']['inert_property'] and not shapes_open['panels']['palette']['inert_attribute'], shapes_open
+                    assert shapes_open['panels']['inspector']['inert_property'] and shapes_open['panels']['inspector']['inert_attribute'], shapes_open
+                    assert shapes_open['panels']['palette']['aria_hidden'] == 'false' and shapes_open['panels']['inspector']['aria_hidden'] == 'true', shapes_open
+                    assert shapes_open['panels']['palette']['reachable_focusable'] > 0 and shapes_open['panels']['inspector']['reachable_focusable'] == 0, shapes_open
+                    assert shapes_open['activeElement']['panel'] == 'palette' and shapes_open['activeElement']['shape'], shapes_open
+                    assert shapes_open['triggers']['palette']['aria_expanded'] == 'true' and shapes_open['triggers']['inspector']['aria_expanded'] == 'false', shapes_open
+
+                    page.locator('#ds-shape-panel [data-action="close-panels"]').click()
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-palette'")
+                    page.wait_for_timeout(220)
+                    shapes_close = _drawer_accessibility_probe(page)
+                    evidence['shapes_close'] = shapes_close
+                    assert shapes_close['activeElement']['action'] == 'toggle-palette', shapes_close
+                    assert shapes_close['panels']['palette']['reachable_focusable'] == 0 and shapes_close['panels']['inspector']['reachable_focusable'] == 0, shapes_close
+
+                    page.locator('[data-action="toggle-inspector"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-inspector-panel')")
+                    page.wait_for_timeout(220)
+                    inspector_open = _drawer_accessibility_probe(page)
+                    evidence['inspector_open'] = inspector_open
+                    assert 'is-open' not in inspector_open['panels']['palette']['classes'] and 'is-open' in inspector_open['panels']['inspector']['classes'], inspector_open
+                    assert inspector_open['panels']['palette']['inert_property'] and inspector_open['panels']['palette']['inert_attribute'], inspector_open
+                    assert not inspector_open['panels']['inspector']['inert_property'] and not inspector_open['panels']['inspector']['inert_attribute'], inspector_open
+                    assert inspector_open['panels']['palette']['aria_hidden'] == 'true' and inspector_open['panels']['inspector']['aria_hidden'] == 'false', inspector_open
+                    assert inspector_open['panels']['palette']['reachable_focusable'] == 0 and inspector_open['panels']['inspector']['reachable_focusable'] > 0, inspector_open
+                    assert inspector_open['activeElement']['panel'] == 'inspector', inspector_open
+                    assert inspector_open['triggers']['palette']['aria_expanded'] == 'false' and inspector_open['triggers']['inspector']['aria_expanded'] == 'true', inspector_open
+
+                    page.locator('#ds-panel-backdrop').click(position={'x': 10, 'y': 350})
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-inspector'")
+                    page.wait_for_timeout(220)
+                    inspector_backdrop_close = _drawer_accessibility_probe(page)
+                    evidence['inspector_backdrop_close'] = inspector_backdrop_close
+                    assert inspector_backdrop_close['activeElement']['action'] == 'toggle-inspector', inspector_backdrop_close
+
+                    page.locator('[data-action="toggle-palette"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-shape-panel')")
+                    page.wait_for_timeout(220)
+                    page.keyboard.press('Escape')
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-palette'")
+                    page.wait_for_timeout(220)
+                    evidence['shapes_escape_close'] = _drawer_accessibility_probe(page)
+                    assert evidence['shapes_escape_close']['activeElement']['action'] == 'toggle-palette', evidence['shapes_escape_close']
+
+                    page.locator('[data-action="toggle-inspector"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-inspector-panel')")
+                    page.wait_for_timeout(220)
+                    page.locator('#ds-inspector-panel [data-action="close-panels"]').click()
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-inspector'")
+                    page.wait_for_timeout(220)
+                    evidence['inspector_close_button'] = _drawer_accessibility_probe(page)
+                    assert evidence['inspector_close_button']['activeElement']['action'] == 'toggle-inspector', evidence['inspector_close_button']
+
+                    page.locator('[data-action="toggle-palette"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-shape-panel')")
+                    page.evaluate("""()=>document.querySelector('[data-action="toggle-inspector"]').click()""")
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-inspector-panel')")
+                    page.wait_for_timeout(220)
+                    switched = _drawer_accessibility_probe(page)
+                    evidence['switched_to_inspector'] = switched
+                    assert 'is-open' not in switched['panels']['palette']['classes'] and 'is-open' in switched['panels']['inspector']['classes'], switched
+                    assert switched['panels']['palette']['reachable_focusable'] == 0 and switched['panels']['inspector']['reachable_focusable'] > 0, switched
+                    assert switched['triggers']['palette']['aria_expanded'] == 'false' and switched['triggers']['inspector']['aria_expanded'] == 'true', switched
+                    page.keyboard.press('Escape')
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-inspector'")
+                    page.wait_for_timeout(220)
+                    evidence['switch_escape_close'] = _drawer_accessibility_probe(page)
+                    assert evidence['switch_escape_close']['activeElement']['action'] == 'toggle-inspector', evidence['switch_escape_close']
+
+                    page.set_viewport_size({'width': 1440, 'height': 900})
+                    page.wait_for_timeout(220)
+                    desktop = _drawer_accessibility_probe(page)
+                    evidence['desktop'] = desktop
+                    assert not desktop['panels']['palette']['inert_property'] and not desktop['panels']['inspector']['inert_property'], desktop
+                    assert not desktop['panels']['palette']['inert_attribute'] and not desktop['panels']['inspector']['inert_attribute'], desktop
+                    assert desktop['panels']['palette']['aria_hidden'] is None and desktop['panels']['inspector']['aria_hidden'] is None, desktop
+                    assert desktop['panels']['palette']['reachable_focusable'] > 0 and desktop['panels']['inspector']['reachable_focusable'] > 0, desktop
+                    assert not desktop['scroll']['horizontalOverflow'], desktop
+                    report['drawer_accessibility'] = evidence
+
+                check('mobile drawer accessibility, focus isolation, and desktop semantics', drawer_accessibility)
 
                 def create_nodes():
                     initial = len(_studio_state(page)['model']['nodes'])
