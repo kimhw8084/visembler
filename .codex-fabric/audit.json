@@ -1,0 +1,546 @@
+{
+  "accepted_at": "2026-09-19T15:35:52Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 17,
+      "deletions": 10,
+      "path": "company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 401,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/canonical_chart_renderer.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/chart_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 8,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/chart_studio.html",
+      "status": "M"
+    },
+    {
+      "additions": 41,
+      "deletions": 17,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 9,
+      "deletions": 32,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 174,
+      "deletions": 0,
+      "path": "scripts/release_checks/build_chart_r1_evidence.py",
+      "status": "A"
+    },
+    {
+      "additions": 268,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chart_renderer_matrix.py",
+      "status": "A"
+    },
+    {
+      "additions": 8,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 145,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chart_renderer_r1.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only 2>&1 | tail -10'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 884,
+        "output_sha256": "dfb1b01b5b95ffad6855fd6f4cea48faec23fe78fc6c0bfc8a51d852eceaad42",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -l '\\\"automated_tests\\\": 1108|\\\"automated_tests\\\": 1099' --glob '*.json' . | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_release_closure.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "cf426ab35f3b06fccef8290fde5325d90af130a79da1d1752031518df77c4236",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' scripts/release_checks/source_identity.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /tmp/visembler-chg137-r1/artifact/reports/domain-scale-probes.json && rtk sed -n '1,180p' /tmp/visembler-chg137-r1/artifact/manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-89bf3ce3318b93987c1b315f/certification_output && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_*.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 981,
+        "output_sha256": "8905aafcc9f7614601e774eeb59462ca688035883e303bd43739356f1cfb4468",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root . --output /tmp/visembler-chg137-r1/matrix/candidate --label candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root /tmp/visembler-chg137-base --output /tmp/visembler-chg137-r1/matrix/base --label base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/canonical_chart_renderer.mjs && rtk node --check company_ui/products/visualizer/assets/authoring_chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk python -m py_compile scripts/release_checks/run_chart_renderer_matrix.py scripts/release_checks/build_chart_r1_evidence.py tests/test_visualizer_chart_renderer_r1.py && rtk git diff --stat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"crosshair|zoom|pan|brush|rangeSelector|reset-selection|data-action.*zoom|selection\" company_ui/products/visualizer/assets/chart_studio.mjs | head -120'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '100,180p' company_ui/products/visualizer/assets/chart_studio.mjs && rtk sed -n '120,155p' company_ui/products/visualizer/assets/chart_studio.mjs && rtk tail -60 company_ui/products/visualizer/assets/canonical_chart_renderer.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,110p' company_ui/products/visualizer/assets/chart_studio.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '155,170p' scripts/release_checks/run_chart_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/authoring_chart_studio.mjs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg137-r1/acceptance && rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg137-r1/acceptance --skip-regressions'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root . --output /tmp/visembler-chg137-r1/matrix/candidate --label candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root . --output /tmp/visembler-chg137-r1/matrix/candidate --label candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root /tmp/visembler-chg137-base --output /tmp/visembler-chg137-r1/matrix/base --label base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_chart_renderer_r1.py tests/test_visualizer_chart_studio.py tests/test_visualizer_authoring_p0.py tests/test_visualizer_wave3_metric_chart_authoring.py tests/test_visualizer_wave13_authoring_quality.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_fab_visuals.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 160,
+        "output_sha256": "51e313688c5e7bfd380316362ed54e7261ec924e6081d9f79446a3f8b94c6120",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /tmp/visembler-chg137-r1/artifact/reports/candidate-browser-matrix.json && rtk sed -n '1,180p' /tmp/visembler-chg137-r1/artifact/reports/interaction-accessibility.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root . --output /tmp/visembler-chg137-r1/matrix/candidate --label candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root /tmp/visembler-chg137-base --output /tmp/visembler-chg137-r1/matrix/base --label base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root . --output /tmp/visembler-chg137-r1/matrix/candidate --label candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root /tmp/visembler-chg137-base --output /tmp/visembler-chg137-r1/matrix/base --label base'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_renderer_matrix.py --root /tmp/visembler-chg137-base --output /tmp/visembler-chg137-r1/matrix/base --label base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' tests/test_visualizer_chart_renderer_r1.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_chart_renderer_r1.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "83a1593c5b5783693fe3006d1f6597bcb4f3a5968f23b59481ee09a0477f910a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -m pytest --collect-only 2>&1 | tail -1 && rtk rg -n '\\\"automated_tests\\\"' company_ui/certification/certification_manifest.json | head -1\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 59,
+        "output_sha256": "a4050d0e5a3d8f39e543cd07f90d79e7f537aa584a956e9da0b8289754657a1b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only 2>&1 | tail -3'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 131,
+        "output_sha256": "314d13e628db4b4a3b80c3048877297c2f83c0fdfe4754626def7d352e54f774",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_*.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 981,
+        "output_sha256": "df37aaf2003c4d4e6af2e1e58204964c63f4d405281feb0f21330bc049e98612",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_release_closure.py && rtk company-ui runtime-contract'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 206,
+        "output_sha256": "73cacced6cdf4cb0b42c226eb54f75e534d30983b5e8426a9ba4017fe0552466",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate . 2>&1 | tail -4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-89bf3ce3318b93987c1b315f/certification_output && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/build_chart_r1_evidence.py --output /tmp/visembler-chg137-r1/artifact --acceptance /tmp/visembler-chg137-r1/acceptance/chart-studio-acceptance.json --candidate-matrix /tmp/visembler-chg137-r1/matrix/candidate --base-matrix /tmp/visembler-chg137-r1/matrix/base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sha256sum /tmp/visembler-chg137-r1/CHG-137-R1-evidence.tar.gz /tmp/visembler-chg137-r1/artifact/manifest.json /tmp/visembler-chg137-r1/artifact/reports/renderer-conformance.json /tmp/visembler-chg137-r1/artifact/reports/domain-scale-probes.json && rtk sed -n '1,90p' /tmp/visembler-chg137-r1/artifact/reports/renderer-conformance.json && rtk sed -n '1,80p' /tmp/visembler-chg137-r1/artifact/reports/candidate-browser-matrix.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'working_tree_status|certification_output|artifact_bridge|head_commit|candidate_tree' /tmp/visembler-chg137-r1/artifact/manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git status --short && rtk git diff --numstat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk node --check company_ui/products/visualizer/assets/canonical_chart_renderer.mjs && rtk node --check company_ui/products/visualizer/assets/authoring_chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove --force /tmp/visembler-chg137-base && rtk git worktree list'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git diff --stat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 542,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.35,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 53928832,
+      "fresh_input_tokens": 903732,
+      "input_tokens": 54832564,
+      "non_reasoning_output_tokens": 105790,
+      "output_tokens": 150706,
+      "reasoning_output_tokens": 44916,
+      "total_processed_tokens": 54983270
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "b7a59a1acf50c57ed1954fe1a57215599ae32e86",
+      "subject": "fabric: capture completed model changes [CF-89bf3ce3318b93987c1b315f]"
+    }
+  ],
+  "diff": {
+    "additions": 1075,
+    "changed_files": 12,
+    "commit_count": 1,
+    "deletions": 65
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 3,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "d43eb9b2e1661c245a1d7e0ff066b8c997210634cd5afb8c01f79dd47ab98c40"
+      },
+      {
+        "bytes": 4687,
+        "path": "company_ui/products/visualizer/assets/chart_studio.html",
+        "sha256": "bee4496b722dbbb24b8e7123b3d59fcd32897d4308c8801644e868d333a7d39c"
+      },
+      {
+        "bytes": 14963,
+        "path": "scripts/release_checks/build_chart_r1_evidence.py",
+        "sha256": "f91d3074574b1f62356e303ef4d1d6c9f66cfbea9e3f55938145f954a3d9a7b1"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-89bf3ce3318b93987c1b315f]",
+    "commit_sha": "b7a59a1acf50c57ed1954fe1a57215599ae32e86",
+    "paths_before": 12,
+    "status_before": [
+      " M company_ui/certification/certification_manifest.json",
+      " M company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      " M company_ui/products/visualizer/assets/chart_studio.css",
+      " M company_ui/products/visualizer/assets/chart_studio.html",
+      " M company_ui/products/visualizer/assets/chart_studio.mjs",
+      " M company_ui/products/visualizer/assets/integrated_editor.mjs",
+      " M company_ui/products/visualizer/page.py",
+      " M scripts/release_checks/run_chart_studio_acceptance.py",
+      "?? company_ui/products/visualizer/assets/canonical_chart_renderer.mjs",
+      "?? scripts/release_checks/build_chart_r1_evidence.py",
+      "?? scripts/release_checks/run_chart_renderer_matrix.py",
+      "?? tests/test_visualizer_chart_renderer_r1.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-19T17:10:46Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "branch": "fix/visembler-chg137-chart-system-r1",
+    "detached_verify": false,
+    "head_sha": "b7a59a1acf50c57ed1954fe1a57215599ae32e86",
+    "remote_exact_head": true,
+    "remote_head_sha": "b7a59a1acf50c57ed1954fe1a57215599ae32e86",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "work_branch": "fix/visembler-chg137-chart-system-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-89bf3ce3318b93987c1b315f",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-137-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-137-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-137-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-19T15:35:52Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 5694,
+    "queue_seconds": 0,
+    "total_seconds": 5694
+  },
+  "transport": {
+    "bytes": 14319,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 14023,
+    "prompt_sha256": "62a93a27ee3f41e221f9abb9aa7feeee34f367b65a489fedcd7b5d01fdbbf607",
+    "sha256": "89bf3ce3318b93987c1b315f6df519b6f2868975f911abf2900995f2bab3e30c"
+  }
+}
