@@ -1,0 +1,324 @@
+{
+  "accepted_at": "2026-09-19T02:04:44Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'git status --short --branch && git rev-parse HEAD && git rev-parse HEAD''^{tree} && git show -s --format='\"'%H%n%T%n%s' HEAD && printf '\\\\n-- top-level --\\\\n' && rg --files -g 'AGENTS.md' -g 'construction_manifest.json' -g 'APP_PATTERNS.md' -g 'COMPONENT_CATALOG.md' -g 'DESIGN_CONSTITUTION_V1_6.md' -g '*atlas*' -g '*capture*' -g '*probe*' -g '*visual*' -g '*gold*' -g '*certif*' | sed -n '1,240p' && printf '\\\\n-- referenced instructions --\\\\n' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && printf '\\\\n-- law --\\\\n' && sed -n '1,280p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' company_ui/ai/construction_manifest.json\nrtk sed -n '1,260p' docs/APP_PATTERNS.md\nrtk sed -n '1,320p' docs/COMPONENT_CATALOG.md\nrtk sed -n '1,320p' docs/DESIGN_CONSTITUTION_V1_6.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i \\\"golden visual atlas|visual atlas|CHG-122|reportbar|diagram studio|drawer|holdout|artifact-bundle|reader-index|surface-manifest|capture-report|ui-probes|publication receipt|publish.*refs/heads/project-os-artifacts\\\" . --glob '\"'!*.png'\"' --glob '\"'!*.pdf'\"' --glob '\"'!*.zip'\"' --glob '\"'!*.lock'\"' | sed -n '1,320p'\nprintf '\\\\n-- scripts and tooling candidates --\\\\n'\nrtk rg --files scripts tools .github 2>/dev/null | sort | sed -n '1,320p'\nprintf '\\\\n-- package/config candidates --\\\\n'\nrtk rg --files -g 'pyproject.toml' -g 'package.json' -g 'Makefile' -g 'requirements*.txt' -g 'README*' -g '*.sh' -g '*.mjs' -g '*.py' | sort | sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- focused atlas/capture/package/publication names --'\nrtk rg --files -g '\"'!*.png'\"' -g '\"'!*.pdf'\"' -g '\"'!*.zip'\"' | rg -i 'atlas|capture|golden|reader|manifest|artifact|publish|verify|report|receipt|visual' | sed -n '1,360p'\nprintf '%s\\\\n' '-- visualizer app entrypoints and fixtures --'\nrtk rg --files company_ui/products/visualizer scripts/release_checks | sort | sed -n '1,420p'\nprintf '%s\\\\n' '-- exact commit history --'\nrtk git log --oneline --decorate --all -30\nprintf '%s\\\\n' '-- branches/remotes --'\nrtk git branch -avv\nrtk git remote -v\nprintf '%s\\\\n' '-- launch/readme/config mentions --'\nrtk rg -n \\\"launch_visembler|run_visembler|visualizer|Visembler|route|fixture|seed|native\\\" README.md app.py scripts/launch_visembler.py run_visembler.sh company_ui/products/visualizer --glob '*.py' --glob '*.json' --glob '*.sh' | sed -n '1,420p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- remote/branch --'\nrtk git remote -v\nrtk git branch -avv\nprintf '%s\\\\n' '-- README --'\nrtk sed -n '1,320p' README.md\nprintf '%s\\\\n' '-- Visembler operations --'\nrtk sed -n '1,360p' company_ui/products/visualizer/OPERATIONS.md\nprintf '%s\\\\n' '-- app/launch entry --'\nrtk sed -n '1,260p' app.py\nrtk sed -n '1,260p' scripts/launch_visembler.py\nrtk sed -n '1,240p' run_visembler.sh\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"for ref in project-os-artifacts/visembler/CHG-122-r1 codex-fabric/evidence/visembler/CHG-122-r1 codex-fabric/evidence/visembler/CHG-122-r2 codex-fabric/evidence/visembler/CHG-122-r3; do\n  printf '\\\\n-- %s --\\\\n' \\\"\"'$ref\"\n  rtk git show -s --format='\"'%H%n%T%n%P%n%s' \\\"\"'$ref\"\n  rtk git ls-tree -r --name-only \"$ref\" | sed -n '\"'1,220p'\ndone\nprintf '\\\\n-- R1/R2/R3 names from all refs --\\\\n'\nrtk git for-each-ref --format='%(refname) %(objectname) %(subject)' 'refs/*/visembler/CHG-122*' | sed -n '1,120p'\nprintf '\\\\n-- R1 artifact file metadata --\\\\n'\nrtk git ls-tree -r -l project-os-artifacts/visembler/CHG-122-r1 | sed -n '1,160p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- remote ref spelling --'\nrtk git for-each-ref --format='%(refname) %(objectname) %(subject)' | rg 'CHG-122|evidence/visembler' | sed -n '1,120p'\nprintf '%s\\\\n' '-- R1 manifest --'\nrtk git show project-os-artifacts/visembler/CHG-122-r1:visual-atlas/surface-manifest.json\nprintf '%s\\\\n' '-- R1 capture report top --'\nrtk git show project-os-artifacts/visembler/CHG-122-r1:visual-atlas/capture-report.json | sed -n '1,260p'\nprintf '%s\\\\n' '-- R1 reader index --'\nrtk git show project-os-artifacts/visembler/CHG-122-r1:visual-atlas/reader-index.json\nprintf '%s\\\\n' '-- R1 publish receipt --'\nrtk git show project-os-artifacts/visembler/CHG-122-r1:git-publish-receipt.json\nprintf '%s\\\\n' '-- R1 bundle members --'\nrtk git show project-os-artifacts/visembler/CHG-122-r1:visual-atlas/artifact-bundle.zip > /tmp/visembler-r1-bundle.zip\nrtk unzip -l /tmp/visembler-r1-bundle.zip | sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"for ref in refs/remotes/origin/codex-fabric/evidence/visembler/CHG-122-r1 refs/remotes/origin/codex-fabric/evidence/visembler/CHG-122-r2 refs/remotes/origin/codex-fabric/evidence/visembler/CHG-122-r3 refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3; do\n  printf '\\\\n-- %s --\\\\n' \\\"\"'$ref\"\n  rtk git show -s --format='\"'%H%n%T%n%P%n%s' \\\"\"'$ref\"\n  rtk git ls-tree -r --name-only \"$ref\" | sed -n '\"'1,180p'\ndone\nprintf '\\\\n-- R3 surface manifest --\\\\n'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/surface-manifest.json | sed -n '1,260p'\nprintf '\\\\n-- R3 capture report schema/defects/probes references --\\\\n'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/capture-report.json | sed -n '1,340p'\nprintf '\\\\n-- R3 reader and receipt --\\\\n'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/reader-index.json | sed -n '1,260p'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:git-publish-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- route registration --'\nrtk rg -n \\\"@ui\\\\.page|ui\\\\.page|visualizer/reports|diagram-studio|chart-studio|report_hub|diagram_studio|chart_studio\\\" company_ui/products/visualizer app.py | sed -n '1,360p'\nprintf '%s\\\\n' '-- data/repository/fixture hooks --'\nrtk rg -n \\\"seed|fixture|template|create_report|create\\\\(|report_id|data_dir|NativeHost|host\\\\.create|atlas|representative|populated|sample\\\" company_ui/products/visualizer scripts/release_checks/element_fixtures.json scripts/release_checks/editor_host.py scripts/release_checks/native_common.py scripts/verify_release.py | sed -n '1,520p'\nprintf '%s\\\\n' '-- verify release CLI --'\nrtk sed -n '1,360p' scripts/verify_release.py\nprintf '%s\\\\n' '-- editor host --'\nrtk sed -n '1,420p' scripts/release_checks/editor_host.py\nprintf '%s\\\\n' '-- native common --'\nrtk sed -n '1,360p' scripts/release_checks/native_common.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- current source routes and entry --'\nrtk sed -n '1,230p' company_ui/products/visualizer/cli.py\nrtk sed -n '1,230p' company_ui/products/visualizer/page.py\nrtk sed -n '500,720p' company_ui/products/visualizer/page.py\nrtk sed -n '900,1080p' company_ui/products/visualizer/page.py\nprintf '%s\\\\n' '-- current source route decorators and route tests --'\nrtk rg -n \\\"@ui\\\\.page|redirect|navigate\\\\.to|/visualizer\\\" company_ui/products/visualizer/page.py company_ui/products/visualizer/cli.py tests | sed -n '1,320p'\nprintf '%s\\\\n' '-- R3 compact metadata --'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/surface-manifest.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({\\\"source_sha\\\":d.get(\\\"source_sha\\\"),\\\"tree_sha\\\":d.get(\\\"tree_sha\\\"),\\\"surface_set_sha256\\\":d.get(\\\"discovery\\\",{}).get(\\\"surface_set_sha256\\\"),\\\"surfaces\\\":[{k:s.get(k) for k in (\\\"surface_key\\\",\\\"canonical_route\\\",\\\"state\\\",\\\"subview\\\",\\\"supported\\\",\\\"responsive_profiles\\\",\\\"holdout_profiles\\\")} for s in d.get(\\\"surfaces\\\",[])]},indent=2))'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/ui-probes.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({k:d.get(k) for k in (\\\"schema_version\\\",\\\"project\\\",\\\"request\\\",\\\"source_sha\\\",\\\"tree_sha\\\",\\\"probe_count\\\",\\\"summary\\\",\\\"profiles\\\")},indent=2,ensure_ascii=False)); print(\\\"top_keys\\\", list(d)[:30])'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/capture-report.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({k:d.get(k) for k in (\\\"schema_version\\\",\\\"project\\\",\\\"request\\\",\\\"source_sha\\\",\\\"tree_sha\\\",\\\"surface_count\\\",\\\"canonical_screenshot_count\\\",\\\"fixture\\\",\\\"diagnostic_states\\\",\\\"supplemental\\\",\\\"capture_contract\\\")},indent=2,ensure_ascii=False)); print(\\\"top_keys\\\", list(d)[:40])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- prior fixture provenance in refs/history --'\nrtk git log --all --oneline -S'atlas-editor-r3' -- . ':(exclude)visual-atlas/*' | sed -n '1,100p'\nrtk rg -n 'atlas-editor-r3|Fab Yield & SPC Review|d-wafer-r3|dataset-2314|R3 representative|atlas-context-r3' . --glob '\"'!*.png'\"' --glob '\"'!*.pdf'\"' --glob '\"'!*.zip'\"' | sed -n '1,260p'\nprintf '%s\\\\n' '-- templates --'\nrtk sed -n '1,520p' company_ui/products/visualizer/templates.py\nprintf '%s\\\\n' '-- dataset store --'\nrtk sed -n '1,520p' company_ui/products/visualizer/dataset_resources.py\nprintf '%s\\\\n' '-- domain/repository --'\nrtk sed -n '1,360p' company_ui/products/visualizer/domain.py\nrtk sed -n '1,440p' company_ui/products/visualizer/repository.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- Diagram Studio acceptance --'\nrtk sed -n '1,390p' scripts/release_checks/run_diagram_studio_acceptance.py\nprintf '%s\\\\n' '-- reportbar geometry --'\nrtk sed -n '1,300p' scripts/release_checks/run_reportbar_responsive_geometry.py\nprintf '%s\\\\n' '-- reportbar / diagram tests --'\nrtk rg -n \\\"reportbar|Reports.*Duplicate|Reports.*Manage|toggle-palette|toggle-inspector|backdrop|aria-hidden|reachable|focus\\\" tests scripts/release_checks company_ui/products/visualizer/assets/diagram_studio.mjs company_ui/products/visualizer/assets/authoring_diagram_studio.mjs | sed -n '1,520p'\nprintf '%s\\\\n' '-- R3 ui-probe selector/probe keys --'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/ui-probes.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({\\\"contract\\\":d.get(\\\"contract\\\"),\\\"selector_semantics\\\":d.get(\\\"selector_semantics\\\"),\\\"defect_proof\\\":d.get(\\\"defect_proof\\\")},indent=2,ensure_ascii=False)[:30000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' scripts/release_checks/run_reportbar_responsive_geometry.py\nrtk sed -n '260,560p' scripts/release_checks/run_reportbar_responsive_geometry.py\nprintf '%s\\\\n' '-- full diagram script tail --'\nrtk sed -n '300,620p' scripts/release_checks/run_diagram_studio_acceptance.py\nprintf '%s\\\\n' '-- R3 probe evidence keys and summary only --'\nrtk git show refs/remotes/origin/project-os-artifacts/visembler/CHG-122-r3:visual-atlas/ui-probes.json | python3 -c 'import json,sys; d=json.load(sys.stdin); print(\\\"top\\\",list(d)); print(\\\"captures\\\",len(d.get(\\\"captures\\\",[]))); print(\\\"capture keys\\\",list(d.get(\\\"captures\\\",[{}])[0])); print(\\\"capture route/profile\\\",[(x.get(\\\"surface_key\\\"),x.get(\\\"viewport\\\"),list(x.keys())) for x in d.get(\\\"captures\\\",[])])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '-- dataset binding/hydration contracts --'\nrtk rg -n \\\"dataset_id|source_dataset_id|DatasetResourceStore|dataset_store|resource_id|report_dataset|datasets\\\" company_ui/products/visualizer/page.py company_ui/products/visualizer/assets/authoring_data.mjs company_ui/products/visualizer/assets/integrated_editor.mjs company_ui/products/visualizer/assets/authoring_chart_studio.mjs | sed -n '1,560p'\nprintf '%s\\\\n' '-- canonical model normalizers --'\nrtk rg -n \\\"def canonical_model|dataset|observations|rows|data\\\" company_ui/products/visualizer/domain.py company_ui/products/visualizer/page.py | sed -n '1,360p'\nprintf '%s\\\\n' '-- relevant page bootstrap sections --'\nrtk sed -n '720,930p' company_ui/products/visualizer/page.py\nrtk sed -n '1080,1240p' company_ui/products/visualizer/page.py\nrtk sed -n '1620,1880p' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '400,470p' company_ui/products/visualizer/page.py\nrtk sed -n '530,735p' company_ui/products/visualizer/page.py\nrtk sed -n '1030,1285p' company_ui/products/visualizer/page.py\nrtk sed -n '220,420p' company_ui/products/visualizer/dataset_resources.py\nrtk sed -n '420,760p' company_ui/products/visualizer/dataset_resources.py\nrtk rg -n \\\"def canonical_model\\\" company_ui/products/visualizer/domain.py\nrtk sed -n '90,260p' company_ui/products/visualizer/domain.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,115p' company_ui/products/visualizer/domain.py\nrtk sed -n '200,360p' company_ui/products/visualizer/dataset_resources.py\nrtk rg -n \\\"def _model|external|row_count|dataset\\\" company_ui/products/visualizer/assets/authoring_data.mjs | sed -n '1,260p'\nrtk sed -n '1,240p' company_ui/products/visualizer/assets/authoring_data.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nimport importlib.metadata, shutil\nfor name in ('nicegui','playwright','Pillow','reportlab'):\n    try: print(name, importlib.metadata.version(name))\n    except Exception as exc: print(name, 'MISSING', type(exc).__name__)\nprint('python', shutil.which('python3'))\nprint('chromium', shutil.which('chromium'))\nprint('chromium-browser', shutil.which('chromium-browser'))\nprint('google-chrome', shutil.which('google-chrome'))\nPY\nprintf '%s\\\\n' '-- remote target preflight --'\nrtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-122-r4\nprintf '%s\\\\n' '-- source identity helpers --'\nrtk sed -n '1,320p' scripts/release_checks/source_identity.py\nrtk sed -n '1,280p' scripts/release_checks/run_company_source_stability.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"async def visualizer|@ui.page|@app.get\\\" company_ui/products/visualizer/page.py\nrtk sed -n '520,540p' company_ui/products/visualizer/page.py\nrtk sed -n '660,675p' company_ui/products/visualizer/page.py\nrtk sed -n '1018,1040p' company_ui/products/visualizer/page.py\nrtk sed -n '760,1020p' company_ui/products/visualizer/page.py | rg -n \\\"data-testid|history|async def|hub\\\" | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk test -f /tmp/visembler_atlas_r4_probe.py && rtk sed -n '1,10p' /tmp/visembler_atlas_r4_probe.py\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -l /tmp/visembler_atlas_r4_probe.py && rtk sed -n '1,10p' /tmp/visembler_atlas_r4_probe.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 -m py_compile /tmp/visembler_atlas_r4.py && rtk sed -n '1,80p' /tmp/visembler_atlas_r4.py\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk nl -ba /tmp/visembler_atlas_r4.py | sed -n '430,465p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 -m py_compile /tmp/visembler_atlas_r4.py && rtk sed -n '445,505p' /tmp/visembler_atlas_r4.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python3 /tmp/visembler_atlas_r4.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk echo waiting'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk pgrep -af 'visembler_atlas_r4|company_ui.products.visualizer.cli' | sed -n '1,60p'\nrtk find /tmp -maxdepth 1 -type d -name 'visembler-atlas-r4-debug-*' -print | tail -5\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ps -p 22285,23571,23576 -o pid,ppid,etime,command'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nimport importlib.util, tempfile, traceback\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('atlas','/tmp/visembler_atlas_r4.py')\nmod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)\ntd=Path(tempfile.mkdtemp(prefix='visembler-atlas-r4-debug-')); data=td/'data'\nprint('debug_dir',td)\nmod.seed_fixture(data)\nhost=mod.NativeHost(mod.ROOT,data)\ntry:\n    host.__enter__()\n    print('started',host.url)\nexcept Exception as exc:\n    print('error',type(exc).__name__,str(exc))\n    print('log_exists',host.log_path.exists(),host.log_path)\n    if host.log_path.exists(): print(host.log_path.read_text(errors='replace')[-20000:])\n    traceback.print_exc()\nfinally:\n    host.stop()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk kill 22285\nrtk ps -p 22285 -o pid,etime,command 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk pgrep -af 'company_ui.products.visualizer.cli' | sed -n '1,80p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 -u - <<'PY'\nimport importlib.util, tempfile, traceback\nfrom pathlib import Path\nspec=importlib.util.spec_from_file_location('atlas','/tmp/visembler_atlas_r4.py')\nmod=importlib.util.module_from_spec(spec); spec.loader.exec_module(mod)\ntd=Path(tempfile.mkdtemp(prefix='visembler-atlas-r4-debug-')); data=td/'data'\nprint('debug_dir',td,flush=True)\nmod.seed_fixture(data)\nhost=mod.NativeHost(mod.ROOT,data)\ntry:\n    host.__enter__()\n    print('started',host.url,flush=True)\nexcept Exception as exc:\n    print('error',type(exc).__name__,str(exc),flush=True)\n    print('log_exists',host.log_path.exists(),host.log_path,flush=True)\n    if host.log_path.exists(): print(host.log_path.read_text(errors='replace')[-30000:],flush=True)\n    traceback.print_exc()\nfinally:\n    host.stop()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '145,225p' company_ui/products/visualizer/dataset_resources.py\nrtk rg -n \\\"summary\\\\[.resource_id.|\\\\['resource_id'\\\\]|resource_id.*dataset_id|dataset_id.*resource_id\\\" company_ui/products/visualizer tests | sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 -m py_compile /tmp/visembler_atlas_r4.py\nrtk pgrep -af 'company_ui.products.visualizer.cli' | sed -n '1,40p'\nrtk python3 /tmp/visembler_atlas_r4.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /private/tmp/visembler-atlas-r4/visual-atlas -maxdepth 3 -type f | sort\nrtk python3 - <<'PY'\nimport hashlib,json,zipfile\nfrom pathlib import Path\nfrom PIL import Image\nroot=Path('/private/tmp/visembler-atlas-r4/visual-atlas')\nfor name in ('surface-manifest.json','capture-report.json','reader-index.json','ui-probes.json'):\n d=json.loads((root/name).read_text()); print(name, 'sha256=',hashlib.sha256((root/name).read_bytes()).hexdigest(), 'top=',list(d)[:12])\nmanifest=json.loads((root/'surface-manifest.json').read_text())\nreport=json.loads((root/'capture-report.json').read_text())\nprobes=json.loads((root/'ui-probes.json').read_text())\nreader=json.loads((root/'reader-index.json').read_text())\nprint('manifest identity',manifest['source_sha'],manifest['tree_sha'],'surfaces', [s['surface_key'] for s in manifest['surfaces']])\nprint('captures',len(report['captures']), 'statuses', {x['status'] for x in report['captures']}, 'overflow',report['summary']['document_horizontal_overflow_count'])\nprint('reportbar',probes['reportbar']['status'],probes['summary']['mobile_reportbar_reports_duplicate_overlap_ratio'],probes['summary']['mobile_reportbar_reports_manage_overlap_ratio'],probes['summary']['mobile_reportbar_horizontal_overflow'])\nprint('diagram',probes['diagram_studio']['status'],probes['summary']['mobile_diagram_closed_reachable_focusable_counts'],probes['summary']['mobile_diagram_closed_aria_hidden'])\nfor path in sorted((root/'screenshots').glob('*.png')):\n im=Image.open(path); print(path.name, im.size, im.mode, hashlib.sha256(path.read_bytes()).hexdigest(), path.stat().st_size)\nfor name in ('review-desktop.pdf','review-mobile.pdf','artifact-bundle.zip'):\n p=root/name; print(name,p.stat().st_size,hashlib.sha256(p.read_bytes()).hexdigest())\nwith zipfile.ZipFile(root/'artifact-bundle.zip') as z: print('bundle_members',len(z.namelist()),z.namelist())\nprint('reader inventory',len(reader['artifact_inventory']),[x['path'] for x in reader['artifact_inventory']])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nimport json\nfrom pathlib import Path\np=json.loads(Path('/private/tmp/visembler-atlas-r4/visual-atlas/ui-probes.json').read_text())\nprint(json.dumps({\n 'reportbar_required':p['reportbar']['required_mobile_390'],\n 'diagram_contract':p['diagram_studio']['contract'],\n 'backdrop':{k:{'closed_active':v['closed']['activeElement'],'focus_during_press':v['focus_during_press']['activeElement']} for k,v in ((name,p['diagram_studio']['evidence'][name]) for name in ('palette_backdrop_180ms','inspector_backdrop_180ms'))},\n 'close_escape':{k:p['diagram_studio']['evidence'][k]['activeElement'] for k in ('palette_close_button','palette_escape','inspector_close_button')},\n 'desktop':p['diagram_studio']['evidence']['desktop_panes']['panels'],\n},indent=2))\nPY\nprintf '%s\\\\n' '-- source remains clean and identity stable --'\nrtk git status --short --branch\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD\"'^{tree}\nrtk git rev-parse main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -ld /private/tmp/visembler-atlas-r4-publish 2>/dev/null || true\nrtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-122-r4\nrtk git status --short\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD''^{tree}\nrtk git rev-parse main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nimport hashlib,json,shutil\nfrom datetime import datetime,timezone\nfrom pathlib import Path\nsrc=Path('/private/tmp/visembler-atlas-r4/visual-atlas').resolve()\npub=Path('/private/tmp/visembler-atlas-r4-publish').resolve()\nif pub.exists():\n    raise SystemExit(f'publication directory unexpectedly exists: {pub}')\n(pub/'visual-atlas').parent.mkdir(parents=True)\nshutil.copytree(src,pub/'visual-atlas')\ndef h(path): return hashlib.sha256(path.read_bytes()).hexdigest()\nreceipt={\n 'schema_version':2,\n 'project':'visembler',\n 'request':'CHG-122-r4',\n 'operation':'VERIFY',\n 'artifact_ref':'refs/heads/project-os-artifacts/visembler/CHG-122-r4',\n 'source_sha':'97a46d60b3a83bf39012998f3d1ed837b2068653',\n 'tree_sha':'ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1',\n 'manifest_sha256':h(pub/'visual-atlas/surface-manifest.json'),\n 'capture_report_sha256':h(pub/'visual-atlas/capture-report.json'),\n 'reader_index_sha256':h(pub/'visual-atlas/reader-index.json'),\n 'ui_probes_sha256':h(pub/'visual-atlas/ui-probes.json'),\n 'review_desktop_sha256':h(pub/'visual-atlas/review-desktop.pdf'),\n 'review_mobile_sha256':h(pub/'visual-atlas/review-mobile.pdf'),\n 'bundle_sha256':h(pub/'visual-atlas/artifact-bundle.zip'),\n 'png_inventory':{p.relative_to(pub).as_posix():{'bytes':p.stat().st_size,'sha256':h(p)} for p in sorted((pub/'visual-atlas/screenshots').glob('*.png'))},\n 'carrier_inventory':'visual-atlas/surface-manifest.json, visual-atlas/capture-report.json, visual-atlas/reader-index.json, visual-atlas/review-desktop.pdf, visual-atlas/review-mobile.pdf, visual-atlas/ui-probes.json, visual-atlas/screenshots/*.png, visual-atlas/artifact-bundle.zip, git-publish-receipt.json',\n 'publisher_contract':{'immutable_no_overwrite':True,'conflict_code':'GIT_ARTIFACT_CONFLICT','publish_exactly_once':True},\n 'published_as':'dedicated non-Product recovery ref; not Product main or Product history',\n 'prepared_at_utc':datetime.now(timezone.utc).isoformat().replace('+00:00','Z'),\n}\n(pub/'git-publish-receipt.json').write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\\\\n',encoding='utf-8')\nprint(json.dumps({'publication_root':str(pub),'manifest_sha256':receipt['manifest_sha256'],'capture_report_sha256':receipt['capture_report_sha256'],'reader_index_sha256':receipt['reader_index_sha256'],'ui_probes_sha256':receipt['ui_probes_sha256'],'review_desktop_sha256':receipt['review_desktop_sha256'],'review_mobile_sha256':receipt['review_mobile_sha256'],'bundle_sha256':receipt['bundle_sha256'],'png_count':len(receipt['png_inventory'])},indent=2))\nPY\nrtk git init /private/tmp/visembler-atlas-r4-publish\nrtk git -C /private/tmp/visembler-atlas-r4-publish config user.name 'Codex Artifact Publisher'\nrtk git -C /private/tmp/visembler-atlas-r4-publish config user.email 'codex-artifacts@openai.invalid'\nrtk git -C /private/tmp/visembler-atlas-r4-publish add visual-atlas git-publish-receipt.json\nrtk git -C /private/tmp/visembler-atlas-r4-publish commit -m 'Project OS Golden Visual Atlas v2 VERIFY: visembler CHG-122-r4'\nrtk git -C /private/tmp/visembler-atlas-r4-publish show --stat --oneline --decorate HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /private/tmp/visembler-atlas-r4-publish remote add origin https://github.com/kimhw8084/visembler.git\nrtk git -C /private/tmp/visembler-atlas-r4-publish status --short\nrtk git -C /private/tmp/visembler-atlas-r4-publish push origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-122-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /private/tmp/visembler-atlas-r4-publish ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-122-r4\nrtk git -C /private/tmp/visembler-atlas-r4-publish fetch --no-tags origin refs/heads/project-os-artifacts/visembler/CHG-122-r4:refs/tmp/visembler-chg122-r4-readback\nrtk git -C /private/tmp/visembler-atlas-r4-publish rev-parse refs/tmp/visembler-chg122-r4-readback\nrtk git -C /private/tmp/visembler-atlas-r4-publish rev-parse refs/tmp/visembler-chg122-r4-readback''^{tree}\nrtk git -C /private/tmp/visembler-atlas-r4-publish ls-tree -r --name-only refs/tmp/visembler-chg122-r4-readback | sed -n '\"'1,80p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nimport hashlib,json,subprocess,zipfile\nfrom pathlib import Path\npub=Path('/private/tmp/visembler-atlas-r4-publish')\nref='refs/tmp/visembler-chg122-r4-readback'\nremote_commit=subprocess.check_output(['git','-C',str(pub),'rev-parse',ref],text=True).strip()\nremote_tree=subprocess.check_output(['git','-C',str(pub),'rev-parse',f'{ref}\"'^{{tree}}'\"'],text=True).strip()\nlocal_commit=subprocess.check_output(['git','-C',str(pub),'rev-parse','HEAD'],text=True).strip()\nlocal_tree=subprocess.check_output(['git','-C',str(pub),'rev-parse','HEAD\"'^{tree}'\"'],text=True).strip()\ndef blob(path): return subprocess.check_output(['git','-C',str(pub),'show',f'{ref}:{path}'])\ndef h_bytes(value): return hashlib.sha256(value).hexdigest()\ndef h_file(path): return hashlib.sha256(path.read_bytes()).hexdigest()\nreceipt=json.loads(blob('git-publish-receipt.json'))\nmanifest=json.loads(blob('visual-atlas/surface-manifest.json'))\nreport=json.loads(blob('visual-atlas/capture-report.json'))\nreader=json.loads(blob('visual-atlas/reader-index.json'))\nprobes=json.loads(blob('visual-atlas/ui-probes.json'))\nexpected_files=[\n 'git-publish-receipt.json','visual-atlas/artifact-bundle.zip','visual-atlas/capture-report.json','visual-atlas/reader-index.json','visual-atlas/review-desktop.pdf','visual-atlas/review-mobile.pdf',\n 'visual-atlas/screenshots/visembler-chart-studio--desktop-1440x900.png','visual-atlas/screenshots/visembler-chart-studio--mobile-390x844.png','visual-atlas/screenshots/visembler-diagram-studio--desktop-1440x900.png','visual-atlas/screenshots/visembler-diagram-studio--mobile-390x844.png','visual-atlas/screenshots/visembler-editor--desktop-1440x900.png','visual-atlas/screenshots/visembler-editor--mobile-390x844.png','visual-atlas/screenshots/visembler-report-hub--desktop-1440x900.png','visual-atlas/screenshots/visembler-report-hub--mobile-390x844.png','visual-atlas/surface-manifest.json','visual-atlas/ui-probes.json']\nactual=subprocess.check_output(['git','-C',str(pub),'ls-tree','-r','--name-only',ref],text=True).splitlines()\nassert actual==expected_files,(actual,expected_files)\nassert remote_commit==local_commit and remote_tree==local_tree\nassert manifest['source_sha']=='97a46d60b3a83bf39012998f3d1ed837b2068653' and manifest['tree_sha']=='ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1'\nassert report['source_sha']==manifest['source_sha'] and report['tree_sha']==manifest['tree_sha']\nassert probes['source_sha']==manifest['source_sha'] and probes['tree_sha']==manifest['tree_sha']\nassert receipt['artifact_ref']=='refs/heads/project-os-artifacts/visembler/CHG-122-r4'\nassert receipt['publisher_contract']['immutable_no_overwrite'] is True and receipt['publisher_contract']['publish_exactly_once'] is True\nhash_checks={}\nfor field,path in [('manifest_sha256','visual-atlas/surface-manifest.json'),('capture_report_sha256','visual-atlas/capture-report.json'),('reader_index_sha256','visual-atlas/reader-index.json'),('ui_probes_sha256','visual-atlas/ui-probes.json'),('review_desktop_sha256','visual-atlas/review-desktop.pdf'),('review_mobile_sha256','visual-atlas/review-mobile.pdf'),('bundle_sha256','visual-atlas/artifact-bundle.zip')]:\n    value=h_bytes(blob(path)); hash_checks[path]=value; assert value==receipt[field],(field,value,receipt[field])\nfor path,detail in receipt['png_inventory'].items():\n    value=h_bytes(blob(path)); assert value==detail['sha256'],(path,value,detail['sha256']); assert len(blob(path))==detail['bytes']\n    if path.endswith('visembler-editor--desktop-1440x900.png'):\n        recovered=Path('/private/tmp/visembler-atlas-r4-remote-recovered-editor--desktop-1440x900.png')\n        recovered.write_bytes(blob(path)); assert h_file(recovered)==detail['sha256']\nassert reader['manifest_sha256']==receipt['manifest_sha256'] and reader['capture_report_sha256']==receipt['capture_report_sha256'] and reader['ui_probes_sha256']==receipt['ui_probes_sha256']\nwith zipfile.ZipFile(__import__('io').BytesIO(blob('visual-atlas/artifact-bundle.zip'))) as z:\n    members=sorted(z.namelist()); assert 'visual-atlas/surface-manifest.json' in members and 'visual-atlas/ui-probes.json' in members\n    assert h_bytes(z.read('visual-atlas/screenshots/visembler-editor--desktop-1440x900.png'))==receipt['png_inventory']['visual-atlas/screenshots/visembler-editor--desktop-1440x900.png']['sha256']\nprint(json.dumps({'remote_commit':remote_commit,'remote_tree':remote_tree,'exact_carrier_file_count':len(actual),'manifest_identity':{'source_sha':manifest['source_sha'],'tree_sha':manifest['tree_sha'],'surface_count':len(manifest['surfaces'])},'package_hashes':hash_checks,'binary_png_recovery':{'path':'/private/tmp/visembler-atlas-r4-remote-recovered-editor--desktop-1440x900.png','sha256':h_file(recovered),'bytes':recovered.stat().st_size},'bundle_member_count':len(members),'probe_status':{'reportbar':probes['reportbar']['status'],'diagram_studio':probes['diagram_studio']['status']},'immutable_contract':receipt['publisher_contract']},indent=2))\nPY\nrtk git -C /private/tmp/visembler-atlas-r4-publish update-ref -d refs/tmp/visembler-chg122-r4-readback\nrtk git -C /private/tmp/visembler-atlas-r4-publish status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /private/tmp/visembler-atlas-r4-publish fetch --no-tags origin refs/heads/project-os-artifacts/visembler/CHG-122-r4:refs/tmp/visembler-chg122-r4-final\nrtk python3 - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\npub=Path('/private/tmp/visembler-atlas-r4-publish'); ref='refs/tmp/visembler-chg122-r4-final'\ndef blob(path): return subprocess.check_output(['git','-C',str(pub),'show',f'{ref}:{path}'])\ndef digest(b): return hashlib.sha256(b).hexdigest()\nmanifest=json.loads(blob('visual-atlas/surface-manifest.json'))\nreader=json.loads(blob('visual-atlas/reader-index.json'))\nreceipt=json.loads(blob('git-publish-receipt.json'))\nfor item in reader['artifact_inventory']:\n    content=blob(item['path']); assert len(content)==item['bytes'],item['path']; assert digest(content)==item['sha256'],item['path']\nfor surface in manifest['surfaces']:\n    for profile in ('desktop','mobile'):\n        path=surface[profile]['artifact_path']; assert digest(blob(path))==surface[profile]['png_sha256'],path\nassert receipt['manifest_sha256']==digest(blob('visual-atlas/surface-manifest.json'))\nassert receipt['reader_index_sha256']==digest(blob('visual-atlas/reader-index.json'))\nprint(json.dumps({'reader_inventory_entries_verified':len(reader['artifact_inventory']),'surface_png_references_verified':len(manifest['surfaces'])*2,'source_sha':manifest['source_sha'],'tree_sha':manifest['tree_sha'],'remote_ref':'refs/heads/project-os-artifacts/visembler/CHG-122-r4'},indent=2))\nPY\nrtk git -C /private/tmp/visembler-atlas-r4-publish update-ref -d refs/tmp/visembler-chg122-r4-final\nprintf '%s\\\\n' '-- final source identity/cleanliness --'\nrtk git status --short --branch\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD\"'^{tree}\nrtk git rev-parse main\nrtk pgrep -af '\"'company_ui.products.visualizer.cli' | sed -n '1,40p' || true\nprintf '%s\\\\n' '-- remote publication ref --'\nrtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-122-r4\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ps -p 39585,39638 -o pid,ppid,etime,command 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 110,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.33,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 9372160,
+      "fresh_input_tokens": 257382,
+      "input_tokens": 9629542,
+      "non_reasoning_output_tokens": 31889,
+      "output_tokens": 52386,
+      "reasoning_output_tokens": 20497,
+      "total_processed_tokens": 9681928
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-19T02:24:35Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "branch": "verify/visembler-chg122-visual-atlas-r4",
+    "detached_verify": false,
+    "head_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "remote_exact_head": true,
+    "remote_head_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "work_branch": "verify/visembler-chg122-visual-atlas-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-bc878767c20b03d2c26ee680",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-122-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-122-r4"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-122-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-19T02:04:44Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 1191,
+    "queue_seconds": 0,
+    "total_seconds": 1191
+  },
+  "transport": {
+    "bytes": 3099,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2798,
+    "prompt_sha256": "3a1ab19a8fbcbf553b4df25777bfa5a91078cfd5ed79f67002a1f08be339b32d",
+    "sha256": "bc878767c20b03d2c26ee68020591c1a5365dacd52ae4cb649a2750b6402cf8a"
+  }
+}
