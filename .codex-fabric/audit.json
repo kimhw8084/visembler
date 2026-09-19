@@ -1,0 +1,489 @@
+{
+  "accepted_at": "2026-09-19T18:46:41Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 23,
+      "deletions": 14,
+      "path": "company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 449,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/canonical_chart_renderer.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/chart_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 8,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/chart_studio.html",
+      "status": "M"
+    },
+    {
+      "additions": 51,
+      "deletions": 18,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/assets/element_renderer.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 9,
+      "deletions": 32,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 175,
+      "deletions": 0,
+      "path": "scripts/release_checks/build_chart_r1_evidence.py",
+      "status": "A"
+    },
+    {
+      "additions": 144,
+      "deletions": 0,
+      "path": "scripts/release_checks/build_chart_r2_evidence.py",
+      "status": "A"
+    },
+    {
+      "additions": 269,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chart_renderer_matrix.py",
+      "status": "A"
+    },
+    {
+      "additions": 340,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chart_renderer_r2_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 8,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 146,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chart_renderer_r1.py",
+      "status": "A"
+    },
+    {
+      "additions": 125,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chart_renderer_r2.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81e7-88ba-00b241d0cdc6/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/candidate-candidate-r2-browser-acceptance.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81e1-9059-00b27ff1a632/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/chart-studio-acceptance.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81fd-a2f1-00b2fd6af101/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/domain-scale-probes.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8144-86f2-00b2060db80d/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/interaction-accessibility.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8116-837e-00b256f4a7ce/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/live-export-parity.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8193-9759-00b218fec57e/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/reports/source-authority.json;type=application/json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8118-a842-00b264c9d611/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-dense-legend-desktop-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81cb-9378-00b20794570f/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-horizontal-percent-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-812e-8827-00b2d954bac5/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-irregular-time-line-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81bc-b954-00b2147d2fc3/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-dense-legend-narrow-1024.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8165-82bf-00b2b92a3361/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-dense-legend-mobile-390.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81ac-b345-00b2304a962b/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-irregular-time-line-reflow-200-percent.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-810d-90e1-00b21ed78e5f/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-mixed-sign-scatter-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81a0-9e73-00b259af5903/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-embedded-main-editor-bar-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81f4-b3e8-00b28b070452/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-horizontal-stacked-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8155-b2c8-00b2d6279549/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-horizontal-grouped-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81e8-a5e1-00b240034036/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-vertical-grouped-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81c3-8046-00b2ebb45809/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-vertical-stacked-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-818e-ae33-00b28555e6b4/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-annotations-secondary-axis-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81b7-8225-00b20aaf201d/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-chart-studio-keyboard-interaction-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8131-ab0a-00b27ec049fa/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/candidate/candidate-vertical-percent-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8178-b9fa-00b2fccd26d7/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-embedded-main-editor-bar-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81d9-a4cd-00b20144ed01/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-annotations-secondary-axis-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-813c-a0c9-00b2afa002be/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-mixed-sign-scatter-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-819c-8b7d-00b21aba3491/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-dense-legend-mobile-390.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8115-9522-00b2c86c728f/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-chart-studio-keyboard-interaction-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8128-b2de-00b2a171d955/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-horizontal-percent-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-812f-9a70-00b26bb6e37a/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-irregular-time-line-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81a4-968b-00b21acb356c/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-dense-legend-narrow-1024.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81b7-8fad-00b277f6303b/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-vertical-percent-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81cf-bb4b-00b28d6c7c83/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-vertical-stacked-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-81a0-8165-00b273a9bde5/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-irregular-time-line-reflow-200-percent.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-813c-be66-00b237a8b755/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-vertical-grouped-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8143-8189-00b207a38ccd/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-dense-legend-desktop-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8149-991a-00b21a1a4b6d/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-horizontal-stacked-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy curl --silent --show-error --fail -X POST 'https://api.notion.com/v1/mcp/file_uploads/3e0c564c-8d04-8121-ae27-00b2e8652c01/send' -H 'authorization: Bearer [REDACTED_SECRET]' -F 'file=@/tmp/chg137-r2-evidence-final2/screenshots/base/base-horizontal-grouped-bars-1440.png;type=image/png'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "update_properties",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "replace_content",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git commit-tree 5f2eec8d95a3fbedf1828bc8b95489a6526296af -p 042026edbc450e3df37f3aaddd44c44394f04ef9 -m \"chore(fabric): publish audit evidence CF-cc68ea8cca82c915c44a0809\" -m \"project: visembler\" -m \"request: CHG-137-r2\" -m \"operation: FIX\" -m \"source_change: CHG-137\" -m \"job: CF-cc68ea8cca82c915c44a0809\" -m \"source_base: a7d5b18ea471ec5ee4b33983175625296d27c07f\" -m \"candidate: 042026edbc450e3df37f3aaddd44c44394f04ef9\" -m \"candidate_tree: 5f2eec8d95a3fbedf1828bc8b95489a6526296af\" -m \"work_branch: fix/visembler-chg137-chart-system-r2\" -m \"target: fix/visembler-chg137-chart-system-r2\" -m \"head: 042026edbc450e3df37f3aaddd44c44394f04ef9\" -m \"artifact_run: AR-30\" -m \"artifact_status: Staged\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git update-ref refs/heads/fix/visembler-chg137-chart-system-r2 2c43d5c4c36d215fe160eafea15b80ce71419f2b 042026edbc450e3df37f3aaddd44c44394f04ef9'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD''^''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD''^''^''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git show -s --format=%B HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy file /tmp/chg137-r2-evidence-final2/screenshots/base/*.png /tmp/chg137-r2-evidence-final2/screenshots/candidate/*.png'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --name-status a7d5b18ea471ec5ee4b33983175625296d27c07f 042026edbc450e3df37f3aaddd44c44394f04ef9'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 1301,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.35,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 57768960,
+      "fresh_input_tokens": 967605,
+      "input_tokens": 58736565,
+      "non_reasoning_output_tokens": 101997,
+      "output_tokens": 165356,
+      "reasoning_output_tokens": 63359,
+      "total_processed_tokens": 58901921
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+      "subject": "chore(fabric): publish audit evidence CF-cc68ea8cca82c915c44a0809"
+    },
+    {
+      "sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+      "subject": "fix: implement CHG-137 R2 chart renderer corrections"
+    }
+  ],
+  "diff": {
+    "additions": 1758,
+    "changed_files": 16,
+    "commit_count": 2,
+    "deletions": 72
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 4,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "d52f9d466d5179a6361e399fb5a15109ee5d605b8f15dd77858fc3df94161fd6"
+      },
+      {
+        "bytes": 4687,
+        "path": "company_ui/products/visualizer/assets/chart_studio.html",
+        "sha256": "bee4496b722dbbb24b8e7123b3d59fcd32897d4308c8801644e868d333a7d39c"
+      },
+      {
+        "bytes": 14964,
+        "path": "scripts/release_checks/build_chart_r1_evidence.py",
+        "sha256": "a7f4df3aa410cc728d0b90fbd2e4796c7239e302bc1ff5000cb58bee613c0e04"
+      },
+      {
+        "bytes": 13894,
+        "path": "scripts/release_checks/build_chart_r2_evidence.py",
+        "sha256": "665e119d2bb2afa0dfdf999dcacad596fa9b34d3f82822ced44352acea93084d"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-19T20:12:02Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "branch": "fix/visembler-chg137-chart-system-r2",
+    "detached_verify": false,
+    "head_sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+    "remote_exact_head": true,
+    "remote_head_sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "work_branch": "fix/visembler-chg137-chart-system-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-cc68ea8cca82c915c44a0809",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-137-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-137-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-137-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-19T18:46:41Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 5121,
+    "queue_seconds": 0,
+    "total_seconds": 5121
+  },
+  "transport": {
+    "bytes": 11689,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 11393,
+    "prompt_sha256": "cc397c1dd3ea41b64cc5fa524275d03f56c9aeafc5abdf986a9dca153183e00b",
+    "sha256": "cc68ea8cca82c915c44a08092f7b600198b8a701df1bb6a486e5d90353c8df21"
+  }
+}
