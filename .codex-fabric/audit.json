@@ -1,0 +1,412 @@
+{
+  "accepted_at": "2026-09-19T00:32:22Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 51,
+      "deletions": 12,
+      "path": "scripts/release_checks/run_diagram_studio_acceptance.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'pwd && git status --short --branch && git rev-parse HEAD && git rev-parse HEAD''^{tree} && git remote -v && printf '\"'\\\\n--- AGENTS refs ---\\\\n' && sed -n '1,240p' AGENTS.md && printf '\\\\n--- RTK ---\\\\n' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && printf '\\\\n--- law ---\\\\n' && sed -n '1,240p' /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '--- manifest ---' && rtk sed -n '1,260p' company_ui/ai/construction_manifest.json && rtk printf '%s\\\\n' '--- patterns matches ---' && rtk rg -n -i 'diagram|studio|drawer|panel|responsive|accessib' docs/APP_PATTERNS.md docs/COMPONENT_CATALOG.md company_ui | head -240 && rtk printf '%s\\\\n' '--- repo matches ---' && rtk rg -n -i 'ds-panel-backdrop|closePanels|panelReturnFocus|requestAnimationFrame|Diagram Studio|diagram studio|Shapes|Inspector' . --glob '\"'!project-os-artifacts/**'\"' --glob '\"'!node_modules/**'\"' --glob '\"'!*.lock'\"' | head -400\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '--- diagram html ---' && rtk sed -n '1,220p' company_ui/products/visualizer/assets/diagram_studio.html && rtk printf '%s\\\\n' '--- diagram css responsive ---' && rtk sed -n '1,230p' company_ui/products/visualizer/assets/diagram_studio.css && rtk printf '%s\\\\n' '--- diagram scripts ---' && rtk rg -l 'ds-panel-backdrop|closePanels|panelReturnFocus|toggle-palette|toggle-inspector|requestAnimationFrame' company_ui/products/visualizer/assets scripts tests | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 24 'panelReturnFocus|closePanels|ds-panel-backdrop|toggle-palette|toggle-inspector|requestAnimationFrame|focus\\\\(' company_ui/products/visualizer/assets/diagram_studio.mjs && rtk printf '%s\\\\n' '--- acceptance top/diagram mobile section ---' && rtk sed -n '1,340p' scripts/release_checks/run_diagram_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '140,215p' company_ui/products/visualizer/assets/diagram_studio.mjs && rtk sed -n '620,820p' company_ui/products/visualizer/assets/diagram_studio.mjs && rtk sed -n '1,150p' scripts/release_checks/run_diagram_studio_acceptance.py && rtk sed -n '150,310p' scripts/release_checks/run_diagram_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'addEventListener|data-action|closePanels|panelReturnFocus' company_ui/products/visualizer/assets/diagram_studio.mjs | tail -120 && rtk sed -n '940,1180p' company_ui/products/visualizer/assets/diagram_studio.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '270,365p' company_ui/products/visualizer/assets/diagram_studio.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '--- historical R3 artifacts ---' && rtk ls project-os-artifacts/visembler/CHG-122-r3 && rtk rg -n -C 3 'backdrop|returned_to_trigger|activeElement|Shapes|Inspector|focus' project-os-artifacts/visembler/CHG-122-r3/visual-atlas/ui-probes.json project-os-artifacts/visembler/CHG-122-r3/capture-report.json | head -300 && rtk printf '%s\\\\n' '--- relevant source history ---' && rtk git log --oneline --decorate --all -- company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py | head -30 && rtk git show --stat --oneline a08147c320de34ba755fec74112269f8a6b67377 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -g 'ui-probes.json' -g 'capture-report.json' -g '*CHG-122*' -g '*R3*' . | head -100 && rtk git log --oneline --decorate --all -- company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show --stat --oneline 70265bc && rtk git show 70265bc -- company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py | sed -n '1,320p' && rtk git branch -a --contains 70265bc\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git cat-file -t a08147c320de34ba755fec74112269f8a6b67377 2>&1 || true && rtk git branch -a && rtk git log --all --oneline --decorate --grep='CHG-122\\\\|R3\\\\|Visual Atlas' | head -40 && rtk git ls-tree -r --name-only codex-fabric/evidence/visembler/CHG-122-r3 | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-base-acceptance'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, tempfile, sys\nfrom pathlib import Path\nfrom urllib.parse import quote\nROOT=Path.cwd();sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom editor_host import NativeHost\nfrom native_common import browser_kwargs, ready\nfrom playwright.sync_api import sync_playwright\nmodel=canonical_model({'schema_version':1,'items':[{'id':'diagram-1','type':'diagram','engine':'DiagramEngine','element':'Process Flow','title':'Manufacturing flow','nodes':['Source','Inspect','Release'],'edges':[['Source','Inspect'],['Inspect','Release']],'direction':'right','edge_label':'handoff','order':0,'weight':1.3,'locked':False,'z':1}],'groups':{},'datasets':[],'crossFilter':None,'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})\nwith tempfile.TemporaryDirectory(prefix='diag-focus-') as td:\n  with NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=model,name='diag'); b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':390,'height':844}); p=c.new_page();p.set_default_timeout(10000)\n    p.goto(f'{host.url}/visualizer?report={quote(rid)}',wait_until='domcontentloaded');ready(p,require_settled=True);p.locator('[data-action=\\\"edit-diagram\\\"]').click();p.locator('#diagram-studio[data-studio-ready=\\\"true\\\"]').wait_for();p.set_viewport_size({'width':390,'height':844});p.wait_for_timeout(250)\n    p.evaluate(\\\"\\\"\\\"()=>{window.__focusTrace=[];const d=()=>{const n=document.activeElement;return {t:performance.now(),type:event?.type||'?',id:n?.id||null,action:n?.dataset?.action||null,shape:n?.dataset?.shape||null,panel:n?.closest('#ds-shape-panel')?'palette':n?.closest('#ds-inspector-panel')?'inspector':null,hidden:n?.hidden||false}};for(const type of ['focusin','focusout','pointerdown','mousedown','pointerup','mouseup','click'])document.addEventListener(type,event=>{const n=document.activeElement;window.__focusTrace.push({t:Number(performance.now().toFixed(2)),type,target:n?.id||n?.dataset?.action||n?.dataset?.shape||n?.tagName,activeAction:n?.dataset?.action||null,activeShape:n?.dataset?.shape||null,activeId:n?.id||null,activePanel:n?.closest('#ds-shape-panel')?'palette':n?.closest('#ds-inspector-panel')?'inspector':null,defaultPrevented:event.defaultPrevented});},true);window.__sample=()=>window.__focusTrace.push({t:Number(performance.now().toFixed(2)),type:'sample',activeAction:document.activeElement?.dataset?.action||null,activeShape:document.activeElement?.dataset?.shape||null,activeId:document.activeElement?.id||null,activePanel:document.activeElement?.closest('#ds-shape-panel')?'palette':document.activeElement?.closest('#ds-inspector-panel')?'inspector':null});}\\\"\\\"\\\")\n    def trace():\n      return p.evaluate(\\\"\\\"\\\"()=>{window.__sample();return window.__focusTrace}\\\"\\\"\\\")\n    for kind,pos in [('palette',{'x':360,'y':350}),('inspector',{'x':10,'y':350})]:\n      p.evaluate('()=>document.querySelector(\"'`[data-action=\"toggle-${arguments[0]}\"]`)'\"',kind) if False else None\n      p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click();p.wait_for_function(f\\\"()=>document.activeElement?.closest('#ds-{ 'shape-panel' if kind=='palette' else 'inspector-panel'}')\\\")\n      p.wait_for_timeout(220)\n      before=p.evaluate(\\\"\\\"\\\"()=>({active:document.activeElement?.outerHTML?.slice(0,180), trace:window.__focusTrace.splice(0)})\\\"\\\"\\\")\n      p.locator('#ds-panel-backdrop').click(position=pos)\n      p.wait_for_timeout(50);at50=p.evaluate(\\\"\\\"\\\"()=>{window.__sample();return {active:document.activeElement?.outerHTML?.slice(0,180),trace:window.__focusTrace.splice(0)}}\\\"\\\"\\\")\n      p.wait_for_timeout(180);at230=p.evaluate(\\\"\\\"()=>{window.__sample();return {active:document.activeElement?.outerHTML?.slice(0,180),trace:window.__focusTrace.splice(0)}}\\\"\\\"\\\")\n      print(json.dumps({'kind':kind,'before':before,'at50':at50,'at230':at230},indent=2))\n      p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click();p.wait_for_function(f\\\"()=>document.activeElement?.closest('#ds-{ 'shape-panel' if kind=='palette' else 'inspector-panel'}')\\\");p.wait_for_timeout(220)\n    b.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, tempfile, sys\nfrom pathlib import Path\nfrom urllib.parse import quote\nROOT=Path.cwd();sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom editor_host import NativeHost\nfrom native_common import browser_kwargs, ready\nfrom playwright.sync_api import sync_playwright\nmodel=canonical_model({'schema_version':1,'items':[{'id':'diagram-1','type':'diagram','engine':'DiagramEngine','element':'Process Flow','title':'Manufacturing flow','nodes':['Source','Inspect','Release'],'edges':[['Source','Inspect'],['Inspect','Release']],'direction':'right','edge_label':'handoff','order':0,'weight':1.3,'locked':False,'z':1}],'groups':{},'datasets':[],'crossFilter':None,'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})\nwith tempfile.TemporaryDirectory(prefix='diag-focus-') as td:\n  with NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=model,name='diag'); b=pw.chromium.launch(**browser_kwargs()); c=b.new_context(viewport={'width':390,'height':844}); p=c.new_page();p.set_default_timeout(10000)\n    p.goto(f'{host.url}/visualizer?report={quote(rid)}',wait_until='domcontentloaded');ready(p,require_settled=True);p.locator('[data-action=\\\"edit-diagram\\\"]').click();p.locator('#diagram-studio[data-studio-ready=\\\"true\\\"]').wait_for();p.set_viewport_size({'width':390,'height':844});p.wait_for_timeout(250)\n    p.evaluate(\\\"\\\"\\\"()=>{window.__focusTrace=[];for(const type of ['focusin','focusout','pointerdown','mousedown','pointerup','mouseup','click'])document.addEventListener(type,event=>{const n=document.activeElement;window.__focusTrace.push({t:Number(performance.now().toFixed(2)),type,target:event.target?.id||event.target?.dataset?.action||event.target?.dataset?.shape||event.target?.tagName,activeAction:n?.dataset?.action||null,activeShape:n?.dataset?.shape||null,activeId:n?.id||null,activePanel:n?.closest('#ds-shape-panel')?'palette':n?.closest('#ds-inspector-panel')?'inspector':null,defaultPrevented:event.defaultPrevented});},true);window.__sample=()=>window.__focusTrace.push({t:Number(performance.now().toFixed(2)),type:'sample',activeAction:document.activeElement?.dataset?.action||null,activeShape:document.activeElement?.dataset?.shape||null,activeId:document.activeElement?.id||null,activePanel:document.activeElement?.closest('#ds-shape-panel')?'palette':document.activeElement?.closest('#ds-inspector-panel')?'inspector':null});}\\\"\\\"\\\")\n    def snap():\n      return p.evaluate(\\\"\\\"\\\"()=>{window.__sample();return window.__focusTrace.splice(0)}\\\"\\\"\\\")\n    for kind,pos,panel in [('palette',{'x':360,'y':350},'#ds-shape-panel'),('inspector',{'x':10,'y':350},'#ds-inspector-panel')]:\n      p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click();p.wait_for_function(f\\\"()=>document.activeElement?.closest('{panel}')\\\");p.wait_for_timeout(220)\n      before={'active':p.evaluate(\\\"()=>document.activeElement?.outerHTML?.slice(0,180)\\\"),'trace':snap()}\n      p.locator('#ds-panel-backdrop').click(position=pos)\n      p.wait_for_timeout(50);at50={'active':p.evaluate(\\\"()=>document.activeElement?.outerHTML?.slice(0,180)\\\"),'trace':snap()}\n      p.wait_for_timeout(180);at230={'active':p.evaluate(\\\"()=>document.activeElement?.outerHTML?.slice(0,180)\\\"),'trace':snap()}\n      print(json.dumps({'kind':kind,'before':before,'at50':at50,'at230':at230},indent=2))\n      p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click();p.wait_for_function(f\\\"()=>document.activeElement?.closest('{panel}')\\\");p.wait_for_timeout(220)\n    b.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-remote origin 'refs/heads/*CHG-122*' 'refs/heads/*CHG-130*' 'refs/heads/main' && rtk git show-ref | rg 'CHG-122|CHG-130|main' | head -50\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git fetch --no-tags origin refs/heads/project-os-artifacts/visembler/CHG-122-r3 && rtk git show --stat --oneline FETCH_HEAD && rtk git ls-tree -r --name-only FETCH_HEAD | rg 'visual-atlas/ui-probes.json|capture-report.json|CHG-122-r3' && rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rg -n -C 5 'backdrop|returned_to_trigger|activeElement|Shapes|Inspector|focus' | head -300 && rtk git show FETCH_HEAD:capture-report.json | rg -n -C 5 'backdrop|returned_to_trigger|activeElement|Shapes|Inspector|focus' | head -300\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '--- R3 ui probes matches ---' && rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rg -n 'returned_to_trigger|backdrop|activeElement|active_element|focus_target|Add Note|Callout|toggle-palette|toggle-inspector' | tail -240 && rtk printf '%s\\\\n' '--- R3 capture report matches ---' && rtk git show FETCH_HEAD:visual-atlas/capture-report.json | rg -n 'returned_to_trigger|backdrop|activeElement|active_element|focus_target|Add Note|Callout|toggle-palette|toggle-inspector' | tail -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | sed -n '19040,19270p' && rtk git show FETCH_HEAD:visual-atlas/capture-report.json | sed -n '450,515p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rtk python -c 'import json,sys; d=json.load(sys.stdin); print(type(d), list(d)[:20] if isinstance(d,dict) else len(d))' && rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rtk python -c 'import json,sys,pprint; d=json.load(sys.stdin); \n\ndef walk(x,path=()):\n  if isinstance(x,dict):\n    if x.get(\\\"returned_to_trigger\\\") is False: print(\\\"PATH\\\",path); pprint.pp(x)\n    for k,v in x.items(): walk(v,path+(k,))\n  elif isinstance(x,list):\n    for i,v in enumerate(x): walk(v,path+(i,))\nwalk(d)' | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rtk python -c 'import json,sys,pprint; d=json.load(sys.stdin); pprint.pp(d[\\\"contract\\\"]); pprint.pp(d[\\\"defect_proof\\\"][\\\"diagram_studio\\\"][\\\"mobile_390\\\"])' | head -500\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:visual-atlas/artifact-bundle.zip | rtk python -c 'import sys,zipfile,io; z=zipfile.ZipFile(io.BytesIO(sys.stdin.buffer.read())); print(\\\"\\\\n\\\".join(z.namelist()))' | head -200\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport tempfile,sys\nfrom pathlib import Path\nfrom urllib.parse import quote\nROOT=Path.cwd();sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom editor_host import NativeHost\nfrom native_common import browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\nmodel=canonical_model({'schema_version':1,'items':[{'id':'diagram-1','type':'diagram','engine':'DiagramEngine','element':'Process Flow','title':'Manufacturing flow','nodes':['Source','Inspect','Release'],'edges':[['Source','Inspect'],['Inspect','Release']],'direction':'right','edge_label':'handoff','order':0,'weight':1.3,'locked':False,'z':1}],'groups':{},'datasets':[],'crossFilter':None,'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})\nwith tempfile.TemporaryDirectory() as td:\n with NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n  rid=host.create(model=model,name='diag');b=pw.chromium.launch(**browser_kwargs());c=b.new_context(viewport={'width':390,'height':844});p=c.new_page();p.set_default_timeout(10000);p.goto(f'{host.url}/visualizer?report={quote(rid)}',wait_until='domcontentloaded');ready(p,require_settled=True);p.locator('[data-action=\\\"edit-diagram\\\"]').click();p.locator('#diagram-studio[data-studio-ready=\\\"true\\\"]').wait_for();p.set_viewport_size({'width':390,'height':844});p.wait_for_timeout(250)\n  for kind,pos in [('palette',{'x':360,'y':450}),('inspector',{'x':10,'y':450})]:\n   p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click();p.wait_for_function(f\\\"()=>document.activeElement?.closest('#ds-{'shape-panel' if kind=='palette' else 'inspector-panel'}')\\\");p.wait_for_timeout(220)\n   if kind=='palette':p.get_by_role('button',name='Add Note / Callout',exact=True).click();p.wait_for_timeout(50)\n   p.locator('#ds-panel-backdrop').click(position=pos);p.wait_for_timeout(180)\n   print(kind, p.evaluate(\\\"()=>({active:document.activeElement?.outerHTML?.slice(0,180),open:[...document.querySelectorAll('.ds-palette,.ds-inspector')].map(x=>x.classList.contains('is-open'))})\\\"))\n   p.locator(f'[data-action=\\\"toggle-{kind}\\\"]').click(force=True);p.wait_for_function(f\\\"()=>document.activeElement?.closest('#ds-{'shape-panel' if kind=='palette' else 'inspector-panel'}')\\\");p.wait_for_timeout(220)\n  b.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:git-publish-receipt.json | rtk python -c 'import json,sys,pprint; d=json.load(sys.stdin); pprint.pp(d)' | head -300\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport tempfile,sys\nfrom pathlib import Path\nfrom urllib.parse import quote\nROOT=Path.cwd();sys.path.insert(0,str(ROOT));sys.path.insert(0,str(ROOT/'scripts/release_checks'))\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom editor_host import NativeHost\nfrom native_common import browser_kwargs,ready\nfrom playwright.sync_api import sync_playwright\nmodel=canonical_model({'schema_version':1,'items':[{'id':'diagram-1','type':'diagram','engine':'DiagramEngine','element':'Process Flow','title':'Manufacturing flow','nodes':['Source','Inspect','Release'],'edges':[['Source','Inspect'],['Inspect','Release']],'direction':'right','edge_label':'handoff','order':0,'weight':1.3,'locked':False,'z':1}],'groups':{},'datasets':[],'crossFilter':None,'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':2})\nwith tempfile.TemporaryDirectory() as td:\n with NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n  rid=host.create(model=model,name='diag');b=pw.chromium.launch(**browser_kwargs());c=b.new_context(viewport={'width':390,'height':844});p=c.new_page();p.set_default_timeout(10000);p.goto(f'{host.url}/visualizer?report={quote(rid)}',wait_until='domcontentloaded');ready(p,require_settled=True);p.locator('[data-action=\\\"edit-diagram\\\"]').click();p.locator('#diagram-studio[data-studio-ready=\\\"true\\\"]').wait_for();p.set_viewport_size({'width':390,'height':844});p.wait_for_timeout(250)\n  p.locator('[data-action=\\\"toggle-palette\\\"]').click();p.wait_for_function(\\\"()=>document.activeElement?.closest('#ds-shape-panel')\\\");p.wait_for_timeout(220);p.get_by_role('button',name='Add Note / Callout',exact=True).click();p.wait_for_timeout(50);p.mouse.click(360,450);p.wait_for_timeout(180);print(p.evaluate(\\\"()=>({active:document.activeElement?.outerHTML?.slice(0,220),open:document.querySelector('#ds-shape-panel').className})\\\"));b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show FETCH_HEAD:visual-atlas/ui-probes.json | rtk python -c 'import json,sys,pprint; d=json.load(sys.stdin); pprint.pp(d[\\\"captures\\\"][-4:])' | head -400\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 5 'diagram_studio|panelReturnFocus|close-panels|ds-panel-backdrop|toggle-palette|toggle-inspector|inert|aria-hidden' tests scripts/release_checks | head -500 && rtk git status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git diff -- company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py && rtk python -m py_compile scripts/release_checks/run_diagram_studio_acceptance.py && rtk node --check company_ui/products/visualizer/assets/diagram_studio.mjs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg130-r2-focused'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -g 'pyproject.toml' -g 'Makefile' -g 'README*' -g '*contract*' -g '*smoke*' -g 'setup.sh' -g 'run_*.sh' -g 'requirements*.txt' | sort | head -200 && rtk rg -n 'runtime-contract|runtime-smoke|repository contract|contract.*test|acceptance|pytest' README.md pyproject.toml Makefile scripts company_ui tests 2>/dev/null | head -300\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 34626,
+        "output_sha256": "6bf03ba173d9ba8a942db9d85c9b58c7ddfa9b5df0afbefa4ae6621eed69a76d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' scripts/release_checks/run_repository_contracts.py && rtk rg -n '\"'^def test_'\"' tests/test_visualizer_diagram_studio.py tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_product_completion_p0.py tests/test_visualizer_p1_usability.py tests/test_visualizer_native_import_check.py | head -240 && rtk command -v company-ui-runtime-contract || true && rtk command -v company-ui-runtime-smoke || true && rtk command -v company-ui || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_product_completion_p0.py tests/test_visualizer_p1_usability.py tests/test_visualizer_native_import_check.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 27,
+        "output_sha256": "4dd52546f9627882f0f0474cc8074ac2df19d8642d2365f456b8115674527036",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest --collect-only -q tests/test_visualizer_diagram_studio.py; rtk pytest -q tests/test_visualizer_diagram_studio.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 54,
+        "output_sha256": "e56f16ffc2edf5659a5579acaa2f2bf6eb0f0453dd2eede8ebddfc1491ef49da",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only -q tests/test_visualizer_diagram_studio.py && rtk python -m pytest -q tests/test_visualizer_diagram_studio.py tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_product_completion_p0.py tests/test_visualizer_p1_usability.py tests/test_visualizer_native_import_check.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 124,
+        "output_sha256": "7d773e20966bddcd99a8ac71d3c969cba14af2a0c0428d518f4b1478a3edc6e3",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg130-r2-repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui-runtime-contract'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui-runtime-smoke --output /tmp/visembler-chg130-r2-runtime-smoke.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,110p' scripts/release_checks/run_native_acceptance.py && rtk sed -n '1,100p' scripts/release_checks/run_p0_smoke.py && rtk sed -n '1,100p' scripts/release_checks/run_p1_smoke.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /tmp/visembler-chg130-r2-native-acceptance'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files scripts/release_checks | sort | sed -n '1,220p' && rtk rg -n 'argparse|--output|scope' scripts/release_checks/run_reportbar_responsive_geometry.py scripts/release_checks/run_p0_smoke.py scripts/release_checks/run_p1_smoke.py | head -160\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p0_smoke.py --output /tmp/visembler-chg130-r2-p0-smoke'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '170,225p' scripts/release_checks/run_p0_smoke.py && rtk python scripts/release_checks/run_p1_smoke.py --output /tmp/visembler-chg130-r2-p1-smoke\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_reportbar_responsive_geometry.py --output /tmp/visembler-chg130-r2-reportbar.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "2f1cd78f8d3cd7ad53e7f2054d11f39a9c884d7905486344fe44c714df1ede61",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_user_browser_acceptance.py --help && rtk python scripts/release_checks/run_crawler_hardening_acceptance.py --help && rtk python scripts/release_checks/run_diagram_studio_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk printf '%s\\\\n' '--- changed files ---' && rtk git diff --name-status && rtk printf '%s\\\\n' '--- status ---' && rtk git status --short --branch && rtk printf '%s\\\\n' '--- CHG-128 diff check ---' && rtk git diff --name-only | rg 'CHG-128|reportbar' || true && rtk printf '%s\\\\n' '--- identity ---' && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^{tree} && rtk git ls-remote origin refs/heads/main && rtk printf '\"'%s\\\\n' '--- diff check ---' && rtk git diff --check && rtk printf '%s\\\\n' '--- changed-line context ---' && rtk nl -ba company_ui/products/visualizer/assets/diagram_studio.mjs | sed -n '338,350p' && rtk nl -ba scripts/release_checks/run_diagram_studio_acceptance.py | sed -n '110,175p' && rtk nl -ba scripts/release_checks/run_diagram_studio_acceptance.py | sed -n '205,295p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_diagram_studio_acceptance.py && rtk git diff --cached --check && rtk git diff --cached --stat && rtk git commit -m \"fix(visualizer): restore focus after diagram backdrop dismissal\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse HEAD''^ && rtk git rev-parse HEAD''^'\"\\\\\"'^{tree} && rtk git ls-remote origin refs/heads/main && rtk git branch --show-current && rtk git log -1 --format='\"'%H%n%T%n%s' && rtk git diff HEAD\"'^ HEAD --name-status && rtk git diff HEAD''^ HEAD --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 111,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.59,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 11297536,
+      "fresh_input_tokens": 278932,
+      "input_tokens": 11576468,
+      "non_reasoning_output_tokens": 15827,
+      "output_tokens": 34618,
+      "reasoning_output_tokens": 18791,
+      "total_processed_tokens": 11611086
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "dfa0fc21bd76d1a3cb632089331f87fc24ba05ba",
+      "subject": "fix(visualizer): restore focus after diagram backdrop dismissal"
+    }
+  ],
+  "diff": {
+    "additions": 52,
+    "changed_files": 2,
+    "commit_count": 1,
+    "deletions": 12
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-19T00:47:05Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "822902006d599c1ff781108e2a9b3f9190301822",
+    "branch": "fix/visembler-chg130-backdrop-focus-r2",
+    "detached_verify": false,
+    "head_sha": "dfa0fc21bd76d1a3cb632089331f87fc24ba05ba",
+    "remote_exact_head": true,
+    "remote_head_sha": "dfa0fc21bd76d1a3cb632089331f87fc24ba05ba",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "822902006d599c1ff781108e2a9b3f9190301822",
+    "work_branch": "fix/visembler-chg130-backdrop-focus-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-2e3858580b60bc07a4b5872a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-130-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-130-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-130-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-19T00:32:22Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 883,
+    "queue_seconds": 0,
+    "total_seconds": 883
+  },
+  "transport": {
+    "bytes": 5045,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4748,
+    "prompt_sha256": "a22171cf2160c1fd27a34991290306602b8167313695c4d0b6cb620ccdf1e977",
+    "sha256": "2e3858580b60bc07a4b5872a356bdeaeb351cbe48c9e21939e87eac239fb6804"
+  }
+}
