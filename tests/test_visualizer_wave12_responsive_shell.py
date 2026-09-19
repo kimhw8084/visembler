@@ -37,9 +37,15 @@ def test_wave12_normal_inspector_exposes_svg_not_powerpoint() -> None:
 
 def test_wave12_narrow_shell_keeps_controls_and_resize_target_available() -> None:
     css = (ASSETS / "integrated_editor.css").read_text()
+    editor = (ASSETS / "integrated_editor.mjs").read_text()
+    shell = (ASSETS / "integrated_editor.html").read_text()
     assert "#libraryToggle" in css and "#inspectorToggle" in css and "display:inline-flex!important" in css
     assert ".seg button { min-width:0; flex:1 1 0; }" in css
     assert "width:calc(28px * var(--viz-interaction-scale,1))!important" in css
     assert "width:calc(44px * var(--viz-interaction-scale,1))!important" in css
     assert ".resize-h::before { content:\"\"; width:8px; height:8px;" in css
     assert "top:calc(-14px * var(--viz-interaction-scale,1))!important" in css
+    assert "editor-chrome-layer" in editor and "renderEditorChrome(rm)" in editor
+    assert "data-editor-only aria-label=\"Selection and resize controls\"" in editor
+    assert 'data-responsive-priority="secondary"' in shell
+    assert "toolbar .tb:nth-of-type" not in css

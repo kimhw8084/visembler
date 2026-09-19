@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -18,7 +19,7 @@ import traceback
 from pathlib import Path
 from urllib.parse import quote
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(os.environ.get('VIZ_ACCEPTANCE_ROOT', str(Path(__file__).resolve().parents[2]))).resolve()
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(Path(__file__).parent))
 
@@ -95,6 +96,20 @@ def _rects(page):
     }))""")
 
 
+def _layout_probe(page):
+    return page.evaluate("""()=>{
+      const canvas=CompanyUIVisualizerBridge.state().model.canvas;
+      const rects=window.__VIZ_PROD__.layoutRects();
+      const overlap=[];
+      for(let i=0;i<rects.length;i+=1)for(let j=i+1;j<rects.length;j+=1){
+        const a=rects[i],b=rects[j],w=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)),h=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));
+        if(w*h>1)overlap.push({a:a.id,b:b.id,area:w*h});
+      }
+      const area=rects.reduce((sum,r)=>sum+r.w*r.h,0);
+      return {canvas,rects,overlap,area_share:area/(canvas.width*canvas.height)};
+    }""")
+
+
 def _assert_workspace(page, width: int) -> None:
     _set_panel(page, '#libraryToggle', True)
     _set_panel(page, '#inspectorToggle', True)
@@ -120,6 +135,79 @@ def _hub_select(page, label: str) -> None:
     page.wait_for_timeout(180)
 
 
+def _assert_layout_geometry(page, *, min_area_share=None):
+    probe=_layout_probe(page)
+    canvas=probe['canvas']
+    assert not probe['overlap'], {'overlap':probe['overlap'],'rects':probe['rects']}
+    for rect in probe['rects']:
+        assert rect['x']>=-1 and rect['y']>=-1, rect
+        assert rect['x']+rect['w']<=canvas['width']+1 and rect['y']+rect['h']<=canvas['height']+1, rect
+    if min_area_share is not None:
+        assert probe['area_share']>=min_area_share, probe
+    before=_layout_hash(page)
+    page.evaluate('()=>window.__VIZ_PROD__.renderAll()')
+    page.wait_for_timeout(80)
+    assert _layout_hash(page)==before, 'Smart layout changed across an identical render'
+
+
+def _assert_chrome(page, shot_path: Path):
+    page.locator('.component').first.click()
+    page.wait_for_timeout(180)
+    page.screenshot(path=str(shot_path))
+    state=page.evaluate("""()=>{
+      const component=document.querySelector('.component.selected'),content=component?.querySelector('.c-content'),chrome=document.querySelector('.editor-chrome');
+      const r=n=>{const x=n?.getBoundingClientRect();return x?{left:x.left,right:x.right,top:x.top,bottom:x.bottom,width:x.width,height:x.height}:null};
+      const intersects=(a,b)=>a&&b&&Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left))*Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top))>1;
+      const cr=r(content);
+      return {component:r(component),content:cr,chrome:r(chrome),handleRects:[...document.querySelectorAll('.editor-chrome .resize-h,.editor-chrome .c-head')].map(r),handlesInsideContent:[...document.querySelectorAll('.editor-chrome .resize-h,.editor-chrome .c-head')].filter(n=>intersects(r(n),cr)).length,embeddedHead:component?.querySelectorAll('.c-head').length||0,embeddedResize:component?.querySelectorAll('.resize-h').length||0,chromeBackground:chrome?getComputedStyle(chrome).backgroundColor:null};
+    }""")
+    assert state['chrome'] and state['content'] and state['embeddedHead']==0 and state['embeddedResize']==0, state
+    assert state['handlesInsideContent']==0, state
+    assert state['chromeBackground'] in ('rgba(0, 0, 0, 0)', 'transparent'), state
+    component=page.locator('.component.selected')
+    component.focus()
+    assert page.evaluate('()=>document.activeElement?.classList.contains("component")')
+    page.locator('.editor-chrome .c-head').first.focus()
+    assert page.evaluate('()=>document.activeElement?.classList.contains("c-head")')
+
+
+def _assert_commands(page, width: int, shot_path: Path):
+    page.set_viewport_size({'width':width,'height':844 if width<=800 else 900})
+    page.wait_for_timeout(140)
+    command=page.locator('#commandBtn')
+    assert command.is_visible(), f'command overflow path is not reachable at {width}px'
+    command.click()
+    page.locator('#cmdModal.show').wait_for()
+    labels=page.locator('#cmdList .cmd-label').all_inner_texts()
+    required=('Undo','Redo','Report History','Help & shortcuts','Preview report','Export report','Open Library','Open Inspector','Reflow report')
+    missing=[label for label in required if label not in labels]
+    assert not missing, {'width':width,'missing':missing,'labels':labels}
+    assert page.evaluate('()=>document.documentElement.scrollWidth-innerWidth')<=1
+    page.screenshot(path=str(shot_path))
+    page.keyboard.press('Escape')
+
+
+def _assert_hover_invariance(page, shot_path: Path):
+    page.locator('.component').first.wait_for()
+    node=page.locator('.component').first
+    target=node.locator('.integrated-element-content')
+    page.wait_for_timeout(700)
+    before_image=target.screenshot(animations='disabled')
+    before=hashlib.sha256(before_image).hexdigest()
+    shot_path.with_name(shot_path.stem + '-before.png').write_bytes(before_image)
+    node.hover(position={'x':2,'y':2})
+    page.wait_for_timeout(700)
+    after_image=target.screenshot(animations='disabled')
+    after=hashlib.sha256(after_image).hexdigest()
+    shot_path.with_name(shot_path.stem + '-after.png').write_bytes(after_image)
+    page.screenshot(path=str(shot_path))
+    assert before==after, {'before':before,'after':after}
+
+
+def _assert_no_document_overflow(page):
+    assert page.evaluate('()=>document.documentElement.scrollWidth-innerWidth')<=1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
@@ -137,6 +225,10 @@ def main() -> int:
             ids['mixed'] = host.create(model=mixed, name='stage-a-mixed')
             ids['timeline'] = host.create(model=solo_model('timeline', 'TimelineEngine', 'Event Timeline', {'milestones': [{'label': 'Observe', 'date': None}, {'label': 'Verify', 'date': None}]}), name='stage-a-timeline')
             ids['chart'] = host.create(model=solo_model('chart', 'CoreChartEngine', 'Line Chart', {'data': [['A', 1], ['B', 3], ['C', 2]], 'brush': [0, 2], 'revealed': True}), name='stage-a-chart')
+            ids['table'] = host.create(model=solo_model('table', 'TableEngine', 'Clean Table', {'customTable': {'headers': ['Signal', 'Value', 'Status'], 'rows': [['Pressure', '12.4', 'Stable'], ['Temperature', '84', 'Watch'], ['Yield', '98.2%', 'Stable']]} }), name='stage-a-table')
+            ids['diagram'] = host.create(model=solo_model('diagram', 'DiagramEngine', 'Process Flow', {'nodes': ['Input', 'Inspect', 'Release'], 'edges': [['Input', 'Inspect'], ['Inspect', 'Release']]}), name='stage-a-diagram')
+            ids['narrative'] = host.create(model=solo_model('text', 'TextEngine', 'Body Narrative', {'text': 'A source-backed narrative keeps the investigation decision visible while preserving the evidence chain.'}), name='stage-a-narrative')
+            ids['metric'] = host.create(model=solo_model('metric', 'MetricEngine', 'Hero KPI', {'value': 84.2, 'unit': '%'}), name='stage-a-metric')
             ids['wafer'] = host.create(model=solo_model('wafer', 'WaferFabEngine', 'Wafer Map', {'observations': [{'x': 0, 'y': 0, 'value': 1.2}]}), name='stage-a-wafer')
             ids['hub'] = host.create(model=template_model('operations-review'), name='stage-a-hub')
 
@@ -176,7 +268,33 @@ def main() -> int:
             _load(page, host, ids['mixed'])
             page.set_viewport_size({'width': 1440, 'height': 900})
             check('selected content has no occluding selection chrome', lambda: _assert_selection(page))
+            page.screenshot(path=str(shots / 'after-multi-report-1440.png'))
+            check('multi-element Smart composition is bounded and deterministic', lambda: _assert_layout_geometry(page, min_area_share=.52))
+            check('external selection and resize chrome stays outside content', lambda: _assert_chrome(page, shots / 'after-selected-chrome-1440.png'))
             check('drag ghost matches final proposed bounds', lambda: _assert_drag(page))
+
+            for name, report_id, min_width, min_area in (
+                ('line-chart', ids['chart'], .94, .70),
+                ('clean-table', ids['table'], .94, .70),
+                ('process-flow', ids['diagram'], .94, .56),
+                ('wafer-map', ids['wafer'], .50, .42),
+                ('body-narrative', ids['narrative'], .94, .30),
+                ('hero-metric', ids['metric'], .94, .38),
+            ):
+                _load(page, host, report_id)
+                page.set_viewport_size({'width':1440,'height':900})
+                check(f'solo {name} safe-hull occupancy', lambda min_width=min_width, min_area=min_area, name=name: _assert_solo(page, name, min_width, min_area))
+                page.screenshot(path=str(shots / f'after-solo-{name}-1440.png'))
+                if name=='line-chart':
+                    check('ordinary hover preserves chart content pixels', lambda: _assert_hover_invariance(page, shots / 'after-hover-line-chart-1440.png'))
+
+            _load(page, host, ids['mixed'])
+            page.set_viewport_size({'width':1440,'height':900})
+            for width in (1440, 1024, 390):
+                check(f'editor command reachability at {width}px', lambda width=width: _assert_commands(page, width, shots / f'after-command-palette-{width}.png'))
+
+            _load(page, host, ids['mixed'])
+            page.set_viewport_size({'width':1440,'height':900})
 
             def preview_case(width):
                 page.set_viewport_size({'width': width, 'height': 844 if width < 800 else 900})
@@ -195,6 +313,16 @@ def main() -> int:
 
             for width in (1440, 1024, 768, 390):
                 check(f'preview full-stage symmetric at {width}', lambda width=width: preview_case(width))
+
+            coarse_context = browser.new_context(viewport={'width':390,'height':844}, device_scale_factor=2, is_mobile=True, has_touch=True)
+            coarse_page = coarse_context.new_page()
+            coarse_events = BrowserEvents()
+            coarse_events.attach(coarse_page)
+            _load(coarse_page, host, ids['mixed'])
+            check('200-percent-equivalent coarse-pointer command reflow', lambda: _assert_commands(coarse_page, 390, shots / 'after-command-palette-200-percent-equivalent.png'))
+            check('200-percent-equivalent coarse-pointer has no document overflow', lambda: _assert_no_document_overflow(coarse_page))
+            report['unexpected_errors'].extend(coarse_events.unexpected)
+            coarse_context.close()
 
             _load(page, host, ids['mixed'])
             page.set_viewport_size({'width': 1440, 'height': 900})
@@ -238,6 +366,7 @@ def _assert_solo(page, kind: str, min_width_share: float, min_area_share: float)
     node = page.locator('.component').first
     assert node.get_attribute('data-content-fit') == 'responsive'
     assert node.get_attribute('data-layout-growth') in {'horizontal', 'plot', 'square', 'text', 'data', 'media', 'balanced'}
+    _assert_layout_geometry(page, min_area_share=min_area_share)
 
 
 def _assert_selection(page):

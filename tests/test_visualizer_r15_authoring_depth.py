@@ -78,7 +78,7 @@ def test_r19_layouts_and_page_size_are_authored_not_implicitly_resized():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
-    assert "const targetH=CANVAS.h" in editor
+    assert "const layoutTargetH=solo?baseNeeded:CANVAS.h" in editor
     assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" not in html
     assert 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' not in editor
     assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
@@ -108,9 +108,10 @@ def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_e
     shell = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
 
-    assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' in editor
-    assert 'const layoutTargetH=solo?baseNeeded:targetH' in editor
-    assert 'const familyCap={plot:spec.height' in editor
+    assert 'const fitToHull=(policy,w=innerW,h=innerH)=>' in editor
+    assert 'const layoutTargetH=solo?baseNeeded:CANVAS.h' in editor
+    assert 'const capacity=spec=>{const maximum=' in editor
+    assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' not in editor
     assert 'Math.max(policy.minH,spec.height)' not in editor
     assert 'show or hide the element library' in shell.lower()
     assert 'id="historyBtn"' in shell

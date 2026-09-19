@@ -12,29 +12,29 @@
           <button class="tb icon" id="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
         </div>
         <div class="tool-separator" aria-hidden="true"></div>
-        <div class="toolgroup" aria-label="Arrange">
+        <div class="toolgroup" aria-label="Arrange" data-responsive-priority="secondary">
           <button class="tb" id="auto" title="Recompose the report using Smart mode constraints">Reflow</button>
           <button class="tb" id="group">Group</button>
           <button class="tb" id="ungroup">Ungroup</button>
         </div>
         <div class="tool-separator" aria-hidden="true"></div>
-        <div class="toolgroup" aria-label="Layer and lock">
+        <div class="toolgroup" aria-label="Layer and lock" data-responsive-priority="secondary">
           <button class="tb" id="lock">Lock</button>
           <button class="tb" id="back">Back</button>
           <button class="tb" id="front">Front</button>
         </div>
-        <button class="tb command-trigger" id="commandBtn" aria-haspopup="dialog">⌘K <span>Commands</span></button>
-        <button class="tb" id="stageDIntakeBtn" title="Start from text, data, or image evidence">Start with content</button>
-        <button class="tb" id="stageDAssistantBtn" title="Review message delivery checks">Delivery checks</button>
+        <button class="tb command-trigger" id="commandBtn" aria-label="Open editor commands" aria-haspopup="dialog">⌘K <span>Commands</span></button>
+        <button class="tb" id="stageDIntakeBtn" data-responsive-priority="secondary" title="Start from text, data, or image evidence">Start with content</button>
+        <button class="tb" id="stageDAssistantBtn" data-responsive-priority="secondary" title="Review message delivery checks">Delivery checks</button>
         <button class="tb" id="libraryToggle" aria-pressed="true" title="Show or hide the element library">Hide library</button>
         <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
-        <button class="tb" id="historyBtn" title="Open report history, checkpoints, restore, and duplicate">History</button>
-        <button class="tb debug-trigger" id="debugBtn" aria-label="Open Developer Console" title="Open Developer Console"><span class="debug-glyph" aria-hidden="true">&lt;/&gt;</span><span class="debug-badge" id="debugBadge" aria-label="0 developer events">0</span></button>
-        <button class="tb icon" id="helpBtn" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
+        <button class="tb" id="historyBtn" data-responsive-priority="secondary" title="Open report history, checkpoints, restore, and duplicate">History</button>
+        <button class="tb debug-trigger" id="debugBtn" data-responsive-priority="secondary" aria-label="Open Developer Console" title="Open Developer Console"><span class="debug-glyph" aria-hidden="true">&lt;/&gt;</span><span class="debug-badge" id="debugBadge" aria-label="0 developer events">0</span></button>
+        <button class="tb icon" id="helpBtn" data-responsive-priority="secondary" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
       </div>
       <div class="rightbar" aria-label="Report actions">
-        <button class="tb" id="stageDCleanBtn" title="Clean layout using message hierarchy">Clean layout</button>
-        <button class="tb" id="stageDFitBtn" title="Fit the complete report">Fit report</button>
+        <button class="tb" id="stageDCleanBtn" data-responsive-priority="secondary" title="Clean layout using message hierarchy">Clean layout</button>
+        <button class="tb" id="stageDFitBtn" data-responsive-priority="secondary" title="Fit the complete report">Fit report</button>
         <button class="tb" id="preflightBtn">Validate</button>
         <button class="tb" id="previewBtn">Preview</button>
         <button class="tb" id="saveBtn">Autosaved</button>
