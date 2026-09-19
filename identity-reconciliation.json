@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "project": "visembler",
+  "request": "CHG-137-r3",
+  "operation": "VERIFY",
+  "source_candidate": {
+    "sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+    "parent": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "relation": "one commit from authoritative current main"
+  },
+  "metadata_alias": {
+    "sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+    "parent": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+    "relation": "sole child; exact tree equality; zero file delta"
+  },
+  "r2_fabric_evidence": {
+    "sha": "d9227f50cc1907e6d6bfdefcfca1579892460284",
+    "parent": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+    "tree_change": "adds only .codex-fabric/audit.json"
+  },
+  "ar30_certifies": {
+    "source_sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "observation": "Exact tree equality plus zero file delta makes the Product bytes semantically identical between 042026ed... and 2c43d5c4... under the repository facts inspected here. This VERIFY records the factual relation only; it does not invent or select an Accepted Head, GO, or integration eligibility. Project OS/ChatGPT must decide whether AR-30 evidence is transferable under the existing evidence law."
+}

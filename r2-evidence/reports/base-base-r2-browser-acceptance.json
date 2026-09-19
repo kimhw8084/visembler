@@ -1,0 +1,963 @@
+{
+  "label": "base",
+  "root": "/private/tmp/chg137-r2-base",
+  "checks": [
+    {
+      "name": "main editor canonical authority",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "Chart Studio canonical authority",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "vertical grouped bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "vertical stacked bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "vertical percent bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "horizontal grouped bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "horizontal stacked bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "horizontal percent bar screenshot",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "bar bounds at desktop",
+      "status": "FAIL",
+      "error": "probe returned false: {'svg': True, 'viewBox': '0 0 920 470', 'svgBox': {'left': 422, 'top': 335, 'right': 1122, 'bottom': 695, 'width': 700, 'height': 360}, 'plot': None, 'plotUseful': False, 'legends': [{'left': 507.2174072265625, 'top': 673.9130859375, 'right': 691.906982421875, 'bottom': 685.9130859375, 'width': 184.6895751953125, 'height': 12}, {'left': 617.54345703125, 'top': 673.9130859375, 'right': 803.6236572265625, 'bottom': 685.9130859375, 'width': 186.0802001953125, 'height': 12}, {'left': 727.8695678710938, 'top': 673.9130859375, 'right': 914.1841430664062, 'bottom': 685.9130859375, 'width': 186.3145751953125, 'height': 12}, {'left': 838.1956787109375, 'top': 673.9130859375, 'right': 1024.66650390625, 'bottom': 685.9130859375, 'width': 186.4708251953125, 'height': 12}, {'left': 948.521728515625, 'top': 673.9130859375, 'right': 1134.7425537109375, 'bottom': 685.9130859375, 'width': 186.2208251953125, 'height': 12}, {'left': 1058.847900390625, 'top': 673.9130859375, 'right': 1245.256103515625, 'bottom': 685.9130859375, 'width': 186.408203125, 'height': 12}, {'left': 1169.173828125, 'top': 673.9130859375, 'right': 1354.722900390625, 'bottom': 685.9130859375, 'width': 185.549072265625, 'height': 12}, {'left': 1279.5, 'top': 673.9130859375, 'right': 1465.923828125, 'bottom': 685.9130859375, 'width': 186.423828125, 'height': 12}, {'left': 1389.826171875, 'top': 673.9130859375, 'right': 1576.234375, 'bottom': 685.9130859375, 'width': 186.408203125, 'height': 12}, {'left': 1500.1522216796875, 'top': 673.9130859375, 'right': 1684.841796875, 'bottom': 685.9130859375, 'width': 184.6895751953125, 'height': 12}, {'left': 1610.478271484375, 'top': 673.9130859375, 'right': 1793.52734375, 'bottom': 685.9130859375, 'width': 183.049072265625, 'height': 12}, {'left': 1720.8043212890625, 'top': 673.9130859375, 'right': 1905.2440185546875, 'bottom': 685.9130859375, 'width': 184.439697265625, 'height': 12}], 'axes': [{'left': 490.45855712890625, 'top': 665.5435180664062, 'right': 501.13043212890625, 'bottom': 677.54345703125, 'width': 10.671875, 'height': 11.99993896484375}, {'left': 478.16168212890625, 'top': 589.45654296875, 'right': 501.13043212890625, 'bottom': 601.45654296875, 'width': 22.96875, 'height': 12}, {'left': 488.20855712890625, 'top': 513.3695678710938, 'right': 501.13043212890625, 'bottom': 525.3695678710938, 'width': 12.921875, 'height': 12}, {'left': 481.08355712890625, 'top': 437.2826232910156, 'right': 501.13043212890625, 'bottom': 449.2825927734375, 'width': 20.046875, 'height': 11.999969482421875}, {'left': 494.86480712890625, 'top': 361.1956481933594, 'right': 501.13043212890625, 'bottom': 373.1956481933594, 'width': 6.265625, 'height': 12}], 'legendBoundsInside': False, 'axisBoundsInside': True, 'overflow': False}",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 94, in check\n    raise AssertionError(f'probe returned false: {details}')\nAssertionError: probe returned false: {'svg': True, 'viewBox': '0 0 920 470', 'svgBox': {'left': 422, 'top': 335, 'right': 1122, 'bottom': 695, 'width': 700, 'height': 360}, 'plot': None, 'plotUseful': False, 'legends': [{'left': 507.2174072265625, 'top': 673.9130859375, 'right': 691.906982421875, 'bottom': 685.9130859375, 'width': 184.6895751953125, 'height': 12}, {'left': 617.54345703125, 'top': 673.9130859375, 'right': 803.6236572265625, 'bottom': 685.9130859375, 'width': 186.0802001953125, 'height': 12}, {'left': 727.8695678710938, 'top': 673.9130859375, 'right': 914.1841430664062, 'bottom': 685.9130859375, 'width': 186.3145751953125, 'height': 12}, {'left': 838.1956787109375, 'top': 673.9130859375, 'right': 1024.66650390625, 'bottom': 685.9130859375, 'width': 186.4708251953125, 'height': 12}, {'left': 948.521728515625, 'top': 673.9130859375, 'right': 1134.7425537109375, 'bottom': 685.9130859375, 'width': 186.2208251953125, 'height': 12}, {'left': 1058.847900390625, 'top': 673.9130859375, 'right': 1245.256103515625, 'bottom': 685.9130859375, 'width': 186.408203125, 'height': 12}, {'left': 1169.173828125, 'top': 673.9130859375, 'right': 1354.722900390625, 'bottom': 685.9130859375, 'width': 185.549072265625, 'height': 12}, {'left': 1279.5, 'top': 673.9130859375, 'right': 1465.923828125, 'bottom': 685.9130859375, 'width': 186.423828125, 'height': 12}, {'left': 1389.826171875, 'top': 673.9130859375, 'right': 1576.234375, 'bottom': 685.9130859375, 'width': 186.408203125, 'height': 12}, {'left': 1500.1522216796875, 'top': 673.9130859375, 'right': 1684.841796875, 'bottom': 685.9130859375, 'width': 184.6895751953125, 'height': 12}, {'left': 1610.478271484375, 'top': 673.9130859375, 'right': 1793.52734375, 'bottom': 685.9130859375, 'width': 183.049072265625, 'height': 12}, {'left': 1720.8043212890625, 'top': 673.9130859375, 'right': 1905.2440185546875, 'bottom': 685.9130859375, 'width': 184.439697265625, 'height': 12}], 'axes': [{'left': 490.45855712890625, 'top': 665.5435180664062, 'right': 501.13043212890625, 'bottom': 677.54345703125, 'width': 10.671875, 'height': 11.99993896484375}, {'left': 478.16168212890625, 'top': 589.45654296875, 'right': 501.13043212890625, 'bottom': 601.45654296875, 'width': 22.96875, 'height': 12}, {'left': 488.20855712890625, 'top': 513.3695678710938, 'right': 501.13043212890625, 'bottom': 525.3695678710938, 'width': 12.921875, 'height': 12}, {'left': 481.08355712890625, 'top': 437.2826232910156, 'right': 501.13043212890625, 'bottom': 449.2825927734375, 'width': 20.046875, 'height': 11.999969482421875}, {'left': 494.86480712890625, 'top': 361.1956481933594, 'right': 501.13043212890625, 'bottom': 373.1956481933594, 'width': 6.265625, 'height': 12}], 'legendBoundsInside': False, 'axisBoundsInside': True, 'overflow': False}\n"
+    },
+    {
+      "name": "annotations and references rendered",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "recommendation preview is transient",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "recommendation apply changes model",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "transient controls enabled",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Fit changes live preview layout",
+      "status": "NOT_APPLICABLE",
+      "reason": "base runtime has no product-owned Fit control"
+    },
+    {
+      "name": "zoom changes live view only",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "tooltip is observable",
+      "status": "FAIL",
+      "error": "Locator.get_attribute: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"#cs-chart-tooltip\")\n",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 90, in check\n    value = fn()\n            ^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 238, in <lambda>\n    check('tooltip is observable', lambda: not page.locator('#cs-chart-tooltip').get_attribute('hidden'))\n                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 19313, in get_attribute\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 465, in get_attribute\n    return await self._frame.get_attribute(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 757, in get_attribute\n    return await self._channel.send(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.get_attribute: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"#cs-chart-tooltip\")\n\n"
+    },
+    {
+      "name": "crosshair is observable",
+      "status": "FAIL",
+      "error": "Locator.get_attribute: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-crosshair-layer]\")\n",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 90, in check\n    value = fn()\n            ^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 239, in <lambda>\n    check('crosshair is observable', lambda: page.locator('[data-crosshair-layer]').get_attribute('visibility') == 'visible')\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 19313, in get_attribute\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 465, in get_attribute\n    return await self._frame.get_attribute(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 757, in get_attribute\n    return await self._channel.send(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.get_attribute: Timeout 12000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-crosshair-layer]\")\n\n"
+    },
+    {
+      "name": "range selector changes live view only",
+      "status": "NOT_APPLICABLE",
+      "reason": "current chart has no numeric/time X range selector"
+    },
+    {
+      "name": "reset restores deterministic view",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "legend has keyboard button semantics",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "Enter activates legend filter",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "Space restores legend filter",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "Enter selects mark semantically",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "Space preserves mark selection",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "cell draft preserves focus",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "recipe naming dialog commits",
+      "status": "NOT_APPLICABLE",
+      "reason": "base runtime has no product-owned naming dialog"
+    },
+    {
+      "name": "SVG export canonical parity",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "layout bounds desktop-1440",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "layout bounds narrow-1024",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "layout bounds mobile-390",
+      "status": "FAIL",
+      "error": "probe returned false",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-cc68ea8cca82c915c44a0809/scripts/release_checks/run_chart_renderer_r2_acceptance.py\", line 97, in check\n    raise AssertionError('probe returned false')\nAssertionError: probe returned false\n"
+    },
+    {
+      "name": "layout reflow 200 percent",
+      "status": "PASS",
+      "details": true
+    },
+    {
+      "name": "no unexpected browser errors",
+      "status": "PASS",
+      "details": true
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "base-embedded-main-editor-bar-1440.png",
+      "sha256": "89813fe7f2e15d37910ed8258355023563a499ebddfa84bc5521b03690d7ac39",
+      "bytes": 144119,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-vertical-grouped-bars-1440.png",
+      "sha256": "b27c444f9cafdba48c98cbfd5925e6c4de3f458117d690f276ed9aa611c7a1fd",
+      "bytes": 142713,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-vertical-stacked-bars-1440.png",
+      "sha256": "7f8d63f93b24772a9e7c5f32456de34ae31ea8803b5161227a475345bb5c085b",
+      "bytes": 143112,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-vertical-percent-bars-1440.png",
+      "sha256": "fe1ab097e54ed9dc749e2f29c4a9e1bc3907639a203c6b8f7e0cdda12999e824",
+      "bytes": 145355,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-horizontal-grouped-bars-1440.png",
+      "sha256": "cfd83e8c856dd62f3f2c7a7e11f2532cf5f37acac9b324bb582d02ca989becf1",
+      "bytes": 126483,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-horizontal-stacked-bars-1440.png",
+      "sha256": "6c4f32884dbae22b4cc4d2637ade6514af5c82c59b9fd53454a0835ea55bb3f1",
+      "bytes": 126320,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-horizontal-percent-bars-1440.png",
+      "sha256": "5e01a7048e8223e4caace701346be239cd91bc64b543d7644838b750dfaf4dca",
+      "bytes": 126944,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-annotations-secondary-axis-1440.png",
+      "sha256": "2c78295ec06874688afbde9ac40b9b800ab7041490097e7ce6f26f0e48656d19",
+      "bytes": 143437,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-chart-studio-keyboard-interaction-1440.png",
+      "sha256": "08896b9b6a2046271857f99d2bad5ef0e55a3e2c492988d39b274091a3dea644",
+      "bytes": 138586,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-dense-legend-desktop-1440.png",
+      "sha256": "ff63f8efe16a21089a0e5fdf5dc7764fc5c3b44613cfe0901bbf500753ca739e",
+      "bytes": 172619,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-dense-legend-narrow-1024.png",
+      "sha256": "7dc89313e50840144cef3a807f13142942780aac947799b193ef27381b15ab7a",
+      "bytes": 150837,
+      "dimensions": {
+        "width": 1024,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-dense-legend-mobile-390.png",
+      "sha256": "4850f18e448fbe452e3e7d222ba39f063e20ec8c84a1a63593a1e9aa56634ede",
+      "bytes": 44032,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-irregular-time-line-reflow-200-percent.png",
+      "sha256": "ed2c7b975ac080e7a22a152321f23c2c788fa0ebb5a7f1a46296c84a69800940",
+      "bytes": 121693,
+      "dimensions": {
+        "width": 390,
+        "height": 844,
+        "devicePixelRatio": 2
+      }
+    },
+    {
+      "path": "base-irregular-time-line-1440.png",
+      "sha256": "76556c099eb3bf08b2b0948cd2e6010615dd9ed9d296876db87f9736e9b09c29",
+      "bytes": 198922,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    },
+    {
+      "path": "base-mixed-sign-scatter-1440.png",
+      "sha256": "7bedab0208ac0c3fcb306ac3397b4549198ba184b2384412186f8e9780e8025c",
+      "bytes": 163669,
+      "dimensions": {
+        "width": 1440,
+        "height": 900,
+        "devicePixelRatio": 1
+      }
+    }
+  ],
+  "viewports": [
+    {
+      "name": "desktop-1440",
+      "width": 1440,
+      "height": 900,
+      "device_scale_factor": 1,
+      "layout": {
+        "svg": true,
+        "viewBox": "0 0 920 470",
+        "svgBox": {
+          "left": 422,
+          "top": 315,
+          "right": 1122,
+          "bottom": 675,
+          "width": 700,
+          "height": 360
+        },
+        "plot": null,
+        "plotUseful": false,
+        "legends": [
+          {
+            "left": 473.7391357421875,
+            "top": 653.9130859375,
+            "right": 658.4287109375,
+            "bottom": 665.9130859375,
+            "width": 184.6895751953125,
+            "height": 12
+          },
+          {
+            "left": 584.065185546875,
+            "top": 653.9130859375,
+            "right": 770.1453857421875,
+            "bottom": 665.9130859375,
+            "width": 186.0802001953125,
+            "height": 12
+          },
+          {
+            "left": 694.3912963867188,
+            "top": 653.9130859375,
+            "right": 880.705810546875,
+            "bottom": 665.9130859375,
+            "width": 186.31451416015625,
+            "height": 12
+          },
+          {
+            "left": 804.7174072265625,
+            "top": 653.9130859375,
+            "right": 991.188232421875,
+            "bottom": 665.9130859375,
+            "width": 186.4708251953125,
+            "height": 12
+          },
+          {
+            "left": 915.04345703125,
+            "top": 653.9130859375,
+            "right": 1101.2642822265625,
+            "bottom": 665.9130859375,
+            "width": 186.2208251953125,
+            "height": 12
+          },
+          {
+            "left": 1025.36962890625,
+            "top": 653.9130859375,
+            "right": 1211.77783203125,
+            "bottom": 665.9130859375,
+            "width": 186.408203125,
+            "height": 12
+          },
+          {
+            "left": 1135.6956787109375,
+            "top": 653.9130859375,
+            "right": 1321.24462890625,
+            "bottom": 665.9130859375,
+            "width": 185.5489501953125,
+            "height": 12
+          },
+          {
+            "left": 1246.021728515625,
+            "top": 653.9130859375,
+            "right": 1432.44580078125,
+            "bottom": 665.9130859375,
+            "width": 186.424072265625,
+            "height": 12
+          },
+          {
+            "left": 1356.347900390625,
+            "top": 653.9130859375,
+            "right": 1542.756103515625,
+            "bottom": 665.9130859375,
+            "width": 186.408203125,
+            "height": 12
+          },
+          {
+            "left": 1466.6739501953125,
+            "top": 653.9130859375,
+            "right": 1651.363525390625,
+            "bottom": 665.9130859375,
+            "width": 184.6895751953125,
+            "height": 12
+          },
+          {
+            "left": 1577,
+            "top": 653.9130859375,
+            "right": 1760.049072265625,
+            "bottom": 665.9130859375,
+            "width": 183.049072265625,
+            "height": 12
+          },
+          {
+            "left": 1687.3260498046875,
+            "top": 653.9130859375,
+            "right": 1871.765625,
+            "bottom": 665.9130859375,
+            "width": 184.4395751953125,
+            "height": 12
+          }
+        ],
+        "axes": [
+          {
+            "left": 456.98028564453125,
+            "top": 609.021728515625,
+            "right": 467.65216064453125,
+            "bottom": 621.021728515625,
+            "width": 10.671875,
+            "height": 12
+          },
+          {
+            "left": 457.19903564453125,
+            "top": 542.065185546875,
+            "right": 467.65216064453125,
+            "bottom": 554.065185546875,
+            "width": 10.453125,
+            "height": 12
+          },
+          {
+            "left": 455.76153564453125,
+            "top": 475.10870361328125,
+            "right": 467.65216064453125,
+            "bottom": 487.10870361328125,
+            "width": 11.890625,
+            "height": 12
+          },
+          {
+            "left": 456.07403564453125,
+            "top": 408.15216064453125,
+            "right": 467.65216064453125,
+            "bottom": 420.15216064453125,
+            "width": 11.578125,
+            "height": 12
+          },
+          {
+            "left": 455.16778564453125,
+            "top": 341.1956481933594,
+            "right": 467.65216064453125,
+            "bottom": 353.1956481933594,
+            "width": 12.484375,
+            "height": 12
+          },
+          {
+            "left": 524.48876953125,
+            "top": 630.3260498046875,
+            "right": 579.34814453125,
+            "bottom": 642.3260498046875,
+            "width": 54.859375,
+            "height": 12
+          },
+          {
+            "left": 680.1600341796875,
+            "top": 630.3260498046875,
+            "right": 736.3944091796875,
+            "bottom": 642.3260498046875,
+            "width": 56.234375,
+            "height": 12
+          },
+          {
+            "left": 836.4014892578125,
+            "top": 630.3260498046875,
+            "right": 892.8702392578125,
+            "bottom": 642.3260498046875,
+            "width": 56.46875,
+            "height": 12
+          },
+          {
+            "left": 992.6742553710938,
+            "top": 630.3260498046875,
+            "right": 1049.31494140625,
+            "bottom": 642.3260498046875,
+            "width": 56.64068603515625,
+            "height": 12
+          },
+          {
+            "left": 424.1739196777344,
+            "top": 416.3386535644531,
+            "right": 436.1739196777344,
+            "bottom": 547.791748046875,
+            "width": 12,
+            "height": 131.45309448242188
+          }
+        ],
+        "legendBoundsInside": false,
+        "axisBoundsInside": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "narrow-1024",
+      "width": 1024,
+      "height": 900,
+      "device_scale_factor": 1,
+      "layout": {
+        "svg": true,
+        "viewBox": "0 0 920 470",
+        "svgBox": {
+          "left": 398,
+          "top": 315,
+          "right": 746,
+          "bottom": 675,
+          "width": 348,
+          "height": 360
+        },
+        "plot": null,
+        "plotUseful": false,
+        "legends": [
+          {
+            "left": 423.72174072265625,
+            "top": 573.973876953125,
+            "right": 515.43017578125,
+            "bottom": 579.973876953125,
+            "width": 91.70843505859375,
+            "height": 6
+          },
+          {
+            "left": 478.569580078125,
+            "top": 573.973876953125,
+            "right": 570.9654541015625,
+            "bottom": 579.973876953125,
+            "width": 92.3958740234375,
+            "height": 6
+          },
+          {
+            "left": 533.4173583984375,
+            "top": 573.973876953125,
+            "right": 625.9227294921875,
+            "bottom": 579.973876953125,
+            "width": 92.50537109375,
+            "height": 6
+          },
+          {
+            "left": 588.2651977539062,
+            "top": 573.973876953125,
+            "right": 680.8486328125,
+            "bottom": 579.973876953125,
+            "width": 92.58343505859375,
+            "height": 6
+          },
+          {
+            "left": 643.113037109375,
+            "top": 573.973876953125,
+            "right": 735.5714721679688,
+            "bottom": 579.973876953125,
+            "width": 92.45843505859375,
+            "height": 6
+          },
+          {
+            "left": 697.9608764648438,
+            "top": 573.973876953125,
+            "right": 790.5130615234375,
+            "bottom": 579.973876953125,
+            "width": 92.55218505859375,
+            "height": 6
+          },
+          {
+            "left": 752.8087158203125,
+            "top": 573.973876953125,
+            "right": 844.93896484375,
+            "bottom": 579.973876953125,
+            "width": 92.1302490234375,
+            "height": 6
+          },
+          {
+            "left": 807.656494140625,
+            "top": 573.973876953125,
+            "right": 900.224365234375,
+            "bottom": 579.973876953125,
+            "width": 92.56787109375,
+            "height": 6
+          },
+          {
+            "left": 862.5043334960938,
+            "top": 573.973876953125,
+            "right": 955.0565185546875,
+            "bottom": 579.973876953125,
+            "width": 92.55218505859375,
+            "height": 6
+          },
+          {
+            "left": 917.3521728515625,
+            "top": 573.973876953125,
+            "right": 1009.0606079101562,
+            "bottom": 579.973876953125,
+            "width": 91.70843505859375,
+            "height": 6
+          },
+          {
+            "left": 972.2000122070312,
+            "top": 573.973876953125,
+            "right": 1063.095947265625,
+            "bottom": 579.973876953125,
+            "width": 90.89593505859375,
+            "height": 6
+          },
+          {
+            "left": 1027.0478515625,
+            "top": 573.973876953125,
+            "right": 1118.63134765625,
+            "bottom": 579.973876953125,
+            "width": 91.58349609375,
+            "height": 6
+          }
+        ],
+        "axes": [
+          {
+            "left": 415.3987731933594,
+            "top": 551.6565551757812,
+            "right": 420.6956481933594,
+            "bottom": 557.6565551757812,
+            "width": 5.296875,
+            "height": 6
+          },
+          {
+            "left": 415.5081481933594,
+            "top": 518.3695678710938,
+            "right": 420.6956481933594,
+            "bottom": 524.3695678710938,
+            "width": 5.1875,
+            "height": 6
+          },
+          {
+            "left": 414.7893981933594,
+            "top": 485.0826110839844,
+            "right": 420.6956481933594,
+            "bottom": 491.0826110839844,
+            "width": 5.90625,
+            "height": 6
+          },
+          {
+            "left": 414.9456481933594,
+            "top": 451.795654296875,
+            "right": 420.6956481933594,
+            "bottom": 457.795654296875,
+            "width": 5.75,
+            "height": 6
+          },
+          {
+            "left": 414.4925231933594,
+            "top": 418.5086975097656,
+            "right": 420.6956481933594,
+            "bottom": 424.5086975097656,
+            "width": 6.203125,
+            "height": 6
+          },
+          {
+            "left": 448.9708557128906,
+            "top": 562.247802734375,
+            "right": 476.2052307128906,
+            "bottom": 568.247802734375,
+            "width": 27.234375,
+            "height": 6
+          },
+          {
+            "left": 526.3597412109375,
+            "top": 562.247802734375,
+            "right": 554.2816162109375,
+            "bottom": 568.247802734375,
+            "width": 27.921875,
+            "height": 6
+          },
+          {
+            "left": 604.0376586914062,
+            "top": 562.247802734375,
+            "right": 632.06884765625,
+            "bottom": 568.247802734375,
+            "width": 28.03118896484375,
+            "height": 6
+          },
+          {
+            "left": 681.723388671875,
+            "top": 562.247802734375,
+            "right": 709.848388671875,
+            "bottom": 568.247802734375,
+            "width": 28.125,
+            "height": 6
+          },
+          {
+            "left": 399.05218505859375,
+            "top": 455.936767578125,
+            "right": 405.05218505859375,
+            "bottom": 521.202392578125,
+            "width": 6,
+            "height": 65.265625
+          }
+        ],
+        "legendBoundsInside": false,
+        "axisBoundsInside": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "mobile-390",
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 1,
+      "layout": {
+        "svg": true,
+        "viewBox": "0 0 920 470",
+        "svgBox": {
+          "left": 25.890625,
+          "top": 389.5,
+          "right": 364.984375,
+          "bottom": 669.5,
+          "width": 339.09375,
+          "height": 280
+        },
+        "plot": null,
+        "plotUseful": false,
+        "legends": [
+          {
+            "left": 50.954078674316406,
+            "top": 606.3248291015625,
+            "right": 140.4138641357422,
+            "bottom": 612.3248291015625,
+            "width": 89.45978546142578,
+            "height": 6
+          },
+          {
+            "left": 104.39820098876953,
+            "top": 606.3248291015625,
+            "right": 194.52984619140625,
+            "bottom": 612.3248291015625,
+            "width": 90.13164520263672,
+            "height": 6
+          },
+          {
+            "left": 157.8423309326172,
+            "top": 606.3248291015625,
+            "right": 248.08335876464844,
+            "bottom": 612.3248291015625,
+            "width": 90.24102783203125,
+            "height": 6
+          },
+          {
+            "left": 211.2864532470703,
+            "top": 606.3248291015625,
+            "right": 301.6055908203125,
+            "bottom": 612.3248291015625,
+            "width": 90.31913757324219,
+            "height": 6
+          },
+          {
+            "left": 264.7305908203125,
+            "top": 606.3248291015625,
+            "right": 354.92474365234375,
+            "bottom": 612.3248291015625,
+            "width": 90.19415283203125,
+            "height": 6
+          },
+          {
+            "left": 318.1746826171875,
+            "top": 606.3248291015625,
+            "right": 408.4626159667969,
+            "bottom": 612.3248291015625,
+            "width": 90.28793334960938,
+            "height": 6
+          },
+          {
+            "left": 371.6188049316406,
+            "top": 606.3248291015625,
+            "right": 461.4848937988281,
+            "bottom": 612.3248291015625,
+            "width": 89.8660888671875,
+            "height": 6
+          },
+          {
+            "left": 425.06292724609375,
+            "top": 606.3248291015625,
+            "right": 515.366455078125,
+            "bottom": 612.3248291015625,
+            "width": 90.30352783203125,
+            "height": 6
+          },
+          {
+            "left": 478.507080078125,
+            "top": 606.3248291015625,
+            "right": 568.7949829101562,
+            "bottom": 612.3248291015625,
+            "width": 90.28790283203125,
+            "height": 6
+          },
+          {
+            "left": 531.951171875,
+            "top": 606.3248291015625,
+            "right": 621.4110107421875,
+            "bottom": 612.3248291015625,
+            "width": 89.4598388671875,
+            "height": 6
+          },
+          {
+            "left": 585.3953247070312,
+            "top": 606.3248291015625,
+            "right": 674.0582275390625,
+            "bottom": 612.3248291015625,
+            "width": 88.66290283203125,
+            "height": 6
+          },
+          {
+            "left": 638.8394165039062,
+            "top": 606.3248291015625,
+            "right": 728.1742553710938,
+            "bottom": 612.3248291015625,
+            "width": 89.3348388671875,
+            "height": 6
+          }
+        ],
+        "axes": [
+          {
+            "left": 42.83355712890625,
+            "top": 584.5785522460938,
+            "right": 48.00543212890625,
+            "bottom": 590.5785522460938,
+            "width": 5.171875,
+            "height": 6
+          },
+          {
+            "left": 42.94293212890625,
+            "top": 552.1434936523438,
+            "right": 48.00543212890625,
+            "bottom": 558.1434936523438,
+            "width": 5.0625,
+            "height": 6
+          },
+          {
+            "left": 42.23980712890625,
+            "top": 519.70849609375,
+            "right": 48.00543212890625,
+            "bottom": 525.70849609375,
+            "width": 5.765625,
+            "height": 6
+          },
+          {
+            "left": 42.39605712890625,
+            "top": 487.2734069824219,
+            "right": 48.00543212890625,
+            "bottom": 493.2734069824219,
+            "width": 5.609375,
+            "height": 6
+          },
+          {
+            "left": 41.95855712890625,
+            "top": 454.8383483886719,
+            "right": 48.00543212890625,
+            "bottom": 460.8383483886719,
+            "width": 6.046875,
+            "height": 6
+          },
+          {
+            "left": 75.53662872314453,
+            "top": 594.8988037109375,
+            "right": 102.11475372314453,
+            "bottom": 600.8988037109375,
+            "width": 26.578125,
+            "height": 6
+          },
+          {
+            "left": 150.95172119140625,
+            "top": 594.8988037109375,
+            "right": 178.18609619140625,
+            "bottom": 600.8988037109375,
+            "width": 27.234375,
+            "height": 6
+          },
+          {
+            "left": 226.6324462890625,
+            "top": 594.8988037109375,
+            "right": 253.9918212890625,
+            "bottom": 600.8988037109375,
+            "width": 27.359375,
+            "height": 6
+          },
+          {
+            "left": 302.33660888671875,
+            "top": 594.8988037109375,
+            "right": 329.77410888671875,
+            "bottom": 600.8988037109375,
+            "width": 27.4375,
+            "height": 6
+          },
+          {
+            "left": 26.78790855407715,
+            "top": 491.398193359375,
+            "right": 32.787906646728516,
+            "bottom": 555.070068359375,
+            "width": 5.999998092651367,
+            "height": 63.671875
+          }
+        ],
+        "legendBoundsInside": false,
+        "axisBoundsInside": true,
+        "overflow": false
+      }
+    },
+    {
+      "name": "reflow-200-percent",
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 2,
+      "layout": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "overflow": false
+      }
+    }
+  ],
+  "errors": [],
+  "source": {
+    "candidate_root": "/private/tmp/chg137-r2-base"
+  },
+  "pass": 12,
+  "applicable": 32
+}

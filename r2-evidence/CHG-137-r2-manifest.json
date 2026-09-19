@@ -1,0 +1,245 @@
+{
+  "schema_version": 2,
+  "project": "visembler",
+  "request": "CHG-137-r2",
+  "source_change": "CHG-137",
+  "operation": "FIX",
+  "job": "CF-cc68ea8cca82c915c44a0809",
+  "scope": "bounded CHG-137 R2 chart renderer correction",
+  "created_at": "2026-09-19T15:07:55-05:00",
+  "base_commit": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+  "base_tree": "a0cc41cdb119b8375d5bea5aa90e806b2e15f811",
+  "candidate_commit": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+  "candidate_tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+  "work_branch": "fix/visembler-chg137-chart-system-r2",
+  "target": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+  "head": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+  "predecessor": {
+    "commit": "b7a59a1acf50c57ed1954fe1a57215599ae32e86",
+    "tree": "9cfcf0bbdbd1de646a17ce9a6e5915dd55522451",
+    "evidence_commit": "7a259d711ea003aae4bc827c60aa26ac892fbfcf"
+  },
+  "working_tree_status": [],
+  "source_files": {
+    "company_ui/products/visualizer/assets/canonical_chart_renderer.mjs": "faaf830fe4adac0f27abc056a5c129a1c8448977988f6a5e7c748af48835f463",
+    "company_ui/products/visualizer/assets/authoring_chart_studio.mjs": "eaf8239a094cc87794f739f8169624140c8ec61abe4e0206a2cdc1be9682df6a",
+    "company_ui/products/visualizer/assets/chart_studio.mjs": "6d7fd959b75a162bcb77592b1fa3dfcc8a35361a8280559c15e952ccb1c848d4",
+    "company_ui/products/visualizer/assets/element_renderer.mjs": "ba8333fb4d51f512dd40d071fd0a43c6e0bf295c9ccf43c7c219127156ba8904",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs": "ba6afee711976b179a127dffeb3b65b8172a27f6153605aaa2b9e438ba2d03ab",
+    "company_ui/products/visualizer/page.py": "01e406f7678927159f43809fd3164233ecd18b8512f5ba26a7ce21d5f8fa54c9",
+    "scripts/release_checks/run_chart_studio_acceptance.py": "71c8bf69b8fa1b53e6c183118eb759100f97c7cb3479a2d9334ad88b2c51eef6",
+    "scripts/release_checks/run_chart_renderer_r2_acceptance.py": "0a506881b953d446d027d8cd8d0b2f7fc4b0ce2fc74d4dc60d6860cc8f71b830",
+    "scripts/release_checks/build_chart_r2_evidence.py": "665e119d2bb2afa0dfdf999dcacad596fa9b34d3f82822ced44352acea93084d",
+    "tests/test_visualizer_chart_renderer_r1.py": "b39213b77f6e9c5e28ef9ee55cc7b60935f499fab2a28df8e0dc6930cc5262fa",
+    "tests/test_visualizer_chart_renderer_r2.py": "1a036a40736881473e4eb17f8d11d0398828ac9f23e3535bfb57208d5ec37c79",
+    "company_ui/certification/certification_manifest.json": "d52f9d466d5179a6361e399fb5a15109ee5d605b8f15dd77858fc3df94161fd6"
+  },
+  "artifacts": [
+    {
+      "path": "reports/bar-geometry-probe.json",
+      "sha256": "4258c37bb960835dcc4516d8e68be4df1cfff6facab6d5715b63b457a83a0f3e",
+      "bytes": 26387
+    },
+    {
+      "path": "reports/base-base-r2-browser-acceptance.json",
+      "sha256": "9a1e9cec558c4982bff172bb4c825d643d95648e6f4d9f732c341b5fdcea8158",
+      "bytes": 40282
+    },
+    {
+      "path": "reports/candidate-candidate-r2-browser-acceptance.json",
+      "sha256": "4dce11ce3e0f8a8794ba799cf5881c60809993e36fe961a77b7b78e8ea1e5978",
+      "bytes": 32426
+    },
+    {
+      "path": "reports/chart-studio-acceptance.json",
+      "sha256": "8f8a64dca8c1cb7aa6e85df628c0020ba57a4acd1834be3ab9136f4a7ae94f91",
+      "bytes": 9313
+    },
+    {
+      "path": "reports/domain-scale-probes.json",
+      "sha256": "bb979157c465b2c6316260f7a749a46f7664d3879ecffc7fb6c98473c677733e",
+      "bytes": 869
+    },
+    {
+      "path": "reports/interaction-accessibility.json",
+      "sha256": "f8320c0736f1c3922a08258c32e5bbfc63ccb05d33cbc0cbbf2634f984678047",
+      "bytes": 10079
+    },
+    {
+      "path": "reports/live-export-parity.json",
+      "sha256": "afdb1a8ab6ae6df595f8d4ad3bc3f68b85ac77bdcf0bed1ab7e8d05475206804",
+      "bytes": 123
+    },
+    {
+      "path": "reports/source-authority.json",
+      "sha256": "a1b422abded1c5a4e1ef63a5a7d0aa503e96ff5555b06d35ad8e43704c247f64",
+      "bytes": 1016
+    },
+    {
+      "path": "screenshots/base/base-annotations-secondary-axis-1440.png",
+      "sha256": "2c78295ec06874688afbde9ac40b9b800ab7041490097e7ce6f26f0e48656d19",
+      "bytes": 143437
+    },
+    {
+      "path": "screenshots/base/base-chart-studio-keyboard-interaction-1440.png",
+      "sha256": "08896b9b6a2046271857f99d2bad5ef0e55a3e2c492988d39b274091a3dea644",
+      "bytes": 138586
+    },
+    {
+      "path": "screenshots/base/base-dense-legend-desktop-1440.png",
+      "sha256": "ff63f8efe16a21089a0e5fdf5dc7764fc5c3b44613cfe0901bbf500753ca739e",
+      "bytes": 172619
+    },
+    {
+      "path": "screenshots/base/base-dense-legend-mobile-390.png",
+      "sha256": "4850f18e448fbe452e3e7d222ba39f063e20ec8c84a1a63593a1e9aa56634ede",
+      "bytes": 44032
+    },
+    {
+      "path": "screenshots/base/base-dense-legend-narrow-1024.png",
+      "sha256": "7dc89313e50840144cef3a807f13142942780aac947799b193ef27381b15ab7a",
+      "bytes": 150837
+    },
+    {
+      "path": "screenshots/base/base-embedded-main-editor-bar-1440.png",
+      "sha256": "89813fe7f2e15d37910ed8258355023563a499ebddfa84bc5521b03690d7ac39",
+      "bytes": 144119
+    },
+    {
+      "path": "screenshots/base/base-horizontal-grouped-bars-1440.png",
+      "sha256": "cfd83e8c856dd62f3f2c7a7e11f2532cf5f37acac9b324bb582d02ca989becf1",
+      "bytes": 126483
+    },
+    {
+      "path": "screenshots/base/base-horizontal-percent-bars-1440.png",
+      "sha256": "5e01a7048e8223e4caace701346be239cd91bc64b543d7644838b750dfaf4dca",
+      "bytes": 126944
+    },
+    {
+      "path": "screenshots/base/base-horizontal-stacked-bars-1440.png",
+      "sha256": "6c4f32884dbae22b4cc4d2637ade6514af5c82c59b9fd53454a0835ea55bb3f1",
+      "bytes": 126320
+    },
+    {
+      "path": "screenshots/base/base-irregular-time-line-1440.png",
+      "sha256": "76556c099eb3bf08b2b0948cd2e6010615dd9ed9d296876db87f9736e9b09c29",
+      "bytes": 198922
+    },
+    {
+      "path": "screenshots/base/base-irregular-time-line-reflow-200-percent.png",
+      "sha256": "ed2c7b975ac080e7a22a152321f23c2c788fa0ebb5a7f1a46296c84a69800940",
+      "bytes": 121693
+    },
+    {
+      "path": "screenshots/base/base-mixed-sign-scatter-1440.png",
+      "sha256": "7bedab0208ac0c3fcb306ac3397b4549198ba184b2384412186f8e9780e8025c",
+      "bytes": 163669
+    },
+    {
+      "path": "screenshots/base/base-vertical-grouped-bars-1440.png",
+      "sha256": "b27c444f9cafdba48c98cbfd5925e6c4de3f458117d690f276ed9aa611c7a1fd",
+      "bytes": 142713
+    },
+    {
+      "path": "screenshots/base/base-vertical-percent-bars-1440.png",
+      "sha256": "fe1ab097e54ed9dc749e2f29c4a9e1bc3907639a203c6b8f7e0cdda12999e824",
+      "bytes": 145355
+    },
+    {
+      "path": "screenshots/base/base-vertical-stacked-bars-1440.png",
+      "sha256": "7f8d63f93b24772a9e7c5f32456de34ae31ea8803b5161227a475345bb5c085b",
+      "bytes": 143112
+    },
+    {
+      "path": "screenshots/candidate/candidate-annotations-secondary-axis-1440.png",
+      "sha256": "06d2c044f5debc79ed6207fa99fc63684ebac16b7b987b9995115f0a32c404d2",
+      "bytes": 150297
+    },
+    {
+      "path": "screenshots/candidate/candidate-chart-studio-keyboard-interaction-1440.png",
+      "sha256": "6d2584f84ff03fe49db4288a1b8c4e9855e8e2ca08083487170595e8ec84ca96",
+      "bytes": 153814
+    },
+    {
+      "path": "screenshots/candidate/candidate-dense-legend-desktop-1440.png",
+      "sha256": "26c4605cf766a73014fcf9c20d0df056b0e2080d1f8f5744c76379f31de51a7b",
+      "bytes": 187775
+    },
+    {
+      "path": "screenshots/candidate/candidate-dense-legend-mobile-390.png",
+      "sha256": "4de5cfda5327f68ff55cc27a9b86c59642a7f1c1552dca176fcd5ca402ee2f8c",
+      "bytes": 48971
+    },
+    {
+      "path": "screenshots/candidate/candidate-dense-legend-narrow-1024.png",
+      "sha256": "ab34cb5daf7ca81a2d6d9365bd4db470fae8927af580852f6a6993f10fd0555d",
+      "bytes": 165380
+    },
+    {
+      "path": "screenshots/candidate/candidate-embedded-main-editor-bar-1440.png",
+      "sha256": "90a9bf104e4b2a5a8c57a20fc21e2badffac5dd6815f2a8ece114b12e8402553",
+      "bytes": 148051
+    },
+    {
+      "path": "screenshots/candidate/candidate-horizontal-grouped-bars-1440.png",
+      "sha256": "dc706398d725caa3369019724c7ac24e4a6c5f95a8e994e4cabe4036e00a8c3a",
+      "bytes": 135116
+    },
+    {
+      "path": "screenshots/candidate/candidate-horizontal-percent-bars-1440.png",
+      "sha256": "6219fe28525846a488d2c30eb38412fb71edd083c54262af7644c5733783bd4d",
+      "bytes": 136749
+    },
+    {
+      "path": "screenshots/candidate/candidate-horizontal-stacked-bars-1440.png",
+      "sha256": "288bf6deb938f2f23349bfe6dcf29dd72b6032e6d0e0c7001817a8aa8fe32153",
+      "bytes": 135877
+    },
+    {
+      "path": "screenshots/candidate/candidate-irregular-time-line-1440.png",
+      "sha256": "7002006ec2b8ee434eae0eace14664908df21bb3cecf78c2e69789312c6dc5ee",
+      "bytes": 201547
+    },
+    {
+      "path": "screenshots/candidate/candidate-irregular-time-line-reflow-200-percent.png",
+      "sha256": "f4ae44201e258d933b4c2439db4097e665ad6f92c0396f52109a0e4c53ee4a5c",
+      "bytes": 127789
+    },
+    {
+      "path": "screenshots/candidate/candidate-mixed-sign-scatter-1440.png",
+      "sha256": "44c7feed0a821547670ebe4e45760314207f29f5e90b410edd5079b69d38a46a",
+      "bytes": 169556
+    },
+    {
+      "path": "screenshots/candidate/candidate-vertical-grouped-bars-1440.png",
+      "sha256": "837464451b51ae809596343e65f9e6be1f4087bf522ed03f28ed6d3525881120",
+      "bytes": 144153
+    },
+    {
+      "path": "screenshots/candidate/candidate-vertical-percent-bars-1440.png",
+      "sha256": "9d73986c86762ddf8500f1d4754264d86fb5e8b84d2671e4bf689e92dc7d98a0",
+      "bytes": 145740
+    },
+    {
+      "path": "screenshots/candidate/candidate-vertical-stacked-bars-1440.png",
+      "sha256": "5a19a3ca43a4c85259d4802cdac3b61f29a543ab7a4e8967ef6c5ad3d936e04a",
+      "bytes": 144877
+    }
+  ],
+  "artifact_bridge": {
+    "status": "STAGED",
+    "transport": "bounded-dashboard-managed-Notion-fallback",
+    "semantic_scope": "canonical CHG-137-r2 Artifact Run only"
+  },
+  "promotion": {
+    "integrated": false,
+    "visual_surfaces_updated": false,
+    "gold_candidate_claimed": false,
+    "go_claimed": false
+  },
+  "holdouts": {
+    "base_is_evidence_only": true,
+    "r1_rejected_candidate_is_not_fabric_envelope_base": true,
+    "specialized_statistical_engineering_waferfab_authorities_retained": true
+  }
+}

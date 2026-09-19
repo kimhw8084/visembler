@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "project": "visembler",
+  "request": "CHG-137-r3",
+  "scope": "bounded CHG-137 chart-system acceptance; not global UI certification",
+  "status": "PASS_WITHIN_BOUNDED_SCOPE",
+  "candidate_pngs_structurally_valid": 15,
+  "base_pngs_structurally_valid": 15,
+  "candidate_pngs_visually_inspected": 15,
+  "base_comparison_pngs_visually_inspected": 8,
+  "candidate_findings": [
+    "No material wrong segment start/end geometry, inverted/collapsed stack, malformed mark, plot escape, or responsive overflow observed in the retained candidate captures.",
+    "Annotations/secondary axis, embedded main-editor chart, line, scatter, dense legend desktop/narrow/mobile, 200-percent reflow and keyboard capture remained visually bounded in the inspected PNGs."
+  ],
+  "base_comparison_findings": [
+    "Retained base captures visibly show the R1 bar-family failures: overlapping/crowded legacy marks and legend/label crowding in the compared grouped/stacked/percent and horizontal families.",
+    "Candidate captures show separated logical bar segments and bounded comparison surfaces for those same families."
+  ],
+  "limitations": "This is a bounded evidence review and is not a claim of global UI perfection."
+}

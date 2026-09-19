@@ -1,0 +1,261 @@
+{
+  "schema_version": 2,
+  "carrier_schema": "project-os-artifact-carrier-v1",
+  "project": "visembler",
+  "request": "CHG-137-r3",
+  "operation": "VERIFY",
+  "artifact_ref": "refs/heads/project-os-artifacts/visembler/CHG-137-r3",
+  "artifact_run": {
+    "id": "AR-30",
+    "page_id": "3e0c564c-8d04-812a-9403-cc12ac4a6547",
+    "title": "Visembler CHG-137-r2 R2 Artifact Run",
+    "bound_request": "CHG-137-r2",
+    "fabric_job": "CF-cc68ea8cca82c915c44a0809",
+    "source_sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+    "tree_sha": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+    "status": "Staged",
+    "manifest_sha256": "65b172ba33b621d8945ca3886d8a9e597f2c99024f4764d66bd420dc45a5c80c",
+    "bundle_sha256": "df4af530ee3855d59b04cd3c16badd22ecb320f8be24f31438a284f733c8b0b2",
+    "artifact_count": 40,
+    "uploaded_bytes": 8544808
+  },
+  "candidate_identity": {
+    "sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "metadata_alias": {
+    "sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+    "zero_file_delta_from_candidate": true
+  },
+  "r2_evidence": {
+    "sha": "d9227f50cc1907e6d6bfdefcfca1579892460284",
+    "sole_parent": "2c43d5c4c36d215fe160eafea15b80ce71419f2b"
+  },
+  "provider_reconciliation": {
+    "json_attachment_downloads": "exact byte equality for all 9 JSON uploads via authorized dashboard-managed Notion download path",
+    "json_attachment_ids": {
+      "CHG-137-r2-manifest.json": "3e0c564c-8d04-81c7-b81b-00b2e5697b1a",
+      "CHG-137-r2-bar-geometry-probe.json": "3e0c564c-8d04-81f7-9e29-00b2bf1057f0",
+      "CHG-137-r2-base-browser-matrix.json": "3e0c564c-8d04-8167-84a4-00b24d040dc3",
+      "CHG-137-r2-candidate-browser-matrix.json": "3e0c564c-8d04-81e7-88ba-00b241d0cdc6",
+      "CHG-137-r2-chart-studio-acceptance.json": "3e0c564c-8d04-81e1-9059-00b27ff1a632",
+      "CHG-137-r2-domain-scale-probes.json": "3e0c564c-8d04-81fd-a2f1-00b2fd6af101",
+      "CHG-137-r2-interaction-accessibility.json": "3e0c564c-8d04-8144-86f2-00b2060db80d",
+      "CHG-137-r2-live-export-parity.json": "3e0c564c-8d04-8116-837e-00b256f4a7ce",
+      "CHG-137-r2-source-authority.json": "3e0c564c-8d04-8193-9759-00b218fec57e"
+    },
+    "binary_bundle_attachment_id": "3e0c564c-8d04-81a2-8507-00b2deb8cc65",
+    "binary_basis": "retained exact bundle bytes; direct small-text endpoint is unsupported for the binary bundle; no screenshot recapture or re-encoding performed",
+    "manifest_exact": true,
+    "bundle_exact": true
+  },
+  "recovered_artifacts": {
+    "artifact_count": 40,
+    "uploaded_bytes": 8544808,
+    "recovered_bytes": 8544808,
+    "individual_manifest_artifact_count": 38,
+    "json_count": 9,
+    "png_count": 30,
+    "hash_and_size_all_match": true,
+    "png_signatures_and_dimensions_valid": true
+  },
+  "json_results": {
+    "candidate_browser": {
+      "pass": 34,
+      "applicable": 34,
+      "errors": [],
+      "all_applicable_pass": true
+    },
+    "chart_studio": {
+      "pass": 95,
+      "applicable": 95,
+      "not_applicable": 2,
+      "unexpected_errors": []
+    },
+    "interaction_accessibility": {
+      "pass": 95,
+      "applicable": 95,
+      "not_applicable": 2,
+      "unexpected_errors": []
+    },
+    "domain_scale": {
+      "source": "tests/test_visualizer_chart_renderer_r1.py and canonical renderer probe",
+      "geometry_domains": {
+        "vertical-grouped-positive": {
+          "min": 0,
+          "max": 5
+        },
+        "vertical-grouped-negative": {
+          "min": -5,
+          "max": 0
+        },
+        "vertical-mixed": {
+          "min": -2,
+          "max": 5
+        },
+        "vertical-stacked": {
+          "min": -7,
+          "max": 7
+        },
+        "vertical-percent": {
+          "min": 0,
+          "max": 1
+        },
+        "horizontal-grouped": {
+          "min": 0,
+          "max": 5
+        },
+        "horizontal-stacked": {
+          "min": -7,
+          "max": 7
+        },
+        "horizontal-percent": {
+          "min": 0,
+          "max": 1
+        },
+        "configured-domain": {
+          "min": -10,
+          "max": 10
+        }
+      },
+      "configured_domain": {
+        "min": -10,
+        "max": 10
+      },
+      "percent_domain": {
+        "min": 0,
+        "max": 1
+      },
+      "finite_all_fixtures": true
+    },
+    "live_export_parity": {
+      "candidate_browser_export_check": true,
+      "authority_marker": true,
+      "chart_studio_and_integrated_core_types": true
+    },
+    "source_authority": {
+      "core_types": {
+        "Vertical Bar": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Horizontal Bar": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Line Chart": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Multi-Line": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Area Chart": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Scatter Plot": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Regression Scatter": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Histogram": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Box Plot": {
+          "chart_studio": true,
+          "integrated_editor": true
+        },
+        "Pareto": {
+          "chart_studio": true,
+          "integrated_editor": true
+        }
+      },
+      "legacy_overlapping_return": false,
+      "legacy_non_core_guard": true,
+      "canonical_route_before_switch": true
+    }
+  },
+  "bar_geometry_independent_reconciliation": {
+    "tolerance": 0.011,
+    "all_fixtures_pass": true,
+    "fixture_count": 9,
+    "finite_and_in_bounds": true,
+    "later_positive_stack": {
+      "base": 4,
+      "display": 3,
+      "end": 7,
+      "vertical_pass": true,
+      "horizontal_pass": true
+    },
+    "later_percent_stack": {
+      "base": 0.4,
+      "display": 0.6,
+      "end": 1.0,
+      "vertical_pass": true,
+      "horizontal_equivalent_pass": true
+    },
+    "orientation": "horizontal uses numeric-X/category-Y"
+  },
+  "visual_audit": {
+    "schema_version": 1,
+    "project": "visembler",
+    "request": "CHG-137-r3",
+    "scope": "bounded CHG-137 chart-system acceptance; not global UI certification",
+    "status": "PASS_WITHIN_BOUNDED_SCOPE",
+    "candidate_pngs_structurally_valid": 15,
+    "base_pngs_structurally_valid": 15,
+    "candidate_pngs_visually_inspected": 15,
+    "base_comparison_pngs_visually_inspected": 8,
+    "candidate_findings": [
+      "No material wrong segment start/end geometry, inverted/collapsed stack, malformed mark, plot escape, or responsive overflow observed in the retained candidate captures.",
+      "Annotations/secondary axis, embedded main-editor chart, line, scatter, dense legend desktop/narrow/mobile, 200-percent reflow and keyboard capture remained visually bounded in the inspected PNGs."
+    ],
+    "base_comparison_findings": [
+      "Retained base captures visibly show the R1 bar-family failures: overlapping/crowded legacy marks and legend/label crowding in the compared grouped/stacked/percent and horizontal families.",
+      "Candidate captures show separated logical bar segments and bounded comparison surfaces for those same families."
+    ],
+    "limitations": "This is a bounded evidence review and is not a claim of global UI perfection."
+  },
+  "identity_reconciliation": {
+    "schema_version": 1,
+    "project": "visembler",
+    "request": "CHG-137-r3",
+    "operation": "VERIFY",
+    "source_candidate": {
+      "sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+      "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+      "parent": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+      "relation": "one commit from authoritative current main"
+    },
+    "metadata_alias": {
+      "sha": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+      "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+      "parent": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+      "relation": "sole child; exact tree equality; zero file delta"
+    },
+    "r2_fabric_evidence": {
+      "sha": "d9227f50cc1907e6d6bfdefcfca1579892460284",
+      "parent": "2c43d5c4c36d215fe160eafea15b80ce71419f2b",
+      "tree_change": "adds only .codex-fabric/audit.json"
+    },
+    "ar30_certifies": {
+      "source_sha": "042026edbc450e3df37f3aaddd44c44394f04ef9",
+      "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+    },
+    "observation": "Exact tree equality plus zero file delta makes the Product bytes semantically identical between 042026ed... and 2c43d5c4... under the repository facts inspected here. This VERIFY records the factual relation only; it does not invent or select an Accepted Head, GO, or integration eligibility. Project OS/ChatGPT must decide whether AR-30 evidence is transferable under the existing evidence law."
+  },
+  "source_authority_reconciliation": "Exact 042026ed... source imports and routes CORE_TYPES through renderCanonicalChartSvg; integrated editor routes core chart entries to renderChartStudioElement, which uses renderChartSvg; the canonical SVG marker is present in both paths. Export parity source check preserves model hash and requires the canonical marker plus data-chart-point output.",
+  "target_observation": {
+    "authoritative_base_sha": "a7d5b18ea471ec5ee4b33983175625296d27c07f",
+    "authoritative_base_tree": "a0cc41cdb119b8375d5bea5aa90e806b2e15f811",
+    "zero_product_source_change": true
+  },
+  "reader_instruction": "Inspect the unchanged r2-evidence payload via visual-atlas/reader-index.json. No Product source/history was modified; no new Product candidate was created; no GO or integration decision is declared."
+}
