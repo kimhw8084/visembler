@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "kind": "project-os.artifact-stage-receipt",
+  "status": "Staged",
+  "stage_error_code": null,
+  "fabric": {
+    "job_id": "CF-d9f64dac00bb470d1d9fe774",
+    "project": "visembler",
+    "request": "CHG-136-r2",
+    "operation": "VERIFY",
+    "work_branch": "verify/visembler-chg136-evidence-r2",
+    "target_branch": "main"
+  },
+  "r2_execution": {
+    "source_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "source_tree": "ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1",
+    "remote_main_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "remote_main_unchanged": true,
+    "product_source_mutated": false,
+    "tests_mutated": false,
+    "browser_tooling_mutated": false,
+    "preserved_r1_candidate_mutated": false,
+    "worktree_clean_before_evidence_commit": true
+  },
+  "r1_provenance": {
+    "request": "CHG-136-r1",
+    "fabric_job": "CF-f3382ade3825c8275518d26f",
+    "candidate_sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+    "candidate_tree": "a0cc41cdb119b8375d5bea5aa90e806b2e15f811",
+    "candidate_parent": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "evidence_commit": "cfe4b494f54938f23060a5a26bf3c67cda291abb",
+    "evidence_parent": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+    "remote_candidate_branch_sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4"
+  },
+  "artifact_run": {
+    "run_id": "AR-28",
+    "page_id": "3e0c564c-8d04-81b7-8fc1-c1f990ab7061",
+    "url": "https://app.notion.com/p/3e0c564c8d0481b78fc1c1f990ab7061",
+    "status": "Staged",
+    "bridge_implementation": "bounded-direct-notion-api-fallback",
+    "bridge_version": "direct-notion-fallback-v1",
+    "credential_recorded": false
+  },
+  "manifest": {
+    "path": "CHG-136-R2-RECOVERY-MANIFEST.json",
+    "sha256": "35320654d0420b1ed90d03585238bd8203258b649f02c960995ea66c84806ad3",
+    "bytes": 17287,
+    "original_r1_manifest_sha256": "1a0ce8c18568fbd0d5fc2e139b4c60fa98b81803e335695d9099c259a4b89b81"
+  },
+  "bundle": {
+    "path": "CHG-136-r2-complete-deterministic-bundle.zip",
+    "sha256": "1c58fc4f9347c66ed1392c371dcea436606d51053ba409ab7ba9619a7615d723",
+    "bytes": 2961621,
+    "member_file_count": 37
+  },
+  "upload": {
+    "artifact_count": 39,
+    "uploaded_bytes": 6114892,
+    "individual_png_count": 34,
+    "final_stage_a_attached": true,
+    "baseline_stage_a_attached": true,
+    "original_r1_manifest_attached": true,
+    "complete_bundle_attached": true
+  },
+  "provider_readback": {
+    "provider": "Notion fetch/search",
+    "exact_row_count_for_request_and_job": 1,
+    "exact_tuple": true,
+    "project_relation": true,
+    "source_change_relation": true,
+    "status_staged": true,
+    "stage_error_empty": true,
+    "artifact_count_matches": true,
+    "uploaded_bytes_matches": true,
+    "manifest_sha_field_matches_local": true,
+    "bundle_sha_field_matches_local": true,
+    "all_34_png_names_present_individually": true,
+    "provider_upload_content_lengths_match_local_bytes": true,
+    "retained_png_signatures_and_dimensions_verified_from_local_bytes": true,
+    "binary_signed_url_redownload": "not exposed by the connected MCP page readback; independent Project OS reader must inspect staged pixels",
+    "readback_result": "PASS_FOR_PROVIDER_ROW_AND_ATTACHMENT_RECONCILIATION"
+  },
+  "acceptance_observations": {
+    "final_stage_a_status": "PASS",
+    "final_stage_a_cases": "30/30",
+    "final_stage_a_unexpected_errors": [],
+    "baseline_stage_a_status": "FAIL_EXPECTED_BASELINE",
+    "hover_before_after_byte_equal": true,
+    "hover_before_after_pixel_equal": true,
+    "hover_dimensions": [847, 426],
+    "geometry_values_absent_from_final_report_not_invented": true
+  },
+  "guardrails": {
+    "self_accepted": false,
+    "promoted": false,
+    "visual_surfaces_modified": false,
+    "chg136_semantic_verdict_modified": false,
+    "ui_go_claimed": false,
+    "stop_after_staging_and_readback": true
+  }
+}

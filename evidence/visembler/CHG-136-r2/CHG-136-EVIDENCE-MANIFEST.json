@@ -1,0 +1,337 @@
+{
+  "artifact_id": "visembler-chg136-editor-composition-r1",
+  "scope": "CHG-136 only",
+  "secret_free": true,
+  "base": {
+    "commit": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "tree": "ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1"
+  },
+  "candidate": {
+    "git_head_commit": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "git_head_tree": "ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1",
+    "working_tree_uncommitted": true,
+    "git_diff_sha256": "5b1e7c680c029cbb95e4647355c3aa518230bb324d5a3b7a2edb8c845ab6ea1f",
+    "source_files": {
+      "company_ui/products/visualizer/assets/integrated_editor.mjs": "a00f33465fbd51b2eefc3f98b3c4ad291be7b4559fd37ec9a525ba74f8407195",
+      "company_ui/products/visualizer/assets/integrated_editor.css": "439f208bbdd7c6a9037c234bfa801d9877556c3649f40618f94863c5a90a1fdd",
+      "company_ui/products/visualizer/assets/integrated_editor.html": "06d6744054b4f1649ce843afb5d493ecb5ee8d2e3034041f097282c875581157",
+      "scripts/release_checks/run_stage_a_acceptance.py": "d922d4ef467e7bf5e6c6a8f8ce99f392ac151d65df50423c2e789d011999c1b7",
+      "tests/test_visualizer_final_visual_remediation.py": "ca5629605ae4d6ac9be748b70a4bbc10f49b33feaaee984b4b048aa265ee7ae2",
+      "tests/test_visualizer_r15_authoring_depth.py": "c1fbfc58698788b8f47cbbd2e0c2a34147f825bc65c5784df37b3c98f591d5f1",
+      "tests/test_visualizer_wave12_responsive_shell.py": "3f8140d6d4cff08106eddcfe87772267c440f84f8a1364ff38dc05fa640ec487"
+    }
+  },
+  "before": {
+    "root": "/tmp/visembler-chg136-fabric-evidence/before-97a46d60",
+    "acceptance_report": "929d6c00af6757a8f9cae59869271eb1d71e7b0b6dd503e882622e241731f220",
+    "status": "FAIL_EXPECTED_BASELINE",
+    "screenshots": [
+      {
+        "file": "screenshots/after-hover-line-chart-1440-after.png",
+        "sha256": "dd872273df479532d599f1abd6e57094db792ec059759c10e1dd2cf8e40ff9cf",
+        "size": [
+          779,
+          285
+        ]
+      },
+      {
+        "file": "screenshots/after-hover-line-chart-1440-before.png",
+        "sha256": "dd872273df479532d599f1abd6e57094db792ec059759c10e1dd2cf8e40ff9cf",
+        "size": [
+          779,
+          285
+        ]
+      },
+      {
+        "file": "screenshots/after-hover-line-chart-1440.png",
+        "sha256": "1025857fc2d3bee7af306d20b1cb4f89dc8d9b3e6df9d66e5746a77309340464",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-multi-report-1440.png",
+        "sha256": "9cbbb01f15256d2cb1479d0cba2299350ffc5184ca6fcaa8e1ff88d375f04f6e",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-selected-chrome-1440.png",
+        "sha256": "20d6f9e21d56bf9ebf4f318e1e0e10d613529de3345401e0596d2015887dea0a",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-body-narrative-1440.png",
+        "sha256": "42f30ccf1fba294bab2485b0077376d7f7a7dfd4b9f82615fd371c8086a498ad",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-clean-table-1440.png",
+        "sha256": "1540cfc23ab4414d720cabbbd28b384ace5bcd21d782cceb606644230ec371b6",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-hero-metric-1440.png",
+        "sha256": "96df6d867b600de1fa8eb834123c1a1f5ae0a2ea7b475d20020c1528b2e6b511",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-line-chart-1440.png",
+        "sha256": "590b75ae2359fd5694d8a767d528d8198ee6b70ba5d73fb1f35770b7c25a73f5",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-process-flow-1440.png",
+        "sha256": "c1cfa36d71c8c691398f71ea7d7dde764c13b4d9975d8a03bee514a404cefc47",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-wafer-map-1440.png",
+        "sha256": "43ceb27466363ea297bd6e2bb5f6544962026592983db30a770e8dab4a55aa7d",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-1024.png",
+        "sha256": "d6551a3cb9fa420b39d932830620906ba0fb59394fcb90426bc672ea4308da7e",
+        "size": [
+          1024,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-1440.png",
+        "sha256": "d86e1a3ebc7ab31273299f1f3743a0e6980cfafdcc1431e56119e5ff138d46aa",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-390.png",
+        "sha256": "0d9070f0f8e462a7e4528b84edf6fa2e37334079b0bbe9276b4581015477978c",
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "screenshots/preview-768.png",
+        "sha256": "706e35eee749cfd5396b7f04adf01fe32df18c901a31983676bab27d3152cf73",
+        "size": [
+          768,
+          844
+        ]
+      }
+    ]
+  },
+  "after": {
+    "root": "/tmp/visembler-chg136-fabric-evidence/after-a00f3346",
+    "acceptance_report": "860acc8aa4baada0965b684fa56f011d99115ba86d36e4d74d1a0e2ec67f3837",
+    "status": "PASS",
+    "screenshots": [
+      {
+        "file": "screenshots/after-command-palette-1024.png",
+        "sha256": "9dbad70cab8f94f4cfa4b2b94175690e4a34a425673f007356e3a07f55498787",
+        "size": [
+          1024,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-command-palette-1440.png",
+        "sha256": "3d01a723eeff44154f448fe58666c1802e325343cbe7e9dd3b0a17e2b1491d48",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-command-palette-200-percent-equivalent.png",
+        "sha256": "72f2bd38256e7b59fa32877bc9c50c0212224db292317a7b3cd5b030b0da2fe2",
+        "size": [
+          780,
+          1688
+        ]
+      },
+      {
+        "file": "screenshots/after-command-palette-390.png",
+        "sha256": "e5990e531da37fb5daa2d601d3e8251e8ad6c842d2c62aae6033e242b64f7232",
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "screenshots/after-hover-line-chart-1440-after.png",
+        "sha256": "8825fb7fb2e66fe7fe68e5408514464420d73cdab1a40f9dc65fc09eb378c4e5",
+        "size": [
+          847,
+          426
+        ]
+      },
+      {
+        "file": "screenshots/after-hover-line-chart-1440-before.png",
+        "sha256": "8825fb7fb2e66fe7fe68e5408514464420d73cdab1a40f9dc65fc09eb378c4e5",
+        "size": [
+          847,
+          426
+        ]
+      },
+      {
+        "file": "screenshots/after-hover-line-chart-1440.png",
+        "sha256": "9afcc32d823fcfd291757f4d33856a9b798e17540d1310c74440815d731cb3df",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-multi-report-1440.png",
+        "sha256": "91d2023fe2f2afca38e6e076dbb0fcfa6dfe131e57bd43bbb195f4ea3bf729f0",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-selected-chrome-1440.png",
+        "sha256": "9f8938c3e821ccd65f020ab06b879f374b1ccd17719f87de275345c311925291",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-body-narrative-1440.png",
+        "sha256": "db40f2ab5b32ad77baeb69beac31c2451e26db4068428ca50084fb7df3602fb6",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-clean-table-1440.png",
+        "sha256": "365f252e6266fd91cab2612482ccc0e068624c2b31e71733fd97131d9f27b81a",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-hero-metric-1440.png",
+        "sha256": "c54d40e5775cf3fb2b606c80cd959b62263af7b9b6c08bccf5bac18ab6606919",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-line-chart-1440.png",
+        "sha256": "4e7e6464684a4c169633153fe447735e27ef2c283ed20d9bebdc73bf428d996b",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-process-flow-1440.png",
+        "sha256": "37ebd70b1d88f82182e21ecec3025f604dba5568a8d1f8a30220c0fc2137a731",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/after-solo-wafer-map-1440.png",
+        "sha256": "0243ff9581adf37e7b83829f27451da5d4d939fec13cae059af6b82222ee0a5d",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-1024.png",
+        "sha256": "924932ddf32e9c6afb953e7577d50281b37728c33262776c3162a022f23aa881",
+        "size": [
+          1024,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-1440.png",
+        "sha256": "a748a46a7a4e26428508caca1f087e7953bba6a8879049d5a47b634a7a7b810f",
+        "size": [
+          1440,
+          900
+        ]
+      },
+      {
+        "file": "screenshots/preview-390.png",
+        "sha256": "b11ebc46e20c6174671a0c767404ddb50bf22acb260d7d9bdf015aaf12feac94",
+        "size": [
+          390,
+          844
+        ]
+      },
+      {
+        "file": "screenshots/preview-768.png",
+        "sha256": "e56c8258de200bb3965f7dd86860f9f662e97d7b5b37cc9e55b5c3ab5b03ea77",
+        "size": [
+          768,
+          844
+        ]
+      }
+    ]
+  },
+  "locators": [
+    "#hull",
+    ".component",
+    ".component.selected",
+    ".editor-chrome",
+    ".editor-chrome .resize-h",
+    "#commandBtn",
+    "#cmdList .cmd-label",
+    "#libraryToggle",
+    "#inspectorToggle",
+    "#previewBtn",
+    "#exportBtn"
+  ],
+  "geometry_policy": [
+    "plot/data/media solo visuals use the safe hull subject to declared aspect/content constraints",
+    "square/spatial visuals use the largest square supported by the safe hull",
+    "text/metric solo visuals use full-row hero bands with readable semantic height",
+    "multi-element rows use deterministic order, family minimums, weighted growth, and bounded row packing"
+  ],
+  "handoff": "No Project OS/Fabric connector was exposed in this session; this deterministic local evidence bundle is retained for independent audit handoff.",
+  "verification": {
+    "focused_and_related_pytest": "71 passed",
+    "company_ui_validate": "0 errors, 99 warnings (pre-existing repository warning inventory)",
+    "node_check": "PASS",
+    "browser_head": "30/30 PASS; no console/page/network errors",
+    "baseline_browser": "19/30 PASS; expected baseline defects recorded, no claim of baseline readiness"
+  }
+}
