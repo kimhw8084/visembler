@@ -175,8 +175,12 @@ def test_layout_selection_and_tablet_contracts_are_explicit() -> None:
     css = (ASSETS / "integrated_editor.css").read_text(encoding="utf-8")
     diagram_html = (ASSETS / "diagram_studio.html").read_text(encoding="utf-8")
     diagram_js = (ASSETS / "diagram_studio.mjs").read_text(encoding="utf-8")
-    assert "soloSize" in editor and "growthScore" in editor and "let y=g" in editor
-    assert "position:fixed;z-index:190" in css and "scored.x}px" in editor
+    assert "const fitToHull=" in editor and "const growthScore=spec=>" in editor and "let y=g" in editor
+    assert "const safeW=Math.max(1,CANVAS.w-2*CANVAS.gap)" in editor
+    assert "editor-chrome-layer" in editor and "renderEditorChrome(rm)" in editor
+    assert "--viz-layer-editor-chrome" in css and "pointer-events:none" in css
+    assert "data-responsive-priority=\"secondary\"" in editor or "data-responsive-priority=\"secondary\"" in (ASSETS / "integrated_editor.html").read_text(encoding="utf-8")
+    assert "toolbar .tb:nth-of-type(n+7)" not in css
     assert "max-height:none" in css and "90cqw" in css
     assert "toggle-palette" in diagram_html and "toggle-inspector" in diagram_html
     assert "fitViewport('fit-page',false)" in diagram_js and "viewportTouched" in diagram_js

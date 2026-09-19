@@ -68,6 +68,14 @@
   --viz-motion-reveal: 450ms;
   --viz-ease: cubic-bezier(.2, .8, .2, 1);
   --viz-peer-gap: 14px;
+  /* One editor-only elevation contract. Content remains below authoring
+     chrome; transient guides never become a second control layer. */
+  --viz-layer-canvas: 1;
+  --viz-layer-group: 8;
+  --viz-layer-content: 10;
+  --viz-layer-guides: 20;
+  --viz-layer-editor-chrome: 40;
+  --viz-layer-context: 190;
   .engineering-live .spec-line{stroke:var(--viz-bad);stroke-width:1.2;stroke-dasharray:2 2}
 }
 
@@ -389,7 +397,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   border-radius: var(--viz-r-1);
 }
 .component:hover .c-head, .component.selected .c-head, .c-head:focus-visible { opacity: 1; }
-.guided .c-head, .free .c-head { background: linear-gradient(to bottom, color-mix(in srgb, var(--viz-surface) 88%, transparent), transparent); }
+.guided .c-head, .free .c-head { background: transparent; }
 .c-grip { position: absolute; top: var(--viz-s-3); left: var(--viz-s-3); width: 20px; height: 6px; border-top: 2px dotted var(--viz-muted); }
 .resize-h {
   position: absolute;
@@ -565,7 +573,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 @media (max-width: 800px) {
   .shell { grid-template-columns: 1fr; }
   .brand span, .top-sep { display: none; }
-  .toolbar .tb:nth-of-type(n+7) { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.001ms !important; animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; }
@@ -1448,6 +1455,123 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 .cui-report-template-title { font-weight:700; color:var(--cui-text-primary,var(--viz-ink)); }
 .cui-report-template-description { color:var(--cui-text-secondary,var(--viz-muted)); font-size:12px; line-height:1.35; }
 .cui-report-template:hover, .cui-report-template:focus-visible { border-color:var(--cui-primary,var(--viz-accent)); background:var(--cui-surface-secondary,var(--viz-surface-2)); }
+
+/* CHG-136: editor-only elevation and non-occluding authoring chrome.  The
+   chrome is a sibling of the report hull, so handles and the move target are
+   never painted over report pixels. */
+.cui-visualizer-root .canvas-hull { z-index:var(--viz-layer-canvas); }
+.cui-visualizer-root .group-layer { z-index:var(--viz-layer-group); }
+.cui-visualizer-root .component-layer { z-index:var(--viz-layer-content); }
+.cui-visualizer-root .overlay-layer { z-index:var(--viz-layer-guides)!important; }
+.cui-visualizer-root .editor-chrome-layer {
+  position:absolute;
+  inset:0;
+  z-index:var(--viz-layer-editor-chrome);
+  pointer-events:none;
+}
+.cui-visualizer-root .editor-chrome {
+  position:absolute;
+  pointer-events:none;
+  border:2px solid var(--viz-accent);
+  border-radius:var(--viz-r-4);
+  box-sizing:border-box;
+}
+.cui-visualizer-root .editor-chrome button { pointer-events:auto; }
+.cui-visualizer-root .editor-chrome .c-head {
+  left:0!important;
+  top:-46px!important;
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  opacity:1!important;
+  border:0!important;
+  border-radius:var(--viz-r-2)!important;
+  background:var(--viz-surface)!important;
+  box-shadow:var(--viz-shadow-1);
+}
+.cui-visualizer-root .editor-chrome .c-grip { top:17px; left:12px; }
+.cui-visualizer-root .editor-chrome .resize-h {
+  width:44px!important;
+  height:44px!important;
+  min-width:44px!important;
+  min-height:44px!important;
+  opacity:1!important;
+  border:0!important;
+  border-radius:var(--viz-r-2)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.cui-visualizer-root .editor-chrome .resize-h::before {
+  content:"";
+  position:absolute;
+  width:9px;
+  height:9px;
+  box-sizing:border-box;
+  border:1px solid var(--viz-accent);
+  border-radius:2px;
+  background:var(--viz-surface);
+  box-shadow:var(--viz-shadow-1);
+}
+.cui-visualizer-root .editor-chrome .resize-h--n { left:50%!important; top:-46px!important; right:auto!important; bottom:auto!important; transform:translateX(-50%); cursor:n-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--ne { right:-46px!important; top:-46px!important; left:auto!important; bottom:auto!important; cursor:ne-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--e { right:-46px!important; top:50%!important; left:auto!important; bottom:auto!important; transform:translateY(-50%); cursor:e-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--se { right:-46px!important; bottom:-46px!important; left:auto!important; top:auto!important; cursor:se-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--s { left:50%!important; bottom:-46px!important; right:auto!important; top:auto!important; transform:translateX(-50%); cursor:s-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--sw { left:-46px!important; bottom:-46px!important; right:auto!important; top:auto!important; cursor:sw-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--w { left:-46px!important; top:50%!important; right:auto!important; bottom:auto!important; transform:translateY(-50%); cursor:w-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--nw { left:-46px!important; top:-46px!important; right:auto!important; bottom:auto!important; cursor:nw-resize; }
+.cui-visualizer-root .editor-chrome .resize-h--n::before,.cui-visualizer-root .editor-chrome .resize-h--s::before { left:17px; top:17px; }
+.cui-visualizer-root .editor-chrome .resize-h--e::before,.cui-visualizer-root .editor-chrome .resize-h--w::before { left:17px; top:17px; }
+.cui-visualizer-root .editor-chrome .resize-h--ne::before,.cui-visualizer-root .editor-chrome .resize-h--sw::before { left:17px; top:17px; }
+.cui-visualizer-root .editor-chrome .resize-h--nw::before,.cui-visualizer-root .editor-chrome .resize-h--se::before { left:17px; top:17px; }
+
+/* Ordinary hover is content-neutral. Selection is the only state that adds
+   editor chrome, and that state is painted outside the component boundary. */
+.cui-visualizer-root .component:hover {
+  border-color:var(--viz-line)!important;
+  box-shadow:var(--viz-shadow-component)!important;
+}
+.cui-visualizer-root .component.selected {
+  border-color:var(--viz-accent)!important;
+  box-shadow:none!important;
+  outline:2px solid color-mix(in srgb,var(--viz-accent) 78%,transparent);
+  outline-offset:2px;
+}
+.cui-visualizer-root .component.selected::before { content:none!important; display:none!important; }
+.cui-visualizer-root .context { z-index:var(--viz-layer-context)!important; }
+.cui-visualizer-root .component.dragging { opacity:.82; box-shadow:none!important; }
+
+/* CHG-136: responsive priority is explicit. Secondary authoring controls are
+   available in the keyboard/touch command palette when the shell is narrow;
+   no DOM-order selector is allowed to remove an action. */
+@media (max-width:1280px) {
+  .cui-visualizer-root .toolbar [data-responsive-priority="secondary"] { display:none!important; }
+  .cui-visualizer-root #commandBtn { display:inline-flex!important; }
+}
+@media (max-width: 800px) {
+  .cui-visualizer-root .topbar { overflow-x:auto!important; overflow-y:hidden; }
+  .cui-visualizer-root .toolbar { min-width:max-content; flex:0 0 auto; }
+  .cui-visualizer-root .toolbar [data-responsive-priority="secondary"] { display:none!important; }
+  .cui-visualizer-root #historyBtn,
+  .cui-visualizer-root #helpBtn,
+  .cui-visualizer-root #debugBtn,
+  .cui-visualizer-root #stageDIntakeBtn,
+  .cui-visualizer-root #stageDAssistantBtn,
+  .cui-visualizer-root #stageDCleanBtn,
+  .cui-visualizer-root #stageDFitBtn { display:none!important; }
+  .cui-visualizer-root #commandBtn,
+  .cui-visualizer-root #libraryToggle,
+  .cui-visualizer-root #inspectorToggle,
+  .cui-visualizer-root #previewBtn,
+  .cui-visualizer-root #saveBtn,
+  .cui-visualizer-root #exportBtn { display:inline-flex!important; }
+}
+
+/* Selection chrome is outside the report hull, so it remains visible near
+   the canvas edge without changing report content clipping semantics. */
+.cui-visualizer-root .editor-chrome-layer[hidden],
+.cui-visualizer-root.preview-mode .editor-chrome-layer { display:none!important; }
 
 /* Stage A: the desktop shell is a real three-column layout.  The tablet
    drawer breakpoint is intentionally kept at 800px; 1024px still gets a

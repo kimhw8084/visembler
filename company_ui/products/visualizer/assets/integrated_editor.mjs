@@ -295,7 +295,8 @@ function semanticPolicy(entry) {
   const d=typeDefaults[entry.type]||typeDefaults.text;
   const name=String(entry.element||entry.title||'').toLowerCase();
   const engine=entry.engine||'';
-  let p={minW:d.minW,minH:d.minH,prefW:Math.max(d.minW,320),prefH:Math.max(d.minH,180),maxW:CANVAS.w-2*CANVAS.gap,maxH:900,growth:'balanced',aspect:null};
+  const safeW=Math.max(1,CANVAS.w-2*CANVAS.gap),safeH=Math.max(1,CANVAS.h-2*CANVAS.gap);
+  let p={minW:d.minW,minH:d.minH,prefW:Math.max(d.minW,320),prefH:Math.max(d.minH,180),maxW:safeW,maxH:safeH,growth:'balanced',aspect:null};
   if(engine==='MetricEngine') {
     p={...p,minW:190,minH:128,prefW:270,prefH:150,growth:'horizontal'};
     if(name.includes('hero kpi')) p={...p,minW:280,minH:145,prefW:420,prefH:170};
@@ -391,30 +392,39 @@ function allocateRowWidths(row, innerW, gap) {
 function semanticSmartLayout(items=viewItems()) {
   const ordered=[...items].sort((a,b)=>a.order-b.order);
   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
-  const g=CANVAS.gap,innerW=CANVAS.w-2*g;
+  const g=CANVAS.gap,innerW=Math.max(1,CANVAS.w-2*g),innerH=Math.max(1,CANVAS.h-2*g);
   const rows=[];let row=[];let minUsed=0;
-  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),forceOwnRow=role==='Headline'||(role==='Primary Evidence'&&['plot','data','media','square'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,squareConflict=row.length>=2&&(policy.growth==='square'||row.some(member=>member.policy.growth==='square'));if(row.length&&(minUsed+need>innerW||squareConflict||forceOwnRow)){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
+  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),forceOwnRow=role==='Headline'||(role==='Primary Evidence'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW;if(row.length&&(minUsed+need>innerW||forceOwnRow)){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
   if(row.length)rows.push(row);
   const solo=ordered.length===1&&rows.length===1;
-  const innerH=CANVAS.h-2*g;
+  const fitToHull=(policy,w=innerW,h=innerH)=>{
+    let width=Math.min(policy.maxW,w),height=Math.min(policy.maxH,h);
+    if(policy.growth==='square'||policy.aspect===1){const side=Math.min(width,height);return {w:Math.max(policy.minW,side),h:Math.max(policy.minH,side)};}
+    if(policy.aspect){if(width/policy.aspect>height)width=height*policy.aspect;else height=width/policy.aspect;}
+    return {w:Math.max(policy.minW,width),h:Math.max(policy.minH,height)};
+  };
   const soloSize=({entry,policy})=>{
     const role=suggestMessageRole(entry),primary=role==='Primary Evidence'||role==='Headline';
-    if(policy.growth==='square'){const size=Math.min(innerW*(primary ? .82 : .74),innerH*(primary ? .82 : .72),policy.maxW,policy.maxH);return {w:Math.max(policy.minW,size),h:Math.max(policy.minH,size)};}
-    if(['plot','data','media'].includes(policy.growth)){
-      const heightShare=entry.engine==='DiagramEngine'?.52:(primary?.72:.62);
-      return {w:Math.min(policy.maxW,innerW*(primary ? .94 : .9)),h:Math.min(policy.maxH,Math.max(policy.minH,innerH*heightShare))};
+    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy);
+    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,innerH);
+    if(policy.growth==='horizontal'){
+      // Horizontal families keep a readable band when no semantic aspect is
+      // declared; process/data-flow diagrams carry their own aspect above.
+      const band=Math.max(policy.prefH,Math.round(innerH*(entry.engine==='TimelineEngine'?.48:.42)));
+      return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,band))};
     }
-    if(policy.growth==='vertical')return {w:Math.min(policy.maxW,innerW*.68),h:Math.min(policy.maxH,Math.max(policy.prefH,innerH*.68))};
-    if(policy.growth==='horizontal'){const diagram=entry.engine==='DiagramEngine';return {w:Math.min(policy.maxW,innerW*(primary ? .94 : .9)),h:Math.min(policy.maxH,Math.max(policy.prefH,innerH*(diagram?.42:.34)))};}
-    if(policy.growth==='text')return {w:Math.min(policy.maxW,innerW*(role==='Headline' ? .9 : .76)),h:Math.max(policy.minH,policy.prefH)};
-    return {w:Math.min(policy.maxW,innerW*.72),h:Math.max(policy.minH,policy.prefH)};
+    if(policy.growth==='text'||policy.growth==='balanced'){
+      const hero=primary||policy.emphasis==='hero';
+      return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,Math.round(innerH*(hero?.42:.32)),policy.prefH))};
+    }
+    return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
   };
-  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{let h=Math.max(policy.minH,policy.prefH);if(policy.aspect&&policy.growth==='square')h=Math.max(policy.minH,Math.min(policy.prefH,widths[i]/policy.aspect));return h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}else if(members.length===1&&members[0].policy.growth==='square'){const policy=members[0].policy,side=Math.min(innerW,innerH*.64,policy.maxW,policy.maxH);widths[0]=Math.max(policy.minW,side);desired[0]=Math.max(policy.minH,side);}return {members,widths,height:Math.max(...desired)};});
+  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}return {members,widths,height:Math.max(...desired)};});
   const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height,0)+g*Math.max(0,rowSpecs.length-1)+2*g;
-  // Multi-card reports retain the authored page height (targetH=CANVAS.h);
-  // a solo card uses its governed useful height so it does not become a blank page.
-  const targetH=CANVAS.h;
-  const layoutTargetH=solo?baseNeeded:targetH;
+  // Smart owns the safe hull. Solo composition uses only the useful semantic
+  // height it needs; multi-element composition fills the report hull through
+  // weighted row growth so hierarchy, not a centered island, determines mass.
+  const layoutTargetH=solo?baseNeeded:CANVAS.h;
   let conflict=null;
   const usableH=layoutTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
   if(baseNeeded>layoutTargetH) {
@@ -438,11 +448,12 @@ function semanticSmartLayout(items=viewItems()) {
       const role=suggestMessageRole(entry),roleWeight=role==='Primary Evidence' ? 1.45 : role==='Supporting Evidence' ? 1.15 : role==='Headline' ? .8 : 1;
       return family*roleWeight;
     }));
-    const capacity=spec=>{const maximum=Math.max(...spec.members.map(({policy})=>({plot:innerH*.55,data:innerH*.52,media:innerH*.58,square:innerH*.64,vertical:innerH*.55,horizontal:Math.min(innerH*.38,spec.height+90),balanced:spec.height+48,text:spec.height}[policy.growth]||spec.height)));return Math.max(0,maximum-spec.height);};
+    const capacity=spec=>{const maximum=Math.max(...spec.members.map(({policy})=>({plot:innerH,data:innerH,media:innerH,square:innerH,vertical:innerH,horizontal:innerH,balanced:innerH*.72,text:innerH*.62}[policy.growth]||innerH*.62)));return Math.max(0,maximum-spec.height);};
     for(let pass=0;pass<4&&extra>.5;pass+=1){const candidates=rowSpecs.map(spec=>({spec,score:growthScore(spec),capacity:capacity(spec)})).filter(value=>value.score>0&&value.capacity>.5),scoreTotal=candidates.reduce((sum,value)=>sum+value.score,0);if(!candidates.length||!scoreTotal)break;let used=0;for(const value of candidates){const add=Math.min(value.capacity,extra*value.score/scoreTotal);value.spec.height+=add;used+=add;}if(used<.5)break;extra-=used;}
+    if(extra>.5){const share=extra/rowSpecs.length;rowSpecs.forEach(spec=>{spec.height+=share;});}
   }
   const rects=[];let y=g;
-  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],base=Math.max(policy.minH,policy.prefH),aspectHeight=policy.aspect?Math.max(policy.minH,w/policy.aspect):spec.height;const familyCap={plot:spec.height,data:spec.height,media:Math.min(spec.height,aspectHeight),square:Math.min(spec.height,aspectHeight),vertical:spec.height,horizontal:Math.min(spec.height,Math.max(base,aspectHeight,base+60)),balanced:base+48,text:base}[policy.growth]||base;const h=solo?spec.height:Math.min(spec.height,familyCap);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
+  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:Math.min(spec.height,aspectHeight);if(policy.growth==='square')h=Math.min(spec.height,w);if(!policy.aspect&&policy.growth==='text')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.62,spec.height)));if(!policy.aspect&&policy.growth==='balanced')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.72,spec.height)));h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>CANVAS.h-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(CANVAS.h-g))<.2;}
   return {rects,height:CANVAS.h,conflict};
 }
@@ -858,6 +869,8 @@ function ensureCanvasScaffold() {
   if (!$('#componentLayer', hull)) {
     hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
   }
+  const scene=$('#scene');
+  if(scene&&!$('#editorChromeLayer',scene)) scene.insertAdjacentHTML('beforeend','<div class="editor-chrome-layer" id="editorChromeLayer" data-editor-only aria-label="Selection and resize controls"></div>');
   if (!$('#blankStartSurface', hull)) hull.insertAdjacentHTML('afterbegin','<div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div>');
   // Selection actions use screen coordinates and therefore live outside the
   // transformed report scene. This prevents zoom/panel reflow detachment.
@@ -872,7 +885,7 @@ function createComponentNode(entry) {
   node.tabIndex = 0;
   node.setAttribute('role', 'group');
   node.setAttribute('aria-roledescription', 'report component');
-  node.innerHTML = '<button type="button" class="c-head"><span class="c-grip" aria-hidden="true"></span></button><div class="c-content"></div>'+['n','ne','e','se','s','sw','w','nw'].map(handle=>`<button type="button" class="resize-h resize-h--${handle}" data-resize="${handle}"></button>`).join('');
+  node.innerHTML = '<div class="c-content"></div>';
   return node;
 }
 function contentSignature(entry, r) {
@@ -966,9 +979,6 @@ function reconcileCanvas({ content = true } = {}) {
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
     node.setAttribute('aria-label', `${typeDefaults[entry.type]?.title || entry.type}: ${entry.title}${entry.locked ? ', locked' : ''}${entry.groupId ? ', grouped' : ''}${ui.selected.has(entry.id) ? ', selected' : ''}`);
-    const head = $('.c-head', node); const resize = $('.resize-h', node);
-    head.setAttribute('aria-label', `Move ${entry.title}`);
-    $$('.resize-h',node).forEach(control=>{control.setAttribute('aria-label',`Resize ${entry.title} from ${control.dataset.resize}`);control.disabled=!!entry.locked;});
     const sig = contentSignature(entry, r);
     if (content && node.dataset.contentSignature !== sig) {
       const contentNode = $('.c-content', node);
@@ -979,6 +989,7 @@ function reconcileCanvas({ content = true } = {}) {
     }
   }
   renderGroups(rm);
+  renderEditorChrome(rm);
   renderContext(rm);
   renderMinimap(rm);
   positionMinimap();
@@ -1017,10 +1028,26 @@ function renderGeometryOnly() {
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`;
   }
   renderGroups(rm);
+  renderEditorChrome(rm);
   renderContext(rm);
   renderMinimap(rm);
   positionMinimap();
   updateStatus({ recomputePreflight: false });
+}
+
+function renderEditorChrome(rm) {
+  const layer=$('#editorChromeLayer');
+  if(!layer)return;
+  const hull=$('#hull');
+  const offsetX=hull?.offsetLeft||0,offsetY=hull?.offsetTop||0;
+  const ids=[...ui.selected].filter(id=>item(id)&&!item(id).locked&&rm.has(id));
+  const signature=`${offsetX}:${offsetY}:${ui.zoom}:${ids.map(id=>{const r=rm.get(id);return `${id}:${r.x}:${r.y}:${r.w}:${r.h}`;}).join('|')}`;
+  if(layer.dataset.signature===signature)return;
+  layer.dataset.signature=signature;
+  layer.innerHTML=ids.map(id=>{
+    const entry=item(id),r=rm.get(id),handles=['n','ne','e','se','s','sw','w','nw'];
+    return `<div class="editor-chrome" data-component-id="${esc(id)}" style="left:${offsetX+r.x}px;top:${offsetY+r.y}px;width:${r.w}px;height:${r.h}px" data-editor-only><button type="button" class="c-head" data-component-id="${esc(id)}" aria-label="Move ${esc(entry.title)}"><span class="c-grip" aria-hidden="true"></span></button>${handles.map(handle=>`<button type="button" class="resize-h resize-h--${handle}" data-component-id="${esc(id)}" data-resize="${handle}" aria-label="Resize ${esc(entry.title)} from ${handle}"></button>`).join('')}</div>`;
+  }).join('');
 }
 
 
@@ -2966,6 +2993,21 @@ function setLibrary(open){const was=ui.libraryOpen;ui.libraryOpen=!!open;if(ui.l
 function setInspector(open){const was=ui.inspectorOpen;ui.inspectorOpen=!!open;if(ui.inspectorOpen&&mobileShell())ui.libraryOpen=false;syncPanelState();if(mobileShell()&&was!==ui.inspectorOpen)focusPanelTarget(ui.inspectorOpen?'#inspectorClose':'#inspectorToggle');}
 
 const commands = [
+  ['Undo', 'Undo the last report edit', undo],
+  ['Redo', 'Redo the last report edit', redo],
+  ['Reflow report', 'Recompose with Smart Layout', autoLayout],
+  ['Group selection', 'Group the selected elements', groupSelected,'group'],
+  ['Ungroup selection', 'Ungroup the selected elements', ungroupSelected,'ungroup'],
+  ['Lock selection', 'Lock the selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),true),'lock'],
+  ['Send selection backward', 'Send unlocked selected elements backward', () => layer(-1),'back'],
+  ['Bring selection forward', 'Bring unlocked selected elements forward', () => layer(1),'front'],
+  ['Open Library', 'Show the production element library', () => setLibrary(true)],
+  ['Open Inspector', 'Show the selected element inspector', () => setInspector(true)],
+  ['Report History', 'Open checkpoints, restore, and duplicate', () => { location.assign(`/visualizer/reports?report=${encodeURIComponent(bootstrap.report_id||'')}`); }],
+  ['Help & shortcuts', 'Open keyboard and interaction help', openHelp],
+  ['Preview report', 'Open the read-only report preview', togglePreview],
+  ['Autosave status', 'Review the current automatic save state', saveReport],
+  ['Export report', 'Open report and dataset export options', openExportMenu],
   ['Paste content', 'Recommend a visual from text, data, or image evidence', () => stageDOpenIntake()],
   ['Add element…', 'Open the production element library', () => { setLibrary(true); requestAnimationFrame(() => $('#componentSearch')?.focus()); }],
   ['Clean Layout', 'Apply message hierarchy and content-aware Smart layout', () => stageDCleanLayout('clean')],
@@ -2983,7 +3025,7 @@ const commands = [
   ['Focus selected', 'Center the selected content in the workspace', () => { const id=[...ui.selected][0]; if(id)stageDFocus(id); else toast('Select an element first'); }],
   ['Export JSON', 'Download the canonical editable report', exportModel],
   ['Export SVG', 'Download a standalone visual report', () => exportCanvasImage('svg')],
-  ['Paste data and create visual', 'Create a visual from Excel, CSV, or TSV data', () => requestAnimationFrame(openDataFirstDialog)], ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Reflow report', 'Recompose with Smart Layout', autoLayout], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected,'delete'], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width'),'arrange'], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height'),'arrange'], ['Match selected size', 'Make width and height match the first unlocked selection', () => matchSize('size'),'arrange'], ['Batch format', 'Open the multi-selection batch format controls', () => {setInspector(true);renderInspector();},'batch'], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full'),'reuse.copySelection'], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection,'reuse.cut'], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first'),'reuse.pasteStyle'], ['Group selection', 'Group selected components', groupSelected,'group'], ['Ungroup selection', 'Ungroup selected components', ungroupSelected,'ungroup'], ['Bring selection forward', 'Bring unlocked selected elements forward', () => layer(1),'front'], ['Send selection backward', 'Send unlocked selected elements backward', () => layer(-1),'back'], ['Lock selection', 'Lock unlocked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),true),'lock'], ['Unlock selection', 'Unlock locked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),false),'unlock'], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
+  ['Paste data and create visual', 'Create a visual from Excel, CSV, or TSV data', () => requestAnimationFrame(openDataFirstDialog)], ['Add KPI', 'Add a metric component', () => addComponent('metric')], ['Add chart', 'Add an analytical chart', () => addComponent('chart')], ['Add table', 'Add an evidence table', () => addComponent('table')], ['Add timeline', 'Add an interactive timeline', () => addComponent('timeline')], ['Executive layout', 'Apply executive composition', () => applySuggestion('executive')], ['Technical layout', 'Apply technical composition', () => applySuggestion('technical')], ['Select all elements', 'Select every report element · Cmd/Ctrl+A', selectAllComponents], ['Duplicate selection', 'Duplicate selected elements · Cmd/Ctrl+D', duplicateSelected], ['Delete selection', 'Delete unlocked selected elements', deleteSelected,'delete'], ['Match selected width', 'Make selected elements the width of the first unlocked selection', () => matchSize('width'),'arrange'], ['Match selected height', 'Make selected elements the height of the first unlocked selection', () => matchSize('height'),'arrange'], ['Match selected size', 'Make width and height match the first unlocked selection', () => matchSize('size'),'arrange'], ['Batch format', 'Open the multi-selection batch format controls', () => {setInspector(true);renderInspector();},'batch'], ['Copy selection', 'Copy selected visual or composition', () => copySemanticSelection('visual_full'),'reuse.copySelection'], ['Cut selection', 'Cut unlocked selection', cutSemanticSelection,'reuse.cut'], ['Paste clipboard', 'Paste copied visual or composition independently', pasteSemanticClipboard], ['Apply copied style', 'Apply presentation-only style to selected unlocked elements', () => ui.semanticClipboard?.kind==='style'?pasteSemanticPayload(ui.semanticClipboard,'style'):toast('Copy style from one element first'),'reuse.pasteStyle'], ['Unlock selection', 'Unlock locked selected elements', () => setSelectionLocked([...ui.selected].map(item).filter(Boolean),false),'unlock'], ['Toggle lock', 'Lock or unlock selection', toggleLock], ['Save preset', 'Save current report as a personal preset', savePreset], ['Save selection preset', 'Save selected elements as an insertable Section preset', saveSelectionPreset], ['Run preflight', 'Validate current composition', showPreflight], ['Export JSON', 'Download canonical report model', exportModel], ['Zoom to fit', 'Fit the whole report canvas', fitZoom],
 ];
 function commandActionState(key) {
   if(!key)return {enabled:true,reason:''};
@@ -3086,8 +3128,8 @@ function onHullDoubleClick(e) {
 function onHullPointerDown(e) {
   if(ui.preview)return;
   const handle = e.target.closest('.brush-handle'); if (handle) return startBrush(e, handle);
-  const resize = e.target.closest('.resize-h'); if (resize) return startResize(e, resize.closest('.component').dataset.id, resize);
-  const head = e.target.closest('.c-head'); if (head) return startDrag(e, head.closest('.component').dataset.id, head);
+  const resize = e.target.closest('.resize-h'); if (resize) return startResize(e, resize.dataset.componentId, resize);
+  const head = e.target.closest('.c-head'); if (head) return startDrag(e, head.dataset.componentId, head);
   if (e.target === $('#hull') || e.target.classList.contains('canvas-grid') || e.target.id === 'componentLayer') { if (ui.space) startPan(e); else startLasso(e); }
 }
 function onHullKeyDown(e) {
@@ -3133,7 +3175,7 @@ function wireGlobal(signal) {
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
-  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);
+  const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);on($('#editorChromeLayer'),'pointerdown',onHullPointerDown);
   on(hull,'dragover',(e)=>{if(ui.preview)return;e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{if(ui.preview)return;e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
