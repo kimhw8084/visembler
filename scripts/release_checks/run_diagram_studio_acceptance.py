@@ -118,6 +118,47 @@ def _active_focus_descriptor(page) -> dict:
     }""")
 
 
+def _uncovered_backdrop_point(page, kind: str) -> dict:
+    return page.evaluate("""kind=>{
+      const backdrop=document.querySelector('#ds-panel-backdrop');
+      const panel=document.querySelector(kind==='palette'?'#ds-shape-panel':'#ds-inspector-panel');
+      const backdropRect=backdrop.getBoundingClientRect(),panelRect=panel.getBoundingClientRect();
+      const x=kind==='palette'
+        ? Math.min(backdropRect.right-8,panelRect.right+10)
+        : Math.max(backdropRect.left+8,panelRect.left-10);
+      const y=Math.max(backdropRect.top+8,Math.min(backdropRect.bottom-8,(backdropRect.top+backdropRect.bottom)/2));
+      const hit=document.elementFromPoint(x,y);
+      if (backdrop.hidden || hit!==backdrop) throw new Error(`backdrop point is not uncovered: ${JSON.stringify({x,y,hit:hit?.id||hit?.tagName})}`);
+      return {x,y,hit:hit.id};
+    }""", kind)
+
+
+def _dismiss_drawer_via_backdrop(page, kind: str) -> dict:
+    trigger_action = f'toggle-{kind}'
+    other_kind = 'inspector' if kind == 'palette' else 'palette'
+    point = _uncovered_backdrop_point(page, kind)
+    page.mouse.move(point['x'], point['y'])
+    page.mouse.down()
+    focus_during_press = _drawer_accessibility_probe(page)
+    assert focus_during_press['activeElement']['panel'] == kind, focus_during_press
+    page.mouse.up()
+    page.wait_for_timeout(180)
+    closed = _drawer_accessibility_probe(page)
+    assert closed['panels'][kind]['inert_property'] and closed['panels'][kind]['inert_attribute'], closed
+    assert closed['panels'][kind]['aria_hidden'] == 'true', closed
+    assert closed['panels'][kind]['reachable_focusable'] == 0, closed
+    assert 'is-open' not in closed['panels'][kind]['classes'], closed
+    assert 'is-open' not in closed['panels'][other_kind]['classes'], closed
+    assert closed['panels'][other_kind]['inert_property'] and closed['panels'][other_kind]['inert_attribute'], closed
+    assert closed['panels'][other_kind]['aria_hidden'] == 'true', closed
+    assert closed['panels'][other_kind]['reachable_focusable'] == 0, closed
+    assert closed['triggers']['palette']['aria_expanded'] == 'false' and closed['triggers']['inspector']['aria_expanded'] == 'false', closed
+    assert closed['activeElement']['action'] == trigger_action, closed
+    assert page.evaluate("action=>document.activeElement===document.querySelector(`[data-action=\"${action}\"]`)", trigger_action), closed
+    assert not closed['scroll']['horizontalOverflow'], closed
+    return {'point': point, 'focus_during_press': focus_during_press, 'closed': closed}
+
+
 def _performance_fixture() -> dict:
     script = """
 import {cleanDiagram, normalizeDiagram} from './company_ui/products/visualizer/assets/authoring_diagram_studio.mjs';
@@ -217,13 +258,7 @@ def main() -> int:
                     assert shapes_open['activeElement']['panel'] == 'palette' and shapes_open['activeElement']['shape'], shapes_open
                     assert shapes_open['triggers']['palette']['aria_expanded'] == 'true' and shapes_open['triggers']['inspector']['aria_expanded'] == 'false', shapes_open
 
-                    page.locator('#ds-shape-panel [data-action="close-panels"]').click()
-                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-palette'")
-                    page.wait_for_timeout(220)
-                    shapes_close = _drawer_accessibility_probe(page)
-                    evidence['shapes_close'] = shapes_close
-                    assert shapes_close['activeElement']['action'] == 'toggle-palette', shapes_close
-                    assert shapes_close['panels']['palette']['reachable_focusable'] == 0 and shapes_close['panels']['inspector']['reachable_focusable'] == 0, shapes_close
+                    evidence['shapes_backdrop_close'] = _dismiss_drawer_via_backdrop(page, 'palette')
 
                     page.locator('[data-action="toggle-inspector"]').click()
                     page.wait_for_function("()=>document.activeElement?.closest('#ds-inspector-panel')")
@@ -238,12 +273,16 @@ def main() -> int:
                     assert inspector_open['activeElement']['panel'] == 'inspector', inspector_open
                     assert inspector_open['triggers']['palette']['aria_expanded'] == 'false' and inspector_open['triggers']['inspector']['aria_expanded'] == 'true', inspector_open
 
-                    page.locator('#ds-panel-backdrop').click(position={'x': 10, 'y': 350})
-                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-inspector'")
+                    evidence['inspector_backdrop_close'] = _dismiss_drawer_via_backdrop(page, 'inspector')
+
+                    page.locator('[data-action="toggle-palette"]').click()
+                    page.wait_for_function("()=>document.activeElement?.closest('#ds-shape-panel')")
                     page.wait_for_timeout(220)
-                    inspector_backdrop_close = _drawer_accessibility_probe(page)
-                    evidence['inspector_backdrop_close'] = inspector_backdrop_close
-                    assert inspector_backdrop_close['activeElement']['action'] == 'toggle-inspector', inspector_backdrop_close
+                    page.locator('#ds-shape-panel [data-action="close-panels"]').click()
+                    page.wait_for_function("()=>document.activeElement?.dataset.action==='toggle-palette'")
+                    page.wait_for_timeout(180)
+                    evidence['shapes_close_button'] = _drawer_accessibility_probe(page)
+                    assert evidence['shapes_close_button']['activeElement']['action'] == 'toggle-palette', evidence['shapes_close_button']
 
                     page.locator('[data-action="toggle-palette"]').click()
                     page.wait_for_function("()=>document.activeElement?.closest('#ds-shape-panel')")
