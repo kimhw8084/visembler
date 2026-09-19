@@ -1,0 +1,499 @@
+{
+  "accepted_at": "2026-09-19T04:03:17Z",
+  "changed_files": [
+    {
+      "additions": 126,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 10,
+      "deletions": 10,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+      "status": "M"
+    },
+    {
+      "additions": 69,
+      "deletions": 27,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 130,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 6,
+      "deletions": 2,
+      "path": "tests/test_visualizer_final_visual_remediation.py",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 4,
+      "path": "tests/test_visualizer_r15_authoring_depth.py",
+      "status": "M"
+    },
+    {
+      "additions": 6,
+      "deletions": 0,
+      "path": "tests/test_visualizer_wave12_responsive_shell.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1480,1665p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk sed -n '1665,1735p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk sed -n '1400,1565p' company_ui/products/visualizer/assets/integrated_editor.css\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"function semanticPolicy|function semanticSmartLayout|fitToHull|layoutTargetH|growthScore|familyCap|renderEditorChrome|ensureCanvasScaffold|createComponentNode\\\" company_ui/products/visualizer/assets/integrated_editor.mjs && rtk sed -n '600,820p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk sed -n '900,1025p' company_ui/products/visualizer/assets/integrated_editor.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '270,480p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk sed -n '850,1085p' company_ui/products/visualizer/assets/integrated_editor.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest --collect-only -q tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 207,
+        "output_sha256": "b7ef79679dacb704ae29bc454f833c073b4dc69b955ad3609baa15b8fdead1f8",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_r15_authoring_depth.py::test_r19_layouts_and_page_size_are_authored_not_implicitly_resized"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1401,
+        "output_sha256": "5357bfc8c10ee61d965093835071d3698f904bfe08827797fc61101bb613b17e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '55,90p' tests/test_visualizer_r15_authoring_depth.py && rtk rg -n \\\"targetH=|targetH\\\" company_ui/products/visualizer/assets/integrated_editor.mjs\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_authoring_p0.py tests/test_visualizer_wave13_authoring_quality.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "325b7cf7b0d6ead544ebb7e833a08009fa10cf90ce29b8f9021e2ede461488f5",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '260,620p' scripts/release_checks/run_stage_a_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"window.__VIZ_PROD__|layoutRects\\\\(|renderAll|serialize\\\\(\\\\)\\\" company_ui/products/visualizer/assets/integrated_editor.mjs | tail -40\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"cmdModal|cmdList|commands=|const commands|cmdInput|data-command\\\" company_ui/products/visualizer/assets/integrated_editor.mjs | head -80 && rtk sed -n '2860,2995p' company_ui/products/visualizer/assets/integrated_editor.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2990,3055p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk rg -n \\\"#cmdModal|id=\\\\\\\"cmdList\\\\\\\"\\\" company_ui/products/visualizer/assets/integrated_editor.html\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"200|zoom|device_scale_factor|scale|reflow\" scripts/release_checks tests/test_visualizer_* | head -160'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m py_compile scripts/release_checks/run_stage_a_acceptance.py && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-1'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"canvas-hull|#hull|scene\\\\b|scene-frame|component-layer|editor-chrome\\\" company_ui/products/visualizer/assets/integrated_editor.css | head -120 && rtk sed -n '240,420p' company_ui/products/visualizer/assets/integrated_editor.css\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-2'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"chart|component:hover|:hover\" company_ui/products/visualizer/assets/integrated_editor.css | head -180'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk python -m pytest -q tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_authoring_p0.py tests/test_visualizer_wave13_authoring_quality.py && rtk git diff --check'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 81,
+        "output_sha256": "77f54166f8388c4ceac3f6b739a9e5d2860a17ebaf70479dca0eb98c7f6f747f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-3'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"@keyframes|animation:|transition:\" company_ui/products/visualizer/assets/integrated_editor.css | head -160'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-4'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-hover'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from PIL import Image,ImageChops; a=Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-before.png').convert('RGBA'); b=Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-after.png').convert('RGBA'); d=ImageChops.difference(a,b); print(a.size, d.getbbox()); print(sum(1 for p in d.getdata() if p\"'!=(0,0,0,0)))\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from PIL import Image,ImageChops; a=Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-before.png').convert('RGB'); b=Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-after.png').convert('RGB'); d=ImageChops.difference(a,b); print(d.getbbox()); print(sum(1 for p in d.getdata() if p\"'!=(0,0,0)))\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from PIL import Image,ImageChops; import numpy as np; a=np.array(Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-before.png').convert('RGB')); b=np.array(Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-after.png').convert('RGB')); m=np.any(a\"'!=b,axis=2); ys,xs=np.where(m); print('\"'count',m.sum(),'bbox',xs.min(),ys.min(),xs.max(),ys.max()); from collections import Counter; print(Counter((int(x//50),int(y//50)) for x,y in zip(xs,ys)).most_common(20))\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"from PIL import Image; import numpy as np; a=np.array(Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-before.png').convert('RGB')); b=np.array(Image.open('/tmp/visembler-chg136-head-hover/screenshots/after-hover-line-chart-1440-after.png').convert('RGB')); m=np.any(a\"'!=b,axis=2); print('\"'inner',m[4:-4,4:-4].sum(),'middle',m[10:-10,10:-10].sum())\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '145,210p' scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '1,28p' scripts/release_checks/run_stage_a_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk test -e /tmp/visembler-chg136-before && rtk git worktree add --detach /tmp/visembler-chg136-before 97a46d60b3a83bf39012998f3d1ed837b2068653'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree add --detach /tmp/visembler-chg136-before 97a46d60b3a83bf39012998f3d1ed837b2068653'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'VIZ_ACCEPTANCE_ROOT=/tmp/visembler-chg136-before rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-before-evidence'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp/visembler-chg136-before-evidence/screenshots -maxdepth 1 -type f -printf '%f\\\\n' | sort && rtk find /tmp/visembler-chg136-head-final/screenshots -maxdepth 1 -type f -printf '%f\\\\n' | sort | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i \\\"fabric evidence|project os|artifact handoff|evidence manifest|handoff\\\" . --glob '\"'!*.png'\"' --glob '\"'!*.jpg'\"' | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --stat && rtk git diff --check && rtk git diff -- company_ui/products/visualizer/assets/integrated_editor.mjs | head -260 && rtk git diff -- company_ui/products/visualizer/assets/integrated_editor.html | head -220'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- company_ui/products/visualizer/assets/integrated_editor.css | head -260 && rtk git diff -- scripts/release_checks/run_stage_a_acceptance.py | head -320'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_application_hardening.py tests/test_visualizer_r14_release.py tests/test_visualizer_wave14_hardening.py tests/test_visualizer_wave15_final_readiness.py tests/test_visualizer_v4_1_final_repair.py'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_wave14_hardening.py::test_wave14_pointer_targets_and_narrow_shell_have_one_contract"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1964,
+        "output_sha256": "550db94a255bfd7c1c6dc82bb280965daff9fef45041e3d39b9be1c38f666d43",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"@media \\\\(max-width: ?800px\\\\)\\\" company_ui/products/visualizer/assets/integrated_editor.css | tail -20 && rtk python -m pytest -q tests/test_visualizer_application_hardening.py tests/test_visualizer_r14_release.py tests/test_visualizer_wave14_hardening.py tests/test_visualizer_wave15_final_readiness.py tests/test_visualizer_v4_1_final_repair.py\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 501,
+        "output_sha256": "9d684ea7baacbe2f640818f4573e7035a184c471c76019e2516abcaf17d86b96",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk python -m pytest -q tests/test_visualizer_final_visual_remediation.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_wave12_responsive_shell.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_authoring_p0.py tests/test_visualizer_wave13_authoring_quality.py tests/test_visualizer_application_hardening.py tests/test_visualizer_r14_release.py tests/test_visualizer_wave14_hardening.py tests/test_visualizer_wave15_final_readiness.py tests/test_visualizer_v4_1_final_repair.py && rtk git diff --check'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 582,
+        "output_sha256": "53b48e9915aae7c091aceef240811cd1ff9c91f136d798bddb686290343bb689",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg136-head-release'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mkdir -p /tmp/visembler-chg136-fabric-evidence/before-97a46d60 /tmp/visembler-chg136-fabric-evidence/after-a00f3346'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /tmp/visembler-chg136-before-evidence/stage-a-acceptance.json /tmp/visembler-chg136-fabric-evidence/before-97a46d60/ && rtk cp -R /tmp/visembler-chg136-before-evidence/screenshots /tmp/visembler-chg136-fabric-evidence/before-97a46d60/ && rtk cp /tmp/visembler-chg136-head-release/stage-a-acceptance.json /tmp/visembler-chg136-fabric-evidence/after-a00f3346/ && rtk cp -R /tmp/visembler-chg136-head-release/screenshots /tmp/visembler-chg136-fabric-evidence/after-a00f3346/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --binary | rtk openssl dgst -sha256 && rtk git rev-parse HEAD && rtk git show -s --format='%T' HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import hashlib,json,os; from pathlib import Path; from PIL import Image; root=Path('/tmp/visembler-chg136-fabric-evidence'); source_root=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-f3382ade3825c8275518d26f'); src=['company_ui/products/visualizer/assets/integrated_editor.mjs','company_ui/products/visualizer/assets/integrated_editor.css','company_ui/products/visualizer/assets/integrated_editor.html','scripts/release_checks/run_stage_a_acceptance.py','tests/test_visualizer_final_visual_remediation.py','tests/test_visualizer_r15_authoring_depth.py','tests/test_visualizer_wave12_responsive_shell.py']; digest=lambda p:hashlib.sha256(Path(p).read_bytes()).hexdigest(); shots=lambda d:[{'file':str(p.relative_to(root/d)),'sha256':digest(p),'size':Image.open(p).size} for p in sorted((root/d/'screenshots').glob('*.png'))]; manifest={'artifact_id':'visembler-chg136-editor-composition-r1','scope':'CHG-136 only','secret_free':True,'base':{'commit':'97a46d60b3a83bf39012998f3d1ed837b2068653','tree':'ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1'},'candidate':{'git_head_commit':'97a46d60b3a83bf39012998f3d1ed837b2068653','git_head_tree':'ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1','working_tree_uncommitted':True,'git_diff_sha256':'5b1e7c680c029cbb95e4647355c3aa518230bb324d5a3b7a2edb8c845ab6ea1f','source_files':{p:digest(source_root/p) for p in src}},'before':{'root':str(root/'before-97a46d60'),'acceptance_report':digest(root/'before-97a46d60/stage-a-acceptance.json'),'status':'FAIL_EXPECTED_BASELINE','screenshots':shots('before-97a46d60')},'after':{'root':str(root/'after-a00f3346'),'acceptance_report':digest(root/'after-a00f3346/stage-a-acceptance.json'),'status':'PASS','screenshots':shots('after-a00f3346')},'locators':['#hull','.component','.component.selected','.editor-chrome','.editor-chrome .resize-h','#commandBtn','#cmdList .cmd-label','#libraryToggle','#inspectorToggle','#previewBtn','#exportBtn'],'geometry_policy':['plot/data/media solo visuals use the safe hull subject to declared aspect/content constraints','square/spatial visuals use the largest square supported by the safe hull','text/metric solo visuals use full-row hero bands with readable semantic height','multi-element rows use deterministic order, family minimums, weighted growth, and bounded row packing'],'handoff':'No Project OS/Fabric connector was exposed in this session; this deterministic local evidence bundle is retained for independent audit handoff.'}; (root/'CHG-136-EVIDENCE-MANIFEST.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\\\\\\\\n')\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import hashlib,json; from pathlib import Path; p=Path('/tmp/visembler-chg136-fabric-evidence/CHG-136-EVIDENCE-MANIFEST.json'); d=json.loads(p.read_text()); print('manifest_sha256',hashlib.sha256(p.read_bytes()).hexdigest()); print('before_shots',len(d['before']['screenshots']),'after_shots',len(d['after']['screenshots'])); print('after_status',d['after']['status']); print('source_editor_sha256',d['candidate']['source_files']['company_ui/products/visualizer/assets/integrated_editor.mjs'])\\\" && rtk find /tmp/visembler-chg136-fabric-evidence -type f | wc -l\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /tmp/visembler-chg136-fabric-evidence -type f | head -30 && rtk du -sh /tmp/visembler-chg136-fabric-evidence'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git diff --name-only && rtk git diff --numstat && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate . > /tmp/visembler-chg136-validate-final.txt && rtk tail -n 1 /tmp/visembler-chg136-validate-final.txt && rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk python -m py_compile scripts/release_checks/run_stage_a_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c \\\"import json; from pathlib import Path; p=Path('/tmp/visembler-chg136-fabric-evidence/CHG-136-EVIDENCE-MANIFEST.json'); d=json.loads(p.read_text()); d['verification']={'focused_and_related_pytest':'71 passed','company_ui_validate':'0 errors, 99 warnings (pre-existing repository warning inventory)','node_check':'PASS','browser_head':'30/30 PASS; no console/page/network errors','baseline_browser':'19/30 PASS; expected baseline defects recorded, no claim of baseline readiness'}; p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\\\\\n')\\\" && rtk python -c \\\"import hashlib; from pathlib import Path; p=Path('/tmp/visembler-chg136-fabric-evidence/CHG-136-EVIDENCE-MANIFEST.json'); print(hashlib.sha256(p.read_bytes()).hexdigest())\\\"\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 65,
+        "output_sha256": "fc694409e1a8741575cc731cb2558ec30429eb3e111122f64d6d7ef29ae0a536",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove /tmp/visembler-chg136-before && rtk git worktree list'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.154.0",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 214,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.03,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 15127680,
+      "fresh_input_tokens": 463260,
+      "input_tokens": 15590940,
+      "non_reasoning_output_tokens": 32311,
+      "output_tokens": 59974,
+      "reasoning_output_tokens": 27663,
+      "total_processed_tokens": 15650914
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+      "subject": "fabric: capture completed model changes [CF-f3382ade3825c8275518d26f]"
+    }
+  ],
+  "diff": {
+    "additions": 352,
+    "changed_files": 7,
+    "commit_count": 1,
+    "deletions": 46
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 12513,
+        "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+        "sha256": "06d6744054b4f1649ce843afb5d493ecb5ee8d2e3034041f097282c875581157"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-f3382ade3825c8275518d26f]",
+    "commit_sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+    "paths_before": 7,
+    "status_before": [
+      " M company_ui/products/visualizer/assets/integrated_editor.css",
+      " M company_ui/products/visualizer/assets/integrated_editor.html",
+      " M company_ui/products/visualizer/assets/integrated_editor.mjs",
+      " M scripts/release_checks/run_stage_a_acceptance.py",
+      " M tests/test_visualizer_final_visual_remediation.py",
+      " M tests/test_visualizer_r15_authoring_depth.py",
+      " M tests/test_visualizer_wave12_responsive_shell.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-19T04:29:35Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "branch": "fix/visembler-chg136-editor-composition-r1",
+    "detached_verify": false,
+    "head_sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+    "remote_exact_head": true,
+    "remote_head_sha": "7eaad40c908d5c6333f3d728defee9981f39d3c4",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "work_branch": "fix/visembler-chg136-editor-composition-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-f3382ade3825c8275518d26f",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-136-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-136-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "44756118cd7fda0c45cd23ba1d31a48a3f4f2422d687df15264ba4406f40e1f2",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-136-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-19T04:03:18Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1577,
+    "queue_seconds": 1,
+    "total_seconds": 1578
+  },
+  "transport": {
+    "bytes": 6667,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 6366,
+    "prompt_sha256": "609c51b5b587a5672d4f2375b20b94d096cc8bdd8f7710cc826bffd5787ce03b",
+    "sha256": "f3382ade3825c8275518d26fa9a101a239881fe324006c802c88d65e4cc55886"
+  }
+}
