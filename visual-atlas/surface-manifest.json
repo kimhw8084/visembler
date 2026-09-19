@@ -1,0 +1,241 @@
+{
+  "schema_version": 2,
+  "project": "visembler",
+  "request": "CHG-122-r4",
+  "operation": "VERIFY",
+  "source_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+  "tree_sha": "ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1",
+  "runtime": {
+    "entrypoint": "./run_visembler.sh",
+    "url": "runtime-local-ephemeral",
+    "python": "/opt/anaconda3/bin/python3",
+    "python_version": "3.11.7",
+    "nicegui_version": "3.15.0",
+    "environment": "test",
+    "auth_mode": "local",
+    "principal": "local-dev",
+    "locale": "en-US",
+    "timezone": "America/Chicago",
+    "theme": "light",
+    "device_scale_factor": 1,
+    "fixture_profile": "CHG-122-r4 governed run-owned populated Product data API fixture",
+    "data_directory": "temporary-run-owned-not-published"
+  },
+  "discovery": {
+    "method": "AST source route registration plus fresh native runtime navigation",
+    "source_route_registrations": [
+      {
+        "route": "/visualizer/diagram-studio",
+        "function": "visualizer_diagram_studio_page",
+        "source_file": "company_ui/products/visualizer/page.py",
+        "source_line": 539,
+        "registration": "ui.page",
+        "surface_key": "visembler-diagram-studio",
+        "ready_selector": "#diagram-studio[data-studio-ready=\"true\"]"
+      },
+      {
+        "route": "/visualizer/chart-studio",
+        "function": "visualizer_chart_studio_page",
+        "source_file": "company_ui/products/visualizer/page.py",
+        "source_line": 598,
+        "registration": "ui.page",
+        "surface_key": "visembler-chart-studio",
+        "ready_selector": "#chart-studio[data-studio-ready=\"true\"]"
+      },
+      {
+        "route": "/visualizer/reports",
+        "function": "visualizer_reports_page",
+        "source_file": "company_ui/products/visualizer/page.py",
+        "source_line": 666,
+        "registration": "ui.page",
+        "surface_key": "visembler-report-hub",
+        "ready_selector": "[data-testid=\"report-hub\"]"
+      },
+      {
+        "route": "/visualizer",
+        "function": "visualizer_page",
+        "source_file": "company_ui/products/visualizer/page.py",
+        "source_line": 1025,
+        "registration": "ui.page",
+        "surface_key": "visembler-editor",
+        "ready_selector": ".cui-visualizer-root[data-editor-ready=\"true\"]"
+      }
+    ],
+    "excluded_transport_routes": [
+      {
+        "route": "/",
+        "reason": "307 redirect to /visualizer; not a material visual surface"
+      },
+      {
+        "route": "/_cui_visualizer/report-assets/{asset_id}",
+        "reason": "protected binary asset transport; not a material visual surface"
+      }
+    ],
+    "surface_set_frozen_before_capture": true,
+    "surface_set_sha256": "cbbb04b62b09678aa6d9879b4228687d4e104ec1237549a390ec0a847a43862e"
+  },
+  "surfaces": [
+    {
+      "route": "/visualizer/diagram-studio",
+      "function": "visualizer_diagram_studio_page",
+      "source_file": "company_ui/products/visualizer/page.py",
+      "source_line": 539,
+      "registration": "ui.page",
+      "surface_key": "visembler-diagram-studio",
+      "canonical_route": "/visualizer/diagram-studio?report=atlas-diagram-r4&element=c3",
+      "ready_selector": "#diagram-studio[data-studio-ready=\"true\"]",
+      "state": "representative populated diagram authoring workspace",
+      "subview": "connected process-flow canvas with palette, inspector and layers",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--desktop-1440x900.png",
+        "png_sha256": "adb43dabb4cefa2ff7eadfdfbca4d1d4a8bd844704c3104a35cdb94e9e6423bf"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-diagram-studio--mobile-390x844.png",
+        "png_sha256": "e803d25617afc9c40c47c8df50547175418338dd8d97e4c07a3220468f217200"
+      }
+    },
+    {
+      "route": "/visualizer/chart-studio",
+      "function": "visualizer_chart_studio_page",
+      "source_file": "company_ui/products/visualizer/page.py",
+      "source_line": 598,
+      "registration": "ui.page",
+      "surface_key": "visembler-chart-studio",
+      "canonical_route": "/visualizer/chart-studio?report=atlas-chart-r4&element=c1",
+      "ready_selector": "#chart-studio[data-studio-ready=\"true\"]",
+      "state": "representative populated chart authoring workspace",
+      "subview": "populated Wafer Map chart editor with data, visual and interaction panels",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--desktop-1440x900.png",
+        "png_sha256": "08651ae02a1aec45d721474d910cd4d987653d4b95fbdd90014046d623fa1d8c"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-chart-studio--mobile-390x844.png",
+        "png_sha256": "a67e44d47dfd868c418f4d4f74d07f32e11d51e0a585fea28562054f5a49fe8e"
+      }
+    },
+    {
+      "route": "/visualizer/reports",
+      "function": "visualizer_reports_page",
+      "source_file": "company_ui/products/visualizer/page.py",
+      "source_line": 666,
+      "registration": "ui.page",
+      "surface_key": "visembler-report-hub",
+      "canonical_route": "/visualizer/reports?report=atlas-editor-r4",
+      "ready_selector": "[data-testid=\"report-hub\"]",
+      "state": "report management workspace",
+      "subview": "active populated reports grid with history context",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-report-hub--desktop-1440x900.png",
+        "png_sha256": "633684c20a51f973b781b2c2c637aabe9bb96b3f419a93c0dc132ebe0eb0aa5b"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-report-hub--mobile-390x844.png",
+        "png_sha256": "791d28c387a6a8a5f77c264f2cfed215a4f1570a81c1923753ee945358a99e99"
+      }
+    },
+    {
+      "route": "/visualizer",
+      "function": "visualizer_page",
+      "source_file": "company_ui/products/visualizer/page.py",
+      "source_line": 1025,
+      "registration": "ui.page",
+      "surface_key": "visembler-editor",
+      "canonical_route": "/visualizer?report=atlas-editor-r4",
+      "ready_selector": ".cui-visualizer-root[data-editor-ready=\"true\"]",
+      "state": "representative populated authoring workspace",
+      "subview": "editor canvas with library and inspector open",
+      "supported": true,
+      "desktop": {
+        "viewport_css": {
+          "width": 1440,
+          "height": 900
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-editor--desktop-1440x900.png",
+        "png_sha256": "4b28d422d5de685b00f92b58e03121a15335f17bbdf57dc0b372df631dd1a4e5"
+      },
+      "mobile": {
+        "viewport_css": {
+          "width": 390,
+          "height": 844
+        },
+        "dpr": 1,
+        "artifact_path": "visual-atlas/screenshots/visembler-editor--mobile-390x844.png",
+        "png_sha256": "248f9fad653d8dba9b85d23cf84c2fd6bfd72404afe24f0157d1a334ba13ae96"
+      }
+    }
+  ],
+  "fixture": {
+    "authority": "normal Visembler repository and DatasetResourceStore APIs outside Product source",
+    "temporary_run_owned": true,
+    "primary_state": "representative_populated",
+    "reports": [
+      "atlas-editor-r4",
+      "atlas-chart-r4",
+      "atlas-diagram-r4",
+      "atlas-context-r4"
+    ],
+    "datasets": {
+      "d-wafer-r4": {
+        "dataset_id": "d-wafer-r4",
+        "resource_id": "d-wafer-r4",
+        "governed_resource_id": "6d015999fdc44949971b8e5dc6dbff4a",
+        "rows": 24,
+        "fields": 12,
+        "content_fingerprint": "7ea2b80d73241cb611b30a662627da344530a266de9ee1c1e4b588e35eab4b54"
+      },
+      "d-process-r4": {
+        "dataset_id": "d-process-r4",
+        "resource_id": "d-process-r4",
+        "governed_resource_id": "760d0657314e4e4c9098ff7e5ef785bd",
+        "rows": 12,
+        "fields": 8,
+        "content_fingerprint": "b8455a75316cc4aaf8e75ea2ebcbe5947e8e77f63d9ad5cd59f1a1078eedf29b"
+      }
+    },
+    "supplemental_diagnostic_policy": "genuine empty/error/adversarial substate messages remain evidence and never replace the populated canonical surfaces"
+  },
+  "capture_binding": {
+    "captured_at_utc": "2026-09-19T02:20:41.697981Z",
+    "source_sha": "97a46d60b3a83bf39012998f3d1ed837b2068653",
+    "tree_sha": "ad7c3dc8f8c92113d3c46956ea8b7ce16d016fc1",
+    "surface_set_sha256": "cbbb04b62b09678aa6d9879b4228687d4e104ec1237549a390ec0a847a43862e",
+    "surface_count": 4,
+    "canonical_screenshot_count": 8
+  }
+}
