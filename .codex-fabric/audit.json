@@ -1,0 +1,253 @@
+{
+  "accepted_at": "2026-09-20T21:38:57Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 327,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_human.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 19,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_preview.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 74,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_projection.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 1,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/chart_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 33,
+      "deletions": 12,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 74,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 127,
+      "deletions": 74,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 125,
+      "deletions": 0,
+      "path": "tests/test_visualizer_authoring_productivity_wave.py",
+      "status": "M"
+    },
+    {
+      "additions": 411,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg138_r2_native.py",
+      "status": "A"
+    },
+    {
+      "additions": 33,
+      "deletions": 0,
+      "path": "tests/test_visualizer_wave3_typed_data_foundation.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,260p' /Users/haewonkim/.codex/law.md && printf '\\\\n--- manifest ---\\\\n' && sed -n '1,260p' company_ui/ai/construction_manifest.json && printf '\\\\n--- git status ---\\\\n' && git status --short --branch && printf '\\\\n--- remotes ---\\\\n' && git remote -v && printf '\\\\n--- refs ---\\\\n' && git show-ref --heads --tags | sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --porcelain=v1 --branch && rtk git rev-parse --verify HEAD && rtk git rev-parse --verify refs/heads/codex/visembler-CHG-138-r6 && rtk git rev-parse --verify refs/heads/fix/visembler-chg138-data-authoring-r3 && rtk git rev-parse --verify refs/heads/main && rtk git cat-file -t f779fa49130fee5901630037cbef9315bcb085b4 && rtk git cat-file -t 15d45dc6eaa93142b00869e48edda82965addb98 && rtk git merge-base --is-ancestor 5938c51fb1de4d540b404e480d028a3d0917e159 f779fa49130fee5901630037cbef9315bcb085b4; printf 'ancestor_exit=%s\\\\n' \"'$?; rtk git rev-parse f779fa49130fee5901630037cbef9315bcb085b4''^{tree}; rtk git diff --stat f779fa49130fee5901630037cbef9315bcb085b4 HEAD; rtk git diff --name-status f779fa49130fee5901630037cbef9315bcb085b4 HEAD; rtk git log --oneline --decorate --graph -8 --all --simplify-by-decoration; rtk git ls-remote origin refs/heads/codex/visembler-CHG-138-r6 refs/heads/fix/visembler-chg138-data-authoring-r3 refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git branch -vv && rtk git status --porcelain=v1 --untracked-files=all && rtk git diff --quiet && printf 'unstaged_diff_exit=%s\\\\n' \"'$? && rtk git diff --cached --quiet && printf '\"'staged_diff_exit=%s\\\\n' \"'$? && rtk git merge --ff-only f779fa49130fee5901630037cbef9315bcb085b4 && rtk git rev-parse --verify HEAD && rtk git rev-parse HEAD''^{tree} && rtk git status --porcelain=v1 --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git rev-list --parents -n 1 f779fa49130fee5901630037cbef9315bcb085b4 && rtk git merge-base --is-ancestor 5938c51fb1de4d540b404e480d028a3d0917e159 HEAD; printf 'base_ancestor_exit=%s\\\\n' \"'$? && rtk git diff --quiet f779fa49130fee5901630037cbef9315bcb085b4 -- . '\"':(exclude).codex-fabric' && printf 'product_diff_exit=%s\\\\n' \"'$? && rtk git diff --name-status f779fa49130fee5901630037cbef9315bcb085b4 -- . '\"':(exclude).codex-fabric' && rtk git diff-tree --no-commit-id --name-status -r HEAD | sed -n '1,80p' && rtk git ls-remote origin refs/heads/codex/visembler-CHG-138-r6\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/codex/visembler-CHG-138-r6'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"set -e\naccepted='f779fa49130fee5901630037cbef9315bcb085b4'\nbase='5938c51fb1de4d540b404e480d028a3d0917e159'\nexpected_tree='15d45dc6eaa93142b00869e48edda82965addb98'\nwork_ref='refs/heads/codex/visembler-CHG-138-r6'\nhead=\"'$(rtk git rev-parse HEAD)\ntree=$(rtk git rev-parse HEAD''^{tree})\ntest \"$head\" = \"$accepted\"\ntest \"$tree\" = \"$expected_tree\"\nrtk git merge-base --is-ancestor \"$base\" HEAD\nrtk git diff --quiet \"$accepted\" --\nrtk git diff --cached --quiet\nrtk git status --porcelain=v1 --untracked-files=all\ncounts=$(rtk git rev-list --left-right --count HEAD...\"origin/codex/visembler-CHG-138-r6\")\ntest \"$counts\" = '\"'0\\\\t0'\nremote_work=\"'$(rtk git ls-remote origin \"$work_ref\" | awk '\"'{print \"'$1}'\"')\ntest \\\"\"'$remote_work\" = \"$accepted\"\nremote_main=$(rtk git ls-remote origin refs/heads/main | awk '\"'{print \"'$1}'\"')\ntest \\\"\"'$remote_main\" = \"$base\"\nremote_pred=$(rtk git ls-remote origin refs/heads/fix/visembler-chg138-data-authoring-r3 | awk '\"'{print \"'$1}'\"')\ntest \\\"\"'$remote_pred\" = \"$accepted\"\nprintf '\"'local_head=%s\\\\nlocal_tree=%s\\\\nbase_ancestor=YES\\\\nproduct_diff_vs_accepted=EMPTY\\\\nlocal_remote_divergence=%s\\\\nremote_work_head=%s\\\\nremote_main=%s\\\\nremote_accepted_ref=%s\\\\nworktree= CLEAN\\\\n' \\\"\"'$head\" \"$tree\" \"$counts\" \"$remote_work\" \"$remote_main\" \"$remote_pred\"'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --porcelain=v1 --branch --untracked-files=all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git rev-list --left-right --count HEAD...origin/codex/visembler-CHG-138-r6 && rtk git merge-base --is-ancestor 5938c51fb1de4d540b404e480d028a3d0917e159 HEAD; printf 'base_ancestor_exit=%s\\\\n' \"'$?'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --quiet f779fa49130fee5901630037cbef9315bcb085b4 --; printf 'product_diff_exit=%s\\\\n' \"'$?; rtk git diff --cached --quiet; printf '\"'staged_diff_exit=%s\\\\n' \"'$?'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/codex/visembler-CHG-138-r6 refs/heads/main refs/heads/fix/visembler-chg138-data-authoring-r3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 31,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 88.36,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 178176,
+      "fresh_input_tokens": 23481,
+      "input_tokens": 201657,
+      "non_reasoning_output_tokens": 2799,
+      "output_tokens": 5167,
+      "reasoning_output_tokens": 2368,
+      "total_processed_tokens": 206824
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+      "subject": "fix(visualizer): bind CHG-138 runtime authoring assets"
+    }
+  ],
+  "diff": {
+    "additions": 1226,
+    "changed_files": 12,
+    "commit_count": 1,
+    "deletions": 88
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "d3d732d400f41a6bdf3893fcd2d624a657e49722455b6fd9794b42eb56edfbbe"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-20T21:41:12Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "branch": "codex/visembler-CHG-138-r6",
+    "detached_verify": false,
+    "head_sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "remote_exact_head": true,
+    "remote_head_sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "work_branch": "codex/visembler-CHG-138-r6",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-81aef9cd8413b15c262c2864",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-138-r6",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-138-r6"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-138-r6",
+  "schema_version": 1,
+  "started_at": "2026-09-20T21:38:57Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 135,
+    "queue_seconds": 0,
+    "total_seconds": 135
+  },
+  "transport": {
+    "bytes": 2239,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 1954,
+    "prompt_sha256": "61a84b7e61e92fb7f94a78ebee11c71d0dafbbf30f6bee11f6b76f5bcbe82fba",
+    "sha256": "81aef9cd8413b15c262c2864eba134483ebaccafcf097bd53d62c6d7dce995ea"
+  }
+}
