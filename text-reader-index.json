@@ -1,0 +1,1257 @@
+{
+  "artifact_run": {
+    "id": "AR-40",
+    "url": "https://app.notion.com/p/3e1c564c8d04810f8979e4f795eac5db"
+  },
+  "canonical_evidence_statement": "Each SVG is a lossy deterministic human-review derivative of exact R4 evidence bytes. The R4 PNG remains canonical evidence; these SVGs are not replacement evidence and carry no visual verdict.",
+  "certified_candidate": {
+    "commit": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "sole_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98"
+  },
+  "execution": {
+    "source_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "target_branch": "main",
+    "tree_sha": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "fabric_job": "CF-d101410eda73388fa1e13a18",
+  "input_carrier": {
+    "commit": "96f9b8376e8caee9aa5eb0abd155da2619faf6a8",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r4",
+    "tree": "2a531b4a7f063dcfd2adaa929f7502fef2df9337"
+  },
+  "kind": "lossy_deterministic_utf8_visual_reader_derivative",
+  "method": {
+    "geometry": "horizontal same-color runs are vertically merged and grouped into SVG path elements; integer pixel-aligned geometry",
+    "limits": {
+      "max_xml_line_bytes": 8000,
+      "preferred_svg_bytes": 122880
+    },
+    "quantization": "Pillow Image.quantize colors=24, method=MEDIANCUT, dither=NONE, then RGB",
+    "resize": "Pillow Image.Resampling.NEAREST to a deterministic integer source grid width equal to displayed cell width divided by 2; aspect ratio preserved; nearest-neighbor integer upscale by GRID_SCALE=2 to the displayed cell rectangle",
+    "text": "ASCII XML with built-in sans-serif fallback; no URLs, data URIs, JavaScript, external fonts or resources"
+  },
+  "operation": "VERIFY",
+  "project": "visembler",
+  "r3_evidence": {
+    "commit": "ac76e210dcc5a652bfda0b1c85149d44831e19e9",
+    "fabric_job": "CF-d5c664198c8efb72b95dae97",
+    "sole_parent": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "tree": "6bf87356f3e5b4a5198141130fcc084a8a8e18b8"
+  },
+  "r4_carrier": {
+    "commit": "96f9b8376e8caee9aa5eb0abd155da2619faf6a8",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r4",
+    "tree": "2a531b4a7f063dcfd2adaa929f7502fef2df9337"
+  },
+  "r4_evidence": {
+    "commit": "523273df8f0de83b3cd93e2d2786dc9157e4d40c",
+    "fabric_job": "CF-1a3a7696b4fb1f30df3579d3",
+    "sole_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "tree": "3c0bdf293f5154a365c812c48d036bdf71f6e601"
+  },
+  "reader_review": {
+    "r4_png_remains_canonical": true,
+    "svg_is_lossy_deterministic_derivative": true,
+    "visual_verdict": "NOT_CLAIMED"
+  },
+  "request": "CHG-138-r5",
+  "root_carrier": {
+    "identity_recorded_in": "r5-identity-reconciliation-report.json and provider reconciliation after remote readback",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r5"
+  },
+  "schema_version": 1,
+  "sheets": [
+    {
+      "bytes": 79389,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-01-create-flow/reader-01-create-flow-1-1.png",
+          "expected_rgb_sha256": "c2b10c8f6a9265bfcea6b0df7a12da1ec64a20c624ecc842393e74730e70809b",
+          "label": "desktop-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "desktop-1440.png",
+          "source_path": "evidence/r2-reused/desktop-1440.png",
+          "source_sha256": "f4d852348718756fc4e7fe9ee6d48a8c0bb28361d178132865cf7aeae24476d8"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-01-create-flow/reader-01-create-flow-1-2.png",
+          "expected_rgb_sha256": "602dfedbe4e07167ac5874e22de1f4999d16f53eeaaca1a6165bd91f59a7baa4",
+          "label": "create-add-stage-desktop-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "create-add-stage-desktop-1440.png",
+          "source_path": "evidence/r2-reused/create-add-stage-desktop-1440.png",
+          "source_sha256": "1377ac853c18ee4e8f0becb772319ad49985eeafdcc49b5aba9f6990407613a9"
+        }
+      ],
+      "filename": "reader-01-create-flow.svg",
+      "group": "reader-01-create-flow.svg",
+      "line_count": 65,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "5180bf5cb5e606fa8a4f34240ca1f538b8a6ce02b909e96c3fd16f525b8ccb1a",
+      "variant": "A",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 115688,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-01-create-flow-b/reader-01-create-flow-b-1-1.png",
+          "expected_rgb_sha256": "01e89a86a721c5b151209419d0096c1931d53bb13dd3d9db31a361e62823fd5a",
+          "label": "create-choose-stage-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "create-choose-stage-1440.png",
+          "source_path": "evidence/r2-reused/create-choose-stage-1440.png",
+          "source_sha256": "e92ff9b5a27d76a124ac2750bbe18769bec85749aa86bf787705101ec34ab918"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-01-create-flow-b/reader-01-create-flow-b-1-2.png",
+          "expected_rgb_sha256": "8a71994fd285aa8fc31e38b5affefaa070f0e67ad6c2c48e86f364b1f308bd95",
+          "label": "create-map-valid-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "create-map-valid-1440.png",
+          "source_path": "evidence/r2-reused/create-map-valid-1440.png",
+          "source_sha256": "0309db4b2bf87b7b39b40aba661f201edfa7f77241dad927a7fddc7b47ed2ea9"
+        }
+      ],
+      "filename": "reader-01-create-flow-b.svg",
+      "group": "reader-01-create-flow.svg",
+      "line_count": 64,
+      "palette_size": 30,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "f4fe8c8606d2f7257fe237f5c5f0644656a7a4d35aaf392f4a207cf4cb42fb88",
+      "variant": "B",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 105027,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-02-mapping-data/reader-02-mapping-data-1-1.png",
+          "expected_rgb_sha256": "02f723c4b30d0fca7c067870dd8106d02e388e435a4ba538ffd9ea414bbbc4b1",
+          "label": "create-map-invalid-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "create-map-invalid-1440.png",
+          "source_path": "evidence/r2-reused/create-map-invalid-1440.png",
+          "source_sha256": "a98117469345efe435f20722804c9ff4bc0b68e12ef4b420c81b7168f49f6c8b"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-02-mapping-data/reader-02-mapping-data-1-2.png",
+          "expected_rgb_sha256": "466be614249202384f8ebd6c061b2d5cfff8d75e368c83a653e8b871324baba9",
+          "label": "dense-field-search-create-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "dense-field-search-create-1440.png",
+          "source_path": "evidence/r2-reused/dense-field-search-create-1440.png",
+          "source_sha256": "2acdd517a0c034c12799cec994132a91c1b110c529023463f26388fa080e6624"
+        }
+      ],
+      "filename": "reader-02-mapping-data.svg",
+      "group": "reader-02-mapping-data.svg",
+      "line_count": 64,
+      "palette_size": 32,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "7de737e8a55c5615c7cfe1b7f2ca0779a562db29656c21890e6bff07417d2419",
+      "variant": "A",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 55024,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-02-mapping-data-b/reader-02-mapping-data-b-1-1.png",
+          "expected_rgb_sha256": "f713b43d1ce093d2614da5bc3cf83322bb536df6dc7d30690e01ca2e291bac7c",
+          "label": "datadock-fields-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "datadock-fields-1440.png",
+          "source_path": "evidence/r2-reused/datadock-fields-1440.png",
+          "source_sha256": "398663a60f88d1b6fffe67b9a19c6a927bcf81ac583d41b24b163a3893cabddf"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-02-mapping-data-b/reader-02-mapping-data-b-1-2.png",
+          "expected_rgb_sha256": "38642b89d6a7540a516c8c402a5d6d901aa81284fefde82cb3c7a374b5502f54",
+          "label": "transform-draft-calculated-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "transform-draft-calculated-1440.png",
+          "source_path": "evidence/r2-reused/transform-draft-calculated-1440.png",
+          "source_sha256": "65ec298c41ad301d6e6978e37380ebb05074c5e234b20c71fb736db82931ffd4"
+        }
+      ],
+      "filename": "reader-02-mapping-data-b.svg",
+      "group": "reader-02-mapping-data.svg",
+      "line_count": 66,
+      "palette_size": 35,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "169b986f48e44f9380eb2d0ad174981c1d890e56c7c8512eb12cc7a39abbdcff",
+      "variant": "B",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 60669,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-03-transform-studio/reader-03-transform-studio-1-1.png",
+          "expected_rgb_sha256": "6f70f6fdb35604fa9ba88889824bad8037b3b29ba57cd8aff990add5daa897e8",
+          "label": "transform-draft-unpivot-1440.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "transform-draft-unpivot-1440.png",
+          "source_path": "evidence/r2-reused/transform-draft-unpivot-1440.png",
+          "source_sha256": "99ab892b2db046b34275b48e71ffc546e7f139d5a833b6a28f7d70e69209a05c"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-03-transform-studio/reader-03-transform-studio-1-2.png",
+          "expected_rgb_sha256": "51bc286d62c6faa6eca1c0fa64c05f2be283763459737587cc85f3d895a53031",
+          "label": "chart-studio-fields-1440.png",
+          "original_dimensions": {
+            "height": 940,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 138,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "chart-studio-fields-1440.png",
+          "source_path": "evidence/r2-reused/chart-studio-fields-1440.png",
+          "source_sha256": "342e26e967465eba824283e0ba87cc9519421089faab5d4a51374a2e03d5c87a"
+        }
+      ],
+      "filename": "reader-03-transform-studio.svg",
+      "group": "reader-03-transform-studio.svg",
+      "line_count": 66,
+      "palette_size": 44,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "08b9962db688772504c4a114266c3770354e117321db04d7551bf0bdf81aacda",
+      "variant": "A",
+      "viewBox": "0 0 474 286"
+    },
+    {
+      "bytes": 62365,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-03-transform-studio-b/reader-03-transform-studio-b-1-1.png",
+          "expected_rgb_sha256": "58d6c4f0fb372b29499e3c9d4219fcdb19d09e312d8a54707afa608f5bf3b8f7",
+          "label": "chart-studio-transform-1440.png",
+          "original_dimensions": {
+            "height": 940,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 138,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "chart-studio-transform-1440.png",
+          "source_path": "evidence/r2-reused/chart-studio-transform-1440.png",
+          "source_sha256": "490e522870821612593b156fcb531d78fcfe105fbf603e35564556cca8a5020a"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-03-transform-studio-b/reader-03-transform-studio-b-1-2.png",
+          "expected_rgb_sha256": "3980e266726681e36fc1c089c28a1b88ab9b597e9dc23e8017d251c82a3b4524",
+          "label": "two-session-conflict.png",
+          "original_dimensions": {
+            "height": 1000,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 146,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "two-session-conflict.png",
+          "source_path": "evidence/r2-reused/two-session-conflict.png",
+          "source_sha256": "f0919ab9c6de82f174da758b970c24077064976d0c49edde7aa3405066fd0a8c"
+        }
+      ],
+      "filename": "reader-03-transform-studio-b.svg",
+      "group": "reader-03-transform-studio.svg",
+      "line_count": 66,
+      "palette_size": 44,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "055439891998bd4b62b9ba08417eb933618d2219a2fdd73c70b26b9df61821ec",
+      "variant": "B",
+      "viewBox": "0 0 474 294"
+    },
+    {
+      "bytes": 111756,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-04-preview-families/reader-04-preview-families-1-1.png",
+          "expected_rgb_sha256": "753f763c20cb6d27e4669a8fbf89bf84109c8f4c79d1fee19bfad5014688913b",
+          "label": "create-preview-table.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "create-preview-table.png",
+          "source_path": "evidence/r2-reused/create-preview-table.png",
+          "source_sha256": "97f6d584261e15b6a6264614175a23ffe9e9a19f89daa3d519c3414ffd2f3a77"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-04-preview-families/reader-04-preview-families-1-2.png",
+          "expected_rgb_sha256": "46850247aa14dcae6e655429cceb17ee74b04d93d5836975509146090e96664a",
+          "label": "create-preview-timeline.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "create-preview-timeline.png",
+          "source_path": "evidence/r2-reused/create-preview-timeline.png",
+          "source_sha256": "f05a15c18a85ac2ddb4478990dadb6228142e712a1da786400f4a75a8fd68354"
+        }
+      ],
+      "filename": "reader-04-preview-families.svg",
+      "group": "reader-04-preview-families.svg",
+      "line_count": 64,
+      "palette_size": 27,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "c4f1bea81cafd43bb7d1bfb53be6cf88d45b35dedce79fc9bf8efcc05012edcb",
+      "variant": "A",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 105559,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-04-preview-families-b/reader-04-preview-families-b-1-1.png",
+          "expected_rgb_sha256": "3c7c13ff704f85b6412af5f80ae1fb456121ef339d7734637ab0b82dea84726f",
+          "label": "create-preview-diagram.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "create-preview-diagram.png",
+          "source_path": "evidence/r2-reused/create-preview-diagram.png",
+          "source_sha256": "b490541ccc73b5cd2845f15e73552a14b7fc03c19aeec9f0c391a1bbbbc9f276"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-04-preview-families-b/reader-04-preview-families-b-1-2.png",
+          "expected_rgb_sha256": "763ee18890bd3a9ed29b960dce79608d915c898aab8e9a712cb7919515142bc2",
+          "label": "create-preview-chart.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "create-preview-chart.png",
+          "source_path": "evidence/r2-reused/create-preview-chart.png",
+          "source_sha256": "dc8159008d5b1d90d4cb84cc7243e618e0316fa1bbc1b935aeec6efec9f971a5"
+        }
+      ],
+      "filename": "reader-04-preview-families-b.svg",
+      "group": "reader-04-preview-families.svg",
+      "line_count": 64,
+      "palette_size": 32,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "aec200d2bb085eb8d67a7f738ac0e1fb0f3cf56c2d4cb49e93787bcf0c798df6",
+      "variant": "B",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 104198,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-05-specialized-parity/reader-05-specialized-parity-1-1.png",
+          "expected_rgb_sha256": "59822588eace62669b59a4dc7d5d601469e0a047bde9be61a073030d7635ac39",
+          "label": "create-preview-engineering.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "create-preview-engineering.png",
+          "source_path": "evidence/r2-reused/create-preview-engineering.png",
+          "source_sha256": "7f9effc3eb517019e058706ca5ed22008ad7099f4ee3a2e890baecd839a26232"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-05-specialized-parity/reader-05-specialized-parity-1-2.png",
+          "expected_rgb_sha256": "49f6678640e5718ccd1705d34bed85dd1f52131359130fcaf9a8ccacaf9fdddb",
+          "label": "create-preview-wafer.png",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "create-preview-wafer.png",
+          "source_path": "evidence/r2-reused/create-preview-wafer.png",
+          "source_sha256": "b2491c88d1694ad5b74690b0c1504519c83ab28cd53e26ac68de5f93a5b530ea"
+        }
+      ],
+      "filename": "reader-05-specialized-parity.svg",
+      "group": "reader-05-specialized-parity.svg",
+      "line_count": 64,
+      "palette_size": 28,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "381368a4a6c435e3803947e55d8729407071721f10118f00d07270dace5f21fb",
+      "variant": "A",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 35048,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-05-specialized-parity-b/reader-05-specialized-parity-b-1-1.png",
+          "expected_rgb_sha256": "6a184aed5b5e81d5781c8d0c8333493725ae8a1e18d184904b1e2fcf4c351e69",
+          "label": "displayed-table-preview.png",
+          "original_dimensions": {
+            "height": 1000,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 146,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "displayed-table-preview.png",
+          "source_path": "evidence/r2-reused/displayed-table-preview.png",
+          "source_sha256": "650f0ffeb17204f9d81ea60f98b610f757b328b7468e4a15ea1ea90c0e063885"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-05-specialized-parity-b/reader-05-specialized-parity-b-1-2.png",
+          "expected_rgb_sha256": "92a4a28b0beff7ea07ca2d255641d3059d6f4029a0ea9a0a40b1ea3cde806694",
+          "label": "displayed-line-preview.png",
+          "original_dimensions": {
+            "height": 1000,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 146,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "displayed-line-preview.png",
+          "source_path": "evidence/r2-reused/displayed-line-preview.png",
+          "source_sha256": "57df965216a73c2ebb14e04cf292221586f0ac4d7bd79bed4d91db5c4afac80f"
+        }
+      ],
+      "filename": "reader-05-specialized-parity-b.svg",
+      "group": "reader-05-specialized-parity.svg",
+      "line_count": 64,
+      "palette_size": 36,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "29557c38e8358d443df71c7bcd24f16e142eb38d640b837964c76a4f6033bdbb",
+      "variant": "B",
+      "viewBox": "0 0 474 294"
+    },
+    {
+      "bytes": 20720,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-05-specialized-parity-c/reader-05-specialized-parity-c-1-1.png",
+          "expected_rgb_sha256": "fac77943c280f1b7ec250cae04a5a46d86a22eb192e0dcd9b8c005986838b760",
+          "label": "displayed-wafer-preview.png",
+          "original_dimensions": {
+            "height": 1000,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 146,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "displayed-wafer-preview.png",
+          "source_path": "evidence/r2-reused/displayed-wafer-preview.png",
+          "source_sha256": "2bf9130bf52b464567898d2432c81baee0501610a6e0d5e61e6517cec94ab50d"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": null,
+          "expected_rgb_sha256": null,
+          "label": "INTENTIONAL EMPTY CELL - 2x3 layout",
+          "original_dimensions": null,
+          "palette_size": 0,
+          "scaled_cell_rectangle": {
+            "height": 146,
+            "width": 0,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": null,
+          "source_path": null,
+          "source_sha256": null
+        }
+      ],
+      "filename": "reader-05-specialized-parity-c.svg",
+      "group": "reader-05-specialized-parity.svg",
+      "line_count": 40,
+      "palette_size": 24,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "d0c864244669f69ed94599f00e5bc2a17ace80914f339621e447454f219864f0",
+      "variant": "C",
+      "viewBox": "0 0 474 294"
+    },
+    {
+      "bytes": 57096,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-06-responsive-desktop/reader-06-responsive-desktop-1-1.png",
+          "expected_rgb_sha256": "8058404d8db77225006757555074e7a3046711b840c5fbc4de805b7805369a48",
+          "label": "BEFORE - base editor",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-editor-1440.png",
+          "source_path": "evidence/r2-reused/base-editor-1440.png",
+          "source_sha256": "351d3f2179a0b61262c7cc84aab2ae818c43fe2e73dac70155f97764985d0aa3"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-06-responsive-desktop/reader-06-responsive-desktop-1-2.png",
+          "expected_rgb_sha256": "c2b10c8f6a9265bfcea6b0df7a12da1ec64a20c624ecc842393e74730e70809b",
+          "label": "AFTER - desktop",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1440
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 132,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "desktop-1440.png",
+          "source_path": "evidence/r2-reused/desktop-1440.png",
+          "source_sha256": "f4d852348718756fc4e7fe9ee6d48a8c0bb28361d178132865cf7aeae24476d8"
+        }
+      ],
+      "filename": "reader-06-responsive-desktop.svg",
+      "group": "reader-06-responsive-desktop.svg",
+      "line_count": 66,
+      "palette_size": 38,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "5d0cd14a4185040b4a143fb335f754a1a654c6192e6ab8e6c1c1954d9eb2b83d",
+      "variant": "A",
+      "viewBox": "0 0 474 280"
+    },
+    {
+      "bytes": 103704,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-06-responsive-desktop-b/reader-06-responsive-desktop-b-1-1.png",
+          "expected_rgb_sha256": "f60ff406f5bee6a358ea73094699fd54d5b8062b76aff74444134f7adaf4107a",
+          "label": "BEFORE - base narrow",
+          "original_dimensions": {
+            "height": 900,
+            "width": 1024
+          },
+          "palette_size": 23,
+          "scaled_cell_rectangle": {
+            "height": 184,
+            "width": 210,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-narrow-1024.png",
+          "source_path": "evidence/r2-reused/base-narrow-1024.png",
+          "source_sha256": "96abb0e8484ccdd0ad670aff6d238d543ba789b06e4dcda645437e25df64bbed"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": null,
+          "expected_png": "reader-06-responsive-desktop-b/reader-06-responsive-desktop-b-1-2.png",
+          "expected_rgb_sha256": "a81979338327d3d11d285359a04422e473414ec96fde7dbf149724692155540d",
+          "label": "AFTER - narrow",
+          "original_dimensions": {
+            "height": 940,
+            "width": 1024
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 192,
+            "width": 210,
+            "x": 246,
+            "y": 60
+          },
+          "source_filename": "narrow-1024.png",
+          "source_path": "evidence/r2-reused/narrow-1024.png",
+          "source_sha256": "64ec8f43c64e95889aabf3517416664474c6ab543078be55d3b3289b32c94d2d"
+        }
+      ],
+      "filename": "reader-06-responsive-desktop-b.svg",
+      "group": "reader-06-responsive-desktop.svg",
+      "line_count": 65,
+      "palette_size": 46,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "62a743696a60175a11f3431c2c67bc10953202702d69e6caa228bc09eccec7f8",
+      "variant": "B",
+      "viewBox": "0 0 474 340"
+    },
+    {
+      "bytes": 82075,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow/reader-07-mobile-reflow-1-1.png",
+          "expected_rgb_sha256": "5a01915a44145fca518d424df23db36d0c74cee32216a915f20e5180b0b1b79d",
+          "label": "BASE - mobile full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 390
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 260,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-mobile-390.png",
+          "source_path": "evidence/r2-reused/base-mobile-390.png",
+          "source_sha256": "8027bb90f0fadf6a0fbc94bd3d8fd969ee0c421681628d891aab5b1df1949c3f"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            0,
+            390,
+            1000
+          ],
+          "expected_png": "reader-07-mobile-reflow/reader-07-mobile-reflow-1-2.png",
+          "expected_rgb_sha256": "a259d4ee3e24d4d4697db8b5ffc7dd705f42e6b2167f075387ddc899a7e220d6",
+          "label": "CANDIDATE - mobile top",
+          "original_dimensions": {
+            "height": 3960,
+            "width": 390
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 308,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "mobile-390.png",
+          "source_path": "evidence/r2-reused/mobile-390.png",
+          "source_sha256": "8aee2d5d2e38c8a7ae0250c4e00cc8cbf7c431db45c53b652050edebcb87d0ef"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 67,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "54525f5a6451a0b5ac5a7453117a5d53c38795630dde3a5acf59c512737d96c3",
+      "variant": "A",
+      "viewBox": "0 0 294 456"
+    },
+    {
+      "bytes": 94608,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow-b/reader-07-mobile-reflow-b-1-1.png",
+          "expected_rgb_sha256": "5a01915a44145fca518d424df23db36d0c74cee32216a915f20e5180b0b1b79d",
+          "label": "BASE - mobile full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 390
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 260,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-mobile-390.png",
+          "source_path": "evidence/r2-reused/base-mobile-390.png",
+          "source_sha256": "8027bb90f0fadf6a0fbc94bd3d8fd969ee0c421681628d891aab5b1df1949c3f"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            1480,
+            390,
+            2480
+          ],
+          "expected_png": "reader-07-mobile-reflow-b/reader-07-mobile-reflow-b-1-2.png",
+          "expected_rgb_sha256": "51dde7acb2aca9a3f107118dd56ccb951072a333e0b263ab3b3d5dc68dce8ec7",
+          "label": "CANDIDATE - mobile middle",
+          "original_dimensions": {
+            "height": 3960,
+            "width": 390
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 308,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "mobile-390.png",
+          "source_path": "evidence/r2-reused/mobile-390.png",
+          "source_sha256": "8aee2d5d2e38c8a7ae0250c4e00cc8cbf7c431db45c53b652050edebcb87d0ef"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow-b.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 69,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "c0d0a7f1baf52d503907a0274b093f946db33a5a85c7bacb90e2c90a38777d21",
+      "variant": "B",
+      "viewBox": "0 0 294 456"
+    },
+    {
+      "bytes": 94762,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow-c/reader-07-mobile-reflow-c-1-1.png",
+          "expected_rgb_sha256": "5a01915a44145fca518d424df23db36d0c74cee32216a915f20e5180b0b1b79d",
+          "label": "BASE - mobile full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 390
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 260,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-mobile-390.png",
+          "source_path": "evidence/r2-reused/base-mobile-390.png",
+          "source_sha256": "8027bb90f0fadf6a0fbc94bd3d8fd969ee0c421681628d891aab5b1df1949c3f"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            2960,
+            390,
+            3960
+          ],
+          "expected_png": "reader-07-mobile-reflow-c/reader-07-mobile-reflow-c-1-2.png",
+          "expected_rgb_sha256": "bd6e68d75a0c124d17e89837cb0c4b5b96b4b61049aedd3a48482c47baf56d3a",
+          "label": "CANDIDATE - mobile bottom",
+          "original_dimensions": {
+            "height": 3960,
+            "width": 390
+          },
+          "palette_size": 23,
+          "scaled_cell_rectangle": {
+            "height": 308,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "mobile-390.png",
+          "source_path": "evidence/r2-reused/mobile-390.png",
+          "source_sha256": "8aee2d5d2e38c8a7ae0250c4e00cc8cbf7c431db45c53b652050edebcb87d0ef"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow-c.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 67,
+      "palette_size": 46,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "70d42b3efcb1fe76830eb689b82217e2501a021a22b46fb139a659809971548c",
+      "variant": "C",
+      "viewBox": "0 0 294 456"
+    },
+    {
+      "bytes": 38207,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow-d/reader-07-mobile-reflow-d-1-1.png",
+          "expected_rgb_sha256": "04efc11440991c2eef41dc7ed627c75e41ac94b4b259c26011ca11cf34a5cbd0",
+          "label": "BASE - reflow full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 140,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/base-reflow-200pct-equivalent.png",
+          "source_sha256": "b6e58ce5517cd34f249d45c547508c051e005d66e4de9352879bcc6ac174b23b"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            0,
+            720,
+            1000
+          ],
+          "expected_png": "reader-07-mobile-reflow-d/reader-07-mobile-reflow-d-1-2.png",
+          "expected_rgb_sha256": "401f5e7e4f61a92c4cc7cc60a32650a5e466a1cd1a527b83bd55a1f65f6ca117",
+          "label": "CANDIDATE - reflow top",
+          "original_dimensions": {
+            "height": 3663,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 166,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/reflow-200pct-equivalent.png",
+          "source_sha256": "9c5d3dc719a8f2b3b25d00a8b132041c0eb695db622196236664d4c456eda744"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow-d.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 64,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "7d63ac00b446b63edc2a5054349c5175892ddfd47c5b2b393db7f1d940f4dd67",
+      "variant": "D",
+      "viewBox": "0 0 294 314"
+    },
+    {
+      "bytes": 45796,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow-e/reader-07-mobile-reflow-e-1-1.png",
+          "expected_rgb_sha256": "04efc11440991c2eef41dc7ed627c75e41ac94b4b259c26011ca11cf34a5cbd0",
+          "label": "BASE - reflow full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 140,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/base-reflow-200pct-equivalent.png",
+          "source_sha256": "b6e58ce5517cd34f249d45c547508c051e005d66e4de9352879bcc6ac174b23b"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            1331,
+            720,
+            2331
+          ],
+          "expected_png": "reader-07-mobile-reflow-e/reader-07-mobile-reflow-e-1-2.png",
+          "expected_rgb_sha256": "62d1b46622f658d117369ba54c62a11737b2176c1c208a55a2086c187af674c4",
+          "label": "CANDIDATE - reflow middle",
+          "original_dimensions": {
+            "height": 3663,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 166,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/reflow-200pct-equivalent.png",
+          "source_sha256": "9c5d3dc719a8f2b3b25d00a8b132041c0eb695db622196236664d4c456eda744"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow-e.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 64,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "9d95b46e322da0d703f4b07d7fc41d934a4722a3c75ef49a0a7af9a041ddd2b3",
+      "variant": "E",
+      "viewBox": "0 0 294 314"
+    },
+    {
+      "bytes": 42091,
+      "cells": [
+        {
+          "cell": 1,
+          "crop_coordinates": null,
+          "expected_png": "reader-07-mobile-reflow-f/reader-07-mobile-reflow-f-1-1.png",
+          "expected_rgb_sha256": "04efc11440991c2eef41dc7ed627c75e41ac94b4b259c26011ca11cf34a5cbd0",
+          "label": "BASE - reflow full",
+          "original_dimensions": {
+            "height": 844,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 140,
+            "width": 120,
+            "x": 18,
+            "y": 60
+          },
+          "source_filename": "base-reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/base-reflow-200pct-equivalent.png",
+          "source_sha256": "b6e58ce5517cd34f249d45c547508c051e005d66e4de9352879bcc6ac174b23b"
+        },
+        {
+          "cell": 2,
+          "crop_coordinates": [
+            0,
+            2663,
+            720,
+            3663
+          ],
+          "expected_png": "reader-07-mobile-reflow-f/reader-07-mobile-reflow-f-1-2.png",
+          "expected_rgb_sha256": "fbb9a3f5984897729f24517edff4174201f379eedf793e05531d82450d2c0027",
+          "label": "CANDIDATE - reflow bottom",
+          "original_dimensions": {
+            "height": 3663,
+            "width": 720
+          },
+          "palette_size": 24,
+          "scaled_cell_rectangle": {
+            "height": 166,
+            "width": 120,
+            "x": 156,
+            "y": 60
+          },
+          "source_filename": "reflow-200pct-equivalent.png",
+          "source_path": "evidence/r2-reused/reflow-200pct-equivalent.png",
+          "source_sha256": "9c5d3dc719a8f2b3b25d00a8b132041c0eb695db622196236664d4c456eda744"
+        }
+      ],
+      "filename": "reader-07-mobile-reflow-f.svg",
+      "group": "reader-07-mobile-reflow.svg",
+      "line_count": 64,
+      "palette_size": 47,
+      "quantization": {
+        "colors": 24,
+        "dither": "NONE",
+        "method": "MEDIANCUT"
+      },
+      "resize_method": "NEAREST",
+      "sha256": "457192db3396ece4fbd08e0e9d5fc52aafbdfdd7afdba0a0874b274c13dc52f6",
+      "variant": "F",
+      "viewBox": "0 0 294 314"
+    }
+  ],
+  "source_change": "CHG-138",
+  "source_integrity": {
+    "manifest": "R4 artifact-manifest.json",
+    "note": "The carrier contains 29 PNGs and 2 SVGs. The seven requested reader groups represent 28 unique PNGs; desktop-1440.png is reused in two cells. The two extra R4 visuals are retained in the carrier and are not used by these sheets.",
+    "r4_png_count": 29,
+    "represented_unique_png_count": 28,
+    "review_index": "R4 review-index.json",
+    "unrepresented_r4_visuals": [
+      "base-create-add-stage.png",
+      "portable-dark.svg",
+      "source-reloaded-dark.svg"
+    ]
+  },
+  "status": "Staged",
+  "visual_provenance": {
+    "r4_png_count": 29,
+    "recaptured": false,
+    "reconciliation": "PASS_EXACT_BYTE_REUSE",
+    "represented_unique_png_count": 28,
+    "source_bytes_unchanged": true
+  }
+}
