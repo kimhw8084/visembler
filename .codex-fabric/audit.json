@@ -1,0 +1,103 @@
+{
+  "artifact_run": {
+    "id": "AR-38",
+    "status": "Staged",
+    "url": "https://app.notion.com/p/3e1c564c8d04813a800fe99416a85607"
+  },
+  "certified_candidate": {
+    "commit": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "integrated": false,
+    "sole_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98"
+  },
+  "evidence_kind": "deterministic_fabric_zero_source_change_verify",
+  "execution": {
+    "product_mutation": false,
+    "sole_parent_required": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "source_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "target_branch": "main",
+    "tree_sha": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "fabric_job": "CF-1a3a7696b4fb1f30df3579d3",
+  "final_hashes": {
+    "bundle_sha256": "c1cfbc9dcbd101df2e66d37f73e272aa20ef73b291f30426e9355fc2fa5ac13e",
+    "data_authoring_pdf_sha256": "0666c076e66aa0b0a2566ef6d6a781ab4d5638e482ec45904b354abdd1dbca1a",
+    "manifest_sha256": "7bdf5dbe2b66f14a26e0e79901383866fbebb905cd5ce0b73e8592e7658ed040",
+    "provider_receipt_sha256": "a9a45df8cbda648540655ee42b2ea5378c1874f7a155e325e8e0f12092835db8",
+    "reader_index_sha256": "b61dd468d73572d6024303202f62d18b8158197b593c570976326f1eb48f2607",
+    "responsive_pdf_sha256": "158aa1b53aede581c3f9040f1527b890b525919e528eba7052224b21532ff70b",
+    "review_index_sha256": "91dd83a3cb96afc166e3bf1118906da0ddf3c30c1f55b065e69f3fbc92f12c97"
+  },
+  "guardrails": {
+    "ar33_untouched": true,
+    "ar35_untouched": true,
+    "product_source_tests_certification_files_modified": false,
+    "self_accept_or_go_claimed": false,
+    "visual_surfaces_not_updated": true
+  },
+  "operation": "VERIFY",
+  "pdf_page_counts": {
+    "CHG-138-r4-data-authoring-review.pdf": 21,
+    "CHG-138-r4-responsive-review.pdf": 8
+  },
+  "project": "visembler",
+  "provider_readback": {
+    "artifact_count": 40,
+    "artifact_file_property_count": 41,
+    "bundle_sha256": "c1cfbc9dcbd101df2e66d37f73e272aa20ef73b291f30426e9355fc2fa5ac13e",
+    "manifest_file_property_count": 1,
+    "manifest_sha256": "7bdf5dbe2b66f14a26e0e79901383866fbebb905cd5ce0b73e8592e7658ed040",
+    "remote_bundle_exact": true,
+    "remote_manifest_exact": true,
+    "remote_pdf_bytes_exact": true,
+    "remote_pdf_page_counts_exact": true,
+    "remote_png_hash_dimensions_exact": true,
+    "run_id": "AR-38",
+    "run_url": "https://app.notion.com/p/3e1c564c8d04813a800fe99416a85607",
+    "status": "PASS",
+    "uploaded_bytes": 19801233
+  },
+  "r3_carrier": {
+    "bundle_sha256": "c0a281d96fb8f3c5b414c2bf86e2904eb7bcd5a2db4639786163ec1fdd55d728",
+    "commit": "970cbd92bf3f11eb37076b6d7f31280c9cb99339",
+    "manifest_sha256": "b22d642fb7283559888e0c4e81e154541bc58d6ffa8abc010d63110a4330a652",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r3",
+    "tree": "e84f0e0db04216e104593b78e991e4cbb7e6795c"
+  },
+  "r3_evidence": {
+    "commit": "ac76e210dcc5a652bfda0b1c85149d44831e19e9",
+    "fabric_job": "CF-d5c664198c8efb72b95dae97",
+    "sole_parent": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "tree": "6bf87356f3e5b4a5198141130fcc084a8a8e18b8"
+  },
+  "r4_reader_carrier": {
+    "commit": "96f9b8376e8caee9aa5eb0abd155da2619faf6a8",
+    "parents": [],
+    "raw_pdf_urls": [
+      "https://raw.githubusercontent.com/kimhw8084/visembler/96f9b8376e8caee9aa5eb0abd155da2619faf6a8/CHG-138-r4-data-authoring-review.pdf",
+      "https://raw.githubusercontent.com/kimhw8084/visembler/96f9b8376e8caee9aa5eb0abd155da2619faf6a8/CHG-138-r4-responsive-review.pdf"
+    ],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r4",
+    "tree": "2a531b4a7f063dcfd2adaa929f7502fef2df9337"
+  },
+  "request": "CHG-138-r4",
+  "reused_visual_reconciliation": {
+    "all_hashes_bytes_dimensions_match_r3_report": true,
+    "png_count": 29,
+    "recaptured": false,
+    "source_png_bytes_unchanged": true,
+    "svg_count": 2
+  },
+  "schema_version": 1,
+  "source_change": "CHG-138",
+  "status": "Staged",
+  "target_observation": {
+    "candidate_preserved_not_integrated": true,
+    "current_main_still_exact": true,
+    "current_main_tree_still_exact": true,
+    "r3_carrier_unchanged": true,
+    "r4_execution_zero_product_mutation": true,
+    "visual_verdict": "NOT_CLAIMED; independent reader inspection required"
+  }
+}
