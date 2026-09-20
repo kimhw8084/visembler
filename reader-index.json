@@ -1,0 +1,82 @@
+{
+  "artifact_counts": {
+    "carrier_core_files": 40,
+    "manifest_core_artifacts": 40,
+    "provider_artifact_files": 41,
+    "provider_manifest_files": 1,
+    "uploaded_bytes": 19801233
+  },
+  "artifact_run": {
+    "id": "AR-38",
+    "url": "https://app.notion.com/p/3e1c564c8d04813a800fe99416a85607"
+  },
+  "carrier_kind": "source_independent_reader_carrier",
+  "certified_candidate": {
+    "commit": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "sole_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98"
+  },
+  "execution": {
+    "source_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "target_branch": "main",
+    "tree_sha": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "fabric_job": "CF-1a3a7696b4fb1f30df3579d3",
+  "files": [
+    "artifact-manifest.json",
+    "CHG-138-r4-bundle.tar.gz",
+    "CHG-138-r4-data-authoring-review.pdf",
+    "CHG-138-r4-responsive-review.pdf",
+    "review-index.json",
+    "provider-reconciliation-receipt.json"
+  ],
+  "hashes": {
+    "bundle_sha256": "c1cfbc9dcbd101df2e66d37f73e272aa20ef73b291f30426e9355fc2fa5ac13e",
+    "data_authoring_pdf_sha256": "0666c076e66aa0b0a2566ef6d6a781ab4d5638e482ec45904b354abdd1dbca1a",
+    "manifest_sha256": "7bdf5dbe2b66f14a26e0e79901383866fbebb905cd5ce0b73e8592e7658ed040",
+    "responsive_pdf_sha256": "158aa1b53aede581c3f9040f1527b890b525919e528eba7052224b21532ff70b",
+    "review_index_sha256": "91dd83a3cb96afc166e3bf1118906da0ddf3c30c1f55b065e69f3fbc92f12c97"
+  },
+  "operation": "VERIFY",
+  "paths": {
+    "bundle": "CHG-138-r4-bundle.tar.gz",
+    "data_authoring_pdf": "CHG-138-r4-data-authoring-review.pdf",
+    "manifest": "artifact-manifest.json",
+    "provider_receipt": "provider-reconciliation-receipt.json",
+    "responsive_pdf": "CHG-138-r4-responsive-review.pdf",
+    "review_index": "review-index.json"
+  },
+  "pdf_page_counts": {
+    "CHG-138-r4-data-authoring-review.pdf": 21,
+    "CHG-138-r4-responsive-review.pdf": 8
+  },
+  "project": "visembler",
+  "r3_carrier": {
+    "commit": "970cbd92bf3f11eb37076b6d7f31280c9cb99339",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r3",
+    "tree": "e84f0e0db04216e104593b78e991e4cbb7e6795c"
+  },
+  "r3_evidence": {
+    "commit": "ac76e210dcc5a652bfda0b1c85149d44831e19e9",
+    "fabric_job": "CF-d5c664198c8efb72b95dae97",
+    "sole_parent": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "tree": "6bf87356f3e5b4a5198141130fcc084a8a8e18b8"
+  },
+  "reader_review": {
+    "do_not_treat_pdfs_as_replacements_for_individual_pngs": true,
+    "pdfs_are_derived_review_aids": true,
+    "visual_verdict": "NOT_CLAIMED"
+  },
+  "request": "CHG-138-r4",
+  "schema_version": 1,
+  "source_change": "CHG-138",
+  "status": "Staged",
+  "visual_provenance": {
+    "recaptured": false,
+    "reconciliation": "PASS_EXACT_BYTE_REUSE",
+    "reused_png_count": 29,
+    "reused_svg_count": 2,
+    "source_bytes_unchanged": true
+  }
+}

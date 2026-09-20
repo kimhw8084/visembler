@@ -1,0 +1,693 @@
+{
+  "artifact_run": {
+    "id": "AR-38",
+    "url": "https://app.notion.com/p/3e1c564c8d04813a800fe99416a85607"
+  },
+  "certified_preserved_candidate": {
+    "commit": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "sole_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "status": "PRESERVED_NOT_INTEGRATED",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98"
+  },
+  "copied_r3_reports": {
+    "browser-smoke-report.json": {
+      "bytes": 828,
+      "path": "evidence/browser-smoke-report.json",
+      "sha256": "c65cfde9f59de3fe4207c5b242baad47812f4ae1e80f4be115f473b72a023638"
+    },
+    "build-identity-report.json": {
+      "bytes": 12981,
+      "path": "evidence/build-identity-report.json",
+      "sha256": "d65b739c0bee6fe6e866ed4accffd8108fd95765e629a5a8434cfab495e13e58"
+    },
+    "r2-evidence-reuse-report.json": {
+      "bytes": 15884,
+      "path": "evidence/r2-evidence-reuse-report.json",
+      "sha256": "03a162abcb18bdd1684250cbe39f44246644c0145dbd1ee4ad55930bbebc82e5"
+    },
+    "source-delta-r2-equivalence-report.json": {
+      "bytes": 2878,
+      "path": "evidence/source-delta-r2-equivalence-report.json",
+      "sha256": "7b4caee544d0120278fa93f5422630e426563f9a9cafcb121545a62f94b27899"
+    },
+    "test-and-runtime-report.json": {
+      "bytes": 3664,
+      "path": "evidence/test-and-runtime-report.json",
+      "sha256": "5d346c70c31ae63cc765807eb9d26b0c82722c1f33e60f7637bc257e7128765e"
+    }
+  },
+  "derived_review_aids": {
+    "data_authoring": {
+      "page_count": 21,
+      "path": "CHG-138-r4-data-authoring-review.pdf",
+      "sha256": "0666c076e66aa0b0a2566ef6d6a781ab4d5638e482ec45904b354abdd1dbca1a"
+    },
+    "responsive": {
+      "page_count": 8,
+      "path": "CHG-138-r4-responsive-review.pdf",
+      "sha256": "158aa1b53aede581c3f9040f1527b890b525919e528eba7052224b21532ff70b"
+    },
+    "review_index": {
+      "path": "review-index.json",
+      "sha256": "91dd83a3cb96afc166e3bf1118906da0ddf3c30c1f55b065e69f3fbc92f12c97"
+    },
+    "source_png_bytes_rewritten": false,
+    "visual_verdict": "NOT_CLAIMED; READER_REVIEW_REQUIRED"
+  },
+  "execution_identity": {
+    "fabric_job": "CF-1a3a7696b4fb1f30df3579d3",
+    "source_change_is_zero": true,
+    "source_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "target_branch": "main",
+    "tree_sha": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "guardrails": {
+    "ar33_untouched": true,
+    "ar35_untouched": true,
+    "candidate_not_integrated": true,
+    "r3_status_preserved": true,
+    "self_accept_or_go_claimed": false,
+    "visual_surfaces_not_updated": true
+  },
+  "local_validation": {
+    "candidate_verified": true,
+    "current_main_verified": true,
+    "product_source_tests_certification_files_modified_by_r4": false,
+    "r3_carrier_verified": true,
+    "r3_evidence_verified": true,
+    "worktree_product_modifications": []
+  },
+  "operation": "VERIFY",
+  "preserved_product_status": {
+    "asset_build_fingerprint": "2f8f1f12eefb0cb7",
+    "asset_build_modules": [
+      "authoring_human.mjs",
+      "authoring_preview.mjs",
+      "authoring_projection.mjs",
+      "authoring_values.mjs"
+    ],
+    "asset_build_sha256_full": "2f8f1f12eefb0cb7c517479620a9616094bdb90cea950e468620ef33cc1d47ca",
+    "browser_module_fetches": {
+      "authoring_preview.mjs": 200,
+      "authoring_projection.mjs": 200,
+      "console_errors": 0,
+      "failed_requests": 0
+    },
+    "controlled_mutation_sensitivity": "PASS_REPORTED_FOR_AUTHORING_PREVIEW_AND_PROJECTION_WITH_EXACT_RESTORE",
+    "full_pytest": {
+      "collected": 1132,
+      "failed": 0,
+      "passed": 1132
+    },
+    "r2_native_regressions": "PASS",
+    "runtime_asset_count": 56,
+    "runtime_contract": "PASS",
+    "runtime_smoke_routes": {
+      "passed": 22,
+      "total": 22
+    },
+    "source_rebuild_or_browser_recapture_performed_by_r4": false,
+    "validator": {
+      "AI004": 11,
+      "AI005": 90,
+      "page": "company_ui/products/visualizer/page.py",
+      "status": "NONZERO_KNOWN_BASELINE"
+    }
+  },
+  "project": "visembler",
+  "r3_deterministic_evidence": {
+    "commit": "ac76e210dcc5a652bfda0b1c85149d44831e19e9",
+    "fabric_job": "CF-d5c664198c8efb72b95dae97",
+    "meaning": "R3 deterministic evidence for the preserved candidate; not the R4 execution tuple",
+    "sole_parent": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "tree": "6bf87356f3e5b4a5198141130fcc084a8a8e18b8"
+  },
+  "r3_reader_carrier": {
+    "bundle_sha256": "c0a281d96fb8f3c5b414c2bf86e2904eb7bcd5a2db4639786163ec1fdd55d728",
+    "commit": "970cbd92bf3f11eb37076b6d7f31280c9cb99339",
+    "manifest_sha256": "b22d642fb7283559888e0c4e81e154541bc58d6ffa8abc010d63110a4330a652",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r3",
+    "tree": "e84f0e0db04216e104593b78e991e4cbb7e6795c"
+  },
+  "report_kind": "chg138_r4_zero_source_change_identity_reconciliation",
+  "request": "CHG-138-r4",
+  "reused_visual_reconciliation": {
+    "files": [
+      {
+        "bytes": 192895,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 192895,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "8f871b6634efcf61a0fa3e991b09caa7e2255d6707a6e3dc700b888bd1f087d7",
+        "format": "PNG",
+        "path": "evidence/r2-reused/base-create-add-stage.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "8f871b6634efcf61a0fa3e991b09caa7e2255d6707a6e3dc700b888bd1f087d7",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 129662,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 129662,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "351d3f2179a0b61262c7cc84aab2ae818c43fe2e73dac70155f97764985d0aa3",
+        "format": "PNG",
+        "path": "evidence/r2-reused/base-editor-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "351d3f2179a0b61262c7cc84aab2ae818c43fe2e73dac70155f97764985d0aa3",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 60512,
+        "dimensions": {
+          "height": 844,
+          "width": 390
+        },
+        "expected_bytes": 60512,
+        "expected_dimensions": {
+          "height": 844,
+          "width": 390
+        },
+        "expected_sha256": "8027bb90f0fadf6a0fbc94bd3d8fd969ee0c421681628d891aab5b1df1949c3f",
+        "format": "PNG",
+        "path": "evidence/r2-reused/base-mobile-390.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "8027bb90f0fadf6a0fbc94bd3d8fd969ee0c421681628d891aab5b1df1949c3f",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 136594,
+        "dimensions": {
+          "height": 900,
+          "width": 1024
+        },
+        "expected_bytes": 136594,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1024
+        },
+        "expected_sha256": "96abb0e8484ccdd0ad670aff6d238d543ba789b06e4dcda645437e25df64bbed",
+        "format": "PNG",
+        "path": "evidence/r2-reused/base-narrow-1024.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "96abb0e8484ccdd0ad670aff6d238d543ba789b06e4dcda645437e25df64bbed",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 87631,
+        "dimensions": {
+          "height": 844,
+          "width": 720
+        },
+        "expected_bytes": 87631,
+        "expected_dimensions": {
+          "height": 844,
+          "width": 720
+        },
+        "expected_sha256": "b6e58ce5517cd34f249d45c547508c051e005d66e4de9352879bcc6ac174b23b",
+        "format": "PNG",
+        "path": "evidence/r2-reused/base-reflow-200pct-equivalent.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "b6e58ce5517cd34f249d45c547508c051e005d66e4de9352879bcc6ac174b23b",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 168148,
+        "dimensions": {
+          "height": 940,
+          "width": 1440
+        },
+        "expected_bytes": 168148,
+        "expected_dimensions": {
+          "height": 940,
+          "width": 1440
+        },
+        "expected_sha256": "342e26e967465eba824283e0ba87cc9519421089faab5d4a51374a2e03d5c87a",
+        "format": "PNG",
+        "path": "evidence/r2-reused/chart-studio-fields-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "342e26e967465eba824283e0ba87cc9519421089faab5d4a51374a2e03d5c87a",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 180409,
+        "dimensions": {
+          "height": 940,
+          "width": 1440
+        },
+        "expected_bytes": 180409,
+        "expected_dimensions": {
+          "height": 940,
+          "width": 1440
+        },
+        "expected_sha256": "490e522870821612593b156fcb531d78fcfe105fbf603e35564556cca8a5020a",
+        "format": "PNG",
+        "path": "evidence/r2-reused/chart-studio-transform-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "490e522870821612593b156fcb531d78fcfe105fbf603e35564556cca8a5020a",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 175912,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 175912,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "1377ac853c18ee4e8f0becb772319ad49985eeafdcc49b5aba9f6990407613a9",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-add-stage-desktop-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "1377ac853c18ee4e8f0becb772319ad49985eeafdcc49b5aba9f6990407613a9",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 198760,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 198760,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "e92ff9b5a27d76a124ac2750bbe18769bec85749aa86bf787705101ec34ab918",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-choose-stage-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "e92ff9b5a27d76a124ac2750bbe18769bec85749aa86bf787705101ec34ab918",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 174788,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 174788,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "a98117469345efe435f20722804c9ff4bc0b68e12ef4b420c81b7168f49f6c8b",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-map-invalid-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "a98117469345efe435f20722804c9ff4bc0b68e12ef4b420c81b7168f49f6c8b",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 179274,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 179274,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "0309db4b2bf87b7b39b40aba661f201edfa7f77241dad927a7fddc7b47ed2ea9",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-map-valid-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "0309db4b2bf87b7b39b40aba661f201edfa7f77241dad927a7fddc7b47ed2ea9",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 203748,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 203748,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "dc8159008d5b1d90d4cb84cc7243e618e0316fa1bbc1b935aeec6efec9f971a5",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-chart.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "dc8159008d5b1d90d4cb84cc7243e618e0316fa1bbc1b935aeec6efec9f971a5",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 197171,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 197171,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "b490541ccc73b5cd2845f15e73552a14b7fc03c19aeec9f0c391a1bbbbc9f276",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-diagram.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "b490541ccc73b5cd2845f15e73552a14b7fc03c19aeec9f0c391a1bbbbc9f276",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 197406,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 197406,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "7f9effc3eb517019e058706ca5ed22008ad7099f4ee3a2e890baecd839a26232",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-engineering.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "7f9effc3eb517019e058706ca5ed22008ad7099f4ee3a2e890baecd839a26232",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 207190,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 207190,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "97f6d584261e15b6a6264614175a23ffe9e9a19f89daa3d519c3414ffd2f3a77",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-table.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "97f6d584261e15b6a6264614175a23ffe9e9a19f89daa3d519c3414ffd2f3a77",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 208316,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 208316,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "f05a15c18a85ac2ddb4478990dadb6228142e712a1da786400f4a75a8fd68354",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-timeline.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "f05a15c18a85ac2ddb4478990dadb6228142e712a1da786400f4a75a8fd68354",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 199651,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 199651,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "b2491c88d1694ad5b74690b0c1504519c83ab28cd53e26ac68de5f93a5b530ea",
+        "format": "PNG",
+        "path": "evidence/r2-reused/create-preview-wafer.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "b2491c88d1694ad5b74690b0c1504519c83ab28cd53e26ac68de5f93a5b530ea",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 139781,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 139781,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "398663a60f88d1b6fffe67b9a19c6a927bcf81ac583d41b24b163a3893cabddf",
+        "format": "PNG",
+        "path": "evidence/r2-reused/datadock-fields-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "398663a60f88d1b6fffe67b9a19c6a927bcf81ac583d41b24b163a3893cabddf",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 179166,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 179166,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "2acdd517a0c034c12799cec994132a91c1b110c529023463f26388fa080e6624",
+        "format": "PNG",
+        "path": "evidence/r2-reused/dense-field-search-create-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "2acdd517a0c034c12799cec994132a91c1b110c529023463f26388fa080e6624",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 124999,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 124999,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "f4d852348718756fc4e7fe9ee6d48a8c0bb28361d178132865cf7aeae24476d8",
+        "format": "PNG",
+        "path": "evidence/r2-reused/desktop-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "f4d852348718756fc4e7fe9ee6d48a8c0bb28361d178132865cf7aeae24476d8",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 54135,
+        "dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_bytes": 54135,
+        "expected_dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_sha256": "57df965216a73c2ebb14e04cf292221586f0ac4d7bd79bed4d91db5c4afac80f",
+        "format": "PNG",
+        "path": "evidence/r2-reused/displayed-line-preview.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "57df965216a73c2ebb14e04cf292221586f0ac4d7bd79bed4d91db5c4afac80f",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 22080,
+        "dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_bytes": 22080,
+        "expected_dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_sha256": "650f0ffeb17204f9d81ea60f98b610f757b328b7468e4a15ea1ea90c0e063885",
+        "format": "PNG",
+        "path": "evidence/r2-reused/displayed-table-preview.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "650f0ffeb17204f9d81ea60f98b610f757b328b7468e4a15ea1ea90c0e063885",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 62816,
+        "dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_bytes": 62816,
+        "expected_dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_sha256": "2bf9130bf52b464567898d2432c81baee0501610a6e0d5e61e6517cec94ab50d",
+        "format": "PNG",
+        "path": "evidence/r2-reused/displayed-wafer-preview.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "2bf9130bf52b464567898d2432c81baee0501610a6e0d5e61e6517cec94ab50d",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 277320,
+        "dimensions": {
+          "height": 3960,
+          "width": 390
+        },
+        "expected_bytes": 277320,
+        "expected_dimensions": {
+          "height": 3960,
+          "width": 390
+        },
+        "expected_sha256": "8aee2d5d2e38c8a7ae0250c4e00cc8cbf7c431db45c53b652050edebcb87d0ef",
+        "format": "PNG",
+        "path": "evidence/r2-reused/mobile-390.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "8aee2d5d2e38c8a7ae0250c4e00cc8cbf7c431db45c53b652050edebcb87d0ef",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 157983,
+        "dimensions": {
+          "height": 940,
+          "width": 1024
+        },
+        "expected_bytes": 157983,
+        "expected_dimensions": {
+          "height": 940,
+          "width": 1024
+        },
+        "expected_sha256": "64ec8f43c64e95889aabf3517416664474c6ab543078be55d3b3289b32c94d2d",
+        "format": "PNG",
+        "path": "evidence/r2-reused/narrow-1024.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "64ec8f43c64e95889aabf3517416664474c6ab543078be55d3b3289b32c94d2d",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 140615,
+        "expected_bytes": 140615,
+        "expected_dimensions": null,
+        "expected_sha256": "a855e59524c6cf00b0d1325f6938641360aa56d65d4cb40774763fd6cf3b02fa",
+        "format": "SVG",
+        "path": "evidence/r2-reused/portable-dark.svg",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "a855e59524c6cf00b0d1325f6938641360aa56d65d4cb40774763fd6cf3b02fa",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 323336,
+        "dimensions": {
+          "height": 3663,
+          "width": 720
+        },
+        "expected_bytes": 323336,
+        "expected_dimensions": {
+          "height": 3663,
+          "width": 720
+        },
+        "expected_sha256": "9c5d3dc719a8f2b3b25d00a8b132041c0eb695db622196236664d4c456eda744",
+        "format": "PNG",
+        "path": "evidence/r2-reused/reflow-200pct-equivalent.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "9c5d3dc719a8f2b3b25d00a8b132041c0eb695db622196236664d4c456eda744",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 140660,
+        "expected_bytes": 140660,
+        "expected_dimensions": null,
+        "expected_sha256": "d42d7bfb81159c7ce4ee49896f09b5310ec9960760c39fbb60b9195e2d3e927d",
+        "format": "SVG",
+        "path": "evidence/r2-reused/source-reloaded-dark.svg",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "d42d7bfb81159c7ce4ee49896f09b5310ec9960760c39fbb60b9195e2d3e927d",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 162730,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 162730,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "65ec298c41ad301d6e6978e37380ebb05074c5e234b20c71fb736db82931ffd4",
+        "format": "PNG",
+        "path": "evidence/r2-reused/transform-draft-calculated-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "65ec298c41ad301d6e6978e37380ebb05074c5e234b20c71fb736db82931ffd4",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 161218,
+        "dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_bytes": 161218,
+        "expected_dimensions": {
+          "height": 900,
+          "width": 1440
+        },
+        "expected_sha256": "99ab892b2db046b34275b48e71ffc546e7f139d5a833b6a28f7d70e69209a05c",
+        "format": "PNG",
+        "path": "evidence/r2-reused/transform-draft-unpivot-1440.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "99ab892b2db046b34275b48e71ffc546e7f139d5a833b6a28f7d70e69209a05c",
+        "status": "PASS_EXACT"
+      },
+      {
+        "bytes": 151640,
+        "dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_bytes": 151640,
+        "expected_dimensions": {
+          "height": 1000,
+          "width": 1440
+        },
+        "expected_sha256": "f0919ab9c6de82f174da758b970c24077064976d0c49edde7aa3405066fd0a8c",
+        "format": "PNG",
+        "path": "evidence/r2-reused/two-session-conflict.png",
+        "provenance": "AR-33 / CHG-138-r2",
+        "sha256": "f0919ab9c6de82f174da758b970c24077064976d0c49edde7aa3405066fd0a8c",
+        "status": "PASS_EXACT"
+      }
+    ],
+    "png_count": 29,
+    "source_report": {
+      "path": "evidence/r2-evidence-reuse-report.json",
+      "sha256": "03a162abcb18bdd1684250cbe39f44246644c0145dbd1ee4ad55930bbebc82e5"
+    },
+    "status": "PASS_EXACT_BYTE_REUSE",
+    "svg_count": 2
+  },
+  "schema_version": 1,
+  "source_change": "CHG-138",
+  "status": "Staged"
+}

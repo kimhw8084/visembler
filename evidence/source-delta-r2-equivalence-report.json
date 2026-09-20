@@ -1,0 +1,75 @@
+{
+  "base": {
+    "branch": "main",
+    "sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af"
+  },
+  "candidate": {
+    "parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98",
+    "work_branch": "fix/visembler-chg138-data-authoring-r3"
+  },
+  "candidate_hygiene": {
+    "integrated": false,
+    "main_unmodified": true,
+    "no_generated_evidence_in_product_source": true,
+    "worktree_clean": true
+  },
+  "changed_files": [
+    "company_ui/certification/certification_manifest.json",
+    "company_ui/products/visualizer/assets/authoring_human.mjs",
+    "company_ui/products/visualizer/assets/authoring_preview.mjs",
+    "company_ui/products/visualizer/assets/authoring_projection.mjs",
+    "company_ui/products/visualizer/assets/chart_studio.css",
+    "company_ui/products/visualizer/assets/chart_studio.mjs",
+    "company_ui/products/visualizer/assets/integrated_editor.css",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs",
+    "company_ui/products/visualizer/page.py",
+    "tests/test_visualizer_authoring_productivity_wave.py",
+    "tests/test_visualizer_chg138_r2_native.py",
+    "tests/test_visualizer_wave3_typed_data_foundation.py"
+  ],
+  "intended_deltas": [
+    {
+      "change": "Added authoring_preview.mjs and authoring_projection.mjs to _asset_build() authoritative asset_names tuple; preserved all existing entries.",
+      "file": "company_ui/products/visualizer/page.py"
+    },
+    {
+      "change": "Synchronized automated_tests 1131 -> 1132 after independent maintained-suite collection.",
+      "file": "company_ui/certification/certification_manifest.json"
+    },
+    {
+      "change": "Added deterministic temp-copy byte-sensitivity guard for both runtime modules and membership assertions alongside authoring_values.mjs invariant.",
+      "file": "tests/test_visualizer_wave3_typed_data_foundation.py"
+    }
+  ],
+  "predecessor_r2": {
+    "evidence_commit": "546f85969e25caf0c4e84a100b120ad3fd1b3736",
+    "fabric_job": "CF-7f98a82190fa11c5ef190182",
+    "sha": "4117db7148a8495c941e1a07b2beb3905a2c59a2",
+    "tree": "5ba3592091af246377f30ec63cdd1a356103f005"
+  },
+  "project": "visembler",
+  "r2_byte_equivalence": {
+    "all_compared_byte_identical": true,
+    "compared_r2_files": 9,
+    "scope": [
+      "authoring_human.mjs",
+      "authoring_preview.mjs",
+      "authoring_projection.mjs",
+      "chart_studio.css",
+      "chart_studio.mjs",
+      "integrated_editor.css",
+      "integrated_editor.mjs",
+      "authoring productivity test",
+      "CHG-138 R2 native test"
+    ],
+    "status": "PASS",
+    "ui_asset_byte_delta": false,
+    "visual_reuse_allowed": true
+  },
+  "request": "CHG-138-r3",
+  "schema_version": 1,
+  "status": "PASS_NARROW_R3_CONTINUATION"
+}
