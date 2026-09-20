@@ -1,0 +1,439 @@
+{
+  "accepted_at": "2026-09-20T03:03:27Z",
+  "changed_files": [
+    {
+      "additions": 285,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_human.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 1,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/chart_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 22,
+      "deletions": 9,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 74,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 112,
+      "deletions": 39,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 45,
+      "deletions": 0,
+      "path": "tests/test_visualizer_authoring_productivity_wave.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p1_smoke.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-p13.XXXXXX.a3te2PlP2z'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-p14.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p1_smoke.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-p14.XXXXXX.9WLXYJBYGU'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk nl -ba scripts/release_checks/run_p1_smoke.py | sed -n '145,182p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport tempfile\nfrom pathlib import Path\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nfrom playwright.sync_api import sync_playwright\nROOT=Path.cwd()\nwith tempfile.TemporaryDirectory() as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n  rid=host.create(); b=pw.chromium.launch(headless=True); p=b.new_page(viewport={'width':1440,'height':1000}); load_editor(p,host,rid); ready(p)\n  p.locator('#pasteDataBtn').click(); p.locator('#dataFirstText').fill('Time\\\\tValue\\\\n2026-01-01\\\\t1\\\\n2026-02-01\\\\t2'); p.locator('[data-data-first-view=\\\"line\\\"]').wait_for(timeout=15000)\n  print('after parse',p.locator('#genericModal').inner_text()[:1500]); print('create count',p.locator('#dataFirstCreate').count(),p.locator('#dataFirstCreate').is_visible() if p.locator('#dataFirstCreate').count() else None)\n  p.locator('#dataFirstSaveMapping').click(); p.locator('#mappingPresetName').fill('Pilot mapping'); p.locator('#mappingSaveConfirm').click(); p.locator('#dataFirstManageMappings').click(); p.locator('[data-mapping-name]').first.fill('Renamed mapping'); p.locator('[data-mapping-name]').first.press('Tab'); p.locator('[data-mapping-action=\\\"duplicate\\\"]').first.click(); print('rows',p.locator('.mapping-manager-row').count(), 'apply', p.locator('[data-mapping-action=\\\"apply\\\"]').count())\n  p.locator('[data-mapping-action=\\\"apply\\\"]').first.click(); p.wait_for_timeout(100); print('after apply class',p.locator('#genericModal').get_attribute('class')); print('create count',p.locator('#dataFirstCreate').count(),p.locator('#dataFirstCreate').is_visible() if p.locator('#dataFirstCreate').count() else None); print('stages',p.locator('.data-first-stages').inner_text()); print('snippet',p.locator('#modalBody').inner_text()[-800:]); b.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-p15.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_p1_smoke.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-p15.XXXXXX.oe6LqXCDja'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"cui-toast|toast-stack\" company_ui/products/visualizer/assets company_ui | head -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"function toast|toast\\\\(\\\" company_ui/products/visualizer/assets/integrated_editor.mjs | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,90p' company_ui/products/visualizer/assets/integrated_editor.mjs && rtk rg -n \\\"const toast|function toast\\\" company_ui/products/visualizer/assets -g '*.mjs' | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"#toast|toast\\\\.show|toast\\\" company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/assets/*.css | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-native.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-native.XXXXXX.IehWgzUaEv'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git diff --stat && rtk git diff --check && rtk git diff -- company_ui/products/visualizer/page.py tests/test_visualizer_authoring_productivity_wave.py | head -240'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find certification_output -maxdepth 2 -type f | head -40'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-322489e053227a0c08720e2f/certification_output'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-finaldata.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_data_workflows.py --native --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-finaldata.XXXXXX.k7wabyZlzr'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_authoring_productivity_wave.py tests/test_visualizer_product_evolution_01_data_first.py tests/test_visualizer_product_evolution_02_mapping_presets.py tests/test_visualizer_product_evolution_03_dataset_refresh.py tests/test_visualizer_dataset_resources.py tests/test_visualizer_wave3_typed_data_foundation.py tests/test_visualizer_chart_studio.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_performance.py tests/test_visualizer_chart_renderer_r1.py tests/test_visualizer_chart_renderer_r2.py tests/test_visualizer_recipe_semantics.py tests/test_visualizer_statistical_quality_wave.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_wave3_engineering_wafer_authoring.py tests/test_visualizer_authoring_p0.py tests/test_visualizer_wave13_authoring_quality.py tests/test_visualizer_r15_authoring_depth.py tests/test_visualizer_company_boundary.py tests/test_visualizer_application_hardening.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 661,
+        "output_sha256": "5b0d7e18c56e6e7e99fefdc62c0b1069c983a22656581e8dec4b9b9af9099c03",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate . && rtk company-ui runtime-contract && rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-322489e053227a0c08720e2f/certification_output && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/authoring_human.mjs && rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk git diff --check && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git diff --name-only && rtk rg -n '\"'JSON\\\\.stringify\\\\(step\\\\)|Field names separated by commas' company_ui/products/visualizer/assets/integrated_editor.mjs company_ui/products/visualizer/assets/chart_studio.mjs || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-evidence.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, tempfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom playwright.sync_api import sync_playwright\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nROOT=Path.cwd(); OUT=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence.XXXXXX.YfK13Xx6GE')\nDATA='Category\\\\tAffected\\\\tReference\\\\tLot\\\\nETCH-B\\\\t10\\\\t8\\\\t0012\\\\nETCH-C\\\\t11\\\\t9\\\\t0007\\\\nETCH-D\\\\t12\\\\t10\\\\t0009'\nwith tempfile.TemporaryDirectory(prefix='visembler-evidence-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=canonical_model({'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':1}))\n    browser=pw.chromium.launch(headless=True); page=browser.new_page(viewport={'width':1440,'height':900}); load_editor(page,host,rid); ready(page)\n    page.locator('#pasteDataBtn').click(); page.locator('#dataFirstText').fill(DATA); page.locator('.data-first-summary').wait_for()\n    shots=[]\n    def shot(name):\n        path=OUT/f'{name}.png'; page.screenshot(path=str(path)); shots.append(path)\n    shot('create-understand')\n    page.locator('[data-data-first-stage=\\\"choose\\\"]').click(); page.locator('[aria-label=\\\"Live result preview\\\"]').wait_for(); shot('create-choose')\n    page.locator('[data-data-first-stage=\\\"map\\\"]').click(); page.locator('[data-role=\\\"category\\\"]').wait_for(); shot('create-map')\n    page.locator('[data-data-first-stage=\\\"commit\\\"]').click(); page.locator('#dataFirstCreate').wait_for(); shot('create-review')\n    page.locator('#dataFirstCreate').click(); page.locator('#genericModal.show').wait_for(state='hidden'); settled(page); shot('dock-fields-1440')\n    for tab in ('encodings','grid','transforms','source'):\n        page.locator(f'[data-data-dock-tab=\\\"{tab}\\\"]').click(); page.wait_for_timeout(80); shot(f'dock-{tab}-1440')\n    page.set_viewport_size({'width':1024,'height':800}); page.wait_for_timeout(120); shot('dock-source-1024')\n    page.set_viewport_size({'width':390,'height':844}); page.wait_for_timeout(120); page.locator('[data-data-dock-tab=\\\"fields\\\"]').click(); shot('dock-fields-390')\n    manifest=[]\n    for path in shots:\n        with Image.open(path) as im: dimensions=[im.width,im.height]\n        manifest.append({'name':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'dimensions':dimensions})\n    (OUT/'manifest.json').write_text(json.dumps({'report_id':rid,'screenshots':manifest},indent=2)+'\\\\n')\n    print(json.dumps({'output':str(OUT),'screenshots':len(shots),'manifest':str(OUT/'manifest.json'),'hashes':manifest},indent=2))\n    browser.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, tempfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom playwright.sync_api import sync_playwright\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nROOT=Path.cwd(); OUT=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence.XXXXXX.YfK13Xx6GE')\nDATA='Category\\\\tAffected\\\\tReference\\\\tLot\\\\nETCH-B\\\\t10\\\\t8\\\\t0012\\\\nETCH-C\\\\t11\\\\t9\\\\t0007\\\\nETCH-D\\\\t12\\\\t10\\\\t0009'\nwith tempfile.TemporaryDirectory(prefix='visembler-evidence-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=canonical_model({'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':1}))\n    browser=pw.chromium.launch(headless=True); page=browser.new_page(viewport={'width':1440,'height':900}); load_editor(page,host,rid); ready(page)\n    page.locator('#pasteDataBtn').click(); page.locator('#dataFirstText').fill(DATA); page.locator('.data-first-summary').wait_for()\n    shots=[]\n    def shot(name):\n        path=OUT/f'{name}.png'; page.screenshot(path=str(path)); shots.append(path)\n    shot('create-understand')\n    page.locator('[data-data-first-stage=\\\"choose\\\"]').last.click(); page.locator('[aria-label=\\\"Live result preview\\\"]').wait_for(); shot('create-choose')\n    page.locator('[data-data-first-stage=\\\"map\\\"]').last.click(); page.locator('[data-role=\\\"category\\\"]').wait_for(); shot('create-map')\n    page.locator('[data-data-first-stage=\\\"commit\\\"]').last.click(); page.locator('#dataFirstCreate').wait_for(); shot('create-review')\n    page.locator('#dataFirstCreate').click(); page.locator('#genericModal.show').wait_for(state='hidden'); settled(page); shot('dock-fields-1440')\n    for tab in ('encodings','grid','transforms','source'):\n        page.locator(f'[data-data-dock-tab=\\\"{tab}\\\"]').click(); page.wait_for_timeout(80); shot(f'dock-{tab}-1440')\n    page.set_viewport_size({'width':1024,'height':800}); page.wait_for_timeout(120); shot('dock-source-1024')\n    page.set_viewport_size({'width':390,'height':844}); page.wait_for_timeout(120); page.locator('[data-data-dock-tab=\\\"fields\\\"]').click(); shot('dock-fields-390')\n    manifest=[]\n    for path in shots:\n        with Image.open(path) as im: dimensions=[im.width,im.height]\n        manifest.append({'name':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'dimensions':dimensions})\n    (OUT/'manifest.json').write_text(json.dumps({'report_id':rid,'screenshots':manifest},indent=2)+'\\\\n')\n    print(json.dumps({'output':str(OUT),'screenshots':len(shots),'manifest':str(OUT/'manifest.json'),'hashes':manifest},indent=2))\n    browser.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"function humanEncodingShelvesMarkup\" company_ui/products/visualizer/assets/authoring_human.mjs && rtk find /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence.XXXXXX.YfK13Xx6GE -maxdepth 1 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '140,175p' company_ui/products/visualizer/assets/authoring_human.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, tempfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom playwright.sync_api import sync_playwright\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nROOT=Path.cwd(); OUT=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence.XXXXXX.YfK13Xx6GE')\nDATA='Category\\\\tAffected\\\\tReference\\\\tLot\\\\nETCH-B\\\\t10\\\\t8\\\\t0012\\\\nETCH-C\\\\t11\\\\t9\\\\t0007\\\\nETCH-D\\\\t12\\\\t10\\\\t0009'\nwith tempfile.TemporaryDirectory(prefix='visembler-evidence-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=canonical_model({'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':1}))\n    browser=pw.chromium.launch(headless=True); page=browser.new_page(viewport={'width':1440,'height':900}); load_editor(page,host,rid); ready(page)\n    page.locator('#pasteDataBtn').click(); page.locator('#dataFirstText').fill(DATA); page.locator('.data-first-summary').wait_for()\n    shots=[]\n    def shot(name):\n        path=OUT/f'{name}.png'; page.screenshot(path=str(path)); shots.append(path)\n    shot('create-understand')\n    page.locator('[data-data-first-stage=\\\"choose\\\"]').last.click(); page.locator('[aria-label=\\\"Live result preview\\\"]').wait_for(); shot('create-choose')\n    page.locator('[data-data-first-stage=\\\"map\\\"]').last.click(); page.locator('[data-role]').first.wait_for(); shot('create-map')\n    page.locator('[data-data-first-stage=\\\"commit\\\"]').last.click(); page.locator('#dataFirstCreate').wait_for(); shot('create-review')\n    page.locator('#dataFirstCreate').click(); page.locator('#genericModal.show').wait_for(state='hidden'); settled(page); shot('dock-fields-1440')\n    for tab in ('encodings','grid','transforms','source'):\n        page.locator(f'[data-data-dock-tab=\\\"{tab}\\\"]').click(); page.wait_for_timeout(80); shot(f'dock-{tab}-1440')\n    page.set_viewport_size({'width':1024,'height':800}); page.wait_for_timeout(120); shot('dock-source-1024')\n    page.set_viewport_size({'width':390,'height':844}); page.wait_for_timeout(120); page.locator('[data-data-dock-tab=\\\"fields\\\"]').click(); shot('dock-fields-390')\n    manifest=[]\n    for path in shots:\n        with Image.open(path) as im: dimensions=[im.width,im.height]\n        manifest.append({'name':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'dimensions':dimensions})\n    (OUT/'manifest.json').write_text(json.dumps({'report_id':rid,'screenshots':manifest},indent=2)+'\\\\n')\n    print(json.dumps({'output':str(OUT),'screenshots':len(shots),'manifest':str(OUT/'manifest.json'),'hashes':manifest},indent=2))\n    browser.close()\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, tempfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom playwright.sync_api import sync_playwright\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nROOT=Path.cwd(); OUT=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence.XXXXXX.YfK13Xx6GE')\nDATA='Category\\\\tAffected\\\\tReference\\\\tLot\\\\nETCH-B\\\\t10\\\\t8\\\\t0012\\\\nETCH-C\\\\t11\\\\t9\\\\t0007\\\\nETCH-D\\\\t12\\\\t10\\\\t0009'\nwith tempfile.TemporaryDirectory(prefix='visembler-evidence-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=canonical_model({'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':1}))\n    browser=pw.chromium.launch(headless=True); page=browser.new_page(viewport={'width':1440,'height':900}); load_editor(page,host,rid); ready(page)\n    page.locator('#pasteDataBtn').click(); page.locator('#dataFirstText').fill(DATA); page.locator('.data-first-summary').wait_for()\n    shots=[]\n    def shot(name):\n        path=OUT/f'{name}.png'; page.screenshot(path=str(path)); shots.append(path)\n    shot('create-understand')\n    page.locator('[data-data-first-stage=\\\"choose\\\"]').last.click(); page.locator('[aria-label=\\\"Live result preview\\\"]').wait_for(); shot('create-choose')\n    page.locator('[data-data-first-stage=\\\"map\\\"]').last.click(); page.locator('[data-role]').first.wait_for(); shot('create-map')\n    page.locator('[data-data-first-stage=\\\"commit\\\"]').last.click(); page.locator('#dataFirstCreate').wait_for(); shot('create-review')\n    page.locator('#dataFirstCreate').click(); page.locator('#genericModal.show').wait_for(state='hidden'); settled(page); shot('dock-fields-1440')\n    for tab in ('encodings','grid','transforms','source'):\n        page.locator(f'[data-data-dock-tab=\\\"{tab}\\\"]').last.click(); page.wait_for_timeout(80); shot(f'dock-{tab}-1440')\n    page.set_viewport_size({'width':1024,'height':800}); page.wait_for_timeout(120); shot('dock-source-1024')\n    page.set_viewport_size({'width':390,'height':844}); page.wait_for_timeout(120); page.locator('[data-data-dock-tab=\\\"fields\\\"]').last.click(); shot('dock-fields-390')\n    manifest=[]\n    for path in shots:\n        with Image.open(path) as im: dimensions=[im.width,im.height]\n        manifest.append({'name':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'dimensions':dimensions})\n    (OUT/'manifest.json').write_text(json.dumps({'report_id':rid,'screenshots':manifest},indent=2)+'\\\\n')\n    print(json.dumps({'output':str(OUT),'screenshots':len(shots),'manifest':str(OUT/'manifest.json'),'hashes':manifest},indent=2))\n    browser.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk node --check company_ui/products/visualizer/assets/integrated_editor.mjs && rtk python -m pytest -q tests/test_visualizer_authoring_productivity_wave.py tests/test_visualizer_product_evolution_01_data_first.py tests/test_visualizer_semiconductor_analytics_wave.py::test_native_recipe_workflow_creates_linked_analysis_with_atomic_undo'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "08faea39fd19189f6544839f505d91d76ecb1367e219f5db362cdf22916ef869",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-evidence-final.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib, json, tempfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom playwright.sync_api import sync_playwright\nfrom company_ui.products.visualizer.domain import canonical_model\nfrom scripts.release_checks.editor_host import NativeHost, load_editor\nfrom scripts.release_checks.run_editor_workflows import ready, settled\nROOT=Path.cwd(); OUT=Path('/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence-final.XXXXXX.wbYf8r9hyj')\nDATA='Category\\\\tAffected\\\\tReference\\\\tLot\\\\nETCH-B\\\\t10\\\\t8\\\\t0012\\\\nETCH-C\\\\t11\\\\t9\\\\t0007\\\\nETCH-D\\\\t12\\\\t10\\\\t0009'\nwith tempfile.TemporaryDirectory(prefix='visembler-evidence-') as td, NativeHost(ROOT,Path(td)/'data') as host, sync_playwright() as pw:\n    rid=host.create(model=canonical_model({'items':[],'groups':{},'datasets':[],'mode':'smart','layoutPreset':'editorial','canvas':{'width':1600,'height':900},'nextId':1}))\n    browser=pw.chromium.launch(headless=True); page=browser.new_page(viewport={'width':1440,'height':900}); load_editor(page,host,rid); ready(page)\n    page.locator('#pasteDataBtn').click(); page.locator('#dataFirstText').fill(DATA); page.locator('.data-first-summary').wait_for()\n    shots=[]\n    def shot(name):\n        path=OUT/f'{name}.png'; page.screenshot(path=str(path)); shots.append(path)\n    shot('create-understand')\n    page.locator('[data-data-first-stage=\\\"choose\\\"]').last.click(); page.locator('[aria-label=\\\"Live result preview\\\"]').wait_for(); shot('create-choose')\n    page.locator('[data-data-first-stage=\\\"map\\\"]').last.click(); page.locator('[data-role]').first.wait_for(); shot('create-map')\n    page.locator('[data-data-first-stage=\\\"commit\\\"]').last.click(); page.locator('#dataFirstCreate').wait_for(); shot('create-review')\n    page.locator('#dataFirstCreate').click(); page.locator('#genericModal.show').wait_for(state='hidden'); settled(page); shot('dock-fields-1440')\n    for tab in ('encodings','grid','transforms','source'):\n        page.locator(f'[data-data-dock-tab=\\\"{tab}\\\"]').last.click(); page.wait_for_timeout(80); shot(f'dock-{tab}-1440')\n    page.set_viewport_size({'width':1024,'height':800}); page.wait_for_timeout(120); shot('dock-source-1024')\n    page.set_viewport_size({'width':390,'height':844}); page.wait_for_timeout(120); page.locator('[data-data-dock-tab=\\\"fields\\\"]').last.click(); shot('dock-fields-390')\n    manifest=[]\n    for path in shots:\n        with Image.open(path) as im: dimensions=[im.width,im.height]\n        manifest.append({'name':path.name,'sha256':hashlib.sha256(path.read_bytes()).hexdigest(),'bytes':path.stat().st_size,'dimensions':dimensions})\n    (OUT/'manifest.json').write_text(json.dumps({'report_id':rid,'screenshots':manifest},indent=2)+'\\\\n')\n    print(json.dumps({'output':str(OUT),'screenshots':len(shots),'manifest':str(OUT/'manifest.json'),'hashes':manifest},indent=2))\n    browser.close()\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-finaldata.XXXXXX.k7wabyZlzr/data-workflows.json /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-chart4.XXXXXX.UXQOHoamTN/chart-studio-acceptance.json /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-native.XXXXXX.IehWgzUaEv/native-acceptance.json /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-evidence-final.XXXXXX.wbYf8r9hyj/manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git diff --check && rtk git diff --stat && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-index.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk env GIT_INDEX_FILE=/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index.XXXXXX.rUcRs1s89M/index git add -A && rtk env GIT_INDEX_FILE=/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index.XXXXXX.rUcRs1s89M/index git write-tree'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index.XXXXXX.rUcRs1s89M'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-chart-full.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-chart-full.XXXXXX.YulpnPUX2L'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-chart-full.XXXXXX.YulpnPUX2L/chart-studio-acceptance.json && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-finaldata2.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_data_workflows.py --native --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-finaldata2.XXXXXX.t0Xugk35zI'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-finaldata2.XXXXXX.t0Xugk35zI/data-workflows.json && rtk git status --short --branch && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-native-final.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_native_acceptance.py --output /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-native-final.XXXXXX.sPs4i3sENY'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-native-final.XXXXXX.sPs4i3sENY/native-acceptance.json && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /Users/haewonkim/.codex-fabric/worktrees/CF-322489e053227a0c08720e2f/certification_output && rtk git status --short --branch && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d -t chg138-index-final.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk env GIT_INDEX_FILE=/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index-final.XXXXXX.CDotgNdajF/index git add -A && rtk env GIT_INDEX_FILE=/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index-final.XXXXXX.CDotgNdajF/index git write-tree && rtk rm -rf /var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/chg138-index-final.XXXXXX.CDotgNdajF'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 546,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.83,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 57110784,
+      "fresh_input_tokens": 676082,
+      "input_tokens": 57786866,
+      "non_reasoning_output_tokens": 105290,
+      "output_tokens": 140259,
+      "reasoning_output_tokens": 34969,
+      "total_processed_tokens": 57927125
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "042d7d18ef09ee52c4bde75f20c9cb5abde14ed5",
+      "subject": "fabric: capture completed model changes [CF-322489e053227a0c08720e2f]"
+    }
+  ],
+  "diff": {
+    "additions": 540,
+    "changed_files": 7,
+    "commit_count": 1,
+    "deletions": 49
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-322489e053227a0c08720e2f]",
+    "commit_sha": "042d7d18ef09ee52c4bde75f20c9cb5abde14ed5",
+    "paths_before": 7,
+    "status_before": [
+      " M company_ui/products/visualizer/assets/chart_studio.css",
+      " M company_ui/products/visualizer/assets/chart_studio.mjs",
+      " M company_ui/products/visualizer/assets/integrated_editor.css",
+      " M company_ui/products/visualizer/assets/integrated_editor.mjs",
+      " M company_ui/products/visualizer/page.py",
+      " M tests/test_visualizer_authoring_productivity_wave.py",
+      "?? company_ui/products/visualizer/assets/authoring_human.mjs"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-20T04:11:03Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "branch": "fix/visembler-chg138-data-authoring-r1",
+    "detached_verify": false,
+    "head_sha": "042d7d18ef09ee52c4bde75f20c9cb5abde14ed5",
+    "remote_exact_head": true,
+    "remote_head_sha": "042d7d18ef09ee52c4bde75f20c9cb5abde14ed5",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5938c51fb1de4d540b404e480d028a3d0917e159",
+    "work_branch": "fix/visembler-chg138-data-authoring-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-322489e053227a0c08720e2f",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-138-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-138-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-138-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-20T03:03:27Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 4056,
+    "queue_seconds": 0,
+    "total_seconds": 4056
+  },
+  "transport": {
+    "bytes": 19479,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 19181,
+    "prompt_sha256": "c77ab7453fe55aaf118651e3565d66a9959345f84c049368c5ffde83f363fc2d",
+    "sha256": "322489e053227a0c08720e2f3222f357e2e528a38ab5403bc4ed15bb59953a77"
+  }
+}
