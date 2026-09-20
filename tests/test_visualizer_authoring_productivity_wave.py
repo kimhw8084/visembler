@@ -69,3 +69,48 @@ def test_focused_browser_controls_are_not_intercepted_by_canvas_paste() -> None:
     assert "hasAuthoringTextFocus()" in editor
     assert "input,textarea,select,[role=\"textbox\"],[contenteditable=\"true\"]" in editor
     assert "if(ui.preview||hasAuthoringTextFocus())return" in editor
+
+
+def test_chg138_shared_human_authoring_authority_handles_dense_fields_and_pipeline_preview() -> None:
+    result = node_json(
+        r"""
+import {intakeText} from './company_ui/products/visualizer/assets/authoring_data.mjs';
+import {humanRoleLabel,humanFieldBrowserMarkup,humanEncodingShelvesMarkup,transformOutcomeSummary,previewTransformPipeline,datasetConsequenceSummary} from './company_ui/products/visualizer/assets/authoring_human.mjs';
+const header=['Tool','Affected','Reference','Lot Code',...Array.from({length:32},(_,i)=>`Very long field name ${i+1}`)].join('\t');
+const intake=intakeText(`${header}\nETCH-B\t10\t8\t0012\t0\t"0"\t\tbad-date\t${Array(28).fill('1').join('\t')}\nETCH-C\t11\t9\t0007\t1\t2\t\t2026-01-01\t${Array(28).fill('2').join('\t')}`);
+const fields=intake.fields,rows=intake.rows;
+const calc={type:'calculated',source_fields:[fields[1].id,fields[2].id],operation:'subtract',name:'Delta'};
+const preview=previewTransformPipeline({fields,rows},{steps:[calc]});
+const consumers=[{id:'a',element:'Chart A'},{id:'b',element:'Chart B',locked:true}];
+console.log(JSON.stringify({
+  fieldCount:fields.length,
+  fieldSearch:humanFieldBrowserMarkup({fields,rows,query:'long field name 31'}).includes('Very long field name 31'),
+  labels:[humanRoleLabel('category'),humanRoleLabel('reference_value'),humanRoleLabel('specification_low')],
+  shelves:humanEncodingShelvesMarkup({fields,mapping:{category:fields[0].id,value:fields[1].id},view:'bar'}).includes('Category')&&humanEncodingShelvesMarkup({fields,mapping:{category:fields[0].id,value:fields[1].id},view:'bar'}).includes('Measurement'),
+  summary:transformOutcomeSummary(calc,fields),
+  preview:{ok:preview.ok,added:preview.columnsAdded,rows:preview.rowCountAfter},
+  consequence:datasetConsequenceSummary({id:'d',resource_id:'r'},consumers,'a'),
+}));
+"""
+    )
+    assert result["fieldCount"] >= 36
+    assert result["fieldSearch"] is True
+    assert result["labels"] == ["Category", "Reference / Golden", "Lower specification"]
+    assert result["shelves"] is True
+    assert result["summary"] == "Create Delta from Affected − Reference"
+    assert result["preview"]["ok"] is True
+    assert result["preview"]["added"] == ["Delta"]
+    assert result["preview"]["rows"] == 2
+    assert result["consequence"]["shared"] is True
+    assert result["consequence"]["lockedNames"] == ["Chart B"]
+
+
+def test_chg138_surfaces_use_shared_task_hierarchy_and_no_json_transform_summary() -> None:
+    editor = (ASSETS / "integrated_editor.mjs").read_text(encoding="utf-8")
+    studio = (ASSETS / "chart_studio.mjs").read_text(encoding="utf-8")
+    for label in ("Fields", "Encodings", "Data grid", "Transforms", "Source"):
+        assert label in editor
+    for label in ("Data understanding", "Spreadsheet data grid", "Transform pipeline"):
+        assert label in studio
+    assert "JSON.stringify(step)" not in studio
+    assert "Field names separated by commas" not in editor
