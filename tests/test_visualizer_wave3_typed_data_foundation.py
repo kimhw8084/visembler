@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 from pathlib import Path
+
+from company_ui.products.visualizer import page as page_module
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "company_ui" / "products" / "visualizer" / "assets"
@@ -122,3 +125,33 @@ def test_wave3_editor_uses_shared_typed_grid_contract() -> None:
 def test_wave3_asset_fingerprint_includes_authoring_values() -> None:
     page = (ROOT / "company_ui" / "products" / "visualizer" / "page.py").read_text(encoding="utf-8")
     assert "'authoring_values.mjs'" in page
+
+
+def test_chg138_runtime_assets_are_fingerprinted_and_byte_sensitive(tmp_path, monkeypatch) -> None:
+    page = (ROOT / "company_ui" / "products" / "visualizer" / "page.py").read_text(encoding="utf-8")
+    runtime_assets = (
+        "authoring_human.mjs",
+        "authoring_preview.mjs",
+        "authoring_projection.mjs",
+        "authoring_values.mjs",
+    )
+    assert all(f"'{name}'" in page for name in runtime_assets)
+
+    copied_product = tmp_path / "product"
+    copied_assets = copied_product / "assets"
+    shutil.copytree(ASSETS, copied_assets)
+    copied_vendor = copied_product / "vendor" / "production_core"
+    shutil.copytree(page_module.VENDOR / "core", copied_vendor / "core")
+    monkeypatch.setattr(page_module, "PRODUCT", copied_product)
+    monkeypatch.setattr(page_module, "ASSETS", copied_assets)
+    monkeypatch.setattr(page_module, "VENDOR", copied_vendor)
+    baseline = page_module._asset_build()
+
+    for name in ("authoring_preview.mjs", "authoring_projection.mjs"):
+        asset = copied_assets / name
+        original = asset.read_bytes()
+        mutated = original[:1] + bytes((original[0] ^ 1,)) + original[1:]
+        asset.write_bytes(mutated)
+        assert page_module._asset_build() != baseline, name
+        asset.write_bytes(original)
+        assert page_module._asset_build() == baseline, name
