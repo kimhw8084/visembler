@@ -320,7 +320,10 @@ function chartEmpty(entry,n,W,H,left,right,top,plotW,plotH){
   return shell(entry,`<div class="chart-empty-state"><svg class="viz-svg" viewBox="0 0 ${W} ${H}"><path class="gridline" d="M${left} ${top+plotH}H${W-right}"/></svg><div><b>No chart data</b><span>Double-click to edit.</span></div></div>`,'Chart');
 }
 
-function chart(entry){
+// Legacy library-only chart previews remain for non-core catalog elements.
+// renderIntegratedElement routes every overlapping Chart Studio core type
+// before this function can be reached.
+function renderLegacyNonCoreChart(entry){
   const rows=chartRows(entry), n=entry.element.toLowerCase(), W=260,H=120,left=22,right=10,top=10,bottom=22,plotW=W-left-right,plotH=H-top-bottom;
   const valid=rows.map((r,i)=>({...r,i,v:typeof r.value==='number'&&Number.isFinite(r.value)?r.value:null}));
   const nums=valid.map(r=>r.v).filter(v=>v!==null), max=Math.max(1,...nums.map(Math.abs));
@@ -466,7 +469,9 @@ export function renderIntegratedElement(entry){
   if(['CoreChartEngine','EngineeringChartEngine','WaferFabEngine'].includes(entry?.engine)&&CHART_TYPES.includes(entry?.element)) return renderChartStudioElement(entry,entry._resolved_dataset||{});
   switch(entry.engine){
     case 'TextEngine': return text(entry);
-    case 'CoreChartEngine': return chart(entry);
+    // Core chart types are routed above to renderChartStudioElement. Only
+    // genuinely distinct non-core catalog elements use the library preview.
+    case 'CoreChartEngine': return renderLegacyNonCoreChart(entry);
     case 'EngineeringChartEngine': return engineering(entry);
     case 'SmartLayoutEngine': return smartLayout(entry);
     case 'MetricEngine': return metric(entry);

@@ -35,7 +35,7 @@
     </aside>
     <main class="cs-main" aria-label="Live chart preview">
       <div class="cs-canvas-head"><div><span class="cs-eyebrow">Live preview</span><b id="cs-chart-name">Chart</b></div><span id="cs-validation" aria-live="polite">Ready</span></div>
-      <div id="cs-canvas-wrap" class="cs-canvas-wrap"><div id="cs-canvas" role="img" aria-label="Chart preview"></div><div id="cs-preview-banner" hidden><span>Reading preview</span><button class="cs-btn" data-action="preview-close" type="button">Exit preview</button></div></div>
+      <div id="cs-canvas-wrap" class="cs-canvas-wrap"><div id="cs-canvas" role="img" aria-label="Chart preview"></div><div id="cs-chart-tooltip" role="tooltip" hidden></div><div id="cs-preview-banner" hidden><span>Reading preview</span><button class="cs-btn" data-action="preview-close" type="button">Exit preview</button></div></div>
       <div class="cs-summary"><b id="cs-summary-title">Chart summary</b><span id="cs-summary"></span><span id="cs-why"></span></div>
     </main>
     <aside class="cs-right" aria-label="Chart context and recipes">
@@ -44,5 +44,12 @@
       <section class="cs-side-section"><div class="cs-section-head"><span>Selected data</span><span id="cs-selection-summary">0 cells</span></div><div id="cs-selection-detail" class="cs-muted">Click chart marks or table cells to inspect values.</div></section>
     </aside>
   </div>
+  <dialog id="cs-name-dialog" aria-labelledby="cs-name-dialog-title">
+    <form method="dialog" class="cs-name-form">
+      <h2 id="cs-name-dialog-title">Name chart item</h2>
+      <label class="cs-field"><span id="cs-name-dialog-label">Name</span><input id="cs-name-input" autocomplete="off" required></label>
+      <div class="cs-card-actions"><button class="cs-btn" value="cancel" type="submit">Cancel</button><button class="cs-btn cs-primary" id="cs-name-confirm" value="confirm" type="submit">Save name</button></div>
+    </form>
+  </dialog>
   <input id="cs-import-json" type="file" accept="application/json,.json" hidden>
 </div>

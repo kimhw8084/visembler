@@ -7,6 +7,7 @@ import {
 import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
 import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, productionEntries } from './production_library.mjs';
 import { renderIntegratedElement } from './element_renderer.mjs';
+import { chartModelFromEntry, renderChartSvg } from './authoring_chart_studio.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
 import { engineeringRecipeCandidates, recommendEngineeringRecipes, recipeExecutionPlan, recipeRoleLabel } from './engineering_recipes.mjs';
 import { semanticDatasetForEntry, semanticResultFromAuthoritative } from './analysis_semantics.mjs';
@@ -733,40 +734,16 @@ function metricMarkup(entry) {
   return `<div class="kicker">Metric · live interaction</div><div class="ctitle">${esc(entry.title)}</div><div class="csub">From 188 min manual → 14 min governed workflow</div><div class="metric-big" data-kpi="${entry.id}">${entry.value}%</div><div class="metric-delta">↓ ${entry.value}% cycle-time reduction</div><button class="mini-btn detail-toggle align-start mt-2" data-action="detail" aria-expanded="${entry.detail ? 'true' : 'false'}">${entry.detail ? 'Hide' : 'Show'} detail</button>${entry.detail ? '<div class="metric-detail">Derived from the same before/after model. Web can expand; PPT keeps the accepted summary.</div>' : ''}`;
 }
 function chartMarkup(entry, r) {
-  const D = chartData(entry);
   if (entry.variant === 'nochart') {
-    return `<div class="kicker">No Chart · semantic fallback</div><div class="ctitle">${esc(entry.title)}</div><div class="metric-big compact">${D.at(-1)[1]}m</div><div class="metric-delta">Current investigation time</div><div class="csub mt-2">Plot removed because direct hierarchy is the selected representation.</div>`;
+    const D = chartData(entry);
+    return `<div class="kicker">No Chart · semantic fallback</div><div class="ctitle">${esc(entry.title)}</div><div class="metric-big compact">${esc(D.at(-1)?.[1] ?? '—')}</div><div class="metric-delta">Current investigation time</div><div class="csub mt-2">Plot removed because direct hierarchy is the selected representation.</div>`;
   }
-  const W = Math.max(220, r.w - 36);
-  const H = Math.max(90, r.h - 116);
-  const left = 24; const right = 12; const top = 10; const bottom = 30;
-  const plotW = W - left - right; const plotH = H - top - bottom;
-  const max = Math.max(...D.map((x) => +x[1] || 0), 1);
-  const pts = D.map((d, k) => ({ x: left + plotW * k / Math.max(1, D.length - 1), y: top + plotH - (+d[1] || 0) / max * plotH, v: +d[1] || 0, l: d[0] }));
-  let marks = '';
-  if (entry.variant === 'bar') {
-    const bw = Math.max(12, plotW / D.length * 0.55);
-    marks = pts.map((p, k) => `<rect aria-hidden="true" class="chart-point-visual ${entry.cross === k ? 'active' : ''}" x="${p.x - bw / 2}" y="${p.y}" width="${bw}" height="${top + plotH - p.y}" rx="5"></rect>`).join('');
-  } else {
-    const linePath = pts.map((p, k) => `${k ? 'L' : 'M'}${p.x} ${p.y}`).join(' ');
-    const areaPath = `M ${pts[0].x} ${top + plotH} ${pts.map((p) => `L ${p.x} ${p.y}`).join(' ')} L ${pts.at(-1).x} ${top + plotH} Z`;
-    const clip = entry.revealed ? 'inset(0 0 0 0)' : 'inset(0 100% 0 0)';
-    marks = (entry.variant === 'area' ? `<path d="${areaPath}" class="chart-area reveal-mask" style="clip-path:${clip}"></path>` : '')
-      + `<path d="${linePath}" class="chart-line reveal-mask" style="clip-path:${clip}"></path>`
-      + pts.map((p, k) => `<circle aria-hidden="true" class="chart-point-visual ${entry.cross === k ? 'active' : ''}" cx="${p.x}" cy="${p.y}" r="${entry.cross === k ? 6.5 : 4.5}"></circle>`).join('');
-  }
-  const hitButtons = pts.map((p, k) => {
-    const cy = entry.variant === 'bar' ? p.y + (top + plotH - p.y) / 2 : p.y;
-    return `<button type="button" class="chart-hit" data-point="${k}" aria-label="${esc(p.l)} ${p.v} minutes" aria-pressed="${entry.cross === k ? 'true' : 'false'}" style="left:${p.x / W * 100}%;top:${cy / H * 100}%"></button>`;
-  }).join('');
-  const bs = entry.brush || [0, D.length - 1];
-  const values=pts.map((point)=>point.v), minimum=Math.min(...values), maximum=Math.max(...values);
-  const summaryId=`chart-summary-${esc(entry.id)}`;
-  const chartSummary=`${entry.title}. ${D.length} data point${D.length===1?'':'s'} from ${esc(D[0][0])} to ${esc(D.at(-1)[0])}; values range from ${minimum} to ${maximum}. ${entry.cross!=null?`Selected ${esc(D[entry.cross][0])}: ${D[entry.cross][1]}.`:''}`;
-  const bx1 = left + plotW * bs[0] / Math.max(1, D.length - 1);
-  const bx2 = left + plotW * bs[1] / Math.max(1, D.length - 1);
-  const drill = entry.drill != null ? `<div class="chart-drill"><b>${esc(D[entry.drill][0])}</b> · ${D[entry.drill][1]} min. Drill-down is interactive on web and flattens to the selected state for PPT.</div>` : '';
-  return `<div class="kicker">Chart · cross-filter + brush + drill</div><div class="row-between"><div>${componentTitleMarkup(entry)}<div class="csub">Click mark to filter evidence · double-click for drill-down</div></div><button class="mini-btn reveal" data-action="reveal" aria-pressed="${entry.revealed ? 'true' : 'false'}">${entry.revealed ? 'Hide' : 'Reveal'}</button></div><p class="sr-only" id="${summaryId}">${chartSummary}</p><div class="chart-wrap"><svg class="chart-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" data-chart="${entry.id}" aria-label="${esc(entry.title)} chart" aria-describedby="${summaryId}">${[0, .5, 1].map((t) => `<line x1="${left}" y1="${top + plotH * t}" x2="${left + plotW}" y2="${top + plotH * t}" class="chart-grid"></line>`).join('')}${marks}<rect x="${left}" y="${H - 13}" width="${plotW}" height="5" rx="3" class="brush-track"></rect><rect x="${bx1}" y="${H - 16}" width="${Math.max(3, bx2 - bx1)}" height="11" rx="4" class="brush-window"></rect><rect aria-hidden="true" x="${bx1 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-start"></rect><rect aria-hidden="true" x="${bx2 - 3}" y="${H - 20}" width="6" height="19" rx="2" class="brush-handle-visual brush-handle-end"></rect></svg><div class="chart-hit-layer">${hitButtons}<button type="button" role="slider" aria-label="Brush start" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[0]}" class="brush-handle" data-brush="start" style="left:${bx1 / W * 100}%"></button><button type="button" role="slider" aria-label="Brush end" aria-valuemin="0" aria-valuemax="${D.length - 1}" aria-valuenow="${bs[1]}" class="brush-handle" data-brush="end" style="left:${bx2 / W * 100}%"></button></div></div><div class="chart-footer"><span>Brush: ${esc(D[bs[0]][0])} → ${esc(D[bs[1]][0])}</span><span>${entry.cross != null ? `Filter: ${esc(D[entry.cross][0])}` : 'No cross-filter'}</span></div>${drill}`;
+  const resolved=resolvedEntry(entry),dataset=resolved._resolved_dataset||resolved.dataset||{},element=resolved.element||({bar:'Vertical Bar',area:'Area Chart',line:'Line Chart'}[resolved.variant]||'Line Chart');
+  const model=chartModelFromEntry({...resolved,engine:resolved.engine||'CoreChartEngine',element,_resolved_dataset:dataset},dataset);
+  const width=Math.max(320,Number(r?.w||760)-24),height=Math.max(260,Number(r?.h||400)-64),svg=renderChartSvg(model,{width,height,dark:document.documentElement.getAttribute('data-theme')==='dark'}),summaryId=`chart-summary-${esc(entry.id)}`,chartSvg=svg.replace('<svg ',`<svg aria-describedby="${summaryId}" `);
+  const rows=model.dataset?.rows||[],values=rows.map(row=>row?.[model.dataset.fields.findIndex(field=>field.id===model.mapping?.y)]).filter(value=>typeof value==='number');
+  const summary=`${entry.title}. ${rows.length} typed data row${rows.length===1?'':'s'} rendered by the canonical chart authority${values.length?`; values range from ${Math.min(...values)} to ${Math.max(...values)}.`:'.'}`;
+  return `<div class="kicker">Chart · canonical renderer</div><div class="row-between"><div>${componentTitleMarkup(entry)}<div class="csub">Click a mark to inspect the semantically relevant datum.</div></div></div><p class="sr-only" id="${summaryId}">${esc(summary)}</p><div class="chart-wrap" data-chart="${esc(entry.id)}">${chartSvg}</div>`;
 }
 function componentTitleMarkup(entry) { return entry.showTitle===true||entry.show_title===true?`<div class="ctitle" data-direct="title" title="Double-click to edit title">${esc(entry.title)}</div>`:''; }
 function textMarkup(entry, r = {}) {
