@@ -1,0 +1,325 @@
+{
+  "unexpected_browser_events": [],
+  "host": "native NiceGUI",
+  "cases": [
+    {
+      "name": "displayed-table-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "displayed-line-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "displayed-wafer-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "linked-locked-peer-detach",
+      "errors": [],
+      "observed": {
+        "linked_values": "707/707",
+        "detached_values": "313/707",
+        "locked_sibling_unchanged": true,
+        "undo_relinked": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "transform-reordered-columns",
+      "errors": [],
+      "observed": {
+        "rebound_sort_field": "value_1",
+        "rendered_values": [
+          727,
+          919
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "clear-cancel-review",
+      "errors": [],
+      "observed": {
+        "clear_disables_refresh": true,
+        "dynamic_cancel_works": true,
+        "review_preserves_input": true,
+        "no_mutation": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "grid-scroll-preserves-active-edit",
+      "errors": [],
+      "observed": {
+        "source_grid_draft": 707,
+        "custom_table_draft": 42.77,
+        "method": "UI editing with deterministic scroll-event injection"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "two-session-conflict-retained-export",
+      "errors": [],
+      "observed": {
+        "server_value": 707,
+        "retained_local_value": 808,
+        "downloaded_local_value": 808,
+        "no_silent_overwrite": true,
+        "transport": "NiceGUI"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "keyboard-typing-cancel-command",
+      "errors": [],
+      "observed": {
+        "typed_characters": 68,
+        "caret_preserved": true,
+        "native_text_undo_did_not_undo_report": true,
+        "command_opened_dialog": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "json-image-fresh-directory-svg",
+      "errors": [],
+      "observed": {
+        "native_import": {
+          "status": "PASS",
+          "upload_requests": 1,
+          "upload_button_clicks": 1,
+          "report_id": "import-9cd09fc8901242e685b1a4bc27df39a1"
+        },
+        "image_embedded": true,
+        "typed_row": [
+          "00123",
+          0,
+          "0",
+          "",
+          null,
+          true,
+          "2026-09-05"
+        ],
+        "separate_repository_edit_reload": true,
+        "source_and_destination_reload_images": "PASS",
+        "standalone_svg_external_requests": 0,
+        "standalone_svg_image_decoded": true,
+        "standalone_svg_canvas": "rgb(32, 32, 36)",
+        "file_bytes": 140615
+      },
+      "status": "PASS"
+    }
+  ],
+  "source_sha256": "21cda4a0ebbd64fa03fc0eace97521e0ba419ebf425251975d785b8909b7acc0",
+  "scope": "complete data-workflow group",
+  "selected_cases": [
+    "displayed-table-refresh-undo",
+    "displayed-line-refresh-undo",
+    "displayed-wafer-refresh-undo",
+    "linked-locked-peer-detach",
+    "transform-reordered-columns",
+    "clear-cancel-review",
+    "grid-scroll-preserves-active-edit",
+    "two-session-conflict-retained-export",
+    "keyboard-typing-cancel-command",
+    "json-image-fresh-directory-svg"
+  ],
+  "test_source_sha256": {
+    "scripts/release_checks/run_data_workflows.py": "4fe9a476ca0abd5aca79a4cc762baf0538f5365296f0d81e5294bbc7757ffccd",
+    "scripts/release_checks/native_upload.py": "a5672aac93194e370fd52c43305e2114cd47c65015e4733dbb448204fd569728",
+    "scripts/release_checks/media_assertions.py": "16eba468b8453443e870373dbbd836ba3822bd99235b0d3d4ec46d3fff7022e1",
+    "scripts/release_checks/editor_host.py": "20701a0ba0855a3eb8c3a573a207985304b5a5bea256724ea9b27bf2a05d81b7",
+    "company_ui/integrations/nicegui_components.py": "71321f47a183a76ff2853b734eec585ee175a605ee74be03f9f3e83c32a72cce",
+    "company_ui/products/visualizer/page.py": "d5afd406f9c486bac8d19d52442017c79e3ead42ef5b356621e9020ca1f6688c",
+    "company_ui/products/visualizer/assets/authoring_portability.mjs": "1f7b938d2d4287d408572c2e499ae1cec2559e068db4531d63ff672deaf944c8"
+  },
+  "browser": "151.0.7922.34",
+  "portability_progress": {
+    "status": "PASS",
+    "stage": "complete",
+    "completed": [
+      {
+        "stage": "source-initial-reload-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-352a4e6375ac689c593a76cd862957b944976daa5bad532455430c349cce222f",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 605.0341796875,
+              "visible_height": 36.239044189453125
+            }
+          ]
+        }
+      },
+      {
+        "stage": "source-replacement-reload-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-f4031add16634a958ef0283aa842e8dd48fcae0d252d7917653e476af378b6d7",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 605.970703125,
+              "visible_height": 36.295135498046875
+            }
+          ]
+        }
+      },
+      {
+        "stage": "portable-json-export",
+        "status": "PASS",
+        "observed": {
+          "typed_rows_preserved": true,
+          "image_bytes_match": true,
+          "file": "portable.json"
+        }
+      },
+      {
+        "stage": "destination-imported-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-f4031add16634a958ef0283aa842e8dd48fcae0d252d7917653e476af378b6d7",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 606.9074096679688,
+              "visible_height": 36.3511962890625
+            }
+          ]
+        }
+      },
+      {
+        "stage": "destination-edit-reload",
+        "status": "PASS",
+        "observed": {
+          "report_id": "import-9cd09fc8901242e685b1a4bc27df39a1",
+          "edited_value": 33,
+          "other_typed_values_preserved": true
+        }
+      },
+      {
+        "stage": "destination-reloaded-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-f4031add16634a958ef0283aa842e8dd48fcae0d252d7917653e476af378b6d7",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 605.0341796875,
+              "visible_height": 36.239044189453125
+            }
+          ]
+        }
+      },
+      {
+        "stage": "source-svg-export",
+        "status": "PASS",
+        "observed": {
+          "file": "source-reloaded-dark.svg",
+          "image_bytes_match": true,
+          "bytes": 140660
+        }
+      },
+      {
+        "stage": "destination-svg-export",
+        "status": "PASS",
+        "observed": {
+          "file": "portable-dark.svg",
+          "image_bytes_match": true,
+          "bytes": 140615
+        }
+      },
+      {
+        "stage": "standalone-svg-render",
+        "status": "PASS",
+        "observed": {
+          "decoded_image": {
+            "item_id": "c21",
+            "status": "PASS",
+            "resources": [
+              {
+                "source": "data:image/png;base64",
+                "embedded": true,
+                "natural_width": 240,
+                "natural_height": 140,
+                "visible_width": 1367.0400390625,
+                "visible_height": 81.8800048828125
+              }
+            ]
+          },
+          "external_requests": 0,
+          "canvas": "rgb(32, 32, 36)",
+          "edited_value_visible": 33
+        }
+      }
+    ]
+  },
+  "native_host_scope": {
+    "status": "EXECUTED",
+    "reason": "Native mode requested."
+  },
+  "passed": 10,
+  "status": "PASS",
+  "release_status": "NOT_ASSESSED",
+  "release_note": "This is a data-workflow receipt, not a whole-release verdict."
+}

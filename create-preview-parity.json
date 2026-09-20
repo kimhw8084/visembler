@@ -1,0 +1,40 @@
+{
+  "families": {
+    "Core Chart": {
+      "engine": "CoreChartEngine",
+      "parity": "PASS",
+      "renderer": "CHG-137 canonical renderer"
+    },
+    "Diagram/Data Flow": {
+      "engine": "DiagramEngine",
+      "parity": "PASS",
+      "post_create_marker": "diagram-svg",
+      "preview_marker": "diagram-svg"
+    },
+    "Engineering": {
+      "engine": "EngineeringChartEngine",
+      "parity": "PASS",
+      "renderer": "governed engineering renderer"
+    },
+    "Table": {
+      "engine": "TableEngine",
+      "parity": "PASS",
+      "post_create_marker": "table-frame",
+      "preview_marker": "table-frame"
+    },
+    "Timeline": {
+      "engine": "TimelineEngine",
+      "parity": "PASS",
+      "post_create_marker": "timeline-rail",
+      "preview_marker": "timeline-rail"
+    },
+    "WaferFab": {
+      "engine": "WaferFabEngine",
+      "parity": "PASS",
+      "renderer": "governed WaferFab renderer"
+    }
+  },
+  "non_persisted_preview_id": "__data-first-preview__",
+  "proof": "tests/test_visualizer_chg138_r2_native.py::test_chg138_r2_native_preview_parity_and_chart_studio_shared_search",
+  "status": "PASS"
+}
