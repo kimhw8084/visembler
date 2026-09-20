@@ -1,0 +1,99 @@
+{
+  "base_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+  "base_tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+  "browser_smoke": {
+    "asset_build_matches": true,
+    "console_errors": 0,
+    "failed_requests": 0,
+    "module_fetches": [
+      "authoring_preview.mjs",
+      "authoring_projection.mjs"
+    ],
+    "report": "evidence/browser-smoke-report.json",
+    "status": "PASS"
+  },
+  "candidate_sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+  "candidate_tree": "15d45dc6eaa93142b00869e48edda82965addb98",
+  "exact_r2_native_authority": {
+    "coverage": [
+      "non-chart production preview parity for Table, Timeline, Diagram/Data Flow; Core Chart, Engineering, WaferFab",
+      "persistent 30+ field search across Create-from-data, Data Dock, Chart Studio",
+      "click/Enter/drag/shelf mapping with incompatible assignment blocked before mutation",
+      "calculated/unpivot transform draft preview changes before Save while canonical model/revision/hash remain unchanged until Save",
+      "shared refresh versus selected detach with locked peer"
+    ],
+    "status": "PASS",
+    "tests": [
+      "tests/test_visualizer_chg138_r2_native.py",
+      "tests/test_visualizer_authoring_productivity_wave.py",
+      "tests/test_visualizer_wave3_typed_data_foundation.py"
+    ]
+  },
+  "full_pytest": {
+    "collected": 1132,
+    "failed": 0,
+    "passed": 1132,
+    "status": "PASS",
+    "warnings": "one pre-existing zipfile warning"
+  },
+  "maintained_suite_count": {
+    "independently_collected": 1132,
+    "manifest_declared": 1132,
+    "status": "PASS",
+    "synchronized_after_independent_count": true
+  },
+  "project": "visembler",
+  "repository_contracts": {
+    "managed_target_status": "PENDING",
+    "report": "evidence/repository-contracts-report.json",
+    "status": "PASS"
+  },
+  "request": "CHG-138-r3",
+  "required_grouped_regressions": {
+    "status": "PASS",
+    "test_modules": [
+      "tests/test_visualizer_product_evolution_01_data_first.py",
+      "tests/test_visualizer_product_evolution_02_mapping_presets.py",
+      "tests/test_visualizer_product_evolution_03_dataset_refresh.py",
+      "tests/test_visualizer_dataset_resources.py",
+      "tests/test_visualizer_wave3_typed_data_foundation.py",
+      "tests/test_visualizer_chart_studio.py",
+      "tests/test_visualizer_chart_renderer_r1.py",
+      "tests/test_visualizer_chart_renderer_r2.py",
+      "tests/test_visualizer_accessibility_authoring.py",
+      "tests/test_visualizer_authoring_p0.py",
+      "tests/test_visualizer_performance.py",
+      "tests/test_visualizer_statistical_quality_wave.py",
+      "tests/test_visualizer_statistical_release_repair.py",
+      "tests/test_visualizer_semiconductor_analytics_wave.py",
+      "tests/test_visualizer_wave3_engineering_wafer_authoring.py",
+      "tests/test_visualizer_wave13_authoring_quality.py",
+      "tests/test_visualizer_r15_authoring_depth.py"
+    ]
+  },
+  "runtime_contract": {
+    "nicegui_installed": "3.15.0",
+    "nicegui_required": "3.15.0",
+    "status": "PASS"
+  },
+  "runtime_smoke": {
+    "routes": 22,
+    "status": "PASS"
+  },
+  "schema_version": 1,
+  "status": "PASS_WITH_KNOWN_VALIDATOR_BASELINE",
+  "validator": {
+    "claim_policy": "Not claimed as validator PASS.",
+    "comparison": "Exact base main in an isolated verification worktree produces the same page.py AI004/AI005 counts; no new validator finding is attributed to R3.",
+    "errors": {
+      "AI004": 11,
+      "AI005": 90,
+      "files": [
+        "company_ui/products/visualizer/page.py"
+      ]
+    },
+    "exit_code": 1,
+    "status": "NONZERO_KNOWN_BASELINE",
+    "summary": "61 files, 101 errors, 1267 warnings"
+  }
+}
