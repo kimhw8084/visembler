@@ -1,0 +1,93 @@
+{
+  "artifact_run": {
+    "artifact_count": 40,
+    "bundle_sha256": "c0a281d96fb8f3c5b414c2bf86e2904eb7bcd5a2db4639786163ec1fdd55d728",
+    "id": "AR-35",
+    "manifest_sha256": "b22d642fb7283559888e0c4e81e154541bc58d6ffa8abc010d63110a4330a652",
+    "page": "https://app.notion.com/p/3e1c564c8d0481188b4cec146f41f21d",
+    "provider_json_attachment_readback": {
+      "downloaded_bytes_total": 48975,
+      "downloaded_text_artifacts": 8,
+      "local_byte_lengths_match": true,
+      "status": "PASS"
+    },
+    "status": "Staged",
+    "uploaded_bytes": 9628144
+  },
+  "asset_build": {
+    "asset_count": 56,
+    "mutation_proof": "preview and projection one-byte temp-copy mutations each changed build and restored exact bytes",
+    "required_runtime_assets": [
+      "authoring_human.mjs",
+      "authoring_preview.mjs",
+      "authoring_projection.mjs"
+    ],
+    "sha256_full": "2f8f1f12eefb0cb7c517479620a9616094bdb90cea950e468620ef33cc1d47ca",
+    "short": "2f8f1f12eefb0cb7"
+  },
+  "base_sha": "5938c51fb1de4d540b404e480d028a3d0917e159",
+  "base_tree": "5f2eec8d95a3fbedf1828bc8b95489a6526296af",
+  "candidate_parent": "5938c51fb1de4d540b404e480d028a3d0917e159",
+  "candidate_sha": "f779fa49130fee5901630037cbef9315bcb085b4",
+  "candidate_tree": "15d45dc6eaa93142b00869e48edda82965addb98",
+  "changed_files": [
+    "company_ui/certification/certification_manifest.json",
+    "company_ui/products/visualizer/assets/authoring_human.mjs",
+    "company_ui/products/visualizer/assets/authoring_preview.mjs",
+    "company_ui/products/visualizer/assets/authoring_projection.mjs",
+    "company_ui/products/visualizer/assets/chart_studio.css",
+    "company_ui/products/visualizer/assets/chart_studio.mjs",
+    "company_ui/products/visualizer/assets/integrated_editor.css",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs",
+    "company_ui/products/visualizer/page.py",
+    "tests/test_visualizer_authoring_productivity_wave.py",
+    "tests/test_visualizer_chg138_r2_native.py",
+    "tests/test_visualizer_wave3_typed_data_foundation.py"
+  ],
+  "evidence_kind": "deterministic_fabric_evidence",
+  "fabric_job": "CF-d5c664198c8efb72b95dae97",
+  "guardrails": [
+    "No CHG-138 page, other Project OS semantic page, Visual Surfaces, or main was mutated.",
+    "No product-source evidence files were added.",
+    "No self-accept or promotion decision was made.",
+    "This evidence commit is deterministic and its sole parent is the exact final R3 source candidate."
+  ],
+  "operation": "FIX",
+  "predecessor_r2_sha": "4117db7148a8495c941e1a07b2beb3905a2c59a2",
+  "predecessor_r2_tree": "5ba3592091af246377f30ec63cdd1a356103f005",
+  "project": "visembler",
+  "r2_visual_reuse": {
+    "png_count": 29,
+    "predecessor_artifact_run": "AR-33",
+    "recaptured": false,
+    "status": "PASS_EXACT_BYTE_REUSE",
+    "svg_count": 2,
+    "visual_count": 31
+  },
+  "reader_carrier": {
+    "bundle_sha256": "c0a281d96fb8f3c5b414c2bf86e2904eb7bcd5a2db4639786163ec1fdd55d728",
+    "commit": "970cbd92bf3f11eb37076b6d7f31280c9cb99339",
+    "manifest_sha256": "b22d642fb7283559888e0c4e81e154541bc58d6ffa8abc010d63110a4330a652",
+    "parents": [],
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-138-r3",
+    "remote_exact_bundle_readback": true,
+    "remote_exact_manifest_readback": true,
+    "tree": "e84f0e0db04216e104593b78e991e4cbb7e6795c"
+  },
+  "request": "CHG-138-r3",
+  "schema_version": 1,
+  "source_change": "CHG-138",
+  "status": "Staged",
+  "target_head": "f779fa49130fee5901630037cbef9315bcb085b4",
+  "tests": {
+    "browser_smoke": "PASS (modules 200, no console/failed requests, asset build matched)",
+    "full_pytest": "1132 passed",
+    "r2_native": "PASS",
+    "repository_contracts": "PASS (managed target PENDING)",
+    "required_grouped_regressions": "PASS",
+    "runtime_contract": "PASS",
+    "runtime_smoke": "PASS (22/22 routes)",
+    "validator": "NONZERO_KNOWN_BASELINE (page.py AI004=11, AI005=90; same exact-base counts; not claimed PASS)"
+  },
+  "work_branch": "fix/visembler-chg138-data-authoring-r3"
+}
