@@ -1,0 +1,200 @@
+{
+  "schema": "visembler-chg140-report-hub.v1",
+  "change": "CHG-140",
+  "candidate_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+  "source_files": {
+    "company_ui/products/visualizer/page.py": "fd8d8621075f722b26ebee99bb649c66ef3ef3a06667787c93e4356663f01835",
+    "scripts/release_checks/run_chg140_report_hub_acceptance.py": "936b13a449bd786647c806f6c7395dae6bb8641b95b9ca8e66db62a913485787"
+  },
+  "viewports": {
+    "narrow-1024": {
+      "width": 1024,
+      "height": 900,
+      "document_scroll_width": 1024,
+      "card_count": 19
+    },
+    "mobile-390": {
+      "width": 390,
+      "height": 844,
+      "document_scroll_width": 390,
+      "card_count": 19
+    },
+    "mobile-200-equivalent": {
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 2,
+      "document_scroll_width": 390,
+      "card_count": 19
+    }
+  },
+  "cases": [
+    {
+      "name": "desktop hierarchy and content preview",
+      "status": "PASS",
+      "details": {
+        "active_cards": 18,
+        "visible_card_controls": 2
+      }
+    },
+    {
+      "name": "long title and description containment",
+      "status": "PASS",
+      "details": {
+        "long_title_wrapped": true,
+        "description_legible": true,
+        "card_contained": true
+      }
+    },
+    {
+      "name": "progressive disclosure and focus return",
+      "status": "FAIL",
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 132, in check\n    row[\"details\"] = function() or {}\n                     ^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 187, in disclosure\n    assert not menu.is_visible()\nAssertionError\n"
+    },
+    {
+      "name": "human-facing sharing surface",
+      "status": "PASS",
+      "details": {
+        "human_facing_terms": true,
+        "implementation_vocabulary_absent": true
+      }
+    },
+    {
+      "name": "focused history current-versus-selected review",
+      "status": "PASS",
+      "details": {
+        "revisions": 3,
+        "current_and_selected_context": true,
+        "restore_is_new_revision": true
+      }
+    },
+    {
+      "name": "supported blueprint creation",
+      "status": "PASS",
+      "details": {
+        "supported_templates": 9,
+        "created": "report-ac9b5c61e4ad48ca983efc0b2bf60045",
+        "template_model_preserved": true
+      }
+    },
+    {
+      "name": "empty search and recovery",
+      "status": "FAIL",
+      "error": "",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 132, in check\n    row[\"details\"] = function() or {}\n                     ^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 256, in empty_search\n    assert page.locator('[data-report-state=\"active\"]:visible').count() >= 1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+    },
+    {
+      "name": "trash consequence and recovery",
+      "status": "FAIL",
+      "error": "Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\".q-menu:visible\") to be visible\n",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 132, in check\n    row[\"details\"] = function() or {}\n                     ^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 263, in trash_recovery\n    _open_actions(page, card)\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_chg140_report_hub_acceptance.py\", line 64, in _open_actions\n    page.locator('.q-menu:visible').wait_for(timeout=5_000)\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 20539, in wait_for\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 748, in wait_for\n    await self._frame.wait_for_selector(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\".q-menu:visible\") to be visible\n\n"
+    },
+    {
+      "name": "narrow 1024 geometry",
+      "status": "PASS",
+      "details": {
+        "width": 1024,
+        "height": 900,
+        "document_scroll_width": 1024,
+        "card_count": 19
+      }
+    },
+    {
+      "name": "mobile 390 geometry",
+      "status": "PASS",
+      "details": {
+        "width": 390,
+        "height": 844,
+        "document_scroll_width": 390,
+        "card_count": 19
+      }
+    },
+    {
+      "name": "200-percent-equivalent mobile geometry",
+      "status": "PASS",
+      "details": {
+        "width": 390,
+        "height": 844,
+        "device_scale_factor": 2,
+        "document_scroll_width": 390,
+        "card_count": 19
+      }
+    },
+    {
+      "name": "viewer read-only governance and rendered state",
+      "status": "PASS",
+      "details": {
+        "role": "viewer",
+        "authorized_read_only_actions": true,
+        "unauthorized_mutations_hidden": true,
+        "browser_fixture": "chg140-viewer"
+      }
+    },
+    {
+      "name": "dark, reduced-motion, forced-colors surface",
+      "status": "PASS",
+      "details": {
+        "dark_theme": true,
+        "reduced_motion": true,
+        "forced_colors": true
+      }
+    }
+  ],
+  "unexpected_browser_events": [],
+  "fixture_ids": {
+    "primary": "chg140-primary",
+    "long": "chg140-long",
+    "history": "chg140-history",
+    "trash": "chg140-trash",
+    "viewer": "chg140-viewer",
+    "editor": "chg140-editor",
+    "many-0": "chg140-many-00",
+    "many-1": "chg140-many-01",
+    "many-2": "chg140-many-02",
+    "many-3": "chg140-many-03",
+    "many-4": "chg140-many-04",
+    "many-5": "chg140-many-05",
+    "many-6": "chg140-many-06",
+    "many-7": "chg140-many-07",
+    "many-8": "chg140-many-08",
+    "many-9": "chg140-many-09",
+    "many-10": "chg140-many-10",
+    "many-11": "chg140-many-11"
+  },
+  "isolated_storage_removed": true,
+  "screenshots": [
+    {
+      "path": "screenshots/report-hub-dark-reduced-motion.png",
+      "sha256": "f2d96a1421a550a076b968bc05dd8fe89a718eba0fcf6863f288ab90e69447ca",
+      "bytes": 200833
+    },
+    {
+      "path": "screenshots/report-hub-long-title.png",
+      "sha256": "40f72a523f43641159e36f8ef8c387e6a0e6c0de5813b62ece9b573bdb336177",
+      "bytes": 276096
+    },
+    {
+      "path": "screenshots/report-hub-mobile-200-equivalent.png",
+      "sha256": "283ed3532aef49f6a78e6152590a77cb4eaa6d3a4eddf7630e0404e92e51e3ae",
+      "bytes": 1301667
+    },
+    {
+      "path": "screenshots/report-hub-mobile-390.png",
+      "sha256": "06f38fe6c2063b357292ed52d9922f4573644f728e6ea06faa497abfefa55af5",
+      "bytes": 504010
+    },
+    {
+      "path": "screenshots/report-hub-narrow-1024.png",
+      "sha256": "1822bbb28c5ddcbfeca1daa2aef4e7dcdbbce57bf39ba69adf89c2c03eea737b",
+      "bytes": 388318
+    },
+    {
+      "path": "screenshots/report-hub-read-only.png",
+      "sha256": "a4e7da3e4f4557f20f60777756708f430a172d1ed93c14095a458f4640410630",
+      "bytes": 291927
+    }
+  ],
+  "passed": 10,
+  "total": 13,
+  "status": "FAIL"
+}

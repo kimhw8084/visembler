@@ -1,0 +1,15 @@
+{
+  "release_status": "BLOCKED",
+  "company_boundary_status": "READY_FOR_COMPANY_TARGET_CERTIFICATION",
+  "managed_target_status": "PENDING",
+  "source_editor_sha256": "21cda4a0ebbd64fa03fc0eace97521e0ba419ebf425251975d785b8909b7acc0",
+  "source_page_sha256": "fd8d8621075f722b26ebee99bb649c66ef3ef3a06667787c93e4356663f01835",
+  "frozen_connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+  "launch_command": "python scripts/launch_visembler.py --data-dir /absolute/path/to/visembler-data --port 8080",
+  "verification_command": "/opt/anaconda3/bin/python3 scripts/verify_release.py --host-mode native --output <new-empty-directory>",
+  "backup_contract": "Stop Visembler, copy the complete configured data directory, restore to a separate directory, and verify report/history/image before rollback use.",
+  "limitations": [
+    "User preferences live in NiceGUI user storage and are not canonical Report JSON.",
+    "Shared-network production requires organization-managed authentication, authorization, durable backup and hosting/session controls."
+  ]
+}

@@ -1,0 +1,451 @@
+{
+  "scope": "final narrow visual cleanup",
+  "checks": [
+    {
+      "id": "FV001",
+      "name": "Preview removes selected chrome",
+      "status": "PASS"
+    },
+    {
+      "id": "FV002",
+      "name": "Preview hides resize handles",
+      "status": "PASS"
+    },
+    {
+      "id": "FV003",
+      "name": "Preview hides context toolbar",
+      "status": "PASS"
+    },
+    {
+      "id": "FV004",
+      "name": "Preview hides editor-only controls",
+      "status": "PASS"
+    },
+    {
+      "id": "FV005",
+      "name": "Preview contains no chart or diagram edit action",
+      "status": "PASS"
+    },
+    {
+      "id": "FV006",
+      "name": "Preview report content is not manipulable",
+      "status": "PASS"
+    },
+    {
+      "id": "FV007",
+      "name": "Exit Preview restores editor behavior",
+      "status": "PASS"
+    },
+    {
+      "id": "FV008",
+      "name": "Preview contract covers six representative compositions",
+      "status": "PASS",
+      "detail": "[{'composition': 'Line Chart', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}, {'composition': 'Process Flow', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}, {'composition': 'Event Timeline', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}, {'composition': 'Wafer Map', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}, {'composition': 'Body Narrative', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}, {'composition': 'mixed', 'selection': True, 'resize': True, 'context': True, 'editor_only': True, 'edit_text': True, 'immutable': True, 'restored': True}]"
+    },
+    {
+      "id": "FV009",
+      "name": "Event Timeline renders five of five events",
+      "status": "PASS",
+      "detail": "{1440: {'count': 5, 'dominant': 0.7458404384670213, 'x': 0.7458404384670213, 'y': 0, 'clipped': False}, 1024: {'count': 5, 'dominant': 0.7458402812083343, 'x': 0.7458402812083343, 'y': 0, 'clipped': False}, 768: {'count': 5, 'dominant': 0.7458404789240435, 'x': 0.7458404789240435, 'y': 0, 'clipped': False}}"
+    },
+    {
+      "id": "FV010",
+      "name": "Event Timeline spans its dominant axis",
+      "status": "PASS",
+      "detail": "{1440: {'count': 5, 'dominant': 0.7458404384670213, 'x': 0.7458404384670213, 'y': 0, 'clipped': False}, 1024: {'count': 5, 'dominant': 0.7458402812083343, 'x': 0.7458402812083343, 'y': 0, 'clipped': False}, 768: {'count': 5, 'dominant': 0.7458404789240435, 'x': 0.7458404789240435, 'y': 0, 'clipped': False}}"
+    },
+    {
+      "id": "FV011",
+      "name": "Event Timeline has no clipping at 1024",
+      "status": "PASS",
+      "detail": "{'count': 5, 'dominant': 0.7458402812083343, 'x': 0.7458402812083343, 'y': 0, 'clipped': False}"
+    },
+    {
+      "id": "FV012",
+      "name": "Event Timeline has no clipping at 768",
+      "status": "PASS",
+      "detail": "{'count': 5, 'dominant': 0.7458404789240435, 'x': 0.7458404789240435, 'y': 0, 'clipped': False}"
+    },
+    {
+      "id": "FV013",
+      "name": "Milestone Rail has no silent event loss",
+      "status": "PASS",
+      "detail": "{1440: {'count': 5, 'dominant': 0.7458402759646106, 'x': 0.7458402759646106, 'y': 0, 'clipped': False}}"
+    },
+    {
+      "id": "FV014",
+      "name": "Sequence Strip has no silent event loss",
+      "status": "PASS",
+      "detail": "{1440: {'count': 5, 'dominant': 0.7511665954074533, 'x': 0.7511665954074533, 'y': 0, 'clipped': False}}"
+    },
+    {
+      "id": "FV015",
+      "name": "Wafer Investigation occupies at least 42 percent",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV016",
+      "name": "Wafer visual uses at least 24 percent of its card",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV017",
+      "name": "RCA report occupies at least 52 percent",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV018",
+      "name": "Process Flow uses its card meaningfully",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV019",
+      "name": "RCA timelines span their dominant axis",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV020",
+      "name": "Process Health occupies at least 42 percent",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV021",
+      "name": "Executive Summary occupies at least 52 percent",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV022",
+      "name": "Smart to Guided retains professional geometry",
+      "status": "PASS",
+      "detail": "{'smart': [{'id': 'item-1', 'x': 14, 'y': 14, 'w': 1172, 'h': 365.67289331672896}, {'id': 'item-2', 'x': 14, 'y': 393.67289331672896, 'w': 1172, 'h': 290.88833540888334}, {'id': 'item-3', 'x': 14, 'y': 698.5612287256123, 'w': 1172, 'h': 187.4387712743877}], 'guided': [{'id': 'item-1', 'x': 14, 'y': 14, 'w': 1172, 'h': 365.67289331672896}, {'id': 'item-2', 'x': 14, 'y': 393.67289331672896, 'w': 1172, 'h': 290.88833540888334}, {'id': 'item-3', 'x': 14, 'y': 698.5612287256123, 'w': 1172, 'h': 187.4387712743877}]}"
+    },
+    {
+      "id": "FV023",
+      "name": "Free geometry remains unchanged",
+      "status": "PASS",
+      "detail": "{'before': [{'id': 'item-1', 'x': 77, 'y': 91, 'w': 438, 'h': 233}], 'after': [{'id': 'item-1', 'x': 77, 'y': 91, 'w': 438, 'h': 233}]}"
+    },
+    {
+      "id": "FV024",
+      "name": "Final reports contain no empty or error placeholders",
+      "status": "NOT_APPLICABLE",
+      "reason": "benchmark intentionally skipped for focused development"
+    },
+    {
+      "id": "FV025",
+      "name": "Shapes control is initially visible at 768",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV026",
+      "name": "Inspector control is initially visible at 768",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV027",
+      "name": "Tablet panel controls need no horizontal toolbar scroll",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV028",
+      "name": "Shapes opens the palette drawer",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV029",
+      "name": "Inspector opens the inspector drawer",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV030",
+      "name": "Diagram drawers provide backdrop, close, and Escape",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 351.1875, 'y': 85.5, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 418.015625, 'y': 85.5, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 752, 'bottom': 170}, 'shell': {'top': 170}, 'buttons': [{'left': 351.1875, 'top': 85.5, 'right': 414.015625, 'bottom': 119.5}, {'left': 418.015625, 'top': 85.5, 'right': 493.234375, 'bottom': 119.5}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV031",
+      "name": "Diagram panel controls are accessible at 390",
+      "status": "PASS",
+      "detail": "{'shapes_visible': True, 'shapes_box': {'x': 25, 'y': 123, 'width': 62.828125, 'height': 34}, 'inspector_visible': True, 'inspector_box': {'x': 91.828125, 'y': 123, 'width': 75.21875, 'height': 34}, 'toolbar_overflow': False, 'document_overflow': False, 'controls_in_toolbar': True, 'shell_below_toolbar': True, 'toolbar': {'left': 16, 'top': 76, 'right': 374, 'bottom': 205}, 'shell': {'top': 205}, 'buttons': [{'left': 25, 'top': 123, 'right': 87.828125, 'bottom': 157}, {'left': 91.828125, 'top': 123, 'right': 167.046875, 'bottom': 157}], 'shapes_open': True, 'inspector_open': True, 'close_visible': True, 'escape': True, 'close': True}"
+    },
+    {
+      "id": "FV032",
+      "name": "Stage A regression",
+      "status": "FAIL",
+      "error": "run_stage_a_acceptance.py exit 1"
+    },
+    {
+      "id": "FV033",
+      "name": "Stage B regression",
+      "status": "PASS",
+      "detail": "run_diagram_studio_acceptance.py exit 0"
+    },
+    {
+      "id": "FV034",
+      "name": "Stage C regression",
+      "status": "PASS",
+      "detail": "run_chart_studio_acceptance.py exit 0"
+    },
+    {
+      "id": "FV035",
+      "name": "Stage D regression",
+      "status": "PASS",
+      "detail": "run_stage_d_acceptance.py exit 0"
+    },
+    {
+      "id": "FV036",
+      "name": "Prior final visual remediation regression",
+      "status": "FAIL",
+      "error": "run_final_visual_remediation_acceptance.py exit 1"
+    },
+    {
+      "id": "FV037",
+      "name": "All 49 production element workflows",
+      "status": "PASS",
+      "detail": "element workflow exit 0"
+    },
+    {
+      "id": "FV038",
+      "name": "Data workflows",
+      "status": "FAIL",
+      "error": "data workflow exit 1"
+    },
+    {
+      "id": "FV039",
+      "name": "Product contract audit",
+      "status": "PASS",
+      "detail": "product contract exit 0"
+    },
+    {
+      "id": "FV040",
+      "name": "No unexpected browser errors",
+      "status": "PASS"
+    },
+    {
+      "id": "FV041",
+      "name": "Frozen connector unchanged",
+      "status": "PASS",
+      "detail": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e"
+    }
+  ],
+  "unexpected_errors": [],
+  "preview": [
+    {
+      "composition": "Line Chart",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    },
+    {
+      "composition": "Process Flow",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    },
+    {
+      "composition": "Event Timeline",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    },
+    {
+      "composition": "Wafer Map",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    },
+    {
+      "composition": "Body Narrative",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    },
+    {
+      "composition": "mixed",
+      "selection": true,
+      "resize": true,
+      "context": true,
+      "editor_only": true,
+      "edit_text": true,
+      "immutable": true,
+      "restored": true
+    }
+  ],
+  "timelines": {
+    "Event Timeline": {
+      "1440": {
+        "count": 5,
+        "dominant": 0.7458404384670213,
+        "x": 0.7458404384670213,
+        "y": 0,
+        "clipped": false
+      },
+      "1024": {
+        "count": 5,
+        "dominant": 0.7458402812083343,
+        "x": 0.7458402812083343,
+        "y": 0,
+        "clipped": false
+      },
+      "768": {
+        "count": 5,
+        "dominant": 0.7458404789240435,
+        "x": 0.7458404789240435,
+        "y": 0,
+        "clipped": false
+      }
+    },
+    "Milestone Rail": {
+      "1440": {
+        "count": 5,
+        "dominant": 0.7458402759646106,
+        "x": 0.7458402759646106,
+        "y": 0,
+        "clipped": false
+      }
+    },
+    "Sequence Strip": {
+      "1440": {
+        "count": 5,
+        "dominant": 0.7511665954074533,
+        "x": 0.7511665954074533,
+        "y": 0,
+        "clipped": false
+      }
+    }
+  },
+  "diagram_tablet": {
+    "768": {
+      "shapes_visible": true,
+      "shapes_box": {
+        "x": 351.1875,
+        "y": 85.5,
+        "width": 62.828125,
+        "height": 34
+      },
+      "inspector_visible": true,
+      "inspector_box": {
+        "x": 418.015625,
+        "y": 85.5,
+        "width": 75.21875,
+        "height": 34
+      },
+      "toolbar_overflow": false,
+      "document_overflow": false,
+      "controls_in_toolbar": true,
+      "shell_below_toolbar": true,
+      "toolbar": {
+        "left": 16,
+        "top": 76,
+        "right": 752,
+        "bottom": 170
+      },
+      "shell": {
+        "top": 170
+      },
+      "buttons": [
+        {
+          "left": 351.1875,
+          "top": 85.5,
+          "right": 414.015625,
+          "bottom": 119.5
+        },
+        {
+          "left": 418.015625,
+          "top": 85.5,
+          "right": 493.234375,
+          "bottom": 119.5
+        }
+      ],
+      "shapes_open": true,
+      "inspector_open": true,
+      "close_visible": true,
+      "escape": true,
+      "close": true
+    },
+    "390": {
+      "shapes_visible": true,
+      "shapes_box": {
+        "x": 25,
+        "y": 123,
+        "width": 62.828125,
+        "height": 34
+      },
+      "inspector_visible": true,
+      "inspector_box": {
+        "x": 91.828125,
+        "y": 123,
+        "width": 75.21875,
+        "height": 34
+      },
+      "toolbar_overflow": false,
+      "document_overflow": false,
+      "controls_in_toolbar": true,
+      "shell_below_toolbar": true,
+      "toolbar": {
+        "left": 16,
+        "top": 76,
+        "right": 374,
+        "bottom": 205
+      },
+      "shell": {
+        "top": 205
+      },
+      "buttons": [
+        {
+          "left": 25,
+          "top": 123,
+          "right": 87.828125,
+          "bottom": 157
+        },
+        {
+          "left": 91.828125,
+          "top": 123,
+          "right": 167.046875,
+          "bottom": 157
+        }
+      ],
+      "shapes_open": true,
+      "inspector_open": true,
+      "close_visible": true,
+      "escape": true,
+      "close": true
+    }
+  },
+  "pass": 30,
+  "applicable": 33,
+  "not_applicable": 8,
+  "status": "FAIL"
+}

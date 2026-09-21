@@ -1,0 +1,108 @@
+{
+  "schema": "visembler-chg40-r6-findings.v1",
+  "source_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+  "source_tree": "068db74c22896673f40f36ad06310bd5e4376a2c",
+  "decision": "VERIFY",
+  "convergence": "NOT_CERTIFIED",
+  "p0_count": 0,
+  "p1_product_defect_count": 0,
+  "findings": [
+    {
+      "id": "F-R6-001",
+      "severity": "P2",
+      "classification": "VERIFY",
+      "scope": "maintained data verifier",
+      "title": "Native import verifier uses stale dialog/upload selectors",
+      "evidence": [
+        "maintained-release/report.json",
+        "maintained-release/logs/data.log",
+        "data-import-r6/native-import-r6-final.json"
+      ],
+      "root_authority": "scripts/release_checks data workflow harness; not Product runtime",
+      "proof": "The maintained helper failed before the current import card was found. A fresh current-main native probe queued portable.json, clicked the real cloud_upload action, created a new governed repository record, closed the dialog, and recorded zero browser events.",
+      "action": "Update the verifier path in a future FIX/maintenance change; no Product defect is proven in R6."
+    },
+    {
+      "id": "F-R6-002",
+      "severity": "P2",
+      "classification": "VERIFY",
+      "scope": "Report Hub acceptance gate",
+      "title": "Three CHG-140 acceptance cases fail in the maintained sequence while isolated current-main counterprobes pass",
+      "evidence": [
+        "report-hub-chg140/chg140-report-hub-acceptance.json",
+        "report-hub-chg140/r6-counterprobes.json"
+      ],
+      "root_authority": "acceptance driver state isolation/selectors; Product source defect not proven",
+      "proof": "Fresh current-main probes pass Escape/focus return, empty-search recovery, and trash consequence/recovery with zero browser events. The maintained run remains FAIL and must not be silently waived.",
+      "action": "Reconcile the acceptance harness and rerun the full gate; keep R6 VERIFY."
+    },
+    {
+      "id": "F-R6-003",
+      "severity": "P2",
+      "classification": "VERIFY",
+      "scope": "worker lifecycle gate",
+      "title": "Cancel/stale-result isolation probe misses the current cancel surface",
+      "evidence": [
+        "maintained-release/report.json",
+        "maintained-release/worker-lifecycle/worker-lifecycle.json"
+      ],
+      "root_authority": "worker lifecycle verifier selector #genericModal; no current rendered source defect proven",
+      "proof": "Three worker lifecycle checks pass; the cancel case times out on a legacy genericModal selector.",
+      "action": "Repair/rebase the verifier probe in a later maintenance run and rerun."
+    },
+    {
+      "id": "F-R6-004",
+      "severity": "P2",
+      "classification": "VERIFY",
+      "scope": "final visual-remediation gate",
+      "title": "Final remediation driver has revision-miniature and Before-review selector drift",
+      "evidence": [
+        "final-visual-remediation/final-visual-remediation-acceptance.json",
+        "report-hub-chg140/r6-counterprobes.json"
+      ],
+      "root_authority": "final-remediation acceptance harness; direct current-main history evidence is present",
+      "proof": "VR034/VR040 fail on expected selectors/sequence; the current Report Hub counterprobe passes history recognition, current-v-selected context, restore semantics and drawer close.",
+      "action": "Reconcile the harness and rerun; do not treat the failed gate as green."
+    },
+    {
+      "id": "F-R6-005",
+      "severity": "P1",
+      "classification": "VERIFY",
+      "scope": "artifact durability",
+      "title": "Qualified provider staging path is unavailable in this Fabric environment",
+      "evidence": [
+        "artifact-stage-receipt.json"
+      ],
+      "root_authority": "Project OS staging capability unavailable; not a Product defect",
+      "proof": "Immutable local capture and Git carrier are available; no Artifact Run ID or URL can be truthfully claimed without the provider path.",
+      "action": "Project OS should stage/read back the exact carrier package when the qualified path is available."
+    },
+    {
+      "id": "F-R6-006",
+      "severity": "P2",
+      "classification": "VERIFY",
+      "scope": "validator policy",
+      "title": "Warnings-as-errors policy reports 126 pre-existing AI011 warnings",
+      "evidence": [
+        "validator.log",
+        "validator-warnings-as-errors.log"
+      ],
+      "root_authority": "existing test/fixture warning inventory; normal validator is green",
+      "proof": "Normal company-ui validation is 262 files / 0 errors; only warnings-as-errors is nonzero.",
+      "action": "Track warning cleanup separately; no source semantic change was made in R6."
+    }
+  ],
+  "historical_comparison": {
+    "baseline": "CHG-40 R1/R2 evidence is historical only; R3-R5 job artifacts are historical/provenance only",
+    "best_so_far": "current exact-main R6 bytes only",
+    "closures_observed": [
+      "malformed SVG/viewBox negative control and chart matrix show no current SVG overflow",
+      "Report Hub small-text/thumbnail contrast negative control passes current computed-contrast oracle",
+      "Smart Layout command/focus reachability passes current interaction diagnostics",
+      "chart domain/renderer responsive and interaction matrix passes",
+      "Diagram mobile canvas/toolbar acceptance passes",
+      "cross-surface shell/control/typography/elevation consistency has no material defect proven"
+    ],
+    "historical_not_reused_as_current": true
+  }
+}

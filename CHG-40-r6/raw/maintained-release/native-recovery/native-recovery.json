@@ -1,0 +1,50 @@
+{
+  "scope": "native NiceGUI synthetic recovery",
+  "cases": [
+    {
+      "name": "socket-disconnect-local-draft-recovery",
+      "status": "PASS",
+      "steps": [
+        "offline edit journaled",
+        "pending commit retained",
+        "reconnected",
+        "draft persisted/recovered"
+      ]
+    },
+    {
+      "name": "server-restart-local-draft-recovery",
+      "status": "PASS",
+      "steps": [
+        "server stopped",
+        "offline edit journaled",
+        "server restarted same origin",
+        "draft recovered once",
+        "second restart durable",
+        "no duplicate replay"
+      ]
+    }
+  ],
+  "unexpected_errors": [],
+  "expected_fault_events": [
+    {
+      "kind": "console",
+      "detail": "WebSocket connection to 'ws://127.0.0.1:56304/_nicegui_ws/socket.io/?client_id=549fd31f-56a6-43f8-a0f1-413a7a4a27fc&next_message_id=8&implicit_handshake=true&document_id=1215917a-9d42-45df-a782-aef7a493e537&tab_id=2516e8bd-0794-497f-9898-11c8ddeda9bd&old_tab_id=null&EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:56304/_nicegui_ws/socket.io/?client_id=549fd31f-56a6-43f8-a0f1-413a7a4a27fc&next_message_id=8&implicit_handshake=true&document_id=1215917a-9d42-45df-a782-aef7a493e537&tab_id=2516e8bd-0794-497f-9898-11c8ddeda9bd&old_tab_id=null&EIO=4&transport=polling&t=rg2ll16q :: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "detail": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:56304/visualizer :: net::ERR_ABORTED"
+    }
+  ],
+  "passed": 2,
+  "total": 2,
+  "status": "PASS",
+  "source_editor_sha256": "21cda4a0ebbd64fa03fc0eace97521e0ba419ebf425251975d785b8909b7acc0"
+}

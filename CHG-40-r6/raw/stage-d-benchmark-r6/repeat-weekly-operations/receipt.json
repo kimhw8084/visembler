@@ -1,0 +1,35 @@
+{
+  "task": "repeat-weekly-operations",
+  "status": "FAIL",
+  "checks": {
+    "visual_quality": {
+      "surface": "report-hub",
+      "occupied_area_ratio": null,
+      "elements": [],
+      "empty_error_state_count": 0,
+      "clipping_overflow_count": 0,
+      "primary_evidence_area_share": null,
+      "context_toolbar": null,
+      "checkpoint_created": false
+    }
+  },
+  "error": "TimeoutError: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-report-card\").filter(has_text=\"Operations Review\").first.locator(\"button\").filter(has_text=\"History\")\n",
+  "metrics": {
+    "elapsed_seconds": 37.714,
+    "primary_clicks": 17,
+    "modal_opens": 1,
+    "context_exits": 0,
+    "destructive_confirmations": 1,
+    "corrective_recovery_actions": 0,
+    "raw_json_edits": 0,
+    "unexpected_noop_controls": [],
+    "browser_errors": [],
+    "top_three_friction": [
+      "Report reuse still crosses the report lifecycle surface for duplicate and restore.",
+      "Shared-data operations remain explicit to protect linked visuals.",
+      "A checkpoint is a deliberate review action before export."
+    ],
+    "evidence_directory": "/Users/haewonkim/.codex-fabric/jobs/CF-95574b9d9b870284d2c9e60f.running/artifact-bridge/stage-d-benchmark-r6/repeat-weekly-operations"
+  },
+  "browser_version": "151.0.7922.34"
+}

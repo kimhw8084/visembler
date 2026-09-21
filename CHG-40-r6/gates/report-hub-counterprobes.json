@@ -1,0 +1,46 @@
+{
+  "schema": "visembler-chg40-r6-report-hub-counterprobes.v1",
+  "status": "PASS",
+  "cases": [
+    {
+      "name": "progressive disclosure and focus return",
+      "status": "PASS",
+      "menu_visible_before_escape": true,
+      "menu_text": "Edit details\nDuplicate report\nReview history\nDownload JSON\nManage access\nMove to trash",
+      "visible_menu_count_after_escape": 0,
+      "menu_is_visible_after_escape": false,
+      "active_tag": {
+        "tag": "BUTTON",
+        "aria": "More actions for Weekly process health",
+        "testid": "report-card"
+      },
+      "focus_return": true
+    },
+    {
+      "name": "empty search and recovery",
+      "status": "PASS",
+      "empty_message_count": 1,
+      "active_hidden_count": 0,
+      "visible_active_count": 18,
+      "visible_cards_count": 18,
+      "body_prefix": "Skip to main content\nVisembler\nReport hub\nReports\nRecognize the report, resume the work, and keep management close at hand.\nOpen editor\nDataset library\nReusable assets\nBlueprints\nImport…\nSearch reports\nSort\nRecently modified\narrow_drop_down\nView\nActive\narrow_drop_down\nGrid\nList\nCreate report\nActive reports · 18\nKey Takeaway\n84.2\nCollection report 12\nRecognizable report context\nActive\nOwner · owner\nRevision 1 · 3 content blocks\nUpdated 2026-09-21T21:55:46.333223+00:00\nResume\nKey Takeaway\n84.2\nCol"
+    },
+    {
+      "name": "trash consequence and recovery",
+      "status": "PASS",
+      "visible_menus": 1,
+      "menu_count_all": 1,
+      "menu_texts": [
+        "Edit detailsDuplicate reportReview historyDownload JSONManage accessMove to trash"
+      ],
+      "menu_html": [
+        "<div role=\"menu\" id=\"c1564\" class=\"q-menu q-position-engine scroll cui-menu cui-overlay-surface cui-overlay-surface--popover q-transition--fade-enter-active q-transition--fade-enter-to\" loopback=\"true\" data-cui-overlay-id=\"cui-menu-199\" data-cui-dismissible=\"true\" tabindex=\"-1\" style=\"--q-transition-duration: 300ms; top: 477.109px; left: 364px; visibility: visible;\"><button class=\"q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--rectangle text-primary q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase q-btn--dense cui-menu-item\" tabindex=\"0\" type=\"button\" id=\"c1565\"><span class=\"q-focus-helper\"></span><span class=\"q-btn__content text-center col items-center q-anchor--skip justify-center row\"><div id=\"c1566\" class=\"cui-svg-icon-host\"><svg class=\"cui-icon\" xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"fa"
+      ],
+      "dialog_count": 0,
+      "dialog_text": "Move report to trash?\nThe report leaves Active and becomes unavailable for editing. Its report ID, history, and content remain recoverable from Trash.\nMove “Weekly process health” to trash? Its history remains recoverable.\nCancel\nMove to trash",
+      "card_state": "trash",
+      "restore_count": 1
+    }
+  ],
+  "events": []
+}

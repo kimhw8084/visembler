@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "revision": 3,
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "category_1",
+            "name": "Category",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "value_2",
+            "name": "Value",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "integer"
+          }
+        ],
+        "id": "dataset-mubrykqf-cfvduk",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 2,
+        "rows": [
+          [
+            "Lot-A",
+            808
+          ],
+          [
+            "Lot-B",
+            202
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-21T21:46:10.935Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "customTable": {
+          "headers": [
+            "Measure",
+            "Current",
+            "Status"
+          ],
+          "rows": [
+            [
+              "Yield",
+              "98.7%",
+              "On track"
+            ],
+            [
+              "Cycle time",
+              "42.8 min",
+              "Improving"
+            ],
+            [
+              "Risk",
+              "Low",
+              "Monitored"
+            ]
+          ]
+        },
+        "dataset_id": "dataset-mubrykqf-cfvduk",
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c20",
+        "locked": false,
+        "mapping": {
+          "category": "category_1",
+          "value": "value_2",
+          "x": "value_2",
+          "y": "value_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 0,
+        "rows": [
+          [
+            "Yield",
+            "98.7%",
+            "On track"
+          ],
+          [
+            "Cycle time",
+            "42.8 min",
+            "Improving"
+          ],
+          [
+            "Risk",
+            "Low",
+            "Monitored"
+          ]
+        ],
+        "showTitle": false,
+        "textAlign": "left",
+        "title": "Clean Table",
+        "type": "table",
+        "view_type": "table",
+        "weight": 1.55,
+        "z": 1
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "editorial",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 21,
+    "crossFilters": []
+  }
+}

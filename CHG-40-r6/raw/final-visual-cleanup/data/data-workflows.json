@@ -1,0 +1,221 @@
+{
+  "unexpected_browser_events": [],
+  "host": "native NiceGUI",
+  "cases": [
+    {
+      "name": "displayed-table-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "displayed-line-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "displayed-wafer-refresh-undo",
+      "errors": [],
+      "observed": {
+        "same_schema_values": [
+          707,
+          909
+        ],
+        "alternate_after_undo": [
+          313,
+          515
+        ],
+        "reload": "PASS",
+        "preview": "PASS",
+        "dataset_revision": 2
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "linked-locked-peer-detach",
+      "errors": [],
+      "observed": {
+        "linked_values": "707/707",
+        "detached_values": "313/707",
+        "locked_sibling_unchanged": true,
+        "undo_relinked": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "transform-reordered-columns",
+      "errors": [],
+      "observed": {
+        "rebound_sort_field": "value_1",
+        "rendered_values": [
+          727,
+          919
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "clear-cancel-review",
+      "errors": [],
+      "observed": {
+        "clear_disables_refresh": true,
+        "dynamic_cancel_works": true,
+        "review_preserves_input": true,
+        "no_mutation": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "grid-scroll-preserves-active-edit",
+      "errors": [],
+      "observed": {
+        "source_grid_draft": 707,
+        "custom_table_draft": 42.77,
+        "method": "UI editing with deterministic scroll-event injection"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "two-session-conflict-retained-export",
+      "errors": [],
+      "observed": {
+        "server_value": 707,
+        "retained_local_value": 808,
+        "downloaded_local_value": 808,
+        "no_silent_overwrite": true,
+        "transport": "NiceGUI"
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "keyboard-typing-cancel-command",
+      "errors": [],
+      "observed": {
+        "typed_characters": 68,
+        "caret_preserved": true,
+        "native_text_undo_did_not_undo_report": true,
+        "command_opened_dialog": true
+      },
+      "status": "PASS"
+    },
+    {
+      "name": "json-image-fresh-directory-svg",
+      "errors": [],
+      "status": "FAIL",
+      "error": "Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-import-card:visible\") to be visible\n",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_data_workflows.py\", line 98, in run\n    r['observed']=fn(ctx,p,rid);assert not r['errors'],r['errors'];r['status']='PASS'\n                  ^^^^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_data_workflows.py\", line 247, in portability\n    import_receipt=import_native_report(target,path,out)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/native_upload.py\", line 120, in import_native_report\n    card.wait_for(state='visible', timeout=timeout_ms)\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 20539, in wait_for\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 748, in wait_for\n    await self._frame.wait_for_selector(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-import-card:visible\") to be visible\n\n"
+    }
+  ],
+  "source_sha256": "21cda4a0ebbd64fa03fc0eace97521e0ba419ebf425251975d785b8909b7acc0",
+  "scope": "complete data-workflow group",
+  "selected_cases": [
+    "displayed-table-refresh-undo",
+    "displayed-line-refresh-undo",
+    "displayed-wafer-refresh-undo",
+    "linked-locked-peer-detach",
+    "transform-reordered-columns",
+    "clear-cancel-review",
+    "grid-scroll-preserves-active-edit",
+    "two-session-conflict-retained-export",
+    "keyboard-typing-cancel-command",
+    "json-image-fresh-directory-svg"
+  ],
+  "test_source_sha256": {
+    "scripts/release_checks/run_data_workflows.py": "4fe9a476ca0abd5aca79a4cc762baf0538f5365296f0d81e5294bbc7757ffccd",
+    "scripts/release_checks/native_upload.py": "a5672aac93194e370fd52c43305e2114cd47c65015e4733dbb448204fd569728",
+    "scripts/release_checks/media_assertions.py": "16eba468b8453443e870373dbbd836ba3822bd99235b0d3d4ec46d3fff7022e1",
+    "scripts/release_checks/editor_host.py": "20701a0ba0855a3eb8c3a573a207985304b5a5bea256724ea9b27bf2a05d81b7",
+    "company_ui/integrations/nicegui_components.py": "71321f47a183a76ff2853b734eec585ee175a605ee74be03f9f3e83c32a72cce",
+    "company_ui/products/visualizer/page.py": "fd8d8621075f722b26ebee99bb649c66ef3ef3a06667787c93e4356663f01835",
+    "company_ui/products/visualizer/assets/authoring_portability.mjs": "1f7b938d2d4287d408572c2e499ae1cec2559e068db4531d63ff672deaf944c8"
+  },
+  "browser": "151.0.7922.34",
+  "portability_progress": {
+    "status": "FAIL",
+    "stage": "native-fresh-directory-import",
+    "completed": [
+      {
+        "stage": "source-initial-reload-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-352a4e6375ac689c593a76cd862957b944976daa5bad532455430c349cce222f",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 604.09765625,
+              "visible_height": 36.182952880859375
+            }
+          ]
+        }
+      },
+      {
+        "stage": "source-replacement-reload-image",
+        "status": "PASS",
+        "observed": {
+          "item_id": "c21",
+          "status": "PASS",
+          "resources": [
+            {
+              "source": "/_cui_visualizer/report-assets/sha256-f4031add16634a958ef0283aa842e8dd48fcae0d252d7917653e476af378b6d7",
+              "embedded": false,
+              "natural_width": 240,
+              "natural_height": 140,
+              "visible_width": 604.09765625,
+              "visible_height": 36.182952880859375
+            }
+          ]
+        }
+      },
+      {
+        "stage": "portable-json-export",
+        "status": "PASS",
+        "observed": {
+          "typed_rows_preserved": true,
+          "image_bytes_match": true,
+          "file": "portable.json"
+        }
+      }
+    ],
+    "error": "Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-import-card:visible\") to be visible\n",
+    "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/run_data_workflows.py\", line 247, in portability\n    import_receipt=import_native_report(target,path,out)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-95574b9d9b870284d2c9e60f/scripts/release_checks/native_upload.py\", line 120, in import_native_report\n    card.wait_for(state='visible', timeout=timeout_ms)\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 20539, in wait_for\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 748, in wait_for\n    await self._frame.wait_for_selector(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 394, in wait_for_selector\n    await self._channel.send(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.wait_for: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-import-card:visible\") to be visible\n\n",
+    "active_page_url": "http://127.0.0.1:64307/visualizer/reports?report=case-8a4ec30ef8cc4b8584947f75ffb4ad20",
+    "active_page_state": null
+  },
+  "native_host_scope": {
+    "status": "EXECUTED",
+    "reason": "Native mode requested."
+  },
+  "passed": 9,
+  "status": "FAIL",
+  "release_status": "NOT_ASSESSED",
+  "release_note": "This is a data-workflow receipt, not a whole-release verdict."
+}
