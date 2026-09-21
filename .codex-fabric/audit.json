@@ -1,0 +1,497 @@
+{
+  "accepted_at": "2026-09-21T14:22:54Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 209,
+      "deletions": 146,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 380,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg140_report_hub_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 35,
+      "deletions": 6,
+      "path": "scripts/release_checks/run_company_user_browser_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "scripts/release_checks/run_crawler_hardening_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_report_hub_browser_error_gate.py",
+      "status": "M"
+    },
+    {
+      "additions": 14,
+      "deletions": 9,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_stage_d_benchmark.py",
+      "status": "M"
+    },
+    {
+      "additions": 67,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg140_report_hub.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.certification.nicegui_runtime_contract && rtk proxy pytest -q'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 3651,
+        "output_sha256": "d1a76ba5686affc92847c69aafc69b92d4ec613964e7890f77ffc14ea2554772",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' scripts/release_checks/run_repository_contracts.py; rtk sed -n '1,100p' tests/test_visualizer_release_closure.py; rtk rg -n \\\"managed_target|PENDING|repository-contract\\\" .github scripts tests | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/private/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/pytest-of-haewonkim/pytest-672/test_repository_contract_recei0/repository-contracts.json')\nprint(json.dumps(json.loads(p.read_text()), indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1603,
+        "output_sha256": "41d496a18027112ec9caddaadf2c0445f1dba5db58399a05c17cfce6897e1ee7",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'automated_tests' company_ui/certification/certification_manifest.json; rtk sed -n '1,35p' company_ui/certification/certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_release_closure.py && rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-repository-contracts-chg140.json'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 196,
+        "output_sha256": "d8132bc4e293d1a760f79fe280d3d019e364c9ab06f4c9249fece28c8b321b6e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files | rg 'certification_manifest|construction_manifest' | sort; rtk rg -n '\\\"automated_tests\\\": 1138|\\\"automated_tests\\\": 1142' . | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '960,1115p' company_ui/products/visualizer/page.py; rtk sed -n '1115,1165p' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate . 2>&1 | tail -n 3; rtk git diff --check; rtk python -m py_compile company_ui/products/visualizer/page.py scripts/release_checks/*.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "02a34777edaa799c8ae144d45659ff21e3231cb4ab1f25a2e6bb8cf6fc30c61b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /tmp/visembler-company-boundary-chg140-final.json'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/private/tmp/visembler-company-boundary-chg140-final.json')\nvalue=json.loads(p.read_text())\nprint(json.dumps({'status':value.get('status'),'checks':value.get('checks'),'stdout':value.get('child_stdout'),'stderr':value.get('child_stderr')},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /tmp/visembler-company-boundary-chg140-final-2.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add company_ui/products/visualizer/page.py company_ui/certification/certification_manifest.json scripts/release_checks/run_chg140_report_hub_acceptance.py scripts/release_checks/run_company_user_browser_acceptance.py scripts/release_checks/run_crawler_hardening_acceptance.py scripts/release_checks/run_report_hub_browser_error_gate.py scripts/release_checks/run_stage_a_acceptance.py scripts/release_checks/run_stage_d_benchmark.py tests/test_visualizer_chg140_report_hub.py && rtk git commit -m \\\"Redesign Visembler report hub\\\" && rtk git status --short --branch && rtk git log -1 --format='%H %s'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chg140_report_hub_acceptance.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/b74a461cfa3bd5eb3c8d296a02412b9d3515918b/report-hub'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/b74a461cfa3bd5eb3c8d296a02412b9d3515918b/company-boundary-browser.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/b74a461cfa3bd5eb3c8d296a02412b9d3515918b/report-hub-browser-error-gate'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk test ! -e /private/tmp/visembler-chg140-base-a3df07127c1a3803440acb45 && rtk git worktree add /private/tmp/visembler-chg140-base-a3df07127c1a3803440acb45 05a606089a50d6b8724066bd01f8d0603776159b'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree list'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /private/tmp/visembler-chg140-base-report-hub-gate'",
+      "exit_code": 127,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk command -v rtk; rtk pwd; rtk ls -la /Users/haewonkim/.codex/bin/rtk /Users/haewonkim/.local/bin/rtk 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc '/Users/haewonkim/.local/bin/rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /private/tmp/visembler-chg140-base-report-hub-gate'",
+      "exit_code": 127,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc '/Users/haewonkim/.local/bin/rtk pwd; /Users/haewonkim/.local/bin/rtk ls -l scripts/release_checks/run_report_hub_browser_error_gate.py; /Users/haewonkim/.local/bin/rtk python --version'",
+      "exit_code": 127,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc '/Users/haewonkim/.local/bin/rtk command -v python; /Users/haewonkim/.local/bin/rtk ls -l /opt/anaconda3/bin/python; /Users/haewonkim/.local/bin/rtk ls -l .venv/bin/python'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk env | rtk rg 'PATH|PYTHON'; rtk ls -l /opt/anaconda3/bin/python3.11; rtk /opt/anaconda3/bin/python3.11 --version\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python3.11 scripts/release_checks/run_report_hub_browser_error_gate.py --output /private/tmp/visembler-chg140-base-report-hub-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add scripts/release_checks/run_report_hub_browser_error_gate.py && rtk git commit -m \\\"Update report hub creation gate\\\" && rtk git status --short --branch && rtk git log -1 --format='%H %s'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/report-hub-browser-error-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python3.11 scripts/release_checks/run_report_hub_browser_error_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/05a606089a50d6b8724066bd01f8d0603776159b/report-hub-browser-error-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chg140_report_hub_acceptance.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/report-hub'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/company-boundary-browser.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "02a34777edaa799c8ae144d45659ff21e3231cb4ab1f25a2e6bb8cf6fc30c61b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.certification.nicegui_runtime_contract; rtk python -m company_ui.validate . 2>&1 | tail -n 2; rtk git diff --check; rtk git status --short --branch; rtk git log -2 --oneline'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git remote -v; rtk git branch -vv; rtk git status --porcelain=v1 --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push -u origin fix/visembler-chg140-report-hub-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /private/tmp/visembler-chg140-base-a3df07127c1a3803440acb45 status --short; rtk git worktree remove --force /private/tmp/visembler-chg140-base-a3df07127c1a3803440acb45; rtk git worktree list; rtk git status --short --branch; rtk git rev-parse HEAD; rtk git ls-remote origin refs/heads/fix/visembler-chg140-report-hub-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140 -maxdepth 3 -type f | sort; rtk shasum -a 256 /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/report-hub/chg140-report-hub-acceptance.json /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/company-boundary-browser.json /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/report-hub-browser-error-gate/report-hub-browser-error-gate.json /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161/repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/73ebd5d471cbbd13a295cf242f3dcd5af4099161')\nfor rel in ('report-hub/chg140-report-hub-acceptance.json','company-boundary-browser.json','report-hub-browser-error-gate/report-hub-browser-error-gate.json','repository-contracts.json'):\n    payload=json.loads((root/rel).read_text())\n    print(rel, payload.get('candidate_sha'), payload.get('status'), payload.get('passed'), payload.get('total'))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -o \\\"\\\\.cui-report-card[\"'^'\"\\\\n]*\\\" company_ui/products/visualizer/page.py | head -5; rtk sed -n '742,752p' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfor line in Path('company_ui/products/visualizer/page.py').read_text().splitlines():\n    if '.cui-report-card-identity' in line and 'cui-report-card-copy' in line:\n        print(repr(line))\n    if '@media(max-width:420px)' in line:\n        print(repr(line))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m py_compile company_ui/products/visualizer/page.py; rtk proxy pytest -q tests/test_visualizer_chg140_report_hub.py tests/test_visualizer_chg139_responsive_system.py; rtk python -m company_ui.validate . 2>&1 | tail -n 2'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 319,
+        "output_sha256": "28d1eab18361756246fa54e0f2a79e67777c53e5ba1987181dc956680d93a18d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add company_ui/products/visualizer/page.py && rtk git commit -m \\\"Compact report hub mobile actions\\\" && rtk git status --short --branch && rtk git log -1 --format='%H %s'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chg140_report_hub_acceptance.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/2f34724cd2a5f21c616a3188686f4fe0b5517248/report-hub'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_report_hub_browser_error_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/2f34724cd2a5f21c616a3188686f4fe0b5517248/report-hub-browser-error-gate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/2f34724cd2a5f21c616a3188686f4fe0b5517248/company-boundary-browser.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/2f34724cd2a5f21c616a3188686f4fe0b5517248/repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "02a34777edaa799c8ae144d45659ff21e3231cb4ab1f25a2e6bb8cf6fc30c61b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.certification.nicegui_runtime_contract; rtk python -m company_ui.validate . 2>&1 | tail -n 2; rtk git diff --check; rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin fix/visembler-chg140-report-hub-r1 && rtk git rev-parse HEAD && rtk git ls-remote origin refs/heads/fix/visembler-chg140-report-hub-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-140/2f34724cd2a5f21c616a3188686f4fe0b5517248')\nfor rel in ('report-hub/chg140-report-hub-acceptance.json','company-boundary-browser.json','report-hub-browser-error-gate/report-hub-browser-error-gate.json','repository-contracts.json'):\n    p=root/rel\n    value=json.loads(p.read_text())\n    print(rel, value.get('candidate_sha','path-pinned'), value.get('status'), value.get('passed'), value.get('total'))\nPY\nrtk git status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 413,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.53,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 37721216,
+      "fresh_input_tokens": 562356,
+      "input_tokens": 38283572,
+      "non_reasoning_output_tokens": 63747,
+      "output_tokens": 98234,
+      "reasoning_output_tokens": 34487,
+      "total_processed_tokens": 38381806
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+      "subject": "Compact report hub mobile actions"
+    },
+    {
+      "sha": "73ebd5d471cbbd13a295cf242f3dcd5af4099161",
+      "subject": "Update report hub creation gate"
+    },
+    {
+      "sha": "b74a461cfa3bd5eb3c8d296a02412b9d3515918b",
+      "subject": "Redesign Visembler report hub"
+    }
+  ],
+  "diff": {
+    "additions": 716,
+    "changed_files": 9,
+    "commit_count": 3,
+    "deletions": 168
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "abdb2764e8693cfc5e24dc0b1b29738dab54fa0af8598ae0589c48b9843d68f1"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-21T15:16:33Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "branch": "fix/visembler-chg140-report-hub-r1",
+    "detached_verify": false,
+    "head_sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+    "remote_exact_head": true,
+    "remote_head_sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "work_branch": "fix/visembler-chg140-report-hub-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-a3df07127c1a3803440acb45",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-140-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-140-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-140-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-21T14:22:55Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 3218,
+    "queue_seconds": 1,
+    "total_seconds": 3219
+  },
+  "transport": {
+    "bytes": 6732,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 6439,
+    "prompt_sha256": "80174261c42b17077038c0cb585ab97178c210fe95e1d2c9a46dfe8eb323cb8e",
+    "sha256": "a3df07127c1a3803440acb458a5552a49f8ed4935b41c93ccebbafa5ede4c9ae"
+  }
+}
