@@ -193,6 +193,8 @@ def main() -> int:
                     page.goto(f"{host.url}/visualizer/reports?report={quote(pathological_id)}", wait_until="domcontentloaded")
                     _wait_hub(page, 12)
                     page.get_by_role("button", name="Create report", exact=True).click()
+                    page.locator('[data-template-id="blank"]').get_by_role("button", name="Create from this blueprint", exact=True).click()
+                    page.wait_for_url("**/visualizer?report=**", timeout=20_000)
                     ready(page, require_settled=False)
                     created = {record.report_id for record in host.repository.list()} - before
                     assert len(created) == 1, created
