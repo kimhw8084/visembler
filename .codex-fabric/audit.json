@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "kind": "codex-fabric-audit-evidence",
+  "operation": "FIX",
+  "status": "EXECUTED_CHANGE",
+  "request": "CHG-139-r2",
+  "project_id": "visembler",
+  "self_acceptance": false,
+  "managed_target_status": "PENDING",
+  "base": {
+    "branch": "main",
+    "sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "tree": "15d45dc6eaa93142b00869e48edda82965addb98"
+  },
+  "candidate": {
+    "branch": "fix/visembler-chg139-responsive-system-r2",
+    "sha": "94490963146f5bbaca9ec191ab02ad2ff58d6b2a",
+    "tree": "3ba3a9b203853eddc98227f953932b4f4a6a9122",
+    "r1_ancestor": "f6886bf5d725cf56a1443637d9b1ae39843ed95a"
+  },
+  "results": {
+    "chart_studio_acceptance": "PASS 103/103 applicable",
+    "diagram_studio_acceptance": "PASS 17/17",
+    "runtime_contract": "PASS",
+    "runtime_smoke": "PASS 22/22 routes",
+    "repository_contracts": "PASS",
+    "company_ui_validate": "PASS 0 errors, 126 warnings",
+    "full_pytest": "PASS 1138 collected",
+    "affected_source_accessibility_responsive_tests": "PASS",
+    "negative_control_exact_r1_overlap": "PASS sentinel observed display:none at 1180px"
+  },
+  "responsive_browser_matrix": {
+    "viewports": [1440, 1180, 1024, 390, 720],
+    "chart_studio": {
+      "direct_secondary_hidden_at_or_below_1180": true,
+      "more_reachable_and_contained": true,
+      "all_duplicated_secondary_actions_visible_and_focusable": true,
+      "preview_and_save_directly_reachable": true,
+      "escape_and_action_dismissal_return_focus_to_more": true,
+      "no_horizontal_document_spill": true,
+      "viewport_transition_state_preserved": true
+    }
+  },
+  "evidence": {
+    "root": "evidence/chg139-r2-final",
+    "chart_receipt": {
+      "path": "evidence/chg139-r2-final/chart-studio/chart-studio-acceptance.json",
+      "sha256": "b824d70c369b54dd93ae84c8693f11ba3506d5892fbcc94abe7e4b741a378116"
+    },
+    "diagram_receipt": {
+      "path": "evidence/chg139-r2-final/diagram-studio/diagram-studio-acceptance.json",
+      "sha256": "55a29977b008d4f6e9cc6c46ba58efc9287e9f89c77cbf6c54faa580a5c5c693"
+    },
+    "repository_contracts": {
+      "path": "evidence/chg139-r2-final/repository-contracts.json",
+      "sha256": "05945c9fbb59b6e76f2c82dbbaadcbc5a4260026c64a037206dfd8bcb16d970e"
+    },
+    "runtime_smoke_log": {
+      "path": "evidence/chg139-r2-final/runtime-smoke-server.log",
+      "sha256": "11b8c170e8e4f363335db6ff0d9e4d035fa05429505a3ba482a14252beba3ac6"
+    },
+    "screenshots": "evidence/chg139-r2-final/{chart-studio,diagram-studio}/screenshots/{desktop-1440,narrow-1024,mobile-390,reflow-200-equivalent}.png"
+  },
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-139-r2",
+    "path": ".codex-fabric/audit.json"
+  },
+  "note": "Evidence was captured against the exact candidate code commit. This artifact is evidence for independent Project OS audit, not a production or managed-target acceptance claim."
+}
