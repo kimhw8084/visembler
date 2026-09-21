@@ -1,0 +1,78 @@
+{
+  "envelope": "FABRIC/2",
+  "schema": "visembler-chg40-r6-fabric-audit.v1",
+  "project_id": "visembler",
+  "request": "CHG-40-r6",
+  "operation": "VERIFY",
+  "job_id": "CF-95574b9d9b870284d2c9e60f",
+  "target": "main",
+  "work_branch": "verify/visembler-chg40-ui-perfection-r6",
+  "remote": "origin",
+  "remote_url": "https://github.com/kimhw8084/visembler.git",
+  "git": {
+    "base_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "base_tree": "068db74c22896673f40f36ad06310bd5e4376a2c",
+    "head_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "head_tree": "068db74c22896673f40f36ad06310bd5e4376a2c",
+    "origin_main_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "origin_work_branch_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "exact_main_match": true,
+    "remote_work_branch_exact_main": true,
+    "target_drifted": false,
+    "worktree_clean": true,
+    "product_source_changed": false,
+    "product_commit_created": false
+  },
+  "decision": "VERIFY",
+  "convergence": "NOT_CERTIFIED",
+  "hard_gate_summary": {
+    "p0": 0,
+    "p1_product_defects_proven": 0,
+    "material_accessibility_truth_critical_workflow_failures_proven": 0,
+    "holdout_new_material_failure_classes": 0,
+    "maintained_release_status": "BLOCKED",
+    "runtime_contract": "PASS",
+    "runtime_smoke_22_routes": "PASS",
+    "full_pytest": "PASS",
+    "company_boundary_and_repository_checks": "PASS",
+    "provider_staging": "UNAVAILABLE"
+  },
+  "artifact_durability": {
+    "schema": "visembler-chg40-r6-artifact-stage-receipt.v2",
+    "project_id": "visembler",
+    "request": "CHG-40-r6",
+    "status": "UNAVAILABLE",
+    "provider": "Project OS Artifact Bridge staging",
+    "artifact_run_id": null,
+    "artifact_run_url": null,
+    "manifest_sha256": "f1e6d30cfe7fa75ed83abf1239a0c512a46c0c873bce70a73473874e80c2cb7b",
+    "bundle_sha256": "b89729af654c915ac9ecc99a1b912c1d2e3801d8896b2330cc11ee064fefe4d9",
+    "artifact_count": 639,
+    "artifact_bytes": 66173676,
+    "carrier_ref": "project-os-artifacts/visembler/CHG-40-r6",
+    "carrier_commit": "3eea449d7fe849ccf647823079c71b9669c5b136",
+    "post_stage_readback": {
+      "status": "PASS",
+      "carrier_commit": "3eea449d7fe849ccf647823079c71b9669c5b136",
+      "tree_file_count": 642,
+      "canonical_png_count": 48,
+      "all_selected_files_match": true
+    },
+    "reason": "No qualified provider staging connector/callable path is available in this Fabric environment. The immutable Git carrier is durable and verified; Project OS can recover exact bytes without browser recapture."
+  },
+  "evidence_scope": {
+    "browser_model_audit": "E1/E2 executed",
+    "representative_human_or_company_field_excellence": "OUT_OF_SCOPE",
+    "later_final_sha_chg19_chg20": "NOT_A_SUBSTITUTE_AND_NOT_EXECUTED"
+  },
+  "findings_summary": {
+    "total": 6,
+    "verify": 6,
+    "fix": 0,
+    "p0": 0,
+    "p1": 1,
+    "p1_product": 0
+  },
+  "historical_comparison": "R1-R5 and AR-11/pre-redesign bytes were used for regression context only; certification is for exact R6 bytes.",
+  "no_product_commit": true
+}

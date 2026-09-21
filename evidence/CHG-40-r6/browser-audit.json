@@ -1,0 +1,131 @@
+{
+  "schema": "visembler-chg40-r6-browser-audit.v1",
+  "source_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+  "source_tree": "068db74c22896673f40f36ad06310bd5e4376a2c",
+  "status": "PASS",
+  "environment": {
+    "browser": "151.0.7922.34",
+    "host_url": "http://127.0.0.1:62159",
+    "python": "3.11.7 (main, Dec 15 2023, 12:09:56) [Clang 14.0.6 ]",
+    "playwright": "1.62.0",
+    "os": "Darwin 25.6.0",
+    "locale": "en-US",
+    "timezone": "America/Chicago"
+  },
+  "states_exercised": 15,
+  "interactions_exercised": 9,
+  "document_horizontal_overflow": "PASS",
+  "clipping_collision_spill": "PASS",
+  "focus_order_traps_return": "PASS",
+  "keyboard_reachability": "PASS",
+  "semantic_accessibility_tree": "PASS",
+  "computed_contrast": {
+    "available": true,
+    "source": "interaction-accessibility-diagnostics.json",
+    "status": "PASS"
+  },
+  "target_geometry": "PASS",
+  "console_runtime_network_errors": "PASS",
+  "broken_assets": "PASS",
+  "state_integrity": "PASS",
+  "viewport_transitions": "PASS",
+  "destructive_recovery": "PASS",
+  "negative_controls": "PASS",
+  "screenshots": [
+    {
+      "path": "browser-audit/screenshots/editor-desktop-1440-dark.png",
+      "sha256": "2cc34441df4d697cbdb8f50f14ccea02c7ea5141cbad60e673e8995bc224f108",
+      "width": 1440,
+      "height": 900,
+      "bytes": 119002
+    },
+    {
+      "path": "browser-audit/screenshots/editor-desktop-1440-light.png",
+      "sha256": "27c5152fbf813b8ab2511727457b42605f5057103d03efba47c7aec90e90bb7a",
+      "width": 1440,
+      "height": 900,
+      "bytes": 130217
+    },
+    {
+      "path": "browser-audit/screenshots/editor-mobile-390-dark.png",
+      "sha256": "c3098a9b89eb421bc0573e7c0da7a7646f693912b757ff6211d85e5fcce8ceef",
+      "width": 390,
+      "height": 844,
+      "bytes": 38345
+    },
+    {
+      "path": "browser-audit/screenshots/editor-mobile-390-light.png",
+      "sha256": "c20a8d271b3a1a48f77fd3c36534e4c162b1bd85849963f5cba70a8dd45e8bf0",
+      "width": 390,
+      "height": 844,
+      "bytes": 41307
+    },
+    {
+      "path": "browser-audit/screenshots/editor-narrow-1024-dark.png",
+      "sha256": "a625b8d1bc84bcbed84bd0b9400ab5030cb5fde0fe5d980bf0835fa3140f770c",
+      "width": 1024,
+      "height": 900,
+      "bytes": 99656
+    },
+    {
+      "path": "browser-audit/screenshots/editor-narrow-1024-light.png",
+      "sha256": "f817ed949a97dfdf9f8fe03a4f92764419f6ad98365eaff2c299770f09a2b672",
+      "width": 1024,
+      "height": 900,
+      "bytes": 106812
+    },
+    {
+      "path": "browser-audit/screenshots/hub-desktop-1440-dark.png",
+      "sha256": "451244b6077cce7b4e8bdf3671cc410b7dd2bfd6398263477eb80b5a04a60edf",
+      "width": 1440,
+      "height": 900,
+      "bytes": 77623
+    },
+    {
+      "path": "browser-audit/screenshots/hub-desktop-1440-light.png",
+      "sha256": "1a96b7e7c32dc4ed3812ad7f2d03a2baecfe0f6570aeaa25112d91f30d49a9d5",
+      "width": 1440,
+      "height": 900,
+      "bytes": 78557
+    },
+    {
+      "path": "browser-audit/screenshots/hub-mobile-390-dark.png",
+      "sha256": "4776680628bffb1b3411911f90f81a357f74aae6f0a0acd95b092df2e64da3e0",
+      "width": 390,
+      "height": 844,
+      "bytes": 47812
+    },
+    {
+      "path": "browser-audit/screenshots/hub-mobile-390-light.png",
+      "sha256": "5160932d056c3e22ddbc1784bac0e36335164c58b023ed2152370eb10284350a",
+      "width": 390,
+      "height": 844,
+      "bytes": 48250
+    },
+    {
+      "path": "browser-audit/screenshots/hub-narrow-1024-dark.png",
+      "sha256": "5b00ec23ea5ba7348c62df84386babdfc7986a2c2c62efb8851ef58c63f9a469",
+      "width": 1024,
+      "height": 900,
+      "bytes": 76145
+    },
+    {
+      "path": "browser-audit/screenshots/hub-narrow-1024-light.png",
+      "sha256": "702e90e331f08c043ef81b7e646bb5c2c51b7e288b5e7de04e8db4deda78f409",
+      "width": 1024,
+      "height": 900,
+      "bytes": 77969
+    }
+  ],
+  "visual_craft_review": {
+    "performed": true,
+    "basis": "lossless current-main PNGs and deterministic review PDFs",
+    "observations": [
+      "hierarchy and grouping readable across shell, editor and hub",
+      "responsive controls remain reachable in narrow/mobile captures",
+      "chart and report thumbnails remain recognizable",
+      "no stock visual leakage or document-level horizontal spill observed"
+    ],
+    "material_visual_defect": "none proven"
+  }
+}

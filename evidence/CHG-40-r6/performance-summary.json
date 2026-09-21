@@ -1,0 +1,157 @@
+{
+  "schema": "visembler-chg40-r6-performance-summary.v1",
+  "source_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+  "status": "OBSERVED_NOT_SLA",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu_count": 12,
+    "browser": "151.0.7922.34",
+    "distinction": "cold readiness vs warm geometry/full-render samples; no universal hardware-independent SLA"
+  },
+  "editor_raw": "performance-measure/performance.json",
+  "capacity_raw": "company-capacity-r6",
+  "editor_measurements": [
+    {
+      "elements": 1,
+      "ready_ms": 489.8503749864176,
+      "geometry_ms": [
+        0.20000004768371582,
+        0.5,
+        0.19999998807907104,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.09999996423721313,
+        0.10000002384185791,
+        0,
+        0.10000002384185791,
+        0.09999996423721313,
+        0.10000002384185791,
+        0
+      ],
+      "full_render_ms": [
+        0.9000000357627869,
+        1.199999988079071,
+        0.699999988079071,
+        0.6000000238418579,
+        0.699999988079071
+      ],
+      "cache_entries": 0
+    },
+    {
+      "elements": 20,
+      "ready_ms": 670.390542014502,
+      "geometry_ms": [
+        0.30000001192092896,
+        0.5999999642372131,
+        0.30000001192092896,
+        0.19999998807907104,
+        0.10000002384185791,
+        0.30000001192092896,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.19999998807907104,
+        0.19999998807907104,
+        0.19999998807907104,
+        0.10000002384185791,
+        0.10000002384185791,
+        0.19999998807907104,
+        0.19999998807907104,
+        0.10000002384185791,
+        0.19999998807907104,
+        0.09999996423721313,
+        0.10000002384185791,
+        0.10000002384185791
+      ],
+      "full_render_ms": [
+        1.5,
+        3.400000035762787,
+        1.2999999523162842,
+        1.2000000476837158,
+        2.399999976158142
+      ],
+      "cache_entries": 0
+    },
+    {
+      "elements": 100,
+      "ready_ms": 1023.1715830159374,
+      "geometry_ms": [
+        0.5,
+        0.699999988079071,
+        0.30000001192092896,
+        0.3999999761581421,
+        0.40000003576278687,
+        0.30000001192092896,
+        1.399999976158142,
+        0.30000001192092896,
+        0.30000001192092896,
+        0.19999998807907104,
+        0.30000001192092896,
+        0.19999998807907104,
+        0.19999998807907104,
+        0.30000001192092896,
+        0.09999996423721313,
+        0.30000001192092896,
+        0.19999998807907104,
+        0.30000001192092896,
+        0.40000003576278687,
+        0.19999998807907104
+      ],
+      "full_render_ms": [
+        4.300000011920929,
+        14.599999964237213,
+        4.300000011920929,
+        4.5,
+        4.399999976158142
+      ],
+      "cache_entries": 0
+    }
+  ],
+  "capacity_results": [
+    {
+      "asset_authorization_ms": 0.413,
+      "asset_reference_count": 1,
+      "create_ms": 19.365,
+      "history_ms": 0.35,
+      "image_items_per_report": 1,
+      "listed": 10,
+      "open_ms": 0.239,
+      "rename_ms": 1.19,
+      "reports": 10,
+      "scoped_list_ms": 2.252
+    },
+    {
+      "asset_authorization_ms": 0.633,
+      "asset_reference_count": 1,
+      "create_ms": 409.421,
+      "history_ms": 0.892,
+      "image_items_per_report": 5,
+      "listed": 100,
+      "open_ms": 0.711,
+      "rename_ms": 3.127,
+      "reports": 100,
+      "scoped_list_ms": 70.727
+    },
+    {
+      "asset_authorization_ms": 3.982,
+      "asset_reference_count": 1,
+      "create_ms": 24945.648,
+      "history_ms": 9.036,
+      "image_items_per_report": 10,
+      "listed": 1000,
+      "open_ms": 3.5,
+      "rename_ms": 31.56,
+      "reports": 1000,
+      "scoped_list_ms": 3499.3
+    }
+  ],
+  "historical_comparison": "Historical CHG-40 measurements are comparison-only; no regression is inferred without a product-relevant threshold.",
+  "rss": "not reliably available in maintained tooling; not invented"
+}
