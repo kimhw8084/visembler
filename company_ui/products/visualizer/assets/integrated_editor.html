@@ -8,8 +8,8 @@
     <header class="topbar" aria-label="Visembler toolbar">
       <div class="toolbar" role="toolbar" aria-label="Editor actions">
         <div class="toolgroup" aria-label="History">
-          <button class="tb icon" id="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
-          <button class="tb icon" id="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+          <button class="tb icon" id="undo" aria-label="Undo" data-responsive-priority="primary" title="Undo · Ctrl/Cmd+Z">↶</button>
+          <button class="tb icon" id="redo" aria-label="Redo" data-responsive-priority="primary" title="Redo · Ctrl/Cmd+Y">↷</button>
         </div>
         <div class="tool-separator" aria-hidden="true"></div>
         <div class="toolgroup" aria-label="Arrange" data-responsive-priority="secondary">
@@ -23,11 +23,11 @@
           <button class="tb" id="back">Back</button>
           <button class="tb" id="front">Front</button>
         </div>
-        <button class="tb command-trigger" id="commandBtn" aria-label="Open editor commands" aria-haspopup="dialog">⌘K <span>Commands</span></button>
+        <button class="tb command-trigger" id="commandBtn" data-responsive-priority="primary" aria-label="Open editor commands" aria-haspopup="dialog">⌘K <span>Commands</span></button>
         <button class="tb" id="stageDIntakeBtn" data-responsive-priority="secondary" title="Start from text, data, or image evidence">Start with content</button>
         <button class="tb" id="stageDAssistantBtn" data-responsive-priority="secondary" title="Review message delivery checks">Delivery checks</button>
-        <button class="tb" id="libraryToggle" aria-pressed="true" title="Show or hide the element library">Hide library</button>
-        <button class="tb" id="inspectorToggle" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
+        <button class="tb" id="libraryToggle" data-responsive-priority="primary" aria-pressed="true" title="Show or hide the element library">Hide library</button>
+        <button class="tb" id="inspectorToggle" data-responsive-priority="primary" aria-pressed="true" title="Show or hide the inspector">Hide inspector</button>
         <button class="tb" id="historyBtn" data-responsive-priority="secondary" title="Open report history, checkpoints, restore, and duplicate">History</button>
         <button class="tb debug-trigger" id="debugBtn" data-responsive-priority="secondary" aria-label="Open Developer Console" title="Open Developer Console"><span class="debug-glyph" aria-hidden="true">&lt;/&gt;</span><span class="debug-badge" id="debugBadge" aria-label="0 developer events">0</span></button>
         <button class="tb icon" id="helpBtn" data-responsive-priority="secondary" aria-label="Help and keyboard shortcuts" title="Help and keyboard shortcuts">?</button>
@@ -36,7 +36,7 @@
         <button class="tb" id="stageDCleanBtn" data-responsive-priority="secondary" title="Clean layout using message hierarchy">Clean layout</button>
         <button class="tb" id="stageDFitBtn" data-responsive-priority="secondary" title="Fit the complete report">Fit report</button>
         <button class="tb" id="preflightBtn">Validate</button>
-        <button class="tb" id="previewBtn">Preview</button>
+        <button class="tb" id="previewBtn" data-responsive-priority="primary">Preview</button>
         <button class="tb" id="saveBtn">Autosaved</button>
         <button class="tb" id="exportBtn" aria-label="Export" aria-haspopup="dialog"><span class="export-label">Export</span><span aria-hidden="true">▾</span></button>
       </div>

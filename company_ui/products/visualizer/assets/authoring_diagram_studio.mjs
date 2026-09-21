@@ -150,7 +150,7 @@ export function diagramToEntry(entry = {}, value = {}) {
 
 export function nodeRect(node) { return {x:finite(node?.x,0),y:finite(node?.y,0),w:Math.max(1,finite(node?.width ?? node?.w,1)),h:Math.max(1,finite(node?.height ?? node?.h,1))}; }
 export function rectsOverlap(a,b,padding=0) { return a.x < b.x+b.w+padding && a.x+a.w+padding > b.x && a.y < b.y+b.h+padding && a.y+a.h+padding > b.y; }
-export function diagramBounds(diagram) { const nodes=(diagram?.nodes||[]).map(nodeRect); const lanes=(diagram?.swimlanes||[]).map(nodeRect); const groups=(diagram?.groups||[]).map(nodeRect); const all=[...nodes,...lanes,...groups]; if(!all.length)return {x:0,y:0,w:900,h:560}; const minX=Math.min(...all.map(rect=>rect.x)),minY=Math.min(...all.map(rect=>rect.y)),maxX=Math.max(...all.map(rect=>rect.x+rect.w)),maxY=Math.max(...all.map(rect=>rect.y+rect.h)); return {x:minX-40,y:minY-40,w:Math.max(900,maxX-minX+80),h:Math.max(560,maxY-minY+80)}; }
+export function diagramBounds(diagram) { const nodes=(diagram?.nodes||[]).map(nodeRect); const lanes=(diagram?.swimlanes||[]).map(nodeRect); const groups=(diagram?.groups||[]).map(nodeRect); const all=[...nodes,...lanes,...groups]; if(!all.length)return {x:0,y:0,w:320,h:240}; const minX=Math.min(...all.map(rect=>rect.x)),minY=Math.min(...all.map(rect=>rect.y)),maxX=Math.max(...all.map(rect=>rect.x+rect.w)),maxY=Math.max(...all.map(rect=>rect.y+rect.h)); return {x:minX-40,y:minY-40,w:Math.max(320,maxX-minX+80),h:Math.max(240,maxY-minY+80)}; }
 
 function graphRanks(diagram) {
   const rank = new Map((diagram.nodes || []).map((node,index) => [node.id, 0 + index * 0]));
