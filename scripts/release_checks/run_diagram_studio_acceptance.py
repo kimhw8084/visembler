@@ -180,7 +180,9 @@ def main() -> int:
     args = parser.parse_args()
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
-    report = {'scope': 'native Diagram Studio acceptance', 'cases': [], 'unexpected_errors': [], 'drawer_accessibility': {}}
+    shots = output / 'screenshots'
+    shots.mkdir(exist_ok=True)
+    report = {'scope': 'native Diagram Studio acceptance', 'cases': [], 'unexpected_errors': [], 'drawer_accessibility': {}, 'responsive_evidence': {}}
 
     def check(name, callback):
         print(f'CHECK {name}', flush=True)
@@ -521,8 +523,12 @@ def main() -> int:
                 check('save/close/reopen report integration and reading preview', save_reopen_and_preview)
 
                 def responsive_and_keyboard():
-                    for width in (1440, 1024, 768, 390):
-                        page.set_viewport_size({'width': width, 'height': 844 if width < 800 else 900})
+                    for label,width in (('desktop-1440',1440),('narrow-1024',1024),('reflow-200-equivalent',720),('mobile-390',390)):
+                        height = 844 if width < 800 else 900
+                        page.set_viewport_size({'width': width, 'height': height})
+                        page.wait_for_timeout(80)
+                        page.screenshot(path=str(shots / f'{label}.png'), full_page=True)
+                        report['responsive_evidence'][label] = page.evaluate('''()=>({viewport:{width:innerWidth,height:innerHeight},scroll:{width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight},canvas:(()=>{const r=document.querySelector('#ds-canvas')?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}:null})(),wrap:(()=>{const r=document.querySelector('#ds-canvas-wrap')?.getBoundingClientRect();return r?{left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height}:null})(),overflow:document.documentElement.scrollWidth>innerWidth+1,openOverflow:[...document.querySelectorAll('[data-responsive-overflow]')].some(node=>node.open)})''')
                         _assert_studio_geometry(page, width)
                     page.set_viewport_size({'width': 1440, 'height': 900})
                     page.locator('.ds-node').first.click()
