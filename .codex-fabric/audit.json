@@ -1,0 +1,540 @@
+{
+  "accepted_at": "2026-09-21T02:09:19Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 15,
+      "deletions": 5,
+      "path": "company_ui/products/visualizer/assets/chart_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 25,
+      "deletions": 11,
+      "path": "company_ui/products/visualizer/assets/chart_studio.html",
+      "status": "M"
+    },
+    {
+      "additions": 3,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 54,
+      "deletions": 42,
+      "path": "company_ui/products/visualizer/assets/diagram_studio.css",
+      "status": "M"
+    },
+    {
+      "additions": 37,
+      "deletions": 17,
+      "path": "company_ui/products/visualizer/assets/diagram_studio.html",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 3,
+      "path": "company_ui/products/visualizer/assets/diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 123,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 6,
+      "deletions": 6,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+      "status": "M"
+    },
+    {
+      "additions": 29,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/tokens.css",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 9,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_diagram_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 61,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg139_responsive_system.py",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 1,
+      "path": "tests/test_visualizer_product_polish_v4.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,160p' .gitignore && rtk find . -maxdepth 2 -type d | rg 'artifact|evidence|receipts' | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find evidence -maxdepth 2 -type f | head -30 && rtk git status --short evidence | head -30 && rtk rg -n \"candidate|qualified|Fabric\" evidence scripts | head -100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mkdir -p /tmp/visembler-chg139-candidate/chart /tmp/visembler-chg139-candidate/diagram /tmp/visembler-chg139-candidate/editor && rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg139-candidate/chart'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg139-candidate/diagram'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg139-candidate/editor'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp/visembler-chg139-candidate -maxdepth 3 -type f | sort | sed -n '1,120p' && rtk python - <<'PY'\nimport json, pathlib\nfor p in pathlib.Path('/tmp/visembler-chg139-candidate').rglob('*.json'):\n    try:\n        d=json.loads(p.read_text())\n        print(p, d.get('status'), d.get('pass'), d.get('applicable'))\n    except Exception as e: print(p,e)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"screenshot|set_viewport_size|open_overflow|responsive|focus\" scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py | tail -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '95,205p' scripts/release_checks/run_chart_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np='/tmp/visembler-chg139-candidate/chart/chart-studio-acceptance.json'\nd=json.load(open(p));print('harness',d.get('harness_error'));print('checks',len(d['checks']),d['checks'][-3:]);print('trace',d.get('traceback','')[-1000:])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -o \\\"\\\\[data-action=\\\\\\\"[\"'^'\"\\\\\\\"]+\\\\\\\"\\\\]\\\" scripts/release_checks/run_chart_studio_acceptance.py | sort | uniq -c && rtk rg -n \\\"\\\\[data-action=\\\\\\\"(toggle-markers|best-axes|clean-labels|copy-setup|export-json|export-svg|preview|save)\\\\\\\"\\\\]\\\" scripts/release_checks/run_chart_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '20,40p' company_ui/products/visualizer/assets/chart_studio.html && rtk sed -n '15,46p' company_ui/products/visualizer/assets/diagram_studio.html\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_chg139_responsive_system.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_chart_studio.py tests/test_visualizer_diagram_studio.py && rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/diagram_studio.mjs'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "7040371af15613c02e821ec0eecc1d1330f691ace4cef93a41bfa358822c4103",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg139-candidate/chart && rtk mkdir -p /tmp/visembler-chg139-candidate/chart && rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg139-candidate/chart'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '500,545p' scripts/release_checks/run_diagram_studio_acceptance.py && rtk sed -n '180,205p' scripts/release_checks/run_diagram_studio_acceptance.py && rtk sed -n '90,110p' scripts/release_checks/run_chart_studio_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg139-candidate/chart /tmp/visembler-chg139-candidate/diagram && rtk mkdir -p /tmp/visembler-chg139-candidate/chart /tmp/visembler-chg139-candidate/diagram && rtk python scripts/release_checks/run_chart_studio_acceptance.py --skip-regressions --output /tmp/visembler-chg139-candidate/chart'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg139-candidate/diagram'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json, pathlib\nfor name in ('chart','diagram'):\n p=pathlib.Path('/tmp/visembler-chg139-candidate')/name\n d=json.loads((p/f'{name}-studio-acceptance.json').read_text())\n print(name,d.get('status'),d.get('pass'),d.get('applicable'),sorted(x.name for x in (p/'screenshots').glob('*.png')))\n if name=='chart': print({k:v['overflow'] for k,v in d.get('responsive_evidence',{}).items()})\nPY\nrtk find /tmp/visembler-chg139-candidate/chart/screenshots /tmp/visembler-chg139-candidate/diagram/screenshots -maxdepth 1 -type f | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,125p' company_ui/products/visualizer/assets/diagram_studio.css && rtk rg -n \\\"\\\\.cs-btn|border-radius|box-shadow|color:\\\" company_ui/products/visualizer/assets/chart_studio.css | head -50 && rtk git diff --stat && rtk git status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate company_ui/products/visualizer'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate company_ui/products/visualizer 2>&1 | rtk rg \"ERROR|Company UI validation\" | head -140'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_p1_usability.py::test_p1_transform_mapping_mobile_chrome_and_wide_table_contracts_are_wired",
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout",
+          "tests/test_visualizer_wave14_hardening.py::test_wave14_accessibility_semantics_and_listener_lifecycle_remain_explicit"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 5284,
+        "output_sha256": "58ed4bf9db9e64630205cc55e46278f6b8749345225c6ce21ebeda9b3c3fc9d1",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk python -m pytest -q tests/test_visualizer_chg139_responsive_system.py tests/test_visualizer_p1_usability.py tests/test_visualizer_wave14_hardening.py tests/test_visualizer_release_closure.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_chart_studio.py tests/test_visualizer_diagram_studio.py'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1622,
+        "output_sha256": "1518d24a60ff9fe94c17808dc60aa1748413d4223e7d88d1fb45136b88629baf",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m py_compile scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py tests/test_visualizer_chg139_responsive_system.py && rtk node --check company_ui/products/visualizer/assets/chart_studio.mjs && rtk node --check company_ui/products/visualizer/assets/diagram_studio.mjs && rtk node --check company_ui/products/visualizer/assets/authoring_diagram_studio.mjs && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- company_ui/products/visualizer/assets/tokens.css company_ui/products/visualizer/assets/chart_studio.html company_ui/products/visualizer/assets/chart_studio.mjs company_ui/products/visualizer/assets/diagram_studio.html company_ui/products/visualizer/assets/diagram_studio.mjs scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py tests/test_visualizer_chg139_responsive_system.py | head -520'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rm -rf /tmp/visembler-chg139-candidate/chart /tmp/visembler-chg139-candidate/diagram /tmp/visembler-chg139-candidate/editor && rtk mkdir -p /tmp/visembler-chg139-candidate/chart /tmp/visembler-chg139-candidate/diagram /tmp/visembler-chg139-candidate/editor && rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg139-candidate/editor'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --skip-regressions --output /tmp/visembler-chg139-candidate/chart'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_diagram_studio_acceptance.py --output /tmp/visembler-chg139-candidate/diagram'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg139-candidate/editor-retry'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git branch --show-current && rtk git remote -v | head -4 && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/products/visualizer/assets/authoring_diagram_studio.mjs company_ui/products/visualizer/assets/chart_studio.css company_ui/products/visualizer/assets/chart_studio.html company_ui/products/visualizer/assets/chart_studio.mjs company_ui/products/visualizer/assets/diagram_studio.css company_ui/products/visualizer/assets/diagram_studio.html company_ui/products/visualizer/assets/diagram_studio.mjs company_ui/products/visualizer/assets/integrated_editor.css company_ui/products/visualizer/assets/integrated_editor.html company_ui/products/visualizer/assets/tokens.css scripts/release_checks/run_chart_studio_acceptance.py scripts/release_checks/run_diagram_studio_acceptance.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_chg139_responsive_system.py && rtk git commit -m \"fix: unify responsive visualizer command surfaces\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q tests/test_visualizer_release_closure.py tests/test_visualizer_chg139_responsive_system.py tests/test_visualizer_p1_usability.py tests/test_visualizer_wave14_hardening.py tests/test_visualizer_product_polish_v4.py tests/test_visualizer_chart_studio.py tests/test_visualizer_diagram_studio.py'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 1621,
+        "output_sha256": "83acc77b8c6938d8a62b126bca20cc31d16034a208f6228b399b04efaed97108",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && rtk sed -n '1,180p' scripts/release_checks/run_repository_contracts.py && rtk git log -1 --oneline\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np='company_ui/certification/certification_manifest.json'; d=json.load(open(p)); print('manifest',d.get('automated_tests'))\nPY\nrtk python -m pytest --collect-only 2>&1 | tail -4\nrtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg139-candidate/repository-contracts.json\"",
+      "exit_code": 2,
+      "test_result": {
+        "exit_code": 2,
+        "framework": "pytest",
+        "outcome": "interrupted",
+        "output_bytes": 362,
+        "output_sha256": "c7e7210a801d51a805e3d74415a5e566d54db619bb72664abd2b3692873f7bf6",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'automated_tests' company_ui/certification/certification_manifest.json CERTIFICATION_REPORT.json | head -20 && rtk python - <<'PY'\nimport json\np='company_ui/certification/certification_manifest.json'; d=json.load(open(p)); print(d.get('framework_version'), d.get('automated_tests'))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files | rg 'certification_manifest.json\"'$'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg139-candidate/repository-contracts.json && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/certification/certification_manifest.json && rtk git commit --amend --no-edit'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1701,
+        "output_sha256": "01a7e04af1579b33ee35a42427ac405b844da020449c0c0c1672889226a30523",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg139-candidate/final-visual'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/visembler-chg139-candidate/final-visual/final-visual-remediation-acceptance.json')\ndata=json.loads(p.read_text())\nprint('status',data.get('status'),'passed',data.get('passed'),'total',data.get('total'))\nfor c in data.get('cases',[]):\n    if c.get('status')\"'!='\"'PASS':\n        print(json.dumps(c,indent=2)[:5000])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/visembler-chg139-candidate/final-visual/final-visual-remediation-acceptance.json')\nd=json.loads(p.read_text())\nprint(d.keys())\nfor k,v in d.items():\n    if isinstance(v,list):\n        print(k, len(v))\n    elif isinstance(v,dict): print(k, v.keys())\n    else: print(k,repr(v))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nd=json.loads(Path('/tmp/visembler-chg139-candidate/final-visual/final-visual-remediation-acceptance.json').read_text())\nfor c in d['checks']:\n    if c.get('status')\"'!='\"'PASS':\n        print(json.dumps(c, indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n -C 8 \"VR042|VR047|Wafer Investigation wafer|five reports\" scripts tests company_ui /tmp/visembler-chg139-candidate/final-visual 2>/dev/null'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/tmp/visembler-chg139-candidate/final-visual/benchmark/stage-d-benchmark.json')\nd=json.loads(p.read_text())\nprint('status',d.get('status'),'tasks',len(d.get('tasks',[])))\nfor t in d.get('tasks',[]):\n    q=t.get('checks',{}).get('visual_quality',{})\n    print('\\\\n',t.get('task'),t.get('status'), 'empty',q.get('empty_error_state_count'),'occ',q.get('occupied_area_ratio'),'wafer_dies',q.get('wafer_dies'))\n    if t.get('status')\"'!='\"'PASS' or q.get('empty_error_state_count',0):\n      print(json.dumps(t,indent=2)[:3000])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_d_benchmark.py --output /tmp/visembler-chg139-candidate/benchmark-retry'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg139-candidate/repository-contracts-final.json && rtk git status --short && rtk git log -1 --format='%H%n%T%n%s' && rtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/fix/visembler-chg139-responsive-system-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin fix/visembler-chg139-responsive-system-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /tmp/visembler-chg139-candidate/chart/chart-studio-acceptance.json /tmp/visembler-chg139-candidate/diagram/diagram-studio-acceptance.json /tmp/visembler-chg139-candidate/editor-retry/stage-a-acceptance.json /tmp/visembler-chg139-candidate/repository-contracts-final.json && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/fix/visembler-chg139-responsive-system-r1 && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show --stat --oneline --decorate --summary HEAD && rtk git diff --stat b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c...HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 192,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.5,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 46883328,
+      "fresh_input_tokens": 715012,
+      "input_tokens": 47598340,
+      "non_reasoning_output_tokens": 49804,
+      "output_tokens": 72609,
+      "reasoning_output_tokens": 22805,
+      "total_processed_tokens": 47670949
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "be76c461f7ca18b7ef6a0c1d13080084d7c2718f",
+      "subject": "fix: unify responsive visualizer command surfaces"
+    }
+  ],
+  "diff": {
+    "additions": 269,
+    "changed_files": 15,
+    "commit_count": 1,
+    "deletions": 213
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 4,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "af60f639f6a4ac51cb88c2447aac97b22e5246f79f652b43431a71785c8c5ebb"
+      },
+      {
+        "bytes": 6417,
+        "path": "company_ui/products/visualizer/assets/chart_studio.html",
+        "sha256": "61966e144c1d22de0ca9f223ea0bb82535e083c6e242cb3ed061e4c6d124ff52"
+      },
+      {
+        "bytes": 11722,
+        "path": "company_ui/products/visualizer/assets/diagram_studio.html",
+        "sha256": "e7b246be66185d385c7e9c06336608bbd74c765f831419a41d56dff76f05b621"
+      },
+      {
+        "bytes": 12723,
+        "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+        "sha256": "3d7f1144b61f0e2a7bcb6b92064a93dc731e7989dbcc50965ee1cadce67e560d"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-21T03:02:13Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "branch": "fix/visembler-chg139-responsive-system-r1",
+    "detached_verify": false,
+    "head_sha": "be76c461f7ca18b7ef6a0c1d13080084d7c2718f",
+    "remote_exact_head": true,
+    "remote_head_sha": "be76c461f7ca18b7ef6a0c1d13080084d7c2718f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "work_branch": "fix/visembler-chg139-responsive-system-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-5c1a1ebbfffdbf7aff641deb",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-139-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-139-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-139-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-21T02:32:14Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1799,
+    "queue_seconds": 1375,
+    "total_seconds": 3174
+  },
+  "transport": {
+    "bytes": 5218,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4918,
+    "prompt_sha256": "10493be0ba84eda73e9fd6dd1447ed5cd347aa1eef1265acc2d5d2b265ce778a",
+    "sha256": "5c1a1ebbfffdbf7aff641deb659484d563ecee73160c3dab06ccb8e012e5a3fd"
+  }
+}
