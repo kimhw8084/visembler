@@ -193,6 +193,8 @@ def main() -> int:
                     page.goto(f"{host.url}/visualizer/reports?report={quote(pathological_id)}", wait_until="domcontentloaded")
                     _wait_hub(page, 12)
                     page.get_by_role("button", name="Create report", exact=True).click()
+                    page.locator('[data-template-id="blank"]').get_by_role("button", name="Create from this blueprint", exact=True).click()
+                    page.wait_for_url("**/visualizer?report=**", timeout=20_000)
                     ready(page, require_settled=False)
                     created = {record.report_id for record in host.repository.list()} - before
                     assert len(created) == 1, created
@@ -205,7 +207,8 @@ def main() -> int:
                     page.locator('[data-testid="manage-reports"]').click()
                     _wait_hub(page, 13)
                     card = page.locator(f'[data-report-id="{created_id}"][data-report-state="active"]')
-                    card.locator('[data-report-action="trash"]').click()
+                    card.locator('[data-report-action="more"]').click()
+                    page.locator('.q-menu:visible').get_by_role('button', name='Move to trash', exact=True).click()
                     page.locator('.q-dialog').get_by_role("button", name="Move to trash", exact=True).click()
                     page.wait_for_function("rid=>!document.querySelector(`[data-report-id=\"${rid}\"][data-report-state=active]`)", arg=created_id)
                     assert any(record.report_id == created_id for record in host.repository.list_trash())

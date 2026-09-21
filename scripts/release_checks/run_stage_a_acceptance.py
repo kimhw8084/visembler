@@ -429,24 +429,28 @@ def _assert_hub(page, host, report_id):
     assert page.locator('.cui-report-thumb').count() >= 1, 'hub has no report preview thumbnails'
     card = page.locator(f'.cui-report-card[data-report-id="{report_id}"]')
     card.wait_for(timeout=20000)
-    old_title = card.locator('input[aria-label="Title"]').input_value()
+    old_title = card.locator('.cui-report-card-title').inner_text()
     new_title = f'{old_title} Stage A'
-    card.locator('input[aria-label="Title"]').fill(new_title)
-    card.locator('input[aria-label="Title"]').press('Tab')
+    card.locator('[data-report-action="more"]').click()
+    page.locator('.q-menu:visible').get_by_role('button', name='Edit details', exact=True).click()
+    page.get_by_label('Report name').fill(new_title)
+    page.get_by_role('button', name='Save details', exact=True).click()
     _wait_repo_title(host, old_title, new_title)
     page.reload(wait_until='domcontentloaded')
     page.locator('.cui-report-grid').first.wait_for(timeout=20000)
-    target = page.locator('.cui-report-card').filter(has=page.locator(f'input[aria-label="Title"][value="{new_title}"]')).first
+    target = page.locator('.cui-report-card').filter(has_text=new_title).first
     if not target.count():
         target = page.locator('.cui-report-card').first
     before = page.locator('.cui-report-card').count()
-    target.get_by_role('button', name='Duplicate', exact=True).click()
+    target.locator('[data-report-action="more"]').click()
+    page.locator('.q-menu:visible').get_by_role('button', name='Duplicate report', exact=True).click()
     page.wait_for_function('(n)=>document.querySelectorAll(".cui-report-card").length>n', arg=before)
     page.reload(wait_until='domcontentloaded')
     page.locator('.cui-report-grid').first.wait_for(timeout=20000)
-    index = page.locator('.cui-report-card').evaluate_all("(cards,title)=>cards.findIndex(card=>card.querySelector('input[aria-label=\\\"Title\\\"]')?.value===title)", new_title)
+    index = page.locator('.cui-report-card').evaluate_all("(cards,title)=>cards.findIndex(card=>card.querySelector('.cui-report-card-title')?.textContent===title)", new_title)
     assert index >= 0, f'renamed report card not found; cards={page.locator(".cui-report-card").count()}'
-    page.locator('.cui-report-card').nth(index).get_by_role('button', name='Move to trash', exact=True).click()
+    page.locator('.cui-report-card').nth(index).locator('[data-report-action="more"]').click()
+    page.locator('.q-menu:visible').get_by_role('button', name='Move to trash', exact=True).click()
     page.locator('.q-dialog').get_by_role('button', name='Move to trash', exact=True).click()
     _hub_select(page, 'Active + trash')
     assert page.get_by_text('Trash', exact=False).count() >= 1
@@ -454,9 +458,10 @@ def _assert_hub(page, host, report_id):
     trash.get_by_role('button', name='Restore', exact=True).click()
     page.wait_for_timeout(220)
     _hub_select(page, 'Active')
-    restored_index = page.locator('.cui-report-card').evaluate_all("(cards,title)=>cards.findIndex(card=>card.querySelector('input[aria-label=\\\"Title\\\"]')?.value===title)", new_title)
+    restored_index = page.locator('.cui-report-card').evaluate_all("(cards,title)=>cards.findIndex(card=>card.querySelector('.cui-report-card-title')?.textContent===title)", new_title)
     assert restored_index >= 0, 'restored report card not found'
-    page.locator('.cui-report-card').nth(restored_index).get_by_role('button', name='History', exact=True).click()
+    page.locator('.cui-report-card').nth(restored_index).locator('[data-report-action="more"]').click()
+    page.locator('.q-menu:visible').get_by_role('button', name='Review history', exact=True).click()
     page.locator('.cui-history-panel').wait_for()
     assert page.locator('.cui-history-card').count() >= 1
 
