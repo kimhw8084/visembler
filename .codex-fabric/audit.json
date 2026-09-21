@@ -27,7 +27,9 @@
     "company_ui_validate": "PASS 0 errors, 126 warnings",
     "full_pytest": "PASS 1138 collected",
     "affected_source_accessibility_responsive_tests": "PASS",
-    "negative_control_exact_r1_overlap": "PASS sentinel observed display:none at 1180px"
+    "negative_control_exact_r1_overlap": "PASS sentinel observed display:none at 1180px",
+    "final_visual_remediation": "FAIL 54/56 applicable; VR042 and VR047",
+    "final_visual_remediation_disposition": "BASE_MATCH_NON_CHG139: exact base produced the same VR042 and VR047 failures"
   },
   "responsive_browser_matrix": {
     "viewports": [1440, 1180, 1024, 390, 720],
@@ -59,7 +61,18 @@
       "path": "evidence/chg139-r2-final/runtime-smoke-server.log",
       "sha256": "11b8c170e8e4f363335db6ff0d9e4d035fa05429505a3ba482a14252beba3ac6"
     },
-    "screenshots": "evidence/chg139-r2-final/{chart-studio,diagram-studio}/screenshots/{desktop-1440,narrow-1024,mobile-390,reflow-200-equivalent}.png"
+    "screenshots": "evidence/chg139-r2-final/{chart-studio,diagram-studio}/screenshots/{desktop-1440,narrow-1024,mobile-390,reflow-200-equivalent}.png",
+    "final_visual_remediation_candidate": {
+      "path": "evidence/chg139-r2-remediation/final-visual-remediation-acceptance.json",
+      "sha256": "7769e5b1300207b874bd09a614a2555e38835cacd4540efded2aa539a9564ed0"
+    },
+    "final_visual_remediation_base_comparison": {
+      "path": "evidence/chg139-r2-remediation/base/final-visual-remediation-acceptance.json",
+      "sha256": "33c49fb4fa9cdd729ebb558986d4ef12d72c6878cc460a3c051d1cc8b4476723",
+      "base_sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+      "candidate_failures": ["VR042", "VR047"],
+      "base_failures": ["VR042", "VR047"]
+    }
   },
   "locator": {
     "branch": "codex-fabric/evidence/visembler/CHG-139-r2",

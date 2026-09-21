@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "revision": 11,
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [],
+    "items": [
+      {
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 176.68728919470598,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "text": "Define the observed issue, affected scope, and impact.",
+        "title": "Executive Statement",
+        "type": "text",
+        "w": 1572,
+        "weight": 1,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "detail": "Record source, observation, and implication.",
+        "element": "Evidence Card",
+        "engine": "EvidenceCompositeEngine",
+        "groupId": null,
+        "h": 270,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 1,
+        "statement": "Evidence item",
+        "status": "Observed",
+        "title": "Evidence Card",
+        "type": "evidence",
+        "w": 326,
+        "weight": 1,
+        "x": 14,
+        "y": 204.68728919470598,
+        "z": 2
+      },
+      {
+        "direction": "right",
+        "edge_label": "handoff",
+        "edges": [
+          [
+            "Detect",
+            "Analyze"
+          ],
+          [
+            "Analyze",
+            "Contain"
+          ],
+          [
+            "Contain",
+            "Verify"
+          ]
+        ],
+        "element": "Process Flow",
+        "engine": "DiagramEngine",
+        "groupId": null,
+        "h": 255,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "nodes": [
+          "Detect",
+          "Analyze",
+          "Contain",
+          "Verify"
+        ],
+        "order": 2,
+        "title": "Process Flow",
+        "type": "diagram",
+        "w": 456.6666666666667,
+        "weight": 1,
+        "x": 354,
+        "y": 204.68728919470598,
+        "z": 3
+      },
+      {
+        "element": "Event Timeline",
+        "engine": "TimelineEngine",
+        "groupId": null,
+        "h": 270,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "milestones": [
+          {
+            "date": null,
+            "label": "Observed"
+          },
+          {
+            "date": null,
+            "label": "Verified"
+          }
+        ],
+        "order": 3,
+        "title": "Event Timeline",
+        "type": "timeline",
+        "w": 421.3333333333333,
+        "weight": 1,
+        "x": 824.6666666666667,
+        "y": 204.68728919470598,
+        "z": 4
+      },
+      {
+        "detail": "Owner · due date · verification",
+        "element": "Evidence Card",
+        "engine": "EvidenceCompositeEngine",
+        "groupId": null,
+        "h": 270,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "statement": "Corrective action",
+        "status": "Planned",
+        "title": "Evidence Card",
+        "type": "evidence",
+        "w": 326,
+        "weight": 1,
+        "x": 1260,
+        "y": 204.68728919470598,
+        "z": 5
+      },
+      {
+        "element": "Event Timeline",
+        "engine": "TimelineEngine",
+        "groupId": null,
+        "h": 397.31271080529405,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "milestones": [
+          {
+            "date": "Week 1",
+            "label": "Discover"
+          },
+          {
+            "date": "Week 2",
+            "label": "Validate"
+          },
+          {
+            "date": "Week 3",
+            "label": "Implement"
+          },
+          {
+            "date": "Week 4",
+            "label": "Verify"
+          }
+        ],
+        "order": 5,
+        "showTitle": false,
+        "textAlign": "left",
+        "title": "Event Timeline",
+        "tm": 1,
+        "type": "timeline",
+        "w": 870.2367870535918,
+        "weight": 1.3,
+        "x": 14,
+        "y": 488.68728919470595,
+        "z": 6
+      },
+      {
+        "alt": "RCA evidence image",
+        "caption": "Pressure signature capture",
+        "element": "Image + Caption",
+        "engine": "ImageMediaEngine",
+        "fit": "fill",
+        "focal": "50% 50%",
+        "groupId": null,
+        "h": 397.31271080529405,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 6,
+        "showTitle": false,
+        "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAACWCAIAAABvmpKCAAABzUlEQVR4nO3UQRHCQBBFwYWKhCiIhqhBBSpyjjA0oAUTqaV4dBv4c3g1t/VxDKi4f/sAuJKgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkLNOW3s/XtC2usp37+Ck+NCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTskxb2s592hZ/y4cmRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYImRdCkCJoUQZMiaFIETYqgSRE0KYJmlHwAZWgGCvDHfzwAAAAASUVORK5CYII=",
+        "textAlign": "left",
+        "title": "Image + Caption",
+        "type": "image",
+        "w": 687.7632129464082,
+        "weight": 1.25,
+        "x": 898.2367870535918,
+        "y": 488.68728919470595,
+        "z": 7
+      }
+    ],
+    "groups": {},
+    "mode": "guided",
+    "layoutPreset": "technical",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 8,
+    "crossFilters": []
+  }
+}

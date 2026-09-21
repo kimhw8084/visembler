@@ -1,0 +1,90 @@
+{
+  "task": "wafer-investigation",
+  "status": "FAIL",
+  "checks": {
+    "visual_quality": {
+      "surface": "editor",
+      "occupied_area_ratio": 0.5280445250848272,
+      "element_count": 1,
+      "elements": [
+        {
+          "id": "c1",
+          "engine": "WaferFabEngine",
+          "element": "Wafer Map",
+          "renderer_contract": "wafer-map",
+          "renderer_kind": "cs-wafer-svg",
+          "internal_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+          "mark_selector": ".cs-wafer-svg [data-wafer-die]",
+          "marks": 5,
+          "legacy_assumption_selector": ".cs-wafer-svg>circle,.cs-wafer-svg [data-wafer-die]",
+          "legacy_assumption_marks": 6,
+          "card_area": 230016.19512695074,
+          "visual_area": 108433.39700438082,
+          "visual_utilization": 0.4714163580722399,
+          "dominant_axis_share": 0.6865976920157714,
+          "overflow": false,
+          "overflow_metrics": {
+            "client_width": 870,
+            "scroll_width": 870,
+            "client_height": 870,
+            "scroll_height": 870
+          },
+          "overflow_offenders": [],
+          "renderer_boxes": {
+            "content": {
+              "width": 460.9000244140625,
+              "height": 428.9054870605469
+            },
+            "body": {
+              "width": 460.9000244140625,
+              "height": 428.90545654296875
+            },
+            "plot": {
+              "width": 460.9000244140625,
+              "height": 418.45550537109375
+            },
+            "svg": {
+              "width": 460.9000244140625,
+              "height": 418.45550537109375
+            },
+            "meaningful": {
+              "width": 329.29229736328125,
+              "height": 329.292236328125
+            }
+          }
+        }
+      ],
+      "empty_error_state_count": 0,
+      "clipping_overflow_count": 0,
+      "primary_evidence_area_share": null,
+      "primary_evidence_min_visual_utilization": null,
+      "plotted_marks": 5,
+      "wafer_dies": 5,
+      "diagram_errors": 0,
+      "context_toolbar": {
+        "distance": 7.9937744140625,
+        "visible": true
+      },
+      "checkpoint_created": false
+    }
+  },
+  "error": "TimeoutError: Locator.wait_for: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator(\"[data-dataset-role=\\\"lot_id\\\"]\") to be visible\n",
+  "metrics": {
+    "elapsed_seconds": 13.361,
+    "primary_clicks": 6,
+    "modal_opens": 2,
+    "context_exits": 1,
+    "destructive_confirmations": 0,
+    "corrective_recovery_actions": 0,
+    "raw_json_edits": 0,
+    "unexpected_noop_controls": [],
+    "browser_errors": [],
+    "top_three_friction": [
+      "Wafer identity roles remain distributed across the data binding controls.",
+      "Evidence grouping is a deliberate multi-selection action.",
+      "Portable import/export is retained as a separate verification step."
+    ],
+    "evidence_directory": "/Users/haewonkim/.codex-fabric/worktrees/CF-523f2dad591bd6980d14f32e/evidence/chg139-r2-remediation/benchmark/wafer-investigation"
+  },
+  "browser_version": "151.0.7922.34"
+}

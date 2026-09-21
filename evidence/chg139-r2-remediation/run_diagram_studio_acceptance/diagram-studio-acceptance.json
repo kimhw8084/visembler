@@ -1,0 +1,1323 @@
+{
+  "scope": "native Diagram Studio acceptance",
+  "cases": [
+    {
+      "name": "open Diagram Studio from Process Flow",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile drawer accessibility, focus isolation, and desktop semantics",
+      "status": "PASS"
+    },
+    {
+      "name": "create five nodes from the shape palette",
+      "status": "PASS"
+    },
+    {
+      "name": "quick-connect branch and insert node on edge",
+      "status": "PASS"
+    },
+    {
+      "name": "fixed and floating connector ports",
+      "status": "PASS"
+    },
+    {
+      "name": "orthogonal route, waypoint, center label, reverse",
+      "status": "PASS"
+    },
+    {
+      "name": "multi-select, lasso-compatible actions, align, group, copy, duplicate",
+      "status": "PASS"
+    },
+    {
+      "name": "lasso selects multiple nodes",
+      "status": "PASS"
+    },
+    {
+      "name": "inline node label edit commits accessibly",
+      "status": "PASS"
+    },
+    {
+      "name": "layer visibility/lock/duplicate and swimlane reorder/move",
+      "status": "PASS"
+    },
+    {
+      "name": "horizontal/vertical layout and Clean Diagram preserve pinned node",
+      "status": "PASS"
+    },
+    {
+      "name": "paste process steps, source-target graph, save/reinsert subflow",
+      "status": "PASS"
+    },
+    {
+      "name": "one-transaction undo/redo and JSON/SVG export",
+      "status": "PASS"
+    },
+    {
+      "name": "save/close/reopen report integration and reading preview",
+      "status": "PASS"
+    },
+    {
+      "name": "responsive studio and keyboard nudge",
+      "status": "PASS"
+    },
+    {
+      "name": "100-node/150-edge deterministic layout fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "no unexpected browser console/page/network errors",
+      "status": "PASS",
+      "error": []
+    }
+  ],
+  "unexpected_errors": [],
+  "drawer_accessibility": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "closed": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "shape": null,
+        "panel": null,
+        "label": "import * as Vue from \"vue\";\n      globalThis.Vue = Vue;\n      document.getElemen"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "closed_tab_forward": [
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "preview",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "save",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "svg",
+        "id": "ds-canvas",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "a",
+        "id": "c5",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": "c12",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "back",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "undo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "redo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "clean",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "layout-horizontal",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "panel": null
+      }
+    ],
+    "closed_shift_tab_backward": [
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "layout-horizontal",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "clean",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "redo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "undo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "back",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": "c12",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "a",
+        "id": "c5",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "svg",
+        "id": "ds-canvas",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "save",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "preview",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "panel": null
+      }
+    ],
+    "shapes_open": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 0,
+            "right": 340,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 29
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "true",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": null,
+        "shape": "start",
+        "panel": "palette",
+        "label": "Add Start"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "shapes_backdrop_close": {
+      "point": {
+        "x": 350,
+        "y": 450,
+        "hit": "ds-panel-backdrop"
+      },
+      "focus_during_press": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette is-open",
+            "inert_property": false,
+            "inert_attribute": false,
+            "aria_hidden": "false",
+            "bounds": {
+              "left": 0,
+              "right": 340,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 29
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "true",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": null,
+          "shape": "start",
+          "panel": "palette",
+          "label": "Add Start"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      },
+      "closed": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "toggle-palette",
+          "shape": null,
+          "panel": null,
+          "label": "Shapes"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      }
+    },
+    "inspector_open": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 50,
+            "right": 390,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "true",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "clear-selection",
+        "shape": null,
+        "panel": "inspector",
+        "label": "Clear selection"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "inspector_backdrop_close": {
+      "point": {
+        "x": 40,
+        "y": 450,
+        "hit": "ds-panel-backdrop"
+      },
+      "focus_during_press": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector is-open",
+            "inert_property": false,
+            "inert_attribute": false,
+            "aria_hidden": "false",
+            "bounds": {
+              "left": 50,
+              "right": 390,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 27
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "true",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "clear-selection",
+          "shape": null,
+          "panel": "inspector",
+          "label": "Clear selection"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      },
+      "closed": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "toggle-inspector",
+          "shape": null,
+          "panel": null,
+          "label": "Inspector"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      }
+    },
+    "shapes_close_button": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "shape": null,
+        "panel": null,
+        "label": "Shapes"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "shapes_escape_close": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "shape": null,
+        "panel": null,
+        "label": "Shapes"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "inspector_close_button": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "shape": null,
+        "panel": null,
+        "label": "Inspector"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "switched_to_inspector": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 50,
+            "right": 390,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "true",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "clear-selection",
+        "shape": null,
+        "panel": "inspector",
+        "label": "Clear selection"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "switch_escape_close": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "shape": null,
+        "panel": null,
+        "label": "Inspector"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": null,
+          "bounds": {
+            "left": 84,
+            "right": 328,
+            "top": 148,
+            "bottom": 920,
+            "width": 244,
+            "height": 772
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 29
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": null,
+          "bounds": {
+            "left": 1110,
+            "right": 1420,
+            "top": 148,
+            "bottom": 920,
+            "width": 310,
+            "height": 772
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "shape": null,
+        "panel": null,
+        "label": "import * as Vue from \"vue\";\n      globalThis.Vue = Vue;\n      document.getElemen"
+      },
+      "scroll": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "innerWidth": 1440,
+        "horizontalOverflow": false
+      }
+    }
+  },
+  "responsive_evidence": {
+    "desktop-1440": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 940
+      },
+      "canvas": {
+        "left": 358,
+        "top": 172,
+        "right": 1080,
+        "bottom": 420.234375,
+        "width": 722,
+        "height": 248.234375
+      },
+      "wrap": {
+        "left": 328,
+        "top": 142,
+        "right": 1110,
+        "bottom": 880,
+        "width": 782,
+        "height": 738
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "narrow-1024": {
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1024,
+        "height": 940
+      },
+      "canvas": {
+        "left": 334,
+        "top": 172,
+        "right": 694,
+        "bottom": 296.4375,
+        "width": 360,
+        "height": 124.4375
+      },
+      "wrap": {
+        "left": 304,
+        "top": 142,
+        "right": 724,
+        "bottom": 880,
+        "width": 420,
+        "height": 738
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "reflow-200-equivalent": {
+      "viewport": {
+        "width": 720,
+        "height": 844
+      },
+      "scroll": {
+        "width": 720,
+        "height": 880
+      },
+      "canvas": {
+        "left": 28.609375,
+        "top": 180,
+        "right": 691.984375,
+        "bottom": 408.1875,
+        "width": 663.375,
+        "height": 228.1875
+      },
+      "wrap": {
+        "left": 16.609375,
+        "top": 168,
+        "right": 703.984375,
+        "bottom": 828,
+        "width": 687.375,
+        "height": 660
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "mobile-390": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "width": 390,
+        "height": 880
+      },
+      "canvas": {
+        "left": 28,
+        "top": 215,
+        "right": 362,
+        "bottom": 330.546875,
+        "width": 334,
+        "height": 115.546875
+      },
+      "wrap": {
+        "left": 16,
+        "top": 203,
+        "right": 374,
+        "bottom": 828,
+        "width": 358,
+        "height": 625
+      },
+      "overflow": false,
+      "openOverflow": false
+    }
+  },
+  "performance_fixture": {
+    "nodes": 100,
+    "edges": 150,
+    "elapsed_ms": 3.9
+  },
+  "production_library_count": 52,
+  "frozen_connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+  "passed": 17,
+  "total": 17,
+  "status": "PASS"
+}
