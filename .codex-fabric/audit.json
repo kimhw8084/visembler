@@ -1,0 +1,159 @@
+{
+  "accepted_at": "2026-09-21T13:38:40Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd\nprintf '%s\\\\n' '--- git status ---'\ngit status --short --branch\nprintf '%s\\\\n' '--- HEAD/tree ---'\ngit rev-parse HEAD\ngit rev-parse HEAD\"'^{tree}\nprintf '\"'%s\\\\n' '--- refs ---'\ngit branch --show-current\ngit remote -v\nprintf '%s\\\\n' '--- instruction files ---'\nsed -n '1,240p' /Users/haewonkim/.codex/RTK.md\nsed -n '1,260p' /Users/haewonkim/.codex/law.md\nprintf '%s\\\\n' '--- construction manifest ---'\nsed -n '1,260p' company_ui/ai/construction_manifest.json\nprintf '%s\\\\n' '--- quality workflow ---'\nsed -n '1,260p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk --version\nrtk which gh\nrtk gh auth status\nrtk rg -n '\"'^  [A-Za-z0-9_-]+:|''^name:|''^on:|''^  (pull_request|push|workflow_dispatch):'\"' .github/workflows/quality.yml\nrtk sed -n '240,520p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main\nrtk gh run list --repo kimhw8084/visembler --workflow quality.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,headBranch,workflowName,url'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh workflow run quality.yml --repo kimhw8084/visembler --ref main\nrtk gh run list --repo kimhw8084/visembler --workflow quality.yml --branch main --event workflow_dispatch --limit 5 --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,headBranch,workflowName,url'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run view 35607080337 --repo kimhw8084/visembler --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,headBranch,workflowName,url,jobs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run watch 35607080337 --repo kimhw8084/visembler --compact --exit-status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD''^{tree}\nrtk git ls-remote origin refs/heads/main\nrtk git diff --exit-code -- .github/workflows/quality.yml\nrtk git diff --cached --exit-code -- .github/workflows/quality.yml'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35607080337 --repo kimhw8084/visembler --json databaseId,number,workflowName,headBranch,headSha,event,status,conclusion,createdAt,updatedAt,url,jobs --jq '{databaseId,number,workflowName,headBranch,headSha,event,status,conclusion,createdAt,updatedAt,url,jobs: [.jobs[] | {databaseId,name,status,conclusion,startedAt,completedAt,url}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git merge-base --is-ancestor 94490963146f5bbaca9ec191ab02ad2ff58d6b2a 05a606089a50d6b8724066bd01f8d0603776159b\nrtk git show -s --format='HEAD %H%nTree %T%nSubject %s' 05a606089a50d6b8724066bd01f8d0603776159b\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 28,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 90.31,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 743936,
+      "fresh_input_tokens": 79799,
+      "input_tokens": 823735,
+      "non_reasoning_output_tokens": 2617,
+      "output_tokens": 6733,
+      "reasoning_output_tokens": 4116,
+      "total_processed_tokens": 830468
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-21T13:47:05Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "branch": "verify/visembler-chg139-postmerge-quality-r4",
+    "detached_verify": false,
+    "head_sha": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "remote_exact_head": true,
+    "remote_head_sha": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "work_branch": "verify/visembler-chg139-postmerge-quality-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-ef0e5c239c5e08156ed7ae23",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-139-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-139-r4"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-139-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-21T13:38:41Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 504,
+    "queue_seconds": 1,
+    "total_seconds": 505
+  },
+  "transport": {
+    "bytes": 2118,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 1812,
+    "prompt_sha256": "63cbd44e1937d851a915357213362e1dc08beb10686277f4f8728c5e3a45ef23",
+    "sha256": "ef0e5c239c5e08156ed7ae2368d8b07c7a9bc2085bb2768b7a860bf2f203b8e5"
+  }
+}
