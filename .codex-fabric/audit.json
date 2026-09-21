@@ -1,0 +1,433 @@
+{
+  "accepted_at": "2026-09-21T15:30:23Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 209,
+      "deletions": 146,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 380,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg140_report_hub_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 35,
+      "deletions": 6,
+      "path": "scripts/release_checks/run_company_user_browser_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "scripts/release_checks/run_crawler_hardening_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_report_hub_browser_error_gate.py",
+      "status": "M"
+    },
+    {
+      "additions": 14,
+      "deletions": 9,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_stage_d_benchmark.py",
+      "status": "M"
+    },
+    {
+      "additions": 67,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg140_report_hub.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/company-boundary-browser.json;type=application/json' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-81e7-940b-00b22a90cc4c/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/company-boundary-browser.server.log;type=text/plain' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8114-bea7-00b27217be93/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/report-hub-browser-error-gate.json;type=application/json' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8127-8ad5-00b24c2a9fd5/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/editor-manage-selected-390.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-816c-a034-00b2f0b385c6/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/editor-manage-selected-768.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8100-ab0a-00b2ad1dfc45/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/editor-manage-unselected-1440.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-81b0-b1fa-00b26d4ae79e/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/report-hub-create-open-trash-1440.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-813f-8acc-00b2d82604d1/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/report-hub-grid-list-thumbnails-1440.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8129-b778-00b2c37410df/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/report-hub-grid-list-thumbnails-390.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-814b-abb2-00b25cb30a24/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub-browser-error-gate/screenshots/report-hub-grid-list-thumbnails-768.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-81b5-8f69-00b288e2ad5b/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/chg140-report-hub-acceptance.json;type=application/json' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8138-ac10-00b2f4f8b91d/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/chg140-report-hub-acceptance.json.sha256;type=text/plain' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-81ba-9d63-00b28da884d9/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-dark-reduced-motion.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8116-9424-00b28a44addb/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-long-title.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8118-9f63-00b2f2ed5d6b/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-mobile-200-equivalent.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-819b-95bc-00b24411ccb2/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-mobile-390.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-812f-a701-00b2a760ea4a/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-narrow-1024.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-810f-b392-00b21f84d9af/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/report-hub/screenshots/report-hub-read-only.png;type=image/png' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8176-b721-00b21e20ae14/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/repository-contracts.json;type=application/json' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-81ce-afd6-00b2535dae96/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk curl --fail --silent --show-error --output /dev/null --write-out '%{http_code}' --request POST --header 'authorization: Bearer [REDACTED_SECRET]' --form 'file=@/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/chg140-r2-evidence-bundle.zip;type=application/zip' 'https://api.notion.com/v1/mcp/file_uploads/3e2c564c-8d04-8146-bd45-00b2f453a921/send'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "update_properties",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "insert_content",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk shasum -a 256 /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/candidate-source-identity.json && rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-manifest.json')\nv=json.loads(p.read_text())\nfor x in v['retainedInventory']['artifacts']:\n if x['path']=='candidate-source-identity.json': print(x)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "update_content",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'signed file URL|download_attachment|file uploads|file_uploads|unsupported_content_type' /Users/haewonkim/.codex/cache/codex_apps_tools /Users/haewonkim/.codex/cache/codex_app_directory 2>/dev/null | sed -n '1,240p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "update_properties",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "insert_content",
+      "type": "mcp_tool_call"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nfrom datetime import datetime, timezone\n\nroot = Path('/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge')\nmanifest_path = root / 'artifact-manifest.json'\nbundle_path = root / 'chg140-r2-evidence-bundle.zip'\nidentity_path = root / 'candidate-source-identity.json'\n\ndef sha(path):\n    h = hashlib.sha256()\n    with path.open('rb') as f:\n        for chunk in iter(lambda: f.read(1024 * 1024), b''):\n            h.update(chunk)\n    return h.hexdigest()\n\nmanifest = json.loads(manifest_path.read_text())\nidentity = json.loads(identity_path.read_text())\nmanifest_sha = sha(manifest_path)\nbundle_sha = sha(bundle_path)\nidentity_sha = sha(identity_path)\nacceptance = root / 'report-hub/chg140-report-hub-acceptance.json'\nsidecar = root / 'report-hub/chg140-report-hub-acceptance.json.sha256'\nacceptance_sha = sha(acceptance)\nsidecar_text = sidecar.read_text().strip()\n\nassert manifest_sha == 'b8e7badc04847cc17eb9efb9ff08f70c2de5c59608e1e9cff87060f1175781d2'\nassert bundle_sha == '9d297d83a9e10e3368f20b5db5da43e2ff5333e0681dbd352af20bf14a1a2bc8'\nassert identity_sha == 'fda71d56b619d1372e86d107530381c01a8b024c5724cb91c4afe11e4e662232'\nassert sidecar_text.startswith(acceptance_sha)\nassert manifest['binding']['fabricJob'] == 'CF-9dd602658e4288c65a5c2a8a'\nassert manifest['binding']['request'] == 'CHG-140-r2'\nassert manifest['binding']['operation'] == 'VERIFY'\nassert manifest['binding']['sourceSha'] == '2f34724cd2a5f21c616a3188686f4fe0b5517248'\nassert manifest['binding']['sourceTree'] == '068db74c22896673f40f36ad06310bd5e4376a2c'\nassert len(manifest['inventory']) == 20\nassert sum(item['bytes'] for item in manifest['inventory']) == 3735472\n\nreceipt = {\n    'schema': 'project-os.artifact-stage-receipt/1',\n    'status': 'Staged',\n    'stageErrorCode': None,\n    'stagedAt': '2026-09-21T15:44:00.000Z',\n    'fabric': {\n        'jobId': 'CF-9dd602658e4288c65a5c2a8a',\n        'projectId': 'visembler',\n        'request': 'CHG-140-r2',\n        'operation': 'VERIFY',\n        'targetBranch': 'main',\n        'workBranch': 'verify/visembler-chg140-evidence-r2',\n        'baseSha': '05a606089a50d6b8724066bd01f8d0603776159b',\n        'remoteExactHeadRequired': True,\n        'evidenceOwner': 'normal Fabric runtime'\n    },\n    'source': {\n        'candidateSha': '2f34724cd2a5f21c616a3188686f4fe0b5517248',\n        'candidateTree': '068db74c22896673f40f36ad06310bd5e4376a2c',\n        'remoteExactHead': True,\n        'sourceChanged': False,\n        'recaptured': False,\n        'historicalR1Mutated': False,\n        'productSourceMutated': False,\n        'mainMutated': False,\n        'originalProducer': {\n            'request': 'CHG-140-r1',\n            'operation': 'FIX',\n            'jobId': 'CF-a3df07127c1a3803440acb45',\n            'evidenceCommit': '59246d73911b9c53af3f0d4a7a6f4e27a55754d4',\n            'evidenceCommitSoleParent': '2f34724cd2a5f21c616a3188686f4fe0b5517248'\n        }\n    },\n    'artifactRun': {\n        'runId': 'AR-51',\n        'pageId': '3e2c564c-8d04-8123-b275-e8dc2dbf049c',\n        'url': 'https://app.notion.com/p/3e2c564c8d048123b275e8dc2dbf049c?pvs=204',\n        'database': 'Artifact Runs',\n        'status': 'Staged',\n        'selfAccepted': False,\n        'promoted': False,\n        'bridge': 'bounded-direct-notion-api-fallback / host-managed Notion connector'\n    },\n    'package': {\n        'manifest': {\n            'path': 'artifact-manifest.json',\n            'sha256': manifest_sha,\n            'bytes': manifest_path.stat().st_size\n        },\n        'bundle': {\n            'path': 'chg140-r2-evidence-bundle.zip',\n            'sha256': bundle_sha,\n            'bytes': bundle_path.stat().st_size,\n            'memberCount': 20,\n            'inventoryBytes': 3735472\n        },\n        'sourceIdentity': {\n            'path': 'candidate-source-identity.json',\n            'sha256': identity_sha,\n            'bytes': identity_path.stat().st_size\n        }\n    },\n    'providerReadback': {\n        'exactRunTitleMatches': 1,\n        'bindingTupleExact': True,\n        'statusExact': True,\n        'stageErrorCodeEmpty': True,\n        'manifestPropertyAttachments': 1,\n        'artifactPropertyAttachments': 21,\n        'readerFacingPathCount': 22,\n        'providerImageReferences': 13,\n        'providerFileReferences': 9,\n        'uploadedBytes': 7273975,\n        'textAttachments': {\n            'checked': 8,\n            'byteLengthsExact': True,\n            'semanticPassReceipts': True,\n            'acceptanceSidecarMatchesAcceptanceJson': True\n        },\n        'hashChecks': {\n            'localManifestSha256': True,\n            'localBundleSha256': True,\n            'localSourceIdentitySha256': True,\n            'manifestDeclaresLocalBundleSha256': True,\n            'acceptanceSidecarMatchesLocalAcceptanceSha256': True,\n            'providerPropertiesMatchManifestAndBundle': True\n        },\n        'screenshotAttachmentSetPresent': True,\n        'bundleAttachmentPresent': True,\n        'manifestAttachmentPresent': True\n    },\n    'guardrails': {\n        'auditJsonAuthored': False,\n        'r2FabricEvidenceRefAuthored': False,\n        'mainMoved': False,\n        'postGoIntegrationPerformed': False\n    }\n}\nreceipt_path = root / 'artifact-stage-receipt.json'\nreceipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\\\\n')\nprint(json.dumps({\n    'receipt': str(receipt_path),\n    'receiptSha256': sha(receipt_path),\n    'status': receipt['status'],\n    'artifactRun': receipt['artifactRun']['runId'],\n    'manifestSha256': manifest_sha,\n    'bundleSha256': bundle_sha,\n    'readerFacingPathCount': receipt['providerReadback']['readerFacingPathCount'],\n    'uploadedBytes': receipt['providerReadback']['uploadedBytes']\n}, sort_keys=True))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-manifest.json')\nx=json.loads(p.read_text())\nprint(sorted(x))\nfor k,v in x.items():\n    print(k, type(v).__name__, len(v) if hasattr(v,'__len__') else '')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-manifest.json')\nx=json.loads(p.read_text())\nprint(json.dumps(x['binding'], indent=2, sort_keys=True))\nprint(json.dumps(x['retainedInventory'], indent=2, sort_keys=True)[:4000])\nprint(json.dumps(x['completeBundle'], indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\n\nroot = Path('/Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge')\nmanifest_path = root / 'artifact-manifest.json'\nbundle_path = root / 'chg140-r2-evidence-bundle.zip'\nidentity_path = root / 'candidate-source-identity.json'\n\ndef sha(path):\n    h = hashlib.sha256()\n    with path.open('rb') as f:\n        for chunk in iter(lambda: f.read(1024 * 1024), b''):\n            h.update(chunk)\n    return h.hexdigest()\n\nmanifest = json.loads(manifest_path.read_text())\nidentity = json.loads(identity_path.read_text())\nmanifest_sha = sha(manifest_path)\nbundle_sha = sha(bundle_path)\nidentity_sha = sha(identity_path)\nacceptance = root / 'report-hub/chg140-report-hub-acceptance.json'\nsidecar = root / 'report-hub/chg140-report-hub-acceptance.json.sha256'\nacceptance_sha = sha(acceptance)\nsidecar_text = sidecar.read_text().strip()\n\nassert manifest_sha == 'b8e7badc04847cc17eb9efb9ff08f70c2de5c59608e1e9cff87060f1175781d2'\nassert bundle_sha == '9d297d83a9e10e3368f20b5db5da43e2ff5333e0681dbd352af20bf14a1a2bc8'\nassert identity_sha == 'fda71d56b619d1372e86d107530381c01a8b024c5724cb91c4afe11e4e662232'\nassert sidecar_text.startswith(acceptance_sha)\nassert manifest['binding']['fabricJob'] == 'CF-9dd602658e4288c65a5c2a8a'\nassert manifest['binding']['request'] == 'CHG-140-r2'\nassert manifest['binding']['operation'] == 'VERIFY'\nassert manifest['binding']['sourceSha'] == '2f34724cd2a5f21c616a3188686f4fe0b5517248'\nassert manifest['binding']['sourceTree'] == '068db74c22896673f40f36ad06310bd5e4376a2c'\nassert manifest['retainedInventory']['artifactCount'] == 20\nassert sum(item['bytes'] for item in manifest['retainedInventory']['artifacts']) == 3735472\n\nreceipt = {\n    'schema': 'project-os.artifact-stage-receipt/1',\n    'status': 'Staged',\n    'stageErrorCode': None,\n    'stagedAt': '2026-09-21T15:44:00.000Z',\n    'fabric': {\n        'jobId': 'CF-9dd602658e4288c65a5c2a8a',\n        'projectId': 'visembler',\n        'request': 'CHG-140-r2',\n        'operation': 'VERIFY',\n        'targetBranch': 'main',\n        'workBranch': 'verify/visembler-chg140-evidence-r2',\n        'baseSha': '05a606089a50d6b8724066bd01f8d0603776159b',\n        'remoteExactHeadRequired': True,\n        'evidenceOwner': 'normal Fabric runtime'\n    },\n    'source': {\n        'candidateSha': '2f34724cd2a5f21c616a3188686f4fe0b5517248',\n        'candidateTree': '068db74c22896673f40f36ad06310bd5e4376a2c',\n        'remoteExactHead': True,\n        'sourceChanged': False,\n        'recaptured': False,\n        'historicalR1Mutated': False,\n        'productSourceMutated': False,\n        'mainMutated': False,\n        'originalProducer': {\n            'request': 'CHG-140-r1',\n            'operation': 'FIX',\n            'jobId': 'CF-a3df07127c1a3803440acb45',\n            'evidenceCommit': '59246d73911b9c53af3f0d4a7a6f4e27a55754d4',\n            'evidenceCommitSoleParent': '2f34724cd2a5f21c616a3188686f4fe0b5517248'\n        }\n    },\n    'artifactRun': {\n        'runId': 'AR-51',\n        'pageId': '3e2c564c-8d04-8123-b275-e8dc2dbf049c',\n        'url': 'https://app.notion.com/p/3e2c564c8d048123b275e8dc2dbf049c?pvs=204',\n        'database': 'Artifact Runs',\n        'status': 'Staged',\n        'selfAccepted': False,\n        'promoted': False,\n        'bridge': 'bounded-direct-notion-api-fallback / host-managed Notion connector'\n    },\n    'package': {\n        'manifest': {\n            'path': 'artifact-manifest.json',\n            'sha256': manifest_sha,\n            'bytes': manifest_path.stat().st_size\n        },\n        'bundle': {\n            'path': 'chg140-r2-evidence-bundle.zip',\n            'sha256': bundle_sha,\n            'bytes': bundle_path.stat().st_size,\n            'memberCount': 20,\n            'inventoryBytes': 3735472\n        },\n        'sourceIdentity': {\n            'path': 'candidate-source-identity.json',\n            'sha256': identity_sha,\n            'bytes': identity_path.stat().st_size\n        }\n    },\n    'providerReadback': {\n        'exactRunTitleMatches': 1,\n        'bindingTupleExact': True,\n        'statusExact': True,\n        'stageErrorCodeEmpty': True,\n        'manifestPropertyAttachments': 1,\n        'artifactPropertyAttachments': 21,\n        'readerFacingPathCount': 22,\n        'providerImageReferences': 13,\n        'providerFileReferences': 9,\n        'uploadedBytes': 7273975,\n        'textAttachments': {\n            'checked': 8,\n            'byteLengthsExact': True,\n            'semanticPassReceipts': True,\n            'acceptanceSidecarMatchesAcceptanceJson': True\n        },\n        'hashChecks': {\n            'localManifestSha256': True,\n            'localBundleSha256': True,\n            'localSourceIdentitySha256': True,\n            'manifestDeclaresLocalBundleSha256': True,\n            'acceptanceSidecarMatchesLocalAcceptanceSha256': True,\n            'providerPropertiesMatchManifestAndBundle': True\n        },\n        'screenshotAttachmentSetPresent': True,\n        'bundleAttachmentPresent': True,\n        'manifestAttachmentPresent': True\n    },\n    'guardrails': {\n        'auditJsonAuthored': False,\n        'r2FabricEvidenceRefAuthored': False,\n        'mainMoved': False,\n        'postGoIntegrationPerformed': False\n    }\n}\nreceipt_path = root / 'artifact-stage-receipt.json'\nreceipt_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + '\\\\n')\nprint(json.dumps({\n    'receipt': str(receipt_path),\n    'receiptSha256': sha(receipt_path),\n    'status': receipt['status'],\n    'artifactRun': receipt['artifactRun']['runId'],\n    'manifestSha256': manifest_sha,\n    'bundleSha256': bundle_sha,\n    'readerFacingPathCount': receipt['providerReadback']['readerFacingPathCount'],\n    'uploadedBytes': receipt['providerReadback']['uploadedBytes']\n}, sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show -s --format=raw 59246d73911b9c53af3f0d4a7a6f4e27a55754d4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/verify/visembler-chg140-evidence-r2 refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running -maxdepth 2 -type f -print'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-9dd602658e4288c65a5c2a8a'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -n 20 /Users/haewonkim/.codex-fabric/results/CF-9dd602658e4288c65a5c2a8a/codex.stderr.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ps -axww'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pgrep -af codex'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -n 50 /Users/haewonkim/.codex-fabric/results/CF-9dd602658e4288c65a5c2a8a/codex.events.jsonl'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' /Users/haewonkim/.codex-fabric/results/CF-717607f02dc14c00239c7fda/r3-stage-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-stage-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,100p' /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-stage-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-stage-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-manifest.json /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/chg140-r2-evidence-bundle.zip'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m json.tool /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-stage-receipt.json >/dev/null && rtk shasum -a 256 /Users/haewonkim/.codex-fabric/jobs/CF-9dd602658e4288c65a5c2a8a.running/artifact-bridge/artifact-stage-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/verify/visembler-chg140-evidence-r2 refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 328,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 96.09,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 9042176,
+      "fresh_input_tokens": 368095,
+      "input_tokens": 9410271,
+      "non_reasoning_output_tokens": 27950,
+      "output_tokens": 46450,
+      "reasoning_output_tokens": 18500,
+      "total_processed_tokens": 9456721
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+      "subject": "Compact report hub mobile actions"
+    },
+    {
+      "sha": "73ebd5d471cbbd13a295cf242f3dcd5af4099161",
+      "subject": "Update report hub creation gate"
+    },
+    {
+      "sha": "b74a461cfa3bd5eb3c8d296a02412b9d3515918b",
+      "subject": "Redesign Visembler report hub"
+    }
+  ],
+  "diff": {
+    "additions": 716,
+    "changed_files": 9,
+    "commit_count": 3,
+    "deletions": 168
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "abdb2764e8693cfc5e24dc0b1b29738dab54fa0af8598ae0589c48b9843d68f1"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-21T15:50:08Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "branch": "verify/visembler-chg140-evidence-r2",
+    "detached_verify": false,
+    "head_sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+    "remote_exact_head": true,
+    "remote_head_sha": "2f34724cd2a5f21c616a3188686f4fe0b5517248",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "05a606089a50d6b8724066bd01f8d0603776159b",
+    "work_branch": "verify/visembler-chg140-evidence-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-9dd602658e4288c65a5c2a8a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-140-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-140-r2"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-140-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-21T15:30:23Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1185,
+    "queue_seconds": 0,
+    "total_seconds": 1185
+  },
+  "transport": {
+    "bytes": 4614,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4317,
+    "prompt_sha256": "3489fd8f5d79d48b35531f311c47cdc986860982a4490b3c8745ae15be82d4b3",
+    "sha256": "9dd602658e4288c65a5c2a8ac3245f1262f5a16bf2a7a00dcf9fa09ba4bc3371"
+  }
+}
