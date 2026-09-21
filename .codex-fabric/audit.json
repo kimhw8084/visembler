@@ -1,0 +1,289 @@
+{
+  "accepted_at": "2026-09-21T01:25:50Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- status ---' && git status --short --branch && printf '%s\\\\n' '--- HEAD/main ---' && git rev-parse HEAD && git rev-parse refs/remotes/origin/main 2>/dev/null || true && printf '%s\\\\n' '--- tree ---' && git rev-parse HEAD\"'^{tree} && printf '\"'%s\\\\n' '--- instruction files ---' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && printf '%s\\\\n' '--- law ---' && sed -n '1,260p' /Users/haewonkim/.codex/law.md && printf '%s\\\\n' '--- manifest ---' && sed -n '1,260p' company_ui/ai/construction_manifest.json 2>/dev/null || true && printf '%s\\\\n' '--- workflow ---' && sed -n '1,260p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '220,520p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git remote -v && rtk git ls-remote origin refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh auth status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh workflow view Quality --yaml'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run list --workflow Quality --limit 10 --json databaseId,number,headSha,headBranch,event,status,conclusion,workflowName,createdAt,updatedAt,url'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh workflow run .github/workflows/quality.yml --ref main && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git ls-remote origin refs/heads/main && rtk gh run list --workflow Quality --branch main --event workflow_dispatch --limit 5 --json databaseId,number,headSha,headBranch,event,status,conclusion,workflowName,createdAt,updatedAt,url'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run view 35550951770 --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,displayTitle,createdAt,updatedAt,url,jobs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run watch 35550951770 --interval 15 --exit-status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\"'^(name:|on:|  pull_request:|  push:|  workflow_dispatch:|jobs:|  [A-Za-z0-9_-]+:|    name:)'\"' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i --hidden --glob '\"'!'\"\\\\.git/**' 'canonical.*fabric|fabric.*evidence|CHG-138|evidence' . 2>/dev/null | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git diff --quiet && rtk git diff --cached --quiet && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse refs/remotes/origin/main && rtk git ls-remote origin refs/heads/main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35550951770 --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,displayTitle,createdAt,updatedAt,url,jobs | jq '{databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,displayTitle,createdAt,updatedAt,url,jobs: [.jobs[] | {name,status,conclusion,startedAt,completedAt,databaseId,url}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git branch -a --contains HEAD && rtk git branch -a --list '*CHG-138*' '*evidence*' '*fabric*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git log --all --decorate --oneline -25'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -g '*evidence*' -g '*fabric*' -g '*CHG*' . /Users/haewonkim/.codex-fabric 2>/dev/null | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk command -v fabric || true; rtk command -v codex-fabric || true; rtk command -v project-os || true; rtk command -v gh || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -path '*visembler*CHG-138*' -o -path '*visembler*chg138*' 2>/dev/null | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show --format= 93dcd75 --'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show --stat --oneline 93dcd75 && rtk git show --format=fuller --no-patch 93dcd75 && rtk git ls-tree -r --name-only 93dcd75'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl evidence --help 2>&1 || true; rtk /Users/haewonkim/.codex-fabric/bin/fabricctl publish --help 2>&1 || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/bin/fabricctl\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-288cbe562cfd76300e9bb90a 2>&1 || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status 2>&1 | head -240'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl health 2>&1 | head -240'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/jobs/CF-288cbe562cfd76300e9bb90a -maxdepth 5 -type f -print 2>/dev/null | sort | head -200'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -type f \\\\( -path '*CF-288cbe562cfd76300e9bb90a*' -o -name '*288cbe562cfd76300e9bb90a*' \\\\) -print 2>/dev/null | head -200\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/results/CF-288cbe562cfd76300e9bb90a -maxdepth 5 -type f -print 2>/dev/null | sort | head -200'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 5 'publish-evidence|def publish|evidence_published|audit\\\\.json|codex-fabric/evidence' /Users/haewonkim/.codex-fabric/current/fabric.py | head -360\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/results -maxdepth 2 -type f -path '*CF-288*' -print -exec sed -n '1,80p' {} \\\\; 2>/dev/null\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 -type d -name 'CF-288*' -print -exec ls -la {} \\\\; 2>/dev/null\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2690,2820p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 3 'def _terminal_job_dir|def iter_job_dirs|terminal_job_dir' /Users/haewonkim/.codex-fabric/current/fabric.py | head -140\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --quiet f779fa49130fee5901630037cbef9315bcb085b4 HEAD && rtk git diff --quiet && rtk git diff --cached --quiet && printf '%s\\\\n' 'candidate_tree='\"'$(rtk git rev-parse f779fa49130fee5901630037cbef9315bcb085b4''^{tree}) && printf '\"'%s\\\\n' 'main_tree='\"'$(rtk git rev-parse HEAD''^{tree}) && printf '\"'%s\\\\n' 'head='\"'$(rtk git rev-parse HEAD) && printf '\"'%s\\\\n' 'origin_main='\"'$(rtk git rev-parse refs/remotes/origin/main) && printf '\"'%s\\\\n' 'remote_main='\"'$(rtk git ls-remote origin refs/heads/main | awk '\"'{print \"'$1}'\"') && printf '%s\\\\n' 'worktree='\"'$(rtk git status --porcelain=v1 --branch --untracked-files=all) && /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-288cbe562cfd76300e9bb90a'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 82,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 91.58,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1205760,
+      "fresh_input_tokens": 110915,
+      "input_tokens": 1316675,
+      "non_reasoning_output_tokens": 4705,
+      "output_tokens": 11393,
+      "reasoning_output_tokens": 6688,
+      "total_processed_tokens": 1328068
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.3-resume-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.3-resume-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-21T01:37:42Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "branch": "verify/visembler-chg138-postmerge-quality-r7",
+    "detached_verify": false,
+    "head_sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "remote_exact_head": true,
+    "remote_head_sha": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "b40e4a6cfd6ab9abab60b0db0f883e87ae511d0c",
+    "work_branch": "verify/visembler-chg138-postmerge-quality-r7",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-288cbe562cfd76300e9bb90a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-138-r7",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-138-r7"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.3-resume-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-138-r7",
+  "schema_version": 1,
+  "started_at": "2026-09-21T01:25:50Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 712,
+    "queue_seconds": 0,
+    "total_seconds": 712
+  },
+  "transport": {
+    "bytes": 2346,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2040,
+    "prompt_sha256": "5cdadf557347884c99bdffddebe8cc92690e288f0d990541252d8d0c72dbcd6a",
+    "sha256": "288cbe562cfd76300e9bb90a3fb4e6a23c985a15d5fcd438f9acde93af2533ef"
+  }
+}
