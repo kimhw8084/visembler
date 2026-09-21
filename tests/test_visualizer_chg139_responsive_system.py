@@ -46,6 +46,23 @@ def test_chg139_overflow_duplicates_secondary_commands_and_keeps_primaries() -> 
     assert '#saveBtn' in read("integrated_editor.css")
 
 
+def test_chg139_chart_breakpoint_has_one_non_overlapping_overflow_rule() -> None:
+    chart_css = read("chart_studio.css")
+    assert chart_css.count("@media(max-width:1180px)") == 1
+    assert "@media(max-width:1181px){.cs-overflow{display:none}}" not in chart_css
+    assert ".cs-overflow{display:block!important}" not in chart_css
+
+
+def test_chg139_negative_control_exact_r1_overlap_hides_more_at_1180px() -> None:
+    exact_r1 = "@media(max-width:1180px){.cs-overflow{display:block}}@media(max-width:1181px){.cs-overflow{display:none}}"
+    rules = re.findall(r"@media\(max-width:(\d+)px\)\{\.cs-overflow\{display:([^}]+)\}\}", exact_r1)
+    display = "none"
+    for breakpoint, value in rules:
+        if 1180 <= int(breakpoint):
+            display = value
+    assert display == "none"
+
+
 def test_chg139_shared_token_authority_and_focus_contract() -> None:
     tokens = read("tokens.css")
     editor_css = read("integrated_editor.css")

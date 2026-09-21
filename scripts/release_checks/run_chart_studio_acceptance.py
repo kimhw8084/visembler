@@ -174,6 +174,17 @@ def main()->int:
               page.locator('[data-action="export-svg"]').click()
           download_info.value.save_as(str(output/'chart.svg'));check('C084','standalone SVG',lambda:assert_true((output/'chart.svg').read_text().find('<svg')>=0,'SVG export missing'))
           page.locator('[data-action="preview"]').click();check('C085','preview',lambda:assert_true('studio-preview' in (page.locator('#chart-studio').get_attribute('class') or ''),'preview did not enter reading mode'));page.locator('[data-action="preview-close"]').click();page.locator('[data-action="toggle-theme"]').click();check('C086','light/dark',lambda:assert_true(page.evaluate('()=>document.documentElement.getAttribute("data-theme")==="dark"'),'dark theme missing'));started=time.perf_counter();page.set_viewport_size({'width':768,'height':800});page.wait_for_timeout(100);resize_ms=(time.perf_counter()-started)*1000;check('C087','resize/content fit',lambda:assert_true(page.locator('#cs-canvas').bounding_box()['width']>0,'resize lost chart'));page.set_viewport_size({'width':390,'height':844});check('C088','responsive acceptance',lambda:assert_true(page.evaluate('()=>document.documentElement.scrollWidth<=innerWidth+1'),'responsive overflow'));receipt['performance']['repeated_resize_ms']=round(resize_ms,2)
+          responsive_command_evidence={};responsive_transition={'last_hash':None}
+          for cid,label,width,height in [('C098','desktop command reachability',1440,900),('C099','1180px breakpoint command reachability',1180,900),('C100','narrow 1024px command reachability',1024,900),('C101','mobile 390px command reachability',390,844),('C102','200-percent-equivalent reflow command reachability',720,900)]:
+              def capture(width=width,height=height,label=label):
+                  before=page.evaluate('()=>CompanyUIChartStudio.hash()')
+                  if responsive_transition['last_hash'] is not None: assert_true(before==responsive_transition['last_hash'],f'viewport transition lost chart state before {label}')
+                  probe=responsive_command_probe(page,width,height);after=page.evaluate('()=>CompanyUIChartStudio.hash()');probe['state_hash_before']=before;probe['state_hash_after']=after;responsive_transition['last_hash']=after;responsive_command_evidence[label]=probe
+              check(cid,label,capture)
+          negative_control={}
+          def capture_negative_control(): negative_control.update(responsive_negative_control_exact_r1(page))
+          check('C103','exact R1 overlapping-media negative control',capture_negative_control)
+          receipt['responsive_command_evidence']={'probes':responsive_command_evidence,'negative_control':negative_control}
           receipt['responsive_evidence']={}
           for label,width,height in (('desktop-1440',1440,900),('narrow-1024',1024,900),('mobile-390',390,844),('reflow-200-equivalent',720,900)):
               page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(80);page.screenshot(path=str(shots/f'{label}.png'),full_page=True)
@@ -201,6 +212,54 @@ def main()->int:
 
 def assert_true(value,message):
     if not value: raise AssertionError(message)
+
+
+def responsive_command_probe(page, width, height):
+    page.set_viewport_size({'width':width,'height':height});page.wait_for_timeout(120)
+    page.locator('.cs-overflow').evaluate('(node)=>{node.open=false}')
+    snapshot=page.evaluate('''()=>{
+      const rect=node=>{const r=node.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
+      const visible=node=>{const style=getComputedStyle(node),r=node.getBoundingClientRect();return style.display!=='none'&&style.visibility!=='hidden'&&r.width>0&&r.height>0;};
+      const topmost=node=>{const r=node.getBoundingClientRect(),hit=document.elementFromPoint(r.left+r.width/2,r.top+r.height/2);return hit===node||node.contains(hit);};
+      const secondary=[...document.querySelectorAll('.cs-actions>[data-responsive-priority="secondary"]')];
+      const duplicated=[...document.querySelectorAll('.cs-overflow [data-overflow-action]')];
+      const primary=[...document.querySelectorAll('.cs-actions>[data-responsive-priority="primary"]')];
+      const more=document.querySelector('.cs-overflow'),summary=more?.querySelector('summary');
+      const panelRects=['.cs-left','.cs-main','.cs-right'].map(selector=>{const node=document.querySelector(selector);return node?{selector,rect:rect(node),visible:visible(node)}:null}).filter(Boolean);
+      return {viewport:{width:innerWidth,height:innerHeight},secondary:secondary.map(node=>({action:node.dataset.action,display:getComputedStyle(node).display,visible:visible(node),rect:rect(node),focusable:node.tabIndex>=0})),duplicated:duplicated.map(node=>({action:node.dataset.overflowAction,display:getComputedStyle(node).display,visible:visible(node),disabled:node.disabled})),more:more?{display:getComputedStyle(more).display,visible:visible(more),summary:summary?{visible:visible(summary),rect:rect(summary),topmost:topmost(summary)}:null}:null,primary:primary.map(node=>({action:node.dataset.action,display:getComputedStyle(node).display,visible:visible(node),rect:rect(node),topmost:topmost(node)})),panels:panelRects,canvas:rect(document.querySelector('#cs-canvas')),scroll:{width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight},overflow:document.documentElement.scrollWidth>innerWidth+1,hiddenButOperable:secondary.some(node=>getComputedStyle(node).display==='none'&&node.getClientRects().length>0&&node.tabIndex>=0),secondaryActions:secondary.map(node=>node.dataset.action),duplicatedActions:duplicated.map(node=>node.dataset.overflowAction)};
+    }''')
+    assert_true(snapshot['secondaryActions'],'Chart Studio has no responsive secondary commands')
+    assert_true(set(snapshot['duplicatedActions'])==set(snapshot['secondaryActions']),snapshot)
+    assert_true(not snapshot['overflow'],'Chart Studio document spill at responsive command probe')
+    assert_true(not snapshot['hiddenButOperable'],'hidden direct command remained operable')
+    assert_true(all(item['visible'] and item['topmost'] for item in snapshot['primary']),snapshot)
+    if width<=1180:
+        assert_true(all(item['display']=='none' and not item['visible'] for item in snapshot['secondary']),snapshot)
+        assert_true(snapshot['more']['visible'] and snapshot['more']['summary']['topmost'],snapshot)
+        page.locator('.cs-overflow summary').focus();page.keyboard.press('Enter');page.wait_for_timeout(60)
+        opened=page.evaluate('''()=>{const details=document.querySelector('.cs-overflow'),summary=details.querySelector('summary'),buttons=[...details.querySelectorAll('[data-overflow-action]')],visible=node=>{const r=node.getBoundingClientRect(),s=getComputedStyle(node);return s.display!=='none'&&s.visibility!=='hidden'&&r.width>0&&r.height>0;};return {open:details.open,buttons:buttons.map(node=>({action:node.dataset.overflowAction,visible:visible(node),disabled:node.disabled,rect:(()=>{const r=node.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};})()})),menuRect:(()=>{const r=details.querySelector('.cs-overflow-menu').getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,width:r.width,height:r.height};})(),summaryActive:document.activeElement===summary,menuContained:details.querySelector('.cs-overflow-menu').getBoundingClientRect().right<=innerWidth+1}}''')
+        assert_true(opened['open'] and all(item['visible'] and not item['disabled'] for item in opened['buttons']),opened)
+        assert_true(opened['menuContained'],opened)
+        for action in snapshot['secondaryActions']:
+            button=page.locator(f'.cs-overflow [data-overflow-action="{action}"]');button.focus();assert_true(page.evaluate('(action)=>document.activeElement?.dataset.overflowAction===action',action),action)
+        page.locator('.cs-overflow [data-overflow-action="best-axes"]').click();page.wait_for_timeout(60)
+        dismissed=page.evaluate('''()=>{const details=document.querySelector('.cs-overflow'),summary=details.querySelector('summary');return {open:details.open,summaryActive:document.activeElement===summary,active:document.activeElement?.outerHTML?.slice(0,160)||''};}''')
+        assert_true(not dismissed['open'] and dismissed['summaryActive'],dismissed)
+        page.locator('.cs-overflow summary').focus();page.keyboard.press('Enter');page.wait_for_timeout(40);page.keyboard.press('Escape');page.wait_for_timeout(60)
+        escaped=page.evaluate('''()=>{const details=document.querySelector('.cs-overflow'),summary=details.querySelector('summary');return {open:details.open,summaryActive:document.activeElement===summary};}''')
+        assert_true(not escaped['open'] and escaped['summaryActive'],escaped)
+        snapshot['opened']=opened;snapshot['dismissed']=dismissed;snapshot['escaped']=escaped
+    else:
+        assert_true(all(item['visible'] for item in snapshot['secondary']),snapshot)
+        assert_true(snapshot['more']['display']=='none' and not snapshot['more']['visible'],snapshot)
+    return snapshot
+
+
+def responsive_negative_control_exact_r1(page):
+    page.set_viewport_size({'width':1180,'height':900});page.wait_for_timeout(80)
+    result=page.evaluate('''()=>{const style=document.createElement('style');style.dataset.r1NegativeControl='true';style.textContent='@media(max-width:1180px){.cs-overflow{display:block}}@media(max-width:1181px){.cs-overflow{display:none}}';document.head.append(style);const node=document.querySelector('.cs-overflow'),display=getComputedStyle(node).display;style.remove();return {display,moreReachable:display!=='none'&&node.getBoundingClientRect().width>0};}''')
+    assert_true(result['display']=='none' and not result['moreReachable'],f'exact R1 overlap did not fail the More reachability assertion: {result}')
+    return result
 
 
 def assert_route(page,typ): assert_true('/visualizer/chart-studio' in page.url and page.locator('#cs-chart-type').input_value()==typ,f'route/type mismatch: {page.url}')
