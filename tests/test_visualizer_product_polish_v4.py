@@ -23,7 +23,8 @@ def test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes():
  tokens=(ASSETS/'tokens.css').read_text()
  css=(ASSETS/'integrated_editor.css').read_text()
  assert '--viz-accent: #0064c8;' in tokens
- assert '--viz-accent: #0064c8;' in css
+ assert '--viz-accent: #0064c8;' not in css
+ assert '--viz-r-control: 10px;' in tokens and '--viz-r-surface: 14px;' in tokens and '--viz-r-overlay: 18px;' in tokens
  assert '.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }' in css
  assert '.cui-visualizer-reportbar .q-btn.bg-primary .q-btn__content' in css
  assert contrast_ratio('#0071E3','#FFFFFF') >= 4.5

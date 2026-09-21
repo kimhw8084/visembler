@@ -39,6 +39,11 @@
   --viz-r-5: 18px;
   --viz-r-canvas: 24px;
   --viz-r-pill: 999px;
+  /* v1.6 product geometry families. Surface-specific aliases keep all
+     application surfaces on one control, surface, and overlay authority. */
+  --viz-r-control: 10px;
+  --viz-r-surface: 14px;
+  --viz-r-overlay: 18px;
   --viz-r-risk: 0 var(--viz-r-2) var(--viz-r-2) 0;
   --viz-s-1: 4px;
   --viz-s-2: 6px;
@@ -62,6 +67,10 @@
   --viz-line-normal: 1.4;
   --viz-target-desktop: 32px;
   --viz-target-touch: 44px;
+  --viz-control-height: 34px;
+  --viz-control-height-touch: 44px;
+  --viz-control-gap: 8px;
+  --viz-surface-padding: 16px;
   --viz-focus-ring: 0 0 0 3px rgba(10, 132, 255, 0.28);
   --viz-motion-fast: 120ms;
   --viz-motion-medium: 220ms;
@@ -106,3 +115,23 @@
 }
 
 /* TOKEN DEFINITIONS END */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :where(button, input, select, textarea, [tabindex]) {
+    forced-color-adjust: auto;
+  }
+  :where(button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+    box-shadow: none !important;
+  }
+}

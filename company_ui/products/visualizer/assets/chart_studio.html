@@ -10,17 +10,31 @@
       <label class="cs-type"><span>Chart type</span><select id="cs-chart-type" aria-label="Chart type"></select></label>
     </div>
     <div class="cs-toolbar-group cs-actions" role="toolbar" aria-label="Chart commands">
-      <button class="cs-btn" data-action="best-axes" type="button">Best readable axes</button>
-      <button class="cs-btn" data-action="clean-labels" type="button">Clean labels</button>
-      <button class="cs-btn" data-action="copy-setup" type="button">Copy setup</button>
-      <button class="cs-btn" data-action="toggle-markers" type="button">Markers</button>
-      <button class="cs-btn" data-action="toggle-theme" type="button">Light / dark</button>
-      <button class="cs-btn" data-action="fit" type="button">Fit</button>
-      <button class="cs-btn" data-action="preview" type="button">Preview</button>
-      <button class="cs-btn" data-action="import-json" type="button">Import JSON</button>
-      <button class="cs-btn" data-action="export-json" type="button">Export JSON</button>
-      <button class="cs-btn" data-action="export-svg" type="button">Export SVG</button>
-      <button class="cs-btn cs-primary" data-action="save" type="button">Save chart</button>
+      <button class="cs-btn" data-action="best-axes" data-responsive-priority="secondary" type="button">Best readable axes</button>
+      <button class="cs-btn" data-action="clean-labels" data-responsive-priority="secondary" type="button">Clean labels</button>
+      <button class="cs-btn" data-action="copy-setup" data-responsive-priority="secondary" type="button">Copy setup</button>
+      <button class="cs-btn" data-action="toggle-markers" data-responsive-priority="secondary" type="button">Markers</button>
+      <button class="cs-btn" data-action="toggle-theme" data-responsive-priority="secondary" type="button">Light / dark</button>
+      <button class="cs-btn" data-action="fit" data-responsive-priority="secondary" type="button">Fit</button>
+      <button class="cs-btn cs-primary" data-action="preview" data-responsive-priority="primary" type="button">Preview</button>
+      <button class="cs-btn" data-action="import-json" data-responsive-priority="secondary" type="button">Import JSON</button>
+      <button class="cs-btn" data-action="export-json" data-responsive-priority="secondary" type="button">Export JSON</button>
+      <button class="cs-btn" data-action="export-svg" data-responsive-priority="secondary" type="button">Export SVG</button>
+      <button class="cs-btn cs-primary" data-action="save" data-responsive-priority="primary" type="button">Save chart</button>
+      <details class="cs-overflow" data-responsive-overflow>
+        <summary class="cs-btn" aria-label="More chart commands">More</summary>
+        <div class="cs-overflow-menu" role="menu" aria-label="More chart commands">
+          <button class="cs-btn" data-overflow-action="best-axes" type="button" role="menuitem">Best readable axes</button>
+          <button class="cs-btn" data-overflow-action="clean-labels" type="button" role="menuitem">Clean labels</button>
+          <button class="cs-btn" data-overflow-action="copy-setup" type="button" role="menuitem">Copy setup</button>
+          <button class="cs-btn" data-overflow-action="toggle-markers" type="button" role="menuitem">Markers</button>
+          <button class="cs-btn" data-overflow-action="toggle-theme" type="button" role="menuitem">Light / dark</button>
+          <button class="cs-btn" data-overflow-action="fit" type="button" role="menuitem">Fit</button>
+          <button class="cs-btn" data-overflow-action="import-json" type="button" role="menuitem">Import JSON</button>
+          <button class="cs-btn" data-overflow-action="export-json" type="button" role="menuitem">Export JSON</button>
+          <button class="cs-btn" data-overflow-action="export-svg" type="button" role="menuitem">Export SVG</button>
+        </div>
+      </details>
     </div>
   </header>
   <div class="cs-shell">

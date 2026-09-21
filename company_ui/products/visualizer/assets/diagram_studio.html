@@ -4,27 +4,47 @@
       <button class="ds-button ds-back" data-action="back" type="button">← Report</button>
       <div class="ds-title-block"><span class="ds-eyebrow">Diagram Studio</span><b id="ds-report-title">Process diagram</b><small id="ds-save-status" aria-live="polite">Ready</small></div>
     </div>
-    <div class="ds-toolbar-group" role="toolbar" aria-label="History and layout">
-      <button class="ds-button ds-icon" data-action="undo" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
-      <button class="ds-button ds-icon" data-action="redo" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
-      <button class="ds-button" data-action="clean" type="button">Clean Diagram</button>
-      <button class="ds-button" data-action="layout-horizontal" type="button">Flow →</button>
-      <button class="ds-button" data-action="layout-vertical" type="button">Flow ↓</button>
-      <button class="ds-button" data-action="layout-tree" type="button">Tree</button>
-      <button class="ds-button" data-action="fit-width" type="button">Fit width</button>
-      <button class="ds-button" data-action="fit-page" type="button">Fit page</button>
-      <button class="ds-button" data-action="fit-selection" type="button">Fit selection</button>
+    <div class="ds-toolbar-group ds-toolbar-history" role="toolbar" aria-label="History and layout">
+      <button class="ds-button ds-icon" data-action="undo" data-responsive-priority="primary" aria-label="Undo" title="Undo · Ctrl/Cmd+Z">↶</button>
+      <button class="ds-button ds-icon" data-action="redo" data-responsive-priority="primary" aria-label="Redo" title="Redo · Ctrl/Cmd+Y">↷</button>
+      <button class="ds-button" data-action="clean" data-responsive-priority="primary" type="button">Clean Diagram</button>
+      <button class="ds-button" data-action="layout-horizontal" data-responsive-priority="primary" type="button">Flow →</button>
+      <button class="ds-button" data-action="layout-vertical" data-responsive-priority="secondary" type="button">Flow ↓</button>
+      <button class="ds-button" data-action="layout-tree" data-responsive-priority="secondary" type="button">Tree</button>
+      <button class="ds-button" data-action="fit-width" data-responsive-priority="secondary" type="button">Fit width</button>
+      <button class="ds-button" data-action="fit-page" data-responsive-priority="secondary" type="button">Fit page</button>
+      <button class="ds-button" data-action="fit-selection" data-responsive-priority="secondary" type="button">Fit selection</button>
+      <details class="ds-overflow" data-responsive-overflow>
+        <summary class="ds-button" aria-label="More diagram layout commands">More</summary>
+        <div class="ds-overflow-menu" role="menu" aria-label="More diagram layout commands">
+          <button class="ds-button" data-overflow-action="layout-vertical" type="button" role="menuitem">Flow ↓</button>
+          <button class="ds-button" data-overflow-action="layout-tree" type="button" role="menuitem">Tree</button>
+          <button class="ds-button" data-overflow-action="fit-width" type="button" role="menuitem">Fit width</button>
+          <button class="ds-button" data-overflow-action="fit-page" type="button" role="menuitem">Fit page</button>
+          <button class="ds-button" data-overflow-action="fit-selection" type="button" role="menuitem">Fit selection</button>
+        </div>
+      </details>
     </div>
     <div class="ds-toolbar-group ds-toolbar-actions" role="toolbar" aria-label="Diagram document actions">
       <button class="ds-button ds-mobile-panel-toggle" data-action="toggle-palette" type="button" aria-controls="ds-shape-panel" aria-expanded="false">Shapes</button>
       <button class="ds-button ds-mobile-panel-toggle" data-action="toggle-inspector" type="button" aria-controls="ds-inspector-panel" aria-expanded="false">Inspector</button>
-      <button class="ds-button" data-action="toggle-grid" type="button" aria-pressed="true">Grid</button>
-      <button class="ds-button" data-action="toggle-snap" type="button" aria-pressed="true">Snap</button>
-      <button class="ds-button" data-action="preview" type="button">Preview</button>
-      <button class="ds-button" data-action="import-json" type="button">Import JSON</button>
-      <button class="ds-button" data-action="export-json" type="button">Export JSON</button>
-      <button class="ds-button" data-action="export-svg" type="button">Export SVG</button>
-      <button class="ds-button ds-primary" data-action="save" type="button">Save diagram</button>
+      <button class="ds-button" data-action="toggle-grid" data-responsive-priority="secondary" type="button" aria-pressed="true">Grid</button>
+      <button class="ds-button" data-action="toggle-snap" data-responsive-priority="secondary" type="button" aria-pressed="true">Snap</button>
+      <button class="ds-button ds-primary" data-action="preview" data-responsive-priority="primary" type="button">Preview</button>
+      <button class="ds-button" data-action="import-json" data-responsive-priority="secondary" type="button">Import JSON</button>
+      <button class="ds-button" data-action="export-json" data-responsive-priority="secondary" type="button">Export JSON</button>
+      <button class="ds-button" data-action="export-svg" data-responsive-priority="secondary" type="button">Export SVG</button>
+      <button class="ds-button ds-primary" data-action="save" data-responsive-priority="primary" type="button">Save diagram</button>
+      <details class="ds-overflow" data-responsive-overflow>
+        <summary class="ds-button" aria-label="More diagram commands">More</summary>
+        <div class="ds-overflow-menu" role="menu" aria-label="More diagram commands">
+          <button class="ds-button" data-overflow-action="toggle-grid" type="button" role="menuitem">Grid</button>
+          <button class="ds-button" data-overflow-action="toggle-snap" type="button" role="menuitem">Snap</button>
+          <button class="ds-button" data-overflow-action="import-json" type="button" role="menuitem">Import JSON</button>
+          <button class="ds-button" data-overflow-action="export-json" type="button" role="menuitem">Export JSON</button>
+          <button class="ds-button" data-overflow-action="export-svg" type="button" role="menuitem">Export SVG</button>
+        </div>
+      </details>
     </div>
   </header>
   <div class="ds-shell">
