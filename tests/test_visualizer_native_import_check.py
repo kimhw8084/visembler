@@ -22,15 +22,15 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 FIXTURE = r'''<!doctype html><meta charset="utf-8"><title>Upload-check fixture</title>
-<style>body{font-family:sans-serif}.cui-visualizer-import-card{display:none;border:1px solid;padding:20px}
+<style>body{font-family:sans-serif}[data-cui-overlay="dialog"]{display:none;border:1px solid;padding:20px}
 .q-btn{display:inline-block;padding:10px;border:1px solid}button{margin:6px}.queued{display:none}</style>
 <button id="manage">Manage</button><button id="import" hidden>Import…</button>
-<section class="cui-visualizer-import-card">
-<h2>Fixture import</h2><div class="q-uploader"><div class="q-uploader__header">
+<section class="cui-dialog" role="dialog" aria-modal="true" data-cui-overlay="dialog">
+<div class="cui-dialog__title">Import a report</div><div class="cui-upload-shell"><div class="q-uploader cui-upload"><div class="q-uploader__header">
 <input type="file"><a role="button" class="q-btn queued" aria-label="Remove queued files"><i class="q-icon">clear_all</i></a>
 __UPLOAD__</div></div><button id="done">Done</button></section>
 <script>
-const card=document.querySelector('section'), input=document.querySelector('input');
+const card=document.querySelector('[data-cui-overlay="dialog"]'), input=document.querySelector('input');
 let rid='case-fresh-target', pending=0;
 window.CompanyUIVisualizerBridge={state:()=>({report_id:rid,revision:1,pending,inflight:null,recovery:false})};
 manage.onclick=()=>document.querySelector('#import').hidden=false;
@@ -113,7 +113,7 @@ def test_native_import_check_submits_once_via_real_visible_button(upload_fixture
     assert receipt['upload_responses'][0]['status'] == 200
     assert (tmp_path / 'evidence/native-import-queued.png').is_file()
     assert (tmp_path / 'evidence/native-import-activated.png').is_file()
-    assert not page.locator('.cui-visualizer-import-card').is_visible()
+    assert not page.locator('[data-cui-overlay="dialog"]:visible').is_visible()
 
 
 def test_application_rejection_is_not_an_import_pass(upload_fixture, tmp_path):

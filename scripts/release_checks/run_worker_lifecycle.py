@@ -25,6 +25,26 @@ def inject_text(page,text):
     page.locator('#dataFirstText').evaluate('(el,v)=>{el.value=v;el.dispatchEvent(new Event("input",{bubbles:true}))}',text)
 
 
+def data_first_dialog(page):
+    """Return the current Data First surface, independent of its host modal."""
+    return page.locator('.data-first-dialog:visible')
+
+
+def cancel_data_first(page):
+    dialog=data_first_dialog(page)
+    dialog.wait_for(state='visible',timeout=8000)
+    cancel=dialog.locator('[data-close]')
+    if cancel.count() and cancel.is_visible():
+        cancel.click()
+    else:
+        # During the parser-to-result DOM replacement the body action can be
+        # absent for one render; the same current Data First surface owns its
+        # header close control as the stable cancellation fallback.
+        host_modal=page.locator('.modal.show').filter(has=page.locator('.data-first-dialog'))
+        host_modal.locator('.dialog-head [data-close]').click(force=True)
+    page.wait_for_function('()=>!document.querySelector(".modal.show .data-first-dialog")',timeout=8000)
+
+
 def main()->int:
     ap=argparse.ArgumentParser();ap.add_argument('--output',type=Path,required=True);args=ap.parse_args()
     out=args.output.resolve();out.mkdir(parents=True,exist_ok=True);(out/'screenshots').mkdir(exist_ok=True)
@@ -73,17 +93,17 @@ def main()->int:
             # delayed module worker imports the real parser but responds later.
             case={'name':'worker-cancel-stale-result-isolated','status':'FAIL'};report['cases'].append(case)
             try:
-                p.locator('#genericModal').get_by_role('button',name='Cancel',exact=True).click();p.wait_for_timeout(200)
+                cancel_data_first(p)
                 delayed="""import { intakeText } from './authoring_data.mjs';\nself.onmessage=({data})=>setTimeout(()=>{try{self.postMessage({id:data.id,result:intakeText(data.text)})}catch(error){self.postMessage({id:data.id,error:String(error?.message||error)})}},1800);"""
                 def delay_worker(route):
                     route.fulfill(status=200,content_type='text/javascript; charset=utf-8',body=delayed)
                 ctx.route(pattern,delay_worker)
                 p.locator('#pasteDataBtn').click();inject_text(p,large_grid(offset=80000))
                 p.wait_for_function('()=>__VIZ_PROD__.ui.dataFirst?.loading===true',timeout=8000)
-                p.locator('#genericModal').get_by_role('button',name='Cancel',exact=True).click()
+                cancel_data_first(p)
                 p.wait_for_timeout(2400)
                 assert p.evaluate('()=>__VIZ_PROD__.ui.dataFirst===null')
-                assert not p.locator('#genericModal').evaluate('(n)=>n.classList.contains("show")')
+                assert p.locator('.modal.show .data-first-dialog').count()==0
                 case['status']='PASS'
                 p.screenshot(path=str(out/'screenshots'/'03-worker-cancelled.png'))
             except Exception as exc:

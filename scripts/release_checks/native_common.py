@@ -65,7 +65,18 @@ def select(page,item_id='c1'):
 
 def edit_text(page,value, *, settle=True):
     select(page,'c1')
+    before_revision=page.evaluate('()=>CompanyUIVisualizerBridge.state().revision')
     field=page.locator('#iText');field.scroll_into_view_if_needed();field.fill(value);field.press('Tab')
+    page.wait_for_function(
+        '''({value,beforeRevision})=>{
+            const state=window.CompanyUIVisualizerBridge.state();
+            const item=state.model?.items?.find(entry=>String(entry.id)==='c1');
+            const text=item?.text ?? item?.body;
+            return text===value && (state.pending>0 || Boolean(state.inflight) || state.revision>beforeRevision);
+        }''',
+        arg={'value':value,'beforeRevision':before_revision},
+        timeout=8000,
+    )
     if settle:
         page.wait_for_function('()=>{const s=window.CompanyUIVisualizerBridge.state();return s.pending===0&&!s.inflight}',timeout=15000)
 

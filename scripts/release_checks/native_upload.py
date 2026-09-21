@@ -96,10 +96,10 @@ def import_native_report(page: Any, source: Path, evidence: Path,
                 notifications: [...document.querySelectorAll('.q-notification')]
                     .map(n => (n.innerText || '').slice(0, 1500)).slice(-10),
                 uploader_headers: [...document.querySelectorAll(
-                    '.cui-visualizer-import-card .q-uploader__header')]
+                    '[data-cui-overlay="dialog"] .cui-upload .q-uploader__header')]
                     .map(n => n.outerHTML.slice(0, 12000)),
                 import_dialog_text: [...document.querySelectorAll(
-                    '.cui-visualizer-import-card')]
+                    '[data-cui-overlay="dialog"]')]
                     .map(n => (n.innerText || '').slice(0, 5000))
             })''')
         except Exception as exc:
@@ -109,16 +109,18 @@ def import_native_report(page: Any, source: Path, evidence: Path,
     page.on('response', responded)
     try:
         page.get_by_role('button', name='Manage', exact=True).click()
-        # The production shell navigates to the dedicated Report Hub. The
-        # isolated contract fixture intentionally keeps the older in-page
-        # dialog so this helper can continue proving the visible upload click.
-        if '/visualizer/reports' not in page.url:
-            page.get_by_role('button', name='Import…', exact=True).wait_for(
-                state='visible', timeout=timeout_ms)
-        page.get_by_role('button', name='Import…', exact=True).click()
-        card = page.locator('.cui-visualizer-import-card:visible')
-        card.wait_for(state='visible', timeout=timeout_ms)
-        uploader = card.locator('.q-uploader')
+        # Manage opens the governed Report Hub, whose import action owns a
+        # Company dialog and FileUpload surface. Wait for that route-owned
+        # action rather than depending on the editor's old generic modal.
+        import_button = page.get_by_role('button', name='Import…', exact=True)
+        import_button.wait_for(state='visible', timeout=timeout_ms)
+        import_button.click()
+        dialog = page.locator('[data-cui-overlay="dialog"]:visible').filter(
+            has=page.locator('.cui-dialog__title').get_by_text('Import a report', exact=True)
+        )
+        dialog.wait_for(state='visible', timeout=timeout_ms)
+        uploader = dialog.locator('.cui-upload')
+        uploader.wait_for(state='visible', timeout=timeout_ms)
         receipt['stage'] = 'queue-file'
         uploader.locator('input[type="file"]').set_input_files(str(source))
 
@@ -154,10 +156,10 @@ def import_native_report(page: Any, source: Path, evidence: Path,
             raise AssertionError('Application rejected the JSON import: ' + ' | '.join(notices))
         receipt['imported_report_id'] = new_id
         page.screenshot(path=str(evidence / 'native-import-activated.png'))
-        done = card.get_by_role('button', name='Done', exact=True)
-        if card.count() and card.is_visible():
+        done = dialog.get_by_role('button', name='Done', exact=True)
+        if dialog.count() and dialog.is_visible():
             done.click(timeout=timeout_ms)
-            card.wait_for(state='hidden', timeout=timeout_ms)
+            dialog.wait_for(state='hidden', timeout=timeout_ms)
         receipt.update(status='PASS', stage='complete')
         return receipt
     except Exception as exc:

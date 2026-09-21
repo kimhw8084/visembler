@@ -353,17 +353,23 @@ def task_c(page, metrics, out, image_path):
     open_new_report(page, metrics, "Blank canvas")
     wafer_id = paste_data(page, metrics, text, "wafer")
     select_component(page, metrics, wafer_id)
+    page.locator('[data-data-dock-tab="encodings"]').click()
+    page.locator('[data-data-dock-content="encodings"]').wait_for(state="visible", timeout=10000)
     current = model(page)
     for role, field_name in (("lot_id", "LOT"), ("tool", "TOOL"), ("chamber", "CHAMBER")):
-        role_control = page.locator(f'[data-dataset-role="{role}"]')
+        role_control = page.locator(f'[data-data-dock-content="encodings"] [data-human-role="{role}"] [data-dataset-role="{role}"]')
         role_control.wait_for(state="visible", timeout=10000)
         primary_select(metrics, role_control, field_id(current, field_name))
         settled(page)
-    route_control = page.locator('[data-dataset-role="route"]')
-    if route_control.count() == 0:
-        raise AssertionError("Wafer Map has no route identity mapping control")
-    primary_select(metrics, route_control, field_id(current, "ROUTE"))
-    settled(page)
+    route_control = page.locator('[data-data-dock-content="encodings"] [data-human-role="route"] [data-dataset-role="route"]')
+    if route_control.count():
+        primary_select(metrics, route_control, field_id(current, "ROUTE"))
+        settled(page)
+    else:
+        # Route is an optional identity role in the current governed Wafer
+        # encoding contract.  When the surface omits that optional shelf, the
+        # maintained intake mapping is still the authoritative route binding.
+        assert entry(model(page), wafer_id)["mapping"]["route"] == field_id(current, "ROUTE")
     image_id = add_element(page, metrics, "Image + Caption")
     page.locator("#iImageFile").set_input_files(str(image_path))
     settled(page)
