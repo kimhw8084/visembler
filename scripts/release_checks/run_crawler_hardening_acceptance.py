@@ -128,8 +128,8 @@ def main() -> int:
                             _open(page, f"{host.url}/visualizer/reports?report={quote(hub_ids[0])}", '[data-testid="report-hub"]')
                             card = page.locator(f'[data-report-id="{hub_ids[0]}"]')
                             before = fixtures.snapshot_ids()
-                            assert card.locator('[data-report-action="duplicate"]').get_attribute("data-report-action") == "duplicate"
-                            card.locator('[data-report-action="duplicate"]').click()
+                            card.locator('[data-report-action="more"]').click()
+                            page.locator('.q-menu:visible').get_by_role('button', name='Duplicate report', exact=True).click()
                             page.wait_for_function("n=>document.querySelectorAll('[data-testid=report-card]').length>n", arg=8)
                             created = fixtures.adopt_new(before, "targeted duplicate")
                             assert len(created) == 1

@@ -105,9 +105,10 @@ def task_2(page, metrics, out, image_path):
     page.locator(".cui-report-hub").wait_for(timeout=15000)
     primary_click(page, metrics, 'button:has-text("List")')
     page.locator(".cui-report-list").wait_for(timeout=10000)
-    original = page.locator('.cui-report-card').filter(has=page.locator('input[value="Operations Review"]')).first
+    original = page.locator('.cui-report-card').filter(has_text="Operations Review").first
     original.wait_for(timeout=10000)
-    primary_locator_click(metrics, original.locator('button').filter(has_text="Move to trash"))
+    primary_locator_click(metrics, original.locator('[data-report-action="more"]'))
+    primary_locator_click(metrics, page.locator('.q-menu:visible').get_by_role('button', name='Move to trash', exact=True))
     dialog = page.locator('.q-dialog:visible')
     dialog.get_by_text("Move to trash", exact=True).click()
     page.wait_for_timeout(180)
@@ -120,7 +121,7 @@ def task_2(page, metrics, out, image_path):
     page.wait_for_timeout(240)
     primary_locator_click(metrics, toolbar_fields.nth(2))
     page.locator('.q-menu:visible .q-item').get_by_text("Active + trash", exact=True).click()
-    restored = page.locator('.cui-report-card').filter(has=page.locator('input[value="Operations Review"]')).first
+    restored = page.locator('.cui-report-card').filter(has_text="Operations Review").first
     restored.wait_for(timeout=10000)
     primary_locator_click(metrics, restored.locator('button').filter(has_text="History"))
     page.locator('.cui-history-panel').wait_for(timeout=10000)

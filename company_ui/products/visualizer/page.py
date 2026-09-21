@@ -16,6 +16,7 @@ from urllib.parse import parse_qs, quote
 
 from fastapi import HTTPException, Request
 
+from company_ui import ActionMenu, Button, ButtonIntent, Card, DetailDrawer, DangerConfirmDialog, FormDialog, IconButton, Icons, MenuItemSpec, OverlaySize, StatusBadge, StatusIntent
 from company_ui.integrations.nicegui_components import FileUpload
 from company_ui.integrations.nicegui_layout import AppShell
 from company_ui.integrations.nicegui_state import NiceGUIStateServices
@@ -671,9 +672,10 @@ def register_visualizer(
         repository=scoped_repository(request)
         hub_dataset_repository=ScopedDatasetRepository(dataset_store, repository)
         query_report=str(request.query_params.get('report') or '')
-        history_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
+        editor_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
         can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
-        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; hub_layout='grid'
+        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; edit_target={'report_id':None}
+        history_report_id=None; selected_history_id=None; hub_layout='grid'
         share_target={'report_id':None}
 
         def hub_statistical_results(record_or_model: Any, *, report_id: str | None = None) -> dict[str, dict[str, Any]]:
@@ -739,27 +741,24 @@ def register_visualizer(
             return results
 
         ui.add_head_html('''<style>
-          .cui-report-hub{--q-primary:var(--cui-accent);--q-negative:var(--cui-danger);max-width:1440px;margin:0 auto;padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5)}
-          .cui-report-hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
-          .cui-report-hub-head h1{margin:0;font-size:var(--cui-font-size-32);letter-spacing:-.04em}.cui-report-hub-head p{margin:var(--cui-space-1) 0 0;color:var(--cui-text-secondary)}
-          .cui-report-hub-toolbar{display:flex;gap:var(--cui-space-2);align-items:center;flex-wrap:wrap;padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-control);background:var(--cui-surface)}
-          .cui-report-hub-toolbar>*{min-width:150px}.cui-report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:var(--cui-space-3)}
-          .cui-report-grid.cui-report-list{grid-template-columns:1fr;gap:var(--cui-space-2)}
-          .cui-report-list .cui-report-card{grid-template-columns:180px minmax(0,1fr);align-items:start}.cui-report-list .cui-report-thumb{grid-row:span 2;height:108px}
-          .cui-report-card,.cui-history-card{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface);box-shadow:var(--cui-shadow-1)}
-          .cui-report-card h2{margin:0;font-size:var(--cui-font-size-16)}.cui-report-card small,.cui-history-card small{color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35)}
-          .cui-report-card .q-field{min-width:0}.cui-report-card .q-field__control{min-height:36px!important;height:36px!important}.cui-report-card .q-field__native{font-size:var(--cui-font-size-13)!important}
-          .cui-report-card-actions,.cui-history-actions{display:flex;gap:var(--cui-space-1);flex-wrap:wrap}.cui-report-card-actions .q-btn,.cui-history-actions .q-btn{min-height:34px}
-          .cui-report-hub .q-btn.q-btn--flat{color:var(--cui-accent)!important}.cui-report-hub .q-btn.q-btn--flat .q-btn__content{color:inherit!important}.cui-report-hub .q-btn.q-btn--flat.text-negative{color:var(--cui-danger)!important}
-          .cui-report-thumb{height:132px;position:relative;overflow:hidden;border-radius:var(--cui-radius-control);background:linear-gradient(135deg,var(--cui-surface-secondary),var(--cui-surface-hover));border:1px solid var(--cui-border-default)}
-          .cui-report-thumb svg{width:100%;height:100%;display:block}.thumb-page{fill:var(--cui-surface-secondary);stroke:var(--cui-border-default)}.thumb-card{fill:var(--cui-surface-elevated);stroke:var(--cui-border-default)}.thumb-chart-line{fill:none;stroke:var(--cui-accent);stroke-width:2}.thumb-axis,.thumb-edge,.thumb-rule,.thumb-copy-line{fill:none;stroke:var(--cui-text-tertiary);stroke-width:1}.thumb-wafer{fill:var(--cui-surface-selected);stroke:var(--cui-info)}.thumb-die{fill:var(--cui-accent);stroke:var(--cui-text-inverse);stroke-width:.5}.thumb-node{fill:var(--cui-info-soft);stroke:var(--cui-info)}.thumb-metric{font-size:var(--cui-font-size-18);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-copy{font-size:var(--cui-font-size-10);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-media{fill:var(--cui-info)}.thumb-media-mark{fill:none;stroke:var(--cui-text-inverse);stroke-width:2}.thumb-blank-mark{stroke:var(--cui-text-tertiary);stroke-width:2}.cui-report-thumb text{font-size:var(--cui-font-size-10);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.cui-history-compare{display:grid;grid-template-columns:1fr 1fr;gap:6px}.cui-history-compare .cui-report-thumb{height:78px}.cui-history-preview-label{font-size:var(--cui-font-size-10);color:var(--cui-text-secondary);text-align:center}
-          .cui-report-hub-section{display:grid;gap:var(--cui-space-2)}.cui-report-hub-section>h2{margin:0;font-size:var(--cui-font-size-18)}.cui-report-hub-empty{padding:var(--cui-space-6);border:1px dashed var(--cui-border-default);border-radius:var(--cui-radius-control);color:var(--cui-text-secondary);background:var(--cui-surface-secondary)}
-          .cui-history-panel{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-4);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface-secondary)}.cui-history-list{display:grid;gap:var(--cui-space-2)}
-          .cui-history-card{grid-template-columns:150px minmax(0,1fr);align-items:start}.cui-history-card .cui-report-thumb{height:94px}.cui-history-card h3{margin:0;font-size:var(--cui-font-size-14)}
-          @media(max-width:800px){.cui-report-hub{padding:var(--cui-space-5) var(--cui-space-3) 78px}.cui-report-hub-toolbar>*{flex:1 1 100%;min-width:0}.cui-history-card{grid-template-columns:1fr}.cui-history-card .cui-report-thumb{height:120px}}
+          .cui-report-hub{padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5);min-width:0}
+          .cui-report-hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--cui-space-4);flex-wrap:wrap}.cui-report-hub-head h1{margin:0;font-size:var(--cui-font-size-32);letter-spacing:-.04em}.cui-report-hub-head p{margin:var(--cui-space-1) 0 0;color:var(--cui-text-secondary)}
+          .cui-report-hub-head-actions{display:flex;align-items:center;gap:var(--cui-space-2);flex-wrap:wrap}.cui-report-hub-toolbar{display:grid;grid-template-columns:minmax(14rem,2fr) repeat(4,minmax(8rem,1fr));gap:var(--cui-space-2);align-items:end;padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface)}.cui-report-hub-toolbar>*{min-width:0}
+          .cui-report-hub-toolbar .cui-report-search{min-width:0}.cui-report-hub-toolbar .cui-report-create{min-width:0}.cui-report-view-toggle{display:flex;gap:var(--cui-space-1);align-items:center;min-height:var(--cui-control-height-medium)}
+          .cui-report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(17.5rem,1fr));gap:var(--cui-space-3);min-width:0}.cui-report-grid.cui-report-list{grid-template-columns:1fr;gap:var(--cui-space-2)}
+          .cui-report-list .cui-report-card{grid-template-columns:minmax(9rem,15rem) minmax(0,1fr);align-items:start}.cui-report-list .cui-report-thumb{height:7rem}
+          .cui-report-card,.cui-template-card{display:grid;gap:var(--cui-space-3);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface);box-shadow:var(--cui-shadow-1);min-width:0}.cui-report-card-body{display:grid;gap:var(--cui-space-2);min-width:0}.cui-report-card-identity{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--cui-space-2);min-width:0}.cui-report-card-copy{min-width:0}.cui-report-card-title{display:block;font-size:var(--cui-font-size-16);font-weight:var(--cui-font-weight-700);line-height:var(--cui-line-height-ratio-1_2);overflow-wrap:anywhere}.cui-report-card-description{display:block;margin-top:var(--cui-space-1);color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-report-card-meta{display:flex;flex-wrap:wrap;gap:var(--cui-space-1) var(--cui-space-3);color:var(--cui-text-secondary);font-size:var(--cui-font-size-12);line-height:var(--cui-line-height-ratio-1_35)}.cui-report-card-meta span{overflow-wrap:anywhere}.cui-report-card-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--cui-space-2);padding-top:var(--cui-space-2);border-top:1px solid var(--cui-border-subtle)}.cui-report-card-primary{min-width:7.5rem}.cui-report-card-more{flex:0 0 auto}
+          .cui-report-thumb{height:8.25rem;position:relative;overflow:hidden;border-radius:var(--cui-radius-control);background:linear-gradient(135deg,var(--cui-surface-secondary),var(--cui-surface-hover));border:1px solid var(--cui-border-default)}.cui-report-thumb svg{width:100%;height:100%;display:block}.thumb-page{fill:var(--cui-surface-secondary);stroke:var(--cui-border-default)}.thumb-card{fill:var(--cui-surface-elevated);stroke:var(--cui-border-default)}.thumb-chart-line{fill:none;stroke:var(--cui-accent);stroke-width:2}.thumb-axis,.thumb-edge,.thumb-rule,.thumb-copy-line{fill:none;stroke:var(--cui-text-tertiary);stroke-width:1}.thumb-wafer{fill:var(--cui-surface-selected);stroke:var(--cui-info)}.thumb-die{fill:var(--cui-accent);stroke:var(--cui-text-inverse);stroke-width:.5}.thumb-node{fill:var(--cui-info-soft);stroke:var(--cui-info)}.thumb-metric{font-size:var(--cui-font-size-18);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-copy{font-size:var(--cui-font-size-10);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-media{fill:var(--cui-info)}.thumb-media-mark{fill:none;stroke:var(--cui-text-inverse);stroke-width:2}.thumb-blank-mark{stroke:var(--cui-text-tertiary);stroke-width:2}.cui-report-thumb text{font-size:var(--cui-font-size-10);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}
+          .cui-report-hub-section{display:grid;gap:var(--cui-space-2);min-width:0}.cui-report-hub-section>h2{margin:0;font-size:var(--cui-font-size-18)}.cui-report-hub-empty{padding:var(--cui-space-6);border:1px dashed var(--cui-border-default);border-radius:var(--cui-radius-control);color:var(--cui-text-secondary);background:var(--cui-surface-secondary)}
+          .cui-template-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:var(--cui-space-3)}.cui-template-card{gap:var(--cui-space-2)}.cui-template-card .cui-report-thumb{height:7rem}.cui-template-title{font-weight:var(--cui-font-weight-700)}.cui-template-description{color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-template-card .cui-button{width:100%}
+          .cui-history-panel{display:grid;gap:var(--cui-space-3);padding:var(--cui-space-1);min-width:0}.cui-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--cui-space-3);flex-wrap:wrap}.cui-history-context{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface-secondary)}.cui-history-context h3{margin:0;font-size:var(--cui-font-size-16)}.cui-history-context-copy{display:grid;gap:var(--cui-space-1);min-width:0}.cui-history-context-copy p{margin:0;color:var(--cui-text-secondary);overflow-wrap:anywhere}.cui-history-compare{display:grid;grid-template-columns:1fr 1fr;gap:var(--cui-space-2)}.cui-history-compare .cui-report-thumb{height:7rem}.cui-history-preview-label{font-size:var(--cui-font-size-12);color:var(--cui-text-secondary);text-align:center}.cui-history-list{display:grid;gap:var(--cui-space-2)}.cui-history-card{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface)}.cui-history-card.is-selected{border-color:var(--cui-accent);box-shadow:0 0 0 1px var(--cui-accent)}.cui-history-card-copy{display:grid;gap:var(--cui-space-1);min-width:0}.cui-history-card-title{font-weight:var(--cui-font-weight-700);overflow-wrap:anywhere}.cui-history-card-meta{color:var(--cui-text-secondary);font-size:var(--cui-font-size-12);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-history-actions{display:flex;gap:var(--cui-space-2);flex-wrap:wrap;padding-top:var(--cui-space-2)}.cui-history-actions .cui-button{min-width:0}
+          @media(max-width:1024px){.cui-report-hub{padding-inline:var(--cui-space-5)}.cui-report-hub-toolbar{grid-template-columns:minmax(0,2fr) repeat(3,minmax(7rem,1fr))}.cui-report-view-toggle{grid-column:span 2}.cui-report-create{grid-column:span 2}}
+          @media(max-width:720px){.cui-report-hub{padding:var(--cui-space-5) var(--cui-space-3) var(--cui-space-16)}.cui-report-hub-toolbar{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}.cui-report-search{grid-column:1 / -1}.cui-report-view-toggle,.cui-report-create{grid-column:auto}.cui-report-grid{grid-template-columns:1fr}.cui-report-list .cui-report-card{grid-template-columns:1fr}.cui-report-list .cui-report-thumb{height:8.25rem}.cui-history-compare{grid-template-columns:1fr}.cui-history-compare .cui-report-thumb{height:8.25rem}.cui-report-hub-head-actions{width:100%}.cui-report-hub-head-actions .cui-button{flex:1 1 auto}}
+          @media(max-width:420px){.cui-report-hub-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.cui-report-search,.cui-report-view-toggle,.cui-report-create{grid-column:1 / -1}.cui-report-card-footer{align-items:stretch}.cui-report-card-primary{flex:1 1 auto}.cui-report-hub-head-actions .cui-button{width:100%}}
         </style>''')
 
         def hub_url(report_id: str) -> str: return f'/visualizer?report={quote(report_id,safe="")}'
+
         def sorted_records(records):
             sort=str(sort_select.value or 'modified')
             if sort=='title': return sorted(records,key=lambda record:(record.title.casefold(),record.report_id))
@@ -771,11 +770,12 @@ def register_visualizer(
             hub_layout='list' if layout=='list' else 'grid'
             render_cards.refresh()
 
-        async def create_hub_report() -> None:
-            template_id=str(template_select.value or 'blank')
-            spec=REPORT_TEMPLATES.get(template_id); title='Untitled report' if template_id=='blank' else str(spec['name'])
-            record=repository.create(f'report-{uuid.uuid4().hex}',title=title,model=template_model(template_id),metadata={'template_id':template_id})
-            notifications.success(f'{title} created'); ui.navigate.to(hub_url(record.report_id))
+        async def create_hub_report(template_id: str) -> None:
+            try:
+                spec=REPORT_TEMPLATES.get(template_id); title='Untitled report' if template_id=='blank' else str(spec['name'])
+                record=repository.create(f'report-{uuid.uuid4().hex}',title=title,model=template_model(template_id),metadata={'template_id':template_id})
+                new_report_dialog.close(); notifications.success(f'{title} created'); ui.navigate.to(hub_url(record.report_id))
+            except Exception as exc: notifications.error(f'Report creation rejected: {exc}')
 
         async def upload_hub_report(event: Any) -> None:
             try:
@@ -789,27 +789,45 @@ def register_visualizer(
 
         async def duplicate_hub_report(report_id: str) -> None:
             try:
-                source=repository.get(report_id); record=repository.duplicate(source.report_id,f'report-{uuid.uuid4().hex}',title=f'{source.title} copy'[:160],metadata={**source.metadata,'duplicated_from':source.report_id})
-                notifications.success('Report duplicated'); history_report_id=record.report_id; render_cards.refresh(); render_history.refresh()
+                source=repository.get(report_id); repository.duplicate(source.report_id,f'report-{uuid.uuid4().hex}',title=f'{source.title} copy'[:160],metadata={**source.metadata,'duplicated_from':source.report_id})
+                notifications.success('Report duplicated'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Duplicate rejected: {exc}')
 
-        async def rename_hub_report(report_id: str,event: Any) -> None:
+        def open_edit_report(report_id: str) -> None:
             try:
-                latest=repository.get(report_id); value=str(getattr(event,'value','') or '')
-                if value.strip()!=latest.title: repository.rename(report_id,title=value,expected_revision=latest.revision); notifications.success('Report renamed'); render_cards.refresh()
-            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before renaming.')
-            except Exception as exc: notifications.error(f'Rename rejected: {exc}')
+                record=repository.get(report_id); projection=repository.capabilities(report_id)
+                if not projection.can_rename and not projection.can_edit: raise PermissionError('report details are read-only')
+                edit_target['report_id']=record.report_id; edit_title.value=record.title; edit_description.value=str(record.metadata.get('description') or '')
+                edit_title.update(); edit_description.update(); edit_dialog.open()
+            except Exception as exc: notifications.error(f'Unable to edit report details: {exc}')
 
-        async def describe_hub_report(report_id: str,event: Any) -> None:
+        async def save_edit_report() -> None:
+            report_id=edit_target.get('report_id')
+            if not report_id: return
             try:
-                latest=repository.get(report_id); value=str(getattr(event,'value','') or '')
-                if value!=str(latest.metadata.get('description') or ''): repository.update_description(report_id,value,expected_revision=latest.revision); notifications.success('Description updated'); render_cards.refresh()
-            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before editing metadata.')
-            except Exception as exc: notifications.error(f'Description update rejected: {exc}')
+                record=repository.get(report_id); projection=repository.capabilities(report_id)
+                title=' '.join(str(edit_title.value or '').replace('\x00','').split())
+                description=' '.join(str(edit_description.value or '').replace('\x00','').split())
+                if projection.can_rename and title != record.title:
+                    record=repository.rename(report_id,title=title,expected_revision=record.revision)
+                if projection.can_edit and description != str(record.metadata.get('description') or ''):
+                    record=repository.update_description(report_id,description,expected_revision=record.revision)
+                edit_dialog.close(); notifications.success('Report details saved'); render_cards.refresh(); render_history.refresh()
+            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before saving details.')
+            except Exception as exc: notifications.error(f'Report details rejected: {exc}')
 
-        def select_history(report_id: str) -> None:
-            nonlocal history_report_id
-            history_report_id=report_id; page_state['visualizer.current_report']=report_id; render_history.refresh()
+        def select_history(report_id: str, history_id: str | None = None) -> None:
+            nonlocal history_report_id, selected_history_id
+            try:
+                entries=repository.list_history(report_id)
+                history_report_id=report_id; page_state['visualizer.current_report']=report_id
+                selected_history_id=history_id or (str(entries[0]['history_id']) if entries else None)
+                render_history.refresh(); history_drawer.open()
+            except Exception as exc: notifications.error(f'History is unavailable: {exc}')
+
+        def select_history_revision(history_id: str) -> None:
+            nonlocal selected_history_id
+            selected_history_id=history_id; render_history.refresh()
 
         def begin_trash(report_id: str) -> None:
             record=repository.get(report_id); delete_target.update(report_id=record.report_id,revision=record.revision); delete_summary.set_text(f'Move “{record.title}” to trash? Its history remains recoverable.'); delete_dialog.open()
@@ -829,13 +847,6 @@ def register_visualizer(
             repository.require_export(report_id)
             record=repository.get(report_id); payload=stable_json({'report_id':record.report_id,'title':record.title,'description':record.metadata.get('description',''),'revision':record.revision,'model':record.model}).encode('utf-8'); downloads.download(f'{record.title or "visembler-report"}.json',payload,media_type='application/json')
 
-        async def checkpoint_hub(report_id: str,field: Any) -> None:
-            try:
-                name=' '.join(str(field.value or '').split())
-                if not name: notifications.warning('Enter a checkpoint name first'); return
-                record=repository.get(report_id); repository.checkpoint(report_id,name=name,expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
-            except Exception as exc: notifications.error(f'Checkpoint rejected: {exc}')
-
         def begin_history_restore(report_id: str,history_id: str,summary: str) -> None:
             restore_target.update(report_id=report_id,history_id=history_id); history_restore_summary.set_text(f'Restore {summary}? This replaces the active report state and creates a new revision.'); history_restore_dialog.open()
 
@@ -851,18 +862,26 @@ def register_visualizer(
                 repository.duplicate_from_history(report_id,history_id,f'report-{uuid.uuid4().hex}'); notifications.success('Historical revision duplicated as a new report'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Historical duplicate rejected: {exc}')
 
+        async def save_hub_checkpoint(report_id: str, field: Any) -> None:
+            try:
+                name=' '.join(str(field.value or '').split())
+                if not name: notifications.warning('Enter a checkpoint name first'); return
+                record=repository.get(report_id); repository.checkpoint(report_id,name=name,expected_revision=record.revision); field.value=''; field.update(); notifications.success('Named checkpoint saved'); render_history.refresh()
+            except RevisionConflictError: notifications.error('Report changed elsewhere; reload history before saving a checkpoint.')
+            except Exception as exc: notifications.error(f'Checkpoint rejected: {exc}')
+
         def open_share(report_id: str) -> None:
             try:
                 record=repository.get(report_id); summary=access.access_summary(report_id,repository.principal)
                 share_target['report_id']=record.report_id
-                share_summary.set_text(f"Owner: {summary['owner']} · Grants: {len(summary['grants'])}")
+                share_summary.set_text(f"Owner: {summary['owner']} · {len(summary['grants'])} people or groups already have access")
                 share_subject.value=''; share_subject.update(); share_dialog.open()
             except Exception as exc: notifications.error(f'Unable to open sharing: {exc}')
 
         async def apply_share() -> None:
             report_id=share_target.get('report_id'); subject=str(share_subject.value or '').strip(); role=ReportRole(str(share_role.value or 'viewer'))
             if not report_id or not subject:
-                notifications.warning('Enter a user or group before sharing'); return
+                notifications.warning('Enter a person or group before sharing'); return
             try:
                 access.grant(report_id,repository.principal,subject,role,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access updated'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Share rejected: {exc}')
@@ -870,10 +889,53 @@ def register_visualizer(
         async def revoke_share() -> None:
             report_id=share_target.get('report_id'); subject=str(share_subject.value or '').strip()
             if not report_id or not subject:
-                notifications.warning('Enter the user or group to revoke'); return
+                notifications.warning('Enter the person or group to remove'); return
             try:
                 access.revoke(report_id,repository.principal,subject,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access revoked'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Revoke rejected: {exc}')
+
+        def report_menu_items(record: Any, projection: Any, *, trashed: bool = False) -> tuple[MenuItemSpec, ...]:
+            items: list[MenuItemSpec] = []
+            if trashed:
+                if projection.can_export: items.append(MenuItemSpec('export-json','Download JSON',Icons.DOWNLOAD,on_select=lambda _event=None,rid=record.report_id:export_hub_json(rid)))
+                return tuple(items)
+            if projection.can_rename or projection.can_edit: items.append(MenuItemSpec('edit-details','Edit details',Icons.EDIT,on_select=lambda _event=None,rid=record.report_id:open_edit_report(rid)))
+            if projection.can_duplicate: items.append(MenuItemSpec('duplicate','Duplicate report',Icons.COPY,on_select=lambda _event=None,rid=record.report_id:duplicate_hub_report(rid)))
+            if projection.can_read_history: items.append(MenuItemSpec('history','Review history',Icons.HISTORY,on_select=lambda _event=None,rid=record.report_id:select_history(rid)))
+            if projection.can_export: items.append(MenuItemSpec('export-json','Download JSON',Icons.DOWNLOAD,on_select=lambda _event=None,rid=record.report_id:export_hub_json(rid)))
+            if projection.can_share: items.append(MenuItemSpec('share','Manage access',Icons.LINK,on_select=lambda _event=None,rid=record.report_id:open_share(rid)))
+            if projection.can_delete: items.append(MenuItemSpec('trash','Move to trash',Icons.DELETE,danger=True,separator_before=True,on_select=lambda _event=None,rid=record.report_id:begin_trash(rid)))
+            return tuple(items)
+
+        def render_report_card(record: Any, *, trashed: bool = False) -> None:
+            projection=repository.capabilities(record.report_id); items=report_menu_items(record,projection,trashed=trashed)
+            with Card() as card:
+                card.element.classes(add='cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="{"trash" if trashed else "active"}"')
+                ui.html(_report_thumbnail_markup(record.model,record.title,hub_statistical_results(record)),sanitize=False)
+                with ui.element('div').classes('cui-report-card-body'):
+                    with ui.element('div').classes('cui-report-card-identity'):
+                        with ui.element('div').classes('cui-report-card-copy'):
+                            ui.label(record.title).classes('cui-report-card-title')
+                            ui.label(str(record.metadata.get('description') or '') or ('Moved to Trash; restore to continue editing.' if trashed else 'No purpose described yet.')).classes('cui-report-card-description')
+                        StatusBadge('In trash' if trashed else 'Active',intent=StatusIntent.WARNING if trashed else StatusIntent.SUCCESS)
+                    with ui.element('div').classes('cui-report-card-meta'):
+                        ui.label(f"{('Owner' if projection.role in {'owner','admin'} else 'Shared')} · {projection.role or 'read-only'}").classes('cui-report-card-meta-item')
+                        ui.label(f"Revision {record.revision} · {len(record.model.get('items',[]))} content blocks").classes('cui-report-card-meta-item')
+                        ui.label(f"Updated {record.updated_at}").classes('cui-report-card-meta-item')
+                    with ui.element('div').classes('cui-report-card-footer'):
+                        if trashed:
+                            if projection.can_restore:
+                                restore_button=Button('Restore report',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id:restore_hub_report(rid))
+                                restore_button.element.props('data-report-action="restore"')
+                        else:
+                            label='Resume' if record.model.get('items') or record.revision > 1 else 'Open'
+                            open_button=Button(label,intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id:ui.navigate.to(hub_url(rid)))
+                            open_button.element.props(f'data-report-action="open" aria-label="{label} report{(" read-only" if projection.read_only else "")}"').classes(add='cui-report-card-primary')
+                        if items:
+                            with ui.element('div').classes('cui-report-card-more'):
+                                trigger=IconButton(Icons.MORE_HORIZONTAL,label='More actions')
+                                trigger.element.props(f'data-report-action="more" aria-label="More actions for {record.title}"')
+                                with trigger.element: ActionMenu(items)
 
         @ui.refreshable
         def render_cards() -> None:
@@ -884,9 +946,8 @@ def register_visualizer(
             def summary_matches(value): return not needle or needle in str(value.get('title') or '').casefold() or needle in str(value.get('report_id') or '').casefold() or needle in str(value.get('description') or '').casefold()
             def matches(record): return not needle or needle in record.title.casefold() or needle in record.report_id.casefold() or needle in str(record.metadata.get('description') or '').casefold()
             if view in {'active','all'}:
-                visible_summaries=[value for value in active_summaries if summary_matches(value)]
-                visible=[]
-                for summary in visible_summaries[:40]:
+                visible_summaries=[value for value in active_summaries if summary_matches(value)]; visible=[]
+                for summary in visible_summaries[:80]:
                     try: visible.append(repository.get(str(summary['report_id'])))
                     except Exception: continue
                 with ui.element('section').classes('cui-report-hub-section'):
@@ -894,26 +955,7 @@ def register_visualizer(
                     if not visible: ui.label('No active reports match this search.').classes('cui-report-hub-empty')
                     else:
                         with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
-                            for record in visible:
-                                with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="active"'):
-                                    ui.html(_report_thumbnail_markup(record.model,record.title,hub_statistical_results(record)),sanitize=False)
-                                    projection=repository.capabilities(record.report_id)
-                                    if projection.can_rename:
-                                        ui.input(value=record.title,label='Title',on_change=lambda event,rid=record.report_id:rename_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
-                                        ui.input(value=str(record.metadata.get('description') or ''),label='Description',placeholder='What this report is for',on_change=lambda event,rid=record.report_id:describe_hub_report(rid,event)).props('outlined dense hide-bottom-space').classes('w-full')
-                                    else:
-                                        ui.label(record.title).classes('cui-report-card-title')
-                                        ui.label(str(record.metadata.get('description') or '') or 'No description').classes('cui-report-card-description')
-                                    ui.label(f'Created {record.created_at} · Modified {record.updated_at} · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
-                                    ui.label(f"Owner {record.metadata.get('owner_display_name') or 'account owner'} · Access {projection.role or 'none'}").classes('text-caption')
-                                    with ui.row().classes('cui-report-card-actions'):
-                                        ui.button('Open',on_click=lambda rid=record.report_id:ui.navigate.to(hub_url(rid))).props('unelevated no-caps data-report-action="open"')
-                                        if projection.can_duplicate: ui.button('Duplicate',on_click=lambda rid=record.report_id:duplicate_hub_report(rid)).props('flat no-caps data-report-action="duplicate"')
-                                        if projection.can_read_history: ui.button('History',on_click=lambda rid=record.report_id:select_history(rid)).props('flat no-caps data-report-action="history"')
-                                        if projection.can_export: ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
-                                        if projection.can_share:
-                                            ui.button('Share',on_click=lambda rid=record.report_id:open_share(rid)).props('flat no-caps data-report-action="share"')
-                                        if projection.can_delete: ui.button('Move to trash',on_click=lambda rid=record.report_id:begin_trash(rid)).props('flat no-caps color=negative data-report-action="trash"')
+                            for record in visible: render_report_card(record)
                         if len(visible_summaries)>len(visible): ui.label(f'Showing the first {len(visible)} reports. Search to narrow the collection.').classes('text-caption')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
@@ -922,104 +964,125 @@ def register_visualizer(
                     if not visible: ui.label('Trash is empty.').classes('cui-report-hub-empty')
                     else:
                         with ui.element('div').classes('cui-report-grid'):
-                            for record in visible:
-                                with ui.card().classes('cui-report-card').props(f'data-testid="report-card" data-report-id="{record.report_id}" data-report-state="trash"'):
-                                    ui.html(_report_thumbnail_markup(record.model,record.title,hub_statistical_results(record)),sanitize=False); ui.label(record.title).classes('text-subtitle1'); ui.label(f'Moved from active storage · revision {record.revision} · {len(record.model.get("items",[]))} elements').classes('text-caption')
-                                    with ui.row().classes('cui-report-card-actions'):
-                                        projection=repository.capabilities(record.report_id)
-                                        if projection.can_restore: ui.button('Restore',on_click=lambda rid=record.report_id:restore_hub_report(rid)).props('unelevated no-caps data-report-action="restore"')
-                                        if projection.can_export: ui.button('Export JSON',on_click=lambda rid=record.report_id:export_hub_json(rid)).props('flat no-caps data-report-action="export-json"')
+                            for record in visible: render_report_card(record,trashed=True)
 
         @ui.refreshable
         def render_history() -> None:
+            nonlocal selected_history_id
             if not history_report_id:
-                with ui.element('section').classes('cui-history-panel'): ui.label('Select History on an active report to inspect revisions.').classes('cui-report-hub-empty')
+                ui.label('Choose Review history from a report’s More actions menu.').classes('cui-report-hub-empty')
                 return
             try: record=repository.get(history_report_id); entries=repository.list_history(history_report_id)
             except Exception: entries=[]; record=None
-            with ui.element('section').classes('cui-history-panel'):
-                if not record: ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
-                ui.label(f'History · {record.title}').classes('text-h6'); ui.label('Each restore is explicit, revisioned, and leaves the prior state in history.').classes('text-caption')
-                checkpoint=ui.input(label='Named checkpoint',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
-                projection=repository.capabilities(record.report_id)
+            if not record:
+                ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
+            projection=repository.capabilities(record.report_id)
+            if entries and selected_history_id not in {str(entry['history_id']) for entry in entries}: selected_history_id=str(entries[0]['history_id'])
+            with ui.element('section').classes('cui-history-panel').props(f'data-testid="report-history" data-report-id="{record.report_id}"'):
+                with ui.element('div').classes('cui-history-head'):
+                    with ui.element('div'):
+                        ui.label(f'History · {record.title}').classes('cui-dialog-title')
+                        ui.label('Review one saved revision against the current report. Restore always creates a new governed revision; prior history stays available.').classes('cui-field-description')
+                    Button('Back to reports',intent=ButtonIntent.GHOST,on_click=history_drawer.close)
+                with ui.element('div').classes('cui-history-context').props('data-testid="history-current-context"'):
+                    StatusBadge(f'Current r{record.revision}',intent=StatusIntent.SUCCESS)
+                    ui.label(f'Last updated {record.updated_at} · {len(record.model.get("items",[]))} content blocks').classes('cui-history-card-meta')
+                    ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False)
                 if projection.can_restore_history:
-                    async def save_hub_checkpoint(_event: Any = None, rid: str = record.report_id, field: Any = checkpoint) -> None:
-                        await checkpoint_hub(rid,field)
-                    checkpoint_button=ui.button('Save checkpoint',on_click=save_hub_checkpoint).props('flat no-caps')
-                    checkpoint.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
+                    with ui.element('div').classes('cui-report-history-checkpoint'):
+                        checkpoint=ui.input(label='Name a checkpoint',placeholder='Before review').props('outlined dense hide-bottom-space').classes('w-full')
+                        checkpoint_button=Button('Save checkpoint',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,rid=record.report_id,field=checkpoint:save_hub_checkpoint(rid,field))
+                        checkpoint.on_value_change(lambda event,button=checkpoint_button.element:button.enable() if str(event.value or '').strip() else button.disable())
+                        checkpoint_button.element.disable()
                 else:
-                    checkpoint.disable(); ui.label('Read-only history · restore and duplicate are unavailable.').classes('cui-field-description')
+                    ui.label('Read-only history. Restore, checkpoints, and duplication are unavailable for this access level.').classes('cui-field-description')
                 if not entries: ui.label('No saved revisions yet.').classes('cui-report-hub-empty')
                 else:
                     with ui.element('div').classes('cui-history-list'):
-                        for entry in entries[:40]:
+                        for entry in entries[:80]:
                             try: snapshot=repository.get_history(record.report_id,str(entry['history_id'])); historical=snapshot.get('model',{})
                             except Exception: continue
-                            summary=f'r{entry["revision"]} · {entry.get("updated_at") or "timestamp unavailable"} · {entry.get("label") or "Saved revision"}{" · checkpoint" if entry.get("checkpoint") else ""}'
-                            with ui.card().classes('cui-history-card'):
+                            history_id=str(entry['history_id']); is_selected=history_id==selected_history_id; summary=f'r{entry["revision"]} · {entry.get("updated_at") or "timestamp unavailable"} · {entry.get("label") or "Saved revision"}{" · named checkpoint" if entry.get("checkpoint") else ""}'
+                            with Card() as history_card:
+                                history_card.element.classes(add='cui-history-card' + (' is-selected' if is_selected else '')).props(f'data-history-id="{history_id}" data-selected="{str(is_selected).lower()}"')
                                 with ui.element('div').classes('cui-history-compare'):
-                                    with ui.element('div'): ui.html(_report_thumbnail_markup(historical,f'{record.title} revision {entry["revision"]}',hub_statistical_results(historical,report_id=record.report_id)),sanitize=False); ui.label(f'r{entry["revision"]}').classes('cui-history-preview-label')
-                                    with ui.element('div'): ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
+                                    with ui.element('div'):
+                                        ui.html(_report_thumbnail_markup(historical,f'{record.title} selected revision {entry["revision"]}',hub_statistical_results(historical,report_id=record.report_id)),sanitize=False); ui.label(f'Selected r{entry["revision"]}').classes('cui-history-preview-label')
+                                    with ui.element('div'):
+                                        ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
                                 with ui.element('div').classes('cui-history-card-copy'):
-                                    ui.label(summary).classes('text-subtitle2'); ui.label(_history_diff_summary(historical,record.model)).classes('text-caption')
-                                    with ui.row().classes('cui-history-actions'):
-                                        if projection.can_restore_history: ui.button('Restore this revision',on_click=lambda rid=record.report_id,hid=entry['history_id'],s=summary:begin_history_restore(rid,str(hid),s)).props('unelevated no-caps')
-                                        if projection.can_duplicate: ui.button('Duplicate as new report',on_click=lambda rid=record.report_id,hid=entry['history_id']:duplicate_hub_history(rid,str(hid))).props('flat no-caps')
+                                    ui.label('Selected revision' if is_selected else 'Saved revision').classes('cui-history-card-title'); ui.label(summary).classes('cui-history-card-meta'); ui.label(f'Changes from selected revision: {_history_diff_summary(historical,record.model)}').classes('cui-history-card-meta'); ui.label(f'Checkpoint metadata · {"named" if entry.get("checkpoint") else "automatic save"} · saved by {entry.get("actor_subject") or "account owner"}').classes('cui-history-card-meta')
+                                    with ui.element('div').classes('cui-history-actions'):
+                                        Button('View this revision',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,hid=history_id:select_history_revision(hid)).element.props(f'data-history-action="select" aria-pressed="{str(is_selected).lower()}"')
+                                        if is_selected and projection.can_restore_history: Button('Restore as new revision',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id,s=summary:begin_history_restore(rid,hid,s)).element.props('data-history-action="restore"')
+                                        if is_selected and projection.can_duplicate: Button('Duplicate selected revision',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id:duplicate_hub_history(rid,hid)).element.props('data-history-action="duplicate"')
 
-        import_hub_dialog=ui.dialog()
+        new_report_dialog=FormDialog('Create a report',description='Start from the supported Visembler blueprint that best matches the work you need to explain.',secondary_label='Cancel')
+        with new_report_dialog.body:
+            with ui.element('div').classes('cui-template-grid'):
+                template_choices=[('blank',{'name':'Blank canvas','description':'Start with an empty, editable report.'})] + [(key,spec) for key,spec in REPORT_TEMPLATES.items()]
+                for template_id,spec in template_choices:
+                    with Card() as template_card:
+                        template_card.element.classes(add='cui-template-card').props(f'data-testid="report-template-card" data-template-id="{template_id}"')
+                        ui.html(_report_thumbnail_markup(template_model(template_id),str(spec['name'])),sanitize=False)
+                        ui.label(str(spec['name'])).classes('cui-template-title')
+                        ui.label(str(spec['description'])).classes('cui-template-description')
+                        Button('Create from this blueprint',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,tid=template_id:create_hub_report(tid))
+
+        import_hub_dialog=FormDialog('Import a report',description='Import a canonical Visembler JSON file. Imported content keeps its report model and creates a new governed report.',secondary_label='Done')
+        with import_hub_dialog.body:
+            FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_hub_report)
+
+        edit_dialog=FormDialog('Edit report details',description='Changes to the name or purpose are saved as governed report revisions.',primary_label='Save details',secondary_label='Cancel',on_primary=save_edit_report)
+        with edit_dialog.body:
+            edit_title=ui.input(label='Report name',placeholder='Give this report a recognizable name').props('outlined dense hide-bottom-space').classes('w-full')
+            edit_description=ui.textarea(label='Purpose',placeholder='What should someone understand or resume here?').props('outlined dense hide-bottom-space rows=3').classes('w-full')
+
+        share_dialog=FormDialog('Manage report access',description='Choose a person or group and the access they should have. Existing stable identity and group semantics are preserved.',secondary_label='Close')
+        with share_dialog.body:
+            share_summary=ui.label('').classes('cui-field-description')
+            share_subject=ui.input(label='Person or group',placeholder='Name, email, or stable group ID').props('outlined dense hide-bottom-space').classes('w-full')
+            share_role=ui.select(label='Permission',options={'viewer':'Can view and export','editor':'Can edit and review history'},value='viewer').props('outlined dense hide-bottom-space').classes('w-full')
+            share_group=ui.checkbox('This identifier represents a group')
+            with ui.element('div').classes('cui-history-actions'):
+                Button('Grant access',intent=ButtonIntent.PRIMARY,on_click=apply_share)
+                Button('Remove access',intent=ButtonIntent.DANGER,on_click=revoke_share)
+
+        delete_dialog=DangerConfirmDialog('Move report to trash?',description='The report leaves Active and becomes unavailable for editing. Its report ID, history, and content remain recoverable from Trash.',primary_label='Move to trash',secondary_label='Cancel',on_confirm=confirm_trash)
+        with delete_dialog.body:
+            delete_summary=ui.label('Select a report to move to trash.').classes('cui-dialog__body-copy')
+
+        history_restore_dialog=FormDialog('Restore a saved revision',description='The current report remains in history. Restoring creates a new governed revision and keeps prior history available.',primary_label='Restore as new revision',secondary_label='Cancel',on_primary=confirm_history_restore)
+        with history_restore_dialog.body:
+            history_restore_summary=ui.label('Choose a saved revision to restore.').classes('cui-dialog__body-copy')
+
+        history_drawer=DetailDrawer('Report history',subtitle='Contextual revision review',size=OverlaySize.LARGE)
+        history_drawer.element.props('data-testid="report-history-drawer"')
+        with history_drawer.body:
+            render_history()
+
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer/reports',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Report hub',owner='Visembler'):
             with ui.column().classes('cui-report-hub w-full').props('data-testid="report-hub"'):
                 with ui.element('header').classes('cui-report-hub-head'):
                     with ui.column().classes('gap-0'):
-                        ui.label('Reports').classes('text-h3'); ui.label('Open, organize, and recover reports without covering the authoring canvas.').classes('text-body1')
-                    ui.button('Open editor',on_click=lambda:ui.navigate.to(hub_url(history_report_id) if history_report_id else '/visualizer')).props('flat no-caps')
-                    ui.button('Dataset library',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=datasets' if history_report_id else '/visualizer?panel=datasets')).props('flat no-caps')
-                    ui.button('Reusable assets',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=assets' if history_report_id else '/visualizer?panel=assets')).props('flat no-caps')
-                    ui.button('Blueprints',on_click=lambda:ui.navigate.to(f'{hub_url(history_report_id)}&panel=blueprints' if history_report_id else '/visualizer?panel=blueprints')).props('flat no-caps')
-                    if can_create: ui.button('Import…',on_click=import_hub_dialog.open).props('flat no-caps')
+                        ui.label('Reports').classes('text-h3'); ui.label('Recognize the report, resume the work, and keep management close at hand.').classes('text-body1')
+                    with ui.element('div').classes('cui-report-hub-head-actions'):
+                        Button('Open editor',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(hub_url(editor_report_id) if editor_report_id else '/visualizer'))
+                        Button('Dataset library',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(f'{hub_url(editor_report_id)}&panel=datasets' if editor_report_id else '/visualizer?panel=datasets'))
+                        Button('Reusable assets',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(f'{hub_url(editor_report_id)}&panel=assets' if editor_report_id else '/visualizer?panel=assets'))
+                        Button('Blueprints',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(f'{hub_url(editor_report_id)}&panel=blueprints' if editor_report_id else '/visualizer?panel=blueprints'))
+                        if can_create:
+                            Button('Import…',intent=ButtonIntent.GHOST,on_click=import_hub_dialog.open)
                 with ui.element('section').classes('cui-report-hub-toolbar'):
-                    search=ui.input(label='Search reports',placeholder='Title, description, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('flex-grow')
+                    search=ui.input(label='Search reports',placeholder='Title, purpose, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('cui-report-search')
                     sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
                     view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
-                    ui.button('Grid',on_click=lambda:set_hub_layout('grid')).props('flat no-caps data-testid="report-grid-view"').tooltip('Show report cards')
-                    ui.button('List',on_click=lambda:set_hub_layout('list')).props('flat no-caps data-testid="report-list-view"').tooltip('Show a compact report list')
+                    with ui.element('div').classes('cui-report-view-toggle'):
+                        grid_button=Button('Grid',intent=ButtonIntent.GHOST,on_click=lambda _event=None:set_hub_layout('grid')); grid_button.element.props('data-testid="report-grid-view"')
+                        list_button=Button('List',intent=ButtonIntent.GHOST,on_click=lambda _event=None:set_hub_layout('list')); list_button.element.props('data-testid="report-list-view"')
                     if can_create:
-                        template_select=ui.select(label='New report from',options={'blank':'Blank canvas',**{key:str(spec['name']) for key,spec in REPORT_TEMPLATES.items()}},value='blank').props('outlined dense hide-bottom-space')
-                        ui.button('Create report',on_click=create_hub_report).props('unelevated no-caps')
+                        create_button=Button('Create report',intent=ButtonIntent.PRIMARY,on_click=new_report_dialog.open); create_button.element.classes(add='cui-report-create')
                 render_cards()
-                render_history()
-
-            with import_hub_dialog:
-                with ui.card().classes('cui-dialog-card cui-visualizer-import-card'):
-                    ui.label('Import').classes('cui-dialog-title')
-                    ui.label('Import a Visembler report from its canonical JSON file.').classes('cui-field-description')
-                    with ui.column().classes('w-full gap-3'):
-                        FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_hub_report)
-                    ui.button('Done',on_click=import_hub_dialog.close).props('flat no-caps')
-
-            share_dialog=ui.dialog()
-            with share_dialog:
-                with ui.card().classes('cui-dialog-card'):
-                    ui.label('Share report').classes('cui-dialog-title')
-                    share_summary=ui.label('').classes('cui-field-description')
-                    share_subject=ui.input(label='User or group subject',placeholder='alice@example.com or team-id').props('outlined dense hide-bottom-space').classes('w-full')
-                    share_role=ui.select(label='Access',options={'viewer':'Viewer · read/export','editor':'Editor · authoring/history'},value='viewer').props('outlined dense hide-bottom-space').classes('w-full')
-                    share_group=ui.checkbox('This is a group subject')
-                    with ui.row():
-                        ui.button('Grant or update',on_click=apply_share).props('unelevated no-caps')
-                        ui.button('Revoke',on_click=revoke_share).props('flat no-caps color=negative')
-                        ui.button('Close',on_click=share_dialog.close).props('flat no-caps')
-
-            delete_dialog=ui.dialog()
-            with delete_dialog:
-                with ui.card().classes('cui-dialog-card'):
-                    delete_summary=ui.label('Move this report to trash?').classes('cui-dialog-title'); ui.label('The report and its history remain recoverable until the trash entry is removed from storage.').classes('cui-field-description')
-                    with ui.row(): ui.button('Move to trash',on_click=confirm_trash).props('unelevated no-caps color=negative'); ui.button('Cancel',on_click=delete_dialog.close).props('flat no-caps')
-            history_restore_dialog=ui.dialog()
-            with history_restore_dialog:
-                with ui.card().classes('cui-dialog-card'):
-                    history_restore_summary=ui.label('Restore this revision?').classes('cui-dialog-title'); ui.label('The current state is retained in history and the restore creates a new revision.').classes('cui-field-description')
-                    with ui.row(): ui.button('Restore revision',on_click=confirm_history_restore).props('unelevated no-caps'); ui.button('Cancel',on_click=history_restore_dialog.close).props('flat no-caps')
 
     @ui.page('/visualizer')
     async def visualizer_page():

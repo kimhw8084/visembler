@@ -95,8 +95,10 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
             visit(alice_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
             alice_hub.locator('[data-testid="report-hub"]').wait_for(timeout=15000)
             owner_card = alice_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
-            if not owner_card.get_by_role('button', name='Share', exact=True).is_visible():
-                raise AssertionError('owner Share command is not visible in Report Hub')
+            owner_card.locator('[data-report-action="more"]').click()
+            owner_menu = alice_hub.locator('.q-menu:visible')
+            owner_menu.get_by_role('button', name='Manage access', exact=True).wait_for(state='visible', timeout=5000)
+            alice_hub.keyboard.press('Escape')
             _record(checks, 'CB002', 'PASS')
 
             bob_before_context = context('bob')
@@ -112,9 +114,10 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                 raise AssertionError(f'unauthorized asset status {asset_response.status}')
             _record(checks, 'CB005', 'PASS')
 
-            owner_card.get_by_role('button', name='Share', exact=True).click()
-            alice_hub.get_by_label('User or group subject').fill('bob')
-            alice_hub.get_by_role('button', name='Grant or update', exact=True).click()
+            owner_card.locator('[data-report-action="more"]').click()
+            alice_hub.locator('.q-menu:visible').get_by_role('button', name='Manage access', exact=True).click()
+            alice_hub.get_by_label('Person or group').fill('bob')
+            alice_hub.get_by_role('button', name='Grant access', exact=True).click()
             page_wait = 0
             while page_wait < 10 and access.get(shared_id).get('grants', {}).get('bob') != 'viewer':
                 alice.wait_for_timeout(100)
@@ -139,6 +142,19 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                 raise AssertionError('Viewer indicator missing')
             _record(checks, 'CB009', 'PASS')
 
+            bob_hub = bob_context.new_page()
+            visit(bob_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
+            viewer_card = bob_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
+            viewer_card.locator('[data-report-action="more"]').click()
+            viewer_menu = bob_hub.locator('.q-menu:visible')
+            for label in ('Review history', 'Download JSON'):
+                viewer_menu.get_by_role('button', name=label, exact=True).wait_for(state='visible', timeout=5000)
+            for label in ('Edit details', 'Manage access', 'Move to trash'):
+                if viewer_menu.get_by_role('button', name=label, exact=True).count():
+                    raise AssertionError(f'Viewer unauthorized Report Hub action visible: {label}')
+            bob_hub.keyboard.press('Escape')
+            _record(checks, 'CB015', 'PASS')
+
             # The server-side projection is the source of truth for role
             # promotion; reload proves the browser consumes the new projection.
             access.update_grant(shared_id, 'bob', 'editor')
@@ -149,6 +165,19 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
             if bob_editor.locator('.cui-visualizer-report-title input').count() != 1:
                 raise AssertionError('Editor title input missing after promotion')
             _record(checks, 'CB010', 'PASS')
+
+            bob_editor_hub = bob_context.new_page()
+            visit(bob_editor_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
+            editor_card = bob_editor_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
+            editor_card.locator('[data-report-action="more"]').click()
+            editor_menu = bob_editor_hub.locator('.q-menu:visible')
+            for label in ('Edit details', 'Duplicate report', 'Review history', 'Download JSON'):
+                editor_menu.get_by_role('button', name=label, exact=True).wait_for(state='visible', timeout=5000)
+            for label in ('Manage access', 'Move to trash'):
+                if editor_menu.get_by_role('button', name=label, exact=True).count():
+                    raise AssertionError(f'Editor unauthorized Report Hub action visible: {label}')
+            bob_editor_hub.keyboard.press('Escape')
+            _record(checks, 'CB016', 'PASS')
 
             access.update_grant(shared_id, 'bob', None)
             revoked = bob_context.new_page()
@@ -162,7 +191,7 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                     raise AssertionError(f'page overflow at {width}px')
                 responsive.close(); responsive_context.close()
             _record(checks, 'CB014', 'PASS')
-            anonymous.close(); alice.close(); alice_hub.close(); bob.close(); bob_editor.close(); revoked.close(); bob_before.close(); carol.close()
+            anonymous.close(); alice.close(); alice_hub.close(); bob.close(); bob_hub.close(); bob_editor.close(); bob_editor_hub.close(); revoked.close(); bob_before.close(); carol.close()
             anonymous_context.close(); alice_context.close(); bob_context.close(); bob_before_context.close(); carol_context.close(); browser.close()
     except Exception as exc:
         _record(checks, 'CB999', 'FAIL', f'{type(exc).__name__}: {exc}')
