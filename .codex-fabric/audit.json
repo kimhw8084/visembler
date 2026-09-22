@@ -1,0 +1,364 @@
+{
+  "accepted_at": "2026-09-22T21:01:24Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' docs/V173_CONTRACT_EVIDENCE_HARDENING.md && rtk rg -n \\\"runtime-owned|Fabric|report\\\\.json|progress|native|source manifest|PASS_LOCAL_INTERNAL_PILOT|CHG-19|verify_release\\\" . -g '\"'!node_modules'\"' -g '\"'!*.pyc'\"' | sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git log -1 --format=fuller && rtk git remote -v'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk --version && rtk gain'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f \\\\( -name 'report.json' -o -name 'progress.json' -o -name 'source-manifest.json' -o -name '*receipt*.json' -o -name '*EVIDENCE*.json' -o -name '*.sha256' \\\\) -print | sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '120,340p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' AGENTS.md && rtk sed -n '1,220p' company_ui/ai/guides/AGENTS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"output|evidence|progress|report|native|release_status|checks_status|required|source_manifest|changed|head|tree|remote|target|Fabric|runtime-owned\\\" scripts/verify_release.py scripts/release_checks docs tests company_ui -g '*.py' -g '*.md' -g '*.json' | sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git branch --show-current && rtk git status --porcelain=v1 && rtk git diff --quiet && rtk git diff --cached --quiet && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg19-current-main-r5'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '100,280p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"PASS_LOCAL_INTERNAL_PILOT|release_status|checks_status|required|source_manifest|source-stability|native-host|report.json|progress.json|target drift|remote work|tree|head\\\" scripts/release_checks scripts/verify_release.py tests docs -g '*.py' -g '*.md' -g '*.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"Fabric|runtime-owned|run-owned|target-drift|remote_work|remote.*head|tree_sha|source_manifest|product_changed|source_changed|clean_worktree|CHG-19|R4|internal pilot\\\" . -g '\"'!node_modules'\"' -g '\"'!*.pyc'\"' -g '\"'!__pycache__'\"' -g '*.py' -g '*.md' -g '*.json' -g '*.sh'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric && rtk ls -la /Users/haewonkim/.codex-fabric/runs 2>/dev/null || true && rtk ls -la /Users/haewonkim/.codex-fabric/evidence 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric | rtk rg '(report\\\\.json|progress\\\\.json|source-manifest\\\\.json|receipt|EVIDENCE|evidence|\\\\.sha256\"'$)'\"' | rtk sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/runs/visembler /Users/haewonkim/.codex-fabric/evidence/visembler 2>/dev/null | rtk sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/release_checks/source_identity.py && rtk sed -n '1,280p' scripts/release_checks/run_repository_contracts.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/evidence/visembler /Users/haewonkim/.codex-fabric/runs/visembler 2>/dev/null | rtk rg -i '(chg-19|chg19|final|release|pilot|report\\\\.json|progress\\\\.json|receipt|manifest|target|head|tree)' | rtk sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' scripts/release_checks/run_company_production_readiness.py && rtk sed -n '1,220p' scripts/release_checks/run_company_source_stability.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md && rtk sed -n '90,170p' docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' scripts/release_checks/source_identity.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/runs/visembler && rtk ls -la /Users/haewonkim/.codex-fabric/runs/visembler/* 2>/dev/null | rtk sed -n '1,220p'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/evidence/visembler 2>/dev/null | rtk rg '/CHG-19|chg-19|CHG19|chg19' | rtk sed -n '1,300p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\\\"release_status\\\"|PASS_LOCAL_INTERNAL_PILOT|source_manifest|product_changed|target_drift|remote.*head|tree' /Users/haewonkim/.codex-fabric/evidence/visembler /Users/haewonkim/.codex-fabric/runs/visembler 2>/dev/null -g '*.json' -g '*.md' | rtk sed -n '1,360p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import importlib.metadata as m; print(\\\"nicegui\\\",m.version(\\\"nicegui\\\")); print(\\\"python\\\",__import__(\\\"sys\\\").version)' && rtk git show -s --format='%H%n%T%n%D%n%s' HEAD && rtk git status --porcelain=v2 --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mkdir -p /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 && rtk test -z \"$(rtk ls -A /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 2>/dev/null)\" && rtk python scripts/verify_release.py --host-mode native --output /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 && rtk python scripts/verify_release.py --host-mode native --output /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 | rtk sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'PASS|FAIL|BLOCK|error|Error|timeout|Timeout|exception|Exception' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/logs -g '*.log' | rtk sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/report.json && rtk sed -n '1,240p' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/progress.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r3/final-receipt.json && rtk sed -n '1,180p' /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r3/audit.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git branch -avv && rtk git show-ref --heads --remotes | rtk rg 'main|chg19|chg40|chg42|visembler' && rtk git ls-remote --heads origin\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r3/final-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,180p' /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-122-r3/audit.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json, pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922\\\"); r=json.loads((p/\\\"report.json\\\").read_text()); print(json.dumps({\\\"host_mode\\\":r[\\\"host_mode\\\"],\\\"release_status\\\":r[\\\"release_status\\\"],\\\"checks_status\\\":r[\\\"checks_status\\\"],\\\"required_gate_count\\\":len(r[\\\"required_gates\\\"]),\\\"required_gates\\\":r[\\\"required_gates\\\"],\\\"nonpass\\\":[{\\\"name\\\":x[\\\"name\\\"],\\\"status\\\":x[\\\"status\\\"]} for x in r[\\\"checks\\\"] if x[\\\"name\\\"] in r[\\\"required_gates\\\"] and x[\\\"status\\\"]\"'!=\"PASS\"],\"source_stability\":next(x for x in r[\"checks\"] if x[\"name\"]==\"source-stability\"),\"frozen_connector\":next(x for x in r[\"checks\"] if x[\"name\"]==\"frozen-connector\"),\"git_status_at_start\":r[\"git_status_at_start\"]},indent=2))'\"' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git branch -vv && rtk git show-ref --heads --remotes | rtk rg 'main|chg19|chg40|chg42|visembler' && rtk git ls-remote --heads origin\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import hashlib,json,pathlib; from scripts.verify_release import source_manifest; root=pathlib.Path(\\\".\\\"); recorded=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/source-manifest.json\\\").read_text()); current=source_manifest(); print(json.dumps({\\\"recorded_file_count\\\":len(recorded),\\\"current_file_count\\\":len(current),\\\"equal\\\":recorded==current,\\\"recorded_sha256\\\":hashlib.sha256(json.dumps(recorded,sort_keys=True).encode()).hexdigest(),\\\"current_sha256\\\":hashlib.sha256(json.dumps(current,sort_keys=True).encode()).hexdigest()},indent=2))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 | rtk rg 'report[.]json|progress[.]json|native|company-boundary|company-readiness|company-capacity|persistence|artifact-sha256|release-manifest' | rtk sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git config --get branch.verify/visembler-chg19-current-main-r5.remote; rtk proxy git config --get branch.verify/visembler-chg19-current-main-r5.merge; rtk proxy git branch -vv --no-color | rtk rg 'chg19|main|chg40|chg42'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git rev-parse HEAD 'HEAD\"'^{tree}'\"'; rtk proxy git status --porcelain=v2 --branch; rtk proxy git diff --name-status; rtk proxy git diff --cached --name-status; rtk proxy git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg19-current-main-r5 refs/heads/verify/visembler-chg19-current-main-r4 refs/heads/verify/visembler-chg19-exact-main-native-pilot-v1 refs/heads/verify/visembler-chg40-ui-perfection-r7 refs/heads/verify/visembler-chg42-postmerge-quality-r8'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files scripts | rtk rg 'evidence|receipt|release|bind|final|audit' | rtk sed -n '1,260p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 | rtk rg '[.]json\"'$'\"' | rtk rg 'native|chart|operations|worker|acceptance|report|progress|readiness|boundary|capacity|persistence|repository|company' | rtk sed -n '1,280p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'final-receipt|product_changed_files|remote_main_sha|target_drifted|source_changed|worktree_clean|artifact-sha256|artifact_manifest' scripts tests -g '*.py' -g '*.mjs' | rtk sed -n '1,320p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922\\\"); r=json.loads((p/\\\"report.json\\\").read_text()); print(json.dumps({\\\"created_at\\\":r[\\\"created_at\\\"],\\\"platform\\\":r[\\\"platform\\\"],\\\"python\\\":r[\\\"python\\\"],\\\"git_status_at_start\\\":r[\\\"git_status_at_start\\\"],\\\"remaining_release_validation\\\":r[\\\"remaining_release_validation\\\"],\\\"company_boundary_status\\\":r[\\\"company_boundary_status\\\"],\\\"managed_target_status\\\":r[\\\"managed_target_status\\\"]},indent=2))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -l -i 'authorization[[:space:]]*[:=]|bearer[[:space:]]+[A-Za-z0-9._-]+|password[[:space:]]*[:=]|secret[[:space:]]*[:=]|cookie[[:space:]]*[:=]|token[[:space:]]*[:=]' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 -g '*.json' | rtk sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922\\\"); d=json.loads((p/\\\"artifact-sha256.json\\\").read_text()); keys=[\\\"report.json\\\",\\\"progress.json\\\",\\\"source-manifest.json\\\",\\\"release-manifest.json\\\",\\\"company-readiness-local.json\\\",\\\"company-boundary-browser.json\\\",\\\"native-recovery/native-recovery.json\\\",\\\"worker-lifecycle/worker-lifecycle.json\\\",\\\"operations-drill/operations-drill.json\\\",\\\"native-acceptance/native-acceptance.json\\\",\\\"chart-studio/chart-studio-acceptance.json\\\",\\\"report-hub-browser-errors/report-hub-browser-error-gate.json\\\",\\\"persistence-source.json\\\"]; print(json.dumps({k:d.get(k) for k in keys},indent=2))' && rtk shasum -a 256 /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922.zip\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json && rtk python -m json.tool /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json >/dev/null && rtk shasum -a 256 /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk date -u '+%Y-%m-%dT%H:%M:%SZ'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import hashlib,json,pathlib,subprocess,sys; root=pathlib.Path(\\\".\\\"); out=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922\\\"); rec=json.loads((out/\\\"final-receipt.json\\\").read_text()); report=json.loads((out/\\\"report.json\\\").read_text()); recorded=json.loads((out/\\\"source-manifest.json\\\").read_text()); from scripts.verify_release import source_manifest; current=source_manifest(); head=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\"],text=True).strip(); tree=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\"'^{tree}\"],text=True).strip(); status=subprocess.check_output([\"git\",\"status\",\"--porcelain\"],text=True).splitlines(); remote=subprocess.check_output([\"git\",\"ls-remote\",\"origin\",\"refs/heads/main\"],text=True).split()[0]; digest=hashlib.sha256((out/\"final-receipt.json\").read_bytes()).hexdigest(); artifact=json.loads((out/\"artifact-sha256.json\").read_text()); artifact_bad=[p for p,h in artifact.items() if hashlib.sha256((out/p).read_bytes()).hexdigest()!=h]; checks={\"final_receipt_sha256\":digest,\"sidecar_matches\":digest==\"902abfd9928d13aa491d88c6308544de669395d5b404ec3b798b845959b66456\",\"report_release_status\":report[\"release_status\"],\"report_checks_status\":report[\"checks_status\"],\"receipt_report_status_match\":rec[\"verifier\"][\"release_status\"]==report[\"release_status\"] and rec[\"verifier\"][\"checks_status\"]==report[\"checks_status\"],\"required_gate_count\":len(report[\"required_gates\"]),\"nonpass\":rec[\"verifier\"][\"nonpass_required_gates\"],\"manifest_equal\":recorded==current,\"manifest_file_count\":len(current),\"head\":head,\"tree\":tree,\"requested_identity\":head==\"2234b04b8363cc347ab729de0bd913cf137b738a\" and tree==\"9a52f7f22fe4cebc965e27f6afdf8657279ebf9e\",\"remote_main\":remote,\"remote_main_matches\":remote==head,\"worktree_clean\":not status,\"artifact_hash_mismatches\":artifact_bad,\"target_drifted\":rec[\"target_drift\"][\"target_drifted\"],\"target_mutation_attempted\":rec[\"target_drift\"][\"target_mutation_attempted\"]}; print(json.dumps(checks,indent=2)); sys.exit(0 if checks[\"sidecar_matches\"] and checks[\"receipt_report_status_match\"] and checks[\"manifest_equal\"] and checks[\"requested_identity\"] and checks[\"remote_main_matches\"] and checks[\"worktree_clean\"] and not artifact_bad and not checks[\"target_drifted\"] and not checks[\"target_mutation_attempted\"] else 1)'\"' && rtk shasum -c /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json.sha256 && rtk rg -l -i 'authorization[[:space:]]*[:=]|bearer[[:space:]]+[A-Za-z0-9._-]+|password[[:space:]]*[:=]|secret[[:space:]]*[:=]|cookie[[:space:]]*[:=]|token[[:space:]]*[:=]' /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922 -g '*.json' >/dev/null; rc=\"'$?; if [ \"$rc\" -eq 1 ]; then rtk printf '\"'%s\\\\n' 'structured-json-secret-scan: PASS (no matches)'; else rtk printf '%s\\\\n' 'structured-json-secret-scan: REVIEW_REQUIRED'; exit 1; fi\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk shasum -c final-receipt.json.sha256 && rtk rg -l -i 'authorization[[:space:]]*[:=]|bearer[[:space:]]+[A-Za-z0-9._-]+|password[[:space:]]*[:=]|secret[[:space:]]*[:=]|cookie[[:space:]]*[:=]|token[[:space:]]*[:=]' . -g '*.json' >/dev/null; rc=\"'$?; if [ \"$rc\" -eq 1 ]; then rtk printf '\"'%s\\\\n' 'structured-json-secret-scan: PASS (no matches)'; else rtk printf '%s\\\\n' 'structured-json-secret-scan: REVIEW_REQUIRED'; exit 1; fi\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 129,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 95.78,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 2715648,
+      "fresh_input_tokens": 119627,
+      "input_tokens": 2835275,
+      "non_reasoning_output_tokens": 11811,
+      "output_tokens": 22290,
+      "reasoning_output_tokens": 10479,
+      "total_processed_tokens": 2857565
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T21:14:14Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "branch": "verify/visembler-chg19-current-main-r5",
+    "detached_verify": false,
+    "head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "remote_exact_head": true,
+    "remote_head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "work_branch": "verify/visembler-chg19-current-main-r5",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-ddbc073be88bad0c088cac5c",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-19-r5",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-19-r5"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "e15738f2a5e7b3c5d2ef9bdf9a19d03b9d73708b3639eb6b188f414c330007d6",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-19-r5",
+  "schema_version": 1,
+  "started_at": "2026-09-22T21:01:24Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 770,
+    "queue_seconds": 0,
+    "total_seconds": 770
+  },
+  "transport": {
+    "bytes": 2177,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 1878,
+    "prompt_sha256": "2f44728dcc9be583cad055d83f1f8dd4abec05901f5ff9cea5a6bb0fc6e0ac71",
+    "sha256": "ddbc073be88bad0c088cac5c5e752db5ef7c577ed7226e85562a5a221d12600b"
+  }
+}
