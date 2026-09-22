@@ -1,0 +1,189 @@
+{
+  "accepted_at": "2026-09-22T03:40:27Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && git status --short --branch && git remote -v && git log -1 --format='%H%n%T%n%P%n%D' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && sed -n '1,240p' /Users/haewonkim/.codex/law.md && sed -n '1,260p' company_ui/ai/construction_manifest.json && sed -n '1,260p' AGENTS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch\nrtk git log -1 --format='%H%n%T%n%P%n%D'\nrtk git ls-remote origin refs/heads/main\nrtk sed -n '1,260p' .github/workflows/quality.yml\nrtk rg -n \\\"Fabric|evidence|runtime-owned|project_id|operation=VERIFY|CHG-42|quality\\\" -S . --glob '\"'!**/.git/**'\"' --glob '\"'!*.pyc'\"' --glob '\"'!node_modules/**'\"' | head -240\nrtk command -v gh || true\nrtk gh auth status || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk nl -ba .github/workflows/quality.yml | sed -n '1,420p'\nprintf '\\\\n--- workflow tail ---\\\\n'\nrtk nl -ba .github/workflows/quality.yml | sed -n '421,840p'\nprintf '\\\\n--- exact ancestry and branch identity ---\\\\n'\nrtk git merge-base --is-ancestor bc8c233a35bc14d48c3c760e709f6097ec6f8e61 HEAD && echo 'accepted-head-is-ancestor=true'\nrtk git rev-parse HEAD\"'^{tree}\nrtk git rev-parse origin/main''^{tree}\nprintf '\"'\\\\n--- candidate evidence hooks ---\\\\n'\nrtk rg -n --hidden --glob '\"'!**/.git/**'\"' --glob '\"'!*.pyc'\"' --glob '\"'!node_modules/**'\"' --glob '\"'!showcase/**'\"' --glob '\"'!*.html'\"' '(runtime-owned|project_id|operation.?=.?VERIFY|request.?=.?CHG|Fabric evidence|fabric evidence|publish.*evidence|evidence.*publish|job_id)' . /Users/haewonkim/.codex-fabric 2>/dev/null | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '260,340p' .github/workflows/quality.yml\nprintf '\\\\n--- existing Quality runs for exact main ---\\\\n'\nrtk gh run list --repo kimhw8084/visembler --workflow quality.yml --branch main --limit 10 --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,workflowName,displayTitle,url\nprintf '\\\\n--- fabric workspace control files ---\\\\n'\nrtk find /Users/haewonkim/.codex-fabric -maxdepth 2 -type f -not -path '*/results/*' -print | head -120\nprintf '\\\\n--- relevant local command names ---\\\\n'\nrtk command -v fabric || true\nrtk command -v codex-fabric || true\nrtk rg -n --hidden --glob '\"'!results/**'\"' --glob '\"'!**/.git/**'\"' '(runtime-owned|project_id|operation|job_id)' /Users/haewonkim/.codex-fabric 2>/dev/null | head -160\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- workflow job declarations ---'\nrtk rg -n '\"'^  [A-Za-z0-9_-]+:|''^    name:|''^    needs:'\"' .github/workflows/quality.yml\nprintf '%s\\\\n' '--- fabric bins and jobs ---'\nrtk ls -la /Users/haewonkim/.codex-fabric/bin 2>/dev/null || true\nrtk ls -la /Users/haewonkim/.codex-fabric/libexec | sed -n '1,120p'\nrtk ls -la /Users/haewonkim/.codex-fabric/jobs | tail -80\nprintf '%s\\\\n' '--- current job references ---'\nrtk rg -n --hidden --glob '\"'!**/.git/**'\"' 'CF-aca10acd66a6234b8d385013|visembler-chg42-postmerge-quality-r8|CHG-42-r8' /Users/haewonkim/.codex-fabric/jobs /Users/haewonkim/.codex-fabric/results /Users/haewonkim/.codex-fabric/evidence 2>/dev/null | head -160\nprintf '%s\\\\n' '--- evidence publishing entry points ---'\nrtk rg -n 'publish_evidence|runtime-owned|canonical.*evidence|job_id' /Users/haewonkim/.codex-fabric/libexec /Users/haewonkim/.codex-fabric/state/finalize-1.2.2.UDtM20/pkg 2>/dev/null | head -220\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- current Fabric job metadata ---'\nrtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/jobs/CF-aca10acd66a6234b8d385013.running/job.json\nprintf '%s\\\\n' '--- Fabric control wrappers ---'\nrtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/bin/fabricctl\nrtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/bin/projectos-integrate-stdin\nprintf '%s\\\\n' '--- Fabric CLI dispatch/publish code ---'\nrtk sed -n '3370,3435p' /Users/haewonkim/.codex-fabric/state/finalize-1.2.2.UDtM20/pkg/fabric.py\nprintf '%s\\\\n' '--- current job result directory ---'\nrtk ls -la /Users/haewonkim/.codex-fabric/results/CF-aca10acd66a6234b8d385013 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh workflow run quality.yml --repo kimhw8084/visembler --ref main\nrtk gh run list --repo kimhw8084/visembler --workflow quality.yml --branch main --event workflow_dispatch --limit 5 --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,workflowName,displayTitle,url'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35684116267 --repo kimhw8084/visembler --json workflowName,runNumber,headSha,event,status,conclusion,createdAt,updatedAt,jobs --jq '{workflowName,runNumber,headSha,event,status,conclusion,createdAt,updatedAt,jobs: [.jobs[] | {databaseId,name,workflowName,status,conclusion,startedAt,completedAt}]}'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35684116267 --repo kimhw8084/visembler --json workflowName,number,headSha,event,status,conclusion,createdAt,updatedAt,jobs --jq '{workflowName,number,headSha,event,status,conclusion,createdAt,updatedAt,jobs: [.jobs[] | {databaseId,name,status,conclusion,startedAt,completedAt}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run view --job 106607199875 --repo kimhw8084/visembler --log | tail -120'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run watch 35684116267 --repo kimhw8084/visembler --exit-status'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sleep 15\nrtk gh run view 35684116267 --repo kimhw8084/visembler --json workflowName,number,headSha,event,status,conclusion,jobs --jq '{workflowName,number,headSha,event,status,conclusion,jobs: [.jobs[] | {databaseId,name,status,conclusion}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sleep 30\nrtk gh run view 35684116267 --repo kimhw8084/visembler --json workflowName,number,headSha,event,status,conclusion,jobs --jq '{workflowName,number,headSha,event,status,conclusion,jobs: [.jobs[] | {databaseId,name,status,conclusion}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35684116267 --repo kimhw8084/visembler --json workflowName,number,headSha,event,status,conclusion,jobs --jq '{workflowName,number,headSha,event,status,conclusion,jobs: [.jobs[] | {databaseId,name,status,conclusion}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"printf '%s\\\\n' '--- final exact-main git identity ---'\nrtk git status --short --branch\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD\"'^{tree}\nrtk git rev-parse HEAD''^@ | tr '\"'\\\\n' ' '\nprintf '\\\\n'\nrtk git merge-base --is-ancestor bc8c233a35bc14d48c3c760e709f6097ec6f8e61 HEAD && echo 'accepted-head-is-ancestor=true'\nrtk git diff --quiet -- . ':\"'!/.git'\"' && echo 'working-tree-diff=clean'\nrtk git diff --quiet -- .github/workflows/quality.yml && echo 'quality-workflow-unchanged=true'\nprintf '%s\\\\n' '--- final remote main ---'\nrtk git ls-remote origin refs/heads/main\nprintf '%s\\\\n' '--- exact dispatched Quality run ---'\nrtk gh run view 35684116267 --repo kimhw8084/visembler --json databaseId,number,name,workflowName,displayTitle,headBranch,headSha,event,status,conclusion,createdAt,startedAt,updatedAt,url,jobs --jq '{databaseId,number,name,workflowName,displayTitle,headBranch,headSha,event,status,conclusion,createdAt,startedAt,updatedAt,url,jobs: [.jobs[] | {databaseId,name,status,conclusion,startedAt,completedAt}]}'\nprintf '%s\\\\n' '--- Fabric runtime-owned identity ---'\nrtk sed -n '1,80p' /Users/haewonkim/.codex-fabric/jobs/CF-aca10acd66a6234b8d385013.running/job.json\nrtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-aca10acd66a6234b8d385013\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 42,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 93.44,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1866240,
+      "fresh_input_tokens": 130934,
+      "input_tokens": 1997174,
+      "non_reasoning_output_tokens": 4698,
+      "output_tokens": 10115,
+      "reasoning_output_tokens": 5417,
+      "total_processed_tokens": 2007289
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T03:48:32Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "branch": "verify/visembler-chg42-postmerge-quality-r8",
+    "detached_verify": false,
+    "head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "remote_exact_head": true,
+    "remote_head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "work_branch": "verify/visembler-chg42-postmerge-quality-r8",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-aca10acd66a6234b8d385013",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-42-r8",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-42-r8"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-42-r8",
+  "schema_version": 1,
+  "started_at": "2026-09-22T03:40:27Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 485,
+    "queue_seconds": 0,
+    "total_seconds": 485
+  },
+  "transport": {
+    "bytes": 2396,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2092,
+    "prompt_sha256": "d866b8b0984bb5efd458082eeab7964b4064c52f0d7e003d240cea839316d01c",
+    "sha256": "aca10acd66a6234b8d385013564c2865cfae13ea67e724fe5a91def30e024122"
+  }
+}
