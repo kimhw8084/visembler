@@ -1,0 +1,364 @@
+{
+  "accepted_at": "2026-09-22T12:09:44Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -i \\\"artifact run|artifact bridge|provider staging|staging|canonical reader|carrier ref|post-stage|reconciliation\\\" /Users/haewonkim/.codex-fabric/current /Users/haewonkim/.codex-fabric/config /Users/haewonkim/.codex-fabric/libexec /Users/haewonkim/.codex-fabric/release* 2>/dev/null | head -400; rtk find /Users/haewonkim/.codex-fabric -maxdepth 2 -type f -name '*artifact*' -print 2>/dev/null | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n -i \"contact.?sheet|review-desktop|review-mobile|reportlab|pdf|reader-index|scenario-state|negative-controls|findings|artifact-stage|bundle-metadata|carrier-readback|manifest\" scripts tests docs company_ui | head -400; rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a -maxdepth 2 -type f -print | head -100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' scripts/release_checks/editor_host.py; rtk rg -n \\\"def fixture|def report_model|def typed_dataset|def canonical_model|def ready|class BrowserEvents\\\" scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_editor_workflows.py scripts/release_checks/native_common.py | head -80; rtk sed -n '1,180p' scripts/release_checks/run_editor_workflows.py; rtk sed -n '1,180p' scripts/release_checks/native_common.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -l /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/holdout_probe.py; rtk sed -n '1,20p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/holdout_probe.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/holdout_probe.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/holdout_probe.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"previewBtn|previewExit|preview-mode\" scripts/release_checks/run_final_visual_cleanup_acceptance.py scripts/release_checks/run_final_visual_remediation_acceptance.py scripts/release_checks/run_editor_workflows.py company_ui/products/visualizer/assets/integrated_editor.mjs | head -120'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/holdout_probe.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a -type f | sort | head -300; rtk printf '%s\\\\n' '--- counts ---'; rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a -type f | wc -l; rtk printf '%s\\\\n' '--- key receipts ---'; rtk ls -l /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/holdout/reserved-holdout.json /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/report.json /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/performance/performance.json /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chg140-report-hub/chg140-report-hub-acceptance.json /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/final-visual-cleanup/final-visual-cleanup-acceptance.json 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native -type f | rtk rg '\\\\.(png|pdf)\"'$'\"' | head -200; rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/final-visual-cleanup -type f | rtk rg '\\\\.png\"'$'\"' | head -100; rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/final-visual-remediation -type f | rtk rg '\\\\.png\"'$'\"' | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native -type f | rtk rg 'editor|elements|report-hub|recovery|operations' | head -160\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mkdir -p /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/canonical/screenshots; rtk cp /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-main-editor-1440-light.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-reading-preview-1440-light.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-1440-light.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-hover-focus-1440.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-1440-dark.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-interactions-1440.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-narrow-1024.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-mobile-390.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-reflow-200-percent.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-matrix/candidate-chart-studio-forced-colors-1440.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/canonical/screenshots/; rtk cp /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chart-renderer-r2/screenshots/*.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/chg140-report-hub/screenshots/*.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/final-visual-cleanup/diagram-studio-390.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/browser/final-visual-cleanup/diagram-studio-768.png /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/canonical/screenshots/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/canonical/screenshots -type f | wc -l; rtk ls -lh /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/canonical/screenshots | head -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/performance/performance.json; rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/company-capacity.json; rtk git show remotes/origin/codex-fabric/evidence/visembler/CHG-40-r6:evidence/CHG-40-r6/performance-summary.json | head -220; rtk sed -n '1,160p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/company-boundary-browser.json; rtk sed -n '1,160p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/repository-contracts.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python scripts/release_checks/verify_element_coverage.py --json | rtk tee /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/element-coverage.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/exact-source-runtime-identity.json; rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/bundle-metadata.json; rtk sed -n '1,180p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/findings.json; rtk ls -lh /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/CHG-40-r7-complete-bundle.zip /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/{contact-sheet.png,review-desktop.pdf,review-mobile.pdf,manifest.json,reader-index.json}\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python -c \\\"from pathlib import Path; import sys; sys.path.insert(0,'.'); from scripts.release_checks.source_identity import source_manifest; print(source_manifest(Path('.'))[0])\\\"; rtk /opt/anaconda3/bin/python -c \\\"import json; print(json.load(open('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/repository-contracts.json'))['source_manifest_hash'])\\\"; rtk git status --short --branch; rtk git ls-files -o --exclude-standard | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python -c \\\"from pathlib import Path; import sys,subprocess,hashlib; sys.path.insert(0,'.'); from scripts.release_checks.source_identity import source_paths; a=sorted(set(source_paths(Path('.')))); b=sorted(x for x in subprocess.check_output(['git','ls-files','-z','--cached','--others','--exclude-standard']).decode().split('\\\\\\\\0') if x); print(len(a),len(b)); print([str(x) for x in a if str(x) not in b][:10]); print([x for x in b if Path(x) not in a][:10]); print(a[:3],b[:3])\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python -c \\\"from pathlib import Path; import subprocess,hashlib; R=Path('.'); sf=subprocess.check_output(['git','ls-files','-z','--cached','--others','--exclude-standard'],cwd=R).decode().split('\\\\\\\\0'); h=hashlib.sha256();\nfor name in sorted(x for x in sf if x):\n p=R/name\n if p.is_file() and not p.is_symlink(): h.update(name.encode());h.update(b'\\\\\\\\0');h.update(p.read_bytes())\nprint(h.hexdigest())\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '30,90p' scripts/release_checks/source_identity.py; rtk /opt/anaconda3/bin/python -c \\\"from pathlib import Path; import sys,hashlib; sys.path.insert(0,'.'); from scripts.release_checks.source_identity import source_paths; p=Path('.'); h=hashlib.sha256();\nfor relative in sorted(set(source_paths(p))):\n q=p/relative\n if not q.is_file() or q.is_symlink(): continue\n content=q.read_bytes(); name=relative.as_posix(); h.update(name.encode('utf-8'));h.update(b'\\\\\\\\0');h.update(content)\nprint(h.hexdigest())\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python -c \\\"from pathlib import Path; import sys,subprocess,hashlib; sys.path.insert(0,'.'); from scripts.release_checks.source_identity import source_paths; R=Path('.'); a=sorted(set(source_paths(R))); b=sorted(x for x in subprocess.check_output(['git','ls-files','-z','--cached','--others','--exclude-standard']).decode().split('\\\\\\\\0') if x); ha=hashlib.sha256();hb=hashlib.sha256();\nfor i,(pa,sb) in enumerate(zip(a,b)):\n na=pa.as_posix(); ca=(R/pa).read_bytes(); cb=(R/sb).read_bytes(); ha.update(na.encode());ha.update(b'\\\\\\\\0');ha.update(ca);hb.update(sb.encode());hb.update(b'\\\\\\\\0');hb.update(cb);\n if ha.digest()\"'!=hb.digest(): print(i,repr(na),repr(sb),len(ca),len(cb));break\nelse: print('\"'all-prefix-same',ha.hexdigest(),hb.hexdigest())\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '68,100p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"def build_identity|source_files|manifest=|source_manifest_hash|source_file_count\\\" /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py && rtk sed -n '70,115p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,75p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"source_manifest_hash|source manifest|source_manifest|77e929\" scripts company_ui tests | head -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,100p' scripts/release_checks/source_identity.py && rtk sed -n '1,65p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nfor p in [Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/gates/verify-release-native/source-manifest.json'),Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/exact-source-runtime-identity.json')]:\n print(p)\n d=json.loads(p.read_text())\n print(type(d), d.get('source_manifest_hash') if isinstance(d,dict) else None)\n if isinstance(d,dict): print('keys',len(d), 'first', list(d)[:3])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport sys\nfrom pathlib import Path\nsys.path.insert(0,'.')\nfrom scripts.release_checks.source_identity import source_manifest, source_paths\nimport hashlib, subprocess\nroot=Path('.')\nprint('official',source_manifest(root)[0],len(source_manifest(root)[1]))\nfiles=subprocess.check_output(['git','ls-files','-z','--cached','--others','--exclude-standard'],cwd=root).decode().split('\\\\0')\nfor mode, names in [('str',sorted(x for x in files if x)),('path',sorted(Path(x) for x in files if x))]:\n h=hashlib.sha256(); n=0\n for name in names:\n  p=root/name\n  if p.is_file() and not p.is_symlink(): h.update(str(name).encode()); h.update(b'\\\\0'); h.update(p.read_bytes()); n+=1\n print(mode,h.hexdigest(),n)\nprint('diff counts',len(files),len(source_paths(root)))\nprint('only sourcepaths',sorted(set(source_paths(root))-set(Path(x) for x in files))[:10])\nprint('only files',sorted(set(Path(x) for x in files)-set(source_paths(root)))[:10])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-files -z --cached --others --exclude-standard | rtk python -c \"import sys; print(repr(sys.stdin.buffer.read()[-100:]))\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/build_package.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json, hashlib, zipfile\nfrom pathlib import Path\nfrom PIL import Image\nfrom pypdf import PdfReader\nart=Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a')\npkg=art/'capture-package'\nident=json.loads((pkg/'exact-source-runtime-identity.json').read_text())\nmanifest=json.loads((pkg/'manifest.json').read_text())\nprint('source_manifest_hash',ident['source_manifest_hash'])\nprint('source_file_count',ident['source_file_count'])\nprint('manifest_count',manifest['artifact_count'], 'bytes',manifest['artifact_bytes'])\nprint('screenshots',len(list((pkg/'canonical/screenshots').glob('*.png'))))\nfor p in sorted((pkg/'canonical/screenshots').glob('*.png')): Image.open(p).verify()\nprint('png_verify','PASS')\nprint('pdf_pages',PdfReader(str(pkg/'review-desktop.pdf')).get_num_pages(),PdfReader(str(pkg/'review-mobile.pdf')).get_num_pages())\nwith zipfile.ZipFile(art/'CHG-40-r7-complete-bundle.zip') as z:\n bad=z.testzip(); print('bundle_testzip',bad or 'PASS','bundle_members',len(z.namelist()))\n# verify package manifest item hashes and byte counts\nbad=[]\nfor item in manifest['items']:\n p=pkg/item['path']; b=p.read_bytes(); h=hashlib.sha256(b).hexdigest()\n if h\"'!=item['\"'sha256'] or len(b)\"'!=item['\"'bytes']: bad.append(item['path'])\nprint('manifest_item_verification', 'PASS' if not bad else bad[:5])\nprint('bundle_sha256',hashlib.sha256((art/'CHG-40-r7-complete-bundle.zip').read_bytes()).hexdigest())\nprint('manifest_sha256',hashlib.sha256((pkg/'manifest.json').read_bytes()).hexdigest())\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /Users/haewonkim/.codex-fabric/repos/visembler status --short --branch && rtk git -C /Users/haewonkim/.codex-fabric/repos/visembler rev-parse refs/remotes/origin/main && rtk git -C /Users/haewonkim/.codex-fabric/repos/visembler ls-remote --heads origin project-os-artifacts/visembler/CHG-40-r7'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ps -o pid,etime,stat,command -ax | rtk rg 'carrier_publish|git cat-file|git rev-parse|git hash-object' | head -20\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ps -ax | rtk rg -i 'carrier|python' | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /bin/ps -axo pid,etime,stat,command | rtk rg -i 'carrier_publish|cat-file|hash-object|write-tree|python' | head -30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -lh /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/carrier-readback.json /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/artifact-stage-receipt.json 2>/dev/null || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /opt/anaconda3/bin/python /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/carrier_publish.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\nart=Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a')\nfor n in ['carrier-readback.json','artifact-stage-receipt.json']:\n d=json.loads((art/n).read_text())\n print(n, json.dumps(d, sort_keys=True))\nPY\nrtk git status --short --branch\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD\"'^{tree}\nrtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg40-ui-perfection-r7 refs/heads/project-os-artifacts/visembler/CHG-40-r7'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a')\nfor n in ['bundle-metadata.json']:\n print(n, (p/n).read_text())\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package')\nfor n in ['scenario-state-matrix.json','findings.json','interaction-accessibility-diagnostics.json','console-network-diagnostics.json','performance-summary.json','negative-controls.json','historical-comparison.json','reader-index.json']:\n d=json.loads((p/n).read_text())\n if n=='scenario-state-matrix.json': print(n,len(d['rows']),d['coverage_discrepancy'])\n elif n=='findings.json': print(n,d['summary'])\n elif n=='performance-summary.json': print(n,d.get('status'),d.get('measurements',{}).keys())\n elif n=='negative-controls.json': print(n,d.get('status'),len(d.get('probes',[])))\n elif n=='historical-comparison.json': print(n,d.get('status'),d.get('comparison'))\n elif n=='reader-index.json': print(n,d.get('artifact_count'),d.get('canonical_screenshots'),d.get('decisive_reports'))\n else: print(n,d.get('status'),d.get('error_count'),d.get('unexpected_runtime_errors'))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/negative-controls.json && rtk sed -n '1,160p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/interaction-accessibility-diagnostics.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/performance-summary.json && rtk sed -n '1,200p' /Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/historical-comparison.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/jobs/CF-e471f9d46ca97aa793e5ec9a.running\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -l /Users/haewonkim/.codex-fabric/jobs/CF-e471f9d46ca97aa793e5ec9a.running && rtk head -c 1000 /Users/haewonkim/.codex-fabric/jobs/CF-e471f9d46ca97aa793e5ec9a.running'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/jobs/CF-e471f9d46ca97aa793e5ec9a.running/job.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/verify/visembler-chg40-ui-perfection-r7'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json, subprocess\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-e471f9d46ca97aa793e5ec9a')\nrefs=subprocess.check_output(['git','ls-remote','origin','refs/heads/main','refs/heads/verify/visembler-chg40-ui-perfection-r7','refs/heads/project-os-artifacts/visembler/CHG-40-r7'],cwd=root,text=True).splitlines()\nprint('\\\\n'.join(refs))\nPY\nrtk git status --short --branch\nrtk git diff --exit-code\nrtk git diff --cached --exit-code\nrtk git rev-parse HEAD\nrtk git rev-parse HEAD\"'^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /opt/anaconda3/bin/python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/artifacts/CF-e471f9d46ca97aa793e5ec9a/capture-package/findings.json')\nprint(p.read_text())\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 201,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.3,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 25053440,
+      "fresh_input_tokens": 432979,
+      "input_tokens": 25486419,
+      "non_reasoning_output_tokens": 36511,
+      "output_tokens": 57785,
+      "reasoning_output_tokens": 21274,
+      "total_processed_tokens": 25544204
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T12:58:25Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "branch": "verify/visembler-chg40-ui-perfection-r7",
+    "detached_verify": false,
+    "head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "remote_exact_head": true,
+    "remote_head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "work_branch": "verify/visembler-chg40-ui-perfection-r7",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-e471f9d46ca97aa793e5ec9a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-40-r7",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-40-r7"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-40-r7",
+  "schema_version": 1,
+  "started_at": "2026-09-22T12:09:44Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 2921,
+    "queue_seconds": 0,
+    "total_seconds": 2921
+  },
+  "transport": {
+    "bytes": 10096,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 9796,
+    "prompt_sha256": "5fd750bb6d164aee5baf72195af1b548ac4c701c7074e152df6a4b5663a2d75d",
+    "sha256": "e471f9d46ca97aa793e5ec9a0b040944607b86e76d806b0420eead22bb37ddb4"
+  }
+}
