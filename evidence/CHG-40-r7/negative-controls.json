@@ -1,0 +1,55 @@
+{
+  "controls": [
+    {
+      "evidence": "final remediation command reachability 1440/1024/390/200%",
+      "id": "NC-01",
+      "oracle": "hidden/unreachable command",
+      "result": "PASS"
+    },
+    {
+      "evidence": "chart renderer bounds, reportbar, diagram and holdout document widths",
+      "id": "NC-02",
+      "oracle": "clipping/overflow",
+      "result": "PASS"
+    },
+    {
+      "evidence": "CHG-140 progressive disclosure/focus return; diagram drawer escape/backdrop; holdout",
+      "id": "NC-03",
+      "oracle": "broken focus return/stale overlay",
+      "result": "PASS"
+    },
+    {
+      "evidence": "diagram inert closed panels and semantic command surfaces",
+      "id": "NC-04",
+      "oracle": "hidden-but-operable content",
+      "result": "PASS"
+    },
+    {
+      "evidence": "forced colors, reduced motion, 44px reportbar targets",
+      "id": "NC-05",
+      "oracle": "contrast/target geometry",
+      "result": "PASS"
+    },
+    {
+      "evidence": "native recovery, worker lifecycle, report conflict/recovery, holdout",
+      "id": "NC-06",
+      "oracle": "misleading success / state loss",
+      "result": "PASS"
+    },
+    {
+      "evidence": "R2 34/34 and renderer matrix 12 marks/viewBox/semantic interaction",
+      "id": "NC-07",
+      "oracle": "chart semantic drift",
+      "result": "PASS"
+    },
+    {
+      "evidence": "company boundary 17/17; CHG-140 viewer/read-only and management checks",
+      "id": "NC-08",
+      "oracle": "lost report governance actions",
+      "result": "PASS"
+    }
+  ],
+  "new_material_failure_classes": 0,
+  "schema": "visembler-chg40-r7-negative-controls.v1",
+  "source_sha": "2234b04b8363cc347ab729de0bd913cf137b738a"
+}

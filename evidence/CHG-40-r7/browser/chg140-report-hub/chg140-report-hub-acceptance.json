@@ -1,0 +1,206 @@
+{
+  "schema": "visembler-chg140-report-hub.v1",
+  "change": "CHG-140",
+  "candidate_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+  "source_files": {
+    "company_ui/products/visualizer/page.py": "fd8d8621075f722b26ebee99bb649c66ef3ef3a06667787c93e4356663f01835",
+    "scripts/release_checks/run_chg140_report_hub_acceptance.py": "f89edcb3c0e773905ae168a389b35db58730d336a67e8a0d335be9e733a813f7"
+  },
+  "viewports": {
+    "narrow-1024": {
+      "width": 1024,
+      "height": 900,
+      "document_scroll_width": 1024,
+      "card_count": 18
+    },
+    "mobile-390": {
+      "width": 390,
+      "height": 844,
+      "document_scroll_width": 390,
+      "card_count": 18
+    },
+    "mobile-200-equivalent": {
+      "width": 390,
+      "height": 844,
+      "device_scale_factor": 2,
+      "document_scroll_width": 390,
+      "card_count": 18
+    }
+  },
+  "cases": [
+    {
+      "name": "desktop hierarchy and content preview",
+      "status": "PASS",
+      "details": {
+        "active_cards": 18,
+        "visible_card_controls": 2
+      }
+    },
+    {
+      "name": "long title and description containment",
+      "status": "PASS",
+      "details": {
+        "long_title_wrapped": true,
+        "description_legible": true,
+        "card_contained": true
+      }
+    },
+    {
+      "name": "progressive disclosure and focus return",
+      "status": "PASS",
+      "details": {
+        "authorized_management_items": 6,
+        "escape_returns_focus": true
+      }
+    },
+    {
+      "name": "human-facing sharing surface",
+      "status": "PASS",
+      "details": {
+        "human_facing_terms": true,
+        "implementation_vocabulary_absent": true
+      }
+    },
+    {
+      "name": "focused history current-versus-selected review",
+      "status": "PASS",
+      "details": {
+        "revisions": 3,
+        "current_and_selected_context": true,
+        "restore_is_new_revision": true
+      }
+    },
+    {
+      "name": "supported blueprint creation",
+      "status": "PASS",
+      "details": {
+        "supported_templates": 9,
+        "created": "report-fd57a840e05e4e2fb6ae42cffad05f1d",
+        "template_model_preserved": true
+      }
+    },
+    {
+      "name": "empty search and recovery",
+      "status": "PASS",
+      "details": {
+        "empty_search_state": true,
+        "search_recovery": true
+      }
+    },
+    {
+      "name": "trash consequence and recovery",
+      "status": "PASS",
+      "details": {
+        "confirmation_consequence": true,
+        "recovery_action": true
+      }
+    },
+    {
+      "name": "narrow 1024 geometry",
+      "status": "PASS",
+      "details": {
+        "width": 1024,
+        "height": 900,
+        "document_scroll_width": 1024,
+        "card_count": 18
+      }
+    },
+    {
+      "name": "mobile 390 geometry",
+      "status": "PASS",
+      "details": {
+        "width": 390,
+        "height": 844,
+        "document_scroll_width": 390,
+        "card_count": 18
+      }
+    },
+    {
+      "name": "200-percent-equivalent mobile geometry",
+      "status": "PASS",
+      "details": {
+        "width": 390,
+        "height": 844,
+        "device_scale_factor": 2,
+        "document_scroll_width": 390,
+        "card_count": 18
+      }
+    },
+    {
+      "name": "viewer read-only governance and rendered state",
+      "status": "PASS",
+      "details": {
+        "role": "viewer",
+        "authorized_read_only_actions": true,
+        "unauthorized_mutations_hidden": true,
+        "browser_fixture": "chg140-viewer"
+      }
+    },
+    {
+      "name": "dark, reduced-motion, forced-colors surface",
+      "status": "PASS",
+      "details": {
+        "dark_theme": true,
+        "reduced_motion": true,
+        "forced_colors": true
+      }
+    }
+  ],
+  "unexpected_browser_events": [],
+  "fixture_ids": {
+    "primary": "chg140-primary",
+    "long": "chg140-long",
+    "history": "chg140-history",
+    "trash": "chg140-trash",
+    "viewer": "chg140-viewer",
+    "editor": "chg140-editor",
+    "many-0": "chg140-many-00",
+    "many-1": "chg140-many-01",
+    "many-2": "chg140-many-02",
+    "many-3": "chg140-many-03",
+    "many-4": "chg140-many-04",
+    "many-5": "chg140-many-05",
+    "many-6": "chg140-many-06",
+    "many-7": "chg140-many-07",
+    "many-8": "chg140-many-08",
+    "many-9": "chg140-many-09",
+    "many-10": "chg140-many-10",
+    "many-11": "chg140-many-11"
+  },
+  "isolated_storage_removed": true,
+  "screenshots": [
+    {
+      "path": "screenshots/report-hub-dark-reduced-motion.png",
+      "sha256": "41a4b28242b14b3a18268b9bb472df93f1e88e6b95cc129de2498b58fd5d0c3e",
+      "bytes": 196798
+    },
+    {
+      "path": "screenshots/report-hub-long-title.png",
+      "sha256": "b6cba6306565d16b6968b73185058ae2ad50be8a5bfac4d64e848f6ccdf949ac",
+      "bytes": 397855
+    },
+    {
+      "path": "screenshots/report-hub-mobile-200-equivalent.png",
+      "sha256": "ca334e693b31dce4152aa974d6d92cd93faa7c330d1af1e03f64d60eda2f1251",
+      "bytes": 1231834
+    },
+    {
+      "path": "screenshots/report-hub-mobile-390.png",
+      "sha256": "522e7b843563162a449af06a87c0f4498ebf473e2811686bd0f1774de7363d19",
+      "bytes": 477992
+    },
+    {
+      "path": "screenshots/report-hub-narrow-1024.png",
+      "sha256": "0e1427e2165713ddef63f4ccf457b2f57328b738437135b9f6d337c7efec9521",
+      "bytes": 420139
+    },
+    {
+      "path": "screenshots/report-hub-read-only.png",
+      "sha256": "f8326d8172f69a1498290e5abb04fa57f5a931cc750328a672c96f8e296b08e3",
+      "bytes": 401742
+    }
+  ],
+  "passed": 13,
+  "total": 13,
+  "status": "PASS"
+}

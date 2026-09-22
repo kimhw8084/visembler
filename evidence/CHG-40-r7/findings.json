@@ -1,0 +1,56 @@
+{
+  "findings": [
+    {
+      "action": "Keep explicit; add/align permanent workflow coverage in a later authority change.",
+      "finding": "52 production elements versus 49 verifier workflows remains an authority/completeness discrepancy.",
+      "id": "R7-F001",
+      "product_defect_proven": false,
+      "root_authority": "production_element_coverage.json vs maintained verifier workflow inventory",
+      "severity": "VERIFY",
+      "status": "OPEN_SEPARATE",
+      "type": "completeness-authority"
+    },
+    {
+      "action": "Project OS may recover exact bytes from the carrier without browser recapture; do not claim Artifact Run success.",
+      "finding": "Provider Artifact Run staging/reconciliation is unavailable in this environment; deterministic Git carrier is the recovery path.",
+      "id": "R7-F002",
+      "product_defect_proven": false,
+      "root_authority": "Project OS Artifact Bridge provider staging capability",
+      "severity": "VERIFY",
+      "status": "OPEN_SEPARATE",
+      "type": "artifact-durability-infrastructure"
+    },
+    {
+      "action": "Retain as later required evidence.",
+      "finding": "E3/E4 representative-human and company-field excellence, and later final-SHA CHG-19/CHG-20 refresh, are not established here.",
+      "id": "R7-F003",
+      "product_defect_proven": false,
+      "root_authority": "user request scope",
+      "severity": "VERIFY",
+      "status": "OUT_OF_SCOPE",
+      "type": "scope"
+    },
+    {
+      "action": "No source change in VERIFY run.",
+      "finding": "Validator returned ok=true, error_count=0, warning_count=126; warnings are retained as diagnostics and are not new R7 rendered Product findings.",
+      "id": "R7-F004",
+      "product_defect_proven": false,
+      "root_authority": "Company UI validator",
+      "severity": "INFO",
+      "status": "NON_BLOCKING",
+      "type": "validator-diagnostics"
+    }
+  ],
+  "schema": "visembler-chg40-r7-findings.v1",
+  "source_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+  "summary": {
+    "convergence_decision": "VERIFY_NOT_CERTIFIED_UNTIL_ARTIFACT_STAGE_AND_COMPLETENESS_AUTHORITIES_CLOSE",
+    "fix_findings": 0,
+    "holdout_new_material_failure_classes": 0,
+    "info_findings": 1,
+    "material_accessibility_truth_critical_workflow_failures": 0,
+    "product_p0": 0,
+    "product_p1": 0,
+    "verify_findings": 3
+  }
+}

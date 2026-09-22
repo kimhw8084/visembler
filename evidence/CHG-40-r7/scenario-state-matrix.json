@@ -1,0 +1,119 @@
+{
+  "coverage_discrepancy": {
+    "disposition": "VERIFY_SEPARATE_COMPLETENESS_AUTHORITY; not normalized or counted as Product failure",
+    "production_elements": 52,
+    "verifier_workflow_elements": 49
+  },
+  "rows": [
+    {
+      "coverage": "composition/Smart Layout/authoring chrome",
+      "data_shape": "default, multi-card, sparse, dense",
+      "environment": "1440,1024,390,200%-equivalent",
+      "evidence": "final-visual-cleanup-acceptance.json",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Main Editor"
+    },
+    {
+      "coverage": "selection, manipulation, keyboard, clipboard, undo/redo",
+      "data_shape": "edited/repeated/interrupted",
+      "environment": "1440,390,keyboard",
+      "evidence": "verify-release-native/elements",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Selection/Inspector"
+    },
+    {
+      "coverage": "categorical/numeric/time, stacked/percent, annotations, legend",
+      "data_shape": "populated, mixed-sign, dense legend",
+      "environment": "1440,1024,390,200%,forced-colors",
+      "evidence": "chart-renderer-r2/candidate-r2-browser-acceptance.json",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Chart Studio"
+    },
+    {
+      "coverage": "marks, domains, viewBox, tooltip, range, zoom/pan/brush",
+      "data_shape": "numeric/time/categorical",
+      "environment": "1440,1024,390",
+      "evidence": "chart-renderer-matrix/candidate-browser-matrix.json",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Canonical renderer"
+    },
+    {
+      "coverage": "mapping, typed roles, derive/unpivot/transform, refresh",
+      "data_shape": "dense/sparse, stale/conflict",
+      "environment": "1440,390",
+      "evidence": "verify-release-native/data",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Data First/Data Dock"
+    },
+    {
+      "coverage": "desktop/narrow/mobile edit/inspect/commands/history",
+      "data_shape": "5-node and 100-node/150-edge",
+      "environment": "1440,1024,768,390,200%",
+      "evidence": "final-visual-cleanup-acceptance.json",
+      "role": "admin/editor",
+      "status": "PASS",
+      "surface": "Diagram Studio"
+    },
+    {
+      "coverage": "recognition, Open/Resume, management, search/sort/view/templates",
+      "data_shape": "18 cards, long labels, empty/no-results",
+      "environment": "1440,1024,390,200%",
+      "evidence": "chg140-report-hub/chg140-report-hub-acceptance.json",
+      "role": "admin/editor/viewer",
+      "status": "PASS",
+      "surface": "Report Hub"
+    },
+    {
+      "coverage": "create/edit/save/saving/saved/conflict/trash/recovery/history",
+      "data_shape": "3 revisions, restore-as-new, cancellation/import",
+      "environment": "1440,390",
+      "evidence": "verify-release-native/native-recovery + chg140",
+      "role": "admin/editor/viewer",
+      "status": "PASS",
+      "surface": "Report lifecycle"
+    },
+    {
+      "coverage": "preview parity, JSON/SVG, destructive confirmation/recovery",
+      "data_shape": "multi-surface",
+      "environment": "1440,1024,768,390",
+      "evidence": "final-visual-cleanup-acceptance.json",
+      "role": "admin/editor/viewer",
+      "status": "PASS",
+      "surface": "Preview/export"
+    },
+    {
+      "coverage": "owner/editor/viewer/anonymous scope",
+      "data_shape": "authorized/unauthorized/read-only",
+      "environment": "1440",
+      "evidence": "verify-release-native/company-boundary-browser.json",
+      "role": "admin/editor/viewer/anonymous",
+      "status": "PASS",
+      "surface": "Roles/permissions"
+    },
+    {
+      "coverage": "tokens/control/typography/elevation/focus/contrast",
+      "data_shape": "light/dark/forced/reduced-motion",
+      "environment": "all",
+      "evidence": "final-remediation + reportbar + chg140",
+      "role": "all applicable",
+      "status": "PASS",
+      "surface": "Cross-surface craft"
+    },
+    {
+      "coverage": "counterexample combinations, interruption, overlay transitions",
+      "data_shape": "long Unicode identifiers, zero, mixed signs, sparse/dense",
+      "environment": "1440,390,forced-colors",
+      "evidence": "holdout/reserved-holdout.json",
+      "role": "editor",
+      "status": "PASS",
+      "surface": "Reserved holdout"
+    }
+  ],
+  "schema": "visembler-chg40-r7-scenario-state-matrix.v1",
+  "source_sha": "2234b04b8363cc347ab729de0bd913cf137b738a"
+}

@@ -1,0 +1,995 @@
+INFO:     Started server process [9091]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:56172 (Press CTRL+C to quit)
+INFO:     127.0.0.1:56183 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56197 - "WebSocket /socket.io/?client_id=41ae249c-9e0d-4146-aeb8-0a39bbbb511e&next_message_id=0&implicit_handshake=true&document_id=6ed28228-3c62-40e0-9ff5-e12fb8f4c1c0&tab_id=ad9a1693-f8c0-42a1-b1d2-777859fda7b0&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56196 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56193 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56205 - "WebSocket /socket.io/?client_id=3763fa00-cd4e-4b58-8fac-35ee3b642fb8&next_message_id=0&implicit_handshake=true&document_id=ed677bca-842c-4779-8e34-524f08a1067d&tab_id=408a6b8b-111a-428a-a54f-ea09dadab4ed&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56196 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56194 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56191 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56195 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56192 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56193 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56215 - "WebSocket /socket.io/?client_id=90b832b1-a906-407c-9736-dfd4c1cc5d1d&next_message_id=0&implicit_handshake=true&document_id=238ae10a-53e3-40f7-8d33-ecebf39e0a82&tab_id=d1a42640-8982-4f69-b5fd-154be4d5161f&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56209 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56219 - "WebSocket /socket.io/?client_id=d7eb619e-8e0e-45bb-9c59-95a914cc09f2&next_message_id=0&implicit_handshake=true&document_id=076c30a2-d1b5-488f-85a7-4f5a30c3db33&tab_id=2ba0e43b-7113-41ab-acac-7790b5ede4b7&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56210 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56212 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56206 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56208 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56209 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56211 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56226 - "WebSocket /socket.io/?client_id=dda1d22f-42e0-438e-8a75-8489cb3a55e4&next_message_id=0&implicit_handshake=true&document_id=b682b377-a442-40a5-b051-935889783b18&tab_id=e166bf32-7325-4513-ba03-9cc01362f519&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56222 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56234 - "WebSocket /socket.io/?client_id=4201cf9d-9564-479e-aa1f-208c94423732&next_message_id=0&implicit_handshake=true&document_id=061f828d-2234-48e5-aaaf-9773932f37c9&tab_id=1c8e9bc5-dbac-4398-b51b-8eee630469c8&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56224 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56220 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56225 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56223 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56221 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56222 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56235 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56242 - "WebSocket /socket.io/?client_id=2dae0d1e-52b2-438a-b43a-3ba07bf29a9a&next_message_id=0&implicit_handshake=true&document_id=91f16e94-0b4a-4d11-8d4e-4e83ba28ec85&tab_id=40403683-b4da-4679-ac6f-6d8402f6c489&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56238 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56240 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56236 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56239 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56237 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56235 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56238 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56250 - "WebSocket /socket.io/?client_id=6d65267b-e644-4a50-9d15-459705a4dc85&next_message_id=0&implicit_handshake=true&document_id=57312e13-d2dd-431b-8f32-bcca5b370746&tab_id=acce39dd-0517-4f3a-9bde-337bc9646b4d&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56245 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56247 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56248 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56246 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56249 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56245 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56244 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56260 - "WebSocket /socket.io/?client_id=0a037760-1e2d-435d-bb6c-e923a5cdfee8&next_message_id=0&implicit_handshake=true&document_id=3ce90270-f26a-42c6-b4c3-55d31b55d1a7&tab_id=fd0cbfcb-9498-46cb-afc8-0c7b8f7e7acf&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56259 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56255 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56258 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56256 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56257 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56254 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56259 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56271 - "WebSocket /socket.io/?client_id=2afb7af5-8c5c-4e65-8654-a305ad9f7f65&next_message_id=0&implicit_handshake=true&document_id=1cee7b26-f41f-4299-b081-a86be7adcc7f&tab_id=0ed0e2e9-5f5a-490d-9911-c9edb93a29eb&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56268 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56265 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56270 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56268 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56267 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56266 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56269 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56281 - "WebSocket /socket.io/?client_id=7ed4e7be-aaf6-4fb0-b11a-a2653acf246b&next_message_id=0&implicit_handshake=true&document_id=5e543cfb-cbcb-4769-8739-c6bbd3d7b674&tab_id=6f26182f-aabf-45fe-a389-3f2553d58744&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56276 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56275 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56277 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56276 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56278 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56279 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56274 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56289 - "WebSocket /socket.io/?client_id=6ce43888-346b-4ce3-9506-c8d28eebd4aa&next_message_id=0&implicit_handshake=true&document_id=80437f70-c055-43d7-abaa-9d7110be42ab&tab_id=cc35dacb-7d21-4ac4-8270-77b1cf1737e4&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56287 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56284 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56283 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56286 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56287 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56288 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56285 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56298 - "WebSocket /socket.io/?client_id=16d92feb-97a6-4252-8d1b-9a0522e0500b&next_message_id=0&implicit_handshake=true&document_id=6b724b34-8675-46b3-99e4-07d935d81ea2&tab_id=9783272e-3cd1-4fc1-9a89-c13c4ff69b8d&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56297 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56296 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56293 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56297 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56294 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56292 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56295 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_nicegui/3.15.0/static/fonts.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_nicegui/3.15.0/static/quasar.unimportant.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_nicegui/3.15.0/static/quasar.important.prod.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_nicegui/3.15.0/static/nicegui.css HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_nicegui/3.15.0/static/vue.esm-browser.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_nicegui/3.15.0/components/7416ad0839166372589af103d2dac97f/link.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_nicegui/3.15.0/components/573d0129acaebad907d825007cd6fa02/query.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_nicegui/3.15.0/components/50808f343f9d39efb70f4fe21b9a193b/html.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_nicegui/3.15.0/components/b6e72e98507a6256b493148a7e8c8d30/dialog.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_nicegui/3.15.0/components/20e90839167eb30dba12722e0d4b24bb/select.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_nicegui/3.15.0/static/tailwindcss.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_nicegui/3.15.0/components/64c866455daa2383bf6d88c437b23510/input.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_nicegui/3.15.0/components/7250174e69a2b6e32dc4145ed9225e09/upload.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_nicegui/3.15.0/static/socket.io.min.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_nicegui/3.15.0/static/dompurify.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_nicegui/3.15.0/static/quasar.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_nicegui/3.15.0/static/nicegui.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_nicegui/3.15.0/static/lang/en-US.umd.prod.js HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_nicegui/3.15.0/static/fonts/2474057f3040a08c.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56322 - "WebSocket /socket.io/?client_id=5543a5ba-11e3-4182-b99f-aa59c8d88280&next_message_id=0&implicit_handshake=true&document_id=3dd8c065-8c0f-4165-a25c-1c2b5117eac2&tab_id=11b70a1f-1260-4eb2-a17d-dc583e7a7e76&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56320 - "GET /_nicegui/3.15.0/static/fonts/0c19a63c7528cc1a.woff2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56324 - "WebSocket /socket.io/?client_id=ea46b8cd-b466-4f8b-b9f2-8edee7c21208&next_message_id=0&implicit_handshake=true&document_id=9bab225c-1098-4f30-ad53-018ca8c56bce&tab_id=66b11da5-75a4-405a-8add-b99dc28bdfc3&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/report-assets/sha256-352a4e6375ac689c593a76cd862957b944976daa5bad532455430c349cce222f HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56319 - "GET /visualizer HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/integrated_editor.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/tokens.css?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56325 - "WebSocket /socket.io/?client_id=6be29df2-b855-4ac9-a27b-7b2ea15e54eb&next_message_id=0&implicit_handshake=true&document_id=fbe6ffe3-8259-4e94-94fc-dad523bb5122&tab_id=b230cf57-40f0-4c8c-8f3b-47bbda00d8e0&old_tab_id=null&EIO=4&transport=websocket" [accepted]
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/integrated_editor.mjs?v=14a922f94bf7634e HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/editor_store.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_chart_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_preview.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/production_library.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/element_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/statistical_presentation.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_data.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/analysis_semantics.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/engineering_recipes.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_transforms.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/statistical_result_guard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_projection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_contracts.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_geometry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_diagram.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_grid.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_values.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_arrange.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_selection.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_performance.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_reuse.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_human.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_clipboard.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_style.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_portability.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_dataset_refresh.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/assets/authoring_batch.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/assets/authoring_mapping_presets.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/assets/authoring_intake_client.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/assets/authoring_stage_d.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/vendor/production_core/core/advanced_chart_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/canonical_chart_renderer.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/vendor/production_core/core/engineering_chart_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/universal_renderer.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/timeline_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56316 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26 HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56318 - "GET /_cui_visualizer/assets/authoring_format.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56317 - "GET /_cui_visualizer/assets/authoring_diagram_studio.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56315 - "GET /_cui_visualizer/vendor/production_core/core/statistics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56319 - "GET /_cui_visualizer/vendor/production_core/core/runtime_registry.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/vendor/production_core/core/graph_semantics_engine.mjs HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:56320 - "GET /_cui_visualizer/report-assets/sha256-f4031add16634a958ef0283aa842e8dd48fcae0d252d7917653e476af378b6d7 HTTP/1.1" 200 OK

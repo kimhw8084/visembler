@@ -1,0 +1,119 @@
+{
+  "cases": [
+    {
+      "evidence": {
+        "cards": 3,
+        "dom": {
+          "bodyWidth": 1440,
+          "clientWidth": 1440,
+          "errors": [],
+          "focus": "BODY",
+          "scrollWidth": 1440
+        }
+      },
+      "id": "HO-01",
+      "name": "dense+sparse long-label dark reduced-motion desktop containment",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        null,
+        null,
+        {
+          "active": "<circle class=\"cs-mark cs-point-mark\" data-chart-point=\"0\" data-behavior-point=\"0\" data-series-key=\"Value\" data-selection-cols=\"0,1,3\" data-secondary=\"false\" data-tooltip=\"Value \u00b7 1970-01-01 \u00b7 270\" tabindex=\"0\" role=\"button\" aria-label=\"Val",
+          "focusable": 232
+        }
+      ],
+      "id": "HO-02",
+      "name": "keyboard selection and inspector reachability",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        null,
+        null,
+        null,
+        null,
+        "true",
+        {
+          "title": "second"
+        }
+      ],
+      "id": "HO-03",
+      "name": "interrupted repeated edit recovers to truthful saved state",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "preview": 0
+      },
+      "id": "HO-04",
+      "name": "preview then escape/back restores authoring state",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        null,
+        null,
+        {
+          "dom": {
+            "bodyWidth": 390,
+            "clientWidth": 390,
+            "errors": [],
+            "focus": "BODY",
+            "scrollWidth": 390
+          },
+          "items": 3
+        }
+      ],
+      "id": "HO-05",
+      "name": "mobile transition retains report state and no document spill",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        null,
+        null,
+        {
+          "active": "inspectorToggle",
+          "spill": 390
+        }
+      ],
+      "id": "HO-06",
+      "name": "overlay escape ownership returns focus",
+      "status": "PASS"
+    },
+    {
+      "evidence": [
+        null,
+        true
+      ],
+      "id": "HO-07",
+      "name": "forced-colors command surface remains reachable",
+      "status": "PASS"
+    },
+    {
+      "evidence": {
+        "buttons": 17,
+        "spill": 390
+      },
+      "id": "HO-08",
+      "name": "forced-colors mobile semantic commands",
+      "status": "PASS"
+    }
+  ],
+  "new_material_failure_classes": 0,
+  "passed": 8,
+  "purpose": "Reserved counterexample/holdout suite executed only for R7; not used during CHG-136..140 tuning.",
+  "schema": "visembler-chg40-r7-reserved-holdout.v1",
+  "source_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+  "status": "PASS",
+  "total": 8,
+  "verifier_diagnostics": [
+    {
+      "attempt": "R7-holdout-1",
+      "classification": "VERIFIER_DEFECT",
+      "detail": "Hidden duplicate #previewExit selector and Playwright-handle serialization prevented a clean receipt; no Product verdict was emitted. The visible semantic control and JSON-safe probe are used in this recapture."
+    }
+  ]
+}

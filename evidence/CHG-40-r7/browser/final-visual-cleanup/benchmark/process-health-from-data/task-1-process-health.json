@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "revision": 2,
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "lot_1",
+            "name": "LOT",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "lot_id"
+            ],
+            "type": "identifier"
+          },
+          {
+            "id": "tool_2",
+            "name": "TOOL",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "tool"
+            ],
+            "type": "categorical"
+          },
+          {
+            "id": "chamber_3",
+            "name": "CHAMBER",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "chamber"
+            ],
+            "type": "categorical"
+          },
+          {
+            "id": "timestamp_4",
+            "name": "TIMESTAMP",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "time"
+            ],
+            "type": "date"
+          },
+          {
+            "id": "measurement_5",
+            "name": "MEASUREMENT",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number"
+          },
+          {
+            "id": "target_6",
+            "name": "TARGET",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "target"
+            ],
+            "type": "categorical"
+          },
+          {
+            "id": "status_7",
+            "name": "STATUS",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "cohort",
+              "status"
+            ],
+            "type": "categorical"
+          }
+        ],
+        "id": "dataset-mucnb0hk-b3m892",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted report data",
+        "revision": 1,
+        "rows": [
+          [
+            "L001",
+            "ETCH-01",
+            "C1",
+            "2026-08-01",
+            98.2,
+            "100",
+            "RUN"
+          ],
+          [
+            "L002",
+            "ETCH-01",
+            "C1",
+            "2026-08-02",
+            97.8,
+            "100",
+            "RUN"
+          ],
+          [
+            "L003",
+            "ETCH-02",
+            "C2",
+            "2026-08-03",
+            101.1,
+            "100",
+            "HOLD"
+          ],
+          [
+            "L004",
+            "ETCH-02",
+            "C2",
+            "2026-08-04",
+            99.4,
+            "100",
+            "RUN"
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-22T12:23:39.320Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "body": "Tool × Chamber Matrix · report summary",
+        "element": "Hero Title",
+        "emphasis": "hero",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "showTitle": false,
+        "text": "Tool × Chamber Matrix · report summary",
+        "title": "Process health report",
+        "type": "text",
+        "w": 1572,
+        "weight": 1.1,
+        "x": 14,
+        "y": 14,
+        "z": 2
+      },
+      {
+        "chamber": "B",
+        "dataset_id": "dataset-mucnb0hk-b3m892",
+        "element": "Tool × Chamber Matrix",
+        "engine": "WaferFabEngine",
+        "groupId": null,
+        "h": 156,
+        "id": "c1",
+        "locked": false,
+        "lot": "24-118",
+        "mapping": {
+          "category": "lot_1",
+          "chamber": "chamber_3",
+          "cohort": "status_7",
+          "lot_id": "lot_1",
+          "series": "tool_2",
+          "status": "status_7",
+          "target": "target_6",
+          "time": "timestamp_4",
+          "tool": "tool_2",
+          "value": "measurement_5",
+          "x": "timestamp_4",
+          "y": "measurement_5"
+        },
+        "message_role": "Supporting Evidence",
+        "observations": [
+          {
+            "value": 98.4,
+            "x": 1,
+            "y": 1
+          },
+          {
+            "value": 98.8,
+            "x": 2,
+            "y": 1
+          },
+          {
+            "value": 97.9,
+            "x": 3,
+            "y": 2
+          },
+          {
+            "value": 98.6,
+            "x": 2,
+            "y": 3
+          }
+        ],
+        "order": 1,
+        "route": "ETCH → MET",
+        "showTitle": false,
+        "textAlign": "left",
+        "title": "Tool × Chamber Matrix",
+        "tool": "ETCH-04",
+        "type": "wafer",
+        "view_type": "tool_chamber_matrix",
+        "w": 560,
+        "weight": 1.5,
+        "x": 14,
+        "y": 178,
+        "z": 1
+      },
+      {
+        "body": "Review the primary evidence and record the next action.",
+        "element": "Key Takeaway",
+        "emphasis": "standard",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Action",
+        "order": 2,
+        "showTitle": false,
+        "text": "Review the primary evidence and record the next action.",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 580,
+        "weight": 1.1,
+        "x": 588,
+        "y": 178,
+        "z": 3
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "editorial",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 4,
+    "crossFilters": []
+  }
+}

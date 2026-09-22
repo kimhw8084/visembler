@@ -1,0 +1,98 @@
+{
+  "ok": true,
+  "profile": "runtime",
+  "browsers": {
+    "chrome": {
+      "key": "chrome",
+      "name": "Chrome/Chromium",
+      "executable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+      "version": "Google Chrome 153.0.8010.53"
+    }
+  },
+  "checks": [
+    {
+      "key": "python",
+      "status": "pass",
+      "detail": "Python 3.11.7; supported >=3.11,<3.14",
+      "required": true
+    },
+    {
+      "key": "platform",
+      "status": "pass",
+      "detail": "Darwin arm64",
+      "required": true
+    },
+    {
+      "key": "framework",
+      "status": "pass",
+      "detail": "Company UI 3.0.0a1",
+      "required": true
+    },
+    {
+      "key": "nicegui",
+      "status": "pass",
+      "detail": "installed=3.15.0; required=3.15.0",
+      "required": true
+    },
+    {
+      "key": "runtime-contract",
+      "status": "pass",
+      "detail": "50 factories / 877 calls; source=0 runtime=0 issues",
+      "required": true
+    },
+    {
+      "key": "playwright",
+      "status": "pass",
+      "detail": "installed=1.62.0; required=1.62.0",
+      "required": false
+    },
+    {
+      "key": "pillow",
+      "status": "pass",
+      "detail": "installed=12.3.0; required=12.3.0",
+      "required": false
+    },
+    {
+      "key": "browser",
+      "status": "pass",
+      "detail": "Chrome/Chromium: /Applications/Google Chrome.app/Contents/MacOS/Google Chrome \u00b7 None",
+      "required": false
+    },
+    {
+      "key": "edge",
+      "status": "warning",
+      "detail": "Microsoft Edge not discovered",
+      "required": false
+    },
+    {
+      "key": "port",
+      "status": "pass",
+      "detail": "127.0.0.1:8080 is available",
+      "required": false
+    },
+    {
+      "key": "visual-assets",
+      "status": "pass",
+      "detail": "0 visual asset validation issue(s)",
+      "required": true
+    },
+    {
+      "key": "lab-coverage",
+      "status": "pass",
+      "detail": "183/183 public visual integrations covered (155 direct + 28 composite)",
+      "required": true
+    },
+    {
+      "key": "compatibility",
+      "status": "pass",
+      "detail": "manifest NiceGUI=3.15.0",
+      "required": true
+    },
+    {
+      "key": "disk",
+      "status": "pass",
+      "detail": "9.7 GB free",
+      "required": false
+    }
+  ]
+}

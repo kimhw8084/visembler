@@ -1,0 +1,195 @@
+{
+  "capacity_raw": "gates/verify-release-native/company-capacity.json",
+  "capacity_results": [
+    {
+      "asset_authorization_ms": 0.29,
+      "asset_reference_count": 1,
+      "create_ms": 18.716,
+      "history_ms": 0.374,
+      "image_items_per_report": 1,
+      "listed": 10,
+      "open_ms": 0.244,
+      "rename_ms": 1.323,
+      "reports": 10,
+      "scoped_list_ms": 2.296
+    },
+    {
+      "asset_authorization_ms": 0.616,
+      "asset_reference_count": 1,
+      "create_ms": 380.403,
+      "history_ms": 0.825,
+      "image_items_per_report": 5,
+      "listed": 100,
+      "open_ms": 0.622,
+      "rename_ms": 3.109,
+      "reports": 100,
+      "scoped_list_ms": 54.857
+    },
+    {
+      "asset_authorization_ms": 2.486,
+      "asset_reference_count": 1,
+      "create_ms": 19959.315,
+      "history_ms": 3.528,
+      "image_items_per_report": 10,
+      "listed": 1000,
+      "open_ms": 2.386,
+      "rename_ms": 20.612,
+      "reports": 1000,
+      "scoped_list_ms": 2538.563
+    }
+  ],
+  "capacity_status": "PASS",
+  "editor_measurements": [
+    {
+      "cold_ready_ms": 563.92,
+      "elements": 1,
+      "raw_samples": {
+        "full_render_ms": [
+          1,
+          1.4000000357627869,
+          0.800000011920929,
+          0.5999999642372131,
+          0.6000000238418579
+        ],
+        "geometry_ms": [
+          0.3999999761581421,
+          0.40000003576278687,
+          0.19999998807907104,
+          0.10000002384185791,
+          0.09999996423721313,
+          0.19999998807907104,
+          0,
+          0.20000004768371582,
+          0.09999996423721313,
+          0,
+          0.10000002384185791,
+          0.19999998807907104,
+          0,
+          0.10000002384185791,
+          0.09999996423721313,
+          0.10000002384185791,
+          0.09999996423721313,
+          0,
+          0.10000002384185791,
+          0
+        ]
+      },
+      "warm_full_render_ms": {
+        "max": 1.4,
+        "p50": 0.8,
+        "p95": 1.32
+      },
+      "warm_geometry_ms": {
+        "max": 0.4,
+        "p50": 0.1,
+        "p95": 0.4
+      }
+    },
+    {
+      "cold_ready_ms": 549.671,
+      "elements": 20,
+      "raw_samples": {
+        "full_render_ms": [
+          1.5,
+          3.400000035762787,
+          1.300000011920929,
+          1.699999988079071,
+          5.699999988079071
+        ],
+        "geometry_ms": [
+          0.3999999761581421,
+          0.6000000238418579,
+          0.09999996423721313,
+          0.19999998807907104,
+          0.20000004768371582,
+          0.19999998807907104,
+          0.09999996423721313,
+          0.20000004768371582,
+          0.09999996423721313,
+          0.19999998807907104,
+          0.10000002384185791,
+          0.19999998807907104,
+          0.10000002384185791,
+          0.09999996423721313,
+          0.30000001192092896,
+          0.10000002384185791,
+          0.09999996423721313,
+          0.20000004768371582,
+          0.19999998807907104,
+          0.09999996423721313
+        ]
+      },
+      "warm_full_render_ms": {
+        "max": 5.7,
+        "p50": 1.7,
+        "p95": 5.24
+      },
+      "warm_geometry_ms": {
+        "max": 0.6,
+        "p50": 0.2,
+        "p95": 0.41
+      }
+    },
+    {
+      "cold_ready_ms": 648.727,
+      "elements": 100,
+      "raw_samples": {
+        "full_render_ms": [
+          10.099999964237213,
+          20.200000047683716,
+          8.399999976158142,
+          6.899999976158142,
+          4.5
+        ],
+        "geometry_ms": [
+          0.9000000357627869,
+          0.8999999761581421,
+          0.3999999761581421,
+          0.5,
+          0.40000003576278687,
+          1.199999988079071,
+          0.30000001192092896,
+          0.30000001192092896,
+          0.3999999761581421,
+          1,
+          1.199999988079071,
+          0.9000000357627869,
+          0.8999999761581421,
+          0.800000011920929,
+          0.800000011920929,
+          1,
+          0.699999988079071,
+          1.399999976158142,
+          0.5,
+          0.6000000238418579
+        ]
+      },
+      "warm_full_render_ms": {
+        "max": 20.2,
+        "p50": 8.4,
+        "p95": 18.18
+      },
+      "warm_geometry_ms": {
+        "max": 1.4,
+        "p50": 0.8,
+        "p95": 1.21
+      }
+    }
+  ],
+  "editor_raw": "gates/verify-release-native/performance/performance.json",
+  "environment": {
+    "browser": "151.0.7922.34",
+    "cpu_count": 12,
+    "distinction": "cold readiness versus warm geometry/full-render; no universal hardware-independent SLA",
+    "platform": "macOS-26.6.2-arm64-arm-64bit"
+  },
+  "historical_comparison": {
+    "baseline": "CHG-40 R6 measurements retained for comparison only; ordinary machine variance is not a Product regression",
+    "r6_source_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "r6_status": "OBSERVED_NOT_SLA",
+    "rss": "not reliably available in maintained tooling; not invented"
+  },
+  "schema": "visembler-chg40-r7-performance-summary.v1",
+  "source_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+  "status": "OBSERVED_NOT_SLA"
+}

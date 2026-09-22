@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "revision": 4,
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "timestamp_1",
+            "name": "TIMESTAMP",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "time"
+            ],
+            "type": "date"
+          },
+          {
+            "id": "measurement_2",
+            "name": "MEASUREMENT",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number"
+          }
+        ],
+        "id": "dataset-mucn9dof-abt561",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "2026-08-01",
+            97.2
+          ],
+          [
+            "2026-08-02",
+            98.5
+          ],
+          [
+            "2026-08-03",
+            99.1
+          ],
+          [
+            "2026-08-04",
+            99.4
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-22T12:22:23.103Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "delta": null,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 190,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "target": null,
+        "title": "Hero KPI",
+        "type": "metric",
+        "unit": "",
+        "value": null,
+        "w": 1572,
+        "weight": 1,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "brush": [
+          0,
+          2
+        ],
+        "data": [
+          [
+            "Period 1",
+            null
+          ],
+          [
+            "Period 2",
+            null
+          ],
+          [
+            "Period 3",
+            null
+          ]
+        ],
+        "dataset_id": "dataset-mucn9dof-abt561",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 360,
+        "id": "c2",
+        "locked": false,
+        "mapping": {
+          "time": "timestamp_1",
+          "value": "measurement_2",
+          "x": "timestamp_1",
+          "y": "measurement_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 2,
+        "revealed": true,
+        "title": "Line Chart",
+        "type": "chart",
+        "w": 1572,
+        "weight": 1,
+        "x": 14,
+        "y": 382,
+        "z": 2
+      },
+      {
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 156,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 3,
+        "text": "Summarize what changed, why it matters, and what happens next.",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 580,
+        "weight": 1,
+        "x": 14,
+        "y": 756,
+        "z": 3
+      },
+      {
+        "after": null,
+        "before": null,
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 156,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 4,
+        "title": "Before/After KPI",
+        "type": "comparison",
+        "unit": "",
+        "w": 580,
+        "weight": 1,
+        "x": 608,
+        "y": 756,
+        "z": 4
+      },
+      {
+        "detail": "Describe the recommendation and trade-offs.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 5,
+        "statement": "Decision required",
+        "status": "Open",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 580,
+        "weight": 1,
+        "x": 14,
+        "y": 926,
+        "z": 5
+      },
+      {
+        "body": "Weekly process health improved after chamber containment.",
+        "element": "Hero Title",
+        "emphasis": "hero",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 1,
+        "showTitle": false,
+        "text": "Weekly process health improved after chamber containment.",
+        "title": "Hero Title",
+        "type": "text",
+        "w": 1572,
+        "weight": 1.1,
+        "x": 14,
+        "y": 218,
+        "z": 6
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "executive",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 7,
+    "crossFilters": []
+  }
+}
