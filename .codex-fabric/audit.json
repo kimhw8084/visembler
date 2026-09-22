@@ -1,0 +1,264 @@
+{
+  "accepted_at": "2026-09-22T02:17:29Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && printf '%s\\\\n' '--- RTK ---' && sed -n '1,240p' /Users/haewonkim/.codex/RTK.md && printf '%s\\\\n' '--- law ---' && sed -n '1,260p' /Users/haewonkim/.codex/law.md && printf '%s\\\\n' '--- manifest ---' && sed -n '1,260p' company_ui/ai/construction_manifest.json && printf '%s\\\\n' '--- AGENTS ---' && sed -n '1,320p' AGENTS.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git remote -v && rtk git rev-parse HEAD && rtk git rev-parse main && rtk git rev-parse origin/main && rtk git show -s --format='HEAD %H%nTree %T%nParents %P%nSubject %s' HEAD && rtk git show -s --format='MAIN %H%nTree %T%nParents %P%nSubject %s' main && rtk git show -s --format='ORIGIN_MAIN %H%nTree %T%nParents %P%nSubject %s' origin/main && rg -n --hidden --glob '.github/workflows/quality.yml' --glob '\"'!.git'\"' '' . && sed -n '1,260p' .github/workflows/quality.yml && printf '%s\\\\n' '--- candidate/evidence references ---' && rg -n --hidden --glob '\"'!.git'\"' 'verify/visembler|CHG-42|Fabric evidence|job_id|project_id|runtime-owned|workflow_dispatch|Quality' . | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk --version && rtk gh --version && rtk gh auth status'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh workflow view quality.yml --repo kimhw8084/visembler && rtk rg -n '\"'^  [a-z0-9-]+:$|''^    name:'\"' .github/workflows/quality.yml && rtk git diff --exit-code && rtk git status --porcelain=v1 -uno\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh api repos/kimhw8084/visembler/git/ref/heads/main --jq '.object.sha' && rtk gh workflow run quality.yml --repo kimhw8084/visembler --ref main && rtk gh run list --repo kimhw8084/visembler --workflow quality.yml --branch main --event workflow_dispatch --limit 10 --json databaseId,number,headSha,event,status,conclusion,createdAt,updatedAt,url,displayTitle,workflowName,headBranch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run view 35679010467 --repo kimhw8084/visembler --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sleep 30 && rtk gh run view 35679010467 --repo kimhw8084/visembler --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs --jq '{databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs:[.jobs[]|{id: .databaseId,name,status,conclusion,startedAt,completedAt}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35679010467 --repo kimhw8084/visembler --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs --jq '{databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs:[.jobs[]|{id: .databaseId,name,status,conclusion,startedAt,completedAt}]}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run watch 35679010467 --repo kimhw8084/visembler --interval 20'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk gh run view 35679010467 --repo kimhw8084/visembler --json databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs --jq '{databaseId,number,workflowName,event,status,conclusion,headBranch,headSha,createdAt,updatedAt,url,jobs:[.jobs[]|{id: .databaseId,name,status,conclusion,startedAt,completedAt,url}]}' && rtk gh run view 35679010467 --repo kimhw8084/visembler --job 106592368436 --log-failed\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mktemp -d /tmp/visembler-chg42-r6.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk gh run download 35679010467 --repo kimhw8084/visembler --name visembler-company-browser-boundary --dir /tmp/visembler-chg42-r6.iZ2jEd && rtk find /tmp/visembler-chg42-r6.iZ2jEd -maxdepth 2 -type f -print'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /tmp/visembler-chg42-r6.iZ2jEd -maxdepth 4 && rtk ls -la /tmp/visembler-chg42-r6.iZ2jEd && rtk ls -la /tmp/visembler-chg42-r6.iZ2jEd/_temp'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '.' /tmp/visembler-chg42-r6.iZ2jEd/visembler/visembler/company-user-browser-acceptance.json && rtk sed -n '1,260p' /tmp/visembler-chg42-r6.iZ2jEd/_temp/visembler-browser-server.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq -r '.checks[] | select(.status == \\\"FAIL\\\") | \\\"id=\\\" + .id + \\\"\\\\n\\\" + .detail' /tmp/visembler-chg42-r6.iZ2jEd/visembler/visembler/company-user-browser-acceptance.json && rtk git status --short --branch && rtk git diff --exit-code && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git show -s --format='%H %T %P' HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rm -rf /tmp/visembler-chg42-r6.iZ2jEd && rtk env | sed -E 's/=.*//' | rtk rg -i 'fabric|evidence|project|request|job|linear' && rtk which fabric || true && rtk which codex-fabric || true && rtk which project-os || true && rtk which evidence || true && rtk ls -la /Users/haewonkim/.codex-fabric | sed -n '1,160p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/evidence -maxdepth 3 && rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 3 && rtk find /Users/haewonkim/.codex-fabric/bin -maxdepth 2 && rtk sed -n '1,220p' /Users/haewonkim/.codex-fabric/config/projects.yaml && rtk find /Users/haewonkim/.codex-fabric/libexec -maxdepth 2\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/projects.yaml && rtk sed -n '1,280p' /Users/haewonkim/.codex-fabric/bin/fabricctl && rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 | rtk rg 'a9f436|CHG-42|visembler' | tail -80 && rtk find /Users/haewonkim/.codex-fabric/evidence/visembler -maxdepth 3 | tail -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f | rtk rg 'a9f436|verify/visembler|CHG-42-r6' | head -120 && rtk rg -n --hidden 'runtime-owned|canonical.*evidence|job_id|project_id|operation.*VERIFY|publish.*evidence' /Users/haewonkim/.codex-fabric /Users/haewonkim/.codex --glob '\"'!**/node_modules/**'\"' --glob '\"'!**/*.bin'\"' --glob '\"'!**/*.log'\"' | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --help && rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --version || true'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status && rtk /Users/haewonkim/.codex-fabric/bin/fabricctl health'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl publish-evidence CF-a9f43660820fc2ed441bf58e'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -1 /Users/haewonkim/.codex-fabric/jobs | rtk rg 'a9f436|CF-' | tail -40 && rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-a9f43660820fc2ed441bf58e\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -maxdepth 3 -type d | rtk rg 'a9f436|running|pending|executed' | head -120 && rtk find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f | rtk rg 'a9f436' | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 -type d -name '*.running' && rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 2 -name '*a9f*' && rtk find /Users/haewonkim/.codex-fabric/runs -maxdepth 2 | tail -40 && rtk find /Users/haewonkim/.codex-fabric/state -maxdepth 2 | tail -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs/CF-a9f43660820fc2ed441bf58e.running -maxdepth 1 -type f -print && rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/jobs/CF-a9f43660820fc2ed441bf58e.running/job.json && rtk sed -n '1,260p' /Users/haewonkim/.codex-fabric/jobs/CF-a9f43660820fc2ed441bf58e.running/lease.json && rtk sed -n '1,240p' /Users/haewonkim/.codex-fabric/jobs/CF-a9f43660820fc2ed441bf58e.running/prompt.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'def publish_evidence|publish-evidence|JOB_NOT_TERMINAL|evidence_published|terminal job' /Users/haewonkim/.codex-fabric/current/fabric.py /Users/haewonkim/.codex-fabric/current --glob '*.py' | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2700,2925p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3600,3835p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '4320,4420p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git diff --exit-code && rtk git rev-parse --abbrev-ref HEAD && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse origin/main && rtk git rev-parse origin/main''^{tree} && rtk git merge-base --is-ancestor 3cbdfbc5639c0aee4a26269a5ff326c17d69b6c1 HEAD && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg42-postmerge-quality-r6 && rtk git show -s --format='\"'HEAD=%H%nTREE=%T%nPARENTS=%P%nSUBJECT=%s' HEAD && rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-a9f43660820fc2ed441bf58e\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 8 'CB999|q-menu|Report Hub|menu' scripts/release_checks/run_company_user_browser_acceptance.py | head -220\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 76,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 94.97,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 3281408,
+      "fresh_input_tokens": 173813,
+      "input_tokens": 3455221,
+      "non_reasoning_output_tokens": 6957,
+      "output_tokens": 15717,
+      "reasoning_output_tokens": 8760,
+      "total_processed_tokens": 3470938
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T02:30:37Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "a389d6d2ee70fbbceac65a4758b44455151b80a8",
+    "branch": "verify/visembler-chg42-postmerge-quality-r6",
+    "detached_verify": false,
+    "head_sha": "a389d6d2ee70fbbceac65a4758b44455151b80a8",
+    "remote_exact_head": true,
+    "remote_head_sha": "a389d6d2ee70fbbceac65a4758b44455151b80a8",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "a389d6d2ee70fbbceac65a4758b44455151b80a8",
+    "work_branch": "verify/visembler-chg42-postmerge-quality-r6",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-a9f43660820fc2ed441bf58e",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-42-r6",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-42-r6"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-42-r6",
+  "schema_version": 1,
+  "started_at": "2026-09-22T02:17:29Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 788,
+    "queue_seconds": 0,
+    "total_seconds": 788
+  },
+  "transport": {
+    "bytes": 2403,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2099,
+    "prompt_sha256": "0c9f7eda8eb17bee2a82b153d5b634b317f12ec50adda2c6357abba9fa4d8bef",
+    "sha256": "a9f43660820fc2ed441bf58e48be626f9915368cb1ebb8b883d96aeea428963f"
+  }
+}
