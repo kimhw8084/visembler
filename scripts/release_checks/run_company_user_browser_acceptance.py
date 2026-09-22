@@ -41,6 +41,29 @@ def _record(checks: list[dict], identifier: str, status: str, detail: str = '') 
     checks.append(item)
 
 
+def _open_report_menu(page, report_id: str):
+    card = page.locator(f'[data-testid="report-card"][data-report-id="{report_id}"]')
+    card.wait_for(state='visible', timeout=15000)
+    if card.count() != 1:
+        raise AssertionError(f'expected one visible report card for {report_id!r}, found {card.count()}')
+    trigger = card.locator('[data-report-action="more"]:visible')
+    trigger.wait_for(state='visible', timeout=5000)
+    if trigger.count() != 1:
+        raise AssertionError(f'expected one visible More trigger for {report_id!r}, found {trigger.count()}')
+    page.locator('.q-menu:visible').wait_for(state='hidden', timeout=5000)
+    trigger.click()
+    menu = page.locator('.q-menu:visible')
+    menu.wait_for(state='visible', timeout=5000)
+    if menu.count() != 1:
+        raise AssertionError(f'expected one visible action menu for {report_id!r}, found {menu.count()}')
+    return menu
+
+
+def _close_report_menu(page, menu) -> None:
+    page.keyboard.press('Escape')
+    menu.wait_for(state='hidden', timeout=5000)
+
+
 def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> int:
     checks: list[dict] = []
     run_id = uuid.uuid4().hex[:12]
@@ -94,11 +117,9 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
             alice_hub = alice_context.new_page()
             visit(alice_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
             alice_hub.locator('[data-testid="report-hub"]').wait_for(timeout=15000)
-            owner_card = alice_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
-            owner_card.locator('[data-report-action="more"]').click()
-            owner_menu = alice_hub.locator('.q-menu:visible')
+            owner_menu = _open_report_menu(alice_hub, shared_id)
             owner_menu.get_by_role('button', name='Manage access', exact=True).wait_for(state='visible', timeout=5000)
-            alice_hub.keyboard.press('Escape')
+            _close_report_menu(alice_hub, owner_menu)
             _record(checks, 'CB002', 'PASS')
 
             bob_before_context = context('bob')
@@ -114,10 +135,14 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                 raise AssertionError(f'unauthorized asset status {asset_response.status}')
             _record(checks, 'CB005', 'PASS')
 
-            owner_card.locator('[data-report-action="more"]').click()
-            alice_hub.locator('.q-menu:visible').get_by_role('button', name='Manage access', exact=True).click()
+            owner_menu = _open_report_menu(alice_hub, shared_id)
+            owner_menu.get_by_role('button', name='Manage access', exact=True).click()
+            owner_menu.wait_for(state='hidden', timeout=5000)
+            share_dialog = alice_hub.locator('[data-cui-overlay="dialog"]:visible')
+            share_dialog.wait_for(state='visible', timeout=5000)
             alice_hub.get_by_label('Person or group').fill('bob')
             alice_hub.get_by_role('button', name='Grant access', exact=True).click()
+            share_dialog.wait_for(state='hidden', timeout=5000)
             page_wait = 0
             while page_wait < 10 and access.get(shared_id).get('grants', {}).get('bob') != 'viewer':
                 alice.wait_for_timeout(100)
@@ -144,15 +169,13 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
 
             bob_hub = bob_context.new_page()
             visit(bob_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
-            viewer_card = bob_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
-            viewer_card.locator('[data-report-action="more"]').click()
-            viewer_menu = bob_hub.locator('.q-menu:visible')
+            viewer_menu = _open_report_menu(bob_hub, shared_id)
             for label in ('Review history', 'Download JSON'):
                 viewer_menu.get_by_role('button', name=label, exact=True).wait_for(state='visible', timeout=5000)
             for label in ('Edit details', 'Manage access', 'Move to trash'):
                 if viewer_menu.get_by_role('button', name=label, exact=True).count():
                     raise AssertionError(f'Viewer unauthorized Report Hub action visible: {label}')
-            bob_hub.keyboard.press('Escape')
+            _close_report_menu(bob_hub, viewer_menu)
             _record(checks, 'CB015', 'PASS')
 
             # The server-side projection is the source of truth for role
@@ -168,15 +191,13 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
 
             bob_editor_hub = bob_context.new_page()
             visit(bob_editor_hub, f'{base_url}/visualizer/reports?report={shared_id}', 200)
-            editor_card = bob_editor_hub.locator(f'[data-testid="report-card"][data-report-id="{shared_id}"]')
-            editor_card.locator('[data-report-action="more"]').click()
-            editor_menu = bob_editor_hub.locator('.q-menu:visible')
+            editor_menu = _open_report_menu(bob_editor_hub, shared_id)
             for label in ('Edit details', 'Duplicate report', 'Review history', 'Download JSON'):
                 editor_menu.get_by_role('button', name=label, exact=True).wait_for(state='visible', timeout=5000)
             for label in ('Manage access', 'Move to trash'):
                 if editor_menu.get_by_role('button', name=label, exact=True).count():
                     raise AssertionError(f'Editor unauthorized Report Hub action visible: {label}')
-            bob_editor_hub.keyboard.press('Escape')
+            _close_report_menu(bob_editor_hub, editor_menu)
             _record(checks, 'CB016', 'PASS')
 
             access.update_grant(shared_id, 'bob', None)
