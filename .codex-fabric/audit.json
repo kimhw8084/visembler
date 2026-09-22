@@ -1,0 +1,306 @@
+{
+  "accepted_at": "2026-09-22T21:28:56Z",
+  "changed_files": [],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'pwd && git status --short --branch && git rev-parse HEAD && git rev-parse HEAD''^{tree} && git remote -v && cat /Users/haewonkim/.codex/RTK.md && cat /Users/haewonkim/.codex/law.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'ls -la && rg --files -g \\\"AGENTS.md\\\" -g \\\"construction_manifest.json\\\" -g \\\"APP_PATTERNS.md\\\" -g \\\"COMPONENT_CATALOG.md\\\" -g \\\"*CHG-20*\\\" -g \\\"*chg20*\\\" -g \\\"*company*boundary*\\\" -g \\\"*readiness*\\\" | head -250'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'cat AGENTS.md && cat company_ui/ai/construction_manifest.json && rg -n \\\"CHG-20|company.boundary|company boundary|final-SHA|READY_FOR_COMPANY_TARGET_CERTIFICATION|Fabric evidence|runtime-owned|authoring acceptance|model acceptance|capacity\\\" .'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'cat docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md && cat docs/VISSEMBLER_COMPANY_PRODUCTION_RUNBOOK.md && cat docs/VISSEMBLER_COMPANY_OPERATIONS.md && find scripts/release_checks -maxdepth 1 -type f -print | sort && git log -8 --oneline --decorate --all && git worktree list --porcelain && git status --porcelain=v1'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,280p\\\" scripts/release_checks/run_company_production_readiness.py && sed -n \\\"1,260p\\\" scripts/release_checks/run_company_release_aggregator.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,320p\\\" scripts/release_checks/run_company_user_acceptance.py && sed -n \\\"1,320p\\\" scripts/release_checks/run_company_user_browser_acceptance.py && sed -n \\\"1,300p\\\" scripts/release_checks/run_company_boundary_browser_gate.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,300p\\\" scripts/release_checks/run_repository_contracts.py && sed -n \\\"1,280p\\\" scripts/release_checks/run_company_source_stability.py && sed -n \\\"1,260p\\\" scripts/release_checks/run_company_capacity.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f | head -160; git ls-remote origin \\\"refs/heads/codex-fabric/evidence/visembler/CHG-20*\\\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'find /Users/haewonkim/.codex-fabric -maxdepth 2 -type d -not -path \\\"*/locks*\\\" -print | head -120; git ls-tree -r --name-only origin/codex-fabric/evidence/visembler/CHG-20-r3 | head -120; git show --no-patch --format=fuller origin/codex-fabric/evidence/visembler/CHG-20-r3; git branch -r --list \\\"*CHG-20*\\\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,260p\\\" scripts/verify_release.py; sed -n \\\"1,280p\\\" scripts/release_checks/run_company_user_acceptance.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,320p\\\" scripts/release_checks/run_company_source_stability.py; sed -n \\\"1,300p\\\" scripts/release_checks/run_company_capacity.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'find /Users/haewonkim/.codex-fabric/codex-runtime/CF-b6992a55c5d35d6ebe7e301f -maxdepth 3 -type f -print; find /Users/haewonkim/.codex-fabric/evidence/visembler -maxdepth 3 -type f -print | sort; find /Users/haewonkim/.codex-fabric/artifacts/CF-b6992a55c5d35d6ebe7e301f -maxdepth 3 -type f -print 2>/dev/null'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,300p\\\" scripts/release_checks/run_company_boundary_browser_gate.py; rg -n \\\"authoring|model acceptance|model_acceptance|authoring_acceptance|CHG-20\\\" scripts docs evidence evidence_history .codex-fabric 2>/dev/null'\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git diff-tree --no-commit-id --name-status -r origin/main origin/codex-fabric/evidence/visembler/CHG-20-r3; git show origin/codex-fabric/evidence/visembler/CHG-20-r3:.codex-fabric/audit.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'find /Users/haewonkim/.codex-fabric/codex-runtime/CF-b6992a55c5d35d6ebe7e301f -maxdepth 2 -type f -print; find /Users/haewonkim/.codex-fabric/jobs/CF-a1bd4cb7f23045d4a467f863.running /Users/haewonkim/.codex-fabric/results/CF-a1bd4cb7f23045d4a467f863 -maxdepth 2 -type f -print 2>/dev/null; ls -la .codex-fabric 2>/dev/null; git show origin/codex-fabric/evidence/visembler/CHG-20-r3:.codex-fabric/audit.json | jq -r \\\".checks[]?.command // empty\\\" | rg -n \\\"authoring|readiness|capacity|stability|artifact|requirements|acceptance|pytest|sha256|verify_release|boundary|repository-contract|printf\\\" | tail -100'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 19654,
+        "output_sha256": "7ce2aceed7c0982bf90800f8bfe3b582ae8e0268a6a5f0fa2324827b61ca7efd",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git status --porcelain=v1 --untracked-files=all; git branch -vv --show-current; git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg20-current-main-r4; python --version; python -m pytest --version; node --version; command -v rtk; command -v playwright || true; python - <<\\\"PY\\\"\nimport importlib.metadata as m\nfor name in (\\\"nicegui\\\", \\\"playwright\\\", \\\"Pillow\\\", \\\"build\\\"):\n    try: print(f\\\"{name}={m.version(name)}\\\")\n    except m.PackageNotFoundError: print(f\\\"{name}=MISSING\\\")\nPY'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 253,
+        "output_sha256": "17990cbe99fcb69c7dbd651e9a96ca2dde9d049aa188644732c17fe2057bf108",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'sed -n \\\"1,240p\\\" scripts/verify_release.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show origin/codex-fabric/evidence/visembler/CHG-20-r3:.codex-fabric/audit.json | jq -r \\\".checks[] | select(.command | contains(\\\\\\\"integrity workflow authority\\\\\\\")) | .command, \\\\\\\"--- next ---\\\\\\\"\\\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show origin/codex-fabric/evidence/visembler/CHG-20-r3:.codex-fabric/audit.json | jq -r \\\".checks[] | select(.command | test(\\\\\\\"wheel|requirements_equal|source_manifest|artifact_binding|package_integrity\\\\\\\"; \\\\\\\"i\\\\\\\")) | .command, \\\\\\\"--- next ---\\\\\\\"\\\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mktemp -d /tmp/visembler-chg20-r4.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg20-r4.pFYIHt/canonical-native'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /tmp/visembler-chg20-r4.pFYIHt/company-source-stability.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest tests/test_visualizer_authoring_p0.py tests/test_visualizer_accessibility_authoring.py tests/test_visualizer_performance.py --tb=short --junitxml=/tmp/visembler-chg20-r4.pFYIHt/authoring-acceptance.xml'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 20
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 180,
+        "output_sha256": "38f24dc9d753b0111cf2b88ce92ce1df81092a1e1e41a2724276a8cfdd659bc6",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport io\nimport subprocess\nimport tarfile\nroot = Path('/Users/haewonkim/.codex-fabric/worktrees/CF-b6992a55c5d35d6ebe7e301f')\ndestination = Path('/tmp/visembler-chg20-r4.pFYIHt/package-source')\ndestination.mkdir(parents=True, exist_ok=False)\narchive = subprocess.check_output(['git', 'archive', '--format=tar', 'HEAD'], cwd=root)\nwith tarfile.open(fileobj=io.BytesIO(archive), mode='r:') as bundle:\n    bundle.extractall(destination)\nprint(f'archive_source={destination}')\nprint(f'archive_bytes={len(archive)}')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pip wheel --no-deps --no-build-isolation --wheel-dir /tmp/visembler-chg20-r4.pFYIHt/dist /tmp/visembler-chg20-r4.pFYIHt/package-source'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'rg -n \\\"console|pageerror|runtime|errors\\\" scripts/release_checks/run_company_user_browser_acceptance.py; rtk python - <<\\\"PY\\\"\nimport hashlib, json, subprocess, tomllib, xml.etree.ElementTree as ET\nfrom pathlib import Path\nroot=Path.cwd(); base=Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/canonical-native\\\")\nreport=json.loads((base/\\\"report.json\\\").read_text()); by={x[\\\"name\\\"]:x for x in report[\\\"checks\\\"]}\ncontracts=json.loads((base/\\\"repository-contracts.json\\\").read_text()); model=json.loads((base/\\\"company-boundary-model.json\\\").read_text()); browser=json.loads((base/\\\"company-boundary-browser.json\\\").read_text()); readiness=json.loads((base/\\\"company-readiness-local.json\\\").read_text()); capacity=json.loads((base/\\\"company-capacity.json\\\").read_text()); stability=json.loads(Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/company-source-stability.json\\\").read_text())\nj=ET.parse(\\\"/tmp/visembler-chg20-r4.pFYIHt/authoring-acceptance.xml\\\").getroot().find(\\\"testsuite\\\")\nsha=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\"],text=True).strip(); tree=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\"'^{tree}\"],text=True).strip(); status=subprocess.check_output([\"git\",\"status\",\"--porcelain=v1\",\"--untracked-files=all\"],text=True).strip()\nremote=subprocess.check_output([\"git\",\"ls-remote\",\"origin\",\"refs/heads/main\",\"refs/heads/verify/visembler-chg20-current-main-r4\"],text=True).splitlines()\nremote_values={line.split(\"'\"\\\\t\\\",1)[1]:line.split(\\\"\\\\t\\\",1)[0] for line in remote if line.strip()}\nfrom scripts.release_checks.run_company_production_readiness import candidate_sha, source_manifest, dependency_fingerprint, validate_local_receipt\nmanifest_hash,_=source_manifest(); dep_hash=dependency_fingerprint(); local_valid,local_errors=validate_local_receipt(readiness,sha=sha,manifest_hash=manifest_hash,dependency_hash=dep_hash)\nrecorded=json.loads((base/\\\"source-manifest.json\\\").read_text())\nimport scripts.verify_release as verify\nwheel=next(Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/dist\\\").glob(\\\"company_ui-*.whl\\\")); import zipfile\nwith zipfile.ZipFile(wheel) as z: names=set(z.namelist())\nrequired_contents={\\\"company_ui/products/visualizer/assets/integrated_editor.mjs\\\",\\\"company_ui/products/visualizer/assets/integrated_editor.html\\\",\\\"company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json\\\",\\\"company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js\\\"}\nrequirements=[line.strip() for line in Path(\\\"requirements.txt\\\").read_text().splitlines() if line.strip() and not line.lstrip().startswith(\\\"#\\\")]\nproject_deps=tomllib.loads(Path(\\\"pyproject.toml\\\").read_text())[\\\"project\\\"][\\\"dependencies\\\"]\ncapacity_map={str(x[\\\"reports\\\"]):x for x in capacity[\\\"results\\\"]}\nprint(json.dumps({\\\"head\\\":sha,\\\"tree\\\":tree,\\\"branch\\\":subprocess.check_output([\\\"git\\\",\\\"branch\\\",\\\"--show-current\\\"],text=True).strip(),\\\"worktree_status\\\":status,\\\"remote_main\\\":remote_values.get(\\\"refs/heads/main\\\"),\\\"remote_work\\\":remote_values.get(\\\"refs/heads/verify/visembler-chg20-current-main-r4\\\"),\\\"native\\\":{\\\"status\\\":report[\\\"release_status\\\"],\\\"company_boundary_status\\\":report[\\\"company_boundary_status\\\"],\\\"managed_target_status\\\":report[\\\"managed_target_status\\\"],\\\"required_gates\\\":len(report[\\\"required_gates\\\"]),\\\"required_passed\\\":sum(by[x][\\\"status\\\"]==\\\"PASS\\\" for x in report[\\\"required_gates\\\"]),\\\"remaining\\\":report[\\\"remaining_release_validation\\\"]},\\\"repository_contracts\\\":{\\\"status\\\":contracts[\\\"status\\\"],\\\"checks\\\":len(contracts[\\\"checks\\\"]),\\\"passed\\\":sum(x.get(\\\"status\\\")==\\\"PASS\\\" for x in contracts[\\\"checks\\\"]),\\\"failed\\\":sum(x.get(\\\"status\\\")==\\\"FAIL\\\" for x in contracts[\\\"checks\\\"])},\\\"authorization_lifecycle\\\":{\\\"status\\\":model[\\\"status\\\"],\\\"passed\\\":model[\\\"passed\\\"],\\\"failed\\\":model[\\\"failed\\\"]},\\\"model_acceptance\\\":{\\\"status\\\":model[\\\"status\\\"],\\\"passed\\\":model[\\\"passed\\\"],\\\"failed\\\":model[\\\"failed\\\"]},\\\"authoring_acceptance\\\":{\\\"tests\\\":int(j.attrib.get(\\\"tests\\\",\\\"0\\\")),\\\"failures\\\":int(j.attrib.get(\\\"failures\\\",\\\"0\\\")),\\\"errors\\\":int(j.attrib.get(\\\"errors\\\",\\\"0\\\"))},\\\"browser\\\":{\\\"status\\\":browser[\\\"status\\\"],\\\"checks\\\":len(browser[\\\"checks\\\"]),\\\"passed\\\":sum(x[\\\"status\\\"]==\\\"PASS\\\" for x in browser[\\\"checks\\\"]),\\\"failed\\\":sum(x[\\\"status\\\"]==\\\"FAIL\\\" for x in browser[\\\"checks\\\"]),\\\"browser_console_errors\\\":len(browser.get(\\\"browser_console_errors\\\",[])),\\\"receipt_keys\\\":sorted(browser.keys()),\\\"remaining\\\":browser.get(\\\"remaining\\\"),\\\"cleanup\\\":browser.get(\\\"cleanup\\\")},\\\"readiness\\\":{\\\"status\\\":readiness[\\\"status\\\"],\\\"local_valid\\\":local_valid,\\\"local_errors\\\":local_errors,\\\"target_receipt\\\":readiness.get(\\\"local_checks\\\",{}).get(\\\"target_receipt\\\"),\\\"dependency_fingerprint\\\":dep_hash,\\\"manifest_hash\\\":manifest_hash,\\\"artifact_manifest\\\":readiness.get(\\\"artifact_manifest\\\")},\\\"capacity\\\":{\\\"status\\\":capacity[\\\"status\\\"],\\\"cases\\\":{size:{\\\"reports\\\":capacity_map[size][\\\"reports\\\"],\\\"listed\\\":capacity_map[size][\\\"listed\\\"],\\\"status\\\":\\\"PASS\\\" if capacity_map[size][\\\"reports\\\"]==int(size) and capacity_map[size][\\\"listed\\\"]==int(size) else \\\"FAIL\\\"} for size in (\\\"10\\\",\\\"100\\\",\\\"1000\\\")}},\\\"source_stability\\\":stability[\\\"status\\\"],\\\"verify_manifest_equal\\\":recorded==verify.source_manifest(),\\\"dependency_binding\\\":{\\\"requirements_equal\\\":requirements==project_deps,\\\"wheel_sha256\\\":hashlib.sha256(wheel.read_bytes()).hexdigest(),\\\"wheel_size\\\":wheel.stat().st_size,\\\"wheel_contents_present\\\":not (required_contents-names),\\\"frozen_connector_sha256\\\":hashlib.sha256(Path(\\\"company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js\\\").read_bytes()).hexdigest()},\\\"candidate_sha_from_readiness\\\":candidate_sha()},indent=2,sort_keys=True))\nPY'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'rtk python - <<\\\"PY\\\"\nimport json\nfrom pathlib import Path\nb=Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/canonical-native\\\")\nfor f in (\\\"repository-contracts.json\\\",\\\"company-boundary-model.json\\\",\\\"company-boundary-browser.json\\\",\\\"company-readiness-local.json\\\",\\\"company-capacity.json\\\"):\n d=json.loads((b/f).read_text()); c=d.get(\\\"checks\\\")\n print(f, \\\"status=\\\",d.get(\\\"status\\\"),\\\"keys=\\\",sorted(d),\\\"checks_type=\\\",type(c).__name__,\\\"checks_len=\\\",len(c) if hasattr(c,\\\"__len__\\\") else None)\n if isinstance(c,dict): print(\\\"  checks_values=\\\",[(k, v.get(\\\"status\\\") if isinstance(v,dict) else v) for k,v in c.items()])\n elif isinstance(c,list): print(\\\"  pass/fail=\\\",sum(x.get(\\\"status\\\")==\\\"PASS\\\" for x in c),sum(x.get(\\\"status\\\")==\\\"FAIL\\\" for x in c))\nPY'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'rtk python - <<\\\"PY\\\"\nimport hashlib, json, subprocess, tomllib, xml.etree.ElementTree as ET, zipfile\nfrom pathlib import Path\nroot=Path.cwd(); base=Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/canonical-native\\\")\nreport=json.loads((base/\\\"report.json\\\").read_text()); by={x[\\\"name\\\"]:x for x in report[\\\"checks\\\"]}\ncontracts=json.loads((base/\\\"repository-contracts.json\\\").read_text()); model=json.loads((base/\\\"company-boundary-model.json\\\").read_text()); browser=json.loads((base/\\\"company-boundary-browser.json\\\").read_text()); readiness=json.loads((base/\\\"company-readiness-local.json\\\").read_text()); capacity=json.loads((base/\\\"company-capacity.json\\\").read_text()); stability=json.loads(Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/company-source-stability.json\\\").read_text())\nj=ET.parse(\\\"/tmp/visembler-chg20-r4.pFYIHt/authoring-acceptance.xml\\\").getroot().find(\\\"testsuite\\\")\nsha=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\"],text=True).strip(); tree=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\"'^{tree}\"],text=True).strip(); status=subprocess.check_output([\"git\",\"status\",\"--porcelain=v1\",\"--untracked-files=all\"],text=True).strip()\nremote=subprocess.check_output([\"git\",\"ls-remote\",\"origin\",\"refs/heads/main\",\"refs/heads/verify/visembler-chg20-current-main-r4\"],text=True).splitlines(); remote_values={line.split(\"'\"\\\\t\\\",1)[1]:line.split(\\\"\\\\t\\\",1)[0] for line in remote if line.strip()}\nfrom scripts.release_checks.run_company_production_readiness import candidate_sha, source_manifest, dependency_fingerprint, validate_local_receipt\nmanifest_hash,_=source_manifest(); dep_hash=dependency_fingerprint(); local_valid,local_errors=validate_local_receipt(readiness,sha=sha,manifest_hash=manifest_hash,dependency_hash=dep_hash)\nrecorded=json.loads((base/\\\"source-manifest.json\\\").read_text()); import scripts.verify_release as verify\nwheel=next(Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/dist\\\").glob(\\\"company_ui-*.whl\\\"))\nwith zipfile.ZipFile(wheel) as z: names=set(z.namelist())\nrequired_contents={\\\"company_ui/products/visualizer/assets/integrated_editor.mjs\\\",\\\"company_ui/products/visualizer/assets/integrated_editor.html\\\",\\\"company_ui/products/visualizer/contracts/ELEMENT_CAPABILITY_MATRIX.json\\\",\\\"company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js\\\"}\nrequirements=[x.strip() for x in Path(\\\"requirements.txt\\\").read_text().splitlines() if x.strip() and not x.lstrip().startswith(\\\"#\\\")]; project_deps=tomllib.loads(Path(\\\"pyproject.toml\\\").read_text())[\\\"project\\\"][\\\"dependencies\\\"]\ncapacity_map={str(x[\\\"reports\\\"]):x for x in capacity[\\\"results\\\"]}; errors=browser.get(\\\"browser_console_errors\\\",[])\nsummary={\\\"head\\\":sha,\\\"tree\\\":tree,\\\"branch\\\":subprocess.check_output([\\\"git\\\",\\\"branch\\\",\\\"--show-current\\\"],text=True).strip(),\\\"worktree_status\\\":status,\\\"remote_main\\\":remote_values.get(\\\"refs/heads/main\\\"),\\\"remote_work\\\":remote_values.get(\\\"refs/heads/verify/visembler-chg20-current-main-r4\\\"),\\\"native\\\":{\\\"status\\\":report[\\\"release_status\\\"],\\\"checks_status\\\":report[\\\"checks_status\\\"],\\\"company_boundary_status\\\":report[\\\"company_boundary_status\\\"],\\\"managed_target_status\\\":report[\\\"managed_target_status\\\"],\\\"required_gates\\\":len(report[\\\"required_gates\\\"]),\\\"required_passed\\\":sum(by[x][\\\"status\\\"]==\\\"PASS\\\" for x in report[\\\"required_gates\\\"]),\\\"remaining\\\":report[\\\"remaining_release_validation\\\"]},\\\"repository_contracts\\\":{\\\"status\\\":contracts[\\\"status\\\"],\\\"checks\\\":len(contracts[\\\"checks\\\"]),\\\"passed\\\":sum(x.get(\\\"status\\\")==\\\"PASS\\\" for x in contracts[\\\"checks\\\"].values()),\\\"failed\\\":sum(x.get(\\\"status\\\")==\\\"FAIL\\\" for x in contracts[\\\"checks\\\"].values())},\\\"authorization_lifecycle\\\":{\\\"status\\\":model[\\\"status\\\"],\\\"passed\\\":model[\\\"passed\\\"],\\\"failed\\\":model[\\\"failed\\\"]},\\\"model_acceptance\\\":{\\\"status\\\":model[\\\"status\\\"],\\\"passed\\\":model[\\\"passed\\\"],\\\"failed\\\":model[\\\"failed\\\"]},\\\"authoring_acceptance\\\":{\\\"tests\\\":int(j.attrib.get(\\\"tests\\\",\\\"0\\\")),\\\"failures\\\":int(j.attrib.get(\\\"failures\\\",\\\"0\\\")),\\\"errors\\\":int(j.attrib.get(\\\"errors\\\",\\\"0\\\"))},\\\"browser\\\":{\\\"status\\\":browser[\\\"status\\\"],\\\"checks\\\":len(browser[\\\"checks\\\"]),\\\"passed\\\":sum(x[\\\"status\\\"]==\\\"PASS\\\" for x in browser[\\\"checks\\\"]),\\\"failed\\\":sum(x[\\\"status\\\"]==\\\"FAIL\\\" for x in browser[\\\"checks\\\"]),\\\"console_errors\\\":sum(str(x).startswith(\\\"error:\\\") for x in errors),\\\"runtime_page_errors\\\":sum(str(x).startswith(\\\"pageerror:\\\") for x in errors),\\\"request_failures\\\":sum(str(x).startswith(\\\"requestfailed:\\\") for x in errors),\\\"http_5xx\\\":sum(str(x).startswith(\\\"http-\\\") for x in errors),\\\"all_browser_errors\\\":len(errors),\\\"remaining\\\":browser.get(\\\"remaining\\\"),\\\"cleanup\\\":browser.get(\\\"cleanup\\\")},\\\"readiness\\\":{\\\"status\\\":readiness[\\\"status\\\"],\\\"local_valid\\\":local_valid,\\\"local_errors\\\":local_errors,\\\"target_receipt\\\":readiness.get(\\\"local_checks\\\",{}).get(\\\"target_receipt\\\"),\\\"dependency_fingerprint\\\":dep_hash,\\\"manifest_hash\\\":manifest_hash,\\\"artifact_manifest\\\":readiness.get(\\\"artifact_manifest\\\")},\\\"capacity\\\":{\\\"status\\\":capacity[\\\"status\\\"],\\\"cases\\\":{size:{\\\"reports\\\":capacity_map[size][\\\"reports\\\"],\\\"listed\\\":capacity_map[size][\\\"listed\\\"],\\\"status\\\":\\\"PASS\\\" if capacity_map[size][\\\"reports\\\"]==int(size) and capacity_map[size][\\\"listed\\\"]==int(size) else \\\"FAIL\\\"} for size in (\\\"10\\\",\\\"100\\\",\\\"1000\\\")}},\\\"source_stability\\\":stability[\\\"status\\\"],\\\"verify_manifest_equal\\\":recorded==verify.source_manifest(),\\\"dependency_binding\\\":{\\\"requirements_equal\\\":requirements==project_deps,\\\"wheel_sha256\\\":hashlib.sha256(wheel.read_bytes()).hexdigest(),\\\"wheel_size\\\":wheel.stat().st_size,\\\"wheel_contents_present\\\":not (required_contents-names),\\\"frozen_connector_sha256\\\":hashlib.sha256(Path(\\\"company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js\\\").read_bytes()).hexdigest()},\\\"candidate_sha_from_readiness\\\":candidate_sha()}\nprint(json.dumps(summary,indent=2,sort_keys=True))\nPY'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/verify/visembler-chg20-current-main-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /tmp/visembler-chg20-r4.pFYIHt/company-source-stability-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'rtk git rev-parse HEAD; rtk git rev-parse HEAD\"'^{tree}; rtk git status --porcelain=v1 --untracked-files=all; rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg20-current-main-r4'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'rtk python - <<\\\"PY\\\"\nimport json, subprocess\nfrom pathlib import Path\nr=Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/canonical-native/company-readiness-local.json\\\")\nd=json.loads(r.read_text())\nprint(json.dumps({\\\"target_receipt_present\\\":d.get(\\\"target\\\",{}).get(\\\"present\\\"),\\\"target_receipt_check\\\":d.get(\\\"local_checks\\\",{}).get(\\\"target_receipt\\\"),\\\"managed_target_status\\\":json.loads(Path(\\\"/tmp/visembler-chg20-r4.pFYIHt/canonical-native/report.json\\\").read_text())[\\\"managed_target_status\\\"],\\\"test_requirements_include_production\\\":\\\"-r requirements.txt\\\" in Path(\\\"requirements-test.txt\\\").read_text(),\\\"head\\\":subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\"],text=True).strip(),\\\"tree\\\":subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\"'^{tree}\"],text=True).strip(),\"worktree_clean\":not subprocess.check_output([\"git\",\"status\",\"--porcelain=v1\",\"--untracked-files=all\"],text=True).strip()},sort_keys=True))\nPY'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy printf '%s\\\\n' 'request=CHG-20-R4 fabric_run=CF-b6992a55c5d35d6ebe7e301f repository=visembler source_head=2234b04b8363cc347ab729de0bd913cf137b738a source_tree=9a52f7f22fe4cebc965e27f6afdf8657279ebf9e native_verifier=PASS_LOCAL_INTERNAL_PILOT native_checks_status=PASS native_required_gates=26/26 repository_contracts=PASS(6/6) authorization_lifecycle=PASS(20/20) authoring_acceptance=PASS(20/20) model_acceptance=PASS(20/20) browser_boundary=PASS(17/17) browser_console_errors=0 browser_page_runtime_errors=0 browser_request_failures=0 browser_http_5xx=0 browser_all_errors=0 browser_fixtures_remaining=0 production_readiness=READY_FOR_COMPANY_TARGET_CERTIFICATION capacity_status=PASS capacity_10=PASS(reports=10,listed=10) capacity_100=PASS(reports=100,listed=100) capacity_1000=PASS(reports=1000,listed=1000) source_stability=PASS integrity_dependency_artifact_binding=PASS production_requirements_equal_project_dependencies=true test_requirements_include_production=true dependency_fingerprint=889312a0df44d3e2cdef28f570507f1cbe9989ba9dae7776fae8971b5cf229aa source_manifest_hash=77e929e73efafa982b3594d4aa76126226d491cd30e795cd6fa6765ab632a231 readiness_dependency_fingerprint_match=true readiness_source_manifest_match=true verifier_source_manifest_equal=true artifact_receipt_valid=true frozen_connector_sha256=d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e wheel_sha256=b1a054c6209b15da7bdc9a61879434b168a466253ac32de4e7c2a83ba88061fe wheel_required_contents_present=true local_readiness_receipt_valid=true local_readiness_receipt_errors=0 local_readiness_receipt_for_exact_sha_tree_dependencies=true managed_target_status=PENDING target_receipt_check=PENDING company_target_receipt_present=false ready_for_company_target_certification=true product_source_changed=false source_changed=false config_test_dependency_changes=false worktree_clean=true worktree_status=clean work_branch=verify/visembler-chg20-current-main-r4 remote_work_head=2234b04b8363cc347ab729de0bd913cf137b738a remote_work_exact=true remote_main_before=2234b04b8363cc347ab729de0bd913cf137b738a remote_main_after=2234b04b8363cc347ab729de0bd913cf137b738a target_drifted=false target_mutated=false target_main_mutated=false work_branch_publish=exact_source_ref_only company_managed_production_claim=false CHG-21_external_gate=required evidence_dir=/tmp/visembler-chg20-r4.pFYIHt/canonical-native evidence_zip=/tmp/visembler-chg20-r4.pFYIHt/canonical-native.zip'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 74,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 96.0,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 2732032,
+      "fresh_input_tokens": 113960,
+      "input_tokens": 2845992,
+      "non_reasoning_output_tokens": 8703,
+      "output_tokens": 26642,
+      "reasoning_output_tokens": 17939,
+      "total_processed_tokens": 2872634
+    },
+    "warnings": []
+  },
+  "commits": [],
+  "diff": {
+    "additions": 0,
+    "changed_files": 0,
+    "commit_count": 0,
+    "deletions": 0
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T21:43:27Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "branch": "verify/visembler-chg20-current-main-r4",
+    "detached_verify": false,
+    "head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "remote_exact_head": true,
+    "remote_head_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "work_branch": "verify/visembler-chg20-current-main-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-b6992a55c5d35d6ebe7e301f",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-20-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-20-r4"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-20-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-22T21:28:57Z",
+  "status": "EXECUTED_NO_CHANGE",
+  "timing": {
+    "execution_seconds": 870,
+    "queue_seconds": 1,
+    "total_seconds": 871
+  },
+  "transport": {
+    "bytes": 2738,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2439,
+    "prompt_sha256": "77ddabb2f7f1c0a7df5e83e9b118f3efe444ca857bf803ebbeddf9bd6c201d48",
+    "sha256": "b6992a55c5d35d6ebe7e301ff00df611c2b484ae17edb233641f4fd71a9da5a2"
+  }
+}
