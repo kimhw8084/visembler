@@ -132,7 +132,10 @@ def _drag_event(page, event_name: str):
 def _hub_select(page, label: str) -> None:
     page.locator('.cui-report-hub-toolbar .q-field').nth(2).click()
     page.get_by_text(label, exact=True).last.click()
-    page.wait_for_timeout(180)
+    page.locator('.cui-report-hub-toolbar .q-field').nth(2).wait_for(state='visible')
+    page.locator('.q-menu:visible').wait_for(state='hidden', timeout=5000)
+    page.locator('.cui-report-card').first.wait_for(state='visible', timeout=20000)
+    page.locator('.cui-report-card [data-report-action="more"]:visible').first.wait_for(state='visible', timeout=5000)
 
 
 def _assert_layout_geometry(page, *, min_area_share=None):
@@ -454,14 +457,20 @@ def _assert_hub(page, host, report_id):
     page.locator('.q-dialog').get_by_role('button', name='Move to trash', exact=True).click()
     _hub_select(page, 'Active + trash')
     assert page.get_by_text('Trash', exact=False).count() >= 1
-    trash = page.locator('.cui-report-card').filter(has_text=new_title).first
-    trash.get_by_role('button', name='Restore', exact=True).click()
-    page.wait_for_timeout(220)
+    trash = page.locator(f'.cui-report-card[data-report-id="{report_id}"][data-report-state="trash"]')
+    trash.wait_for(timeout=20000)
+    trash.get_by_role('button', name='Restore report', exact=True).click()
+    page.wait_for_function('(rid)=>!document.querySelector(`[data-report-id="${rid}"][data-report-state="trash"]`)', arg=report_id, timeout=20000)
     _hub_select(page, 'Active')
-    restored_index = page.locator('.cui-report-card').evaluate_all("(cards,title)=>cards.findIndex(card=>card.querySelector('.cui-report-card-title')?.textContent===title)", new_title)
-    assert restored_index >= 0, 'restored report card not found'
-    page.locator('.cui-report-card').nth(restored_index).locator('[data-report-action="more"]').click()
-    page.locator('.q-menu:visible').get_by_role('button', name='Review history', exact=True).click()
+    restored = page.locator(f'.cui-report-card[data-report-id="{report_id}"][data-report-state="active"]')
+    restored.wait_for(timeout=20000)
+    restored.locator('[data-report-action="more"]:visible').wait_for(state='visible', timeout=5000)
+    restored.locator('[data-report-action="more"]:visible').click()
+    menu = page.locator('.q-menu:visible')
+    menu.wait_for(state='visible', timeout=5000)
+    history_action = menu.get_by_role('button', name='Review history', exact=True)
+    history_action.wait_for(state='visible', timeout=5000)
+    history_action.click()
     page.locator('.cui-history-panel').wait_for()
     assert page.locator('.cui-history-card').count() >= 1
 

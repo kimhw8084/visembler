@@ -114,16 +114,23 @@ def task_2(page, metrics, out, image_path):
     page.wait_for_timeout(180)
     toolbar_fields = page.locator('.cui-report-hub-toolbar .q-field')
     primary_locator_click(metrics, toolbar_fields.nth(2))
-    page.locator('.q-menu:visible .q-item').get_by_text("Trash", exact=True).click()
-    trash_card = page.locator('.cui-report-card').filter(has_text="Operations Review").first
+    view_menu = page.locator('.q-menu:visible')
+    view_menu.get_by_text("Trash", exact=True).click()
+    view_menu.wait_for(state='hidden', timeout=10000)
+    trash_card = page.locator('.cui-report-card[data-report-state="trash"]').filter(has_text="Operations Review").first
     trash_card.wait_for(timeout=10000)
-    primary_locator_click(metrics, trash_card.locator('button').filter(has_text="Restore"))
-    page.wait_for_timeout(240)
+    primary_locator_click(metrics, trash_card.get_by_role('button', name='Restore report', exact=True))
+    page.wait_for_function("title => ![...document.querySelectorAll('.cui-report-card[data-report-state=\\\"trash\\\"]')].some(card => card.textContent.includes(title))", arg="Operations Review", timeout=15000)
     primary_locator_click(metrics, toolbar_fields.nth(2))
-    page.locator('.q-menu:visible .q-item').get_by_text("Active + trash", exact=True).click()
-    restored = page.locator('.cui-report-card').filter(has_text="Operations Review").first
+    view_menu = page.locator('.q-menu:visible')
+    view_menu.get_by_text("Active + trash", exact=True).click()
+    view_menu.wait_for(state='hidden', timeout=10000)
+    restored = page.locator('.cui-report-card[data-report-state="active"]').filter(has_text="Operations Review").first
     restored.wait_for(timeout=10000)
-    primary_locator_click(metrics, restored.locator('button').filter(has_text="History"))
+    more = restored.locator('[data-report-action="more"]:visible')
+    more.wait_for(state='visible', timeout=10000)
+    primary_locator_click(metrics, more)
+    page.locator('.q-menu:visible').get_by_role('button', name='Review history', exact=True).click()
     page.locator('.cui-history-panel').wait_for(timeout=10000)
     checkpoint = page.locator('input[placeholder="Before review"]').first
     checkpoint.wait_for(state="visible", timeout=10000)

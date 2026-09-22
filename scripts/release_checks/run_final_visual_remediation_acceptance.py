@@ -17,7 +17,7 @@ import traceback
 from pathlib import Path
 from urllib.parse import quote
 
-from playwright.sync_api import Error as PlaywrightError, sync_playwright
+from playwright.sync_api import Error as PlaywrightError, expect, sync_playwright
 
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT));sys.path.insert(0,str(Path(__file__).parent))
@@ -229,8 +229,18 @@ console.log(JSON.stringify({count:PRODUCTION_LIBRARY_COUNT,entries:productionEnt
                 for cid,zoom,item_id in [('VR028',.4,'top-right'),('VR029',.55,'bottom-left'),('VR030',1,'top-right')]:
                     page.evaluate('(z)=>window.__VIZ_PROD__.setZoom(z,true,.1)',zoom);distance=toolbar_distance(page,item_id);record(cid,distance<=20,f'distance {distance:.1f}px')
                 page.locator('#libraryToggle').click();page.wait_for_timeout(80);distance=toolbar_distance(page,'bottom-left');page.locator('#inspectorToggle').click();page.wait_for_timeout(80);distance=max(distance,toolbar_distance(page,'top-right'));record('VR031',distance<=20,f'distance {distance:.1f}px')
-                navigate(f'{host.url}/visualizer/reports?report={quote(line_id)}');page.locator('.cui-report-hub').wait_for(timeout=20000);attempt('VR034',lambda: (_ for _ in ()).throw(AssertionError('revision comparison miniatures missing')) if page.locator('.cui-history-compare .cui-report-thumb-svg').count()<2 else None)
-                checkpoint=page.locator('input[placeholder="Before review"]').first;button=page.locator('button:has-text("Save checkpoint")').first;attempt('VR040',lambda: (_ for _ in ()).throw(AssertionError('checkpoint has neither a safe default nor disabled empty state')) if bool(checkpoint.input_value().strip())!=button.is_enabled() else None)
+                navigate(f'{host.url}/visualizer/reports?report={quote(line_id)}');page.locator('.cui-report-hub').wait_for(timeout=20000)
+                history_card=page.locator(f'[data-testid="report-card"][data-report-id="{line_id}"]')
+                history_card.locator('[data-report-action="more"]').click()
+                page.locator('.q-menu:visible').get_by_role('button',name='Review history',exact=True).click()
+                history_panel=page.locator('[data-testid="report-history"]:visible');history_panel.wait_for(timeout=20000)
+                selected_history=history_panel.locator('[data-history-id][data-selected="true"]')
+                current_context=history_panel.locator('[data-testid="history-current-context"]')
+                attempt('VR034',lambda: (_ for _ in ()).throw(AssertionError('revision comparison miniatures missing')) if current_context.locator('.cui-report-thumb-svg').count()!=1 or selected_history.locator('.cui-history-compare .cui-report-thumb-svg').count()!=2 or not any('Selected r' in label for label in selected_history.locator('.cui-history-preview-label').all_inner_texts()) or not any('Current r' in label for label in selected_history.locator('.cui-history-preview-label').all_inner_texts()) else None)
+                checkpoint=history_panel.locator('input[placeholder="Before review"]');button=history_panel.get_by_role('button',name='Save checkpoint',exact=True)
+                def checkpoint_behavior():
+                    expect(checkpoint).to_be_empty();expect(button).to_be_disabled();checkpoint.fill('Visual remediation review');expect(button).to_be_enabled();checkpoint.fill('');expect(button).to_be_disabled()
+                attempt('VR040',checkpoint_behavior)
                 receipt['unexpected_errors']=events.unexpected;record('VR055',not events.unexpected,str(events.unexpected[:5]));context.close();browser.close()
     except Exception as error:
         receipt['harness_error']=str(error);receipt['traceback']=traceback.format_exc()

@@ -39,7 +39,7 @@ def _inside(box: dict | None, width: int) -> bool:
 
 
 def _overlay_closed(locator) -> bool:
-    locator.wait_for(state="hidden", timeout=2_000)
+    locator.wait_for(state="hidden", timeout=8_000)
     return True
 
 
@@ -52,7 +52,8 @@ def _open(page, url: str) -> None:
     response = page.goto(url, wait_until="domcontentloaded")
     assert response and response.status < 400, response.status if response else None
     page.locator('[data-testid="report-hub"]').wait_for(timeout=20_000)
-    page.wait_for_timeout(180)
+    page.locator('[data-testid="report-card"]').first.wait_for(timeout=20_000)
+    page.locator('.q-menu:visible').wait_for(state='hidden', timeout=5_000)
 
 
 def _card(page, report_id: str):
@@ -60,14 +61,19 @@ def _card(page, report_id: str):
 
 
 def _open_actions(page, card) -> None:
-    card.locator('[data-report-action="more"]').click()
+    trigger = card.locator('[data-report-action="more"]:visible')
+    trigger.wait_for(state='visible', timeout=5_000)
+    trigger.click()
     page.locator('.q-menu:visible').wait_for(timeout=5_000)
 
 
 def _select_view(page, label: str) -> None:
-    page.locator('.cui-report-hub-toolbar .q-field').nth(2).click()
-    page.locator('.q-menu:visible').get_by_text(label, exact=True).click()
-    page.wait_for_timeout(120)
+    field = page.locator('.cui-report-hub-toolbar .q-field').nth(2)
+    field.click()
+    menu = page.locator('.q-menu:visible')
+    menu.get_by_text(label, exact=True).click()
+    menu.wait_for(state='hidden', timeout=5_000)
+    field.get_by_text(label, exact=True).wait_for(state='visible', timeout=5_000)
 
 
 def _fixture_setup(host: NativeHost) -> dict[str, str]:
@@ -183,9 +189,8 @@ def main() -> int:
                         for label in ("Edit details", "Duplicate report", "Review history", "Download JSON", "Manage access", "Move to trash"):
                             assert menu.get_by_role("button", name=label, exact=True).count() == 1, label
                         page.keyboard.press("Escape")
-                        page.wait_for_timeout(100)
-                        assert not menu.is_visible()
-                        assert page.evaluate("trigger=>document.activeElement===trigger", trigger.element_handle())
+                        menu.wait_for(state="hidden", timeout=5_000)
+                        page.wait_for_function("trigger=>document.activeElement===trigger", arg=trigger.element_handle(), timeout=5_000)
                         return {"authorized_management_items": 6, "escape_returns_focus": True}
 
                     def share() -> dict:
@@ -235,6 +240,7 @@ def main() -> int:
                         _open(page, f"{host.url}/visualizer/reports?report={quote(ids['history'])}")
                         page.get_by_role("button", name="Create report", exact=True).click()
                         chooser = page.locator('[data-cui-overlay="dialog"]:visible')
+                        chooser.wait_for(state='visible', timeout=5_000)
                         assert chooser.get_by_text("Create a report", exact=True).count() == 1
                         assert chooser.locator('[data-testid="report-template-card"]').count() == len(REPORT_TEMPLATES) + 1
                         chooser.locator('[data-template-id="investigation-rca"]').get_by_role("button", name="Create from this blueprint", exact=True).click()
@@ -249,11 +255,10 @@ def main() -> int:
                         _open(page, f"{host.url}/visualizer/reports?report={quote(ids['history'])}")
                         search = page.get_by_label("Search reports")
                         search.fill("no-report-matches-this-query")
-                        page.wait_for_timeout(140)
-                        assert page.get_by_text("No active reports match this search.", exact=True).count() == 1
+                        empty = page.get_by_text("No active reports match this search.", exact=True)
+                        empty.wait_for(state='visible', timeout=5_000)
                         search.fill("")
-                        page.wait_for_timeout(140)
-                        assert page.locator('[data-report-state="active"]:visible').count() >= 1
+                        page.locator('[data-report-state="active"]:visible').first.wait_for(timeout=5_000)
                         return {"empty_search_state": True, "search_recovery": True}
 
                     def trash_recovery() -> dict:
@@ -270,9 +275,8 @@ def main() -> int:
                         _open_actions(page, card)
                         page.locator('.q-menu:visible').get_by_role("button", name="Move to trash", exact=True).click()
                         page.locator('[data-cui-overlay="dialog"]:visible').get_by_role("button", name="Move to trash", exact=True).click()
-                        page.wait_for_timeout(260)
-                        trash_card = _card(page, ids["primary"])
-                        assert trash_card.get_attribute("data-report-state") == "trash"
+                        trash_card = page.locator(f'[data-testid="report-card"][data-report-id="{ids["primary"]}"][data-report-state="trash"]')
+                        trash_card.wait_for(timeout=5_000)
                         assert trash_card.get_by_role("button", name="Restore report", exact=True).count() == 1
                         return {"confirmation_consequence": True, "recovery_action": True}
 
