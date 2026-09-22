@@ -41,6 +41,14 @@ def _record(checks: list[dict], identifier: str, status: str, detail: str = '') 
     checks.append(item)
 
 
+def _wait_for_nicegui_interactive(page) -> None:
+    """Wait for NiceGUI 3.15's live Socket.IO connection and handshake."""
+    page.wait_for_function(
+        '() => window.socket?.connected === true && window.did_handshake === true',
+        timeout=15000,
+    )
+
+
 def _open_report_menu(page, report_id: str):
     card = page.locator(f'[data-testid="report-card"][data-report-id="{report_id}"]')
     card.wait_for(state='visible', timeout=15000)
@@ -101,6 +109,8 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
                 actual = response.status if response else 0
                 if actual != expected:
                     raise AssertionError(f'{url} returned {actual}, expected {expected}')
+                if expected == 200:
+                    _wait_for_nicegui_interactive(page)
                 return response
 
             alice_context = context('alice')
