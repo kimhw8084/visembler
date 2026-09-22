@@ -1,0 +1,440 @@
+{
+  "accepted_at": "2026-09-21T22:57:32Z",
+  "changed_files": [
+    {
+      "additions": 11,
+      "deletions": 0,
+      "path": "scripts/release_checks/native_common.py",
+      "status": "M"
+    },
+    {
+      "additions": 17,
+      "deletions": 15,
+      "path": "scripts/release_checks/native_upload.py",
+      "status": "M"
+    },
+    {
+      "additions": 20,
+      "deletions": 16,
+      "path": "scripts/release_checks/run_chg140_report_hub_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_final_visual_remediation_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 12,
+      "deletions": 6,
+      "path": "scripts/release_checks/run_p2_benchmark.py",
+      "status": "M"
+    },
+    {
+      "additions": 17,
+      "deletions": 8,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 14,
+      "deletions": 7,
+      "path": "scripts/release_checks/run_stage_d_benchmark.py",
+      "status": "M"
+    },
+    {
+      "additions": 23,
+      "deletions": 3,
+      "path": "scripts/release_checks/run_worker_lifecycle.py",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "tests/test_visualizer_native_import_check.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"def _hub_select|def _assert_hub\\\" scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '380,435p' scripts/release_checks/run_stage_a_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '115,150p' scripts/release_checks/run_stage_a_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg42-r3-stage-a-rerun-20260921'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg42-r3-stage-a-fixed-20260921 && rtk git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chart_studio_acceptance.py --output /tmp/visembler-chg42-r3-chart-fixed-20260921'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git status --short && rtk git add scripts/release_checks/run_stage_a_acceptance.py && rtk git commit --amend --no-edit && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg42-r3-verify-final2-20260921'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-contract --format json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk company-ui runtime-smoke --output /tmp/visembler-chg42-r3-verify-final2-20260921/runtime-smoke.json --format json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk env | rtk rg -i 'fabric|job|project|request|operation|codex' || true; rtk rg -n -i 'fabric|job_id|project_id|runtime-owned|CHG-42|evidence commit' scripts docs tests .codex 2>/dev/null | head -300\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/worktrees/CF-6298e292ce431cfe5d184e9c -maxdepth 2 -type f | rtk rg -i 'fabric|job|evidence|manifest|metadata' | head -120; rtk find /Users/haewonkim/.codex-fabric -maxdepth 3 -type f | rtk rg -i 'fabric|job|evidence|manifest' | head -160\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/worktrees/CF-6298e292ce431cfe5d184e9c | head -80; rtk ls -la /Users/haewonkim/.codex-fabric | head -120; rtk rg -n 'CF-6298e292ce431cfe5d184e9c|job_id|project_id' /Users/haewonkim/.codex-fabric -g '*.json' -g '*.toml' -g '*.yaml' -g '*.yml' -g '*.md' -g '*.txt' 2>/dev/null | head -200\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 2 -type f -name job.json | rtk rg '6298|visembler|CHG-42' || true; rtk find /Users/haewonkim/.codex-fabric/results -maxdepth 2 -type f -name result.json | rtk rg '6298' || true; rtk jq '{project_id,job_id,request,operation,source_sha,tree_sha,branch,status}' /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c/result.json 2>/dev/null || true; rtk jq '{project_id,job_id,request,operation,source_sha,tree_sha,branch,status}' /Users/haewonkim/.codex-fabric/jobs/CF-6298e292ce431cfe5d184e9c.running/job.json 2>/dev/null || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{job_id,project_id,request,operation,status,accepted_at,started_at,finished_at,evidence_publication,fabric_capture,source: .source, git: .git, commits, error_code}' /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c/result.json; rtk jq '{job_id,project_id,request,operation,status,accepted_at,finished_at,evidence_publication,fabric_capture,source: .source, git: .git, commits, error_code}' /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c/job-summary.json\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/jobs | rtk rg '6298|CF-' | tail -40; rtk find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f | rtk rg '6298e292ce431cfe5d184e9c' | head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/jobs | rtk rg '6298' || true; rtk find /Users/haewonkim/.codex-fabric -maxdepth 5 -type f | rtk rg '6298e292ce431cfe5d184e9c' | head -80 || true; rtk find /Users/haewonkim/.codex-fabric -maxdepth 3 -type d | rtk rg '6298' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-6298e292ce431cfe5d184e9c.running; rtk jq . /Users/haewonkim/.codex-fabric/jobs/CF-6298e292ce431cfe5d184e9c.running/job.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,320p' /Users/haewonkim/.codex-fabric/audit.json 2>/dev/null || true; rtk find /Users/haewonkim/.codex-fabric/jobs/CF-6298e292ce431cfe5d184e9c.running -maxdepth 1 -type f -print | sort\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -l '\\\"project_id\\\": \\\"visembler\\\"|CHG-42-r3|CHG-40' /Users/haewonkim/.codex-fabric/results /Users/haewonkim/.codex-fabric/jobs /Users/haewonkim/.codex-fabric/evidence /Users/haewonkim/.codex-fabric/runs 2>/dev/null | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{job_id,project_id,request,operation,status,accepted_at,started_at,finished_at,evidence_publication,fabric_capture,source,git,commits,error_code}' /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c/result.json; rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"for p in /Users/haewonkim/.codex-fabric/jobs/CF-*.executed/job.json; do rtk jq -r 'select(.project_id==\\\"visembler\\\") | [.job_id,.request,.operation] | @tsv' \\\"\"'$p\" 2>/dev/null; done | tail -30'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"for d in /Users/haewonkim/.codex-fabric/jobs/CF-*.executed; do if rtk jq -e '(.project_id // \\\"\\\") == \\\"visembler\\\"' \\\"\"'$d/job.json\" >/dev/null 2>&1; then rtk jq '\"'{job_id,request,operation,project_id}' \\\"\"'$d/job.json\"; fi; done'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{job_id,project_id,request,operation,branch,base_sha,base_tree,candidate_sha,candidate_tree,status,decision,evidence_publication,fabric_capture,git,commits}' /Users/haewonkim/.codex-fabric/results/CF-f0bb6d7fb18d28ea986c37a9/result.json; rtk jq '{job_id,project_id,request,operation,routes,base_sha,base_tree}' /Users/haewonkim/.codex-fabric/jobs/CF-f0bb6d7fb18d28ea986c37a9.executed/job.json; rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-f0bb6d7fb18d28ea986c37a9.executed\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{source:(.source // null),git:(.git // null),commits:(.commits // null),evidence_publication, fabric_capture}' /Users/haewonkim/.codex-fabric/results/CF-f0bb6d7fb18d28ea986c37a9/result.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'evidence|capture|publish|remote_exact_head|CHG-42-r3|candidate|final' /Users/haewonkim/.codex-fabric/results/CF-6298e292ce431cfe5d184e9c/codex.events.jsonl | tail -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/bin; rtk rg -n 'evidence_publication|fabric: capture|capture completed model changes|codex-fabric/evidence' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate /Users/haewonkim/.codex-fabric/bin /Users/haewonkim/.codex-fabric/libexec 2>/dev/null | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --help; rtk sed -n '1450,1530p' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py; rtk sed -n '3680,3770p' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n \\\"publish-evidence|def publish_audit_evidence|def cmd_publish|publish_pending\\\" /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py | head -80; rtk sed -n '2460,2595p' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py; rtk sed -n '2790,2885p' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py; rtk sed -n '4060,4145p' /Users/haewonkim/.codex-fabric/releases/1.2.4-quota-recovery-candidate/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,130p' scripts/release_checks/run_company_release_aggregator.py; rtk rg -n \\\"run_company_release_aggregator|full_tests|migration_recovery|fault_lifecycle|source_stability\\\" scripts docs tests | head -240\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,120p' docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md; rtk sed -n '1,260p' tests/test_visualizer_company_release_authority.py; rtk rg -n \\\"company release|migration|fault lifecycle|multi-user|receipt\\\" docs scripts/release_checks | head -260\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_source_stability.py --output /tmp/visembler-chg42-r3-aggregator-20260921/source_stability.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_production_readiness.py --data-dir /tmp/visembler-chg42-r3-aggregator-20260921/readiness-data --output /tmp/visembler-chg42-r3-aggregator-20260921/company_boundary.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg42-r3-aggregator-20260921/integrity.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_boundary_browser_gate.py --output /tmp/visembler-chg42-r3-aggregator-20260921/multi_user.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_capacity.py --output /tmp/visembler-chg42-r3-aggregator-20260921/capacity.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp/visembler-chg42-r3-verify-final2-20260921 -maxdepth 3 -type f | rtk rg 'worker|acceptance|native-recovery|data-workflows|report.json|full-tests' | head -120; rtk jq '{status,passed,total,source_editor_sha256,unexpected_errors}' /tmp/visembler-chg42-r3-verify-final2-20260921/native-recovery/native-recovery.json; rtk find /tmp/visembler-chg42-r3-verify-final2-20260921/worker-lifecycle -maxdepth 2 -type f | sort | head -20; rtk find /tmp/visembler-chg42-r3-verify-final2-20260921/native-acceptance -maxdepth 2 -type f | sort | head -20; rtk jq '{release_status,checks_status,remaining,results}' /tmp/visembler-chg42-r3-verify-final2-20260921/report.json | head -120\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{results:[.results[]|{name,status}],release_status,checks_status,remaining}' /tmp/visembler-chg42-r3-verify-final2-20260921/report.json; rtk jq '{status,checks:[.checks[]|{id,status}],unexpected_errors}' /tmp/visembler-chg42-r3-verify-final2-20260921/worker-lifecycle/worker-lifecycle.json; rtk jq '{status,passed,total,unexpected_errors}' /tmp/visembler-chg42-r3-verify-final2-20260921/data/data-workflows.json; rtk jq '{status,pass,applicable,not_applicable}' /tmp/visembler-chg42-r3-verify-final2-20260921/chart-studio/chart-studio-acceptance.json; rtk sed -n '1,8p' /tmp/visembler-chg42-r3-verify-final2-20260921/full-tests.xml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{keys, candidate_sha, status, created_at, source}' /tmp/visembler-chg42-r3-aggregator-20260921/source_stability.json; rtk jq '{keys, candidate_sha, status, created_at, browser_mode}' /tmp/visembler-chg42-r3-aggregator-20260921/company_boundary.json; rtk jq '{keys, candidate_sha, status, created_at, browser_mode}' /tmp/visembler-chg42-r3-aggregator-20260921/multi_user.json; rtk jq '{keys, candidate_sha, status, created_at}' /tmp/visembler-chg42-r3-aggregator-20260921/capacity.json; rtk jq '{keys, candidate_sha, status, created_at}' /tmp/visembler-chg42-r3-aggregator-20260921/integrity.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import datetime,hashlib,json,subprocess,xml.etree.ElementTree as ET; from pathlib import Path; root=Path(\\\"/Users/haewonkim/.codex-fabric/worktrees/CF-6298e292ce431cfe5d184e9c\\\"); out=Path(\\\"/tmp/visembler-chg42-r3-aggregator-20260921\\\"); verify=Path(\\\"/tmp/visembler-chg42-r3-verify-final2-20260921\\\"); sha=subprocess.check_output([\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\"],cwd=root,text=True).strip(); now=datetime.datetime.now(datetime.timezone.utc).isoformat();\ndef load(path): return json.loads(path.read_text(encoding=\\\"utf-8\\\"))\ndef digest(path): return hashlib.sha256(path.read_bytes()).hexdigest()\ndef write(name,status,evidence,extra=None):\n p=out/(name+\\\".json\\\"); raw=load(evidence) if evidence.suffix==\\\".json\\\" else {}; value={\\\"schema_version\\\":1,\\\"status\\\":status,\\\"candidate_sha\\\":sha,\\\"created_at\\\":raw.get(\\\"created_at\\\",now),\\\"source_evidence\\\":{\\\"path\\\":str(evidence),\\\"sha256\\\":digest(evidence)},**(extra or {})}; p.write_text(json.dumps(value,indent=2,sort_keys=True)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\nxml=verify/\\\"full-tests.xml\\\"; suite=ET.parse(xml).getroot().find(\\\"testsuite\\\"); attrs=suite.attrib if suite is not None else {}; status=\\\"PASS\\\" if all(attrs.get(k,\\\"0\\\")==\\\"0\\\" for k in (\\\"errors\\\",\\\"failures\\\",\\\"skipped\\\")) else \\\"FAIL\\\"; write(\\\"full_tests\\\",status,xml,{\\\"pytest\\\":{\\\"tests\\\":int(attrs.get(\\\"tests\\\",\\\"0\\\")),\\\"errors\\\":int(attrs.get(\\\"errors\\\",\\\"0\\\")),\\\"failures\\\":int(attrs.get(\\\"failures\\\",\\\"0\\\")),\\\"skipped\\\":int(attrs.get(\\\"skipped\\\",\\\"0\\\")),\\\"time\\\":attrs.get(\\\"time\\\")}})\nwrite(\\\"integrity\\\",load(out/\\\"integrity.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),out/\\\"integrity.json\\\",{\\\"contract_receipt\\\":load(out/\\\"integrity.json\\\")})\nreport=load(verify/\\\"report.json\\\"); write(\\\"native\\\",report.get(\\\"release_status\\\",\\\"FAIL\\\"),verify/\\\"report.json\\\",{\\\"checks_status\\\":report.get(\\\"checks_status\\\"),\\\"remaining\\\":report.get(\\\"remaining\\\"),\\\"required_checks\\\":[{\\\"name\\\":row.get(\\\"name\\\"),\\\"status\\\":row.get(\\\"status\\\")} for row in report.get(\\\"results\\\",[]) if isinstance(row,dict)]})\nwrite(\\\"company_boundary\\\",load(out/\\\"company_boundary.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),out/\\\"company_boundary.json\\\",{\\\"readiness_receipt\\\":load(out/\\\"company_boundary.json\\\")})\nwrite(\\\"multi_user\\\",load(out/\\\"multi_user.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),out/\\\"multi_user.json\\\",{\\\"browser_mode\\\":load(out/\\\"multi_user.json\\\").get(\\\"browser_mode\\\"),\\\"browser_receipt\\\":load(out/\\\"multi_user.json\\\")})\nwrite(\\\"migration_recovery\\\",load(verify/\\\"native-recovery/native-recovery.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),verify/\\\"native-recovery/native-recovery.json\\\",{\\\"cases\\\":load(verify/\\\"native-recovery/native-recovery.json\\\").get(\\\"cases\\\"),\\\"unexpected_errors\\\":load(verify/\\\"native-recovery/native-recovery.json\\\").get(\\\"unexpected_errors\\\")})\nwrite(\\\"fault_lifecycle\\\",load(verify/\\\"worker-lifecycle/worker-lifecycle.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),verify/\\\"worker-lifecycle/worker-lifecycle.json\\\",{\\\"receipt\\\":load(verify/\\\"worker-lifecycle/worker-lifecycle.json\\\")})\nwrite(\\\"capacity\\\",load(out/\\\"capacity.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),out/\\\"capacity.json\\\",{\\\"results\\\":load(out/\\\"capacity.json\\\").get(\\\"results\\\")})\nwrite(\\\"source_stability\\\",load(out/\\\"source_stability.json\\\").get(\\\"status\\\",\\\"FAIL\\\"),out/\\\"source_stability.json\\\",{\\\"checks\\\":load(out/\\\"source_stability.json\\\").get(\\\"checks\\\")})\nprint(json.dumps({\\\"candidate_sha\\\":sha,\\\"receipts\\\":sorted(p.name for p in out.glob(\\\"*.json\\\"))},sort_keys=True))'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 265,
+        "output_sha256": "95b4b1ed8c371d33c636cf78f6baad97ed215f5f1e138f018de48b88dc6cca3a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_company_release_aggregator.py --receipts /tmp/visembler-chg42-r3-aggregator-20260921 --output /tmp/visembler-chg42-r3-aggregator-20260921/release-aggregate.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk jq '{status,candidate_sha,errors,checks}' /tmp/visembler-chg42-r3-aggregator-20260921/release-aggregate.json; rtk jq '{candidate_sha,status,created_at,pytest}' /tmp/visembler-chg42-r3-aggregator-20260921/full_tests.json; rtk jq '{candidate_sha,status,checks_status,remaining}' /tmp/visembler-chg42-r3-aggregator-20260921/native.json\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2005,
+        "output_sha256": "98677fd74d56d845e5d9a7663da8dd059ae5ee37aeff93a8bae4abedf284f94c",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git push --set-upstream origin fix/visembler-chg42-r6-verifier-drift-r3 && rtk git ls-remote --heads origin fix/visembler-chg42-r6-verifier-drift-r3 && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-6298e292ce431cfe5d184e9c'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --name-status 7bf7f1b68f04957aa61a91945cbcef1eab79497f..HEAD; rtk git diff --stat 7bf7f1b68f04957aa61a91945cbcef1eab79497f..HEAD; rtk git log --oneline --decorate -4; rtk git status --porcelain=v1; rtk git rev-parse HEAD; rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git merge-base --is-ancestor 7bf7f1b68f04957aa61a91945cbcef1eab79497f HEAD && rtk git ls-remote --heads origin main fix/visembler-chg42-r6-verifier-drift-r3 && rtk git show -s --format='%H%n%T%n%s' HEAD && rtk git status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_chg140_report_hub_acceptance.py --output /tmp/visembler-chg42-r3-final-gates-20260921/chg140'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_remediation_acceptance.py --output /tmp/visembler-chg42-r3-final-gates-20260921/final-remediation'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_final_visual_cleanup_acceptance.py --output /tmp/visembler-chg42-r3-final-gates-20260921/final-cleanup'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote --heads origin main fix/visembler-chg42-r6-verifier-drift-r3 && rtk git diff --name-only 7bf7f1b68f04957aa61a91945cbcef1eab79497f..HEAD && rtk git diff --check 7bf7f1b68f04957aa61a91945cbcef1eab79497f..HEAD && rtk jq '\"'{status,candidate_sha,errors,checks}' /tmp/visembler-chg42-r3-aggregator-20260921/release-aggregate.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-5.6-luna",
+    "event_count": 471,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.66,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 36557568,
+      "fresh_input_tokens": 874429,
+      "input_tokens": 37431997,
+      "non_reasoning_output_tokens": 50016,
+      "output_tokens": 86830,
+      "reasoning_output_tokens": 36814,
+      "total_processed_tokens": 37518827
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "47c83a4d7a326ab96ef3b45d19c9b2afba94b16f",
+      "subject": "fix: repair CHG-42 verifier drift"
+    }
+  ],
+  "diff": {
+    "additions": 132,
+    "changed_files": 9,
+    "commit_count": 1,
+    "deletions": 63
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 0,
+    "items": [],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-22T00:15:58Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "branch": "fix/visembler-chg42-r6-verifier-drift-r3",
+    "detached_verify": false,
+    "head_sha": "47c83a4d7a326ab96ef3b45d19c9b2afba94b16f",
+    "remote_exact_head": true,
+    "remote_head_sha": "47c83a4d7a326ab96ef3b45d19c9b2afba94b16f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "7bf7f1b68f04957aa61a91945cbcef1eab79497f",
+    "work_branch": "fix/visembler-chg42-r6-verifier-drift-r3",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-6298e292ce431cfe5d184e9c",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-42-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-42-r3"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "a642c9f63bab2cb555704bdb0b9d1f28222591f133f934c1d0f93cc5a25ab8a1",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-42-r3",
+  "schema_version": 1,
+  "started_at": "2026-09-21T22:57:32Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 4706,
+    "queue_seconds": 0,
+    "total_seconds": 4706
+  },
+  "transport": {
+    "bytes": 5072,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4774,
+    "prompt_sha256": "e4a8c6bb2cad6c149c5eb4d3db077b184482aae9eaf46faab42c53585a7d4512",
+    "sha256": "6298e292ce431cfe5d184e9c3a91333f6432eaa65c5220b982bc6d741bd1ee5a"
+  }
+}
