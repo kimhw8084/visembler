@@ -7,6 +7,7 @@ import {
 import { ELEMENTS_BY_ENGINE } from '../vendor/production_core/core/runtime_registry.mjs?v=v0.4.26';
 import { PRODUCTION_LIBRARY, PRODUCTION_LIBRARY_COUNT, PRODUCTION_RECOMMENDED, productionEntries } from './production_library.mjs';
 import { renderIntegratedElement } from './element_renderer.mjs';
+import { diagramRenderBounds } from './authoring_diagram_studio.mjs';
 import { chartModelFromEntry, renderChartSvg } from './authoring_chart_studio.mjs';
 import { renderDataFirstPreview } from './authoring_preview.mjs';
 import { intakeText, datasetFromIntake, appendCompatibleDataset, profileDataset, candidateForView, inferMappings, productionRecommendations, productionTargetForView, planDataFirstCreation, parseGridText as parseUniversalGridText } from './authoring_data.mjs';
@@ -222,6 +223,7 @@ const ui = {
   recovery: null,
   persistenceFailure: null,
   intrinsicOverrides: new Map(),
+  smartCanvasHeight: 0,
   smartLayoutConflict: null,
   libraryTab: 'elements',
   presetQuery: '',
@@ -266,7 +268,8 @@ function item(id) { return model().items.find((entry) => entry.id === id); }
 function invalidateResolvedData() { ui.projectionEpoch+=1; ui.resolvedDataCache.clear(); }
 function canvasSize() {
   const value=model().canvas||DEFAULT_CANVAS_SIZE;
-  return {width:clamp(Math.round(Number(value.width)||DEFAULT_CANVAS_SIZE.width),640,3840),height:clamp(Math.round(Number(value.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H)};
+  const height=clamp(Math.round(Number(value.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H);
+  return {width:clamp(Math.round(Number(value.width)||DEFAULT_CANVAS_SIZE.width),640,3840),height:model().mode==='smart'?clamp(Math.max(height,ui.smartCanvasHeight||height),360,MAX_CANVAS_H):height};
 }
 function syncCanvasSpec() {
   const size=canvasSize();
@@ -339,6 +342,11 @@ function semanticPolicy(entry) {
     p={...p,minW:340,minH:225,prefW:480,prefH:275,growth:'plot'};
     if((name.includes('process flow')||name.includes('data flow'))&&String(entry.direction||'right').toLowerCase()!=='down') p={...p,minW:380,minH:170,prefW:580,prefH:220,growth:'horizontal',aspect:2.5};
     if((name.includes('process flow')||name.includes('data flow'))&&String(entry.direction||'').toLowerCase()==='down') p={...p,minW:290,minH:330,prefW:360,prefH:460,growth:'vertical',aspect:.8};
+    if(name.includes('process flow')) {
+      const bounds=diagramRenderBounds(entry),heading=entry.showTitle===true||entry.show_title===true?78:38;
+      const requiredH=Math.min(MAX_CANVAS_H-2*CANVAS.gap,Math.ceil(bounds.height+heading));
+      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap};
+    }
     if(name.includes('architecture')||name.includes('swimlane')||name.includes('sequence')) p={...p,minW:380,minH:245,prefW:540,prefH:300};
     if(name.includes(' node')) p={...p,minW:190,minH:135,prefW:240,prefH:155,growth:'balanced'};
   } else if(engine==='ImageMediaEngine') {
@@ -369,7 +377,7 @@ function semanticPolicy(entry) {
   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
   p.prefW=Math.min(p.maxW,Math.max(p.minW,p.prefW*scale));
   p.prefH=Math.min(p.maxH,Math.max(p.minH,p.prefH*(emphasis==='hero'?1.12:emphasis==='compact'?.9:1)));
-  const measured=ui.intrinsicOverrides.get(entry.id);
+  const measured=name.includes('process flow')?null:ui.intrinsicOverrides.get(entry.id);
   if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
   // This is the single source of truth for Smart/Guided defaults.  Keep the
   // policy inspectable so renderers and acceptance probes can distinguish a
@@ -436,9 +444,10 @@ function semanticSmartLayout(items=viewItems()) {
   // height it needs; multi-element composition fills the report hull through
   // weighted row growth so hierarchy, not a centered island, determines mass.
   const layoutTargetH=solo?baseNeeded:CANVAS.h;
-  let conflict=null;
-  const usableH=layoutTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
-  if(baseNeeded>layoutTargetH) {
+  const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
+  let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
+  const usableH=resolvedTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  if(baseNeeded>resolvedTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
     if(minimumTotal<=usableH) {
@@ -449,11 +458,11 @@ function semanticSmartLayout(items=viewItems()) {
     } else {
       const scale=usableH/Math.max(1,minimumTotal);
       rowSpecs.forEach((spec,index)=>{spec.height=Math.max(1,minimum[index]*scale);});
-      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${layoutTargetH}px page. Increase Page size for their preferred space.`;
+      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${resolvedTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  if(!solo&&baseNeeded<layoutTargetH&&rowSpecs.length){
-    let extra=layoutTargetH-baseNeeded;
+  if(!solo&&baseNeeded<resolvedTargetH&&rowSpecs.length){
+    let extra=resolvedTargetH-baseNeeded;
     const growthScore=spec=>Math.max(...spec.members.map(({entry,policy})=>{
       const family={plot:5,data:4.5,media:4,square:4,vertical:2.5,horizontal:1.2,balanced:.6,text:0}[policy.growth]||0;
       const role=suggestMessageRole(entry),roleWeight=role==='Primary Evidence' ? 1.45 : role==='Supporting Evidence' ? 1.15 : role==='Headline' ? .8 : 1;
@@ -465,11 +474,15 @@ function semanticSmartLayout(items=viewItems()) {
   }
   const rects=[];let y=g;
   for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:Math.min(spec.height,aspectHeight);if(policy.growth==='square')h=Math.min(spec.height,w);if(!policy.aspect&&policy.growth==='text')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.62,spec.height)));if(!policy.aspect&&policy.growth==='balanced')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.72,spec.height)));h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
-  if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>CANVAS.h-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(CANVAS.h-g))<.2;}
-  return {rects,height:CANVAS.h,conflict};
+  if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
+  return {rects,height:resolvedTargetH,conflict};
 }
 function smartRects(items = viewItems()) {
-  const layout=semanticSmartLayout(items);ui.smartLayoutConflict=layout.conflict;return layout.rects;
+  const smart=model().mode==='smart',size=canvasSize(),persistedHeight=clamp(Math.round(Number(model().canvas?.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H);
+  CANVAS.w=size.width;CANVAS.h=persistedHeight;
+  const layout=semanticSmartLayout(items);
+  if(smart){ui.smartCanvasHeight=layout.height;CANVAS.h=layout.height;SCENE.h=CANVAS.h+60;}
+  ui.smartLayoutConflict=layout.conflict;return layout.rects;
 }
 function committedRects() {
   if (model().mode === 'smart') return smartRects(model().items);
@@ -909,6 +922,7 @@ function measureSmartContentRequirements(rm) {
   if(model().mode!=='smart'||ui.smartLayoutConflict) return false;
   let changed=false;
   for(const entry of model().items) {
+    if(entry.engine==='DiagramEngine'&&String(entry.element||entry.title||'').toLowerCase().includes('process flow'))continue;
     const r=rm.get(entry.id); const node=ui.componentNodes.get(entry.id); if(!r||!node)continue;
     const overflow=nodeOverflow($('.c-content',node));
     if(overflow.x<=1&&overflow.y<=1)continue;
@@ -1670,7 +1684,7 @@ function syncModeButtons() {
     button.classList.toggle('active', active);
     button.setAttribute('aria-pressed', active ? 'true' : 'false');
   });
-  const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition within the fixed page':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
+  const help=$('#modeHelp'); if(help) help.textContent=model().mode==='smart'?'Auto composition with content-fit page growth':model().mode==='guided'?'Manual · 14px grid + margin + peer alignment/equal-gap snapping':'Exact manual geometry · no snapping';
 }
 function commandEligibility() {
   const structure=structuralSelectionState(model(),[...ui.selected]);
@@ -2085,7 +2099,7 @@ function distribute(axis) {
 function performModeSwitch(nextMode) {
   if (model().mode === nextMode) return;
   const ops = [];
-  if (model().mode === 'smart' && nextMode !== 'smart') { const sm = new Map(smartRects(model().items).map((r) => [r.id, r])); model().items.forEach((entry) => { const r = sm.get(entry.id); ops.push({ op: 'item.patch', id: entry.id, patch: { x: r.x, y: r.y, w: r.w, h: r.h } }); }); }
+  if (model().mode === 'smart' && nextMode !== 'smart') { const sm = new Map(smartRects(model().items).map((r) => [r.id, r])),size=canvasSize(); model().items.forEach((entry) => { const r = sm.get(entry.id); ops.push({ op: 'item.patch', id: entry.id, patch: { x: r.x, y: r.y, w: r.w, h: r.h } }); });if(size.height>(Number(model().canvas?.height)||DEFAULT_CANVAS_SIZE.height))ops.push({op:'model.patch',patch:{canvas:{...model().canvas,height:size.height}}}); }
   ops.push({ op: 'model.patch', patch: { mode: nextMode } }); commitOps('Change canvas mode', ops);
 }
 function setMode(nextMode) {
@@ -2126,7 +2140,7 @@ function openPageSize() {
   const size=canvasSize(),modal=$('#genericModal');
   modal.classList.add('page-size-modal');
   $('#modalTitle').textContent='Page size';
-  $('#modalBody').innerHTML=`<form class="modal-form page-size-form" id="pageSizeForm"><div class="page-size-presets" role="group" aria-label="Page size presets"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Wide</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="page-size-dimensions"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><small>Smart fits within the fixed page. Guided and Free scale existing geometry when the size changes.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply</button></div></form>`;
+  $('#modalBody').innerHTML=`<form class="modal-form page-size-form" id="pageSizeForm"><div class="page-size-presets" role="group" aria-label="Page size presets"><button type="button" class="tb" data-page-preset="1200,675">16:9</button><button type="button" class="tb" data-page-preset="1600,900">Wide</button><button type="button" class="tb" data-page-preset="900,1200">Portrait</button></div><div class="page-size-dimensions"><label>Width <input id="pageWidth" type="number" min="640" max="3840" step="1" value="${size.width}"></label><label>Height <input id="pageHeight" type="number" min="360" max="4800" step="1" value="${size.height}"></label></div><small>Smart grows the page when semantic content needs more room. Guided and Free keep saved geometry within the page.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Apply</button></div></form>`;
   const form=$('#pageSizeForm');
   $$('[data-page-preset]',form).forEach(button=>button.addEventListener('click',()=>{const [w,h]=button.dataset.pagePreset.split(',');$('#pageWidth').value=w;$('#pageHeight').value=h;}));
   form.addEventListener('submit',(event)=>{event.preventDefault();setCanvasSize($('#pageWidth').value,$('#pageHeight').value);closeModals();});
@@ -2888,7 +2902,7 @@ function renamePreset(index,name){if(!personalPresets[index])return;const cleane
 function deletePreset(index){if(!personalPresets[index])return;personalPresets.splice(index,1);persistPersonalPresets();toast('Preset deleted');}
 function hydratePresets(){try{personalPresets=normalizedPersonalPresets(JSON.parse(storage.get('viz-prod-presets-cache')||'[]'));}catch{personalPresets=[];storage.remove('viz-prod-presets-cache');}renderPresetList();dispatchSemantic('preset.preferences_requested',{});dispatchSemantic('mapping.preferences_requested',{});dispatchSemantic('reuse.preferences_requested',{});}
 function saveReport(){if(ui.recovery)return reapplyLocalRecovery();if(ui.persistenceFailure){const failed=ui.pendingCommits.get(ui.persistenceFailure.commit_id)||[...ui.pendingCommits.values()].at(-1);if(failed){ui.persistenceFailure=null;ui.saveInFlight=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}return toast('No retryable edit is available; local recovery is retained.');}if(ui.pendingCommits.size)return toast('Edits are already being saved automatically');return toast('All edits are saved automatically');}
-function exportPpt(){const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision});toast('PowerPoint export requested');}
+function exportPpt(){if(ui.pointerSession||ui.previewPatches.size)return toast('Finish the current layout edit before exporting');if(ui.pendingCommits.size||ui.saveInFlight)return toast('Wait for the latest report revision to finish saving before exporting');const pf=preflight();if(pf.layoutIssues.length||pf.dataIssues.length){showPreflight();return toast('Resolve export-blocking validation issues first');}const rects=currentRects();dispatchSemantic('ppt.export_requested',{report_id:String(bootstrap.report_id||'default'),revision:store.revision,layout_geometry:{canvas:{width:CANVAS.w,height:CANVAS.h},items:rects.map(({id,x,y,w,h})=>({id,x,y,w,h}))}});toast('PowerPoint export requested');}
 async function resolvePortableImage(source){
   if(String(source).startsWith('data:'))return source;
   const url=new URL(source,document.baseURI),base=new URL(document.baseURI);
@@ -3265,7 +3279,7 @@ function init(root=$('.cui-visualizer-root')) {
   activeRoot.dataset.editorReady='true';
   const stagePanel=new URLSearchParams(location.search).get('panel');
   if(['assets','datasets','blueprints','roles','delivery'].includes(stagePanel))requestAnimationFrame(()=>stageDOpen(stagePanel));
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h})=>({id,x,y,w,h}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}
