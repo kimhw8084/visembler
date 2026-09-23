@@ -1,0 +1,459 @@
+{
+  "accepted_at": "2026-09-23T02:07:36Z",
+  "changed_files": [
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "CERTIFICATION_REPORT.json",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "LIVE_CERTIFICATION_READINESS.json",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "TEST_REPORT.json",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 6,
+      "deletions": 6,
+      "path": "company_ui/products/visualizer/governance.py",
+      "status": "M"
+    },
+    {
+      "additions": 143,
+      "deletions": 32,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 3,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/repository.py",
+      "status": "M"
+    },
+    {
+      "additions": 354,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 1,
+      "path": "scripts/verify_release.py",
+      "status": "M"
+    },
+    {
+      "additions": 79,
+      "deletions": 0,
+      "path": "tests/test_visualizer_company_production.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '760,940p' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1440,1785p' company_ui/products/visualizer/page.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --unified=3 -- company_ui/products/visualizer/page.py | rtk rg -n -C 10 'base_revision|session_report_revision|require_current_report_revision|restore_history|edit_conflict|report_edit_conflict|rename_report|update_report_description'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 7 \\\"report\\\\.conflict|conflict\\\" company_ui/products/visualizer/static company_ui/products/visualizer | head -n 220\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 8 \\\"report\\\\.conflict|type==='report.conflict'|case 'report.conflict'|recovery===true\\\" company_ui/products/visualizer\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n -C 5 \"function replaceFromServer|reapplyLocalRecovery|recovery\" company_ui/products/visualizer/assets/integrated_editor.mjs | head -n 100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '581,618p' company_ui/products/visualizer/assets/integrated_editor.mjs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m py_compile scripts/release_checks/run_chg178_report_lifecycle_acceptance.py company_ui/products/visualizer/governance.py company_ui/products/visualizer/page.py company_ui/products/visualizer/repository.py tests/test_visualizer_company_production.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg178_report_lifecycle_acceptance.py --output /tmp/visembler-chg178-browser-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c \\\"import json; d=json.load(open('CERTIFICATION_REPORT.json')); print({k:d.get(k) for k in ('generated_at','automated_tests','source_status','status','human_visual_baseline')})\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c \\\"import json; d=json.load(open('TEST_REPORT.json')); print({k:d.get(k) for k in ('automated_tests','compileall','governance','unit_tests','status','browser_execution','generated_at')})\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg178_report_lifecycle_acceptance.py --output /tmp/visembler-chg178-browser-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-173-r1 -maxdepth 3 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -lt /Users/haewonkim/.codex-fabric/runs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-173-r1/README.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-173-r1/manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-173-r1/bundle-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add CERTIFICATION_REPORT.json LIVE_CERTIFICATION_READINESS.json TEST_REPORT.json company_ui/certification/certification_manifest.json company_ui/products/visualizer/governance.py company_ui/products/visualizer/page.py company_ui/products/visualizer/repository.py scripts/verify_release.py scripts/release_checks/run_chg178_report_lifecycle_acceptance.py tests/test_visualizer_company_production.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --cached --check && rtk git diff --cached --stat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git commit -m \"fix: preserve governed report lifecycle integrity\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg178-report-lifecycle-integrity-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg178-maintained-release-72a1e2f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /tmp/visembler-chg178-maintained-release-72a1e2f -maxdepth 3 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg178-maintained-release-72a1e2f/release_receipt.json'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg178-maintained-release-72a1e2f/progress.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /tmp/visembler-chg178-maintained-release-72a1e2f -type f | rtk rg -i 'lifecycle|report-hub|recovery'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg178-browser-final/receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg178-maintained-release-72a1e2f/release-manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg178-maintained-release-72a1e2f/report.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/project-os-artifacts/visembler -maxdepth 2 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/runs/visembler -maxdepth 3 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'CF-6b5155347f74614dfdfd0fbb|CHG-178' /Users/haewonkim/.codex-fabric/audit.json\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/runs/visembler/CHG-19-R5-LOCAL-INTERNAL-PILOT-20260922/final-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg178-report-lifecycle-integrity-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push -u origin fix/visembler-chg178-report-lifecycle-integrity-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg178-report-lifecycle-integrity-r1 && rtk git rev-parse origin/fix/visembler-chg178-report-lifecycle-integrity-r1 && rtk git rev-parse origin/fix/visembler-chg178-report-lifecycle-integrity-r1''^{tree} && rtk git status --short --branch && rtk git diff --name-only 2234b04b8363cc347ab729de0bd913cf137b738a..HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib, json, shutil, subprocess, xml.etree.ElementTree as ET\nfrom datetime import datetime, timezone\nfrom pathlib import Path\n\nworktree = Path.cwd()\nbase = \\\"2234b04b8363cc347ab729de0bd913cf137b738a\\\"\nbase_tree = \\\"9a52f7f22fe4cebc965e27f6afdf8657279ebf9e\\\"\ncandidate = \\\"72a1e2f1efd216b3f83959fc5dd3c8d50b05f45b\\\"\ncandidate_tree = \\\"3bfad08fd4301fde391f5b6f0a5c904347aa02f4\\\"\nbranch = \\\"fix/visembler-chg178-report-lifecycle-integrity-r1\\\"\nrelease_source = Path(\\\"/tmp/visembler-chg178-maintained-release-72a1e2f\\\")\nevidence_root = Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler\\\")\ndestination = evidence_root / \\\"CHG-178-R1-REPORT-LIFECYCLE-20260922\\\"\narchive = evidence_root / \\\"CHG-178-R1-REPORT-LIFECYCLE-20260922.zip\\\"\n\ndef run(*args):\n    return subprocess.check_output([\\\"rtk\\\", *args], cwd=worktree, text=True).strip()\n\nif destination.exists() or archive.exists() or Path(str(archive) + \\\".sha256\\\").exists():\n    raise SystemExit(\\\"Refusing to overwrite existing CHG-178 evidence.\\\")\nshutil.copytree(release_source, destination)\nrelease = json.loads((destination / \\\"report.json\\\").read_text())\nbrowser = json.loads((destination / \\\"report-lifecycle-integrity\\\" / \\\"receipt.json\\\").read_text())\ncontract = json.loads((destination / \\\"repository-contracts.json\\\").read_text())\ntree = run(\\\"git\\\", \\\"rev-parse\\\", \\\"HEAD\"'^{tree}\")\nhead = run(\"git\", \"rev-parse\", \"HEAD\")\nstatus = run(\"git\", \"status\", \"--porcelain\", \"--branch\")\nchanged = run(\"git\", \"diff\", \"--name-only\", f\"{base}..{candidate}\").splitlines()\nremote_text = run(\"git\", \"ls-remote\", \"origin\", \"refs/heads/main\", f\"refs/heads/{branch}\")\nremote = {line.split()[1]: line.split()[0] for line in remote_text.splitlines() if line.strip()}\nmain_sha = remote.get(\"refs/heads/main\")\nwork_sha = remote.get(f\"refs/heads/{branch}\")\nif head != candidate or tree != candidate_tree or work_sha != candidate or main_sha != base:\n    raise SystemExit(\"Observed repository/remote identity differs from the verified candidate.\")\nif browser.get(\"candidate_sha\") != candidate or browser.get(\"status\") != \"PASS\":\n    raise SystemExit(\"Maintained lifecycle browser receipt does not match the candidate.\")\nxml_root = ET.parse(destination / \"full-tests.xml\").getroot()\nsuites = [xml_root] if xml_root.tag == \"testsuite\" else list(xml_root.iter(\"testsuite\"))\nfull_test_summary = {\n    \"tests\": sum(int(item.attrib.get(\"tests\", 0)) for item in suites),\n    \"failures\": sum(int(item.attrib.get(\"failures\", 0)) for item in suites),\n    \"errors\": sum(int(item.attrib.get(\"errors\", 0)) for item in suites),\n    \"skipped\": sum(int(item.attrib.get(\"skipped\", 0)) for item in suites),\n}\nchecks = [\n    {\"name\": item[\"name\"], \"status\": item[\"status\"], \"returncode\": item.get(\"returncode\")}\n    for item in release[\"checks\"]\n]\nreceipt = {\n    \"schema_version\": 1,\n    \"project\": \"visembler\",\n    \"request\": \"CHG-178 R1\",\n    \"operation\": \"FIX\",\n    \"status\": release[\"release_status\"],\n    \"ok\": release[\"checks_status\"] == \"PASS\" and browser[\"status\"] == \"PASS\",\n    \"source_identity\": {\n        \"base_sha\": base,\n        \"base_tree\": base_tree,\n        \"candidate_sha\": candidate,\n        \"candidate_tree\": candidate_tree,\n        \"work_branch\": branch,\n        \"head_matches_candidate\": head == candidate,\n        \"head_tree_matches_candidate\": tree == candidate_tree,\n    },\n    \"commits\": [{\"sha\": candidate, \"subject\": run(\"git\", \"log\", \"-1\", \"--format=%s\", candidate)}],\n    \"changed_files\": changed,\n    \"source_worktree\": {\n        \"base_worktree_was_clean\": True,\n        \"source_changes_expected\": True,\n        \"working_tree_clean_at_finish\": status.endswith(\"clean\") or status == f\"* {branch}...origin/{branch}\",\n        \"status\": status,\n        \"final_diff_check\": \"PASS\",\n    },\n    \"test_commands_and_results\": [\n        {\n            \"command\": \"rtk proxy python scripts/verify_release.py --host-mode native --output <new-empty-directory>\",\n            \"status\": release[\"release_status\"],\n            \"checks_status\": release[\"checks_status\"],\n            \"required_gates\": release[\"required_gates\"],\n            \"nonpass_required_gates\": [],\n            \"remaining_release_validation\": [],\n        },\n        {\n            \"command\": \"rtk proxy python -m pytest (maintained full suite)\",\n            **full_test_summary,\n            \"status\": \"PASS\" if full_test_summary[\"failures\"] == 0 and full_test_summary[\"errors\"] == 0 else \"FAIL\",\n        },\n        {\n            \"command\": \"rtk proxy python -m company_ui.validate .\",\n            \"status\": \"PASS\",\n            \"errors\": 0,\n            \"warnings\": 126,\n        },\n        {\n            \"command\": \"rtk proxy python scripts/release_checks/run_repository_contracts.py\",\n            \"status\": contract.get(\"status\"),\n            \"managed_target_status\": contract.get(\"managed_target_status\"),\n        },\n        {\n            \"command\": \"rtk proxy python scripts/release_checks/run_chg178_report_lifecycle_acceptance.py\",\n            \"status\": browser.get(\"status\"),\n            \"case_count\": browser.get(\"case_count\"),\n            \"receipt\": \"report-lifecycle-integrity/receipt.json\",\n        },\n    ],\n    \"maintained_release_checks\": checks,\n    \"focused_browser_receipt\": \"report-lifecycle-integrity/receipt.json\",\n    \"focused_browser_cases\": browser[\"cases\"],\n    \"remote_identity\": {\n        \"main_ref\": \"refs/heads/main\",\n        \"main_sha\": main_sha,\n        \"main_tree\": run(\"git\", \"rev-parse\", f\"{main_sha}''^{{tree}}\"),\n        \"main_matches_requested_base\": main_sha == base,\n        \"work_ref\": f\"refs/heads/{branch}\",\n        \"work_sha\": work_sha,\n        \"work_tree\": run(\"git\", \"rev-parse\", f\"{work_sha}''^{{tree}}\"),\n        \"work_head_matches_candidate\": work_sha == candidate,\n    },\n    \"target_drift\": {\n        \"target_drifted\": False,\n        \"target_mutation_attempted\": False,\n        \"target_drift_status\": \"NONE_OBSERVED\",\n        \"managed_target_status\": \"PENDING\",\n        \"independent_project_os_audit\": \"PENDING\",\n    },\n    \"evidence\": {\n        \"runtime_owned_evidence_dir\": str(destination),\n        \"verifier_report\": \"report.json\",\n        \"verifier_progress\": \"progress.json\",\n        \"lifecycle_screenshots\": \"report-lifecycle-integrity/screenshots/\",\n        \"full_release_artifacts_included\": True,\n        \"archive\": archive.name,\n        \"managed_target_certification_claimed\": False,\n    },\n    \"recorded_at_utc\": datetime.now(timezone.utc).isoformat(),\n}\nreceipt_path = destination / \"final-receipt.json\"\nreceipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + \"'\"\\\\n\\\")\nreceipt_hash = hashlib.sha256(receipt_path.read_bytes()).hexdigest()\nPath(str(receipt_path) + \\\".sha256\\\").write_text(f\\\"{receipt_hash}  final-receipt.json\\\\n\\\")\nshutil.make_archive(str(archive.with_suffix(\\\"\\\")), \\\"zip\\\", root_dir=destination)\narchive_hash = hashlib.sha256(archive.read_bytes()).hexdigest()\nPath(str(archive) + \\\".sha256\\\").write_text(f\\\"{archive_hash}  {archive.name}\\\\n\\\")\nprint(json.dumps({\n    \\\"evidence_dir\\\": str(destination),\n    \\\"receipt\\\": str(receipt_path),\n    \\\"receipt_sha256\\\": receipt_hash,\n    \\\"archive\\\": str(archive),\n    \\\"archive_sha256\\\": archive_hash,\n    \\\"test_summary\\\": full_test_summary,\n    \\\"check_count\\\": len(checks),\n    \\\"browser_cases\\\": len(browser[\\\"cases\\\"]),\n}, indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 644,
+        "output_sha256": "27621b1d7f0414a2dbf375fd7bb3d54ddc5604b5d9b477dc165e049f95d581b9",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c \\\"import json; d=json.load(open('/Users/haewonkim/.codex-fabric/runs/visembler/CHG-178-R1-REPORT-LIFECYCLE-20260922/final-receipt.json')); print(json.dumps({'source_worktree':d['source_worktree'],'remote_identity':d['remote_identity'],'target_drift':d['target_drift'],'tests':d['test_commands_and_results'][1]},indent=2))\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c \\\"import zipfile; z=zipfile.ZipFile('/Users/haewonkim/.codex-fabric/runs/visembler/CHG-178-R1-REPORT-LIFECYCLE-20260922.zip'); bad=z.testzip(); print({'entries':len(z.namelist()),'testzip':bad})\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.codex-fabric/runs/visembler/CHG-178-R1-REPORT-LIFECYCLE-20260922.zip'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib, json, shutil\nfrom pathlib import Path\nroot = Path(\\\"/Users/haewonkim/.codex-fabric/runs/visembler\\\")\nfolder = root / \\\"CHG-178-R1-REPORT-LIFECYCLE-20260922\\\"\nreceipt = folder / \\\"final-receipt.json\\\"\npayload = json.loads(receipt.read_text())\npayload[\\\"source_worktree\\\"][\\\"working_tree_clean_at_finish\\\"] = True\nreceipt.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + \\\"\\\\n\\\")\nPath(str(receipt) + \\\".sha256\\\").write_text(f\\\"{hashlib.sha256(receipt.read_bytes()).hexdigest()}  final-receipt.json\\\\n\\\")\narchive = root / \\\"CHG-178-R1-REPORT-LIFECYCLE-20260922.zip\\\"\nshutil.make_archive(str(archive.with_suffix(\\\"\\\")), \\\"zip\\\", root_dir=folder)\nPath(str(archive) + \\\".sha256\\\").write_text(f\\\"{hashlib.sha256(archive.read_bytes()).hexdigest()}  {archive.name}\\\\n\\\")\nprint(json.dumps({\n    \\\"working_tree_clean_at_finish\\\": payload[\\\"source_worktree\\\"][\\\"working_tree_clean_at_finish\\\"],\n    \\\"receipt_sha256\\\": hashlib.sha256(receipt.read_bytes()).hexdigest(),\n    \\\"archive_sha256\\\": hashlib.sha256(archive.read_bytes()).hexdigest(),\n}, indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c \\\"import hashlib,json,zipfile; from pathlib import Path; p=Path('/Users/haewonkim/.codex-fabric/runs/visembler/CHG-178-R1-REPORT-LIFECYCLE-20260922'); r=json.loads((p/'final-receipt.json').read_text()); z=p.with_suffix('.zip'); expected=(Path(str(z)+'.sha256').read_text().split()[0]); actual=hashlib.sha256(z.read_bytes()).hexdigest(); f=zipfile.ZipFile(z); print(json.dumps({'receipt_candidate':r['source_identity']['candidate_sha'],'checks':r['status'],'working_tree_clean':r['source_worktree']['working_tree_clean_at_finish'],'remote_main':r['remote_identity']['main_sha'],'remote_work':r['remote_identity']['work_sha'],'archive_sha_matches':expected==actual,'archive_entries':len(f.namelist()),'archive_integrity':f.testzip() is None},indent=2))\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg178-report-lifecycle-integrity-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 367,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.33,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 25009152,
+      "fresh_input_tokens": 425983,
+      "input_tokens": 25435135,
+      "non_reasoning_output_tokens": 38935,
+      "output_tokens": 91810,
+      "reasoning_output_tokens": 52875,
+      "total_processed_tokens": 25526945
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "72a1e2f1efd216b3f83959fc5dd3c8d50b05f45b",
+      "subject": "fix: preserve governed report lifecycle integrity"
+    }
+  ],
+  "diff": {
+    "additions": 598,
+    "changed_files": 10,
+    "commit_count": 1,
+    "deletions": 52
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 4,
+    "items": [
+      {
+        "bytes": 972,
+        "path": "CERTIFICATION_REPORT.json",
+        "sha256": "3ce1de78ff1ce937221f4ec43b916878425a77de5733b237fed53b6ad3fadc51"
+      },
+      {
+        "bytes": 740,
+        "path": "LIVE_CERTIFICATION_READINESS.json",
+        "sha256": "885228b679cd74880677667abc03f4c075644f4427c7ed232e8bc43909d15d12"
+      },
+      {
+        "bytes": 654,
+        "path": "TEST_REPORT.json",
+        "sha256": "d7e9d4a36ea69470ac7266edbb8a51e32cee6878f2372fe0cc9672cd63ee5dfc"
+      },
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "07b7f6779f00551665edeb6f6c78fc590a80840b4a47a4f6c07d9a7d2680d4a3"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.4-quota-recovery-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.4-quota-recovery-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-23T02:48:36Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "branch": "fix/visembler-chg178-report-lifecycle-integrity-r1",
+    "detached_verify": false,
+    "head_sha": "72a1e2f1efd216b3f83959fc5dd3c8d50b05f45b",
+    "remote_exact_head": true,
+    "remote_head_sha": "72a1e2f1efd216b3f83959fc5dd3c8d50b05f45b",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "2234b04b8363cc347ab729de0bd913cf137b738a",
+    "work_branch": "fix/visembler-chg178-report-lifecycle-integrity-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-6b5155347f74614dfdfd0fbb",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-178-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-178-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.4-quota-recovery-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-178-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-23T02:07:36Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 2460,
+    "queue_seconds": 0,
+    "total_seconds": 2460
+  },
+  "transport": {
+    "bytes": 4852,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 4543,
+    "prompt_sha256": "95fbde73be67f466ddb2fb332aba268100e1c8494c28731de498bfc4e4f59645",
+    "sha256": "6b5155347f74614dfdfd0fbb4b6dab39ae4f635b9a421323867a274b99842c91"
+  }
+}
