@@ -16,6 +16,7 @@ from PIL import Image
 
 from .files import validate_image_bytes, validate_pptx_bytes
 from .domain import MODEL_MAX_BYTES, VisualizerContractError, canonical_model, stable_json
+from .metric_format import format_metric_value, metric_format_issues
 
 _VENDOR_ADAPTER = Path(__file__).with_name('vendor') / 'production_core' / 'tools' / 'ppt_template_adapter.py'
 _MAX_ITEMS_PER_SLIDE = 12
@@ -109,8 +110,8 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
         elif engine=='MatrixEngine':
             entry['matrix']=[[str(field.get('name') or field.get('id') or f'Column {i+1}') if isinstance(field,Mapping) else f'Column {i+1}' for i,field in enumerate(fields)],*rows]
         elif engine=='TimelineEngine':
-            label=index('category') if index('category')>=0 else index('x'); date=index('time')
-            entry['milestones']=[{'label':str(row[label] if label>=0 and label<len(row) else i+1),'date':row[date] if date>=0 and date<len(row) else None} for i,row in enumerate(rows)]
+            label=next((index(role) for role in ('category','label','time','x') if index(role)>=0),-1); date=index('time')
+            entry['milestones']=[{'label':str(row[label] if label>=0 and label<len(row) else ''),'date':row[date] if date>=0 and date<len(row) else None} for row in rows]
         elif engine=='DiagramEngine':
             source_index,target_index=index('source'),index('target')
             edges=[(str(row[source_index]),str(row[target_index])) for row in rows if source_index>=0 and target_index>=0 and source_index<len(row) and target_index<len(row) and row[source_index] not in (None,'') and row[target_index] not in (None,'')]
@@ -120,10 +121,13 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
             entry['observations']=[{'x':row[x] if x>=0 and x<len(row) else None,'y':row[y] if y>=0 and y<len(row) else None,'value':row[value] if value>=0 and value<len(row) else None} for row in rows]
             entry.update({key:first(key) for key in ('wafer_id','lot_id','tool','chamber','recipe','process')})
         else:
-            label=index('category') if index('category')>=0 else (index('time') if index('time')>=0 else index('x')); value=index('value') if index('value')>=0 else index('y')
-            points=[(str(row[label] if label>=0 and label<len(row) else i+1),row[value] if value>=0 and value<len(row) else None) for i,row in enumerate(rows)]
+            label=index('category') if index('category')>=0 else (index('label') if index('label')>=0 else (index('time') if index('time')>=0 else index('x'))); value=index('value') if index('value')>=0 else index('y')
+            points=[(str(row[label] if label>=0 and label<len(row) else ''),row[value] if value>=0 and value<len(row) else None) for row in rows]
             if engine in {'CoreChartEngine','EngineeringChartEngine'}: entry['data']=points;entry['rows']=[{'label':label,'value':value} for label,value in points];entry['observations']=[{'label':label,'value':value} for label,value in points]
-            elif engine=='MetricEngine': entry['value']=next((value for _,value in reversed(points) if value is not None),None)
+            elif engine=='MetricEngine':
+                entry['value']=next((value for _,value in reversed(points) if value is not None),None)
+                value_field=index('value') if index('value')>=0 else index('y')
+                entry['_metric_field']=fields[value_field] if value_field>=0 and value_field<len(fields) and isinstance(fields[value_field],Mapping) else {}
             elif engine=='ComparisonEngine':
                 values=[value for _,value in points if value is not None];entry['before']=values[0] if values else None;entry['after']=values[-1] if values else None
         resolved.append(entry)
@@ -282,9 +286,9 @@ def _fill_kpi(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if value is None and str(entry.get('engine') or '')=='ComparisonEngine':
         value=f"{_display(entry.get('before'))} → {_display(entry.get('after'))}".strip()
     tf=shape.text_frame; tf.clear();p=tf.paragraphs[0];p.text=f"{title} · {entry.get('metric_label')}" if entry.get('metric_label') else title;p.font.bold=True;p.font.size=Pt(10)
-    p2=tf.add_paragraph();p2.text=_display(value);p2.font.bold=True;p2.font.size=Pt(24)
+    p2=tf.add_paragraph();p2.text=format_metric_value(value,entry,entry.get('_metric_field')) if str(entry.get('engine') or '')=='MetricEngine' else _display(value);p2.font.bold=True;p2.font.size=Pt(24)
     unit=str(entry.get('unit') or '')
-    if unit:
+    if unit and str(entry.get('engine') or '')!='MetricEngine':
         p3=tf.add_paragraph();p3.text=unit;p3.font.size=Pt(9)
     if entry.get('detail'):
         p3=tf.add_paragraph();p3.text=str(entry['detail']);p3.font.size=Pt(8)
@@ -351,7 +355,14 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
         for entry in semantic_model['items']:
             if entry.get('engine')=='ImageMediaEngine' and entry.get('asset_id'):
                 entry['src']=asset_data_url(entry['asset_id']); entry.pop('asset_id',None)
-    entries=bound_export_items(semantic_model or model); adapter=_adapter()
+    entries=bound_export_items(semantic_model or model)
+    for entry in entries:
+        if str(entry.get('engine') or '')!='MetricEngine':
+            continue
+        issues=metric_format_issues(entry,entry.get('_metric_field'))
+        if issues:
+            raise VisualizerContractError('; '.join(issues))
+    adapter=_adapter()
     for page_index,page_entries in enumerate(_export_pages(entries)):
         slide=prs.slides[slide_index] if page_index==0 else prs.slides.add_slide(prs.slide_layouts[6]); target_slide_index=slide_index if page_index==0 else len(prs.slides)-1
         plan=_plan({**model,'items':page_entries}); before_count=len(slide.shapes)

@@ -21,6 +21,7 @@ import { parseDiagramNodes, parseDiagramEdges, reconcileDiagramEdges, validateDi
 import { applyGridAction, gridSelection } from './authoring_grid.mjs';
 import { contractFor } from './authoring_contracts.mjs';
 import { parseAuthoringScalar, parseAuthoringFieldValue, formatAuthoringScalar, parseDelimitedText, parseAuthoringGrid, formatAuthoringRow } from './authoring_values.mjs';
+import { normalizeMetricFormat, metricFormattingIssues } from './authoring_format.mjs';
 import { humanRoleLabel, humanRoleDefinition, humanFieldTypeLabel, humanFieldBrowserMarkup, humanEncodingShelvesMarkup, humanFieldOptionMarkup, multiFieldPickerMarkup, selectedMultiFieldIds, humanTransformTypeLabel, transformOutcomeSummary, previewTransformPipeline, transformPreviewMarkup, datasetConsequenceSummary, compatibilityExplanation, humanMappingAssignment, transformRecipeWithDraft, readHumanTransformStep, HUMAN_TRANSFORM_TYPES } from './authoring_human.mjs';
 import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 // Production and transient previews share the bounded projection authority;
@@ -1135,9 +1136,10 @@ function observationsText(entry, fields=['label','value']) { return (entry.obser
 function parseObservations(text, fields=['label','value']) { return parseAuthoringGrid(text).rows.filter((row)=>row.some((value)=>value!==null&&value!=='')).map((row)=>Object.fromEntries(fields.map((field,index)=>[field,row[index]??null]))); }
 
 function metricFormatMarkup(entry){
-  const style=entry.value_format||'auto';
-  const decimals=Number.isInteger(Number(entry.decimals))?Math.max(0,Math.min(6,Number(entry.decimals))):1;
-  return `<div class="field"><label>Number presentation</label><div class="field-grid"><select id="iValueFormat"><option value="auto" ${style==='auto'?'selected':''}>Auto</option><option value="number" ${style==='number'?'selected':''}>Number</option><option value="percent" ${style==='percent'?'selected':''}>Percent</option><option value="currency" ${style==='currency'?'selected':''}>Currency</option><option value="compact" ${style==='compact'?'selected':''}>Compact</option></select><input id="iDecimals" type="number" min="0" max="6" step="1" value="${decimals}" aria-label="Decimal places"></div><input id="iCurrencySymbol" value="${esc(entry.currency_symbol||'$')}" maxlength="4" placeholder="Currency symbol" ${style==='currency'?'':'disabled'}><small>Formatting changes presentation only; the stored metric value remains typed and unchanged.</small></div>`;
+  const dataset=entry._resolved_dataset||selectedDataset(entry);
+  const field=dataset?.fields?.find(value=>value.id===(entry.mapping?.value||entry.mapping?.y))||null;
+  const format=normalizeMetricFormat(entry,field),style=format.kind,decimals=format.precision??'';
+  return `<div class="field"><label>Number presentation</label><div class="field-grid"><select id="iValueFormat"><option value="auto" ${style==='auto'?'selected':''}>Auto</option><option value="number" ${style==='number'?'selected':''}>Number</option><option value="percent" ${style==='percent'?'selected':''}>Percent</option><option value="currency" ${style==='currency'?'selected':''}>Currency</option><option value="compact" ${style==='compact'?'selected':''}>Compact</option></select><input id="iDecimals" type="number" min="0" max="8" step="1" value="${decimals}" aria-label="Decimal places" placeholder="Preserve"></div><div class="inline2"><input id="iMetricPrefix" value="${esc(format.prefix)}" placeholder="Prefix"><input id="iMetricSuffix" value="${esc(format.suffix)}" placeholder="Suffix / unit"></div><input id="iCurrencySymbol" value="${esc(format.prefix||entry.currency_symbol||'$')}" maxlength="8" placeholder="Currency symbol" ${style==='currency'?'':'disabled'}><div class="field-grid"><input id="iCompactDivisor" type="number" min="0" step="any" value="${format.compactDivisor??''}" placeholder="Compact divisor"><input id="iCompactUnit" value="${esc(format.compactUnit)}" placeholder="Compact unit (K / M / B)"></div><div class="field-grid"><select id="iPercentScale"><option value="points" ${format.percentScale==='points'?'selected':''}>Percent points</option><option value="ratio" ${format.percentScale==='ratio'?'selected':''}>Ratio × 100</option></select><select id="iSignDisplay"><option value="auto" ${format.signDisplay==='auto'?'selected':''}>Sign as stored</option><option value="always" ${format.signDisplay==='always'?'selected':''}>Always show sign</option><option value="exceptZero" ${format.signDisplay==='exceptZero'?'selected':''}>Show sign except zero</option><option value="never" ${format.signDisplay==='never'?'selected':''}>Hide sign</option></select></div><select id="iNullDisplay"><option value="—" ${format.nullDisplay==='—'?'selected':''}>Missing value as dash</option><option value="" ${format.nullDisplay===''?'selected':''}>Missing value blank</option></select><small>Formatting changes presentation only. Blank remains missing, zero remains zero, and bound field units take precedence over legacy style fields.</small></div>`;
 }
 function legacyMetricInspectorMarkup(entry){
   const name=String(entry.element||'').toLowerCase();
@@ -1361,7 +1363,10 @@ function bindDataDock(entry) {
 }
 function legacySemanticInspectorMarkup(entry) {
   const engine=entry.engine||'';
-  if(entry.dataset_id)return `<div class="field"><b>Linked dataset</b><small>Values come from the Data Dock below. Edit the canonical dataset there so the canvas, preview, export, and undo history stay synchronized.</small></div>`;
+  if(entry.dataset_id){
+    const linked=`<div class="field"><b>Linked dataset</b><small>Values come from the Data Dock below. Edit the canonical dataset there so the canvas, preview, export, and undo history stay synchronized.</small></div>`;
+    return linked+(engine==='MetricEngine'?metricFormatMarkup(entry):'');
+  }
   if (engine==='TextEngine') return `<div class="field"><label for="iText">Narrative</label><textarea id="iText" rows="7">${esc(entry.text||entry.body||'')}</textarea></div>`;
   if (engine==='MetricEngine') return metricInspectorMarkup(entry)+metricFormatMarkup(entry);
   if (engine==='ComparisonEngine') return `<div class="field"><label>Comparison values</label><div class="inline2"><label>Before<input id="iBefore" placeholder="Before" value="${esc(entry.before??'')}"></label><label>After<input id="iAfter" placeholder="After" value="${esc(entry.after??'')}"></label></div><label>Unit<input id="iUnit" placeholder="%, minutes, count…" value="${esc(entry.unit||'')}"></label><small>Labels and units are rendered from these values for Before/After KPI, Time Compression, and As-Is → To-Be variants.</small></div>`;
@@ -1430,13 +1435,24 @@ function bindSemanticInspector(entry) {
   const patch=(label,value)=>{const current=item(entry.id);if(String(bootstrap.report_id)!==bindingReport||!current)return false;if(current.locked)return toast('Unlock the component before editing');return commitOps(label,[{op:'item.patch',id:current.id,patch:value}]);};
   $('#iVisualType')?.addEventListener('change',(e)=>switchVisualType(entry,e.target.value));
   if(entry.engine==='TableEngine')renderVirtualCustomTable(entry);
-  $('#iValueFormat')?.addEventListener('change',(e)=>patch('Edit metric value format',{value_format:e.target.value}));
-  $('#iDecimals')?.addEventListener('change',(e)=>patch('Edit metric decimals',{decimals:Math.max(0,Math.min(6,Math.round(Number(e.target.value)||0)))}));
-  $('#iCurrencySymbol')?.addEventListener('change',(e)=>patch('Edit metric currency symbol',{currency_symbol:e.target.value||'$'}));
+  const dataset=entry._resolved_dataset||selectedDataset(entry);
+  const metricField=dataset?.fields?.find(value=>value.id===(entry.mapping?.value||entry.mapping?.y))||null;
+  const currentMetricFormat=()=>normalizeMetricFormat(entry,metricField);
+  const updateMetricFormat=(label,mutate,legacy={})=>{const format={...currentMetricFormat()};mutate(format);patch(label,{...legacy,metric_format:{kind:format.kind,precision:format.precision,prefix:format.prefix,suffix:format.suffix,percent_scale:format.percentScale,signDisplay:format.signDisplay,null_display:format.nullDisplay,compact_divisor:format.compactDivisor,compact_unit:format.compactUnit}});};
+  $('#iValueFormat')?.addEventListener('change',(e)=>{const kind=e.target.value,explicitPrefix=Object.prototype.hasOwnProperty.call(entry.metric_format||{},'prefix');updateMetricFormat('Edit metric value format',format=>{format.kind=kind;if(kind==='percent')format.suffix='%';else if(format.suffix==='%')format.suffix='';if(kind!=='currency'&&!explicitPrefix&&/[$€£¥]/u.test(format.prefix))format.prefix='';if(kind==='currency'&&!format.prefix)format.prefix=entry.currency_symbol||'$';},{value_format:kind});});
+  $('#iDecimals')?.addEventListener('change',(e)=>{const value=e.target.value===''?null:Math.max(0,Math.min(8,Math.round(Number(e.target.value)||0)));updateMetricFormat('Edit metric decimals',format=>{format.precision=value;},{decimals:value});});
+  $('#iCurrencySymbol')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric currency symbol',format=>{format.prefix=e.target.value||'$';},{currency_symbol:e.target.value||'$'}));
+  $('#iMetricPrefix')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric prefix',format=>{format.prefix=e.target.value}));
+  $('#iMetricSuffix')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric suffix',format=>{format.suffix=e.target.value},{unit:e.target.value}));
+  $('#iCompactDivisor')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric compact divisor',format=>{format.compactDivisor=e.target.value===''?null:Number(e.target.value)}));
+  $('#iCompactUnit')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric compact unit',format=>{format.compactUnit=e.target.value;format.suffix=e.target.value}));
+  $('#iPercentScale')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric percent scale',format=>{format.percentScale=e.target.value}));
+  $('#iSignDisplay')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric sign display',format=>{format.signDisplay=e.target.value}));
+  $('#iNullDisplay')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric missing-value display',format=>{format.nullDisplay=e.target.value}));
   $('#iChartSort')?.addEventListener('change',(e)=>patch('Edit chart sort',{sort_mode:e.target.value}));
   $('#iChartMissing')?.addEventListener('change',(e)=>patch('Edit chart missing-value policy',{missing_policy:e.target.value}));
   $('#iText')?.addEventListener('change',(e)=>patch('Edit narrative',{text:e.target.value,body:e.target.value}));
-  $('#iValue')?.addEventListener('change',(e)=>patch('Edit metric',{value:parseTypedCell(e.target.value)})); $('#iUnit')?.addEventListener('change',(e)=>patch('Edit metric unit',{unit:e.target.value})); $('#iDelta')?.addEventListener('change',(e)=>patch('Edit metric delta',{delta:parseTypedCell(e.target.value)})); $('#iTarget')?.addEventListener('change',(e)=>patch('Edit metric target',{target:parseTypedCell(e.target.value)}));
+  $('#iValue')?.addEventListener('change',(e)=>patch('Edit metric',{value:parseTypedCell(e.target.value)})); $('#iUnit')?.addEventListener('change',(e)=>updateMetricFormat('Edit metric unit',format=>{format.suffix=e.target.value},{unit:e.target.value})); $('#iDelta')?.addEventListener('change',(e)=>patch('Edit metric delta',{delta:parseTypedCell(e.target.value)})); $('#iTarget')?.addEventListener('change',(e)=>patch('Edit metric target',{target:parseTypedCell(e.target.value)}));
   for(const [id,key] of [['iMax','max'],['iConfidence','confidence'],['iCurrent','current'],['iCapacity','capacity'],['iNumerator','numerator'],['iDenominator','denominator'],['iWarning','warning'],['iCritical','critical'],['iActual','actual'],['iVariance','variance']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key}`,{[key]:parseTypedCell(e.target.value),...(key==='actual'?{value:parseTypedCell(e.target.value)}:{})}));
   for(const [id,key] of [['iCenterLabel','center_label'],['iInterpretation','interpretation'],['iContext','context'],['iBands','bands'],['iPeriod','period'],['iThresholdLogic','threshold_logic'],['iOrientation','orientation'],['iDirection','direction'],['iEdgeLabel','edge_label'],['iImageFit','fit']])$('#'+id)?.addEventListener('change',(e)=>patch(`Edit ${key.replaceAll('_',' ')}`,{[key]:e.target.value}));
   $('#iLevels')?.addEventListener('change',(e)=>patch('Edit metric ladder levels',{levels:parseGridText(e.target.value).filter((row)=>row.some((x)=>x!=='')).map((row)=>[String(row[0]??''),parseTypedCell(row[1])])}));
@@ -1681,6 +1697,10 @@ function preflight() {
   const inset=model().mode==='free'?0:CANVAS.gap;
   for (let a = 0; a < R.length; a += 1) {
     const entry = item(R[a].id); if(!entry)continue; const resolved=resolvedEntry(entry); const policy=semanticPolicy(entry);
+    if(entry.engine==='MetricEngine'){
+      const dataset=resolved._resolved_dataset,fieldId=entry.mapping?.value||entry.mapping?.y,metricField=dataset?.fields?.find(field=>field.id===fieldId)||null;
+      metricFormattingIssues(resolved,metricField).forEach(message=>addIssue('metric-format',entry.id,message,'data'));
+    }
     const analysisError=statisticalAnalysisError(resolved);
     if(analysisError) addIssue('analysis',entry.id,analysisError,'data');
     if (R[a].w < policy.minW-.1 || R[a].h < policy.minH-.1){pf.min += 1;addIssue('intrinsic-size',entry.id,`${entry.title} is below its readable ${Math.ceil(policy.minW)}×${Math.ceil(policy.minH)} minimum.`);}

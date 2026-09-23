@@ -5,9 +5,9 @@ const contract=(id,required_roles,optional_roles,compatible_views,roleTypes={})=
 
 export const DATA_CONTRACTS=Object.freeze({
   bar:contract('bar',['category','value'],['series','color','tooltip'],['line','scatter','table']),
-  line:contract('line',['x','y'],['series','color','tooltip'],['bar','scatter','table'],{x:new Set([...numeric,...temporal])}),
+  line:contract('line',['x','y'],['series','color','tooltip'],['bar','scatter','table'],{x:new Set([...numeric,...temporal,'categorical','string','identifier'])}),
   scatter:contract('scatter',['x','y'],['size','color','label','tooltip'],['bar','line','table']),
-  multi_line:contract('multi_line',['x','y'],['series','color','label','tooltip'],['line','bar','scatter','table'],{x:new Set([...numeric,...temporal])}),
+  multi_line:contract('multi_line',['x','y'],['series','color','label','tooltip'],['line','bar','scatter','table'],{x:new Set([...numeric,...temporal,'categorical','string','identifier'])}),
   regression_scatter:contract('regression_scatter',['x','y'],['label','tooltip'],['scatter','line','table']),
   distribution:contract('distribution',['value'],['category','label','tooltip'],['table','bar'],{value:numeric}),
   pareto:contract('pareto',['category','value'],['label','tooltip'],['bar','table']),
@@ -19,7 +19,7 @@ export const DATA_CONTRACTS=Object.freeze({
   wafer:contract('wafer',['die_x','die_y','value'],['wafer_id','lot_id','tool','chamber','recipe','process','product','bin'],['table','engineering']),
   wafer_difference:contract('wafer_difference',['die_x','die_y','reference_value','affected_value'],['value','lot_id','wafer_id','tool','chamber','recipe','process','product'],['table'],{reference_value:numeric,affected_value:numeric}),
   tool_chamber_matrix:contract('tool_chamber_matrix',['tool','chamber','value'],['lot_id','wafer_id','recipe','process','product'],['table'],{value:numeric}),
-  golden_affected_profile:contract('golden_affected_profile',['x'],['reference_value','affected_value','cohort','value','tool','chamber','recipe','process'],['line','table'],{x:new Set([...numeric,...temporal])}),
+  golden_affected_profile:contract('golden_affected_profile',['x'],['reference_value','affected_value','cohort','value','tool','chamber','recipe','process'],['line','table'],{x:new Set([...numeric,...temporal,'categorical','string','identifier'])}),
   control_affected_distribution:contract('control_affected_distribution',['cohort','value'],['tool','chamber','recipe','process'],['table'],{value:numeric}),
 });
 export const LEGACY_VIEW_ALIASES=Object.freeze({chart:'line',matrix:'matrix_heatmap',diagram:'diagram_flow',wafer_fab:'wafer',engineering_chart:'engineering',histogram:'distribution',box:'distribution',regression:'regression_scatter'});

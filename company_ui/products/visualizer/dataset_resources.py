@@ -62,7 +62,7 @@ def _validate_fields(fields: Iterable[Mapping[str, Any]]) -> list[dict[str, Any]
         if not field_id or not name or field_id in seen:
             raise VisualizerContractError('dataset fields require unique id and name')
         seen.add(field_id)
-        clean = {str(key): _copy(value) for key, value in field.items() if str(key) in {'id', 'name', 'type', 'nullable', 'semantic_tags', 'unit', 'profile'}}
+        clean = {str(key): _copy(value) for key, value in field.items() if str(key) in {'id', 'name', 'type', 'nullable', 'semantic_tags', 'unit', 'format', 'profile'}}
         clean.update({'id': field_id, 'name': name, 'type': str(field.get('type') or 'unknown')})
         result.append(clean)
         if len(result) > MAX_DATASET_FIELDS:
