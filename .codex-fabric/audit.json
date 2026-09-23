@@ -1,0 +1,465 @@
+{
+  "accepted_at": "2026-09-23T13:48:37Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 5,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+      "status": "M"
+    },
+    {
+      "additions": 30,
+      "deletions": 16,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 170,
+      "deletions": 6,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 430,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg180_r1_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 4,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 215,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg180_r1.py",
+      "status": "A"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "tests/test_visualizer_r15_authoring_depth.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg180-r1-stage-a-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files tests | rtk rg 'diagram|stage_d|lifecycle|semantic|image|application_hardening|semiconductor|statistical|structural|phase20|chg180|release_closure|smart' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m pytest -q tests/test_visualizer_chg180_r1.py tests/test_visualizer_diagram_studio.py tests/test_visualizer_wave2_diagram_editing.py tests/test_visualizer_stage_d.py tests/test_visualizer_r15_authoring_depth.py tests/test_phase38_v200rc5_p0_lifecycle_async_overlay.py tests/test_visualizer_wave4_report_lifecycle.py tests/test_visualizer_chg179_semantic_parity.py tests/test_visualizer_wave2_image_placeholder_persistence.py tests/test_visualizer_application_hardening.py tests/test_visualizer_semiconductor_analytics_wave.py tests/test_visualizer_statistical_release_repair.py tests/test_visualizer_wave10_structural_protection.py tests/test_phase20_runtime_compatibility_hotfix.py tests/test_visualizer_release_closure.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 661,
+        "output_sha256": "02b4d2fd9fcf39cb129fccecc0646c9b289dfdcf1434445bbb1695cbd3ca0fe3",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git diff --stat && rtk git diff --check && rtk git diff -- company_ui/certification/certification_manifest.json company_ui/products/visualizer/assets/integrated_editor.mjs scripts/release_checks/run_stage_a_acceptance.py tests/test_visualizer_r15_authoring_depth.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add company_ui/certification/certification_manifest.json company_ui/products/visualizer/assets/integrated_editor.mjs scripts/release_checks/run_stage_a_acceptance.py tests/test_visualizer_r15_authoring_depth.py && rtk git diff --cached --check && rtk git commit -m 'fix(visualizer): align smart geometry release contracts (CHG-180 R1)' && rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'capture_start_head|requested_base|write-tree|add_argument' scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '280,325p' scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk diff --check && rtk proxy python -m py_compile scripts/release_checks/run_chg180_r1_acceptance.py && rtk git status --short && rtk git add scripts/release_checks/run_chg180_r1_acceptance.py && rtk git diff --cached --check && rtk git commit -m 'chore(visualizer): bind acceptance capture to candidate identity' && rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"'\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --check && rtk proxy python -m py_compile scripts/release_checks/run_chg180_r1_acceptance.py && rtk git status --short && rtk git add scripts/release_checks/run_chg180_r1_acceptance.py && rtk git diff --cached --check && rtk git commit -m 'chore(visualizer): bind acceptance capture to candidate identity' && rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --output /tmp/visembler-chg180-r1-final-acceptance-candidate --candidate-sha 1f7925c8c1917e3de406af60affa929a6997280f --candidate-tree 134654fc35440dfb13d8879816b793a78491c7f2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; r=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1\\\"); print(\\\"evidence children:\\\",[(x.name,x.is_dir()) for x in r.iterdir()]); [print(p.name, json.loads(p.read_text()).get(\\\"status\\\"), list(json.loads(p.read_text()).keys())) for p in [r/\\\"chg178-lifecycle\\\"/\\\"acceptance-receipt.json\\\",r/\\\"chg179-semantics\\\"/\\\"acceptance-receipt.json\\\",r/\\\"company-ui-runtime-smoke\\\"/\\\"runtime-smoke.json\\\"] if p.exists()]' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r1\\\"); print(\\\"\\\\n\\\".join(str(x.relative_to(p)) for x in sorted(p.rglob(\\\"*\\\")) if x.is_file()))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import pathlib,json; r=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1\\\");\nfor sub in [\\\"chg178-lifecycle\\\",\\\"chg179-semantics\\\",\\\"company-ui-runtime-smoke\\\"]:\n p=r/sub; print(\\\"DIR\\\",sub); print(\\\"\\\\n\\\".join(str(x.relative_to(p)) for x in sorted(p.rglob(\\\"*\\\")) if x.is_file())[:1800]);\n for q in sorted(p.glob(\\\"*.json\\\")):\n  try:\n   d=json.loads(q.read_text()); print(\\\"JSON\\\",q.name,\\\"status\\\",d.get(\\\"status\\\"),\\\"keys\\\",list(d)[:12])\n  except Exception: pass' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final/progress.json\\\"); print([x[\\\"name\\\"]+\\\":\\\"+x[\\\"status\\\"] for x in json.loads(p.read_text())])' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1 && rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import shutil,pathlib; src=pathlib.Path(\\\"/tmp/visembler-chg180-r1-final-acceptance-candidate\\\"); dst=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/native-acceptance\\\"); assert src.is_dir(); shutil.copytree(src,dst,dirs_exist_ok=True); print(\\\"copied\\\",dst)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/native-acceptance/acceptance-receipt.json\\\").read_text()); print(\\\"id\\\",d[\\\"candidate_sha\\\"],d[\\\"candidate_tree\\\"],\\\"runtime\\\",d[\\\"runtime\\\"]); forcase=d[\\\"cases\\\"][0]; print(\\\"case keys\\\",list(forcase));\nfor label in [\\\"geometry_before_save\\\",\\\"geometry_after_save\\\",\\\"geometry_after_fresh_reload\\\",\\\"geometry_after_export_reload\\\"]:\n g=forcase[label]; print(label,\\\"revision\\\",g.get(\\\"revision\\\"),\\\"canvas\\\",g[\\\"layout\\\"][\\\"canvas\\\"],\\\"item_count\\\",len(g[\\\"layout\\\"][\\\"items\\\"])); pf=[x for x in g[\\\"layout\\\"][\\\"items\\\"] if x[\\\"id\\\"]==\\\"c1\\\"]; print(\\\"pf\\\",pf[0] if pf else None); print(\\\"dom\\\",g.get(\\\"dom\\\"))\nprint(\\\"renderer\\\",d[\\\"headless_pptx_renderer\\\"]); print(\\\"ops structure keys\\\",forcase[\\\"powerpoint_structure\\\"].keys()); print(\\\"rca keys\\\",d[\\\"cases\\\"][1][\\\"powerpoint_structure\\\"].keys())' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/native-acceptance/acceptance-receipt.json\\\").read_text()); c=d[\\\"cases\\\"][0];\nfor k in [\\\"geometry_before_save\\\",\\\"geometry_after_save\\\",\\\"geometry_after_fresh_reload\\\",\\\"geometry_after_export_reload\\\"]:\n g=c[k]; print(\\\"\\\\\\\\n\\\",k,\\\"keys\\\",list(g)); print(json.dumps({x:g.get(x) for x in g if x not in [\\\"layout\\\",\\\"dom\\\"]},indent=2)[:1400]); print(\\\"item keys\\\",g[\\\"layout\\\"][\\\"items\\\"][0].keys()); print(\\\"svg dims\\\",g[\\\"dom\\\"][\\\"svg\\\"])' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'def capture|geometry_|svgViewBox|component.*clientWidth|persisted' scripts/release_checks/run_chg180_r1_acceptance.py && rtk sed -n '110,180p' scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '340,395p' scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final/progress.json\\\"); print([x[\\\"name\\\"]+\\\":\\\"+x[\\\"status\\\"] for x in json.loads(p.read_text())])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files scripts/release_checks | rtk rg 'chg178|chg179|lifecycle|semantic_parity' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg178_report_lifecycle_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg179_semantic_parity_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg178_report_lifecycle_acceptance.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/chg178-lifecycle-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg179_semantic_parity_acceptance.py --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/chg179-semantics-final --base-sha 797f874c5d5c5c7f522674b4a08cdd08bdbf31db --base-tree e279190e4709e4914054e7098a0d1421723c8a6e'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && rtk git branch --show-current && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"' && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk du -sh /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final.zip /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/native-acceptance /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/chg179-semantics-final /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/chg178-lifecycle-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/release-verifier-final/report.json\\\"); d=json.loads(p.read_text()); print(d[\\\"release_status\\\"],d[\\\"checks_status\\\"]); print(\\\"\\\\n\\\".join(x[\\\"name\\\"]+\\\" \\\"+x[\\\"status\\\"] for x in d[\\\"checks\\\"]))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy company-ui runtime-contract --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy company-ui runtime-contract --format json > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/runtime-contract-final.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/runtime-contract-final.json\\\"); print(json.dumps(json.loads(p.read_text()),indent=2)[:1200])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy company-ui runtime-smoke --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/company-ui-runtime-smoke-final --format json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib,subprocess,sys; command=[sys.executable,\\\"-m\\\",\\\"company_ui.validate\\\",\\\"company_ui/products/visualizer\\\",\\\"--quiet\\\"]; result=subprocess.run(command,text=True,capture_output=True); record={\\\"command\\\":command,\\\"exit_code\\\":result.returncode,\\\"stdout\\\":result.stdout,\\\"stderr\\\":result.stderr,\\\"note\\\":\\\"The exact-base comparison is recorded in the task run log; this unchanged validator baseline reports 57 legacy errors and 1157 warnings from the raw-NiceGUI compatibility host.\\\"}; pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/company-ui-validate-final.json\\\").write_text(json.dumps(record,indent=2)+\\\"\\\\n\\\"); print(json.dumps({\\\"exit_code\\\":result.returncode,\\\"stdout_tail\\\":result.stdout[-900:],\\\"stderr_tail\\\":result.stderr[-200:]}))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree add --detach /tmp/visembler-chg180-r1-base-validation 797f874c5d5c5c7f522674b4a08cdd08bdbf31db'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib,subprocess,sys; root=pathlib.Path(\\\"/tmp/visembler-chg180-r1-base-validation\\\"); command=[sys.executable,\\\"-m\\\",\\\"company_ui.validate\\\",\\\"company_ui/products/visualizer\\\",\\\"--quiet\\\"]; result=subprocess.run(command,cwd=root,text=True,capture_output=True); record={\\\"revision\\\":\\\"797f874c5d5c5c7f522674b4a08cdd08bdbf31db\\\",\\\"tree\\\":\\\"e279190e4709e4914054e7098a0d1421723c8a6e\\\",\\\"command\\\":command,\\\"exit_code\\\":result.returncode,\\\"stdout\\\":result.stdout,\\\"stderr\\\":result.stderr}; pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/company-ui-validate-base.json\\\").write_text(json.dumps(record,indent=2)+\\\"\\\\n\\\"); print(json.dumps({\\\"exit_code\\\":result.returncode,\\\"stdout\\\":result.stdout.strip(),\\\"stderr\\\":result.stderr.strip()}))' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove --force /tmp/visembler-chg180-r1-base-validation && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git bundle create /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/candidate.bundle refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git bundle verify /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/candidate.bundle && rtk git bundle list-heads /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/candidate.bundle'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/native-acceptance/acceptance-receipt.json\\\").read_text()); c=d[\\\"cases\\\"][0];\nfor k in [\\\"geometry_before_save\\\",\\\"geometry_after_save\\\",\\\"geometry_after_fresh_reload\\\",\\\"geometry_after_export_reload\\\"]:\n g=c[k]; fid=g[\\\"model\\\"][\\\"flow\\\"][\\\"id\\\"]; r=[x for x in g[\\\"layout\\\"][\\\"items\\\"] if x[\\\"id\\\"]==fid]; print(k,\\\"flow\\\",fid,\\\"rect\\\",r,\\\"canvas\\\",g[\\\"layout\\\"][\\\"canvas\\\"],\\\"dom\\\",g[\\\"dom\\\"],\\\"viewBox\\\",g[\\\"svgViewBox\\\"],\\\"pf\\\",{z:g[\\\"preflight\\\"].get(z) for z in [\\\"clipping\\\",\\\"overlaps\\\",\\\"out\\\",\\\"issues\\\"]})' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_chg180_r1_package.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git bundle verify /Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-180-r1/candidate.bundle && rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-180-r1/carrier-manifest.json\\\"); print(json.dumps(json.loads(p.read_text()),indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import hashlib,json,pathlib,zipfile; root=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1\\\"); z=root/\\\"CHG-180-r1-artifact-package.zip\\\"; h=hashlib.sha256(z.read_bytes()).hexdigest(); mf=json.loads((root/\\\"artifact-package/artifact-manifest.json\\\").read_text()); print(\\\"zip_sha\\\",h,\\\"sidecar\\\",(root/(z.name+\\\".sha256\\\")).read_text().strip(),\\\"valid_zip\\\",zipfile.ZipFile(z).testzip(),\\\"members\\\",len(zipfile.ZipFile(z).namelist()),\\\"manifest_files\\\",mf[\\\"file_count\\\"]); print(\\\"package_ro\\\",oct((root/\\\"artifact-package\\\").stat().st_mode & 0o777),\\\"archive_ro\\\",oct(z.stat().st_mode & 0o777)); print(\\\"top\\\",[p.name for p in sorted((root/\\\"artifact-package\\\").iterdir())]); print(\\\"carrier\\\",[(p.name,p.stat().st_size,oct(p.stat().st_mode & 0o777)) for p in sorted(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-180-r1\\\").iterdir())])' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && rtk git branch --show-current && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"' && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import hashlib,json,pathlib,zipfile; e=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1\\\"); p=e/\\\"artifact-package\\\"; z=e/\\\"CHG-180-r1-artifact-package.zip\\\"; c=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-180-r1\\\"); h=lambda b:hashlib.sha256(b).hexdigest(); m=json.loads((p/\\\"artifact-manifest.json\\\").read_text()); archive=zipfile.ZipFile(z); bad=[];\nfor x in m[\\\"files\\\"]:\n data=archive.read(\\\"CHG-180-r1/\\\"+x[\\\"path\\\"]);\n if len(data)\"'!=x[\"size_bytes\"] or h(data)!=x[\"sha256\"]: bad.append(x[\"path\"])\nrr=json.loads((p/\"release-verifier/repository-contracts.json\").read_text()); ar=json.loads((p/\"native-acceptance/acceptance-receipt.json\").read_text()); l=json.loads((p/\"test-results.json\").read_text()); im=json.loads((p/\"source-runtime-identity.json\").read_text()); carrier=json.loads((c/\"carrier-manifest.json\").read_text()); print(json.dumps({\"manifest_entries\":m[\"file_count\"],\"zip_members\":len(archive.namelist()),\"bad_hashes\":bad,\"verifier\":json.loads((p/\"release-verifier/report.json\").read_text())[\"release_status\"],\"repository_contract_candidate_sha\":rr[\"candidate_sha\"],\"acceptance_status\":ar[\"status\"],\"acceptance_candidate\":ar[\"candidate_sha\"],\"full_pytest\":l[\"complete_maintained_native_release_verifier\"][\"full_pytest\"],\"focused_suite_cases\":l[\"complete_maintained_native_release_verifier\"][\"focused_visualizer_regression_cases_in_full_suite\"][\"count\"],\"project\":im[\"project\"],\"request\":im[\"request\"],\"fabric_job\":im[\"fabric_job_id\"],\"carrier_package_sha_matches\":carrier[\"package\"][\"sha256\"]==h(z.read_bytes()),\"carrier_git_bundle_matches\":carrier[\"git_bundle\"][\"sha256\"]==h((c/\"candidate.bundle\").read_bytes()),\"raster\":json.loads((p/\"powerpoint-rasterization-status.json\").read_text())[\"status\"],\"provider\":json.loads((p/\"provider-staging.json\").read_text())[\"status\"]},indent=2)); assert not bad and ar[\"candidate_sha\"]==im[\"candidate\"][\"sha\"] and rr[\"candidate_sha\"]==im[\"candidate\"][\"sha\"]'\"' \"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 663,
+        "output_sha256": "78e3a8a6b354f7e4ff461177ad51a48a0c025bdd49ad18660fd7a7f2e320fccc",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short && rtk git branch --show-current && rtk git rev-parse HEAD && rtk git rev-parse 'HEAD\"'^{tree}'\"' && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-content-fit-spatial-ppt-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/powerpoint-structural-inspection.json\\\").read_text()); print(json.dumps(d,indent=2)[:2800])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/powerpoint-structural-inspection.json\\\").read_text()); r=d[\\\"semiconductor_rca\\\"]; print(\\\"slide_count\\\",r[\\\"slide_count\\\"],\\\"items\\\",r[\\\"round_trip_item_ids\\\"]); print([(s.get(\\\"kind\\\"),s.get(\\\"editable_die_count\\\"),s.get(\\\"metadata\\\"),[(o.get(\\\"x\\\"),o.get(\\\"y\\\"),o.get(\\\"value\\\"),o.get(\\\"delta\\\")) for o in s.get(\\\"observations\\\",[])]) for s in r[\\\"slides\\\"]])' \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 599,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.48,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 33344768,
+      "fresh_input_tokens": 861406,
+      "input_tokens": 34206174,
+      "non_reasoning_output_tokens": 75237,
+      "output_tokens": 211526,
+      "reasoning_output_tokens": 136289,
+      "total_processed_tokens": 34417700
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+      "subject": "chore(visualizer): bind acceptance capture to candidate identity"
+    },
+    {
+      "sha": "13e743fb5cac981547ab8d045d51473aa45786f7",
+      "subject": "fix(visualizer): align smart geometry release contracts (CHG-180 R1)"
+    },
+    {
+      "sha": "72c10f175a3d729698aaefe8de64ff0f3cb7f165",
+      "subject": "fix(visualizer): fit process flows and export wafer maps (CHG-180 R1)"
+    }
+  ],
+  "diff": {
+    "additions": 874,
+    "changed_files": 10,
+    "commit_count": 3,
+    "deletions": 36
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "8276ff700a0b626cdd93fdc683720f3411211ca03182b4720b92a2a6ef70d774"
+      },
+      {
+        "bytes": 12730,
+        "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+        "sha256": "19a023ff3f5f852b1b2a0e9206387d0337aee0c048e4f3195d4e30095c26e2c8"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-23T15:27:41Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "branch": "fix/visembler-chg180-content-fit-spatial-ppt-r1",
+    "detached_verify": false,
+    "head_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "remote_exact_head": true,
+    "remote_head_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "work_branch": "fix/visembler-chg180-content-fit-spatial-ppt-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-995caf5848f29bcacbd19b43",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-180-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-180-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-180-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-23T13:48:37Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 5944,
+    "queue_seconds": 0,
+    "total_seconds": 5944
+  },
+  "transport": {
+    "bytes": 8230,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 7924,
+    "prompt_sha256": "2e0565bfaed642e9616b27039eb016963d54a0fd69e3e2c0c67bc1b736fc21f9",
+    "sha256": "995caf5848f29bcacbd19b43be20acbdba5fe8b4b53018c600720d7f194ac690"
+  }
+}
