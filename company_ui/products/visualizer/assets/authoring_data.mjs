@@ -22,6 +22,8 @@ function profile(name, values, index) {
   const present=values.filter(value=>String(value ?? '').trim()!==''); const raw=present.map(value=>String(value).trim());
   const tags=Object.entries(SEMANTIC_ALIASES).filter(([, aliases])=>aliases.includes(slug(name))).map(([tag])=>tag);
   const all=(predicate)=>raw.length>0 && raw.every(predicate);
+  const percentLiteral=value=>/^[-+]?(?:\d+\.?\d*|\.\d+)%$/.test(value);
+  const currencyLiteral=value=>/^([$€£¥])\s*[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?$/i.test(value);
   let type='string';
   if(all(value=>/^(true|false)$/i.test(value))) type='boolean';
   else if(all(value=>dateOnly.test(value))) type='date';
@@ -30,7 +32,12 @@ function profile(name, values, index) {
   if(raw.some(value=>idLike.test(value)) || /(^|_)(id|code|lot|wafer|bin)(_|$)/.test(slug(name))) type='identifier';
   else if(tags.some(tag=>['tool','chamber','recipe','process','product','route','source','target','subgroup','cohort','status'].includes(tag))) type='categorical';
   else if(type==='string' && new Set(raw).size <= Math.min(20, Math.max(3, raw.length/2))) type='categorical';
-  return {id:fieldId(name,index),name:String(name),type,nullable:present.length!==values.length,semantic_tags:tags,profile:{missing:values.length-present.length,distinct:new Set(raw).size}};
+  const percentage=all(percentLiteral);
+  if(raw.some(percentLiteral)&&!percentage)type='string';
+  const currency=all(currencyLiteral),currencySymbol=currency?raw[0].match(currencyLiteral)?.[1]:null;
+  const currencyCode={'$':'USD','€':'EUR','£':'GBP','¥':'JPY'}[currencySymbol];
+  const unitFormat=percentage?{unit:'%',format:{kind:'percent',percent_scale:'ratio'}}:currency?{unit:currencyCode,format:{kind:'currency',prefix:currencySymbol}}:['integer','number'].includes(type)?{unit:''}:{};
+  return {id:fieldId(name,index),name:String(name),type,nullable:present.length!==values.length,semantic_tags:tags,...unitFormat,profile:{missing:values.length-present.length,distinct:new Set(raw).size}};
 }
 function headerConfidence(rows) {
   if(rows.length<2) return {present:false,confidence:0,source_row:null};
@@ -56,7 +63,19 @@ export function inferMappings(fields) {
   const mapping={}; const set=(role,field)=>{if(field)mapping[role]=field.id;};
   set('source',byTag('source')); set('target',byTag('target')); set('weight',byTag('weight')); set('time',byTag('time')); set('x',byTag('die_x')||byTag('time')||numericFields[0]); set('y',byTag('die_y')||numericFields[1]||byTag('value')); set('value',byTag('value')||numericFields.find(field=>field.id!==mapping.x)||numericFields[0]); set('category',category); set('series',fields.find(field=>field!==category && ['categorical','identifier'].includes(field.type))); set('die_x',byTag('die_x')); set('die_y',byTag('die_y')); ['lot_id','wafer_id','tool','chamber','recipe','process','product','route','cohort','status','reference_value','affected_value','subgroup','specification_low','specification_high'].forEach(role=>set(role,byTag(role)));
   const contracts=['bar','line','scatter','multi_line','regression_scatter','distribution','pareto','table','timeline','diagram_flow','engineering','wafer','wafer_difference','tool_chamber_matrix','golden_affected_profile','control_affected_distribution'];
-  return contracts.map(view=>{const validation=contractFor(view).validate(mapping,fields);return {view,mapping,confidence:Math.min(1,Object.keys(mapping).length/Math.max(1,fields.length)),unresolved:validation.missing,incompatible:validation.incompatible};}).sort((a,b)=>(a.unresolved.length+a.incompatible.length)-(b.unresolved.length+b.incompatible.length));
+  return contracts.map(view=>{
+    const candidate={...mapping};
+    if(['line','multi_line','golden_affected_profile'].includes(view)){
+      const categoryOrTime=byTag('time')||category;
+      if(categoryOrTime)candidate.x=categoryOrTime.id;
+      if(numericFields.length){const preferred=byTag('value')||numericFields[0];candidate.y=preferred.id;candidate.value=preferred.id;}
+    }
+    if(['scatter','regression_scatter'].includes(view)&&numericFields.length>=2){candidate.x=numericFields[0].id;candidate.y=numericFields[1].id;candidate.value=numericFields[1].id;}
+    if(['bar','pareto'].includes(view)&&category)candidate.category=category.id;
+    if(view==='timeline'&&category)candidate.category=category.id;
+    const validation=contractFor(view).validate(candidate,fields);
+    return {view,mapping:candidate,confidence:Math.min(1,Object.keys(candidate).length/Math.max(1,fields.length)),unresolved:validation.missing,incompatible:validation.incompatible};
+  }).sort((a,b)=>(a.unresolved.length+a.incompatible.length)-(b.unresolved.length+b.incompatible.length));
 }
 const contractView=view=>({diagram:'diagram_flow',histogram:'distribution',box:'distribution',regression:'regression_scatter'}[view]||view);
 const PRODUCTION_VIEW_TARGETS=Object.freeze({

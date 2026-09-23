@@ -90,7 +90,9 @@ function numericMapping(model, role) {
 function buildRows(model) {
   const dataset = model.dataset || {fields:[],rows:[]};
   const type = model.chart_type;
-  const xRole = type === 'Pareto' || BAR_TYPES.has(type) ? 'category' : model.mapping?.x ? 'x' : model.mapping?.category ? 'category' : model.mapping?.time ? 'time' : null;
+  const xRole = type === 'Pareto' || BAR_TYPES.has(type)
+    ? (model.mapping?.category ? 'category' : model.mapping?.x ? 'x' : model.mapping?.time ? 'time' : model.mapping?.label ? 'label' : null)
+    : model.mapping?.x ? 'x' : model.mapping?.category ? 'category' : model.mapping?.time ? 'time' : model.mapping?.label ? 'label' : null;
   const yRole = type === 'Pareto' || BAR_TYPES.has(type) || type === 'Histogram' || type === 'Box Plot' ? 'value' : model.mapping?.y ? 'y' : 'value';
   const xIndex = fieldIndex(model, model.mapping?.[xRole]);
   const yIndex = fieldIndex(model, model.mapping?.[yRole]);
@@ -99,7 +101,7 @@ function buildRows(model) {
   const temporal = timeLike(xField?.type) || Boolean(xField?.semantic_tags?.includes('time'));
   const xNumeric = numberLike(xField?.type) || (temporal && (dataset.rows || []).some(row => parseTime(row?.[xIndex]) !== null));
   let rows = (dataset.rows || []).map((row, index) => {
-    const xRaw = xIndex >= 0 ? row?.[xIndex] : index;
+    const xRaw = xIndex >= 0 ? row?.[xIndex] : null;
     const yRaw = yIndex >= 0 ? row?.[yIndex] : null;
     const xValue = xNumeric ? (temporal ? parseTime(xRaw) : (finite(xRaw) ? xRaw : Number(xRaw))) : index;
     const series = seriesIndex >= 0 ? String(row?.[seriesIndex] ?? 'Value') : 'Value';

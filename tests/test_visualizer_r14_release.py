@@ -136,7 +136,7 @@ def test_r14_ppt_export_uses_actual_metric_chart_and_table_values():
         {'id':'t','element':'Clean Table','engine':'TableEngine','title':'Table','customTable':{'headers':['Field','Value'],'rows':[['Zero',0],['Missing',None],['String zero','0']]}},
     ]}
     prs=Presentation(io.BytesIO(export_pptx(_pptx(),model))); slide=prs.slides[0]
-    assert any(getattr(s,'has_text_frame',False) and 'Metric zero' in s.text and '\n0\n' in f'\n{s.text}\n' for s in slide.shapes)
+    assert any(getattr(s,'has_text_frame',False) and 'Metric zero' in s.text and '\n0 hr\n' in f'\n{s.text}\n' for s in slide.shapes)
     charts=[s.chart for s in slide.shapes if getattr(s,'has_chart',False)]
     assert len(charts)==1
     categories=[c.label for c in charts[0].plots[0].categories]
