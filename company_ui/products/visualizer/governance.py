@@ -652,8 +652,8 @@ class ScopedReportRepository:
         record = self._repository.commit(report_id, **kwargs); self._access.update_summary(record)
         self._access.audit.record('report.commit', actor=self.principal, report_id=report_id, revision=record.revision); return record
 
-    def rename(self, report_id: str, **kwargs: Any) -> Any:
-        self._require(report_id, 'report.rename'); record = self._repository.rename(report_id, **kwargs); self._access.update_summary(record)
+    def rename(self, report_id: str, *, title: str, expected_revision: int) -> Any:
+        self._require(report_id, 'report.rename'); record = self._repository.rename(report_id, title=title, expected_revision=expected_revision); self._access.update_summary(record)
         self._access.audit.record('report.rename', actor=self.principal, report_id=report_id, revision=record.revision); return record
 
     def duplicate(self, source_report_id: str, new_report_id: str, **kwargs: Any) -> Any:
@@ -686,8 +686,8 @@ class ScopedReportRepository:
         self._require(report_id, 'report.history.restore'); result = self._repository.checkpoint(report_id, **kwargs)
         self._access.audit.record('report.checkpoint', actor=self.principal, report_id=report_id); return result
 
-    def restore_history(self, report_id: str, **kwargs: Any) -> Any:
-        self._require(report_id, 'report.history.restore'); record = self._repository.restore_history(report_id, **kwargs)
+    def restore_history(self, report_id: str, *, history_id: str, expected_revision: int) -> Any:
+        self._require(report_id, 'report.history.restore'); record = self._repository.restore_history(report_id, history_id=history_id, expected_revision=expected_revision)
         self._access.update_summary(record); self._access.audit.record('report.history.restore', actor=self.principal, report_id=report_id, revision=record.revision); return record
 
     def trash_report(self, report_id: str, **kwargs: Any) -> Any:
@@ -751,9 +751,9 @@ class ScopedReportRepository:
     def require_export(self, report_id: str) -> None:
         self._require(report_id, REPORT_EXPORT)
 
-    def update_description(self, report_id: str, **kwargs: Any) -> Any:
+    def update_description(self, report_id: str, *, description: str, expected_revision: int) -> Any:
         self._require(report_id, REPORT_EDIT)
-        record = self._repository.update_description(report_id, **kwargs)
+        record = self._repository.update_description(report_id, description=description, expected_revision=expected_revision)
         self._access.update_summary(record)
         self._access.audit.record('report.description', actor=self.principal, report_id=report_id, revision=record.revision)
         return record

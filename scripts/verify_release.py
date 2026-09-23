@@ -117,6 +117,7 @@ def main() -> int:
     ]
     if args.host_mode == 'native':
         browser_checks.extend([
+            ('report-lifecycle-integrity', 'run_chg178_report_lifecycle_acceptance.py', 300),
             ('chart-studio', 'run_chart_studio_acceptance.py', 900),
             ('report-hub-browser-errors', 'run_report_hub_browser_error_gate.py', 600),
             ('native-recovery', 'run_native_recovery.py', 600),
@@ -144,7 +145,7 @@ def main() -> int:
     }
     if ROOT.joinpath('.git').exists(): required_names.add('git-diff-check')
     if args.host_mode=='native':
-        required_names.update({'report-hub-browser-errors','chart-studio','native-recovery','worker-lifecycle','operations-drill','native-acceptance'})
+        required_names.update({'report-hub-browser-errors','chart-studio','native-recovery','worker-lifecycle','operations-drill','native-acceptance','report-lifecycle-integrity'})
     by_name={row['name']:row for row in results}
     missing=sorted(required_names-set(by_name))
     failing=sorted(name for name in required_names if by_name.get(name,{}).get('status')!='PASS')

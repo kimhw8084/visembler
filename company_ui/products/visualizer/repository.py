@@ -70,7 +70,7 @@ class ReportRepository:
 
     def _snapshot_unlocked(self, record: ReportRecord, *, label: str='', checkpoint: bool=False) -> None:
         directory=self._history_path(record.report_id); suffix=f'-checkpoint-{uuid.uuid4().hex[:10]}' if checkpoint else ''
-        payload={'report_id':record.report_id,'revision':record.revision,'title':record.title,'updated_at':record.updated_at,'label':' '.join(label.split())[:160],'checkpoint':checkpoint,'model':record.model}
+        payload={'report_id':record.report_id,'revision':record.revision,'title':record.title,'metadata':record.metadata,'updated_at':record.updated_at,'label':' '.join(label.split())[:160],'checkpoint':checkpoint,'model':record.model}
         self._atomic_write(directory/f'r{record.revision}{suffix}.json',stable_json(payload)+'\n'); self._trim_history_unlocked(record.report_id)
 
     def _trim_history_unlocked(self, report_id: str) -> None:
@@ -237,7 +237,8 @@ class ReportRepository:
             current=self._get_unlocked(report_id)
             if current.revision!=expected_revision: raise RevisionConflictError(current.revision,expected_revision)
             source=self._load_history_unlocked(current.report_id,history_id); now=utc_now()
-            restored=replace(current,revision=current.revision+1,model=self._prepare_model_unlocked(source['model']),commit_ids=(),updated_at=now)
+            metadata=source.get('metadata')
+            restored=replace(current,title=str(source.get('title') or current.title),metadata=dict(metadata) if isinstance(metadata,Mapping) else current.metadata,revision=current.revision+1,model=self._prepare_model_unlocked(source['model']),commit_ids=(),updated_at=now)
             self._save_unlocked(restored); self._snapshot_unlocked(restored,label=f'Restored {history_id}'); return restored
 
     def duplicate_from_history(self, source_report_id: str, history_id: str, new_report_id: str, *, title: str|None=None) -> ReportRecord:
