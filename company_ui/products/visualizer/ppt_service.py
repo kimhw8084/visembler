@@ -5,11 +5,13 @@ import binascii
 import importlib.util
 import io
 import json
+import math
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 from pptx import Presentation
 from pptx.chart.data import ChartData
+from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.util import Inches, Pt
 from PIL import Image
@@ -36,6 +38,8 @@ def _kind(entry: Mapping[str, Any]) -> str:
     if engine in {'MetricEngine','ComparisonEngine'}: return 'kpi'
     if engine=='DiagramEngine': return 'diagram'
     if engine=='TimelineEngine': return 'timeline'
+    if engine=='WaferFabEngine' and str(entry.get('element') or '')=='Wafer Map': return 'wafer_map'
+    if engine=='WaferFabEngine' and str(entry.get('element') or '')=='Wafer Difference Map': return 'wafer_difference'
     if engine in {'TextEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'}: return 'text'
     return 'fallback'
 
@@ -118,7 +122,18 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
             entry['edges']=edges; entry['nodes']=list(dict.fromkeys(node for edge in edges for node in edge))
         elif engine=='WaferFabEngine':
             x=index('die_x') if index('die_x')>=0 else index('x'); y=index('die_y') if index('die_y')>=0 else index('y'); value=index('value')
-            entry['observations']=[{'x':row[x] if x>=0 and x<len(row) else None,'y':row[y] if y>=0 and y<len(row) else None,'value':row[value] if value>=0 and value<len(row) else None} for row in rows]
+            reference=index('reference_value'); affected=index('affected_value'); delta=index('delta')
+            observations=[]
+            for row in rows:
+                observed={'x':row[x] if x>=0 and x<len(row) else None,'y':row[y] if y>=0 and y<len(row) else None,'value':row[value] if value>=0 and value<len(row) else None}
+                if reference>=0: observed['reference_value']=row[reference] if reference<len(row) else None
+                if affected>=0: observed['affected_value']=row[affected] if affected<len(row) else None
+                if delta>=0: observed['delta']=row[delta] if delta<len(row) else None
+                elif reference>=0 and affected>=0:
+                    reference_value=observed.get('reference_value'); affected_value=observed.get('affected_value')
+                    observed['delta']=affected_value-reference_value if isinstance(reference_value,(int,float)) and not isinstance(reference_value,bool) and isinstance(affected_value,(int,float)) and not isinstance(affected_value,bool) else None
+                observations.append(observed)
+            entry['observations']=observations
             entry.update({key:first(key) for key in ('wafer_id','lot_id','tool','chamber','recipe','process')})
         else:
             label=index('category') if index('category')>=0 else (index('label') if index('label')>=0 else (index('time') if index('time')>=0 else index('x'))); value=index('value') if index('value')>=0 else index('y')
@@ -134,13 +149,14 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
     return resolved
 
 
-def _plan(model: Mapping[str, Any]) -> dict[str, Any]:
+def _plan(model: Mapping[str, Any], layout_geometry: Mapping[str, Any] | None = None) -> dict[str, Any]:
     report_items=list(model.get('items') or [])
     if not report_items: return _adapter().default_plan()
     positioned=[entry for entry in report_items if all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h')) and entry['w']>0 and entry['h']>0]
     if len(positioned)==len(report_items):
-        canvas_w=max(1200.0,max(float(entry['x'])+float(entry['w']) for entry in report_items))
-        canvas_h=max(675.0,max(float(entry['y'])+float(entry['h']) for entry in report_items))
+        canvas=layout_geometry.get('canvas') if isinstance(layout_geometry,Mapping) and isinstance(layout_geometry.get('canvas'),Mapping) else {}
+        canvas_w=max(1200.0,float(canvas.get('width') or 0),max(float(entry['x'])+float(entry['w']) for entry in report_items))
+        canvas_h=max(675.0,float(canvas.get('height') or 0),max(float(entry['y'])+float(entry['h']) for entry in report_items))
         return {'items':[{'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
                           'nx':max(0.0,min(1.0,float(entry['x'])/canvas_w)),'ny':max(0.0,min(1.0,float(entry['y'])/canvas_h)),
                           'nw':max(.001,min(1.0,float(entry['w'])/canvas_w)),'nh':max(.001,min(1.0,float(entry['h'])/canvas_h))} for entry in report_items]}
@@ -154,6 +170,42 @@ def _plan(model: Mapping[str, Any]) -> dict[str, Any]:
         items.append({'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
                       'nx':col*(cell_w+gap_x),'ny':row*(cell_h+gap_y),'nw':cell_w,'nh':cell_h})
     return {'items':items}
+
+
+def _validated_layout_geometry(value: Any, entries: Sequence[Mapping[str, Any]]) -> dict[str, Any] | None:
+    """Validate and retain the exact Smart/manual geometry that passed browser preflight."""
+    if value is None: return None
+    if not isinstance(value,Mapping) or not isinstance(value.get('canvas'),Mapping) or not isinstance(value.get('items'),list):
+        raise VisualizerContractError('PowerPoint export requires a complete validated report layout.')
+    canvas=value['canvas']
+    def dimension(raw: Any, name: str, low: int, high: int) -> int:
+        if isinstance(raw,bool) or not isinstance(raw,(int,float)) or not math.isfinite(raw) or int(raw)!=raw or not low<=int(raw)<=high:
+            raise VisualizerContractError(f'PowerPoint layout {name} is invalid.')
+        return int(raw)
+    width=dimension(canvas.get('width'),'canvas width',640,3840); height=dimension(canvas.get('height'),'canvas height',360,4800)
+    expected={str(entry.get('id') or '') for entry in entries}
+    if not all(expected) or len(expected)!=len(entries): raise VisualizerContractError('PowerPoint report elements require unique ids.')
+    rects=[]; seen=set()
+    for source in value['items']:
+        if not isinstance(source,Mapping): raise VisualizerContractError('PowerPoint layout element geometry is malformed.')
+        item_id=str(source.get('id') or '')
+        if not item_id or item_id in seen: raise VisualizerContractError('PowerPoint layout contains duplicate or missing element ids.')
+        seen.add(item_id)
+        rect={key:source.get(key) for key in ('x','y','w','h')}
+        if any(isinstance(raw,bool) or not isinstance(raw,(int,float)) or not math.isfinite(raw) for raw in rect.values()):
+            raise VisualizerContractError(f'PowerPoint layout geometry for {item_id} is invalid.')
+        x,y,w,h=(float(rect[key]) for key in ('x','y','w','h'))
+        if w<=0 or h<=0 or x<-.1 or y<-.1 or x+w>width+.1 or y+h>height+.1:
+            raise VisualizerContractError(f'PowerPoint layout geometry for {item_id} exceeds the report canvas.')
+        rects.append({'id':item_id,'x':x,'y':y,'w':w,'h':h})
+    if seen!=expected: raise VisualizerContractError('PowerPoint layout elements do not match the saved report.')
+    for index,first in enumerate(rects):
+        for second in rects[index+1:]:
+            intersection_w=min(first['x']+first['w'],second['x']+second['w'])-max(first['x'],second['x'])
+            intersection_h=min(first['y']+first['h'],second['y']+second['h'])-max(first['y'],second['y'])
+            if intersection_w>1 and intersection_h>1:
+                raise VisualizerContractError('PowerPoint layout contains overlapping report elements.')
+    return {'canvas':{'width':width,'height':height},'items':rects}
 
 
 def _export_pages(entries: list[dict[str, Any]]) -> list[list[dict[str, Any]]]:
@@ -272,6 +324,112 @@ def _replace_diagram(slide: Any, shape: Any, entry: Mapping[str, Any], title: st
     return next(iter(created.values()))
 
 
+def _numeric(value: Any) -> bool:
+    return isinstance(value,(int,float)) and not isinstance(value,bool) and math.isfinite(value)
+
+
+def _mix_color(start: tuple[int,int,int], end: tuple[int,int,int], ratio: float) -> RGBColor:
+    amount=max(0.0,min(1.0,float(ratio)))
+    return RGBColor(*(round(a+(b-a)*amount) for a,b in zip(start,end)))
+
+
+def _wafer_color(value: Any, low: float | None, high: float | None, *, difference: bool) -> RGBColor:
+    if not _numeric(value): return RGBColor(205,211,219)
+    if difference:
+        extent=max(abs(low or 0.0),abs(high or 0.0),1e-12)
+        neutral=(180,188,197)
+        if value<0: return _mix_color((54,90,199),neutral,(value+extent)/extent)
+        return _mix_color(neutral,(201,79,95),value/extent)
+    if low is None or high is None or low==high: return RGBColor(87,112,183)
+    return _mix_color((54,90,199),(201,79,95),(value-low)/(high-low))
+
+
+def _ppt_text(slide: Any, text: str, name: str, left: int, top: int, width: int, height: int, *, size: float=8, bold: bool=False, color: tuple[int,int,int]=(52,65,82)) -> Any:
+    shape=slide.shapes.add_textbox(left,top,width,height);shape.name=name
+    frame=shape.text_frame;frame.clear();frame.word_wrap=True;frame.margin_left=0;frame.margin_right=0;frame.margin_top=0;frame.margin_bottom=0
+    paragraph=frame.paragraphs[0];paragraph.text=text;paragraph.font.size=Pt(size);paragraph.font.bold=bold;paragraph.font.color.rgb=RGBColor(*color)
+    return shape
+
+
+def _replace_wafer_map(slide: Any, shape: Any, entry: Mapping[str, Any], title: str, *, difference: bool) -> Any:
+    """Draw an editable wafer panel from canonical die observations."""
+    left,top,width,height=shape.left,shape.top,shape.width,shape.height
+    shape._element.getparent().remove(shape._element)
+    panel=slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,left,top,width,height);panel.name=f'VIZ::{title}::spatial-panel'
+    panel.fill.solid();panel.fill.fore_color.rgb=RGBColor(255,255,255);panel.line.color.rgb=RGBColor(211,219,229);panel.line.width=Pt(.8)
+    observations=[dict(value) for value in entry.get('observations') or [] if isinstance(value,Mapping)]
+    def die_value(observation: Mapping[str,Any]) -> Any:
+        if not difference: return observation.get('value')
+        delta=observation.get('delta')
+        if _numeric(delta): return delta
+        reference,affected=observation.get('reference_value'),observation.get('affected_value')
+        if _numeric(reference) and _numeric(affected): return affected-reference
+        return observation.get('value')
+    numeric_values=[float(die_value(observation)) for observation in observations if _numeric(die_value(observation))]
+    low=min(numeric_values) if numeric_values else None;high=max(numeric_values) if numeric_values else None
+    title_y=top+max(Inches(.09),height*.035);title_h=max(Inches(.24),height*.09)
+    _ppt_text(slide,title,f'VIZ::{title}::title',left+width*.04,title_y,width*.92,title_h,size=12,bold=True,color=(28,43,62))
+    identity=[]
+    for label,keys in [('Wafer',('wafer_id','wafer')),('Lot',('lot_id','lot')),('Tool',('tool',)),('Chamber',('chamber',)),('Recipe',('recipe',)),('Process',('process',))]:
+        value=next((entry.get(key) for key in keys if entry.get(key) not in (None,'')),None)
+        if value is not None: identity.append(f'{label} {value}')
+    extent_text=(f'Delta {low:+g} to {high:+g}' if difference and low is not None and high is not None else f'Value {low:g} to {high:g}' if low is not None and high is not None else 'No numeric die values')
+    missing=sum(not _numeric(die_value(observation)) for observation in observations)
+    scope=f'{len(observations)} observations · {missing} missing · {extent_text}'
+    metadata=' · '.join(identity)
+    details='\n'.join(value for value in (metadata,scope) if value)
+    meta_top=title_y+title_h+Inches(.04);meta_h=min(Inches(.52),max(Inches(.25),height*.16))
+    _ppt_text(slide,details,f'VIZ::{title}::metadata',left+width*.04,meta_top,width*.92,meta_h,size=7.5,color=(79,94,113))
+
+    pad=max(Inches(.12),width*.035);body_top=meta_top+meta_h+Inches(.04);body_bottom=top+height-pad
+    body_h=max(Inches(.45),body_bottom-body_top);side_layout=width>=Inches(5.8) and body_h>=Inches(1.6)
+    if side_layout:
+        diameter=min(width*.46,body_h*.94);map_left=left+pad;map_top=body_top+(body_h-diameter)/2
+        legend_left=map_left+diameter+pad;legend_top=body_top+body_h*.29;legend_width=max(Inches(.8),left+width-pad-legend_left)
+    else:
+        diameter=min(width*.72,body_h*.68);map_left=left+(width-diameter)/2;map_top=body_top+max(0,(body_h-diameter-Inches(.3))/2)
+        legend_left=left+pad;legend_top=min(body_bottom-Inches(.27),map_top+diameter+Inches(.04));legend_width=width-2*pad
+    diameter=max(Inches(.65),diameter)
+    outline=slide.shapes.add_shape(MSO_SHAPE.OVAL,map_left,map_top,diameter,diameter);outline.name=f'VIZ::{title}::wafer-outline'
+    outline.fill.solid();outline.fill.fore_color.rgb=RGBColor(247,249,252);outline.line.color.rgb=RGBColor(39,54,74);outline.line.width=Pt(1.2)
+    notch_w=max(Inches(.10),diameter*.065);notch_h=max(Inches(.035),diameter*.024)
+    notch=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,map_left+diameter/2-notch_w/2,map_top-Inches(.004),notch_w,notch_h);notch.name=f'VIZ::{title}::orientation-notch'
+    notch.fill.solid();notch.fill.fore_color.rgb=RGBColor(255,255,255);notch.line.fill.background()
+    _ppt_text(slide,'N · NOTCH',f'VIZ::{title}::orientation',map_left+diameter*.37,map_top-Inches(.16),diameter*.7,Inches(.13),size=6,bold=True,color=(79,94,113))
+
+    points=[(index,observation) for index,observation in enumerate(observations) if _numeric(observation.get('x')) and _numeric(observation.get('y'))]
+    if points:
+        center_x=map_left+diameter/2;center_y=map_top+diameter/2;radius=diameter/2
+        center_data_x=sum(float(observation['x']) for _,observation in points)/len(points);center_data_y=sum(float(observation['y']) for _,observation in points)/len(points)
+        max_radius=max((math.hypot(float(observation['x'])-center_data_x,float(observation['y'])-center_data_y) for _,observation in points),default=0.0)
+        cell=max(Inches(.035),min(Inches(.16),diameter*.075));scale=max(0.0,(radius-cell*.72)/max_radius) if max_radius else 0.0
+        for index,observation in points:
+            value=die_value(observation);die=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,center_x+(float(observation['x'])-center_data_x)*scale-cell/2,center_y-(float(observation['y'])-center_data_y)*scale-cell/2,cell,cell)
+            die.name=f'VIZ::{title}::die-{index+1}';die.fill.solid();die.fill.fore_color.rgb=_wafer_color(value,low,high,difference=difference);die.line.color.rgb=RGBColor(255,255,255);die.line.width=Pt(.45)
+            detail={'index':index,'x':observation.get('x'),'y':observation.get('y'),'value':observation.get('value'),'delta':value if difference else None,'reference_value':observation.get('reference_value'),'affected_value':observation.get('affected_value')}
+            try: die._element.xpath('.//p:cNvPr')[0].set('descr','VisualizerSemanticDie:'+json.dumps(detail,ensure_ascii=False,separators=(',',':')))
+            except Exception: pass
+    else:
+        _ppt_text(slide,'No die coordinates',f'VIZ::{title}::empty',map_left+diameter*.15,map_top+diameter*.47,diameter*.7,Inches(.22),size=8,color=(100,112,128))
+
+    if difference:
+        legend_title='SIGNED DELTA · AFFECTED − REFERENCE'; colors=[_wafer_color(-max(abs(low or 0),abs(high or 0)),low,high,difference=True),_wafer_color(0,low,high,difference=True),_wafer_color(max(abs(low or 0),abs(high or 0)),low,high,difference=True)]
+        labels=[f'{-max(abs(low or 0),abs(high or 0)):g}','0',f'+{max(abs(low or 0),abs(high or 0)):g}']
+    else:
+        legend_title='MEASURED VALUE';colors=[_wafer_color(low,low,high,difference=False),_wafer_color((low+high)/2 if low is not None and high is not None else low,low,high,difference=False),_wafer_color(high,low,high,difference=False)];labels=[f'{low:g}' if low is not None else 'Missing',f'{(low+high)/2:g}' if low is not None and high is not None else '—',f'{high:g}' if high is not None else '—']
+    title_height=Inches(.19);_ppt_text(slide,legend_title,f'VIZ::{title}::legend-title',legend_left,legend_top,legend_width,title_height,size=6.5,bold=True,color=(58,72,91))
+    band_top=legend_top+title_height+Inches(.04);band_h=max(Inches(.10),min(Inches(.16),height*.04));gap=Inches(.025);band_w=max(Inches(.04),(legend_width-gap*8)/9)
+    for index in range(9):
+        value=low+(high-low)*index/8 if low is not None and high is not None else low
+        if difference:
+            extent=max(abs(low or 0),abs(high or 0));value=-extent+2*extent*index/8
+        swatch=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,legend_left+index*(band_w+gap),band_top,band_w,band_h);swatch.name=f'VIZ::{title}::legend-{index+1}'
+        swatch.fill.solid();swatch.fill.fore_color.rgb=_wafer_color(value,low,high,difference=difference);swatch.line.fill.background()
+    _ppt_text(slide,labels[0],f'VIZ::{title}::legend-low',legend_left,band_top+band_h+Inches(.025),legend_width*.3,Inches(.17),size=7,color=(80,94,113))
+    _ppt_text(slide,labels[-1],f'VIZ::{title}::legend-high',legend_left+legend_width*.7,band_top+band_h+Inches(.025),legend_width*.3,Inches(.17),size=7,color=(80,94,113))
+    return panel
+
+
 def _fill_text_shape(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if not getattr(shape,'has_text_frame',False): return
     tf=shape.text_frame; tf.clear(); p=tf.paragraphs[0]; p.text=title; p.font.bold=True; p.font.size=Pt(13)
@@ -330,6 +488,8 @@ def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, A
         shape=created[index];kind=item['kind'];title=item['title']
         if kind=='image': shape=_replace_image(slide,shape,entry,title,asset_data_url)
         elif kind=='diagram': shape=_replace_diagram(slide,shape,entry,title)
+        elif kind=='wafer_map': shape=_replace_wafer_map(slide,shape,entry,title,difference=False)
+        elif kind=='wafer_difference': shape=_replace_wafer_map(slide,shape,entry,title,difference=True)
         elif kind=='timeline': _fill_text_shape(shape,entry,title)
         elif kind=='kpi': _fill_kpi(shape,entry,title)
         elif kind=='chart': _fill_chart(shape,entry,title)
@@ -339,7 +499,7 @@ def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, A
         _set_semantic_metadata(shape,entry)
 
 
-def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None) -> bytes:
+def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None, layout_geometry: Mapping[str, Any] | None=None) -> bytes:
     """Export the authored report into an optional template or a clean blank deck."""
     if template_bytes is None:
         prs=Presentation()
@@ -356,6 +516,10 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
             if entry.get('engine')=='ImageMediaEngine' and entry.get('asset_id'):
                 entry['src']=asset_data_url(entry['asset_id']); entry.pop('asset_id',None)
     entries=bound_export_items(semantic_model or model)
+    layout_geometry=_validated_layout_geometry(layout_geometry,entries)
+    if layout_geometry is not None:
+        geometry={rect['id']:rect for rect in layout_geometry['items']}
+        entries=[{**entry,**geometry[str(entry['id'])]} for entry in entries]
     for entry in entries:
         if str(entry.get('engine') or '')!='MetricEngine':
             continue
@@ -365,7 +529,7 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
     adapter=_adapter()
     for page_index,page_entries in enumerate(_export_pages(entries)):
         slide=prs.slides[slide_index] if page_index==0 else prs.slides.add_slide(prs.slide_layouts[6]); target_slide_index=slide_index if page_index==0 else len(prs.slides)-1
-        plan=_plan({**model,'items':page_entries}); before_count=len(slide.shapes)
+        plan=_plan({**(semantic_model or model),'items':page_entries},layout_geometry); before_count=len(slide.shapes)
         adapter.insert(prs,slide_index=target_slide_index,placeholder=placeholder if page_index==0 else None,plan=plan)
         _apply_semantics(slide,before_count,page_entries,plan,asset_data_url)
         if page_index==0 and semantic_model is not None: _set_report_metadata(slide,semantic_model)

@@ -1499,7 +1499,13 @@ def register_visualizer(
                     await send('reuse.preferences_result',{'bucket':bucket,'records':records,'assets':library['assets'],'datasets':library['datasets'],'saved':True}); return
                 if kind=='ppt.export_requested':
                     repository.require_export(current.report_id)
-                    latest=repository.export(current.report_id); output=export_pptx(ppt_template['content'],export_model(latest),asset_data_url=lambda asset_id: repository.asset_data_url(latest.report_id,asset_id))
+                    latest=repository.export(current.report_id)
+                    requested_revision=payload.get('revision')
+                    if isinstance(requested_revision,bool) or not isinstance(requested_revision,int) or requested_revision!=latest.revision:
+                        raise VisualizerContractError('The report changed or is still saving. Validate again after the latest revision is saved.')
+                    layout_geometry=payload.get('layout_geometry')
+                    if not isinstance(layout_geometry,Mapping): raise VisualizerContractError('PowerPoint export requires the validated report geometry.')
+                    output=export_pptx(ppt_template['content'],export_model(latest),asset_data_url=lambda asset_id: repository.asset_data_url(latest.report_id,asset_id),layout_geometry=layout_geometry)
                     downloads.download(f'{latest.title or "visembler-report"}.pptx',output,media_type='application/vnd.openxmlformats-officedocument.presentationml.presentation')
                     await send('application.notification',{'level':'success','message':'Editable PowerPoint export generated'}); return
                 if kind in {'dataset.binding_requested','analysis.statistical_requested'}:

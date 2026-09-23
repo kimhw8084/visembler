@@ -180,10 +180,10 @@ export function autoLayout(value, options = {}) {
   const diagram = normalizeDiagram(value); const direction = options.direction === 'down' || options.direction === 'right' ? options.direction : diagram.layout.direction;
   const mode=options.mode || diagram.layout.mode || 'horizontal'; const spacing = Math.max(24,finite(options.nodeSpacing,mode==='compact'?28:diagram.layout.nodeSpacing)); const rankSpacing = Math.max(80,finite(options.rankSpacing,mode==='compact'?72:diagram.layout.rankSpacing));
   const preservePinned = options.preservePinned !== false; const pinned = new Set(diagram.nodes.filter(node => preservePinned && node.pinned).map(node => node.id));
-  const {rank} = graphRanks(diagram); const ranks = new Map(); diagram.nodes.forEach((node,index) => { const key=rank.get(node.id)||0; if(!ranks.has(key))ranks.set(key,[]); ranks.get(key).push({...node,__index:index}); });
+  const {rank} = graphRanks(diagram); const ranks = new Map(); diagram.nodes.forEach((node,index) => { const key=rank.get(node.id)||0; if(!ranks.has(key))ranks.set(key,[]); ranks.get(key).push({node,index}); });
   for (const [key,list] of ranks) {
-    list.sort((a,b)=>a.__index-b.__index);
-    list.forEach((node,index) => { if (pinned.has(node.id)) return; if(direction==='right'){node.x=64+key*(Math.max(node.width,168)+rankSpacing);node.y=64+index*(Math.max(node.height,76)+spacing);}else{node.x=64+index*(Math.max(node.width,168)+spacing);node.y=64+key*(Math.max(node.height,76)+rankSpacing);} });
+    list.sort((a,b)=>a.index-b.index);
+    list.forEach(({node},index) => { if (pinned.has(node.id)) return; if(direction==='right'){node.x=64+key*(Math.max(node.width,168)+rankSpacing);node.y=64+index*(Math.max(node.height,76)+spacing);}else{node.x=64+index*(Math.max(node.width,168)+spacing);node.y=64+key*(Math.max(node.height,76)+rankSpacing);} });
   }
   moveAwayFromOverlap(diagram.nodes,pinned,direction);
   diagram.layout={...diagram.layout,direction,nodeSpacing:spacing,rankSpacing,mode:options.mode || diagram.layout.mode || (direction==='down'?'vertical':'horizontal'),preservePinned,lastCommand:'Auto layout'};
@@ -279,10 +279,16 @@ function staticPoint(points,fraction=.5) {
   let traversed=0;for(let index=0;index<lengths.length;index+=1){if(traversed+lengths[index]>=target){const ratio=(target-traversed)/Math.max(1,lengths[index]),start=points[index],end=points[index+1];return {x:start.x+(end.x-start.x)*ratio,y:start.y+(end.y-start.y)*ratio};}traversed+=lengths[index];}
   return points.at(-1);
 }
+export function diagramRenderBounds(value={}) {
+  const diagram=value?.engine?diagramFromEntry(value):normalizeDiagram(value),visibleLayers=new Set(diagram.layers.filter(layer=>layer.visible!==false).map(layer=>layer.id));
+  const all=[...diagram.nodes.filter(node=>visibleLayers.has(node.layer)).map(nodeRect),...diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(nodeRect),...diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(nodeRect)];
+  const minX=all.length?Math.min(...all.map(rect=>rect.x))-28:0,minY=all.length?Math.min(...all.map(rect=>rect.y))-28:0,maxX=all.length?Math.max(...all.map(rect=>rect.x+rect.w))+28:640,maxY=all.length?Math.max(...all.map(rect=>rect.y+rect.h))+28:360;
+  return {x:minX,y:minY,width:Math.max(1,maxX-minX),height:Math.max(1,maxY-minY)};
+}
+
 export function renderDiagramSvg(value={},options={}) {
   const diagram=value?.engine?diagramFromEntry(value):normalizeDiagram(value),visibleLayers=new Set(diagram.layers.filter(layer=>layer.visible!==false).map(layer=>layer.id)),nodes=diagram.nodes.filter(node=>visibleLayers.has(node.layer)),nodeIds=new Set(nodes.map(node=>node.id));
-  const all=[...nodes.map(nodeRect),...diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(nodeRect),...diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(nodeRect)];
-  const minX=all.length?Math.min(...all.map(rect=>rect.x))-28:0,minY=all.length?Math.min(...all.map(rect=>rect.y))-28:0,maxX=all.length?Math.max(...all.map(rect=>rect.x+rect.w))+28:640,maxY=all.length?Math.max(...all.map(rect=>rect.y+rect.h))+28:360,width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY);
+  const {x:minX,y:minY,width,height}=diagramRenderBounds(diagram);
   const lanes=diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(lane=>`<g class="diagram-static-lane"><rect x="${lane.x}" y="${lane.y}" width="${lane.width}" height="${lane.height}" rx="10"/><text x="${lane.x+14}" y="${lane.y+22}">${svgEscape(lane.label)}</text></g>`).join('');
   const groups=diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(group=>`<g class="diagram-static-group"><rect x="${group.x}" y="${group.y}" width="${group.width}" height="${group.height}" rx="10"/><text x="${group.x+12}" y="${group.y+20}">${svgEscape(group.label)}</text></g>`).join('');
   const edges=diagram.edges.filter(edge=>visibleLayers.has(edge.layer)&&nodeIds.has(edge.source)&&nodeIds.has(edge.target)).map(edge=>{const points=routeEdge(diagram,edge),dash=edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':'';const labels=(edge.labels||[]).map((label,index)=>{const fraction=label.position==='source'?.25:label.position==='target'?.75:.5,point=staticPoint(points,fraction);return `<text class="diagram-edge-label" data-edge-label="${svgEscape(label.id||index)}" x="${point.x+finite(label.offset,0)}" y="${point.y-7-index*14}" text-anchor="middle">${svgEscape(label.text)}</text>`;}).join('');return `<g data-diagram-edge="${svgEscape(edge.id)}"><path d="${staticPath(points,edge.routing)}" stroke="${svgEscape(edge.style.color||'currentColor')}" stroke-width="${edge.style.width}" fill="none" marker-end="${edge.endMarker==='none'?'':'url(#diagram-static-arrow)'}"${dash}/>${labels}</g>`;}).join('');
