@@ -285,6 +285,8 @@ def test_chg180_process_flow_powerpoint_projection_preserves_validated_geometry_
 
     deck = Presentation(str(output))
     slide = deck.slides[0]
+    diagram_container = next(shape for shape in slide.shapes if shape.name == 'VIZ::Process Flow')
+    assert diagram_container.text == ''
     node_shapes = [shape for shape in slide.shapes if shape.name.startswith('VIZ::Process Flow::') and '::node-' in shape.name]
     assert len(node_shapes) == 9
     node_shapes.sort(key=lambda shape: _node_payload(shape)['node_index'])

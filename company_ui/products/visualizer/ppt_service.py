@@ -501,7 +501,9 @@ def _replace_diagram(slide: Any, shape: Any, entry: Mapping[str, Any], title: st
     if not nodes: return shape
     rect=(shape.left,shape.top,shape.width,shape.height)
     try:
-        return _render_diagram(slide,rect,entry,title)
+        rendered=_render_diagram(slide,rect,entry,title)
+        if getattr(shape,'has_text_frame',False): shape.text_frame.clear()
+        return rendered
     except VisualizerContractError as exc:
         if 'cannot fit its assigned region' not in str(exc): raise
     frame=shape.text_frame;frame.clear();frame.word_wrap=True;frame.margin_left=frame.margin_right=Inches(.08);frame.margin_top=frame.margin_bottom=Inches(.05);frame.vertical_anchor=MSO_ANCHOR.MIDDLE
