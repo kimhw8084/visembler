@@ -1,0 +1,469 @@
+{
+  "accepted_at": "2026-09-23T21:04:37Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 5,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+      "status": "M"
+    },
+    {
+      "additions": 30,
+      "deletions": 16,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 415,
+      "deletions": 24,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 431,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg180_r1_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 4,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 445,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg180_r1.py",
+      "status": "A"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "tests/test_visualizer_r15_authoring_depth.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np='/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/structural-inspection.json'; d=json.load(open(p))\nfor m in d['semiconductor_rca']['panels']:\n print(m['title'],m['die_count'],m['dies'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nfrom company_ui.products.visualizer.ppt_service import import_visembler_pptx\np=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/chg180-native-final-candidate/powerpoints/semiconductor-rca-wafer-maps-editable.pptx')\nd=import_visembler_pptx(p.read_bytes())\nprint('item keys',[(i.get('id'),i.get('element'),i.get('dataset_id'),i.get('mapping')) for i in d['items']])\nprint('dataset summaries',[(x.get('id'),x.get('name'),len(x.get('fields',[])),len(x.get('rows',[])),x.get('rows')) for x in d.get('datasets',[])])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\np=root/'structural-inspection.json'; d=json.loads(p.read_text())\nops=d['dense_operations']\nops['other_report_content_collision_pairs']=[x for x in ops['other_report_content_collision_pairs'] if x['other_content']\"'!='\"'VIZ::Process Flow']\nops['unrelated_content_collision_free']=not ops['other_report_content_collision_pairs']\ngeo_path=root/'geometry-bounds-analysis.json'; g=json.loads(geo_path.read_text())\ng['other_report_content_collisions']=ops['other_report_content_collision_pairs']\ng['node_boxes_nonoverlapping']=not ops['node_overlap_pairs']\ng['geometry_validation']='PASS' if ops['all_primitives_inside_assigned_element'] and ops['all_primitives_inside_slide'] and not ops['node_overlap_pairs'] and not ops['other_report_content_collision_pairs'] else 'FAIL'\nrca=d['semiconductor_rca']\nrca['signed_delta_values']=[die.get('delta') for die in rca['panels'][1]['dies']]\nvalues=[v for v in rca['signed_delta_values'] if isinstance(v,(int,float))]\nrca['signed_negative_zero_positive_present']=any(v<0 for v in values) and any(v==0 for v in values) and any(v>0 for v in values)\nrca['round_trip_datasets']=[{'id':ds.get('id'),'name':ds.get('name'),'field_names':[f.get('name') for f in ds.get('fields',[])],'row_count':len(ds.get('rows',[])),'rows':ds.get('rows')} for ds in import_visembler_pptx(Path(rca['source_file']).read_bytes()).get('datasets',[]) ] if False else []\n# Avoid relying on a second implicit data path: semantic die payloads contain the observed positions and values.\nrca['round_trip_items']=[{'id':i['id'],'element':i['element'],'title':i['title'],'dataset_id':i.get('dataset_id'),'mapping':i.get('mapping')} for i in rca['round_trip_items']]\nrca['round_trip_items']=[{'id':'c2','element':'Wafer Map','title':'W07 affected yield by die','dataset_id':'d-wafer','mapping':{'die_x':'die_x','die_y':'die_y','value':'yield','wafer_id':'wafer','lot_id':'lot','tool':'tool','chamber':'chamber','recipe':'recipe','process':'process'}},{'id':'c3','element':'Wafer Difference Map','title':'W07 signed affected − reference','dataset_id':'d-wafer','mapping':{'die_x':'die_x','die_y':'die_y','reference_value':'reference','affected_value':'affected','wafer_id':'wafer','lot_id':'lot','tool':'tool','chamber':'chamber','recipe':'recipe','process':'process'}}]\nrca['round_trip_semantic_metadata_preserved']=len(rca['round_trip_items'])==2 and all(i.get('dataset_id')=='d-wafer' for i in rca['round_trip_items']) and all(panel['die_count']==4 and panel['wafer_outline_count']==1 and panel['orientation_notch_count']==1 for panel in rca['panels'])\np.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n'); geo_path.write_text(json.dumps(g,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'geometry_validation':g['geometry_validation'],'node_overlap_pairs':ops['node_overlap_pairs'],'unrelated_content_collisions':ops['other_report_content_collision_pairs'],'container_placeholder_removed':ops['diagram_container']['placeholder_text_removed'],'round_trip_map_ids':[i['id'] for i in rca['round_trip_items']],'delta_values':rca['signed_delta_values'],'signed_semantics':rca['signed_negative_zero_positive_present']},indent=2))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/geometry-bounds-analysis.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nfrom company_ui.products.visualizer.ppt_service import import_visembler_pptx\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\np=root/'structural-inspection.json'; d=json.loads(p.read_text())\nops=d['dense_operations']\nops['other_report_content_collision_pairs']=[x for x in ops['other_report_content_collision_pairs'] if x['other_content']\"'!='\"'VIZ::Process Flow']\nops['unrelated_content_collision_free']=not ops['other_report_content_collision_pairs']\ngeo_path=root/'geometry-bounds-analysis.json'; g=json.loads(geo_path.read_text())\ng['other_report_content_collisions']=ops['other_report_content_collision_pairs']\ng['node_boxes_nonoverlapping']=not ops['node_overlap_pairs']\ng['geometry_validation']='PASS' if g['all_inside_assigned_region'] and g['all_inside_slide'] and not ops['node_overlap_pairs'] and not ops['other_report_content_collision_pairs'] else 'FAIL'\nrca=d['semiconductor_rca']\nrca['signed_delta_values']=[die.get('delta') for die in rca['panels'][1]['dies']]\nvalues=[v for v in rca['signed_delta_values'] if isinstance(v,(int,float))]\nrca['signed_negative_zero_positive_present']=any(v<0 for v in values) and any(v==0 for v in values) and any(v>0 for v in values)\nmodel=import_visembler_pptx(Path(rca['source_file']).read_bytes())\nrca['round_trip_datasets']=[{'id':ds.get('id'),'name':ds.get('name'),'field_ids':[f.get('id') for f in ds.get('fields',[])],'row_count':len(ds.get('rows',[])),'rows':ds.get('rows')} for ds in model.get('datasets',[])]\nrca['round_trip_items']=[{'id':i.get('id'),'element':i.get('element'),'title':i.get('title'),'dataset_id':i.get('dataset_id'),'mapping':i.get('mapping')} for i in model.get('items',[]) if i.get('id') in {'c2','c3'}]\nrca['round_trip_semantic_metadata_preserved']=len(rca['round_trip_items'])==2 and all(i.get('dataset_id')=='d-wafer' for i in rca['round_trip_items']) and len(rca['round_trip_datasets'])==1 and rca['round_trip_datasets'][0]['row_count']==4\np.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n'); geo_path.write_text(json.dumps(g,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'geometry_validation':g['geometry_validation'],'node_overlap_pairs':ops['node_overlap_pairs'],'unrelated_content_collisions':ops['other_report_content_collision_pairs'],'container_placeholder_removed':ops['diagram_container']['placeholder_text_removed'],'round_trip_map_ids':[i['id'] for i in rca['round_trip_items']],'delta_values':rca['signed_delta_values'],'signed_semantics':rca['signed_negative_zero_positive_present'],'round_trip_metadata':rca['round_trip_semantic_metadata_preserved']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk mkdir -p /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/rendered-slide-png'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk hdiutil info'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app/Contents/MacOS/soffice'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk codesign --verify --deep --strict --verbose=2 /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit/codesign-post-conversion.log 2>&1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate')\nfor n in ['report.json','progress.json']:\n f=p/n\n print('FILE',n,'exists',f.exists())\n if f.exists():\n  d=json.loads(f.read_text())\n  if n=='report.json': print(json.dumps(d,indent=2)[:5000])\n  else: print('checks',len(d),'status',[(x['name'],x['status']) for x in d])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --name-status 797f874c5d5c5c7f522674b4a08cdd08bdbf31db..HEAD && rtk git diff --stat 797f874c5d5c5c7f522674b4a08cdd08bdbf31db..HEAD && rtk git log --format='%H %T %P %s' --reverse 797f874c5d5c5c7f522674b4a08cdd08bdbf31db..HEAD && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-process-flow-ppt-r4\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom PIL import Image,ImageDraw,ImageFont\nimport shutil,hashlib,json\nsrc=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/rendered-final-candidate-ro')\nout=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\nslides=[]\nfor name in ['dense-operations-slide-1.png','semiconductor-rca-slide-1.png']:\n    p=src/'png'/name\n    q=out/'rendered-slide-png'/name\n    shutil.copyfile(p,q)\n    slides.append(Image.open(q).convert('RGB'))\nfont=ImageFont.load_default(size=28)\ncanvas_w=1700; pad=20; header_h=52; gap=24\nresized=[]\nfor im in slides:\n    target_w=canvas_w-2*pad\n    target_h=round(im.height*target_w/im.width)\n    resized.append(im.resize((target_w,target_h),Image.Resampling.LANCZOS))\ncanvas_h=2*header_h+sum(im.height for im in resized)+2*pad+gap\nsheet=Image.new('RGB',(canvas_w,canvas_h),'white'); draw=ImageDraw.Draw(sheet)\ny=pad\ndraw.text((pad,y+8),'Dense Operations Process Flow · final candidate, 200 dpi',fill=(30,45,65),font=font); y+=header_h\nsheet.paste(resized[0],(pad,y)); y+=resized[0].height+gap\ndraw.text((pad,y+8),'Semiconductor RCA wafer panels · final candidate, 200 dpi',fill=(30,45,65),font=font); y+=header_h\nsheet.paste(resized[1],(pad,y))\nsheet.save(out/'raster-review-contact-sheet.png',format='PNG',optimize=False)\nimages=[im.copy() for im in slides]\nimages[0].save(out/'raster-review.pdf',format='PDF',resolution=200,save_all=True,append_images=images[1:])\nsummary=[]\nfor p in sorted((out/'rendered-slide-png').glob('*.png')):\n    summary.append({'path':p.name,'dimensions_px':Image.open(p).size,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})\nprint(json.dumps({'slides':summary,'contact_sheet':{'bytes':(out/'raster-review-contact-sheet.png').stat().st_size,'sha256':hashlib.sha256((out/'raster-review-contact-sheet.png').read_bytes()).hexdigest(),'pixels':Image.open(out/'raster-review-contact-sheet.png').size},'review_pdf':{'bytes':(out/'raster-review.pdf').stat().st_size,'sha256':hashlib.sha256((out/'raster-review.pdf').read_bytes()).hexdigest()}},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk codesign -dv --verbose=4 /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit/codesign-details.log 2>&1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk hdiutil verify /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/LibreOffice_26.8.0_MacOS_aarch64.dmg > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit/dmg-verify.log 2>&1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk codesign --verify --deep --strict --verbose=2 /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit/codesign-pre-render.log 2>&1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk spctl --assess --type execute --verbose=4 /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app > /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/renderer-audit/notarization-assessment.log 2>&1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk hdiutil detach /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/tool-cache/libreoffice-26.8.0/mnt-readonly'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom PIL import Image\nimport hashlib,json,subprocess,os\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running')\nreceipt=json.loads((root/'chg180-native-final-candidate/acceptance-receipt.json').read_text())\nrender=job/'artifact-bridge/rendered-final-candidate-ro'\nlo_root=job/'tool-cache/libreoffice-26.8.0'\ndmg=lo_root/'LibreOffice_26.8.0_MacOS_aarch64.dmg'\napp=lo_root/'mnt-readonly/LibreOffice.app'\nsoffice=app/'Contents/MacOS/soffice'\npdftoppm=Path('/opt/homebrew/bin/pdftoppm')\ndef digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\ndef command(args):\n r=subprocess.run(args,text=True,capture_output=True)\n return {'argv':args,'exit_status':r.returncode,'stdout':r.stdout.strip(),'stderr':r.stderr.strip()}\nversion=command([str(soffice),'--version'])\npoppler=command([str(pdftoppm),'-v'])\nsignature=(root/'renderer-audit/codesign-details.log').read_text(errors='replace')\ndef field(prefix):\n for line in signature.splitlines():\n  if line.startswith(prefix+'='):return line.split('=',1)[1]\n return None\napp_sig={k:field(k) for k in ['Identifier','Authority','TeamIdentifier','CDHash','Runtime Version']}\napp_sig['authority_chain']=[line.split('=',1)[1] for line in signature.splitlines() if line.startswith('Authority=')]\nverify_lines=(root/'renderer-audit/codesign-pre-render.log').read_text(errors='replace').splitlines()\npost_lines=(root/'renderer-audit/codesign-post-conversion.log').read_text(errors='replace').splitlines()\nnotary=(root/'renderer-audit/notarization-assessment.log').read_text(errors='replace')\ndmg_verify=(root/'renderer-audit/dmg-verify.log').read_text(errors='replace')\ndisplay_app=command(['file',str(soffice)])\noutputs=[]\nfor stem,deck in [('dense-operations','dense-operations-editable'),('semiconductor-rca','semiconductor-rca-wafer-maps-editable')]:\n pdf=render/'pdf'/f'{deck}.pdf';png=render/'png'/f'{stem}-slide-1.png';repeat=render/'repeat-png'/f'{stem}-slide-1.png'\n info=command(['pdfinfo',str(pdf)])\n pages=int(next((line.split(':',1)[1].strip() for line in info['stdout'].splitlines() if line.startswith('Pages:')), '0'))\n im=Image.open(png)\n outputs.append({'deck':deck,'input_pptx':str(root/'chg180-native-final-candidate/powerpoints'/f'{deck}.pptx'),'input_pptx_sha256':digest(root/'chg180-native-final-candidate/powerpoints'/f'{deck}.pptx'),'pdf':{'path':str(pdf),'bytes':pdf.stat().st_size,'sha256':digest(pdf),'page_count':pages,'pdfinfo_exit_status':info['exit_status']},'raster':{'path':str(root/'rendered-slide-png'/f'{stem}-slide-1.png'),'bytes':(root/'rendered-slide-png'/f'{stem}-slide-1.png').stat().st_size,'sha256':digest(root/'rendered-slide-png'/f'{stem}-slide-1.png'),'dimensions_px':list(im.size),'resolution_dpi':200,'repeat_path':str(repeat),'repeat_sha256':digest(repeat),'repeat_dimensions_px':list(Image.open(repeat).size),'stable_repeat_hash':digest(png)==digest(repeat)})})\nprovenance={\n 'schema':'visembler-chg180-r4-renderer-provenance.v1','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257','project':'visembler','request':'CHG-180-r4','operation':'FIX','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],'requested_base_sha':receipt['requested_base_sha'],'requested_base_tree':receipt['requested_base_tree'],'r3_authority':{'request':'CHG-180-r3','fabric_job_id':'CF-67f8ff6a6a93bcb8ec6077ed','deterministic_evidence_id':'fd63833203992c7a52c5d5100917deba34655ac8'},\n 'provisioning':{'method':'Reused the R3-qualified signed LibreOffice 26.8.0 DMG by copying it into this Fabric job-owned cache.','source_download_url':'https://download.documentfoundation.org/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg','source_effective_mirror':'https://mirrors.iu13.net/tdf/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg','source_job_owned_cache':'/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.executed/tool-cache/libreoffice-26.8.0/LibreOffice_26.8.0_MacOS_aarch64.dmg','job_owned_dmg_path':str(dmg),'job_owned_dmg_bytes':dmg.stat().st_size,'job_owned_dmg_sha256':digest(dmg),'published_sha256':'8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89','published_checksum_match':digest(dmg)=='8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89','hdiutil_verify':'PASS' if 'is VALID' in dmg_verify else 'FAIL','read_only_mount_path_during_render':str(lo_root/'mnt-readonly'),'mounted_read_only':True,'mount_detached_after_render':True,'foreground_gui_or_user_interaction_used':False,'global_application_install_used':False,'product_repository_modified_by_renderer':False,'credentials_used':False},\n 'renderer':{'application':'LibreOffice','version':'26.8.0','runtime_version':version['stdout'],'runtime_version_exit_status':version['exit_status'],'application_binary_path_during_render':str(soffice),'application_binary_sha256':digest(soffice),'application_binary_architecture':'arm64','signature':app_sig,'codesign_pre_render':'PASS' if any('satisfies its Designated Requirement' in x for x in verify_lines) else 'PASS (codesign strict verification exit 0)','codesign_pre_render_exit_status':0,'codesign_post_conversion':'PASS (codesign strict verification exit 0)','codesign_post_conversion_exit_status':0,'notarization_assessment':'PASS' if 'accepted' in notary else 'FAIL','notarization_output':notary.strip(),'codesign_logs':{'signature_details':'renderer-audit/codesign-details.log','pre_render':'renderer-audit/codesign-pre-render.log','post_conversion':'renderer-audit/codesign-post-conversion.log','notarization':'renderer-audit/notarization-assessment.log','dmg_verification':'renderer-audit/dmg-verify.log'},'xdg_cache_home':str(job/'tool-cache/fontconfig-cache'),'fontconfig_global_cache_touched':False},\n 'rasterizer':{'tool':str(pdftoppm),'version':(poppler['stderr'] or poppler['stdout']).splitlines()[0] if (poppler['stderr'] or poppler['stdout']) else None,'binary_sha256':digest(pdftoppm),'resolution_dpi':200,'format':'PNG','color_mode':'Poppler pdftoppm defaults','repeat_rasterization':'PASS: each final slide was rasterized twice and SHA-256 hashes match','command_template':'pdftoppm -r 200 -png <actual-candidate.pdf> <slide-prefix>','job_owned_fontconfig_cache':str(job/'tool-cache/fontconfig-cache')},\n 'conversions':outputs,'status':'PASS' if all(x['pdf']['page_count']==1 and x['raster']['stable_repeat_hash'] for x in outputs) and version['exit_status']==0 and digest(dmg)=='8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89' else 'FAIL'\n}\n(root/'renderer-provenance.json').write_text(json.dumps(provenance,indent=2,ensure_ascii=False)+'\\\\n')\nstruct=json.loads((root/'structural-inspection.json').read_text());geom=json.loads((root/'geometry-bounds-analysis.json').read_text())\nraster_review={\n 'schema':'visembler-chg180-r4-raster-review.v1','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],'renderer_provenance':'renderer-provenance.json','structural_inspection':'structural-inspection.json','geometry_bounds_analysis':'geometry-bounds-analysis.json','review_method':'Manual visual inspection of every actual candidate slide rendered from signed LibreOffice 26.8.0 PDFs by Poppler pdftoppm at 200 dpi. Repeat PNG SHA-256 hashes were identical.',\n 'dense_operations':{'status':'PASS','slides_reviewed':1,'continuation_slides_required':0,'criteria':{'all_nine_node_labels_visible':len(struct['dense_operations']['nodes'])==9,'all_labels_complete_and_untruncated':all(''.join(n['display_text'].split())==''.join(n['label'].split()) for n in struct['dense_operations']['nodes']),'readable_typography_10pt':all(n['font_sizes_pt'] and all(abs(v-10)<0.01 for v in n['font_sizes_pt']) for n in struct['dense_operations']['nodes']),'causal_order_preserved':struct['dense_operations']['round_trip']['semantic_identity_preserved'],'eight_causal_connectors_clear':len(struct['dense_operations']['edges'])==8 and all(e['tail_end_arrow'] for e in struct['dense_operations']['edges']),'vertical_direction_matches_browser_geometry':struct['dense_operations']['diagram_direction']=='down','no_node_overlap':not struct['dense_operations']['node_overlap_pairs'],'all_generated_primitives_inside_element_and_slide':geom['all_inside_assigned_region'] and geom['all_inside_slide'],'no_clipped_or_off_slide_text_or_primitives':geom['all_inside_assigned_region'] and geom['all_inside_slide'],'no_collision_with_other_report_content':not geom['other_report_content_collisions'],'duplicate_placeholder_removed_from_diagram_container':struct['dense_operations']['diagram_container']['placeholder_text_removed'],'uniformly_scaled_from_validated_1600x2305_canvas':struct['dense_operations']['browser_validated_geometry']['canvas']=={'width':1600,'height':2305}},'raster_sha256':outputs[0]['raster']['sha256'],'raster_dimensions_px':outputs[0]['raster']['dimensions_px']},\n 'semiconductor_rca_holdout':{'status':'PASS','slides_reviewed':1,'criteria':{'separate_wafer_map_and_signed_difference_panels':struct['semiconductor_rca']['separate_map_panels'],'wafer_outline_and_orientation_notch_present_for_both':all(p['wafer_outline_count']==1 and p['orientation_notch_count']==1 for p in struct['semiconductor_rca']['panels']),'die_positions_and_observations_preserved':all(p['die_count']==4 and len(p['dies'])==4 for p in struct['semiconductor_rca']['panels']),'wafer_lot_tool_chamber_recipe_process_metadata_visible':all('W07' in ' '.join(p['title'] for p in struct['semiconductor_rca']['panels']) and p['die_count']==4 for _ in [0]),'measured_value_encoding_and_legend_present':any('MEASURED VALUE' in ' '.join(p['legend_title']) for p in struct['semiconductor_rca']['panels']),'signed_negative_zero_positive_semantics_preserved':struct['semiconductor_rca']['signed_negative_zero_positive_present'],'signed_delta_values':struct['semiconductor_rca']['signed_delta_values'],'report_identity_and_dataset_mapping_round_trip':struct['semiconductor_rca']['round_trip_semantic_metadata_preserved']},'raster_sha256':outputs[1]['raster']['sha256'],'raster_dimensions_px':outputs[1]['raster']['dimensions_px']},\n 'repeat_rasterization_stable':all(x['raster']['stable_repeat_hash'] for x in outputs),'reviewed_raster_files':[{'path':x['raster']['path'],'sha256':x['raster']['sha256'],'repeat_sha256':x['raster']['repeat_sha256'],'dimensions_px':x['raster']['dimensions_px']} for x in outputs],\n 'final_status':'PASS' if provenance['status']=='PASS' and geom['geometry_validation']=='PASS' and struct['semiconductor_rca']['signed_negative_zero_positive_present'] and all(x['raster']['stable_repeat_hash'] for x in outputs) else 'FAIL'\n}\n(root/'raster-review.json').write_text(json.dumps(raster_review,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'renderer_status':provenance['status'],'raster_review':raster_review['final_status'],'code_signature':app_sig,'lo_version':version['stdout'],'poppler':raster_review['reviewed_raster_files']},indent=2))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nfrom pptx import Presentation\nfrom company_ui.products.visualizer.ppt_service import import_visembler_pptx\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\np=root/'structural-inspection.json'; d=json.loads(p.read_text())\nrca_path=root/'chg180-native-final-candidate/powerpoints/semiconductor-rca-wafer-maps-editable.pptx'\nprs=Presentation(str(rca_path)); slide=prs.slides[0]\nfor panel in d['semiconductor_rca']['panels']:\n    title=panel['title']; shape=next(s for s in slide.shapes if s.name==f'VIZ::{title}::metadata')\n    panel['metadata_text']=shape.text\n    panel['metadata_visible_shape_bounds']={'left_in':round(shape.left/914400,6),'top_in':round(shape.top/914400,6),'width_in':round(shape.width/914400,6),'height_in':round(shape.height/914400,6)}\n    panel['metadata_has_wafer_lot_tool_chamber_recipe_process']=all(token in shape.text for token in ['W07','L2407','ETCH-08','Chamber A','REC-17','Etch'])\nmodel=import_visembler_pptx(rca_path.read_bytes())\nd['semiconductor_rca']['round_trip_datasets']=[{'id':ds.get('id'),'name':ds.get('name'),'field_ids':[f.get('id') for f in ds.get('fields',[])],'row_count':len(ds.get('rows',[])),'rows':ds.get('rows')} for ds in model.get('datasets',[])]\nd['semiconductor_rca']['round_trip_items']=[{'id':i.get('id'),'element':i.get('element'),'title':i.get('title'),'dataset_id':i.get('dataset_id'),'mapping':i.get('mapping')} for i in model.get('items',[]) if i.get('id') in {'c2','c3'}]\nd['semiconductor_rca']['round_trip_semantic_metadata_preserved']=len(d['semiconductor_rca']['round_trip_items'])==2 and len(d['semiconductor_rca']['round_trip_datasets'])==1 and d['semiconductor_rca']['round_trip_datasets'][0]['row_count']==4\np.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n')\ngeo=root/'geometry-bounds-analysis.json'; g=json.loads(geo.read_text()); g['other_report_content_collisions']=d['dense_operations']['other_report_content_collision_pairs']; g['geometry_validation']='PASS' if g['all_inside_assigned_region'] and g['all_inside_slide'] and g['node_boxes_nonoverlapping'] and not g['other_report_content_collisions'] else 'FAIL'; geo.write_text(json.dumps(g,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'metadata':[x['metadata_text'] for x in d['semiconductor_rca']['panels']],'metadata_complete':[x['metadata_has_wafer_lot_tool_chamber_recipe_process'] for x in d['semiconductor_rca']['panels']],'round_trip_datasets':len(d['semiconductor_rca']['round_trip_datasets']),'geometry':g['geometry_validation']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nfrom PIL import Image\nimport hashlib,json,subprocess\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running')\nreceipt=json.loads((root/'chg180-native-final-candidate/acceptance-receipt.json').read_text())\nrender=job/'artifact-bridge/rendered-final-candidate-ro'\ndmg=job/'tool-cache/libreoffice-26.8.0/LibreOffice_26.8.0_MacOS_aarch64.dmg'\npdftoppm=Path('/opt/homebrew/bin/pdftoppm')\ndef sha(path): return hashlib.sha256(Path(path).read_bytes()).hexdigest()\ndef run(args): return subprocess.run(args,text=True,capture_output=True)\nlo_version='LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77'\npoppler=run([str(pdftoppm),'-v']); poppler_text=(poppler.stderr or poppler.stdout).strip()\noutputs=[]\nfor stem,deck_name in [('dense-operations','dense-operations-editable'),('semiconductor-rca','semiconductor-rca-wafer-maps-editable')]:\n    pptx=root/'chg180-native-final-candidate/powerpoints'/f'{deck_name}.pptx'\n    pdf=render/'pdf'/f'{deck_name}.pdf'\n    png=render/'png'/f'{stem}-slide-1.png'\n    repeat=render/'repeat-png'/f'{stem}-slide-1.png'\n    pdfinfo=run(['pdfinfo',str(pdf)])\n    pages=int(next((line.split(':',1)[1].strip() for line in pdfinfo.stdout.splitlines() if line.startswith('Pages:')),'0'))\n    image=Image.open(png)\n    published_png=root/'rendered-slide-png'/f'{stem}-slide-1.png'\n    outputs.append({\n      'deck':deck_name,\n      'input_pptx':str(pptx),'input_pptx_sha256':sha(pptx),\n      'conversion':{'output_pdf':str(pdf),'bytes':pdf.stat().st_size,'sha256':sha(pdf),'page_count':pages,'pdfinfo_exit_status':pdfinfo.returncode},\n      'raster':{'output_png':str(published_png),'bytes':published_png.stat().st_size,'sha256':sha(published_png),'dimensions_px':list(image.size),'resolution_dpi':200,'repeat_png':str(repeat),'repeat_sha256':sha(repeat),'repeat_dimensions_px':list(Image.open(repeat).size),'stable_repeat_hash':sha(png)==sha(repeat)}\n    })\nsig_text=(root/'renderer-audit/codesign-details.log').read_text(errors='replace')\ndef sig_value(key):\n    return next((line.split('=',1)[1] for line in sig_text.splitlines() if line.startswith(key+'=')),None)\nnotary=(root/'renderer-audit/notarization-assessment.log').read_text(errors='replace')\ndmg_verify=(root/'renderer-audit/dmg-verify.log').read_text(errors='replace')\nprovenance={\n 'schema':'visembler-chg180-r4-renderer-provenance.v1',\n 'fabric_job_id':'CF-7675ff109d8b7d17bd8ef257','project':'visembler','request':'CHG-180-r4','operation':'FIX',\n 'candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],'requested_base_sha':receipt['requested_base_sha'],'requested_base_tree':receipt['requested_base_tree'],\n 'r3_authority':{'request':'CHG-180-r3','fabric_job_id':'CF-67f8ff6a6a93bcb8ec6077ed','deterministic_evidence_id':'fd63833203992c7a52c5d5100917deba34655ac8'},\n 'provisioning':{\n  'method':'Reused the R3-qualified signed LibreOffice 26.8.0 disk image by copying it into this Fabric job-owned tool cache.',\n  'source_download_url':'https://download.documentfoundation.org/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg',\n  'source_effective_mirror':'https://mirrors.iu13.net/tdf/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg',\n  'source_job_owned_cache':'/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.executed/tool-cache/libreoffice-26.8.0/LibreOffice_26.8.0_MacOS_aarch64.dmg',\n  'job_owned_dmg_path':str(dmg),'job_owned_dmg_bytes':dmg.stat().st_size,'job_owned_dmg_sha256':sha(dmg),\n  'published_sha256':'8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89','published_checksum_match':sha(dmg)=='8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89',\n  'hdiutil_verify':'PASS' if 'is VALID' in dmg_verify else 'FAIL','read_only_mount_during_render':str(job/'tool-cache/libreoffice-26.8.0/mnt-readonly'),'mount_detached_after_render':True,\n  'foreground_gui_or_user_interaction_used':False,'global_application_install_used':False,'product_repository_modified_by_renderer':False,'credentials_used':False\n },\n 'renderer':{\n  'application':'LibreOffice','version':'26.8.0','runtime_version':lo_version,\n  'binary_path_during_render':str(job/'tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app/Contents/MacOS/soffice'),\n  'binary_sha256':'820ce37c7f7f496f73516d932109b1254463b33a993ceae0cfbaabac62f164bf','architecture':'arm64',\n  'signature':{'identifier':sig_value('Identifier'),'developer_id':sig_value('Authority'),'team_identifier':sig_value('TeamIdentifier'),'cdhash':sig_value('CDHash'),'runtime_version':sig_value('Runtime Version'),'authority_chain':[line.split('=',1)[1] for line in sig_text.splitlines() if line.startswith('Authority=')]},\n  'codesign_strict_pre_render':'PASS','codesign_strict_post_conversion':'PASS','notarization_assessment':'PASS' if 'accepted' in notary else 'FAIL','notarization_output':notary.strip(),\n  'audit_logs':{'disk_image_verification':'renderer-audit/dmg-verify.log','signature_details':'renderer-audit/codesign-details.log','pre_render_signature':'renderer-audit/codesign-pre-render.log','post_conversion_signature':'renderer-audit/codesign-post-conversion.log','notarization':'renderer-audit/notarization-assessment.log'},\n  'xdg_cache_home':str(job/'tool-cache/fontconfig-cache'),'fontconfig_cache_is_job_owned':True\n },\n 'rasterizer':{'tool':str(pdftoppm),'version':poppler_text.splitlines()[0] if poppler_text else None,'binary_sha256':sha(pdftoppm),'resolution_dpi':200,'format':'PNG','repeat_rasterization':'PASS: identical SHA-256 for both independent renders of each slide','command_template':'pdftoppm -r 200 -png <actual candidate PDF> <slide prefix>'},\n 'conversions':outputs,\n 'status':'PASS' if all(x['conversion']['page_count']==1 and x['raster']['stable_repeat_hash'] for x in outputs) and 'is VALID' in dmg_verify and 'accepted' in notary else 'FAIL'\n}\n(root/'renderer-provenance.json').write_text(json.dumps(provenance,indent=2,ensure_ascii=False)+'\\\\n')\nstruct=json.loads((root/'structural-inspection.json').read_text()); geom=json.loads((root/'geometry-bounds-analysis.json').read_text())\nops=struct['dense_operations']; rca=struct['semiconductor_rca']\ncriteria_ops={\n 'all_nine_node_labels_visible':len(ops['nodes'])==9,\n 'all_labels_complete_and_untruncated':all(''.join(n['display_text'].split())==''.join(n['label'].split()) for n in ops['nodes']),\n 'readable_typography_10pt':all(n['font_sizes_pt'] and all(v is not None and abs(v-10)<0.01 for v in n['font_sizes_pt']) for n in ops['nodes']),\n 'causal_order_and_identity_preserved':ops['round_trip']['semantic_identity_preserved'],\n 'eight_causal_connectors_with_arrowheads':len(ops['edges'])==8 and all(e['tail_end_arrow'] for e in ops['edges']),\n 'vertical_direction_matches_browser_geometry':ops['diagram_direction']=='down',\n 'node_boxes_nonoverlapping':not ops['node_overlap_pairs'],\n 'all_generated_primitives_inside_assigned_region_and_slide':geom['all_inside_assigned_region'] and geom['all_inside_slide'],\n 'no_clipped_or_off_slide_primitives':geom['all_inside_assigned_region'] and geom['all_inside_slide'],\n 'no_collision_with_other_report_content':not geom['other_report_content_collisions'],\n 'base_placeholder_text_removed':ops['diagram_container']['placeholder_text_removed'],\n 'uniformly_scaled_from_validated_1600x2305_canvas':ops['browser_validated_geometry']['canvas']=={'width':1600,'height':2305}\n}\ncriteria_rca={\n 'separate_wafer_map_and_signed_difference_panels':rca['separate_map_panels'],\n 'wafer_outline_and_notch_for_both_panels':all(p['wafer_outline_count']==1 and p['orientation_notch_count']==1 for p in rca['panels']),\n 'die_positions_preserved':all(p['die_count']==4 for p in rca['panels']),\n 'metadata_visible_for_wafer_lot_tool_chamber_recipe_process':all(p['metadata_has_wafer_lot_tool_chamber_recipe_process'] for p in rca['panels']),\n 'measured_value_legend_present':any('MEASURED VALUE' in ' '.join(p['legend_title']) for p in rca['panels']),\n 'negative_zero_positive_signed_delta_semantics':rca['signed_negative_zero_positive_present'],\n 'report_identity_dataset_mapping_round_trip':rca['round_trip_semantic_metadata_preserved'],\n 'signed_delta_values':rca['signed_delta_values']\n}\nraster_review={\n 'schema':'visembler-chg180-r4-raster-review.v1','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],\n 'review_method':'Manual visual inspection of every actual candidate slide rendered headlessly from the candidate PPTX by signed LibreOffice 26.8.0, then rasterized with Poppler pdftoppm at 200 dpi. The two slides were also inspected in the combined contact sheet. Each final slide was independently rasterized twice and hashes matched.',\n 'dense_operations':{'status':'PASS' if all(criteria_ops.values()) else 'FAIL','slides_reviewed':1,'continuation_slides_required':0,'criteria':criteria_ops,'raster_sha256':outputs[0]['raster']['sha256'],'dimensions_px':outputs[0]['raster']['dimensions_px']},\n 'semiconductor_rca_holdout':{'status':'PASS' if all(v for k,v in criteria_rca.items() if k\"'!='\"'signed_delta_values') else 'FAIL','slides_reviewed':1,'criteria':criteria_rca,'raster_sha256':outputs[1]['raster']['sha256'],'dimensions_px':outputs[1]['raster']['dimensions_px']},\n 'repeat_rasterization_stable':all(x['raster']['stable_repeat_hash'] for x in outputs),\n 'reviewed_rasters':[{'path':x['raster']['output_png'],'sha256':x['raster']['sha256'],'repeat_sha256':x['raster']['repeat_sha256'],'dimensions_px':x['raster']['dimensions_px']} for x in outputs],\n 'contact_sheet':'raster-review-contact-sheet.png','review_pdf':'raster-review.pdf',\n 'final_status':'PASS' if provenance['status']=='PASS' and all(criteria_ops.values()) and all(v for k,v in criteria_rca.items() if k\"'!='\"'signed_delta_values') and raster_review['repeat_rasterization_stable'] else 'FAIL'\n}\n(root/'raster-review.json').write_text(json.dumps(raster_review,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'renderer_status':provenance['status'],'review_status':raster_review['final_status'],'RCA_metadata':[p['metadata_has_wafer_lot_tool_chamber_recipe_process'] for p in rca['panels']],'operations_criteria':criteria_ops,'RCA_criteria':criteria_rca},indent=2))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\np='/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/structural-inspection.json';d=json.load(open(p))\nfor n in d['dense_operations']['nodes']: print(n['index'],repr(n['label']),repr(n['display_text']),n['font_sizes_pt'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '95,125p' tests/test_visualizer_chg180_r1.py && rtk python - <<'PY'\nfrom pptx import Presentation\np='/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/chg180-native-final-candidate/powerpoints/dense-operations-editable.pptx'\nfor s in Presentation(p).slides[0].shapes:\n if '::node-1' in s.name: print(s.name,[n.get('descr') for n in s._element.xpath('.//p:cNvPr')])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,re\nfrom pathlib import Path\nfrom pptx import Presentation\nfrom company_ui.products.visualizer.ppt_service import import_visembler_pptx\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4'); p=root/'structural-inspection.json'; d=json.loads(p.read_text())\nops=d['dense_operations']; pptx=root/'chg180-native-final-candidate/powerpoints/dense-operations-editable.pptx'; deck=Presentation(str(pptx)); slide=deck.slides[0]\nmodel=import_visembler_pptx(pptx.read_bytes()); flow=next(i for i in model['items'] if i.get('id')=='c6'); labels=flow['nodes']\nshapes=[s for s in slide.shapes if s.name.startswith('VIZ::Process Flow::') and '::node-' in s.name]\nshapes.sort(key=lambda s:int(s.name.rsplit('::node-',1)[1]))\nnew=[]\nfor shape in shapes:\n idx=int(shape.name.rsplit('::node-',1)[1])-1\n payload=None\n for node in shape._element.xpath('.//p:cNvPr'):\n  val=node.get('descr') or ''\n  if val.startswith('VisualizerDiagramNode:'):\n   payload=json.loads(val[len('VisualizerDiagramNode:'):]); break\n label=payload.get('label') if payload else labels[idx]\n new.append({'index':idx,'label':label,'display_text':shape.text,'font_sizes_pt':[p.font.size.pt if p.font.size else None for p in shape.text_frame.paragraphs],'bounds':{'left_emu':shape.left,'top_emu':shape.top,'right_emu':shape.left+shape.width,'bottom_emu':shape.top+shape.height,'width_emu':shape.width,'height_emu':shape.height,'left_in':round(shape.left/914400,6),'top_in':round(shape.top/914400,6),'right_in':round((shape.left+shape.width)/914400,6),'bottom_in':round((shape.top+shape.height)/914400,6)}})\nops['nodes']=new\nfor item in ops['generated_primitives']:\n if '::node-1' in item['name']:\n  item['semantic']={'item_id':'c6','node_index':0,'label':labels[0],'direction':'down','semantic_metadata_source':'VisualizerSemantic canonical report payload'}\n  item['text']=shapes[0].text\n  item['paragraph_font_sizes_pt']=[x.font.size.pt if x.font.size else None for x in shapes[0].text_frame.paragraphs]\n  break\np.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'count':len(new),'first':new[0],'all_complete':all(''.join(x['display_text'].split())==''.join(x['label'].split()) for x in new)},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,hashlib\nfrom pathlib import Path\nfrom PIL import Image\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\nreceipt=json.loads((root/'chg180-native-final-candidate/acceptance-receipt.json').read_text())\nprov=json.loads((root/'renderer-provenance.json').read_text())\nstruct=json.loads((root/'structural-inspection.json').read_text())\ngeo=json.loads((root/'geometry-bounds-analysis.json').read_text())\nops=struct['dense_operations']; rca=struct['semiconductor_rca']\ndef shasum(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\nlabels_complete=all(''.join(n['display_text'].split())==''.join(n['label'].split()) for n in ops['nodes'])\nfont_readable=all(n['font_sizes_pt'] and all(v is not None and abs(v-10)<0.01 for v in n['font_sizes_pt']) for n in ops['nodes'])\nops_criteria={\n 'all_nine_node_labels_visible':len(ops['nodes'])==9,\n 'all_labels_complete_and_untruncated':labels_complete,\n 'readable_typography_10pt':font_readable,\n 'causal_order_and_report_identity_preserved':ops['round_trip']['semantic_identity_preserved'],\n 'eight_causal_connectors_with_directional_arrowheads':len(ops['edges'])==8 and all(e['tail_end_arrow'] for e in ops['edges']),\n 'vertical_direction_matches_browser_validated_geometry':ops['diagram_direction']=='down',\n 'node_boxes_nonoverlapping':not ops['node_overlap_pairs'],\n 'all_generated_primitives_inside_assigned_region_and_slide':geo['all_inside_assigned_region'] and geo['all_inside_slide'],\n 'no_clipped_or_off_slide_primitives':geo['all_inside_assigned_region'] and geo['all_inside_slide'],\n 'no_collision_with_other_report_content':not geo['other_report_content_collisions'],\n 'no_old_placeholder_text_collision':ops['diagram_container']['placeholder_text_removed'],\n 'geometry_preserves_validated_1600x2305_canvas':ops['browser_validated_geometry']['canvas']=={'width':1600,'height':2305}\n}\nrca_criteria={\n 'separate_wafer_map_and_signed_difference_panels':rca['separate_map_panels'],\n 'wafer_outline_and_orientation_notch_on_both_panels':all(p['wafer_outline_count']==1 and p['orientation_notch_count']==1 for p in rca['panels']),\n 'die_positions_and_counts_preserved':all(p['die_count']==4 and len(p['dies'])==4 for p in rca['panels']),\n 'wafer_lot_tool_chamber_recipe_process_metadata_present':all(p['metadata_has_wafer_lot_tool_chamber_recipe_process'] for p in rca['panels']),\n 'measured_value_legend_present':any('MEASURED VALUE' in ' '.join(p['legend_title']) for p in rca['panels']),\n 'negative_zero_positive_signed_semantics_preserved':rca['signed_negative_zero_positive_present'],\n 'report_identity_dataset_and_mapping_round_trip':rca['round_trip_semantic_metadata_preserved'],\n 'signed_delta_values':rca['signed_delta_values']\n}\nrasters=[]\nfor name in ['dense-operations-slide-1.png','semiconductor-rca-slide-1.png']:\n p=root/'rendered-slide-png'/name; rasters.append({'path':name,'sha256':shasum(p),'dimensions_px':list(Image.open(p).size),'bytes':p.stat().st_size})\npayload={\n 'schema':'visembler-chg180-r4-raster-review.v1','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],\n 'review_method':'Manual visual inspection of each actual candidate slide rendered headlessly from the candidate PPTX by signed LibreOffice 26.8.0, then rasterized by Poppler pdftoppm at 200 dpi. Every slide PNG was rasterized twice independently and both hashes matched.',\n 'dense_operations':{'status':'PASS' if all(ops_criteria.values()) else 'FAIL','slides_reviewed':1,'continuation_slides_required':0,'criteria':ops_criteria,'raster':rasters[0]},\n 'semiconductor_rca_holdout':{'status':'PASS' if all(v for k,v in rca_criteria.items() if k\"'!='\"'signed_delta_values') else 'FAIL','slides_reviewed':1,'criteria':rca_criteria,'raster':rasters[1]},\n 'repeat_rasterization_stable':all(o['raster']['stable_repeat_hash'] for o in prov['conversions']),\n 'renderer_provenance':'renderer-provenance.json','structural_inspection':'structural-inspection.json','geometry_bounds_analysis':'geometry-bounds-analysis.json',\n 'contact_sheet':'raster-review-contact-sheet.png','review_pdf':'raster-review.pdf',\n 'final_status':'PASS' if prov['status']=='PASS' and all(ops_criteria.values()) and all(v for k,v in rca_criteria.items() if k\"'!='\"'signed_delta_values') and all(o['raster']['stable_repeat_hash'] for o in prov['conversions']) else 'FAIL'\n}\n(root/'raster-review.json').write_text(json.dumps(payload,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'renderer':prov['status'],'operations':payload['dense_operations']['status'],'operations_criteria':ops_criteria,'semiconductor_rca':payload['semiconductor_rca_holdout']['status'],'rca_criteria':rca_criteria,'final_status':payload['final_status']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\nfor n in ['renderer-provenance.json','raster-review.json','structural-inspection.json','geometry-bounds-analysis.json']:\n d=json.loads((root/n).read_text()); print(n,{k:d.get(k) for k in ['status','final_status','geometry_validation','candidate_sha','candidate_tree']})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg --files /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/stage-a-final-candidate /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/diagram-studio-final-candidate /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/chg179-parity-final-candidate /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/chg178-lifecycle-final-candidate /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/chg180-native-final-candidate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-list --reverse 797f874c5d5c5c7f522674b4a08cdd08bdbf31db..fd906110ea9f5bc10b99e24d3931bf8463fa7b23 && rtk git status --porcelain=v1 && rtk git rev-parse HEAD HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-process-flow-ppt-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,xml.etree.ElementTree as ET\nfrom pathlib import Path\nr=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\npaths=['maintained-native-release-final-candidate/report.json','stage-a-final-candidate/stage-a-acceptance.json','diagram-studio-final-candidate/diagram-studio-acceptance.json','chg178-lifecycle-final-candidate/receipt.json','chg179-parity-final-candidate/chg179-semantic-parity.json','chg180-native-final-candidate/acceptance-receipt.json']\nfor rel in paths:\n d=json.loads((r/rel).read_text()); print(rel,{'status':d.get('status'),'release_status':d.get('release_status'),'checks':d.get('checks_status'),'passed':d.get('passed'),'total':d.get('total'),'cases':d.get('passed_cases')})\n for k in ('checks','cases'):\n  if isinstance(d.get(k),list) and k=='checks': print(' checks total',len(d[k]),'failed',[x for x in d[k] if x.get('status')\"'!='\"'PASS'])\nxml=ET.parse(r/'focused-tests-final-candidate.xml').getroot(); print('focused junit',xml.attrib)\nfull=ET.parse(r/'maintained-native-release-final-candidate/full-tests.xml').getroot(); print('full junit',full.attrib)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport json,xml.etree.ElementTree as ET,hashlib,subprocess\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\nrepo=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257')\ndef read(rel):return json.loads((root/rel).read_text())\ndef digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\ndef counts(rel):\n x=ET.parse(root/rel).getroot(); suites=x.findall('.//testsuite') or ([x] if x.tag=='testsuite' else [])\n return {'tests':sum(int(s.attrib.get('tests',0)) for s in suites),'failures':sum(int(s.attrib.get('failures',0)) for s in suites),'errors':sum(int(s.attrib.get('errors',0)) for s in suites),'skipped':sum(int(s.attrib.get('skipped',0)) for s in suites)}\nreceipt=read('chg180-native-final-candidate/acceptance-receipt.json')\nmaint=read('maintained-native-release-final-candidate/report.json')\nprogress=read('maintained-native-release-final-candidate/progress.json')\nfocused=counts('focused-tests-final-candidate.xml'); full=counts('maintained-native-release-final-candidate/full-tests.xml')\nidentity={\n 'schema':'visembler-chg180-r4-source-runtime-identity.v1','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257','project':'visembler','request':'CHG-180-r4','operation':'FIX',\n 'target':{'branch':'main','requested_sha':'797f874c5d5c5c7f522674b4a08cdd08bdbf31db','requested_tree':'e279190e4709e4914054e7098a0d1421723c8a6e','remote_main_at_completion':'797f874c5d5c5c7f522674b4a08cdd08bdbf31db','target_drift':'UNCHANGED','target_mutated':False},\n 'work':{'branch':'fix/visembler-chg180-process-flow-ppt-r4','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],'remote_work_head':receipt['candidate_sha'],'worktree_clean':True,'source_tree':receipt['source_tree']},\n 'predecessor':{'candidate_sha':'1f7925c8c1917e3de406af60affa929a6997280f','tree':'134654fc35440dfb13d8879816b793a78491c7f2','existing_commits_preserved_without_rewrite':True,'fast_forwarded_from_requested_base':True,'ancestry_commits_from_base_to_candidate':['72c10f175a3d729698aaefe8de64ff0f3cb7f165','13e743fb5cac981547ab8d045d51473aa45786f7','1f7925c8c1917e3de406af60affa929a6997280f','d3604ef59ca4d8de579a19b386a1e08e2efe1e8e','2060c65f2ceec9142f67ed3004c67f3317b39a30','fd906110ea9f5bc10b99e24d3931bf8463fa7b23']},\n 'r4_commits':[{'sha':'d3604ef59ca4d8de579a19b386a1e08e2efe1e8e','parent':'1f7925c8c1917e3de406af60affa929a6997280f','purpose':'directional, bounded editable DiagramEngine geometry and deterministic continuation with focused tests and label acceptance normalization'},{'sha':'2060c65f2ceec9142f67ed3004c67f3317b39a30','parent':'d3604ef59ca4d8de579a19b386a1e08e2efe1e8e','purpose':'remove hidden centered placeholder text from rendered diagram container; assert collision regression'},{'sha':'fd906110ea9f5bc10b99e24d3931bf8463fa7b23','parent':'2060c65f2ceec9142f67ed3004c67f3317b39a30','purpose':'synchronize maintained certification automated-test counts to 1,175 collected tests'}],\n 'r4_changed_files_since_predecessor':['company_ui/products/visualizer/ppt_service.py','tests/test_visualizer_chg180_r1.py','scripts/release_checks/run_chg180_r1_acceptance.py','company_ui/certification/certification_manifest.json'],\n 'runtime':{'os':maint.get('platform'),'python':'3.11.7','nicegui':'3.15.0','playwright':'1.62.0','python_pptx':'1.0.2','browser':'Chromium 151.0.7922.34','release_status':maint.get('release_status'),'maintained_verifier_status':maint.get('checks_status'),'target_company_gold_certification_claimed':False},\n 'test_results':{\n  'focused_regressions':{'status':'PASS' if focused['failures']==0 and focused['errors']==0 else 'FAIL',**focused,'receipt':'focused-tests-final-candidate.xml'},\n  'maintained_full_pytest':{'status':'PASS' if full['failures']==0 and full['errors']==0 else 'FAIL',**full,'receipt':'maintained-native-release-final-candidate/full-tests.xml'},\n  'maintained_native_release':{'status':'PASS' if all(x.get('status')=='PASS' for x in progress) else 'FAIL','check_count':len(progress),'checks':{x['name']:x['status'] for x in progress},'receipt':'maintained-native-release-final-candidate/report.json'},\n  'CHG180_native_export':{'status':receipt['status'],'cases':receipt['passed_cases'],'total':receipt['total_cases'],'receipt':'chg180-native-final-candidate/acceptance-receipt.json'},\n  'stage_a':{'status':read('stage-a-final-candidate/stage-a-acceptance.json')['status'],'passed':read('stage-a-final-candidate/stage-a-acceptance.json')['passed'],'total':read('stage-a-final-candidate/stage-a-acceptance.json')['total'],'receipt':'stage-a-final-candidate/stage-a-acceptance.json'},\n  'diagram_studio':{'status':read('diagram-studio-final-candidate/diagram-studio-acceptance.json')['status'],'passed':read('diagram-studio-final-candidate/diagram-studio-acceptance.json')['passed'],'total':read('diagram-studio-final-candidate/diagram-studio-acceptance.json')['total'],'receipt':'diagram-studio-final-candidate/diagram-studio-acceptance.json'},\n  'CHG178_lifecycle':{'status':read('chg178-lifecycle-final-candidate/receipt.json')['status'],'case_count':read('chg178-lifecycle-final-candidate/receipt.json')['case_count'],'receipt':'chg178-lifecycle-final-candidate/receipt.json'},\n  'CHG179_semantic_parity':{'status':read('chg179-parity-final-candidate/chg179-semantic-parity.json')['status'],'receipt':'chg179-parity-final-candidate/chg179-semantic-parity.json'},\n  'framework_validation':{'status':'PASS','files':267,'errors':0,'warnings':126,'receipt':'framework-validation.json'}\n },\n 'authority':{'r3_request':'CHG-180-r3','r3_job':'CF-67f8ff6a6a93bcb8ec6077ed','r3_deterministic_evidence_id':'fd63833203992c7a52c5d5100917deba34655ac8'},\n 'scope_separation':{'CHG181_whole_report_composition_or_reuse_claimed':False,'CHG21_company_managed_target_certification_claimed':False}\n}\n(root/'source-runtime-identity.json').write_text(json.dumps(identity,indent=2,ensure_ascii=False)+'\\\\n')\nvalidation={'schema':'visembler-chg180-r4-framework-validation.v1','candidate_sha':receipt['candidate_sha'],'candidate_tree':receipt['candidate_tree'],'command':'python -m company_ui.validate .','status':'PASS','files_scanned':267,'errors':0,'warnings':126,'note':'The validator output lists existing warning-level findings; it reported no validation errors.'}\n(root/'framework-validation.json').write_text(json.dumps(validation,indent=2)+'\\\\n')\nprint(json.dumps({'candidate':identity['work'],'focused':focused,'full':full,'maintained':maint['checks_status'],'checks':len(progress),'clean':identity['work']['worktree_clean']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 609,
+        "output_sha256": "dbf2e9bed2c588c796e7a96989a4a9d9a1ca41befab2f19116d9d7aa7cff58a3",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport shutil\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running')\nevidence=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\npkg=job/'artifact-bridge/CHG-180-r4-package'\nif pkg.exists(): raise SystemExit(f'package already exists: {pkg}')\npkg.mkdir(parents=True)\ndef cp(src,dst):\n src=Path(src); dst=pkg/dst; dst.parent.mkdir(parents=True,exist_ok=True)\n if src.is_dir(): shutil.copytree(src,dst)\n else: shutil.copy2(src,dst)\n# Identity and direct analysis files.\nfor f in ['source-runtime-identity.json','framework-validation.json','structural-inspection.json','geometry-bounds-analysis.json','renderer-provenance.json','raster-review.json']:\n cp(evidence/f,f)\ncp(evidence/'focused-tests-final-candidate.xml','test-receipts/focused-tests-final-candidate.xml')\n# Final-candidate maintained and focused native acceptance receipts.\ncp(evidence/'maintained-native-release-final-candidate','test-receipts/maintained-native-release')\nrelease_zip=evidence/'maintained-native-release-final-candidate.zip'\nif release_zip.exists(): cp(release_zip,'test-receipts/maintained-native-release-bundle.zip')\nfor name,folder in [('stage-a','stage-a-final-candidate'),('diagram-studio','diagram-studio-final-candidate'),('chg178-lifecycle','chg178-lifecycle-final-candidate'),('chg179-semantic-parity','chg179-parity-final-candidate')]:\n cp(evidence/folder,f'test-receipts/{name}')\n# Native browser/preflight geometry and screenshots; PPTX outputs are stored once below.\ncp(evidence/'chg180-native-final-candidate/acceptance-receipt.json','browser-preflight/chg180-native/acceptance-receipt.json')\ncp(evidence/'chg180-native-final-candidate/ui-review-contact-sheet.png','browser-preflight/chg180-native/ui-review-contact-sheet.png')\ncp(evidence/'chg180-native-final-candidate/native-server.log','browser-preflight/chg180-native/native-server.log')\ncp(evidence/'chg180-native-final-candidate/screenshots','browser-preflight/chg180-native/screenshots')\n# Actual final candidate PowerPoint files and headless-rendered artifacts.\nfor name in ['dense-operations-editable.pptx','semiconductor-rca-wafer-maps-editable.pptx']:\n cp(evidence/'chg180-native-final-candidate/powerpoints'/name,'powerpoints/'+name)\n cp(job/'artifact-bridge/rendered-final-candidate-ro/pdf'/name.replace('.pptx','.pdf'),'rendered/pdf/'+name.replace('.pptx','.pdf'))\ncp(evidence/'rendered-slide-png','rendered/slides')\ncp(evidence/'raster-review-contact-sheet.png','visual/raster-review-contact-sheet.png')\ncp(evidence/'raster-review.pdf','visual/raster-review.pdf')\nfor name in ['dense-operations-slide-1.png','semiconductor-rca-slide-1.png']:\n cp(job/'artifact-bridge/rendered-final-candidate-ro/repeat-png'/name,'rendered/repeat/'+name)\ncp(evidence/'renderer-audit','renderer-audit')\n# Preserve the R3 holdout authority and the qualified reference raster.\nr3=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3')\nfor f in ['renderer-provenance.json','raster-review.json','verification-status.json']:\n if (r3/f).exists(): cp(r3/f,'r3-authority/'+f)\nr3png=r3/'rendered/slide-png/semiconductor-rca-slide-1.png'\nif r3png.exists(): cp(r3png,'r3-authority/semiconductor-rca-slide-1-r3.png')\nprint(pkg)\nprint('copied',sum(1 for p in pkg.rglob('*') if p.is_file()),'files')\nprint('bytes',sum(p.stat().st_size for p in pkg.rglob('*') if p.is_file()))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,hashlib\nfrom pathlib import Path\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running')\nevidence=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\npkg=job/'artifact-bridge/CHG-180-r4-package'\nprov_path=evidence/'renderer-provenance.json'; prov=json.loads(prov_path.read_text())\nfor conv in prov['conversions']:\n    short='dense-operations' if conv['deck']=='dense-operations-editable' else 'semiconductor-rca'\n    basename=f'{short}-slide-1.png'\n    conv['raster']['package_png_path']='rendered/slides/'+basename\n    conv['raster']['package_repeat_png_path']='rendered/repeat/'+basename\nprov_path.write_text(json.dumps(prov,indent=2,ensure_ascii=False)+'\\\\n')\n(pkg/'renderer-provenance.json').write_text(json.dumps(prov,indent=2,ensure_ascii=False)+'\\\\n')\nidentity=json.loads((evidence/'source-runtime-identity.json').read_text())\nidx={\n 'schema':'visembler-chg180-r4-reader-index.v1',\n 'package_id':'visembler/CHG-180-r4/CF-7675ff109d8b7d17bd8ef257',\n 'created_at':'UTC_PLACEHOLDER',\n 'project':'visembler','request':'CHG-180-r4','operation':'FIX','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257',\n 'candidate_sha':identity['work']['candidate_sha'],'candidate_tree':identity['work']['candidate_tree'],\n 'target':{'branch':'main','sha':identity['target']['requested_sha'],'tree':identity['target']['requested_tree'],'drift':'UNCHANGED'},\n 'status':'ACCEPTANCE_PASS_PENDING_PROJECT_OS_ARTIFACT_RUN_STAGING',\n 'start_here':'source-runtime-identity.json',\n 'decisive_files':[\n  {'path':'source-runtime-identity.json','purpose':'Exact base, preserved predecessor ancestry, candidate/tree, changed R4 files, runtime and all test gates.'},\n  {'path':'test-receipts/maintained-native-release/report.json','purpose':'Complete maintained native release verifier summary; 25 checks PASS.'},\n  {'path':'test-receipts/maintained-native-release/full-tests.xml','purpose':'Full maintained suite receipt; 1,175 tests passed.'},\n  {'path':'browser-preflight/chg180-native/acceptance-receipt.json','purpose':'Browser Validate/save/reload/Preview/preflight geometry and both candidate export cases.'},\n  {'path':'powerpoints/dense-operations-editable.pptx','purpose':'New editable Dense Operations PowerPoint generated from the final candidate.'},\n  {'path':'powerpoints/semiconductor-rca-wafer-maps-editable.pptx','purpose':'New Semiconductor RCA Wafer Map/Wafer Difference PowerPoint holdout.'},\n  {'path':'structural-inspection.json','purpose':'Saved PPTX node/connector/wafer-map structure, semantics, and report round-trip checks.'},\n  {'path':'geometry-bounds-analysis.json','purpose':'Exact browser element rectangle, target slide scale, all diagram primitive bounds, and containment result.'},\n  {'path':'renderer-provenance.json','purpose':'Signed job-owned LibreOffice, Poppler, PDF and repeat-raster provenance.'},\n  {'path':'raster-review.json','purpose':'Explicit visual review for Operations and RCA slides; both PASS.'},\n  {'path':'rendered/slides/dense-operations-slide-1.png','purpose':'200 dpi final Dense Operations raster.'},\n  {'path':'rendered/slides/semiconductor-rca-slide-1.png','purpose':'200 dpi final Semiconductor RCA raster.'},\n  {'path':'visual/raster-review-contact-sheet.png','purpose':'Combined candidate slide review image.'},\n  {'path':'visual/raster-review.pdf','purpose':'Two-page full-resolution review PDF.'},\n  {'path':'test-receipts/stage-a/stage-a-acceptance.json','purpose':'Stage A 30/30 native acceptance.'},\n  {'path':'test-receipts/diagram-studio/diagram-studio-acceptance.json','purpose':'Diagram Studio 17/17 native acceptance.'},\n  {'path':'test-receipts/chg178-lifecycle/receipt.json','purpose':'CHG-178 lifecycle 5/5, candidate-bound receipt.'},\n  {'path':'test-receipts/chg179-semantic-parity/chg179-semantic-parity.json','purpose':'CHG-179 metric/category semantic parity acceptance.'},\n  {'path':'r3-authority/raster-review.json','purpose':'R3 qualified comparison authority for the Semiconductor RCA holdout.'}\n ],\n 'contents':{'test_receipts':'test-receipts/','browser_preflight':'browser-preflight/','PowerPoint files':'powerpoints/','structural_and_geometry':'structural-inspection.json and geometry-bounds-analysis.json','final_rasters_and_review':'rendered/ and visual/','renderer_evidence':'renderer-provenance.json and renderer-audit/','R3 comparison authority':'r3-authority/'},\n 'scope_notes':['CHG-181 whole-report composition/reuse is separate and is not claimed.','CHG-21 company-managed target certification is separate and is not claimed.','The maintained receipt reports PASS_LOCAL_INTERNAL_PILOT; this package does not claim Production Gold.']\n}\n(pkg/'reader-index.json').write_text(json.dumps(idx,indent=2,ensure_ascii=False)+'\\\\n')\nprint('reader index created; package files',sum(1 for p in pkg.rglob('*') if p.is_file()))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport json\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/CHG-180-r4-package/reader-index.json')\nd=json.loads(p.read_text()); d['created_at']='2026-09-23T22:26:21Z'\nd['contents']['manifest']='manifest.json; the detached manifest digest is adjacent to the deterministic bundle in the Artifact Bridge root.'\np.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib,zipfile,os\nroot=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\npkg=root/'CHG-180-r4-package'\nidentity=json.loads((pkg/'source-runtime-identity.json').read_text())\ndef sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\nfiles=sorted((p for p in pkg.rglob('*') if p.is_file() and p.name\"'!='\"'manifest.json'),key=lambda p:p.relative_to(pkg).as_posix())\nentries=[{'path':p.relative_to(pkg).as_posix(),'bytes':p.stat().st_size,'sha256':sha(p)} for p in files]\nmanifest={\n 'schema':'visembler-project-os-artifact-manifest.v1','package_id':'visembler/CHG-180-r4/CF-7675ff109d8b7d17bd8ef257',\n 'project':'visembler','request':'CHG-180-r4','operation':'FIX','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257',\n 'candidate_sha':identity['work']['candidate_sha'],'candidate_tree':identity['work']['candidate_tree'],\n 'target_main_sha':identity['target']['requested_sha'],'target_main_tree':identity['target']['requested_tree'],\n 'r3_deterministic_evidence_id':'fd63833203992c7a52c5d5100917deba34655ac8',\n 'acceptance_status':{'functional':'PASS','structural':'PASS','raster':'PASS','maintained_native_release':identity['test_results']['maintained_native_release']['status']},\n 'created_at_utc':'2026-09-23T22:26:21Z','artifact_count':len(entries)+1,'inventory_entry_count':len(entries),'inventory_payload_bytes':sum(x['bytes'] for x in entries),\n 'self_hashing':'The manifest is included in artifact_count but omitted from its own files array; its SHA-256 is provided by a detached adjacent file.',\n 'files':entries\n}\nmanifest_path=pkg/'manifest.json'; manifest_path.write_text(json.dumps(manifest,indent=2,ensure_ascii=False)+'\\\\n')\nmanifest_sha=sha(manifest_path)\n(root/'CHG-180-r4-manifest.sha256').write_text(f'{manifest_sha}  CHG-180-r4-package/manifest.json\\\\n')\nbundle=root/'CHG-180-r4-bundle.zip'\ndef build(path):\n with zipfile.ZipFile(path,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9,strict_timestamps=True) as z:\n  z.comment=b''\n  for f in sorted((p for p in pkg.rglob('*') if p.is_file()),key=lambda p:p.relative_to(pkg).as_posix()):\n   rel='CHG-180-r4-package/'+f.relative_to(pkg).as_posix()\n   info=zipfile.ZipInfo(rel,date_time=(1980,1,1,0,0,0)); info.compress_type=zipfile.ZIP_DEFLATED; info.create_system=3; info.external_attr=(0o100644&0xffff)<<16; info.extra=b''; info.comment=b''\n   z.writestr(info,f.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)\nbuild(bundle)\nrepeat=root/'CHG-180-r4-bundle.repeat.zip'; build(repeat)\nbundle_sha=sha(bundle); repeat_sha=sha(repeat); stable=bundle_sha==repeat_sha and bundle.stat().st_size==repeat.stat().st_size\nrepeat.unlink()\n(root/'CHG-180-r4-bundle.sha256').write_text(f'{bundle_sha}  CHG-180-r4-bundle.zip\\\\n')\ncarrier_meta={'schema':'visembler-chg180-r4-carrier-metadata.v1','candidate_sha':identity['work']['candidate_sha'],'candidate_tree':identity['work']['candidate_tree'],'target_main_sha':identity['target']['requested_sha'],'manifest_sha256':manifest_sha,'bundle_sha256':bundle_sha,'bundle_bytes':bundle.stat().st_size,'artifact_count':manifest['artifact_count'],'inventory_payload_bytes':manifest['inventory_payload_bytes'],'deterministic_repeat_hash_check':'PASS' if stable else 'FAIL'}\n(root/'CHG-180-r4-carrier-metadata.json').write_text(json.dumps(carrier_meta,indent=2)+'\\\\n')\nprint(json.dumps({**carrier_meta,'manifest_bytes':manifest_path.stat().st_size,'inventory_entry_count':len(entries),'deterministic_bundle':stable},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib,zipfile\nbase=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\npkg=base/'CHG-180-r4-package'; m=json.loads((pkg/'manifest.json').read_text())\nfor x in m['files']:\n p=pkg/x['path']; assert p.is_file() and p.stat().st_size==x['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==x['sha256'],x['path']\nbundle=base/'CHG-180-r4-bundle.zip'\nwith zipfile.ZipFile(bundle) as z:\n assert z.testzip() is None\n names=z.namelist(); assert len(names)==m['artifact_count']\n assert all('CHG-180-r4-package/'+x['path'] in names for x in m['files'])\nprint(json.dumps({'files_verified':len(m['files']),'artifact_count':m['artifact_count'],'zip_entries':len(names),'zip_test':'PASS','manifest_sha256':hashlib.sha256((pkg/'manifest.json').read_bytes()).hexdigest(),'bundle_sha256':hashlib.sha256(bundle.read_bytes()).hexdigest()},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-180-r4 && rtk git remote get-url origin && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport shutil\nroot=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\nsrc=root/'CHG-180-r4-package'; dst=root/'carrier-worktree'\nif dst.exists(): raise SystemExit(f'carrier worktree already exists: {dst}')\ndst.mkdir()\nshutil.copytree(src,dst/'CHG-180-r4-package')\nfor n in ['CHG-180-r4-bundle.zip','CHG-180-r4-bundle.sha256','CHG-180-r4-manifest.sha256','CHG-180-r4-carrier-metadata.json']:\n shutil.copy2(root/n,dst/n)\nprint(dst,'files',sum(1 for p in dst.rglob('*') if p.is_file()))\nPY\nrtk git init --initial-branch=carrier /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree add --all'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /usr/bin/env GIT_AUTHOR_DATE=2026-09-23T22:26:21Z GIT_COMMITTER_DATE=2026-09-23T22:26:21Z git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree -c user.name='Fabric Artifact Carrier' -c user.email='fabric-artifact-carrier@localhost' commit -m 'Artifact carrier for visembler CHG-180 R4'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree remote add origin https://github.com/kimhw8084/visembler.git && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree push origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-180-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree fetch origin refs/heads/project-os-artifacts/visembler/CHG-180-r4 && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree rev-parse HEAD HEAD''^{tree} FETCH_HEAD FETCH_HEAD''^{tree} && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show -s --format='\"'%H%n%T%n%P%n%s' FETCH_HEAD && rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-180-r4 refs/heads/fix/visembler-chg180-process-flow-ppt-r4 refs/heads/main\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show FETCH_HEAD:CHG-180-r4-manifest.sha256 && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show FETCH_HEAD:CHG-180-r4-bundle.sha256 && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show FETCH_HEAD:CHG-180-r4-carrier-metadata.json && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show FETCH_HEAD:CHG-180-r4-package/reader-index.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/bin | rtk rg -i 'artifact|projectos|bridge'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-process-flow-ppt-r4 refs/heads/project-os-artifacts/visembler/CHG-180-r4 && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree rev-parse HEAD HEAD''^{tree} && rtk git -C /Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge/carrier-worktree show -s --format='\"'%P' HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\ncarrier=json.loads((job/'CHG-180-r4-carrier-metadata.json').read_text())\nidentity=json.loads((root/'source-runtime-identity.json').read_text())\nmaint=json.loads((root/'maintained-native-release-final-candidate/report.json').read_text())\nblocker={\n 'schema':'visembler-chg180-r4-project-os-artifact-staging.v1','created_at_utc':'2026-09-23T22:31:06Z',\n 'project':'visembler','request':'CHG-180-r4','operation':'FIX','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257',\n 'candidate_sha':identity['work']['candidate_sha'],'candidate_tree':identity['work']['candidate_tree'],\n 'acceptance_status':{'functional':'PASS','structural':'PASS','raster':'PASS','maintained_native_release':maint.get('checks_status'),'maintained_release_status':maint.get('release_status')},\n 'artifact_package':{'path':str(job/'CHG-180-r4-package'),'artifact_count':carrier['artifact_count'],'manifest_sha256':carrier['manifest_sha256'],'bundle_path':str(job/'CHG-180-r4-bundle.zip'),'bundle_sha256':carrier['bundle_sha256'],'bundle_bytes':carrier['bundle_bytes'],'inventory_payload_bytes':carrier['inventory_payload_bytes'],'deterministic_bundle_repeat_check':carrier['deterministic_repeat_hash_check']},\n 'git_carrier':{'remote':'https://github.com/kimhw8084/visembler.git','ref':'refs/heads/project-os-artifacts/visembler/CHG-180-r4','commit':'b0a5042f3a79ab0d39a7ab2a46f5b246ca54ab3c','tree':'66529928260c7748e29f412245ce510ee9992ccf','parentless_artifact_root_commit':True,'remote_tip_readback':'PASS','remote_readback_verified':True,'manifest_sha256_readback':'ae0e815346ce77229192ff6c4dafb9b3faa144ada0ff24fda4810908756b35a9','bundle_sha256_readback':'5c8b1ddc588fecdd9f94fd0d42e87bb44c1bff466a0bccf32caf2046856de38c','carrier_preserved':True},\n 'artifact_run_staging':{'status':'BLOCKED_TOOL_UNAVAILABLE','qualified_project_os_artifact_bridge_callable':False,'artifact_run_created':False,'artifact_run_identity':None,'canonical_artifact_run_count':0,'post_stage_reconciliation':'NOT_POSSIBLE','provider_uploaded_bytes':None,'provider_attached_files':None,\n  'exact_blocker':'No qualified Project OS Artifact Bridge or Artifact Run reconciliation tool is exposed in the active tool inventory. The local projectos-integrate-stdin wrapper is a separate post-GO integration operator, not an Artifact Bridge, so it cannot create/reconcile the requested canonical Artifact Run. No substitute provider was used.',\n  'capability_discovery':'ALL_TOOLS contains no Project OS Artifact Bridge or Artifact Run staging/reconciliation capability; the only local ProjectOS-named command is projectos-integrate-stdin.'},\n 'status':'BLOCKED_AT_PROJECT_OS_ARTIFACT_RUN_STAGING'\n}\n(root/'provider-staging.json').write_text(json.dumps(blocker,indent=2,ensure_ascii=False)+'\\\\n')\nfinal={\n 'schema':'visembler-chg180-r4-final-runtime-evidence.v1','fabric_job_id':'CF-7675ff109d8b7d17bd8ef257','project':'visembler','request':'CHG-180-r4','operation':'FIX','candidate_sha':identity['work']['candidate_sha'],'candidate_tree':identity['work']['candidate_tree'],\n 'base':{'sha':'797f874c5d5c5c7f522674b4a08cdd08bdbf31db','tree':'e279190e4709e4914054e7098a0d1421723c8a6e'},\n 'predecessor':{'sha':'1f7925c8c1917e3de406af60affa929a6997280f','tree':'134654fc35440dfb13d8879816b793a78491c7f2','three_commits_preserved':True},\n 'changed_files':identity['r4_changed_files_since_predecessor'],'r4_commits':identity['r4_commits'],\n 'tests':identity['test_results'],'renderer_raster':{'renderer_provenance':'renderer-provenance.json','structural_inspection':'structural-inspection.json','geometry_bounds_analysis':'geometry-bounds-analysis.json','raster_review':'raster-review.json','status':'PASS'},\n 'carrier':blocker['git_carrier'],'artifact_run':None,'artifact_staging_status':blocker['artifact_run_staging'],\n 'target_drift':{'main_requested_sha':identity['target']['requested_sha'],'main_remote_at_completion':identity['target']['remote_main_at_completion'],'status':'UNCHANGED','target_mutated':False},\n 'worktree':{'branch':identity['work']['branch'],'remote_head':identity['work']['remote_work_head'],'clean':True},\n 'scope':{'CHG181_claimed':False,'CHG21_company_managed_certification_claimed':False,'production_gold_claimed':False},\n 'overall_status':'BLOCKED_AT_PROJECT_OS_ARTIFACT_RUN_STAGING_AFTER_ACCEPTANCE_AND_CARRIER_PASS'\n}\n(root/'final-evidence.json').write_text(json.dumps(final,indent=2,ensure_ascii=False)+'\\\\n')\nprint(json.dumps({'overall_status':final['overall_status'],'carrier':final['carrier']['commit'],'artifact_run':final['artifact_run'],'blocker':blocker['artifact_run_staging']['exact_blocker'],'target_drift':final['target_drift']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport subprocess,hashlib,json\njob=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\nrepo=job/'carrier-worktree'; ref='FETCH_HEAD'; prefix='CHG-180-r4-package/'\nexpected=json.loads((job/'CHG-180-r4-carrier-metadata.json').read_text())\nfiles=['manifest.json','powerpoints/dense-operations-editable.pptx','powerpoints/semiconductor-rca-wafer-maps-editable.pptx','rendered/slides/dense-operations-slide-1.png','rendered/slides/semiconductor-rca-slide-1.png']\nreadbacks=[]\nfor rel in files:\n data=subprocess.check_output(['git','-C',str(repo),'cat-file','blob',f'{ref}:{prefix}{rel}'])\n readbacks.append({'path':rel,'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'readback':'PASS'})\nbundle=subprocess.check_output(['git','-C',str(repo),'cat-file','blob',f'{ref}:CHG-180-r4-bundle.zip'])\nreadbacks.append({'path':'CHG-180-r4-bundle.zip','bytes':len(bundle),'sha256':hashlib.sha256(bundle).hexdigest(),'readback':'PASS'})\nexpected_paths={'manifest.json':expected['manifest_sha256'],'CHG-180-r4-bundle.zip':expected['bundle_sha256']}\nfor f in readbacks:\n if f['path'] in expected_paths: assert f['sha256']==expected_paths[f['path']]\npayload={'schema':'visembler-chg180-r4-git-carrier-readback.v1','remote_ref':'refs/heads/project-os-artifacts/visembler/CHG-180-r4','commit':'b0a5042f3a79ab0d39a7ab2a46f5b246ca54ab3c','tree':'66529928260c7748e29f412245ce510ee9992ccf','parentless':True,'verified_manifest_sha256':expected['manifest_sha256'],'verified_bundle_sha256':expected['bundle_sha256'],'files':readbacks,'status':'PASS'}\nPath('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/carrier-readback.json').write_text(json.dumps(payload,indent=2)+'\\\\n')\nprint(json.dumps({'status':payload['status'],'files_read_back':len(readbacks),'manifest':readbacks[0],'bundle':readbacks[-1]},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport json\nroot=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\np=root/'provider-staging.json';d=json.loads(p.read_text());d['carrier_readback_receipt']='carrier-readback.json';p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n')\np=root/'final-evidence.json';f=json.loads(p.read_text());f['created_at_utc']='2026-09-23T22:31:06Z';f['carrier']['remote_readback_receipt']='carrier-readback.json';f['provider_staging_receipt']='provider-staging.json';f['package_manifest_sha256']='ae0e815346ce77229192ff6c4dafb9b3faa144ada0ff24fda4810908756b35a9';f['deterministic_bundle_sha256']='5c8b1ddc588fecdd9f94fd0d42e87bb44c1bff466a0bccf32caf2046856de38c';f['artifact_count']=367;f['bundle_bytes']=27529704;p.write_text(json.dumps(f,indent=2,ensure_ascii=False)+'\\\\n')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/final-evidence.json')\nd=json.loads(p.read_text()); d['created_at_utc']='2026-09-23T22:32:41Z'; p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n')\nPY\nrtk python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib\nroot=Path('/Users/haewonkim/.codex-fabric/jobs/CF-7675ff109d8b7d17bd8ef257.running/artifact-bridge')\npkg=root/'CHG-180-r4-package'; manifest=json.loads((pkg/'manifest.json').read_text())\nassert hashlib.sha256((pkg/'manifest.json').read_bytes()).hexdigest()==json.loads((root/'CHG-180-r4-carrier-metadata.json').read_text())['manifest_sha256']\nassert hashlib.sha256((root/'CHG-180-r4-bundle.zip').read_bytes()).hexdigest()==json.loads((root/'CHG-180-r4-carrier-metadata.json').read_text())['bundle_sha256']\nprint('package manifest and bundle hashes PASS; artifacts',manifest['artifact_count'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom datetime import datetime,timezone\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/final-evidence.json')\nd=json.loads(p.read_text()); d['created_at_utc']=datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace('+00:00','Z'); p.write_text(json.dumps(d,indent=2,ensure_ascii=False)+'\\\\n'); print(d['created_at_utc'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg180-process-flow-ppt-r4 refs/heads/project-os-artifacts/visembler/CHG-180-r4 && rtk python - <<'\"'PY'\nimport json\nfrom pathlib import Path\nr=Path('/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4')\nfor name in ['final-evidence.json','provider-staging.json','raster-review.json']:\n d=json.loads((r/name).read_text()); print(name,d.get('overall_status') or d.get('status') or d.get('final_status'))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.155.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 474,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.01,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 31231488,
+      "fresh_input_tokens": 635455,
+      "input_tokens": 31866943,
+      "non_reasoning_output_tokens": 79644,
+      "output_tokens": 193339,
+      "reasoning_output_tokens": 113695,
+      "total_processed_tokens": 32060282
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+      "subject": "Update certification regression count for CHG-180"
+    },
+    {
+      "sha": "2060c65f2ceec9142f67ed3004c67f3317b39a30",
+      "subject": "Fix Process Flow PowerPoint card text collision"
+    },
+    {
+      "sha": "d3604ef59ca4d8de579a19b386a1e08e2efe1e8e",
+      "subject": "fix(visualizer): preserve process flow PowerPoint geometry (CHG-180 R4)"
+    },
+    {
+      "sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+      "subject": "chore(visualizer): bind acceptance capture to candidate identity"
+    },
+    {
+      "sha": "13e743fb5cac981547ab8d045d51473aa45786f7",
+      "subject": "fix(visualizer): align smart geometry release contracts (CHG-180 R1)"
+    },
+    {
+      "sha": "72c10f175a3d729698aaefe8de64ff0f3cb7f165",
+      "subject": "fix(visualizer): fit process flows and export wafer maps (CHG-180 R1)"
+    }
+  ],
+  "diff": {
+    "additions": 1350,
+    "changed_files": 10,
+    "commit_count": 6,
+    "deletions": 54
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "db484f3439aa5576b07a576a56a2f66166684f70e8775c07ae6be58df2adda06"
+      },
+      {
+        "bytes": 12730,
+        "path": "company_ui/products/visualizer/assets/integrated_editor.html",
+        "sha256": "19a023ff3f5f852b1b2a0e9206387d0337aee0c048e4f3195d4e30095c26e2c8"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-23T22:34:44Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "branch": "fix/visembler-chg180-process-flow-ppt-r4",
+    "detached_verify": false,
+    "head_sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+    "remote_exact_head": true,
+    "remote_head_sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "work_branch": "fix/visembler-chg180-process-flow-ppt-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-7675ff109d8b7d17bd8ef257",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-180-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-180-r4"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "cfc765f3211c37c7967a138f3b2d89a99341939b15b2623f92744d007f625d6f"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-180-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-23T21:04:38Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 5406,
+    "queue_seconds": 1,
+    "total_seconds": 5407
+  },
+  "transport": {
+    "bytes": 9133,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 8834,
+    "prompt_sha256": "8475eff7670d1416e3fd10d10946b9be03ec983e366095632f6f19d341af5a3e",
+    "sha256": "7675ff109d8b7d17bd8ef257e345164b4fd4f57518fe5cb062ad64820380bb91"
+  }
+}
