@@ -242,7 +242,8 @@ def structural_operations(path: Path) -> dict:
                 semantic.append(json.loads(description.removeprefix('VisualizerSemantic:')))
     assert len(nodes) == len(FLOW_LABELS), f'Expected {len(FLOW_LABELS)} editable flow nodes, got {len(nodes)}.'
     assert len(connectors) >= len(FLOW_LABELS) - 1, f'Expected causal connectors, got {len(connectors)}.'
-    assert all(label in '\n'.join(labels) for label in FLOW_LABELS), 'PowerPoint flow labels are incomplete.'
+    normalized_labels = ' '.join('\n'.join(labels).split())
+    assert all(' '.join(label.split()) in normalized_labels for label in FLOW_LABELS), 'PowerPoint flow labels are incomplete.'
     assert semantic and semantic[0].get('direction') == 'down' and len(semantic[0].get('edges') or []) == len(FLOW_LABELS) - 1
     return {'slide_count': len(presentation.slides), 'editable_node_count': len(nodes), 'connector_count': len(connectors), 'node_labels': labels, 'canonical_flow_metadata': semantic[0]}
 

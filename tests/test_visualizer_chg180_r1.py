@@ -11,9 +11,10 @@ from pathlib import Path
 import pytest
 from PIL import Image
 from pptx import Presentation
+from pptx.util import Inches
 
 from company_ui.products.visualizer.domain import VisualizerContractError, canonical_model
-from company_ui.products.visualizer.ppt_service import _kind, bound_export_items, export_pptx
+from company_ui.products.visualizer.ppt_service import _kind, _validate_diagram_geometry, bound_export_items, export_pptx, import_visembler_pptx
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -68,6 +69,59 @@ def _two_map_layout() -> dict:
 
 def _descr(shape) -> list[str]:
     return [node.get('descr') or '' for node in shape._element.xpath('.//p:cNvPr')]
+
+
+FLOW_LABELS = [
+    'Define affected wafer scope and customer impact',
+    'Contain material from the suspect process window',
+    'Verify measurement method against qualified standards',
+    'Compare affected and reference wafer populations',
+    'Inspect etch tool and chamber process history',
+    'Correlate recipe settings with die-level yield loss',
+    'Confirm the physical defect signature by inspection',
+    'Apply corrective action and verify effectiveness',
+    'Release production after engineering approval',
+]
+
+
+def _process_flow(*, direction='down', canvas=(1600, 2305), bounds=(1080.158375508504, 776.9999999999999, 505.84162449149613, 1514)):
+    nodes = FLOW_LABELS if direction == 'down' else ['Inspect incoming lot', 'Qualify process window']
+    item = {
+        'id': 'c6', 'type': 'diagram', 'engine': 'DiagramEngine', 'element': 'Process Flow',
+        'title': 'Process Flow' if direction == 'down' else 'Inspection Flow',
+        'direction': direction, 'nodes': nodes, 'edges': [[source, target] for source, target in zip(nodes, nodes[1:])],
+        'order': 0,
+    }
+    width, height = canvas
+    x, y, item_width, item_height = bounds
+    model = canonical_model({'mode': 'smart', 'canvas': {'width': width, 'height': height}, 'nextId': 7, 'items': [item]})
+    geometry = {'canvas': {'width': width, 'height': height}, 'items': [{'id': 'c6', 'x': x, 'y': y, 'w': item_width, 'h': item_height}]}
+    return model, geometry
+
+
+def _diagram_payload(shape, prefix):
+    return json.loads(next(value.removeprefix(prefix) for value in _descr(shape) if value.startswith(prefix)))
+
+
+def _node_payload(shape):
+    descriptions = _descr(shape)
+    if any(value.startswith('VisualizerDiagramNode:') for value in descriptions):
+        return _diagram_payload(shape, 'VisualizerDiagramNode:')
+    semantic = _diagram_payload(shape, 'VisualizerSemantic:')
+    return {'item_id': semantic['id'], 'node_index': 0, 'label': semantic['nodes'][0], 'direction': semantic['direction']}
+
+
+def _diagram_signature(path):
+    deck = Presentation(str(path))
+    return [
+        (shape.name, shape.left, shape.top, shape.width, shape.height, getattr(shape, 'text', ''),
+         bool(shape._element.xpath('.//a:tailEnd')), tuple(_descr(shape)))
+        for slide in deck.slides for shape in slide.shapes
+        if shape.name.startswith('VIZ::Process Flow::')
+        or shape.name.startswith('VIZ::DiagramTitle::Process Flow::')
+        or shape.name.startswith('VIZ::DiagramEdge::Process Flow::')
+        or shape.name.startswith('VIZ::DiagramContinuation::Process Flow::')
+    ]
 
 
 def test_chg180_waferfab_map_variants_are_first_class_export_kinds():
@@ -213,3 +267,177 @@ def test_chg180_process_flow_geometry_is_rebuilt_from_saved_diagram_content():
     assert float(view_box.split()[3]) == projection['bounds']['height']
     for label in ('Problem definition and scope', 'Machine chamber verification', 'Production release approval'):
         assert label in projection['svg']
+
+
+def test_chg180_process_flow_powerpoint_projection_preserves_validated_geometry_and_direction(tmp_path):
+    model, geometry = _process_flow()
+    assert geometry['canvas'] == {'width': 1600, 'height': 2305}
+    assert geometry['items'][0] == {
+        'id': 'c6', 'x': 1080.158375508504, 'y': 776.9999999999999,
+        'w': 505.84162449149613, 'h': 1514,
+    }
+    output = tmp_path / 'dense-operations.pptx'
+    output.write_bytes(export_pptx(None, model, layout_geometry=geometry))
+    first_signature = _diagram_signature(output)
+    again = tmp_path / 'dense-operations-again.pptx'
+    again.write_bytes(export_pptx(None, model, layout_geometry=geometry))
+    assert first_signature == _diagram_signature(again)
+
+    deck = Presentation(str(output))
+    slide = deck.slides[0]
+    node_shapes = [shape for shape in slide.shapes if shape.name.startswith('VIZ::Process Flow::') and '::node-' in shape.name]
+    assert len(node_shapes) == 9
+    node_shapes.sort(key=lambda shape: _node_payload(shape)['node_index'])
+    for index, (shape, expected) in enumerate(zip(node_shapes, FLOW_LABELS)):
+        assert ''.join(shape.text.split()) == ''.join(expected.split())
+        assert all(paragraph.font.size.pt == 10 for paragraph in shape.text_frame.paragraphs)
+        node = _node_payload(shape)
+        assert node['node_index'] == index and node['direction'] == 'down'
+        if index:
+            assert node_shapes[index - 1].top < shape.top
+
+    scale = deck.slide_height / geometry['canvas']['height']
+    x, y, width, height = (round(geometry['items'][0][key] * scale) for key in ('x', 'y', 'w', 'h'))
+    rect = (x, y, width, height)
+    primitives = [
+        shape for shape in slide.shapes
+        if shape.name.startswith('VIZ::Process Flow::')
+        or shape.name.startswith('VIZ::DiagramTitle::Process Flow::')
+        or shape.name.startswith('VIZ::DiagramEdge::Process Flow::')
+    ]
+    _validate_diagram_geometry(slide, rect, primitives)
+    for shape in primitives:
+        assert shape.left >= x and shape.top >= y
+        assert shape.left + shape.width <= x + width
+        assert shape.top + shape.height <= y + height
+        assert shape.left >= 0 and shape.top >= 0
+        assert shape.left + shape.width <= deck.slide_width
+        assert shape.top + shape.height <= deck.slide_height
+
+    for first, second in zip(node_shapes, node_shapes[1:]):
+        overlap_w = min(first.left + first.width, second.left + second.width) - max(first.left, second.left)
+        overlap_h = min(first.top + first.height, second.top + second.height) - max(first.top, second.top)
+        assert not (overlap_w > 1 and overlap_h > 1)
+        assert abs((first.left + first.width // 2) - (second.left + second.width // 2)) <= 1
+    edges = [shape for shape in slide.shapes if shape.name.startswith('VIZ::DiagramEdge::Process Flow::')]
+    assert len(edges) == 8
+    semantic_edges = [_diagram_payload(shape, 'VisualizerSemanticEdge:') for shape in edges]
+    assert [(edge['source'], edge['target']) for edge in semantic_edges] == list(zip(FLOW_LABELS, FLOW_LABELS[1:]))
+    assert all(shape._element.xpath('.//a:tailEnd') for shape in edges)
+    imported = import_visembler_pptx(output.read_bytes())
+    flow = imported['items'][0]
+    assert flow['id'] == 'c6' and flow['direction'] == 'down'
+    assert flow['nodes'] == FLOW_LABELS and flow['edges'] == [list(edge) for edge in zip(FLOW_LABELS, FLOW_LABELS[1:])]
+
+
+def test_chg180_rightward_process_flow_stays_horizontal_when_it_fits(tmp_path):
+    model, geometry = _process_flow(direction='right', canvas=(1600, 900), bounds=(80, 80, 1440, 700))
+    deck = Presentation(io.BytesIO(export_pptx(None, model, layout_geometry=geometry)))
+    slide = deck.slides[0]
+    nodes = [shape for shape in slide.shapes if shape.name.startswith('VIZ::Inspection Flow::') and '::node-' in shape.name]
+    nodes.sort(key=lambda shape: _node_payload(shape)['node_index'])
+    assert [shape.text.replace('\n', ' ') for shape in nodes] == ['Inspect incoming lot', 'Qualify process window']
+    assert nodes[0].left < nodes[1].left
+    assert abs((nodes[0].top + nodes[0].height // 2) - (nodes[1].top + nodes[1].height // 2)) <= 1
+    connector = next(shape for shape in slide.shapes if shape.name.startswith('VIZ::DiagramEdge::Inspection Flow::'))
+    assert connector._element.xpath('.//a:tailEnd')
+    assert _diagram_payload(connector, 'VisualizerSemanticEdge:') == {
+        'item_id': 'c6', 'edge_index': 0, 'source': 'Inspect incoming lot',
+        'target': 'Qualify process window', 'continuation': False,
+    }
+
+
+def test_chg180_data_flow_honors_down_direction(tmp_path):
+    model, geometry = _process_flow()
+    model['items'][0].update({'element': 'Data Flow', 'title': 'Data Flow', 'direction': 'down', 'nodes': ['Source population', 'Qualified observations', 'Engineering conclusion'], 'edges': [['Source population', 'Qualified observations'], ['Qualified observations', 'Engineering conclusion']]})
+    geometry['items'][0].update({'x': 50, 'y': 50, 'w': 1500, 'h': 2200})
+    deck = Presentation(io.BytesIO(export_pptx(None, model, layout_geometry=geometry)))
+    nodes = [shape for shape in deck.slides[0].shapes if shape.name.startswith('VIZ::Data Flow::') and '::node-' in shape.name]
+    nodes.sort(key=lambda shape: _node_payload(shape)['node_index'])
+    assert len(nodes) == 3
+    assert nodes[0].top < nodes[1].top < nodes[2].top
+    assert all(_node_payload(shape)['direction'] == 'down' for shape in nodes[1:])
+    edges = [shape for shape in deck.slides[0].shapes if shape.name.startswith('VIZ::DiagramEdge::Data Flow::')]
+    assert [_diagram_payload(shape, 'VisualizerSemanticEdge:')['source'] for shape in edges] == ['Source population', 'Qualified observations']
+
+
+def test_chg180_structural_diagram_validator_rejects_primitive_outside_assigned_region(tmp_path):
+    model, geometry = _process_flow(direction='right', canvas=(1600, 900), bounds=(80, 80, 1440, 700))
+    deck = Presentation(io.BytesIO(export_pptx(None, model, layout_geometry=geometry)))
+    slide = deck.slides[0]
+    scale = deck.slide_width / geometry['canvas']['width']
+    rect = tuple(round(geometry['items'][0][key] * scale) for key in ('x', 'y', 'w', 'h'))
+    primitives = [
+        shape for shape in slide.shapes
+        if shape.name.startswith('VIZ::Inspection Flow::')
+        or shape.name.startswith('VIZ::DiagramTitle::Inspection Flow::')
+        or shape.name.startswith('VIZ::DiagramEdge::Inspection Flow::')
+    ]
+    _validate_diagram_geometry(slide, rect, primitives)
+    escaped = next(shape for shape in primitives if shape.name.startswith('VIZ::DiagramTitle::'))
+    escaped.left = rect[0] - 1
+    with pytest.raises(VisualizerContractError, match='assigned element region'):
+        _validate_diagram_geometry(slide, rect, primitives)
+
+
+def test_chg180_process_flow_continuations_are_ordered_complete_and_round_trip(tmp_path):
+    model, geometry = _process_flow(canvas=(1600, 900), bounds=(40, 40, 1520, 820))
+    template = Presentation()
+    template.slide_width = Inches(4)
+    template.slide_height = Inches(3)
+    template.slides.add_slide(template.slide_layouts[6])
+    template_bytes = io.BytesIO()
+    template.save(template_bytes)
+    output = export_pptx(template_bytes.getvalue(), model, layout_geometry=geometry)
+    deck = Presentation(io.BytesIO(output))
+    assert len(deck.slides) == 6
+    headings = [
+        shape.text for slide in deck.slides for shape in slide.shapes
+        if shape.name.startswith('VIZ::DiagramTitle::Process Flow::')
+    ]
+    assert [' '.join(value.split()) for value in headings] == [f'Process Flow · Continued {index}/5' for index in range(1, 6)]
+    nodes = [
+        shape for slide in deck.slides for shape in slide.shapes
+        if shape.name.startswith('VIZ::Process Flow::') and '::node-' in shape.name
+    ]
+    assert len(nodes) == len(FLOW_LABELS)
+    nodes.sort(key=lambda shape: _node_payload(shape)['node_index'])
+    assert [_node_payload(shape)['label'] for shape in nodes] == FLOW_LABELS
+    edges = [
+        shape for slide in deck.slides for shape in slide.shapes
+        if shape.name.startswith('VIZ::DiagramEdge::Process Flow::')
+    ]
+    assert len(edges) == 8
+    semantic_edges = sorted((_diagram_payload(shape, 'VisualizerSemanticEdge:') for shape in edges), key=lambda edge: edge['edge_index'])
+    assert [(edge['source'], edge['target']) for edge in semantic_edges] == list(zip(FLOW_LABELS, FLOW_LABELS[1:]))
+    assert sum(edge['continuation'] for edge in semantic_edges) == 4
+    for slide in list(deck.slides)[1:]:
+        slide_nodes = [
+            shape for shape in slide.shapes
+            if shape.name.startswith('VIZ::Process Flow::') and '::node-' in shape.name
+        ]
+        assert slide_nodes
+        rect = (Inches(.5), Inches(.4), deck.slide_width-Inches(1), deck.slide_height-Inches(.8))
+        diagram_shapes = [
+            shape for shape in slide.shapes
+            if shape.name.startswith('VIZ::Process Flow::')
+            or shape.name.startswith('VIZ::DiagramTitle::Process Flow::')
+            or shape.name.startswith('VIZ::DiagramEdge::Process Flow::')
+            or shape.name.startswith('VIZ::DiagramContinuation::Process Flow::')
+        ]
+        _validate_diagram_geometry(slide, rect, diagram_shapes)
+    imported = import_visembler_pptx(output)
+    assert len(imported['items']) == 1
+    assert imported['items'][0]['id'] == 'c6'
+    assert imported['items'][0]['nodes'] == FLOW_LABELS
+    assert imported['items'][0]['edges'] == [list(edge) for edge in zip(FLOW_LABELS, FLOW_LABELS[1:])]
+    assert _diagram_signature_from_bytes(output) == _diagram_signature_from_bytes(export_pptx(template_bytes.getvalue(), model, layout_geometry=geometry))
+
+
+def _diagram_signature_from_bytes(payload):
+    deck = Presentation(io.BytesIO(payload))
+    return [
+        (shape.name, shape.left, shape.top, shape.width, shape.height, getattr(shape, 'text', ''),
+         bool(shape._element.xpath('.//a:tailEnd')), tuple(_descr(shape)))
+        for slide in deck.slides for shape in slide.shapes
+    ]

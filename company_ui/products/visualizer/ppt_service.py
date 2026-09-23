@@ -7,12 +7,15 @@ import io
 import json
 import math
 from pathlib import Path
+import textwrap
 from typing import Any, Mapping, Sequence
 
 from pptx import Presentation
 from pptx.chart.data import ChartData
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
+from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Inches, Pt
 from PIL import Image
 
@@ -149,17 +152,25 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
     return resolved
 
 
-def _plan(model: Mapping[str, Any], layout_geometry: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def _plan(model: Mapping[str, Any], layout_geometry: Mapping[str, Any] | None = None, *, target_width: int | None = None, target_height: int | None = None) -> dict[str, Any]:
     report_items=list(model.get('items') or [])
     if not report_items: return _adapter().default_plan()
     positioned=[entry for entry in report_items if all(isinstance(entry.get(key),(int,float)) for key in ('x','y','w','h')) and entry['w']>0 and entry['h']>0]
     if len(positioned)==len(report_items):
         canvas=layout_geometry.get('canvas') if isinstance(layout_geometry,Mapping) and isinstance(layout_geometry.get('canvas'),Mapping) else {}
-        canvas_w=max(1200.0,float(canvas.get('width') or 0),max(float(entry['x'])+float(entry['w']) for entry in report_items))
-        canvas_h=max(675.0,float(canvas.get('height') or 0),max(float(entry['y'])+float(entry['h']) for entry in report_items))
+        if layout_geometry is not None and canvas.get('width') and canvas.get('height'):
+            canvas_w=float(canvas['width']);canvas_h=float(canvas['height'])
+        else:
+            canvas_w=max(1200.0,max(float(entry['x'])+float(entry['w']) for entry in report_items))
+            canvas_h=max(675.0,max(float(entry['y'])+float(entry['h']) for entry in report_items))
+        scale=min(target_width/canvas_w,target_height/canvas_h) if target_width and target_height else 1.0
+        offset_x=(target_width-canvas_w*scale)/2 if target_width and target_height else 0.0
+        offset_y=(target_height-canvas_h*scale)/2 if target_width and target_height else 0.0
         return {'items':[{'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
-                          'nx':max(0.0,min(1.0,float(entry['x'])/canvas_w)),'ny':max(0.0,min(1.0,float(entry['y'])/canvas_h)),
-                          'nw':max(.001,min(1.0,float(entry['w'])/canvas_w)),'nh':max(.001,min(1.0,float(entry['h'])/canvas_h))} for entry in report_items]}
+                          'nx':max(0.0,min(1.0,(offset_x+float(entry['x'])*scale)/target_width)) if target_width else max(0.0,min(1.0,float(entry['x'])/canvas_w)),
+                          'ny':max(0.0,min(1.0,(offset_y+float(entry['y'])*scale)/target_height)) if target_height else max(0.0,min(1.0,float(entry['y'])/canvas_h)),
+                          'nw':max(.001,min(1.0,float(entry['w'])*scale/target_width)) if target_width else max(.001,min(1.0,float(entry['w'])/canvas_w)),
+                          'nh':max(.001,min(1.0,float(entry['h'])*scale/target_height)) if target_height else max(.001,min(1.0,float(entry['h'])/canvas_h))} for entry in report_items]}
     cols=1 if len(report_items)==1 else 2 if len(report_items)<=8 else 3
     rows=max(1,(len(report_items)+cols-1)//cols)
     gap_x=.025 if cols>1 else 0.0; gap_y=.035 if rows>1 else 0.0
@@ -291,6 +302,19 @@ def _set_report_metadata(slide: Any, model: Mapping[str, Any]) -> None:
     if nodes: nodes[0].set('descr','VisualizerSemanticReport:'+stable_json(model))
 
 
+def _set_blank_report_slide_size(prs: Any, layout_geometry: Mapping[str, Any] | None) -> None:
+    """Match a blank PowerPoint page to the validated browser canvas aspect ratio."""
+    if not isinstance(layout_geometry,Mapping): return
+    canvas=layout_geometry.get('canvas')
+    if not isinstance(canvas,Mapping): return
+    width,height=float(canvas.get('width') or 0),float(canvas.get('height') or 0)
+    if width<=0 or height<=0: return
+    longest=Inches(13.333333)
+    scale=longest/max(width,height)
+    prs.slide_width=round(width*scale)
+    prs.slide_height=round(height*scale)
+
+
 def _replace_image(slide: Any, shape: Any, entry: Mapping[str, Any], title: str, asset_data_url: Any=None) -> Any:
     src=entry.get('src') or (asset_data_url(entry['asset_id']) if asset_data_url and entry.get('asset_id') else None)
     if not isinstance(src,str) or not src.startswith('data:image/') or ';base64,' not in src:
@@ -307,21 +331,216 @@ def _replace_image(slide: Any, shape: Any, entry: Mapping[str, Any], title: str,
     return picture
 
 
-def _replace_diagram(slide: Any, shape: Any, entry: Mapping[str, Any], title: str) -> Any:
+_DIAGRAM_FONT_PT = 10.0
+_DIAGRAM_MIN_GAP = Inches(.11)
+
+
+def _diagram_graph(entry: Mapping[str, Any]) -> tuple[list[str], list[tuple[int, str, str, Any]]]:
     nodes=[str(node) for node in entry.get('nodes') or []]
+    if len(nodes)!=len(set(nodes)): raise VisualizerContractError('PowerPoint diagrams require unique node labels.')
+    node_indexes={label:index for index,label in enumerate(nodes)}
+    edges=[]
+    for position,edge in enumerate(entry.get('edges') or []):
+        if isinstance(edge,Mapping):
+            source,target=edge.get('source',edge.get('from')),edge.get('target',edge.get('to'))
+            index=int(edge.get('_diagram_edge_index',position))
+        elif isinstance(edge,Sequence) and not isinstance(edge,(str,bytes)) and len(edge)>=2: source,target=edge[0],edge[1];index=position
+        else: raise VisualizerContractError('PowerPoint diagram contains a malformed edge.')
+        source,target=str(source),str(target)
+        if source not in node_indexes or target not in node_indexes: raise VisualizerContractError('PowerPoint diagram edge references a missing node.')
+        if node_indexes[source]>=node_indexes[target]: raise VisualizerContractError('PowerPoint diagram edges must preserve the declared causal node order.')
+        edges.append((index,source,target,edge))
+    return nodes,edges
+
+
+def _wrap_diagram_label(label: str, width: int, font_size: float) -> list[str]:
+    """Insert deterministic word breaks before PowerPoint lays out editable text."""
+    usable_points=max(font_size, width/914400*72-14.0)
+    capacity=max(1,int(usable_points/(font_size*.55)))
+    lines=[]
+    for paragraph in str(label).splitlines() or ['']:
+        lines.extend(textwrap.wrap(paragraph, width=capacity, break_long_words=True, break_on_hyphens=False, replace_whitespace=True, drop_whitespace=True) or [''])
+    return lines
+
+
+def _diagram_text(slide: Any, name: str, text: str, rect: tuple[int, int, int, int], *, size: float, bold: bool=False) -> Any:
+    left,top,width,height=rect
+    shape=slide.shapes.add_textbox(left,top,width,height);shape.name=name
+    frame=shape.text_frame;frame.clear();frame.word_wrap=False
+    frame.margin_left=frame.margin_right=Inches(.05);frame.margin_top=frame.margin_bottom=Inches(.025)
+    frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+    for index,line in enumerate(text.split('\n') or ['']):
+        paragraph=frame.paragraphs[0] if index==0 else frame.add_paragraph()
+        paragraph.text=line;paragraph.alignment=PP_ALIGN.CENTER;paragraph.font.name='Arial';paragraph.font.size=Pt(size);paragraph.font.bold=bold;paragraph.font.color.rgb=RGBColor(35,52,73);paragraph.space_after=Pt(0);paragraph.line_spacing=Pt(size*1.12)
+    return shape
+
+
+def _diagram_node_text(shape: Any, text: str) -> None:
+    frame=shape.text_frame;frame.clear();frame.word_wrap=False
+    frame.margin_left=frame.margin_right=Inches(.10);frame.margin_top=frame.margin_bottom=Inches(.08)
+    frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+    for index,line in enumerate(text.split('\n') or ['']):
+        paragraph=frame.paragraphs[0] if index==0 else frame.add_paragraph()
+        paragraph.text=line;paragraph.alignment=PP_ALIGN.CENTER;paragraph.font.name='Arial';paragraph.font.size=Pt(_DIAGRAM_FONT_PT);paragraph.font.color.rgb=RGBColor(35,52,73);paragraph.space_after=Pt(0);paragraph.line_spacing=Pt(_DIAGRAM_FONT_PT*1.12)
+
+
+def _diagram_layout(nodes: Sequence[str], direction: str, title: str, rect: tuple[int, int, int, int], *, outgoing: bool=False) -> dict[str, Any] | None:
+    left,top,width,height=rect
+    if width<Inches(1.45) or height<Inches(.85) or not nodes: return None
+    direction='down' if direction in {'down','vertical','top-to-bottom'} else 'right'
+    side=Inches(.06);heading_lines=_wrap_diagram_label(title,width-2*side,11.5)
+    heading_height=max(Inches(.25),round(len(heading_lines)*Inches(.19)+Inches(.04)))
+    body_top=top+heading_height+Inches(.08);body_bottom=top+height-Inches(.07)-(Inches(.31) if outgoing else 0)
+    body_height=body_bottom-body_top
+    if body_height<=0: return None
+    if direction=='down':
+        node_width=width-2*side
+        if node_width<Inches(1.2): return None
+        node_left=left+side;wraps=[_wrap_diagram_label(label,node_width, _DIAGRAM_FONT_PT) for label in nodes]
+        heights=[max(Inches(.54),round(len(lines)*Inches(_DIAGRAM_FONT_PT*1.18/72)+Inches(.19))) for lines in wraps]
+        free=body_height-sum(heights)
+        gap=0 if len(nodes)==1 else min(Inches(.30),free//(len(nodes)-1))
+        if free<0 or (len(nodes)>1 and gap<_DIAGRAM_MIN_GAP): return None
+        placements=[];cursor=body_top
+        for label,lines,node_height in zip(nodes,wraps,heights):
+            placements.append({'label':label,'text':'\n'.join(lines),'rect':(node_left,cursor,node_width,node_height)})
+            cursor+=node_height+gap
+    else:
+        gap=Inches(.22);usable=width-2*side-gap*(len(nodes)-1)
+        node_width=usable//len(nodes) if nodes else 0
+        if node_width<Inches(.75): return None
+        wraps=[_wrap_diagram_label(label,node_width, _DIAGRAM_FONT_PT) for label in nodes]
+        node_height=max(max(Inches(.54),round(len(lines)*Inches(_DIAGRAM_FONT_PT*1.18/72)+Inches(.19))) for lines in wraps)
+        if node_height>body_height: return None
+        node_top=body_top+(body_height-node_height)//2;placements=[];cursor=left+side
+        for label,lines in zip(nodes,wraps):
+            placements.append({'label':label,'text':'\n'.join(lines),'rect':(cursor,node_top,node_width,node_height)})
+            cursor+=node_width+gap
+    return {'direction':direction,'heading':{'text':'\n'.join(heading_lines),'rect':(left+side,top+Inches(.02),width-2*side,heading_height)},'nodes':placements,'body_bottom':body_bottom,'rect':rect}
+
+
+def _set_diagram_arrow(connector: Any) -> None:
+    connector.line.color.rgb=RGBColor(67,91,121);connector.line.width=Pt(1.5)
+    line=connector._element.spPr.ln
+    for item in list(line):
+        if item.tag.endswith('tailEnd'): line.remove(item)
+    arrow=OxmlElement('a:tailEnd');arrow.set('type','triangle');arrow.set('w','med');arrow.set('len','med');line.append(arrow)
+
+
+def _validate_diagram_geometry(slide: Any, rect: tuple[int, int, int, int], shapes: Sequence[Any]) -> None:
+    left,top,width,height=rect;right,bottom=left+width,top+height
+    slide_size=slide.part.package.presentation_part._element.sldSz
+    slide_right,slide_bottom=int(slide_size.cx),int(slide_size.cy)
+    for shape in shapes:
+        if shape.left<left or shape.top<top or shape.left+shape.width>right or shape.top+shape.height>bottom:
+            raise VisualizerContractError(f'PowerPoint diagram primitive {shape.name} exceeds its assigned element region.')
+        if shape.left<0 or shape.top<0 or shape.left+shape.width>slide_right or shape.top+shape.height>slide_bottom:
+            raise VisualizerContractError(f'PowerPoint diagram primitive {shape.name} exceeds the slide bounds.')
+    nodes=[shape for shape in shapes if '::node-' in shape.name and not shape.name.endswith('::label')]
+    for index,first in enumerate(nodes):
+        for second in nodes[index+1:]:
+            overlap_x=min(first.left+first.width,second.left+second.width)-max(first.left,second.left)
+            overlap_y=min(first.top+first.height,second.top+second.height)-max(first.top,second.top)
+            if overlap_x>1 and overlap_y>1: raise VisualizerContractError('PowerPoint diagram node boxes overlap.')
+
+
+def _diagram_description(shape: Any, prefix: str, value: Mapping[str, Any]) -> None:
+    nodes=shape._element.xpath('.//p:cNvPr')
+    if nodes: nodes[0].set('descr',prefix+json.dumps(value,ensure_ascii=False,separators=(',',':')))
+
+
+def _render_diagram(slide: Any, rect: tuple[int, int, int, int], entry: Mapping[str, Any], title: str, *, page: int=1, page_count: int=1, outgoing: Sequence[tuple[int,str,str,Any]]=(), continued: bool=False) -> Any:
+    nodes,edges=_diagram_graph(entry);direction=str(entry.get('direction') or 'right')
+    heading=title+(f' · Continued {page}/{page_count}' if continued else '')
+    layout=_diagram_layout(nodes,direction,heading,rect,outgoing=bool(outgoing))
+    if layout is None: raise VisualizerContractError('PowerPoint diagram cannot fit its assigned region at readable minimum typography.')
+    start=len(slide.shapes);heading_shape=_diagram_text(slide,f'VIZ::DiagramTitle::{title}::{page}',layout['heading']['text'],layout['heading']['rect'],size=11.5,bold=True)
+    by_label={}
+    node_offset=int(entry.get('_diagram_node_offset') or 0)
+    for index,node in enumerate(layout['nodes']):
+        semantic_index=node_offset+index
+        left,top,width,height=node['rect'];shape=slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,left,top,width,height)
+        shape.name=f'VIZ::{title}::{node["label"]}::node-{semantic_index+1}';shape.fill.solid();shape.fill.fore_color.rgb=RGBColor(235,242,250);shape.line.color.rgb=RGBColor(102,133,173);shape.line.width=Pt(.9)
+        _diagram_node_text(shape,node['text'])
+        by_label[node['label']]=shape
+        _diagram_description(shape,'VisualizerDiagramNode:',{'item_id':str(entry.get('id') or ''),'node_index':semantic_index,'label':node['label'],'page':page,'page_count':page_count,'direction':layout['direction']})
+    for edge_index,source_label,target_label,_raw in edges:
+        if source_label not in by_label or target_label not in by_label: continue
+        source,target=by_label[source_label],by_label[target_label]
+        if layout['direction']=='down':
+            x1=source.left+source.width//2;y1=source.top+source.height+Inches(.005);x2=target.left+target.width//2;y2=target.top-Inches(.005)
+        else:
+            x1=source.left+source.width+Inches(.005);y1=source.top+source.height//2;x2=target.left-Inches(.005);y2=target.top+target.height//2
+        connector=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,x1,y1,x2,y2);connector.name=f'VIZ::DiagramEdge::{title}::{edge_index+1}';_set_diagram_arrow(connector)
+        _diagram_description(connector,'VisualizerSemanticEdge:',{'item_id':str(entry.get('id') or ''),'edge_index':edge_index,'source':source_label,'target':target_label,'continuation':False})
+    if outgoing:
+        source_shape=by_label[layout['nodes'][-1]['label']]
+        left,top,width,height=rect;footer_y=layout['body_bottom']+Inches(.035);footer_h=top+height-footer_y-Inches(.015)
+        footer=_diagram_text(slide,f'VIZ::DiagramContinuation::{title}::{page}','Continues on next slide',(left+Inches(.08),footer_y,width-Inches(.16),footer_h),size=8.5)
+        edge_index,source_label,target_label,_raw=outgoing[0]
+        if layout['direction']=='down':
+            x=source_shape.left+source_shape.width//2;y1=source_shape.top+source_shape.height+Inches(.005);y2=footer_y+Inches(.005)
+            connector=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,x,y1,x,y2)
+        else:
+            x1=source_shape.left+source_shape.width+Inches(.005);x2=left+width-Inches(.06);y=source_shape.top+source_shape.height//2
+            connector=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,x1,y,x2,y)
+        connector.name=f'VIZ::DiagramEdge::{title}::{edge_index+1}';_set_diagram_arrow(connector)
+        _diagram_description(connector,'VisualizerSemanticEdge:',{'item_id':str(entry.get('id') or ''),'edge_index':edge_index,'source':source_label,'target':target_label,'continuation':True})
+        for edge_index,source_label,target_label,_raw in outgoing[1:]:
+            stub=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,source_shape.left+source_shape.width//2,source_shape.top+source_shape.height+Inches(.005),source_shape.left+source_shape.width//2,footer_y+Inches(.005))
+            stub.name=f'VIZ::DiagramEdge::{title}::{edge_index+1}';_set_diagram_arrow(stub)
+            _diagram_description(stub,'VisualizerSemanticEdge:',{'item_id':str(entry.get('id') or ''),'edge_index':edge_index,'source':source_label,'target':target_label,'continuation':True})
+    all_created=[slide.shapes[index] for index in range(start,len(slide.shapes))]
+    _validate_diagram_geometry(slide,rect,all_created)
+    _diagram_description(heading_shape,'VisualizerDiagramContinuation:',{'item_id':str(entry.get('id') or ''),'page':page,'page_count':page_count,'direction':layout['direction']})
+    return by_label[nodes[0]]
+
+
+def _replace_diagram(slide: Any, shape: Any, entry: Mapping[str, Any], title: str, continuations: list[dict[str, Any]] | None=None) -> Any:
+    nodes,_edges=_diagram_graph(entry)
     if not nodes: return shape
-    left,top,width,height=shape.left,shape.top,shape.width,shape.height
-    shape._element.getparent().remove(shape._element)
-    gap=Inches(.08); node_width=max(Inches(.55),(width-gap*(len(nodes)-1))//len(nodes)); node_height=max(Inches(.35),height//3)
-    created={}
-    for index,label in enumerate(nodes):
-        node=slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE,left+index*(node_width+gap),top+(height-node_height)//2,node_width,node_height)
-        node.name=f'VIZ::{title}::{label}'; node.text_frame.text=label; created[label]=node
-    for edge in entry.get('edges') or []:
-        if not isinstance(edge,Sequence) or isinstance(edge,(str,bytes)) or len(edge)<2: continue
-        source,target=created.get(str(edge[0])),created.get(str(edge[1]))
-        if source is not None and target is not None: slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,source.left+source.width,source.top+source.height//2,target.left,target.top+target.height//2)
-    return next(iter(created.values()))
+    rect=(shape.left,shape.top,shape.width,shape.height)
+    try:
+        return _render_diagram(slide,rect,entry,title)
+    except VisualizerContractError as exc:
+        if 'cannot fit its assigned region' not in str(exc): raise
+    frame=shape.text_frame;frame.clear();frame.word_wrap=True;frame.margin_left=frame.margin_right=Inches(.08);frame.margin_top=frame.margin_bottom=Inches(.05);frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+    paragraph=frame.paragraphs[0];paragraph.text=f'{title}\nContinued on following slides';paragraph.alignment=PP_ALIGN.CENTER;paragraph.font.name='Arial';paragraph.font.size=Pt(8.5);paragraph.font.color.rgb=RGBColor(35,52,73)
+    shape.name=f'VIZ::{title}::continuation-reference';shape.fill.solid();shape.fill.fore_color.rgb=RGBColor(245,248,252);shape.line.color.rgb=RGBColor(102,133,173)
+    if continuations is not None: continuations.append({'entry':dict(entry),'title':title,'reference':shape})
+    return shape
+
+
+def _partition_diagram(entry: Mapping[str, Any], title: str, rect: tuple[int, int, int, int]) -> list[dict[str, Any]]:
+    nodes,edges=_diagram_graph(entry);direction=str(entry.get('direction') or 'right');pages=[];start=0
+    while start<len(nodes):
+        best=None
+        for end in range(start+1,len(nodes)+1):
+            internal=[edge for edge in edges if start<=nodes.index(edge[1])<end and start<=nodes.index(edge[2])<end]
+            outgoing=[edge for edge in edges if start<=nodes.index(edge[1])<end<=nodes.index(edge[2])]
+            if any(nodes.index(edge[1])!=end-1 for edge in outgoing): continue
+            if _diagram_layout(nodes[start:end],direction,title+' · Continued',rect,outgoing=bool(outgoing)) is None: break
+            subset={**entry,'nodes':nodes[start:end],'edges':[{'source':edge[1],'target':edge[2],'_diagram_edge_index':edge[0]} for edge in internal],'_diagram_node_offset':start}
+            best={'start':start,'end':end,'entry':subset,'outgoing':outgoing,'internal':internal}
+        if best is None: raise VisualizerContractError('PowerPoint diagram contains a label that cannot fit a continuation slide at readable minimum typography.')
+        pages.append(best);start=best['end']
+    return pages
+
+
+def _export_diagram_continuations(prs: Any, pending: Sequence[dict[str, Any]]) -> None:
+    prepared=[]
+    for item in pending:
+        rect=(Inches(.5),Inches(.4),prs.slide_width-Inches(1.0),prs.slide_height-Inches(.8))
+        pages=_partition_diagram(item['entry'],item['title'],rect);prepared.append((item,rect,pages))
+    page_number=len(prs.slides)+1
+    for item,rect,pages in prepared:
+        last_number=page_number+len(pages)-1
+        reference=item['reference'];reference.text_frame.clear();p=reference.text_frame.paragraphs[0];p.text=f'Diagram continues on slides {page_number}–{last_number}';p.alignment=PP_ALIGN.CENTER;p.font.name='Arial';p.font.size=Pt(8.5);p.font.color.rgb=RGBColor(35,52,73)
+        nodes,_edges=_diagram_graph(item['entry'])
+        for index,page in enumerate(pages,1):
+            slide=prs.slides.add_slide(prs.slide_layouts[6]);entry={**page['entry'],'nodes':nodes[page['start']:page['end']], 'edges':[{'source':edge[1],'target':edge[2],'_diagram_edge_index':edge[0]} for edge in page['internal']],'_diagram_node_offset':page['start']}
+            _render_diagram(slide,rect,entry,item['title'],page=index,page_count=len(pages),outgoing=page['outgoing'],continued=True)
+        page_number=last_number+1
 
 
 def _numeric(value: Any) -> bool:
@@ -480,14 +699,14 @@ def _replace_table(slide: Any, shape: Any, entry: Mapping[str, Any], title: str)
     return new_shape
 
 
-def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, Any]], plan: Mapping[str, Any], asset_data_url: Any=None) -> None:
+def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, Any]], plan: Mapping[str, Any], asset_data_url: Any=None, continuations: list[dict[str, Any]] | None=None) -> None:
     created=[slide.shapes[i] for i in range(before_count,len(slide.shapes))]
     # adapter emits one top-level shape per plan item; replacement tables are processed from the correlated originals.
     if len(created)<len(entries): raise RuntimeError('frozen PowerPoint adapter created fewer shapes than planned')
     for index,(entry,item) in enumerate(zip(entries,plan['items'])):
         shape=created[index];kind=item['kind'];title=item['title']
         if kind=='image': shape=_replace_image(slide,shape,entry,title,asset_data_url)
-        elif kind=='diagram': shape=_replace_diagram(slide,shape,entry,title)
+        elif kind=='diagram': shape=_replace_diagram(slide,shape,entry,title,continuations)
         elif kind=='wafer_map': shape=_replace_wafer_map(slide,shape,entry,title,difference=False)
         elif kind=='wafer_difference': shape=_replace_wafer_map(slide,shape,entry,title,difference=True)
         elif kind=='timeline': _fill_text_shape(shape,entry,title)
@@ -520,6 +739,7 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
     if layout_geometry is not None:
         geometry={rect['id']:rect for rect in layout_geometry['items']}
         entries=[{**entry,**geometry[str(entry['id'])]} for entry in entries]
+    if template_bytes is None: _set_blank_report_slide_size(prs,layout_geometry)
     for entry in entries:
         if str(entry.get('engine') or '')!='MetricEngine':
             continue
@@ -527,12 +747,17 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
         if issues:
             raise VisualizerContractError('; '.join(issues))
     adapter=_adapter()
-    for page_index,page_entries in enumerate(_export_pages(entries)):
+    continuations=[]
+    pages=_export_pages(entries)
+    for page_index,page_entries in enumerate(pages):
         slide=prs.slides[slide_index] if page_index==0 else prs.slides.add_slide(prs.slide_layouts[6]); target_slide_index=slide_index if page_index==0 else len(prs.slides)-1
-        plan=_plan({**(semantic_model or model),'items':page_entries},layout_geometry); before_count=len(slide.shapes)
-        adapter.insert(prs,slide_index=target_slide_index,placeholder=placeholder if page_index==0 else None,plan=plan)
-        _apply_semantics(slide,before_count,page_entries,plan,asset_data_url)
+        selected_placeholder=placeholder if page_index==0 else None
+        target=adapter.target_region(prs,slide,placeholder=selected_placeholder)
+        plan=_plan({**(semantic_model or model),'items':page_entries},layout_geometry,target_width=Inches(target['width']),target_height=Inches(target['height'])); before_count=len(slide.shapes)
+        adapter.insert(prs,slide_index=target_slide_index,placeholder=selected_placeholder,plan=plan)
+        _apply_semantics(slide,before_count,page_entries,plan,asset_data_url,continuations)
         if page_index==0 and semantic_model is not None: _set_report_metadata(slide,semantic_model)
+    _export_diagram_continuations(prs,continuations)
     output=io.BytesIO(); prs.save(output); payload=output.getvalue(); validate_pptx_bytes(payload); return payload
 
 
