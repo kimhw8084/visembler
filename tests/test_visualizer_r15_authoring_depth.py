@@ -127,7 +127,7 @@ def test_r25_smart_layout_prioritizes_growth_capable_families_and_table_preview_
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
 
-    assert 'if(!solo&&baseNeeded<layoutTargetH&&rowSpecs.length)' in editor
+    assert 'if(!solo&&baseNeeded<resolvedTargetH&&rowSpecs.length)' in editor
     assert 'const growthScore=spec=>' in editor
     assert 'plot:5,data:4.5,media:4,square:4' in editor
     assert 'for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length' not in editor

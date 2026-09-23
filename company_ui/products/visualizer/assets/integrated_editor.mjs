@@ -443,10 +443,11 @@ function semanticSmartLayout(items=viewItems()) {
   // Smart owns the safe hull. Solo composition uses only the useful semantic
   // height it needs; multi-element composition fills the report hull through
   // weighted row growth so hierarchy, not a centered island, determines mass.
-  const layoutTargetH=solo?Math.ceil(baseNeeded):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
+  const layoutTargetH=solo?baseNeeded:CANVAS.h;
+  const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
   let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
-  const usableH=layoutTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
-  if(baseNeeded>layoutTargetH) {
+  const usableH=resolvedTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  if(baseNeeded>resolvedTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
     if(minimumTotal<=usableH) {
@@ -457,11 +458,11 @@ function semanticSmartLayout(items=viewItems()) {
     } else {
       const scale=usableH/Math.max(1,minimumTotal);
       rowSpecs.forEach((spec,index)=>{spec.height=Math.max(1,minimum[index]*scale);});
-      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${layoutTargetH}px page. Increase Page size for their preferred space.`;
+      conflict=`Smart layout compacted ${ordered.length} elements to fit this ${resolvedTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  if(!solo&&baseNeeded<layoutTargetH&&rowSpecs.length){
-    let extra=layoutTargetH-baseNeeded;
+  if(!solo&&baseNeeded<resolvedTargetH&&rowSpecs.length){
+    let extra=resolvedTargetH-baseNeeded;
     const growthScore=spec=>Math.max(...spec.members.map(({entry,policy})=>{
       const family={plot:5,data:4.5,media:4,square:4,vertical:2.5,horizontal:1.2,balanced:.6,text:0}[policy.growth]||0;
       const role=suggestMessageRole(entry),roleWeight=role==='Primary Evidence' ? 1.45 : role==='Supporting Evidence' ? 1.15 : role==='Headline' ? .8 : 1;
@@ -473,8 +474,8 @@ function semanticSmartLayout(items=viewItems()) {
   }
   const rects=[];let y=g;
   for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:Math.min(spec.height,aspectHeight);if(policy.growth==='square')h=Math.min(spec.height,w);if(!policy.aspect&&policy.growth==='text')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.62,spec.height)));if(!policy.aspect&&policy.growth==='balanced')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.72,spec.height)));h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
-  if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>layoutTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(layoutTargetH-g))<.2;}
-  return {rects,height:layoutTargetH,conflict};
+  if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
+  return {rects,height:resolvedTargetH,conflict};
 }
 function smartRects(items = viewItems()) {
   const smart=model().mode==='smart',size=canvasSize(),persistedHeight=clamp(Math.round(Number(model().canvas?.height)||DEFAULT_CANVAS_SIZE.height),360,MAX_CANVAS_H);

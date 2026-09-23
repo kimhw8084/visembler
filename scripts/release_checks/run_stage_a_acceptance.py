@@ -98,7 +98,10 @@ def _rects(page):
 
 def _layout_probe(page):
     return page.evaluate("""()=>{
-      const canvas=CompanyUIVisualizerBridge.state().model.canvas;
+      // Smart can reconstruct a taller semantic page from canonical content;
+      // bound placements against that same effective geometry, not only the
+      // authored seed height retained in model.canvas.
+      const canvas=window.__VIZ_PROD__.layoutGeometry().canvas;
       const rects=window.__VIZ_PROD__.layoutRects();
       const overlap=[];
       for(let i=0;i<rects.length;i+=1)for(let j=i+1;j<rects.length;j+=1){
