@@ -3,6 +3,8 @@ from __future__ import annotations
 import asyncio
 import base64
 import io
+import inspect
+import json
 from pathlib import Path
 
 import pytest
@@ -127,6 +129,83 @@ def test_scoped_checkpoint_facade_accepts_named_checkpoint(tmp_path: Path):
 
     assert checkpoint["checkpoint"] is True
     assert checkpoint["label"] == "Weekly review"
+
+
+def test_scoped_lifecycle_adapters_have_explicit_keyword_contracts() -> None:
+    expected = {
+        'rename': ('title', 'expected_revision'),
+        'update_description': ('description', 'expected_revision'),
+        'restore_history': ('history_id', 'expected_revision'),
+    }
+    for method, keywords in expected.items():
+        parameters = inspect.signature(getattr(ScopedReportRepository, method)).parameters
+        assert tuple(parameters)[1:] == ('report_id', *keywords)
+        assert all(parameters[name].kind is inspect.Parameter.KEYWORD_ONLY for name in keywords)
+
+
+def test_scoped_details_and_history_restore_are_revisioned_audited_and_projected(tmp_path: Path) -> None:
+    repo = ReportRepository(tmp_path)
+    access = ReportAccessCatalog(repo)
+    owner = scoped(repo, access, 'alice', 'report.create')
+    first_model = canonical_model({'items': [{'id': 'c1', 'type': 'text', 'order': 0, 'text': 'first revision'}]})
+    first = owner.create('lifecycle-contract', title='First title', model=first_model, metadata={'description': 'First purpose'})
+    original_history_id = repo.list_history(first.report_id)[0]['history_id']
+    renamed = owner.rename(first.report_id, title='Second title', expected_revision=first.revision)
+    checkpoint = owner.checkpoint(first.report_id, name='Before purpose update', expected_revision=renamed.revision)
+    described = owner.update_description(first.report_id, description='Second purpose', expected_revision=renamed.revision)
+
+    with pytest.raises(RevisionConflictError):
+        owner.update_description(first.report_id, description='Stale purpose', expected_revision=renamed.revision)
+    assert repo.get(first.report_id).metadata['description'] == 'Second purpose'
+
+    restored = owner.restore_history(first.report_id, history_id=original_history_id, expected_revision=described.revision)
+    reloaded = ReportRepository(tmp_path).get(first.report_id)
+    assert restored.revision == described.revision + 1
+    assert reloaded.title == 'First title'
+    assert reloaded.metadata['description'] == 'First purpose'
+    assert reloaded.model == first_model
+    history_ids = {entry['history_id'] for entry in repo.list_history(first.report_id)}
+    assert original_history_id in history_ids and checkpoint['history_id'] in history_ids
+    summary = next(value for value in owner.list_summaries() if value['report_id'] == first.report_id)
+    assert (summary['revision'], summary['title'], summary['description']) == (restored.revision, 'First title', 'First purpose')
+    actions = [event['action'] for event in access.audit.read(report_id=first.report_id)]
+    assert {'report.rename', 'report.checkpoint', 'report.description', 'report.history.restore'} <= set(actions)
+
+    with pytest.raises(RevisionConflictError):
+        owner.restore_history(first.report_id, history_id=original_history_id, expected_revision=described.revision)
+    assert repo.get(first.report_id).revision == restored.revision
+
+
+def test_scoped_lifecycle_adapters_still_enforce_capabilities(tmp_path: Path) -> None:
+    repo = ReportRepository(tmp_path)
+    access = ReportAccessCatalog(repo)
+    owner = scoped(repo, access, 'alice', 'report.create')
+    record = owner.create('lifecycle-permissions', model=template_model('blank'))
+    access.grant(record.report_id, owner.principal, 'reader', ReportRole.VIEWER)
+    reader = scoped(repo, access, 'reader')
+    history_id = repo.list_history(record.report_id)[0]['history_id']
+    with pytest.raises(PermissionError):
+        reader.rename(record.report_id, title='Blocked', expected_revision=record.revision)
+    with pytest.raises(PermissionError):
+        reader.update_description(record.report_id, description='Blocked', expected_revision=record.revision)
+    with pytest.raises(PermissionError):
+        reader.restore_history(record.report_id, history_id=history_id, expected_revision=record.revision)
+
+
+def test_history_without_saved_metadata_remains_restorable(tmp_path: Path) -> None:
+    repo = ReportRepository(tmp_path)
+    first = repo.create('legacy-history', title='Legacy title', model=template_model('blank'), metadata={'description': 'Legacy purpose'})
+    history_path = repo._history_path(first.report_id) / 'r1.json'
+    history = json.loads(history_path.read_text(encoding='utf-8'))
+    history.pop('metadata')
+    history_path.write_text(json.dumps(history), encoding='utf-8')
+    renamed = repo.rename(first.report_id, 'Current title', expected_revision=first.revision)
+    described = repo.update_description(first.report_id, 'Current purpose', expected_revision=renamed.revision)
+
+    restored = repo.restore_history(first.report_id, 'r1', expected_revision=described.revision)
+
+    assert restored.title == 'Legacy title'
+    assert restored.metadata['description'] == 'Current purpose'
 
 
 def test_share_revoke_group_access_and_stale_commit_preserve_data(tmp_path: Path):

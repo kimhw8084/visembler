@@ -674,7 +674,7 @@ def register_visualizer(
         query_report=str(request.query_params.get('report') or '')
         editor_report_id=query_report or str(page_state.get('visualizer.current_report') or '')
         can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
-        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None}; edit_target={'report_id':None}
+        delete_target={'report_id':None,'revision':None}; restore_target={'report_id':None,'history_id':None,'revision':None}; edit_target={'report_id':None,'revision':None,'title':None,'description':None,'conflict_dirty':None}
         history_report_id=None; selected_history_id=None; hub_layout='grid'
         share_target={'report_id':None}
 
@@ -797,24 +797,67 @@ def register_visualizer(
             try:
                 record=repository.get(report_id); projection=repository.capabilities(report_id)
                 if not projection.can_rename and not projection.can_edit: raise PermissionError('report details are read-only')
-                edit_target['report_id']=record.report_id; edit_title.value=record.title; edit_description.value=str(record.metadata.get('description') or '')
+                description=str(record.metadata.get('description') or '')
+                edit_target.update(report_id=record.report_id,revision=record.revision,title=record.title,description=description,conflict_dirty=None)
+                edit_conflict_panel.set_visibility(False)
+                edit_title.value=record.title; edit_description.value=description
                 edit_title.update(); edit_description.update(); edit_dialog.open()
             except Exception as exc: notifications.error(f'Unable to edit report details: {exc}')
+
+        async def persist_edit_report(expected_revision: int, dirty: Mapping[str,bool]) -> None:
+            report_id=edit_target.get('report_id')
+            if not report_id: return
+            projection=repository.capabilities(report_id)
+            title=' '.join(str(edit_title.value or '').replace('\x00','').split())
+            description=' '.join(str(edit_description.value or '').replace('\x00','').split())
+            record=None; revision=expected_revision
+            if dirty.get('title') and projection.can_rename:
+                record=repository.rename(report_id,title=title,expected_revision=revision); revision=record.revision
+            if dirty.get('description') and projection.can_edit:
+                record=repository.update_description(report_id,description=description,expected_revision=revision); revision=record.revision
+            if record is not None:
+                edit_target.update(revision=record.revision,title=record.title,description=str(record.metadata.get('description') or ''),conflict_dirty=None)
+            edit_conflict_panel.set_visibility(False); edit_dialog.close()
+            notifications.success('Report details saved'); render_cards.refresh(); render_history.refresh()
 
         async def save_edit_report() -> None:
             report_id=edit_target.get('report_id')
             if not report_id: return
+            title=' '.join(str(edit_title.value or '').replace('\x00','').split())
+            description=' '.join(str(edit_description.value or '').replace('\x00','').split())
+            dirty={
+                'title':title != str(edit_target.get('title') or ''),
+                'description':description != str(edit_target.get('description') or ''),
+            }
             try:
-                record=repository.get(report_id); projection=repository.capabilities(report_id)
-                title=' '.join(str(edit_title.value or '').replace('\x00','').split())
-                description=' '.join(str(edit_description.value or '').replace('\x00','').split())
-                if projection.can_rename and title != record.title:
-                    record=repository.rename(report_id,title=title,expected_revision=record.revision)
-                if projection.can_edit and description != str(record.metadata.get('description') or ''):
-                    record=repository.update_description(report_id,description,expected_revision=record.revision)
-                edit_dialog.close(); notifications.success('Report details saved'); render_cards.refresh(); render_history.refresh()
-            except RevisionConflictError: notifications.error('Report changed elsewhere; reload the report hub before saving details.')
+                await persist_edit_report(int(edit_target['revision']),dirty)
+            except RevisionConflictError as exc:
+                edit_target['conflict_dirty']=dirty
+                edit_conflict_summary.set_text(f'Report changed after revision {edit_target["revision"]}. Your entered details are still here. Choose to reload and discard them, or deliberately save this draft as a new revision. Current revision: {exc.received}.')
+                edit_conflict_panel.set_visibility(True)
             except Exception as exc: notifications.error(f'Report details rejected: {exc}')
+
+        async def reload_edit_conflict() -> None:
+            report_id=edit_target.get('report_id')
+            if not report_id: return
+            try:
+                record=repository.get(report_id); description=str(record.metadata.get('description') or '')
+                edit_target.update(revision=record.revision,title=record.title,description=description,conflict_dirty=None)
+                edit_title.value=record.title; edit_description.value=description; edit_title.update(); edit_description.update()
+                edit_conflict_panel.set_visibility(False)
+            except Exception as exc: notifications.error(f'Unable to reload report details: {exc}')
+
+        async def resolve_edit_conflict() -> None:
+            report_id=edit_target.get('report_id'); dirty=edit_target.get('conflict_dirty')
+            if not report_id or not isinstance(dirty,Mapping): return
+            try:
+                latest=repository.get(report_id)
+                await persist_edit_report(latest.revision,dirty)
+            except RevisionConflictError as exc:
+                edit_target['conflict_dirty']=dirty
+                edit_conflict_summary.set_text(f'Report changed again before the draft could be saved. Your entered details remain here. Current revision: {exc.received}. Choose Save retained draft again to resolve against the latest revision.')
+                edit_conflict_panel.set_visibility(True)
+            except Exception as exc: notifications.error(f'Retained report details rejected: {exc}')
 
         def select_history(report_id: str, history_id: str | None = None) -> None:
             nonlocal history_report_id, selected_history_id
@@ -847,14 +890,15 @@ def register_visualizer(
             repository.require_export(report_id)
             record=repository.get(report_id); payload=stable_json({'report_id':record.report_id,'title':record.title,'description':record.metadata.get('description',''),'revision':record.revision,'model':record.model}).encode('utf-8'); downloads.download(f'{record.title or "visembler-report"}.json',payload,media_type='application/json')
 
-        def begin_history_restore(report_id: str,history_id: str,summary: str) -> None:
-            restore_target.update(report_id=report_id,history_id=history_id); history_restore_summary.set_text(f'Restore {summary}? This replaces the active report state and creates a new revision.'); history_restore_dialog.open()
+        def begin_history_restore(report_id: str,history_id: str,summary: str,revision: int) -> None:
+            restore_target.update(report_id=report_id,history_id=history_id,revision=revision); history_restore_summary.set_text(f'Restore {summary}? This replaces the active report state and creates a new revision.'); history_restore_dialog.open()
 
         async def confirm_history_restore() -> None:
             report_id=restore_target.get('report_id'); history_id=restore_target.get('history_id')
             if not report_id or not history_id: return
             try:
-                record=repository.get(report_id); repository.restore_history(report_id,history_id,expected_revision=record.revision); history_restore_dialog.close(); notifications.success('Revision restored as a new revision'); render_cards.refresh(); render_history.refresh()
+                repository.restore_history(report_id,history_id=history_id,expected_revision=int(restore_target['revision'])); history_restore_dialog.close(); notifications.success('Revision restored as a new revision'); render_cards.refresh(); render_history.refresh()
+            except RevisionConflictError: history_restore_summary.set_text('The report changed after this history view loaded. Close this prompt, reload history, and select the saved revision again before restoring.')
             except Exception as exc: notifications.error(f'Revision restore rejected: {exc}')
 
         async def duplicate_hub_history(report_id: str,history_id: str) -> None:
@@ -1014,7 +1058,7 @@ def register_visualizer(
                                     ui.label('Selected revision' if is_selected else 'Saved revision').classes('cui-history-card-title'); ui.label(summary).classes('cui-history-card-meta'); ui.label(f'Changes from selected revision: {_history_diff_summary(historical,record.model)}').classes('cui-history-card-meta'); ui.label(f'Checkpoint metadata · {"named" if entry.get("checkpoint") else "automatic save"} · saved by {entry.get("actor_subject") or "account owner"}').classes('cui-history-card-meta')
                                     with ui.element('div').classes('cui-history-actions'):
                                         Button('View this revision',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,hid=history_id:select_history_revision(hid)).element.props(f'data-history-action="select" aria-pressed="{str(is_selected).lower()}"')
-                                        if is_selected and projection.can_restore_history: Button('Restore as new revision',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id,s=summary:begin_history_restore(rid,hid,s)).element.props('data-history-action="restore"')
+                                        if is_selected and projection.can_restore_history: Button('Restore as new revision',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id,s=summary,rev=record.revision:begin_history_restore(rid,hid,s,rev)).element.props('data-history-action="restore"')
                                         if is_selected and projection.can_duplicate: Button('Duplicate selected revision',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id:duplicate_hub_history(rid,hid)).element.props('data-history-action="duplicate"')
 
         new_report_dialog=FormDialog('Create a report',description='Start from the supported Visembler blueprint that best matches the work you need to explain.',secondary_label='Cancel')
@@ -1033,10 +1077,16 @@ def register_visualizer(
         with import_hub_dialog.body:
             FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_hub_report)
 
-        edit_dialog=FormDialog('Edit report details',description='Changes to the name or purpose are saved as governed report revisions.',primary_label='Save details',secondary_label='Cancel',on_primary=save_edit_report)
+        edit_dialog=FormDialog('Edit report details',description='Changes to the name or purpose are saved as governed report revisions.',primary_label='Save details',secondary_label='Cancel',close_on_primary=False,on_primary=save_edit_report)
         with edit_dialog.body:
             edit_title=ui.input(label='Report name',placeholder='Give this report a recognizable name').props('outlined dense hide-bottom-space').classes('w-full')
             edit_description=ui.textarea(label='Purpose',placeholder='What should someone understand or resume here?').props('outlined dense hide-bottom-space rows=3').classes('w-full')
+            with ui.column().classes('w-full') as edit_conflict_panel:
+                edit_conflict_summary=ui.label('').classes('cui-field-description')
+                with ui.row().classes('items-center gap-2'):
+                    Button('Save retained draft as new revision',intent=ButtonIntent.PRIMARY,on_click=resolve_edit_conflict)
+                    Button('Reload latest and discard draft',intent=ButtonIntent.SECONDARY,on_click=reload_edit_conflict)
+            edit_conflict_panel.set_visibility(False)
 
         share_dialog=FormDialog('Manage report access',description='Choose a person or group and the access they should have. Existing stable identity and group semantics are preserved.',secondary_label='Close')
         with share_dialog.body:
@@ -1052,7 +1102,7 @@ def register_visualizer(
         with delete_dialog.body:
             delete_summary=ui.label('Select a report to move to trash.').classes('cui-dialog__body-copy')
 
-        history_restore_dialog=FormDialog('Restore a saved revision',description='The current report remains in history. Restoring creates a new governed revision and keeps prior history available.',primary_label='Restore as new revision',secondary_label='Cancel',on_primary=confirm_history_restore)
+        history_restore_dialog=FormDialog('Restore a saved revision',description='The current report remains in history. Restoring creates a new governed revision and keeps prior history available.',primary_label='Restore as new revision',secondary_label='Cancel',close_on_primary=False,on_primary=confirm_history_restore)
         with history_restore_dialog.body:
             history_restore_summary=ui.label('Choose a saved revision to restore.').classes('cui-dialog__body-copy')
 
@@ -1113,6 +1163,8 @@ def register_visualizer(
         except Exception: current=records[0]
         page_state['visualizer.current_report']=current.report_id
         current_capabilities=repository.capabilities(current.report_id)
+        history_target_revision={'value':current.revision}
+        report_edit_conflict={'field':None,'value':None,'revision':None}
         ppt_template:dict[str,Any]={'name':None,'content':None}
 
         def session_key(dataset_id: str, raw_session_id: str) -> str:
@@ -1364,6 +1416,16 @@ def register_visualizer(
             result=session.query(query)
             return {'rows': list(result.rows), 'total': result.total, 'filtered_total': result.filtered_total, 'revision': result.revision, 'source_revision': result.source_revision}
 
+        def session_report_revision(payload: Mapping[str,Any]) -> int:
+            try: revision=int(payload['base_revision'])
+            except (KeyError,TypeError,ValueError) as exc: raise VisualizerContractError('report base_revision is required for edits') from exc
+            if revision<1: raise VisualizerContractError('report base_revision must be positive')
+            return revision
+
+        def require_current_report_revision(expected_revision: int) -> None:
+            latest=repository.get(current.report_id)
+            if latest.revision!=expected_revision: raise RevisionConflictError(expected_revision,latest.revision)
+
         async def send(kind: str, payload: Mapping[str,Any]) -> None:
             message={'bridge_version':BRIDGE_VERSION,'type':kind,'payload':dict(payload)}
             await ui.run_javascript(f'window.CompanyUIVisualizerBridge?.receive({json.dumps(message,ensure_ascii=False)})')
@@ -1393,7 +1455,7 @@ def register_visualizer(
                     model_value=payload.get('model')
                     if not isinstance(model_value,Mapping): raise VisualizerContractError('commit model is required')
                     canonical=canonical_model(model_value); _validate_model_images(canonical)
-                    record=repository.commit(report_id,base_revision=int(payload.get('base_revision')),model=canonical,commit_id=str(payload.get('commit_id') or ''))
+                    record=repository.commit(report_id,base_revision=session_report_revision(payload),model=canonical,commit_id=str(payload.get('commit_id') or ''))
                     current=record
                     await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint']})
                     return
@@ -1510,6 +1572,8 @@ def register_visualizer(
                     downloads.download(filename,_dataset_export_bytes(resource['fields'],rows,delimiter='\t' if suffix=='tsv' else ','),media_type=media_type)
                     await send('application.notification',{'level':'success','message':f'Exported {scope} dataset ({len(rows):,} rows)'}); return
                 if kind=='dataset.resource_requested':
+                    base_revision=session_report_revision(payload)
+                    require_current_report_revision(base_revision)
                     dataset_value=payload.get('dataset')
                     if not isinstance(dataset_value, Mapping): raise VisualizerContractError('dataset resource payload is required')
                     dataset_id=str(dataset_value.get('id') or '')
@@ -1525,7 +1589,7 @@ def register_visualizer(
                         preview=dataset_store.preview(resource['dataset_id'])
                         external={**dict(source_dataset),'external':True,'resource_id':resource['dataset_id'],'revision':resource['revision'],'fields':preview['fields'],'rows':preview['rows'],'row_count':preview['row_count'],'content_fingerprint':preview['content_fingerprint']}
                         model_value={**dict(current.model),'datasets':[external if str(value.get('id'))==dataset_id else value for value in current.model.get('datasets',[])]}
-                        record=repository.commit(current.report_id,base_revision=int(payload.get('base_revision',current.revision)),model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
+                        record=repository.commit(current.report_id,base_revision=base_revision,model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
                     except Exception:
                         dataset_store.delete(resource['dataset_id'])
                         raise
@@ -1533,6 +1597,8 @@ def register_visualizer(
                     await send('report.commit_result',{'report_id':record.report_id,'revision':record.revision,'commit_id':str(payload.get('commit_id') or ''),'fingerprint':record.to_dict()['fingerprint'],'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{current.report_id}')})
                     await send('report.bootstrap',{**report_payload(record),'request_id':payload.get('request_id'),'request_dataset_id':dataset_id,'request_session_id':str(payload.get('session_id') or f'report:{record.report_id}')}); return
                 if kind=='dataset.resource_refresh_requested':
+                    base_revision=session_report_revision(payload)
+                    require_current_report_revision(base_revision)
                     dataset_id=str(payload.get('dataset_id') or '')
                     dataset_value=payload.get('dataset')
                     if not isinstance(dataset_value, Mapping): raise VisualizerContractError('dataset refresh payload is required')
@@ -1553,7 +1619,7 @@ def register_visualizer(
                     try:
                         preview=dataset_store.preview(resource['dataset_id'],revision=resource['revision'])
                         model_value={**dict(current.model),'datasets':[({**dict(value),'revision':resource['revision'],'fields':preview['fields'],'rows':preview['rows'],'row_count':preview['row_count'],'content_fingerprint':preview['content_fingerprint'],'external':True} if isinstance(value,Mapping) and str(value.get('id'))==dataset_id else value) for value in current.model.get('datasets',[])]}
-                        record=repository.commit(current.report_id,base_revision=int(payload.get('base_revision',current.revision)),model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
+                        record=repository.commit(current.report_id,base_revision=base_revision,model=canonical_model(model_value),commit_id=str(payload.get('commit_id') or ''))
                     except Exception:
                         # The old report binding remains authoritative if the
                         # report commit fails; the immutable new revision is
@@ -1587,20 +1653,58 @@ def register_visualizer(
             except Exception as exc: notifications.error(f'Duplicate rejected: {exc}')
 
         async def rename_report(event: Any) -> None:
+            value=str(getattr(event,'value','') or '').strip()
+            if report_edit_conflict['field']:
+                report_edit_conflict['value']=value
+                return
+            if value==current.title: return
+            expected_revision=current.revision
             try:
-                latest=repository.get(current.report_id); value=str(getattr(event,'value','') or '').strip()
-                if value==latest.title: return
-                await activate(repository.rename(latest.report_id,title=value,expected_revision=latest.revision),notice='Report renamed')
-            except RevisionConflictError: await activate(repository.get(current.report_id),notice='Report changed elsewhere; latest revision loaded')
+                await activate(repository.rename(current.report_id,title=value,expected_revision=expected_revision),notice='Report renamed')
+            except RevisionConflictError as exc:
+                show_inline_report_conflict('title',value,expected_revision,exc.received)
             except Exception as exc: notifications.error(f'Rename rejected: {exc}')
 
         async def update_report_description(event: Any) -> None:
+            value=str(getattr(event,'value','') or '')
+            if report_edit_conflict['field']:
+                report_edit_conflict['value']=value
+                return
+            if value.strip()==str(current.metadata.get('description') or ''): return
+            expected_revision=current.revision
             try:
-                latest=repository.get(current.report_id); value=str(getattr(event,'value','') or '')
-                if value.strip()==str(latest.metadata.get('description') or ''): return
-                await activate(repository.update_description(latest.report_id,value,expected_revision=latest.revision),notice='Report description updated')
-            except RevisionConflictError: await activate(repository.get(current.report_id),notice='Report changed elsewhere; latest revision loaded')
+                await activate(repository.update_description(current.report_id,description=value,expected_revision=expected_revision),notice='Report description updated')
+            except RevisionConflictError as exc:
+                show_inline_report_conflict('description',value,expected_revision,exc.received)
             except Exception as exc: notifications.error(f'Description update rejected: {exc}')
+
+        def show_inline_report_conflict(field: str,value: str,expected_revision: int,received_revision: int) -> None:
+            report_edit_conflict.update(field=field,value=value,revision=expected_revision)
+            report_conflict_summary.set_text(f'Report changed after revision {expected_revision}. Your {"title" if field=="title" else "description"} draft is still in its field. Current revision: {received_revision}. Choose to reload and discard it, or deliberately save it as a new revision.')
+            report_conflict_dialog.open()
+
+        async def resolve_inline_report_conflict() -> None:
+            field=report_edit_conflict.get('field')
+            if field not in {'title','description'}: return
+            control=report_title if field=='title' else report_description
+            value=str(getattr(control,'value','') or '') if control is not None else str(report_edit_conflict.get('value') or '')
+            report_edit_conflict['value']=value
+            try:
+                latest=repository.get(current.report_id)
+                if field=='title': record=repository.rename(latest.report_id,title=value,expected_revision=latest.revision)
+                else: record=repository.update_description(latest.report_id,description=value,expected_revision=latest.revision)
+                report_edit_conflict.update(field=None,value=None,revision=None); report_conflict_dialog.close()
+                await activate(record,notice='Retained draft saved as a new revision')
+            except RevisionConflictError as exc:
+                show_inline_report_conflict(field,value,int(report_edit_conflict.get('revision') or current.revision),exc.received)
+            except Exception as exc: notifications.error(f'Retained report draft rejected: {exc}')
+
+        async def reload_inline_report_conflict() -> None:
+            try:
+                latest=repository.get(current.report_id)
+                report_edit_conflict.update(field=None,value=None,revision=None); report_conflict_dialog.close()
+                await activate(latest,notice='Latest report revision reloaded; the draft was discarded')
+            except Exception as exc: notifications.error(f'Unable to reload the latest report: {exc}')
 
         async def select_report(event: Any) -> None:
             report_id=str(getattr(event,'value','') or '')
@@ -1647,14 +1751,17 @@ def register_visualizer(
 
         async def open_history() -> None:
             entries=repository.list_history(current.report_id)
+            history_target_revision['value']=current.revision
             history_select.options={entry['history_id']:f"r{entry['revision']} · {entry.get('label') or 'Saved revision'}" for entry in entries}
             history_select.value=entries[0]['history_id'] if entries else None; history_select.update(); history_dialog.open()
 
         async def restore_history_selected() -> None:
             if not history_select.value: return
-            latest=repository.get(current.report_id)
-            await activate(repository.restore_history(latest.report_id,str(history_select.value),expected_revision=latest.revision),notice='Historical revision restored')
-            history_dialog.close()
+            try:
+                record=repository.restore_history(current.report_id,history_id=str(history_select.value),expected_revision=int(history_target_revision['value']))
+                history_dialog.close(); await activate(record,notice='Historical revision restored as a new report revision')
+            except RevisionConflictError:
+                notifications.warning('Report changed after history loaded. Close history, reload it, and select the revision again before restoring.')
 
         async def duplicate_history_selected() -> None:
             if not history_select.value: return
@@ -1664,7 +1771,7 @@ def register_visualizer(
         async def create_checkpoint() -> None:
             name=' '.join(str(checkpoint_name.value or '').split())
             if not name: notifications.warning('Enter a checkpoint name first'); return
-            latest=repository.get(current.report_id); repository.checkpoint(latest.report_id,name=name,expected_revision=latest.revision)
+            repository.checkpoint(current.report_id,name=name,expected_revision=int(history_target_revision['value']))
             checkpoint_name.value=''; checkpoint_name.update(); await open_history(); notifications.success('Checkpoint created')
 
         async def upload_report(event: Any) -> None:
@@ -1801,6 +1908,10 @@ def register_visualizer(
                     ui.button('Duplicate revision',on_click=duplicate_history_selected).props('flat no-caps')
                     # company-ui: allow-ai005 — see dialog compatibility host above.
                     ui.button('Close',on_click=history_dialog.close).props('flat no-caps')
+            report_conflict_dialog=FormDialog('Report changed elsewhere',description='The save was rejected because this session edited an older revision. Your field draft remains available until you choose how to resolve it.',primary_label='Save retained draft as new revision',secondary_label='Reload latest and discard draft',close_on_primary=False,close_on_secondary=False,on_primary=resolve_inline_report_conflict,on_secondary=reload_inline_report_conflict)
+            report_conflict_dialog.element.props('data-testid="report-edit-conflict"')
+            with report_conflict_dialog.body:
+                report_conflict_summary=ui.label('Your draft is retained.').classes('cui-dialog__body-copy')
             # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
             import_dialog=ui.dialog()
             with import_dialog:
