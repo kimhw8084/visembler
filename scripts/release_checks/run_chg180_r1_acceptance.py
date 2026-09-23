@@ -287,7 +287,11 @@ def structural_rca(path: Path, expected_model: dict) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', required=True, type=Path)
+    parser.add_argument('--candidate-sha', help='Require capture from this committed candidate SHA.')
+    parser.add_argument('--candidate-tree', help='Require capture from this committed candidate tree.')
     args = parser.parse_args()
+    if bool(args.candidate_sha) != bool(args.candidate_tree):
+        parser.error('--candidate-sha and --candidate-tree must be provided together')
     output = args.output.expanduser().resolve()
     shots = output / 'screenshots'
     exports = output / 'powerpoints'
@@ -299,6 +303,7 @@ def main() -> int:
     receipt = {
         'schema': 'visembler-chg180-r1-native-acceptance.v1', 'status': 'FAIL',
         'requested_base_sha': BASE_SHA, 'requested_base_tree': BASE_TREE,
+        'candidate_sha': args.candidate_sha, 'candidate_tree': args.candidate_tree,
         'capture_start_head': head, 'capture_start_tree': tree,
         'source_tree': source_tree,
         'source_files_sha256': {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in SOURCE_FILES},
@@ -308,8 +313,15 @@ def main() -> int:
     }
     events = BrowserEvents()
     try:
-        assert head == BASE_SHA, f'Acceptance started on {head}, expected exact base {BASE_SHA}.'
-        assert tree == BASE_TREE, f'Acceptance started on tree {tree}, expected exact tree {BASE_TREE}.'
+        if args.candidate_sha:
+            assert head == args.candidate_sha, f'Acceptance started on {head}, expected candidate {args.candidate_sha}.'
+            assert tree == args.candidate_tree, f'Acceptance started on tree {tree}, expected candidate tree {args.candidate_tree}.'
+            assert source_tree == tree, f'Committed candidate tree {tree} differs from captured source tree {source_tree}.'
+            dirty = subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()
+            assert not dirty, 'Candidate-mode acceptance requires a clean worktree.'
+        else:
+            assert head == BASE_SHA, f'Acceptance started on {head}, expected exact base {BASE_SHA}.'
+            assert tree == BASE_TREE, f'Acceptance started on tree {tree}, expected exact tree {BASE_TREE}.'
         with tempfile.TemporaryDirectory(prefix='visembler-chg180-r1-') as temporary:
             with NativeHost(ROOT, Path(temporary) / 'data') as host:
                 ops_id = host.create(model=operations_model(), name='chg180-r1-dense-operations')
