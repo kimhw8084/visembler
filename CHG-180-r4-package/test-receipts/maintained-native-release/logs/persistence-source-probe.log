@@ -1,0 +1,101 @@
+{
+  "source_sha256": "c175ca676ea1812766ecacbffd54e697554de807c5e4590decb16811203bf46f",
+  "baseline": "26e4fc0dde87d7ebee54ce1734e31abc11a198d1",
+  "checked_head": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+  "dirty": "",
+  "mode": "actual-checkout-isolated-functions",
+  "scope": "Journal and bridge dispatch source functions. Explicit EditorStore, DOM, storage and transport test doubles; not full browser or persistence acceptance.",
+  "counts": {
+    "PASS": 8,
+    "FAIL": 0,
+    "ERROR": 0
+  },
+  "results": [
+    {
+      "id": "CONTROL-REDO",
+      "title": "Immediate redo model reflects the forward operation",
+      "status": "PASS",
+      "observed": {
+        "displayModel": 99,
+        "recordedAfter": 99
+      }
+    },
+    {
+      "id": "PERSIST-REDO",
+      "title": "Replaying queued redo operations produces canonical_after",
+      "status": "PASS",
+      "observed": {
+        "canonicalAfter": 99,
+        "replayedValue": 99,
+        "queuedOps": [
+          {
+            "op": "item.patch",
+            "id": "c1",
+            "patch": {
+              "value": 99
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "CONTROL-PENDING",
+      "title": "Existing pending journal is restored on reload",
+      "status": "PASS",
+      "observed": {
+        "recovered": true
+      }
+    },
+    {
+      "id": "PERSIST-RECOVERY",
+      "title": "Recovery-only draft survives persist then reload",
+      "status": "PASS",
+      "observed": {
+        "savedPending": 0,
+        "savedRecoveryOps": 1,
+        "recovered": true
+      }
+    },
+    {
+      "id": "PERSIST-STORAGE",
+      "title": "Failed local recovery storage produces a visible failure signal",
+      "status": "PASS",
+      "observed": {
+        "localWrites": 0,
+        "notifications": [
+          "Local recovery copy could not be saved. Export JSON before closing this tab."
+        ],
+        "persistenceFailure": null
+      }
+    },
+    {
+      "id": "CONTROL-CONFLICT",
+      "title": "Current-report conflict is routed for recovery",
+      "status": "PASS",
+      "observed": {
+        "replacements": [
+          "B"
+        ]
+      }
+    },
+    {
+      "id": "PERSIST-LATE-CONFLICT",
+      "title": "Late conflict from report A cannot replace active B",
+      "status": "PASS",
+      "observed": {
+        "replacements": [],
+        "inflight": "B-save"
+      }
+    },
+    {
+      "id": "PERSIST-LATE-ERROR",
+      "title": "Late error from report A cannot replace active B",
+      "status": "PASS",
+      "observed": {
+        "replacements": [],
+        "persistenceFailure": null
+      }
+    }
+  ]
+}
+

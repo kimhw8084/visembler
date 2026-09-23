@@ -1,0 +1,384 @@
+{
+  "created_at": "2026-09-23T22:13:09Z",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.11.7 (main, Dec 15 2023, 12:09:56) [Clang 14.0.6 ]",
+  "host_mode": "native",
+  "source_editor_sha256": "c175ca676ea1812766ecacbffd54e697554de807c5e4590decb16811203bf46f",
+  "source_page_sha256": "50b2fb2dfb45f5823f60c07e0fe4e7fbd638b8d4f88caca665acf652e71d0b2c",
+  "checks": [
+    {
+      "name": "repository-contracts",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_repository_contracts.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/repository-contracts.json"
+      ],
+      "log": "logs/repository-contracts.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 2.051
+    },
+    {
+      "name": "company-boundary-model",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_user_acceptance.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/company-boundary-model.json"
+      ],
+      "log": "logs/company-boundary-model.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.281
+    },
+    {
+      "name": "company-boundary-browser",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_boundary_browser_gate.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/company-boundary-browser.json"
+      ],
+      "log": "logs/company-boundary-browser.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 6.569
+    },
+    {
+      "name": "company-readiness-local",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_production_readiness.py",
+        "--data-dir",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/company-readiness-data",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/company-readiness-local.json"
+      ],
+      "log": "logs/company-readiness-local.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.497
+    },
+    {
+      "name": "company-capacity",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_capacity.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/company-capacity.json"
+      ],
+      "log": "logs/company-capacity.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 26.009
+    },
+    {
+      "name": "element-coverage",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/verify_element_coverage.py",
+        "--json"
+      ],
+      "log": "logs/element-coverage.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.045
+    },
+    {
+      "name": "delivery-tests",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_visualizer_completion_delivery.py",
+        "tests/test_visualizer_production_closeout.py",
+        "--tb=short",
+        "--junitxml=/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/delivery-tests.xml"
+      ],
+      "log": "logs/delivery-tests.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.723
+    },
+    {
+      "name": "full-tests",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "-m",
+        "pytest",
+        "--tb=short",
+        "--junitxml=/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/full-tests.xml"
+      ],
+      "log": "logs/full-tests.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 118.642
+    },
+    {
+      "name": "syntax-integrated_editor.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257/company_ui/products/visualizer/assets/integrated_editor.mjs"
+      ],
+      "log": "logs/syntax-integrated_editor.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.048
+    },
+    {
+      "name": "syntax-element_renderer.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257/company_ui/products/visualizer/assets/element_renderer.mjs"
+      ],
+      "log": "logs/syntax-element_renderer.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.044
+    },
+    {
+      "name": "syntax-authoring_dataset_refresh.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257/company_ui/products/visualizer/assets/authoring_dataset_refresh.mjs"
+      ],
+      "log": "logs/syntax-authoring_dataset_refresh.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.024
+    },
+    {
+      "name": "syntax-authoring_portability.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257/company_ui/products/visualizer/assets/authoring_portability.mjs"
+      ],
+      "log": "logs/syntax-authoring_portability.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.024
+    },
+    {
+      "name": "syntax-authoring_intake_client.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257/company_ui/products/visualizer/assets/authoring_intake_client.mjs"
+      ],
+      "log": "logs/syntax-authoring_intake_client.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.024
+    },
+    {
+      "name": "persistence-source-probe",
+      "command": [
+        "node",
+        "scripts/release_checks/probe_persistence.mjs",
+        "--repo",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7675ff109d8b7d17bd8ef257",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/persistence-source.json"
+      ],
+      "log": "logs/persistence-source-probe.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.09
+    },
+    {
+      "name": "git-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "log": "logs/git-diff-check.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.024
+    },
+    {
+      "name": "elements",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_editor_workflows.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/elements",
+        "--native"
+      ],
+      "log": "logs/elements.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 66.416
+    },
+    {
+      "name": "data",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_data_workflows.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/data",
+        "--native"
+      ],
+      "log": "logs/data.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 22.02
+    },
+    {
+      "name": "performance",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/measure_editor.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/performance",
+        "--native"
+      ],
+      "log": "logs/performance.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 3.605
+    },
+    {
+      "name": "report-lifecycle-integrity",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/report-lifecycle-integrity"
+      ],
+      "log": "logs/report-lifecycle-integrity.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 8.926
+    },
+    {
+      "name": "chart-studio",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chart_studio_acceptance.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/chart-studio"
+      ],
+      "log": "logs/chart-studio.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 46.395
+    },
+    {
+      "name": "report-hub-browser-errors",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_report_hub_browser_error_gate.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/report-hub-browser-errors"
+      ],
+      "log": "logs/report-hub-browser-errors.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 13.783
+    },
+    {
+      "name": "native-recovery",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_native_recovery.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/native-recovery"
+      ],
+      "log": "logs/native-recovery.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 9.081
+    },
+    {
+      "name": "worker-lifecycle",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_worker_lifecycle.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/worker-lifecycle"
+      ],
+      "log": "logs/worker-lifecycle.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 18.444
+    },
+    {
+      "name": "operations-drill",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_operations_drill.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/operations-drill"
+      ],
+      "log": "logs/operations-drill.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 9.343
+    },
+    {
+      "name": "native-acceptance",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_native_acceptance.py",
+        "--output",
+        "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r4/maintained-native-release-final-candidate/native-acceptance"
+      ],
+      "log": "logs/native-acceptance.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 7.157
+    },
+    {
+      "name": "source-stability",
+      "status": "PASS"
+    },
+    {
+      "name": "frozen-connector",
+      "status": "PASS"
+    }
+  ],
+  "required_gates": [
+    "chart-studio",
+    "company-boundary-browser",
+    "company-boundary-model",
+    "company-capacity",
+    "company-readiness-local",
+    "data",
+    "delivery-tests",
+    "element-coverage",
+    "elements",
+    "frozen-connector",
+    "full-tests",
+    "git-diff-check",
+    "native-acceptance",
+    "native-recovery",
+    "operations-drill",
+    "performance",
+    "persistence-source-probe",
+    "report-hub-browser-errors",
+    "report-lifecycle-integrity",
+    "repository-contracts",
+    "source-stability",
+    "syntax-authoring_dataset_refresh.mjs",
+    "syntax-authoring_intake_client.mjs",
+    "syntax-authoring_portability.mjs",
+    "syntax-element_renderer.mjs",
+    "syntax-integrated_editor.mjs",
+    "worker-lifecycle"
+  ],
+  "remaining_release_validation": [],
+  "checks_status": "PASS",
+  "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "company_boundary_status": "READY_FOR_COMPANY_TARGET_CERTIFICATION",
+  "managed_target_status": "PENDING",
+  "supported_scope": "single local/internal-pilot instance; shared-network identity/authorization/hosting remain organization-managed",
+  "git_status_at_start": [],
+  "reason": "All bounded local/internal-pilot gates passed on this exact source."
+}

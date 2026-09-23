@@ -1,0 +1,164 @@
+{
+  "schema": "visembler-chg180-r4-source-runtime-identity.v1",
+  "fabric_job_id": "CF-7675ff109d8b7d17bd8ef257",
+  "project": "visembler",
+  "request": "CHG-180-r4",
+  "operation": "FIX",
+  "target": {
+    "branch": "main",
+    "requested_sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "requested_tree": "e279190e4709e4914054e7098a0d1421723c8a6e",
+    "remote_main_at_completion": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "target_drift": "UNCHANGED",
+    "target_mutated": false
+  },
+  "work": {
+    "branch": "fix/visembler-chg180-process-flow-ppt-r4",
+    "candidate_sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+    "candidate_tree": "c503a9f59d3b3a18b0a6d50c416b0383156c28ea",
+    "remote_work_head": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+    "worktree_clean": true,
+    "source_tree": "c503a9f59d3b3a18b0a6d50c416b0383156c28ea"
+  },
+  "predecessor": {
+    "candidate_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "tree": "134654fc35440dfb13d8879816b793a78491c7f2",
+    "existing_commits_preserved_without_rewrite": true,
+    "fast_forwarded_from_requested_base": true,
+    "ancestry_commits_from_base_to_candidate": [
+      "72c10f175a3d729698aaefe8de64ff0f3cb7f165",
+      "13e743fb5cac981547ab8d045d51473aa45786f7",
+      "1f7925c8c1917e3de406af60affa929a6997280f",
+      "d3604ef59ca4d8de579a19b386a1e08e2efe1e8e",
+      "2060c65f2ceec9142f67ed3004c67f3317b39a30",
+      "fd906110ea9f5bc10b99e24d3931bf8463fa7b23"
+    ]
+  },
+  "r4_commits": [
+    {
+      "sha": "d3604ef59ca4d8de579a19b386a1e08e2efe1e8e",
+      "parent": "1f7925c8c1917e3de406af60affa929a6997280f",
+      "purpose": "directional, bounded editable DiagramEngine geometry and deterministic continuation with focused tests and label acceptance normalization"
+    },
+    {
+      "sha": "2060c65f2ceec9142f67ed3004c67f3317b39a30",
+      "parent": "d3604ef59ca4d8de579a19b386a1e08e2efe1e8e",
+      "purpose": "remove hidden centered placeholder text from rendered diagram container; assert collision regression"
+    },
+    {
+      "sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+      "parent": "2060c65f2ceec9142f67ed3004c67f3317b39a30",
+      "purpose": "synchronize maintained certification automated-test counts to 1,175 collected tests"
+    }
+  ],
+  "r4_changed_files_since_predecessor": [
+    "company_ui/products/visualizer/ppt_service.py",
+    "tests/test_visualizer_chg180_r1.py",
+    "scripts/release_checks/run_chg180_r1_acceptance.py",
+    "company_ui/certification/certification_manifest.json"
+  ],
+  "runtime": {
+    "os": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "python_pptx": "1.0.2",
+    "browser": "Chromium 151.0.7922.34",
+    "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+    "maintained_verifier_status": "PASS",
+    "target_company_gold_certification_claimed": false
+  },
+  "test_results": {
+    "focused_regressions": {
+      "status": "PASS",
+      "tests": 130,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "receipt": "focused-tests-final-candidate.xml"
+    },
+    "maintained_full_pytest": {
+      "status": "PASS",
+      "tests": 1175,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "receipt": "maintained-native-release-final-candidate/full-tests.xml"
+    },
+    "maintained_native_release": {
+      "status": "PASS",
+      "check_count": 25,
+      "checks": {
+        "repository-contracts": "PASS",
+        "company-boundary-model": "PASS",
+        "company-boundary-browser": "PASS",
+        "company-readiness-local": "PASS",
+        "company-capacity": "PASS",
+        "element-coverage": "PASS",
+        "delivery-tests": "PASS",
+        "full-tests": "PASS",
+        "syntax-integrated_editor.mjs": "PASS",
+        "syntax-element_renderer.mjs": "PASS",
+        "syntax-authoring_dataset_refresh.mjs": "PASS",
+        "syntax-authoring_portability.mjs": "PASS",
+        "syntax-authoring_intake_client.mjs": "PASS",
+        "persistence-source-probe": "PASS",
+        "git-diff-check": "PASS",
+        "elements": "PASS",
+        "data": "PASS",
+        "performance": "PASS",
+        "report-lifecycle-integrity": "PASS",
+        "chart-studio": "PASS",
+        "report-hub-browser-errors": "PASS",
+        "native-recovery": "PASS",
+        "worker-lifecycle": "PASS",
+        "operations-drill": "PASS",
+        "native-acceptance": "PASS"
+      },
+      "receipt": "maintained-native-release-final-candidate/report.json"
+    },
+    "CHG180_native_export": {
+      "status": "PASS",
+      "cases": 2,
+      "total": 2,
+      "receipt": "chg180-native-final-candidate/acceptance-receipt.json"
+    },
+    "stage_a": {
+      "status": "PASS",
+      "passed": 30,
+      "total": 30,
+      "receipt": "stage-a-final-candidate/stage-a-acceptance.json"
+    },
+    "diagram_studio": {
+      "status": "PASS",
+      "passed": 17,
+      "total": 17,
+      "receipt": "diagram-studio-final-candidate/diagram-studio-acceptance.json"
+    },
+    "CHG178_lifecycle": {
+      "status": "PASS",
+      "case_count": 5,
+      "receipt": "chg178-lifecycle-final-candidate/receipt.json"
+    },
+    "CHG179_semantic_parity": {
+      "status": "PASS",
+      "receipt": "chg179-parity-final-candidate/chg179-semantic-parity.json"
+    },
+    "framework_validation": {
+      "status": "PASS",
+      "files": 267,
+      "errors": 0,
+      "warnings": 126,
+      "receipt": "framework-validation.json"
+    }
+  },
+  "authority": {
+    "r3_request": "CHG-180-r3",
+    "r3_job": "CF-67f8ff6a6a93bcb8ec6077ed",
+    "r3_deterministic_evidence_id": "fd63833203992c7a52c5d5100917deba34655ac8"
+  },
+  "scope_separation": {
+    "CHG181_whole_report_composition_or_reuse_claimed": false,
+    "CHG21_company_managed_target_certification_claimed": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "company_boundary_status": "READY_FOR_COMPANY_TARGET_CERTIFICATION",
+  "managed_target_status": "PENDING",
+  "source_editor_sha256": "c175ca676ea1812766ecacbffd54e697554de807c5e4590decb16811203bf46f",
+  "source_page_sha256": "50b2fb2dfb45f5823f60c07e0fe4e7fbd638b8d4f88caca665acf652e71d0b2c",
+  "frozen_connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+  "launch_command": "python scripts/launch_visembler.py --data-dir /absolute/path/to/visembler-data --port 8080",
+  "verification_command": "/opt/anaconda3/bin/python scripts/verify_release.py --host-mode native --output <new-empty-directory>",
+  "backup_contract": "Stop Visembler, copy the complete configured data directory, restore to a separate directory, and verify report/history/image before rollback use.",
+  "limitations": [
+    "User preferences live in NiceGUI user storage and are not canonical Report JSON.",
+    "Shared-network production requires organization-managed authentication, authorization, durable backup and hosting/session controls."
+  ]
+}

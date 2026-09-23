@@ -1,0 +1,312 @@
+{
+  "schema": "visembler-chg180-r3-raster-review.v1",
+  "fabric_job_id": "CF-67f8ff6a6a93bcb8ec6077ed",
+  "request": "CHG-180-r3",
+  "source_candidate_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+  "source_candidate_tree": "134654fc35440dfb13d8879816b793a78491c7f2",
+  "review_method": "Explicit visual inspection of actual 200 dpi slide PNGs rendered from original R1 PPTX files using the signed LibreOffice application from a read-only disk image; deterministic Poppler raster hashes were repeated and matched.",
+  "overall_verdict": "FAIL_RASTER_FIDELITY",
+  "go_evidence": false,
+  "cross_checks": {
+    "r1_acceptance_receipt": {
+      "path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/acceptance-receipt.json",
+      "sha256": "c7118502a22c722a148b697d0e9b3324003578b24586191ed418b6c65616efe1",
+      "r1_status": "PASS",
+      "candidate_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+      "candidate_tree": "134654fc35440dfb13d8879816b793a78491c7f2",
+      "rasterization_evidence_in_r1_receipt": false
+    },
+    "operations_geometry": {
+      "path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/operations-process-flow-geometry.json",
+      "sha256": "5d04ff85ca48b616c2c4c788da5b69efd94d6f06d6f079546cafba01f8351e46",
+      "browser_clipping_zero": true,
+      "effective_canvas": {
+        "height": 2305,
+        "width": 1600
+      },
+      "flow_rect": {
+        "h": 1514,
+        "id": "c6",
+        "w": 505.84162449149613,
+        "x": 1080.158375508504,
+        "y": 776.9999999999999
+      },
+      "node_count": 9,
+      "edge_count": 8
+    },
+    "powerpoint_structural_inspection": {
+      "path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/powerpoint-structural-inspection.json",
+      "sha256": "c61de5d64f1e16dd64b5f13b091fe1c23a26c5f51a09816744a11d2477c5d31f",
+      "operations": {
+        "slide_count": 1,
+        "editable_node_count": 9,
+        "connector_count": 8,
+        "pptx_sha256": "52b4c9dcfec10af8bf990c395776987d5707c68b5366cc9064e272fe5310b69a"
+      },
+      "semiconductor_rca": {
+        "slide_count": 1,
+        "slides": [
+          {
+            "editable_die_count": 4,
+            "kind": "wafer_map",
+            "metadata": {
+              "chamber": "A",
+              "lot_id": "L2407",
+              "process": "Etch",
+              "recipe": "REC-17",
+              "tool": "ETCH-08",
+              "wafer_id": "W07"
+            },
+            "notch": "VIZ::W07 affected yield by die::orientation-notch",
+            "observations": [
+              {
+                "value": 98.1,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "value": 96.0,
+                "x": 1,
+                "y": 0
+              },
+              {
+                "value": 0,
+                "x": 0,
+                "y": 1
+              },
+              {
+                "value": null,
+                "x": 1,
+                "y": 1
+              }
+            ],
+            "outline": "VIZ::W07 affected yield by die::wafer-outline",
+            "panel": "VIZ::W07 affected yield by die::spatial-panel",
+            "title": "W07 affected yield by die"
+          },
+          {
+            "editable_die_count": 4,
+            "kind": "wafer_difference",
+            "metadata": {
+              "chamber": "A",
+              "lot_id": "L2407",
+              "process": "Etch",
+              "recipe": "REC-17",
+              "tool": "ETCH-08",
+              "wafer_id": "W07"
+            },
+            "notch": "VIZ::W07 signed affected − reference::orientation-notch",
+            "observations": [
+              {
+                "affected_value": 100.0,
+                "delta": 0.0,
+                "reference_value": 100.0,
+                "value": null,
+                "x": 0,
+                "y": 0
+              },
+              {
+                "affected_value": 95.0,
+                "delta": -5.0,
+                "reference_value": 100.0,
+                "value": null,
+                "x": 1,
+                "y": 0
+              },
+              {
+                "affected_value": 102.0,
+                "delta": 2.0,
+                "reference_value": 100.0,
+                "value": null,
+                "x": 0,
+                "y": 1
+              },
+              {
+                "affected_value": null,
+                "delta": null,
+                "reference_value": 102.0,
+                "value": null,
+                "x": 1,
+                "y": 1
+              }
+            ],
+            "outline": "VIZ::W07 signed affected − reference::wafer-outline",
+            "panel": "VIZ::W07 signed affected − reference::spatial-panel",
+            "title": "W07 signed affected − reference"
+          }
+        ],
+        "pptx_sha256": "4d3d4a6d24a1b677dca6bc0eeaa960b919ed4271f5b3f83079d4c7bab7a74d07"
+      }
+    }
+  },
+  "reviewed_slides": [
+    {
+      "deck": "Dense Operations editable PowerPoint",
+      "input_r1_pptx": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/dense-operations-editable.pptx",
+      "input_r1_pptx_sha256": "52b4c9dcfec10af8bf990c395776987d5707c68b5366cc9064e272fe5310b69a",
+      "pdf": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/pdf/dense-operations-editable.pdf",
+      "pdf_sha256": "17541faf0dd0270ca12a5a20bb7dfee841d370142a9ff150cc4ee86ec0fb1972",
+      "page_count": 1,
+      "slide_png": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/slide-png/dense-operations-slide-1.png",
+      "dimensions_px": [
+        2000,
+        1500
+      ],
+      "bytes": 225804,
+      "sha256": "99ad9ed7366bf5a7100def4bce3f5f25e19458f05665cb9a8fde335384ee513a",
+      "verdict": "FAIL",
+      "checks": {
+        "process_flow_contained": false,
+        "all_nine_labels_visible_and_readable": false,
+        "all_causal_connectors_visible": false,
+        "no_hidden_or_clipped_text": false,
+        "no_accidental_overlap": false,
+        "no_off_slide_content": false,
+        "faithful_to_validated_browser_geometry": false
+      },
+      "findings": [
+        "White Process Flow labels are fragmented and unreadable against the white slide.",
+        "Flow nodes continue below the slide edge; bottom nodes and labels are clipped.",
+        "Flow labels overlap the table/status area and other content; the sequence is not readable as a contained causal flow.",
+        "R1 browser geometry records a 1600x2305 effective canvas, Process Flow y=777 h=1514, zero clipping and zero overlaps; raster geometry diverges materially.",
+        "OOXML inspection proves 9 editable nodes and 8 connectors exist on one slide, but does not prove they render legibly or within page bounds."
+      ]
+    },
+    {
+      "deck": "Semiconductor RCA wafer maps editable PowerPoint",
+      "input_r1_pptx": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/semiconductor-rca-wafer-maps-editable.pptx",
+      "input_r1_pptx_sha256": "4d3d4a6d24a1b677dca6bc0eeaa960b919ed4271f5b3f83079d4c7bab7a74d07",
+      "pdf": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/pdf/semiconductor-rca-wafer-maps-editable.pdf",
+      "pdf_sha256": "911263a169cc077c05a7d6a3491969fd1e3ddfa88564b44584c4888087a8c257",
+      "page_count": 1,
+      "slide_png": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/slide-png/semiconductor-rca-slide-1.png",
+      "dimensions_px": [
+        2000,
+        1500
+      ],
+      "bytes": 143334,
+      "sha256": "cba80736ae13b04d15daba0972301b99f58f99e7b5e11e57cab133d1b9b14a8e",
+      "verdict": "PASS",
+      "checks": {
+        "separate_spatial_maps": true,
+        "die_positions_within_wafer_outline": true,
+        "outline_and_north_notch_visible": true,
+        "legible_title_context_and_metadata": true,
+        "measured_values_spatially_encoded": true,
+        "signed_affected_minus_reference_encoding_distinct": true,
+        "negative_zero_positive_semantics_visible": true,
+        "legend_clipped_or_lost": false
+      },
+      "visible_metadata": [
+        "Wafer W07",
+        "Lot L2407",
+        "Tool ETCH-08",
+        "Chamber A",
+        "Recipe REC-17",
+        "Process Etch"
+      ],
+      "pixel_cross_check": {
+        "measured_value_map": {
+          "legend": "0 to 98.1",
+          "dies": [
+            {
+              "xy": [
+                0,
+                0
+              ],
+              "value": 98.1,
+              "raster": "lower-left warm/high"
+            },
+            {
+              "xy": [
+                1,
+                0
+              ],
+              "value": 96.0,
+              "raster": "lower-right warm/high"
+            },
+            {
+              "xy": [
+                0,
+                1
+              ],
+              "value": 0,
+              "raster": "upper-left blue/low"
+            },
+            {
+              "xy": [
+                1,
+                1
+              ],
+              "value": null,
+              "raster": "upper-right gray/missing"
+            }
+          ]
+        },
+        "signed_difference_map": {
+          "legend": "-5 to +5 diverging blue-neutral-red",
+          "title_semantics": "signed affected minus reference",
+          "dies": [
+            {
+              "xy": [
+                0,
+                0
+              ],
+              "delta": 0.0,
+              "raster": "lower-left neutral"
+            },
+            {
+              "xy": [
+                1,
+                0
+              ],
+              "delta": -5.0,
+              "raster": "lower-right blue/negative"
+            },
+            {
+              "xy": [
+                0,
+                1
+              ],
+              "delta": 2.0,
+              "raster": "upper-left warm/positive"
+            },
+            {
+              "xy": [
+                1,
+                1
+              ],
+              "delta": null,
+              "raster": "upper-right gray/missing"
+            }
+          ]
+        },
+        "structure_matches_raster": true
+      },
+      "findings": [
+        "The measured and signed-difference maps are distinct spatial panels with matching die positions and clear titles.",
+        "Both maps preserve a circular wafer outline and north notch; wafer, lot, tool, chamber, recipe and process are legible.",
+        "Measured colors match per-die values; the difference scale labels signed affected minus reference, with -5 blue, 0 neutral, and +2 warm.",
+        "Legends are fully visible; no watermark or loss of spatial distribution is visible."
+      ]
+    }
+  ],
+  "r1_evidence_kept_historical": [
+    "native-acceptance/acceptance-receipt.json",
+    "operations-process-flow-geometry.json",
+    "powerpoint-structural-inspection.json",
+    "native-acceptance/powerpoints/dense-operations-editable.pptx",
+    "native-acceptance/powerpoints/semiconductor-rca-wafer-maps-editable.pptx",
+    "native-acceptance/screenshots/*",
+    "test-results.json",
+    "release-verifier/report.json"
+  ],
+  "r3_derived": [
+    "renderer-provenance.json",
+    "rendered/pdf/dense-operations-editable.pdf",
+    "rendered/pdf/semiconductor-rca-wafer-maps-editable.pdf",
+    "rendered/slide-png/dense-operations-slide-1.png",
+    "rendered/slide-png/semiconductor-rca-slide-1.png",
+    "raster-review.json"
+  ]
+}

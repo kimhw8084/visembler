@@ -1,0 +1,133 @@
+{
+  "schema": "visembler-chg180-r3-renderer-provenance.v1",
+  "fabric_job_id": "CF-67f8ff6a6a93bcb8ec6077ed",
+  "project": "visembler",
+  "request": "CHG-180-r3",
+  "operation": "VERIFY",
+  "source_candidate_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+  "source_candidate_tree": "134654fc35440dfb13d8879816b793a78491c7f2",
+  "renderer_status": "PASS",
+  "rendered_using_original_r1_pptx_bytes": true,
+  "provisioning": {
+    "product_repository_modified": false,
+    "system_or_global_application_installed": false,
+    "foreground_gui_or_user_interaction_used": false,
+    "credentials_used": false,
+    "release_page": "https://www.libreoffice.org/download/",
+    "published_mirrorlist": "https://download.documentfoundation.org/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg.mirrorlist",
+    "download_url": "https://download.documentfoundation.org/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg",
+    "effective_mirror_url": "https://mirrors.iu13.net/tdf/libreoffice/stable/26.8.0/mac/aarch64/LibreOffice_26.8.0_MacOS_aarch64.dmg",
+    "version": "26.8.0",
+    "runtime_version": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+    "disk_image_cache_path": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/LibreOffice_26.8.0_MacOS_aarch64.dmg",
+    "disk_image_bytes": 298773447,
+    "published_sha256": "8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89",
+    "downloaded_sha256": "8858d8058da4f862f47559486814e65efc27294da67c5e4bb56b006b1ee59f89",
+    "published_checksum_match": true,
+    "disk_image_crc_verification": "PASS",
+    "runtime_path_during_render": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app",
+    "runtime_source": "signed LibreOffice.app run directly from the downloaded disk image mounted read-only inside the job tool cache",
+    "read_only_mount_path": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/mnt-readonly",
+    "read_only_mount_detached_after_render": true,
+    "app_signature": {
+      "verified_before_conversion": "PASS",
+      "verified_after_conversion": "PASS",
+      "identifier": "org.libreoffice.script",
+      "developer_id": "Developer ID Application: The Document Foundation (7P5S3ZLCN7)",
+      "team_identifier": "7P5S3ZLCN7"
+    },
+    "binary_hashes": [
+      {
+        "path": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "sha256": "820ce37c7f7f496f73516d932109b1254463b33a993ceae0cfbaabac62f164bf",
+        "architecture": "arm64"
+      },
+      {
+        "path": "/opt/homebrew/bin/pdftoppm",
+        "sha256": "9a44364d0fa42a43c3efdb2cbab47d275973c4a5856c1109f6bf4513def6bb54",
+        "version": "pdftoppm version 26.09.0"
+      }
+    ],
+    "fontconfig_cache": "XDG_CACHE_HOME pointed to the job-owned tool-cache/fontconfig-cache; /usr/local/var/cache/fontconfig remained absent"
+  },
+  "conversion_commands": [
+    {
+      "command": "rtk proxy /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app/Contents/MacOS/soffice --headless --nologo --nodefault --nolockcheck --nofirststartwizard -env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/profile-dense-operations --convert-to pdf:impress_pdf_Export --outdir /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/pdf /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/dense-operations-editable.pptx > /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/logs/dense-operations-conversion.stdout.txt 2> /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/logs/dense-operations-conversion.stderr.txt",
+      "exit_status": 0,
+      "profile_path": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/profile-dense-operations",
+      "output": {
+        "file": "dense-operations-editable.pdf",
+        "input_r1_path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/dense-operations-editable.pptx",
+        "input_r1_sha256": "52b4c9dcfec10af8bf990c395776987d5707c68b5366cc9064e272fe5310b69a",
+        "output_path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/pdf/dense-operations-editable.pdf",
+        "bytes": 349770,
+        "sha256": "17541faf0dd0270ca12a5a20bb7dfee841d370142a9ff150cc4ee86ec0fb1972",
+        "page_count": 1,
+        "expected_page_count": 1,
+        "renderer_exit_status": 0
+      }
+    },
+    {
+      "command": "rtk proxy /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/libreoffice-26.8.0/mnt-readonly/LibreOffice.app/Contents/MacOS/soffice --headless --nologo --nodefault --nolockcheck --nofirststartwizard -env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/profile-semiconductor-rca --convert-to pdf:impress_pdf_Export --outdir /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/pdf /Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/semiconductor-rca-wafer-maps-editable.pptx > /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/logs/semiconductor-rca-conversion.stdout.txt 2> /Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/logs/semiconductor-rca-conversion.stderr.txt",
+      "exit_status": 0,
+      "profile_path": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/artifact-bridge/rendered-verified-ro/profile-semiconductor-rca",
+      "output": {
+        "file": "semiconductor-rca-wafer-maps-editable.pdf",
+        "input_r1_path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1/artifact-package/native-acceptance/powerpoints/semiconductor-rca-wafer-maps-editable.pptx",
+        "input_r1_sha256": "4d3d4a6d24a1b677dca6bc0eeaa960b919ed4271f5b3f83079d4c7bab7a74d07",
+        "output_path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/pdf/semiconductor-rca-wafer-maps-editable.pdf",
+        "bytes": 151826,
+        "sha256": "911263a169cc077c05a7d6a3491969fd1e3ddfa88564b44584c4888087a8c257",
+        "page_count": 1,
+        "expected_page_count": 1,
+        "renderer_exit_status": 0
+      }
+    }
+  ],
+  "rasterization": {
+    "tool": "/opt/homebrew/bin/pdftoppm",
+    "version": "pdftoppm version 26.09.0",
+    "resolution_dpi": 200,
+    "format": "PNG",
+    "page_selection": "-f 1 -l 1",
+    "xdg_cache_home": "/Users/haewonkim/.codex-fabric/jobs/CF-67f8ff6a6a93bcb8ec6077ed.running/tool-cache/fontconfig-cache",
+    "exit_status": 0,
+    "repeat_render_hash_check": "PASS",
+    "outputs": [
+      {
+        "file": "dense-operations-slide-1.png",
+        "path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/slide-png/dense-operations-slide-1.png",
+        "bytes": 225804,
+        "sha256": "99ad9ed7366bf5a7100def4bce3f5f25e19458f05665cb9a8fde335384ee513a",
+        "dimensions_px": [
+          2000,
+          1500
+        ],
+        "repeat_sha256": "99ad9ed7366bf5a7100def4bce3f5f25e19458f05665cb9a8fde335384ee513a",
+        "repeat_dimensions_px": [
+          2000,
+          1500
+        ],
+        "stable_repeat_hash": true,
+        "render_exit_status": 0
+      },
+      {
+        "file": "semiconductor-rca-slide-1.png",
+        "path": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered/slide-png/semiconductor-rca-slide-1.png",
+        "bytes": 143334,
+        "sha256": "cba80736ae13b04d15daba0972301b99f58f99e7b5e11e57cab133d1b9b14a8e",
+        "dimensions_px": [
+          2000,
+          1500
+        ],
+        "repeat_sha256": "cba80736ae13b04d15daba0972301b99f58f99e7b5e11e57cab133d1b9b14a8e",
+        "repeat_dimensions_px": [
+          2000,
+          1500
+        ],
+        "stable_repeat_hash": true,
+        "render_exit_status": 0
+      }
+    ]
+  }
+}

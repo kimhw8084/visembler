@@ -1,0 +1,58 @@
+{
+  "scope": "native NiceGUI synthetic recovery",
+  "cases": [
+    {
+      "name": "socket-disconnect-local-draft-recovery",
+      "status": "PASS",
+      "steps": [
+        "offline edit journaled",
+        "pending commit retained",
+        "reconnected",
+        "draft persisted/recovered"
+      ]
+    },
+    {
+      "name": "server-restart-local-draft-recovery",
+      "status": "PASS",
+      "steps": [
+        "server stopped",
+        "offline edit journaled",
+        "server restarted same origin",
+        "draft recovered once",
+        "second restart durable",
+        "no duplicate replay"
+      ]
+    }
+  ],
+  "unexpected_errors": [],
+  "expected_fault_events": [
+    {
+      "kind": "console",
+      "detail": "WebSocket connection to 'ws://127.0.0.1:64261/_nicegui_ws/socket.io/?client_id=29c73478-4fd8-4e6f-a64f-5527d0fdfd15&next_message_id=8&implicit_handshake=true&document_id=40f76319-4806-4265-9721-29ca50e9db4e&tab_id=f11d53c3-ef14-43f8-aa41-da0a42c3794a&old_tab_id=null&EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:64261/_nicegui_ws/socket.io/?client_id=29c73478-4fd8-4e6f-a64f-5527d0fdfd15&next_message_id=8&implicit_handshake=true&document_id=40f76319-4806-4265-9721-29ca50e9db4e&tab_id=f11d53c3-ef14-43f8-aa41-da0a42c3794a&old_tab_id=null&EIO=4&transport=polling&t=ns5cdoke :: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "detail": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "detail": "WebSocket connection to 'ws://127.0.0.1:64261/_nicegui_ws/socket.io/?client_id=16d8027d-aa28-463f-86f7-2cda7fded4e7&next_message_id=8&implicit_handshake=true&document_id=29397464-bf7a-47e6-8a65-58e0aee5494c&tab_id=f11d53c3-ef14-43f8-aa41-da0a42c3794a&old_tab_id=null&EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:64261/_nicegui_ws/socket.io/?client_id=16d8027d-aa28-463f-86f7-2cda7fded4e7&next_message_id=8&implicit_handshake=true&document_id=29397464-bf7a-47e6-8a65-58e0aee5494c&tab_id=f11d53c3-ef14-43f8-aa41-da0a42c3794a&old_tab_id=null&EIO=4&transport=polling&t=ns7988bi :: net::ERR_CONNECTION_REFUSED"
+    },
+    {
+      "kind": "console",
+      "detail": "Failed to load resource: net::ERR_CONNECTION_REFUSED"
+    }
+  ],
+  "passed": 2,
+  "total": 2,
+  "status": "PASS",
+  "source_editor_sha256": "c175ca676ea1812766ecacbffd54e697554de807c5e4590decb16811203bf46f"
+}

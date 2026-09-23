@@ -1,0 +1,84 @@
+{
+  "schema": "visembler-chg180-r3-verification-status.v1",
+  "status": "FAIL_RASTER_FIDELITY",
+  "go_evidence": false,
+  "identity": {
+    "fabric_job_id": "CF-67f8ff6a6a93bcb8ec6077ed",
+    "project": "visembler",
+    "request": "CHG-180-r3",
+    "operation": "VERIFY",
+    "target_branch": "main",
+    "requested_base_sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "requested_base_tree": "e279190e4709e4914054e7098a0d1421723c8a6e",
+    "candidate_sha": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "candidate_tree": "134654fc35440dfb13d8879816b793a78491c7f2",
+    "work_branch": "verify/visembler-chg180-renderer-recovery-r3",
+    "local_head": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "remote_work_head": "1f7925c8c1917e3de406af60affa929a6997280f",
+    "remote_main": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db"
+  },
+  "source_mutation": {
+    "product_source_or_config_or_test_changed_in_r3": false,
+    "new_product_commits": 0,
+    "worktree_clean": true
+  },
+  "r1_recovery": {
+    "status": "PASS_HASH_VERIFIED",
+    "manifest_entries_verified": 349,
+    "manifest_entry_errors": 0,
+    "artifact_archive_sha256": "10e6f4f727ff6810c8584c075a51af7cdb2ca8862ffa6f512e525b3c43c04428",
+    "r2_recovery_receipt_sha256": "7a93ef17ef5c3eae442b5ddd43224a9c694a91e61e983bad07b56386818923fb",
+    "artifact_manifest_sha256": "1c888598b4c050c3f8c939a92316cb2a75a5d92656fb0b7a67e3a28f32e8d78f"
+  },
+  "renderer": {
+    "status": "PASS",
+    "version": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+    "both_original_exports_rendered_one_page": true,
+    "provenance": "renderer-provenance.json"
+  },
+  "raster_review": {
+    "status": "FAIL",
+    "verdict": "FAIL_RASTER_FIDELITY",
+    "review": "raster-review.json",
+    "operations_process_flow": "FAIL",
+    "semiconductor_rca_wafer_maps": "PASS",
+    "blocking_finding": "Dense Operations Process Flow is clipped off-slide, white labels are unreadable and content overlaps."
+  },
+  "artifact_carrier": {
+    "requested_ref": "refs/heads/project-os-artifacts/visembler/CHG-180-r3",
+    "created": false,
+    "commit": null,
+    "remote_readback": false,
+    "reason": "Package/carrier creation requires both raster reviews to pass; Operations failed."
+  },
+  "artifact_bridge": {
+    "qualified_project_os_artifact_bridge_helper_available": false,
+    "canonical_artifact_run_created": false,
+    "canonical_artifact_run_id": null,
+    "stage_status": "NOT_ATTEMPTED_FAIL_RASTER_FIDELITY",
+    "reason": "Raster fidelity failed before staging. No qualified helper that creates/reconciles and reads back a canonical Artifact Run is exposed; generic Notion file tools do not implement that contract.",
+    "staging_performed": false,
+    "canonical_artifact_run_identity": {
+      "project": "visembler",
+      "request": "CHG-180-r3",
+      "fabric_job_id": "CF-67f8ff6a6a93bcb8ec6077ed",
+      "run_id": null
+    },
+    "post_stage_readback": null
+  },
+  "evidence_paths": {
+    "runtime_evidence_root": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3",
+    "recovered_r1_package": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r1",
+    "r3_rendered_outputs": "/Users/haewonkim/.codex-fabric/evidence/visembler/CHG-180-r3/rendered"
+  },
+  "scope_not_claimed": [
+    "CHG-181 whole-report composition/reuse",
+    "CHG-21 company-managed production certification"
+  ],
+  "r3_artifact_package": {
+    "created": false,
+    "artifact_manifest_sha256": null,
+    "bundle_sha256": null,
+    "reason": "Raster fidelity failed, so the package/carrier stage gate was not entered."
+  }
+}

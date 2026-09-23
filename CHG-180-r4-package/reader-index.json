@@ -1,0 +1,112 @@
+{
+  "schema": "visembler-chg180-r4-reader-index.v1",
+  "package_id": "visembler/CHG-180-r4/CF-7675ff109d8b7d17bd8ef257",
+  "created_at": "2026-09-23T22:26:21Z",
+  "project": "visembler",
+  "request": "CHG-180-r4",
+  "operation": "FIX",
+  "fabric_job_id": "CF-7675ff109d8b7d17bd8ef257",
+  "candidate_sha": "fd906110ea9f5bc10b99e24d3931bf8463fa7b23",
+  "candidate_tree": "c503a9f59d3b3a18b0a6d50c416b0383156c28ea",
+  "target": {
+    "branch": "main",
+    "sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+    "tree": "e279190e4709e4914054e7098a0d1421723c8a6e",
+    "drift": "UNCHANGED"
+  },
+  "status": "ACCEPTANCE_PASS_PENDING_PROJECT_OS_ARTIFACT_RUN_STAGING",
+  "start_here": "source-runtime-identity.json",
+  "decisive_files": [
+    {
+      "path": "source-runtime-identity.json",
+      "purpose": "Exact base, preserved predecessor ancestry, candidate/tree, changed R4 files, runtime and all test gates."
+    },
+    {
+      "path": "test-receipts/maintained-native-release/report.json",
+      "purpose": "Complete maintained native release verifier summary; 25 checks PASS."
+    },
+    {
+      "path": "test-receipts/maintained-native-release/full-tests.xml",
+      "purpose": "Full maintained suite receipt; 1,175 tests passed."
+    },
+    {
+      "path": "browser-preflight/chg180-native/acceptance-receipt.json",
+      "purpose": "Browser Validate/save/reload/Preview/preflight geometry and both candidate export cases."
+    },
+    {
+      "path": "powerpoints/dense-operations-editable.pptx",
+      "purpose": "New editable Dense Operations PowerPoint generated from the final candidate."
+    },
+    {
+      "path": "powerpoints/semiconductor-rca-wafer-maps-editable.pptx",
+      "purpose": "New Semiconductor RCA Wafer Map/Wafer Difference PowerPoint holdout."
+    },
+    {
+      "path": "structural-inspection.json",
+      "purpose": "Saved PPTX node/connector/wafer-map structure, semantics, and report round-trip checks."
+    },
+    {
+      "path": "geometry-bounds-analysis.json",
+      "purpose": "Exact browser element rectangle, target slide scale, all diagram primitive bounds, and containment result."
+    },
+    {
+      "path": "renderer-provenance.json",
+      "purpose": "Signed job-owned LibreOffice, Poppler, PDF and repeat-raster provenance."
+    },
+    {
+      "path": "raster-review.json",
+      "purpose": "Explicit visual review for Operations and RCA slides; both PASS."
+    },
+    {
+      "path": "rendered/slides/dense-operations-slide-1.png",
+      "purpose": "200 dpi final Dense Operations raster."
+    },
+    {
+      "path": "rendered/slides/semiconductor-rca-slide-1.png",
+      "purpose": "200 dpi final Semiconductor RCA raster."
+    },
+    {
+      "path": "visual/raster-review-contact-sheet.png",
+      "purpose": "Combined candidate slide review image."
+    },
+    {
+      "path": "visual/raster-review.pdf",
+      "purpose": "Two-page full-resolution review PDF."
+    },
+    {
+      "path": "test-receipts/stage-a/stage-a-acceptance.json",
+      "purpose": "Stage A 30/30 native acceptance."
+    },
+    {
+      "path": "test-receipts/diagram-studio/diagram-studio-acceptance.json",
+      "purpose": "Diagram Studio 17/17 native acceptance."
+    },
+    {
+      "path": "test-receipts/chg178-lifecycle/receipt.json",
+      "purpose": "CHG-178 lifecycle 5/5, candidate-bound receipt."
+    },
+    {
+      "path": "test-receipts/chg179-semantic-parity/chg179-semantic-parity.json",
+      "purpose": "CHG-179 metric/category semantic parity acceptance."
+    },
+    {
+      "path": "r3-authority/raster-review.json",
+      "purpose": "R3 qualified comparison authority for the Semiconductor RCA holdout."
+    }
+  ],
+  "contents": {
+    "test_receipts": "test-receipts/",
+    "browser_preflight": "browser-preflight/",
+    "PowerPoint files": "powerpoints/",
+    "structural_and_geometry": "structural-inspection.json and geometry-bounds-analysis.json",
+    "final_rasters_and_review": "rendered/ and visual/",
+    "renderer_evidence": "renderer-provenance.json and renderer-audit/",
+    "R3 comparison authority": "r3-authority/",
+    "manifest": "manifest.json; the detached manifest digest is adjacent to the deterministic bundle in the Artifact Bridge root."
+  },
+  "scope_notes": [
+    "CHG-181 whole-report composition/reuse is separate and is not claimed.",
+    "CHG-21 company-managed target certification is separate and is not claimed.",
+    "The maintained receipt reports PASS_LOCAL_INTERNAL_PILOT; this package does not claim Production Gold."
+  ]
+}
