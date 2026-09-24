@@ -14,7 +14,7 @@ from pptx import Presentation
 from pptx.chart.data import ChartData
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
-from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
+from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.xmlchemy import OxmlElement
 from pptx.util import Inches, Pt
 from PIL import Image
@@ -240,6 +240,190 @@ def _display(value: Any) -> str:
     if value is None: return ''
     if isinstance(value,bool): return 'True' if value else 'False'
     return str(value)
+
+
+_REPORT_TEXT_BACKGROUND = (255,255,255)
+_REPORT_TEXT_STYLES = {
+    'text_heading': {'size':10.5,'minimum':9.5,'bold':True,'color':(28,43,62),'alignment':PP_ALIGN.CENTER,'line_spacing':1.0,'space_after':0.0},
+    'report_headline': {'size':17.5,'minimum':13.0,'bold':True,'color':(23,43,67),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.5},
+    'context_subhead': {'size':10.5,'minimum':8.0,'family':'Arial Narrow','bold':False,'color':(55,74,96),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.0},
+    'metric_title': {'size':10.5,'minimum':9.5,'bold':True,'color':(55,74,96),'alignment':PP_ALIGN.CENTER,'line_spacing':1.0,'space_after':0.5},
+    'metric_value': {'size':24.0,'minimum':15.0,'bold':True,'color':(23,50,78),'alignment':PP_ALIGN.CENTER,'line_spacing':1.0,'space_after':0.5},
+    'comparison_value': {'size':20.0,'minimum':14.0,'bold':True,'color':(23,50,78),'alignment':PP_ALIGN.CENTER,'line_spacing':1.0,'space_after':0.5},
+    'narrative_interpretation': {'size':11.5,'minimum':9.5,'bold':False,'color':(37,54,73),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.5},
+    'evidence_detail': {'size':10.5,'minimum':9.5,'bold':False,'color':(55,72,92),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.5},
+    'risk_decision': {'size':11.0,'minimum':9.5,'bold':True,'color':(104,43,49),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.5},
+    'action_status': {'size':10.5,'minimum':9.5,'bold':True,'color':(43,79,67),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.0},
+    'conclusion_next_step': {'size':12.5,'minimum':10.0,'bold':True,'color':(23,50,78),'alignment':PP_ALIGN.LEFT,'line_spacing':1.0,'space_after':0.5},
+}
+_REPORT_TEXT_MARGIN_LEFT = Inches(.03)
+_REPORT_TEXT_MARGIN_RIGHT = Inches(.03)
+_REPORT_TEXT_MARGIN_TOP = Inches(0)
+_REPORT_TEXT_MARGIN_BOTTOM = Inches(0)
+# PowerPoint and LibreOffice shape text with font-specific glyph widths and
+# natural leading that can exceed a character-count estimate. Reserve room for
+# both so editable text does not rely on renderer-specific clipping behavior.
+_REPORT_TEXT_WIDTH_SAFETY_FACTOR = 1.15
+_REPORT_TEXT_LINE_HEIGHT_FACTOR = 1.2
+
+
+def _report_text_role(entry: Mapping[str, Any]) -> str:
+    description=' '.join(str(entry.get(key) or '') for key in ('element','title','type')).casefold().replace('_',' ').replace('-',' ')
+    if any(token in description for token in ('executive statement','hero title','report headline','headline')): return 'report_headline'
+    if any(token in description for token in ('key takeaway','next step','conclusion','recommendation')): return 'conclusion_next_step'
+    if any(token in description for token in ('risk','decision','release gate')): return 'risk_decision'
+    if any(token in description for token in ('evidence','detail','finding','supporting data')): return 'evidence_detail'
+    if any(token in description for token in ('context','subhead','objective','scope')): return 'context_subhead'
+    if any(token in description for token in ('action','status','containment','owner','corrective action')): return 'action_status'
+    body=str(entry.get('text') or entry.get('body') or '')
+    if 'body narrative' in description and body.count(' · ')>=2: return 'context_subhead'
+    return 'narrative_interpretation'
+
+
+def _report_text_segments(entry: Mapping[str, Any], title: str) -> list[tuple[str,str]]:
+    engine=str(entry.get('engine') or '')
+    segments=[(title,'text_heading')]
+    if engine in {'EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'}:
+        entry_role=_report_text_role(entry)
+        statement=str(entry.get('statement') or '')
+        statement_lower=statement.casefold().strip()
+        decision_language=('contain','hold ','release ','do not','stop ','reserve ','block ')
+        next_step_language=('complete ','verify ','run ','confirm ','review ','update ','schedule ','implement ','document ','prepare ')
+        if engine=='ProjectCompositeEngine':
+            if any(statement_lower.startswith(token) for token in decision_language): entry_role='risk_decision'
+            elif any(statement_lower.startswith(token) for token in next_step_language): entry_role='conclusion_next_step'
+        statement_role=entry_role if engine in {'DecisionCompositeEngine','ProjectCompositeEngine'} else 'narrative_interpretation'
+        if engine=='DecisionCompositeEngine' and statement_role=='conclusion_next_step': detail_role='risk_decision'
+        elif engine=='ProjectCompositeEngine' and statement_role=='risk_decision': detail_role='conclusion_next_step'
+        else: detail_role='evidence_detail'
+        segments.extend((str(entry[key]),role) for key,role in (
+            ('statement',statement_role),('detail',detail_role),('status','action_status')
+        ) if entry.get(key) not in (None,''))
+        return segments
+    if engine=='ImageMediaEngine':
+        body='\n'.join(str(entry[key]) for key in ('caption','alt') if entry.get(key) not in (None,''))
+    else:
+        body=_semantic_text(entry)
+    if body:
+        role=_report_text_role(entry)
+        if engine=='TimelineEngine': role='action_status'
+        segments.append((body,role))
+    return segments
+
+
+def _estimated_character_width(character: str, size: float, font_family: str='Arial') -> float:
+    if character in ' il.,:;!|\'`': factor=.28
+    elif character in 'MW@%&': factor=.88
+    elif character.isspace(): factor=.29
+    elif character in 'frt()[]{}-_/': factor=.36
+    elif character.isupper(): factor=.62
+    elif character.isdigit(): factor=.55
+    else: factor=.51
+    condensed=.8 if font_family=='Arial Narrow' else 1.0
+    return size*factor*condensed
+
+
+def _estimated_lines(text: str, size: float, available_width: float, font_family: str='Arial') -> int:
+    lines=0
+    for hard_line in text.split('\n') or ['']:
+        current=0.0; line_count=1
+        for word in hard_line.split(' '):
+            word_width=sum(_estimated_character_width(character,size,font_family) for character in word)
+            if current and current+size*.29+word_width>available_width:
+                line_count+=1;current=word_width
+            elif word_width>available_width:
+                line_count+=max(0,math.ceil(word_width/available_width)-1);current=word_width%available_width
+            else:
+                current+=(size*.29 if current else 0)+word_width
+        lines+=line_count
+    return max(1,lines)
+
+
+def _apply_report_text_authority(shape: Any, segments: Sequence[tuple[str,str]]) -> None:
+    """Give every exported report text frame deterministic, high-contrast formatting."""
+    frame=shape.text_frame
+    frame.clear()
+    frame.word_wrap=True
+    frame.auto_size=MSO_AUTO_SIZE.NONE
+    frame.margin_left=_REPORT_TEXT_MARGIN_LEFT
+    frame.margin_right=_REPORT_TEXT_MARGIN_RIGHT
+    frame.margin_top=_REPORT_TEXT_MARGIN_TOP
+    frame.margin_bottom=_REPORT_TEXT_MARGIN_BOTTOM
+    frame.vertical_anchor=MSO_ANCHOR.TOP
+    shape.fill.solid()
+    shape.fill.fore_color.rgb=RGBColor(*_REPORT_TEXT_BACKGROUND)
+
+    specs=[(str(text),role,_REPORT_TEXT_STYLES[role]) for text,role in segments]
+    usable_width=max(1.0,(shape.width/12700-(_REPORT_TEXT_MARGIN_LEFT+_REPORT_TEXT_MARGIN_RIGHT)/12700)/_REPORT_TEXT_WIDTH_SAFETY_FACTOR)
+    usable_height=max(1.0,shape.height/12700-(_REPORT_TEXT_MARGIN_TOP+_REPORT_TEXT_MARGIN_BOTTOM)/12700)
+    groupings=[[(index,) for index in range(len(specs))]]
+    if len(specs)>1 and specs[0][1]=='text_heading':
+        compact=[(0,1)]
+        remaining=list(range(2,len(specs)))
+        if len(remaining)>1 and specs[remaining[-1]][1]=='action_status':
+            remaining[-2:]=[(remaining[-2],remaining[-1])]
+        compact.extend((index,) if isinstance(index,int) else index for index in remaining)
+        groupings.append(compact)
+
+    selected_scale=None;selected_families=[];selected_groups=[]
+    for groups in groupings:
+        for step in range(21):
+            scale=1.0-step*.025
+            for use_condensed in (False,True):
+                families=[];total_height=0.0
+                for group in groups:
+                    texts=[];group_sizes=[];group_spacing=[];group_after=[];group_roles=[];group_family='Arial'
+                    for position,index in enumerate(group):
+                        text,role,style=specs[index]
+                        if position: texts.append(' · ')
+                        texts.append(text);group_roles.append(role)
+                        group_sizes.append(max(style['minimum'],round(style['size']*scale*2)/2))
+                        group_spacing.append(style['line_spacing']);group_after.append(style['space_after'])
+                        family=style.get('family','Arial')
+                        if use_condensed and role in {'report_headline','narrative_interpretation','evidence_detail'} and family=='Arial': family='Arial Narrow'
+                        families.append((index,family))
+                        if family=='Arial Narrow': group_family='Arial Narrow'
+                    content_sizes=[group_sizes[position] for position,index in enumerate(group) if specs[index][1]!='text_heading']
+                    measure_size=max(content_sizes or group_sizes)
+                    text=''.join(texts)
+                    total_height+=_estimated_lines(text,measure_size,usable_width,group_family)*measure_size*max(group_spacing)*_REPORT_TEXT_LINE_HEIGHT_FACTOR+max(group_after)
+                if total_height<=usable_height:
+                    selected_scale=scale;selected_families=[family for _,family in sorted(families)];selected_groups=groups;break
+            if selected_scale is not None: break
+        if selected_scale is not None: break
+    if selected_scale is None:
+        raise VisualizerContractError(f'PowerPoint report text for {shape.name} exceeds its assigned element rectangle at minimum readable font sizes.')
+
+    roles=[]
+    for group_index,group in enumerate(selected_groups):
+        first_style=specs[group[0]][2]
+        paragraph_style=next((specs[index][2] for index in group if specs[index][1]!='text_heading'),first_style)
+        paragraph=frame.paragraphs[0] if group_index==0 else frame.add_paragraph()
+        paragraph.alignment=paragraph_style['alignment']
+        paragraph.line_spacing=max(specs[index][2]['line_spacing'] for index in group)
+        paragraph.space_before=Pt(0)
+        paragraph.space_after=Pt(max(specs[index][2]['space_after'] for index in group))
+        for position,index in enumerate(group):
+            text,role,style=specs[index]
+            if len(group)==1:
+                paragraph.text=text
+                runs=paragraph.runs
+            else:
+                run=paragraph.add_run()
+                run.text=(' · ' if position else '')+text
+                runs=[run]
+            size=max(style['minimum'],round(style['size']*selected_scale*2)/2)
+            for run in runs:
+                run.font.name=selected_families[index]
+                run.font.size=Pt(size)
+                run.font.bold=style['bold']
+                run.font.italic=False
+                run.font.color.rgb=RGBColor(*style['color'])
+            roles.append(role)
+    nodes=shape._element.xpath('.//p:cNvPr')
+    if nodes:
+        labels=', '.join(dict.fromkeys(role.replace('_',' ') for role in roles))
+        nodes[0].set('title',f'Visembler report text roles: {labels}')
 
 
 def _semantic_text(entry: Mapping[str, Any]) -> str:
@@ -655,24 +839,25 @@ def _replace_wafer_map(slide: Any, shape: Any, entry: Mapping[str, Any], title: 
 
 def _fill_text_shape(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if not getattr(shape,'has_text_frame',False): return
-    tf=shape.text_frame; tf.clear(); p=tf.paragraphs[0]; p.text=title; p.font.bold=True; p.font.size=Pt(13)
-    body=_semantic_text(entry)
-    if body:
-        p2=tf.add_paragraph(); p2.text=body; p2.font.size=Pt(10)
+    _apply_report_text_authority(shape,_report_text_segments(entry,title))
 
 
 def _fill_kpi(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     if not getattr(shape,'has_text_frame',False): return
     value=entry.get('value')
     if value is None and str(entry.get('engine') or '')=='ComparisonEngine':
-        value=f"{_display(entry.get('before'))} → {_display(entry.get('after'))}".strip()
-    tf=shape.text_frame; tf.clear();p=tf.paragraphs[0];p.text=f"{title} · {entry.get('metric_label')}" if entry.get('metric_label') else title;p.font.bold=True;p.font.size=Pt(10)
-    p2=tf.add_paragraph();p2.text=format_metric_value(value,entry,entry.get('_metric_field')) if str(entry.get('engine') or '')=='MetricEngine' else _display(value);p2.font.bold=True;p2.font.size=Pt(24)
+        before=format_metric_value(entry.get('before'),entry,entry.get('_metric_field'))
+        after=format_metric_value(entry.get('after'),entry,entry.get('_metric_field'))
+        value=f'{before} → {after}'
+    label=f"{title} · {entry.get('metric_label')}" if entry.get('metric_label') else title
+    rendered=format_metric_value(value,entry,entry.get('_metric_field')) if str(entry.get('engine') or '')=='MetricEngine' else _display(value)
+    segments=[(label,'metric_title'),(rendered,'comparison_value' if str(entry.get('engine') or '')=='ComparisonEngine' else 'metric_value')]
     unit=str(entry.get('unit') or '')
-    if unit and str(entry.get('engine') or '')!='MetricEngine':
-        p3=tf.add_paragraph();p3.text=unit;p3.font.size=Pt(9)
+    if unit and str(entry.get('engine') or '') not in {'MetricEngine','ComparisonEngine'}:
+        segments.append((unit,'comparison_value' if str(entry.get('engine') or '')=='ComparisonEngine' else 'metric_value'))
     if entry.get('detail'):
-        p3=tf.add_paragraph();p3.text=str(entry['detail']);p3.font.size=Pt(8)
+        segments.append((str(entry['detail']),'evidence_detail'))
+    _apply_report_text_authority(shape,segments)
 
 
 def _fill_chart(shape: Any, entry: Mapping[str, Any], title: str) -> None:
