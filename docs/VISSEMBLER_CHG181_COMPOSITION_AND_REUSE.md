@@ -35,11 +35,15 @@ to own component visuals and export geometry.
 Smart composition derives one deterministic pattern for each semantic section
 from its roles, engines, item count, content requirements, available page width
 and selected recipe. The supported patterns are hero/opening band, compact KPI
-strip, feature/support analysis, balanced analytical pair, evidence/detail
-grid, narrative/evidence split, causal-flow feature, compact decision band,
-closing next step, and an editorial flow for content that does not match a
-specialized pattern. Patterns describe placement only; chart view, mapping,
-data, transformation, analysis recipe and source values are never rewritten to
+strip, analytical feature, feature/support analysis, balanced analytical pair,
+evidence/detail grid, narrative/evidence split, causal-flow feature, compact
+decision band, closing next step, and an editorial flow for content that does
+not match a specialized pattern. A single analysis visual uses the
+analytical-feature pattern; it does not reserve an empty support column.
+Causal flow may pair with short interpretation or compatible visual evidence
+when the section's content fits, while dense evidence tables keep their
+available width. Patterns describe placement only; chart view, mapping, data,
+transformation, analysis recipe and source values are never rewritten to
 manufacture visual variety.
 
 Every section identifies its feature and supporting entries from composition
@@ -54,6 +58,10 @@ The row gap, section gap and heading height come from the shared
 `compositionSpacing` authority and have explicit minimum and maximum bounds.
 Item heights remain content-driven, and Smart canvas height follows the
 resulting content instead of stretching components to fill a saved blank page.
+An individually authored visual uses the available content hull for its
+standalone Smart canvas; multi-item reports retain intrinsic component heights.
+Stage A occupancy checks use that live Smart hull while keeping their existing
+area thresholds, since the persisted page height remains user-authored.
 The section heading and any section surface are derived browser state. No new
 section-layout field is required in report JSON. Older reports therefore get
 the same stable defaults; custom `section_id`, `section_title`,

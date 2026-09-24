@@ -155,7 +155,7 @@ function sectionPattern(section, preset, profiles, pageWidth) {
   if (narrative.length && hasEvidence) return 'narrative-evidence-split';
   if (entries.filter(entry => compositionRole(entry) === 'detailed_evidence').length >= 1) return 'evidence-detail-grid';
   if (visuals.length >= 2 && roles.some(role => ['primary_analysis','supporting_analysis'].includes(role))) return 'feature-support-analysis';
-  if (section.id === 'analysis' && visuals.length === 1 && roles.includes('primary_analysis')) return 'feature-support-analysis';
+  if (section.id === 'analysis' && visuals.length === 1 && roles.includes('primary_analysis')) return 'analytical-feature';
   if (visuals.length >= 2 && !usableInOneRow(visuals.map(entry => String(entry.id)), profiles, pageWidth)) return 'feature-support-analysis';
   return 'editorial-flow';
 }
@@ -206,7 +206,10 @@ function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
   if (pattern === 'causal-flow-feature') {
     const diagram = section.items.find(entry => entry.engine === 'DiagramEngine') || section.items.find(entry => compositionRole(entry) === 'causal_evidence');
     const id = String(diagram?.id || featureId || ids[0]), prose = section.items.find(entry => String(entry.id) !== id && ['TextEngine','DecisionCompositeEngine'].includes(entry.engine));
-    const result = prose && fits([id, String(prose.id)]) ? [row([id, String(prose.id)], [.62,.38])] : [row([id])];
+    const evidence = section.items.find(entry => String(entry.id) !== id && visualEntry(entry) && entry.engine !== 'TableEngine');
+    const support = prose || evidence;
+    const shortProse = !prose || String(prose.text || prose.body || prose.content || '').length <= 360;
+    const result = support && shortProse && fits([id, String(support.id)]) ? [row([id, String(support.id)], [.62,.38])] : [row([id])];
     const used = new Set(result.flatMap(value => value.ids));
     return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
   }
@@ -218,6 +221,11 @@ function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
     const result = pair ? [row([String(prose.id),String(evidence.id)],[.48,.52])] : prose ? [row([String(prose.id)])] : [];
     const used = new Set(result.flatMap(value => value.ids));
     return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
+  }
+  if (pattern === 'analytical-feature') {
+    const result = featureId ? [row([featureId])] : [];
+    const used = new Set(result.flatMap(value => value.ids));
+    return [...result, ...ids.filter(id => !used.has(id)).map(id => row([id]))];
   }
   if (pattern === 'balanced-analytical-pair') {
     const pair = section.items.filter(visualEntry).slice(0, 2).map(entry => String(entry.id));

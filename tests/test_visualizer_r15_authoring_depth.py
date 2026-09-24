@@ -79,7 +79,8 @@ def test_r19_layouts_and_page_size_are_authored_not_implicitly_resized():
     composition = (PRODUCT / 'assets/authoring_composition.mjs').read_text(encoding='utf-8')
     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
-    assert "const layoutTargetH=solo?baseNeeded:CANVAS.h" in editor
+    assert "const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))" in editor
+    assert "const usableH=resolvedTargetH-2*g-rowSpecs.reduce" in editor
     assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" not in html
     assert 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' not in editor
     assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
@@ -113,10 +114,11 @@ def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_e
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
 
     assert 'const fitToHull=(policy,w=innerW,h=innerH)=>' in editor
-    assert 'const layoutTargetH=solo?baseNeeded:CANVAS.h' in editor
+    assert 'const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))' in editor
+    assert 'const solo=ordered.length===1&&rows.length===1' in editor
     assert 'function semanticPolicy(entry)' in editor
-    assert 'function allocateRowWidths(row, innerW, gap)' in editor
-    assert 'policy.maxH' in editor and 'semanticRole=compositionRole(entry)' in editor
+    assert 'function allocateRowWidths(row, innerW, gap, ratios = null)' in editor
+    assert 'policy.maxH' in editor and 'const role=compositionRole(entry)' in editor
     assert 'contentFitSummary' in stage and 'layoutOperations' in stage
     assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' not in editor
     assert 'Math.max(policy.minH,spec.height)' not in editor
@@ -137,7 +139,8 @@ def test_r25_smart_layout_prioritizes_growth_capable_families_and_table_preview_
 
     assert 'function effectiveWeight(entry)' in editor
     assert 'const weights=row.map(({entry})=>effectiveWeight(entry))' in editor
-    assert 'const baseNeeded=rowSpecs.reduce' in editor and 'resolvedTargetH=solo?' in editor
+    assert 'const baseNeeded=rowSpecs.reduce' in editor and 'const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))' in editor
+    assert "if(['plot','media','square'].includes(policy.growth)||policy.aspect)return fitToHull({...policy,maxW:innerW},innerW,innerH)" in editor
     assert 'const ROLE_SECTIONS = Object.freeze' in composition
     assert "beginPointerSession($('#viewport')" in editor
     assert "box.classList.add('active')" in editor

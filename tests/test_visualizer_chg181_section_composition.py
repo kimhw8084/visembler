@@ -37,7 +37,8 @@ const items=[
  {id:'next',element:'Project Card',engine:'ProjectCompositeEngine',composition_role:'action_status',section_id:'delivery',order:8},
 ];
 const first=sectionCompositionPlan(items,'executive',1440,{main:{minW:380},support:{minW:380}}),second=sectionCompositionPlan(items,'executive',1440,{main:{minW:380},support:{minW:380}});
-console.log(JSON.stringify({patterns:first.map(value=>[value.id,value.pattern]),stable:JSON.stringify(first)===JSON.stringify(second),opening:first.find(value=>value.id==='opening'),performance:first.find(value=>value.id==='performance'),analysis:first.find(value=>value.id==='analysis'),ids:first.flatMap(value=>value.rows.flatMap(row=>row.ids))}));
+const solo=sectionCompositionPlan([{id:'solo-chart',element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'analysis'}],'executive',1440,{'solo-chart':{minW:380}})[0];
+console.log(JSON.stringify({patterns:first.map(value=>[value.id,value.pattern]),stable:JSON.stringify(first)===JSON.stringify(second),opening:first.find(value=>value.id==='opening'),performance:first.find(value=>value.id==='performance'),analysis:first.find(value=>value.id==='analysis'),solo:{pattern:solo.pattern,featureId:solo.featureId,rows:solo.rows.map(row=>row.ids)},ids:first.flatMap(value=>value.rows.flatMap(row=>row.ids))}));
 '''
     )
     assert result["patterns"] == [
@@ -51,6 +52,7 @@ console.log(JSON.stringify({patterns:first.map(value=>[value.id,value.pattern]),
     assert result["analysis"]["featureId"] == "main"
     assert result["analysis"]["supportIds"] == ["support"]
     assert result["analysis"]["rows"][0]["ids"] == ["main", "support"]
+    assert result["solo"] == {"pattern": "analytical-feature", "featureId": "solo-chart", "rows": [["solo-chart"]]}
     assert result["patterns"][1] == ["performance", "compact-kpi-strip"]
     assert result["patterns"][0] == ["opening", "hero-opening-band"]
     assert result["opening"]["rows"][0]["ids"] == ["title", "context"]
@@ -143,6 +145,9 @@ console.log(JSON.stringify({rows:plan[0].rows.map(row=>row.ids),ratios:plan[0].r
     assert "model().mode==='smart'&&Number.isFinite(Number(r.order))?Number(r.order)*2+1" in result["source"]
     assert "sectionCompositionPlan(ordered,preset,CANVAS.w,profiles)" in result["source"]
     assert "Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))" in result["source"]
+    stage_a = (ROOT / "scripts/release_checks/run_stage_a_acceptance.py").read_text(encoding="utf-8")
+    assert "canvas = page.evaluate('()=>__VIZ_PROD__.layoutGeometry().canvas')" in stage_a
+    assert "area_share >= min_area_share" in stage_a
 
 
 def test_shared_remap_requirements_deduplicate_roles_and_summarize_incompatibility() -> None:

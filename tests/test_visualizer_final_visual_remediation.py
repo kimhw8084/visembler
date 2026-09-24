@@ -177,7 +177,10 @@ def test_layout_selection_and_tablet_contracts_are_explicit() -> None:
     diagram_html = (ASSETS / "diagram_studio.html").read_text(encoding="utf-8")
     diagram_js = (ASSETS / "diagram_studio.mjs").read_text(encoding="utf-8")
     assert "const fitToHull=" in editor and "function semanticSmartLayout(items=viewItems())" in editor
-    assert "function allocateRowWidths(row, innerW, gap)" in editor and "let y=g+(rowSpecs[0]?.sectionStart?20:0)" in editor
+    assert "function allocateRowWidths(row, innerW, gap, ratios = null)" in editor
+    assert "sectionCompositionPlan(ordered,preset,CANVAS.w,profiles)" in editor
+    assert "const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length})" in editor
+    assert "let y=g;" in editor and "sectionHeadingOrder" in editor
     assert "compositionOrder(items,model().layoutPreset||'editorial')" in editor
     assert "COMPOSITION_ROLES" in composition and "ROLE_SECTIONS" in composition
     assert "innerW=Math.max(1,CANVAS.w-2*g)" in editor

@@ -476,7 +476,8 @@ function semanticSmartLayout(items=viewItems()) {
   };
   const soloSize=({entry,policy})=>{
     const role=suggestMessageRole(entry),primary=role==='Primary Evidence'||role==='Headline';
-    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy,innerW,Math.max(policy.minH,policy.prefH));
+    if(['plot','media','square'].includes(policy.growth)||policy.aspect)return fitToHull({...policy,maxW:innerW},innerW,innerH);
+    if(policy.growth==='data')return fitToHull({...policy,maxW:innerW},innerW,Math.max(policy.minH,policy.prefH));
     if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,Math.max(policy.minH,policy.prefH));
     if(policy.growth==='horizontal'){
       // Horizontal families keep a readable band when no semantic aspect is
