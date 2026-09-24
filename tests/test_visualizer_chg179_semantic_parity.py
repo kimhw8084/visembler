@@ -159,6 +159,56 @@ def test_powerpoint_projection_keeps_category_labels_and_formats_bound_metric() 
         export_pptx(None, report)
 
 
+def test_powerpoint_line_uses_canonical_y_when_legacy_value_alias_is_stale() -> None:
+    report = canonical_model(
+        {
+            'datasets': [
+                {
+                    'id': 'd1',
+                    'name': 'Order returns',
+                    'revision': 1,
+                    'fields': [
+                        {'id': 'date', 'name': 'Date', 'type': 'date', 'semantic_tags': ['time']},
+                        {'id': 'orders', 'name': 'Orders', 'type': 'integer'},
+                        {'id': 'returns', 'name': 'Returns', 'type': 'integer'},
+                    ],
+                    'rows': [
+                        ['2026-01-01', 1280, 42],
+                        ['2026-02-01', 1395, 38],
+                        ['2026-03-01', 1522, 35],
+                        ['2026-04-01', 1611, 31],
+                    ],
+                }
+            ],
+            'items': [
+                {
+                    'id': 'returns',
+                    'type': 'chart',
+                    'engine': 'CoreChartEngine',
+                    'element': 'Line Chart',
+                    'title': 'Returns',
+                    'order': 0,
+                    'dataset_id': 'd1',
+                    'mapping': {'x': 'date', 'time': 'date', 'y': 'returns', 'value': 'orders'},
+                }
+            ],
+        }
+    )
+    projected = bound_export_items(report)
+    assert projected[0]['data'] == [
+        ('2026-01-01', 42),
+        ('2026-02-01', 38),
+        ('2026-03-01', 35),
+        ('2026-04-01', 31),
+    ]
+    deck = Presentation(io.BytesIO(export_pptx(None, report)))
+    chart = next(shape.chart for slide in deck.slides for shape in slide.shapes if getattr(shape, 'has_chart', False))
+    assert [point.label for point in chart.plots[0].categories] == [
+        '2026-01-01', '2026-02-01', '2026-03-01', '2026-04-01'
+    ]
+    assert list(chart.series[0].values) == [42, 38, 35, 31]
+
+
 def test_dataset_resource_field_validation_keeps_metric_format_metadata(tmp_path) -> None:
     from company_ui.products.visualizer.dataset_resources import _validate_fields
 

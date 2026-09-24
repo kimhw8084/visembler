@@ -170,7 +170,7 @@ class _VisualizerResourceBoundary:
 
 def _asset_build() -> str:
     h=hashlib.sha256()
-    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_human.mjs','authoring_preview.mjs','authoring_projection.mjs','analysis_semantics.mjs','statistical_presentation.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','canonical_chart_renderer.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
+    asset_names=('tokens.css','integrated_editor.css','integrated_editor.html','diagram_studio.html','diagram_studio.css','chart_studio.html','chart_studio.css','authoring_contracts.mjs','authoring_data.mjs','authoring_human.mjs','authoring_preview.mjs','authoring_projection.mjs','analysis_semantics.mjs','statistical_presentation.mjs','engineering_recipes.mjs','authoring_mapping_presets.mjs','authoring_dataset_refresh.mjs','authoring_portability.mjs','authoring_intake_client.mjs','authoring_values.mjs','authoring_format.mjs','authoring_selection.mjs','authoring_arrange.mjs','authoring_clipboard.mjs','authoring_reuse.mjs','authoring_reuse_contract.mjs','authoring_composition.mjs','authoring_presets.mjs','authoring_style.mjs','authoring_batch.mjs','authoring_data_worker.mjs','authoring_transforms.mjs','authoring_performance.mjs','authoring_geometry.mjs','authoring_grid.mjs','production_library.mjs','element_renderer.mjs','authoring_diagram_studio.mjs','diagram_studio.mjs','canonical_chart_renderer.mjs','authoring_chart_studio.mjs','chart_studio.mjs','authoring_stage_d.mjs','integrated_editor.mjs')
     paths=[ASSETS/name for name in asset_names]
     paths.extend(sorted((VENDOR/'core').glob('*.mjs')))
     for path in paths:
@@ -256,6 +256,37 @@ def _normalize_section_preset_payload(raw: Any) -> dict[str, Any]:
     return payload
 
 
+def _normalize_binding_contract(raw: Any) -> dict[str, Any] | None:
+    if raw is None: return None
+    if not isinstance(raw,Mapping) or raw.get('kind')!='analytical-bindings' or raw.get('version')!=1:
+        raise VisualizerContractError('unsupported reusable data binding contract')
+    slots=raw.get('slots')
+    if not isinstance(slots,list) or len(slots)>100: raise VisualizerContractError('reusable data bindings must contain at most 100 slots')
+    contract=json.loads(stable_json(raw))
+    for slot in contract['slots']:
+        if not isinstance(slot,Mapping) or not isinstance(slot.get('source_fields'),list) or not isinstance(slot.get('bindings'),list):
+            raise VisualizerContractError('reusable data slot is malformed')
+        if len(slot['source_fields'])>500 or len(slot['bindings'])>500: raise VisualizerContractError('reusable data slot exceeds supported limits')
+    def forbidden_identity(value: Any) -> bool:
+        if isinstance(value,Mapping):
+            return any(str(key) in {'dataset_id','source_dataset_id','datasetId','sourceDatasetId'} or forbidden_identity(child) for key,child in value.items())
+        if isinstance(value,list): return any(forbidden_identity(child) for child in value)
+        return False
+    if forbidden_identity(contract): raise VisualizerContractError('reusable binding contracts cannot store report dataset identities')
+    if len(stable_json(contract).encode('utf-8'))>MAX_PRESET_BYTES: raise VisualizerContractError('reusable binding contract is too large')
+    return contract
+
+
+def _validate_structure_only_reuse(content: Mapping[str, Any], *, section: bool) -> None:
+    if content.get('datasets'): raise VisualizerContractError('reusable structure cannot include source data')
+    if any(isinstance(item,Mapping) and item.get('dataset_id') for item in content.get('items',[])):
+        raise VisualizerContractError('reusable structure cannot include source dataset identities')
+    if not section:
+        for item in content.get('items',[]):
+            if isinstance(item,Mapping) and isinstance(item.get('analysis_recipe'),Mapping) and item['analysis_recipe'].get('source_dataset_id'):
+                raise VisualizerContractError('reusable structure cannot include source dataset identities')
+
+
 def _normalize_presets(raw: Any) -> list[dict[str, Any]]:
     if not isinstance(raw,list): raise VisualizerContractError('presets must be a list')
     result=[]; total=0
@@ -265,15 +296,22 @@ def _normalize_presets(raw: Any) -> list[dict[str, Any]]:
         if not name: continue
         preset_id=str(entry.get('id') or uuid.uuid4().hex)[:160]
         try:
+            reuse_mode=entry.get('reuse_mode')
+            if reuse_mode not in (None,'structure','copy'): raise VisualizerContractError('invalid preset data source mode')
+            binding_contract=_normalize_binding_contract(entry.get('binding_contract'))
             if entry.get('kind') == 'section':
                 payload=_normalize_section_preset_payload(entry.get('payload'))
                 preset={'id':preset_id,'name':name,'kind':'section','payload':payload}
+                if reuse_mode=='structure': _validate_structure_only_reuse(payload,section=True)
             else:
                 model=entry.get('model')
                 if not isinstance(model,Mapping): continue
                 canonical=canonical_model(model); _validate_model_images(canonical)
                 # Preserve the legacy server shape for whole-report presets.
                 preset={'id':preset_id,'name':name,'model':canonical}
+                if reuse_mode=='structure': _validate_structure_only_reuse(canonical,section=False)
+            if reuse_mode is not None: preset['reuse_mode']=reuse_mode
+            if binding_contract is not None: preset['binding_contract']=binding_contract
         except Exception:
             continue
         total += len(stable_json(preset).encode('utf-8'))

@@ -92,7 +92,8 @@ def main() -> int:
                        '--junitxml=' + str(output / 'full-tests.xml')], 600)
     assets = ROOT / 'company_ui/products/visualizer/assets'
     for name in ('integrated_editor.mjs', 'element_renderer.mjs', 'authoring_dataset_refresh.mjs',
-                 'authoring_portability.mjs', 'authoring_intake_client.mjs'):
+                 'authoring_portability.mjs', 'authoring_intake_client.mjs',
+                 'authoring_composition.mjs', 'authoring_reuse_contract.mjs'):
         run('syntax-' + name, ['node', '--check', str(assets / name)])
     run('persistence-source-probe', ['node', 'scripts/release_checks/probe_persistence.mjs', '--repo', str(ROOT),
                                     '--output', str(output / 'persistence-source.json')])
@@ -118,6 +119,7 @@ def main() -> int:
     if args.host_mode == 'native':
         browser_checks.extend([
             ('report-lifecycle-integrity', 'run_chg178_report_lifecycle_acceptance.py', 300),
+            ('chg181-authoring-composition-reuse', 'run_chg181_authoring_acceptance.py', 1200),
             ('chart-studio', 'run_chart_studio_acceptance.py', 900),
             ('report-hub-browser-errors', 'run_report_hub_browser_error_gate.py', 600),
             ('native-recovery', 'run_native_recovery.py', 600),
@@ -140,12 +142,13 @@ def main() -> int:
     required_names={
         'delivery-tests','full-tests','syntax-integrated_editor.mjs','syntax-element_renderer.mjs',
         'syntax-authoring_dataset_refresh.mjs','syntax-authoring_portability.mjs','syntax-authoring_intake_client.mjs',
+        'syntax-authoring_composition.mjs','syntax-authoring_reuse_contract.mjs',
         'repository-contracts','company-boundary-model','company-boundary-browser','company-readiness-local','company-capacity','element-coverage',
         'persistence-source-probe','elements','data','performance','source-stability','frozen-connector',
     }
     if ROOT.joinpath('.git').exists(): required_names.add('git-diff-check')
     if args.host_mode=='native':
-        required_names.update({'report-hub-browser-errors','chart-studio','native-recovery','worker-lifecycle','operations-drill','native-acceptance','report-lifecycle-integrity'})
+        required_names.update({'report-hub-browser-errors','chart-studio','native-recovery','worker-lifecycle','operations-drill','native-acceptance','report-lifecycle-integrity','chg181-authoring-composition-reuse'})
     by_name={row['name']:row for row in results}
     missing=sorted(required_names-set(by_name))
     failing=sorted(name for name in required_names if by_name.get(name,{}).get('status')!='PASS')

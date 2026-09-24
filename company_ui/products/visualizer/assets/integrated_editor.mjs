@@ -30,8 +30,10 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
+import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
+import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
 import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
 import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
 import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, mappingFromFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
@@ -51,6 +53,7 @@ import {
   deliveryFindings,
   layoutOperations,
   rolePolicy,
+  applyCompositionRole,
   suggestMessageRole,
   withSuggestedRoles,
 } from './authoring_stage_d.mjs';
@@ -76,6 +79,7 @@ let readOnly = bootstrap.capabilities?.read_only === true;
 let activeRoot = null;
 let eventAbort = null;
 let personalPresets = [];
+let reuseApplyState = null;
 let mappingPresets = [];
 let presetRenderFrame = 0;
 let stageD = null;
@@ -130,7 +134,7 @@ function starterContent(engine, element) {
     if(name==='metric ring')return {value:84.2,max:100,unit:'%',center_label:'Progress'};
     return {value:84.2,unit:'%',delta:6.4,detail:false};
   }
-  if(engine==='ComparisonEngine') return {before:62,after:91,unit:'%'};
+  if(engine==='ComparisonEngine') return {before:null,after:null,unit:''};
   if(engine==='CoreChartEngine') { const data=chartStarterData(element); return {variant:'line',data,rows:data.map(([label,value])=>({label,value})),brush:[0,data.length-1],cross:null,drill:null,revealed:true}; }
   if(engine==='TextEngine') return {text:'State the insight, evidence, and intended decision in one clear sentence.',body:'State the insight, evidence, and intended decision in one clear sentence.'};
   if(engine==='TableEngine') { const rows=[['Yield','98.7%','On track'],['Cycle time','42.8 min','Improving'],['Risk','Low','Monitored']]; return {customTable:{headers:['Measure','Current','Status'],rows},rows}; }
@@ -300,6 +304,8 @@ function viewItems() { return model().items.map(viewItem); }
 function defaultEmphasis(entry) {
   const name=String(entry.element||entry.title||'').toLowerCase();
   if (entry.emphasis && ['compact','standard','prominent','hero'].includes(entry.emphasis)) return entry.emphasis;
+  if (['report_headline','hero_metric'].includes(entry.composition_role)) return 'hero';
+  if (['primary_analysis','causal_evidence','decision_risk','conclusion'].includes(entry.composition_role)) return 'prominent';
   if (name.includes('hero') || name==='executive statement') return 'hero';
   if (name.includes('section divider') || name.includes('spacer') || name.includes('metadata') || name.includes('footnote') || name.includes('eyebrow')) return 'compact';
   if (name.includes('decision needed') || name.includes('recommendation') || name.includes('key takeaway')) return 'prominent';
@@ -312,8 +318,8 @@ function semanticPolicy(entry) {
   const safeW=Math.max(1,CANVAS.w-2*CANVAS.gap),safeH=Math.max(1,CANVAS.h-2*CANVAS.gap);
   let p={minW:d.minW,minH:d.minH,prefW:Math.max(d.minW,320),prefH:Math.max(d.minH,180),maxW:safeW,maxH:safeH,growth:'balanced',aspect:null};
   if(engine==='MetricEngine') {
-    p={...p,minW:190,minH:128,prefW:270,prefH:150,growth:'horizontal'};
-    if(name.includes('hero kpi')) p={...p,minW:280,minH:145,prefW:420,prefH:170};
+    p={...p,minW:190,minH:112,prefW:270,prefH:132,growth:'horizontal'};
+    if(name.includes('hero kpi')) p={...p,minW:280,minH:120,prefW:420,prefH:136};
     if(name.includes('pair')||name.includes('strip')) p={...p,minW:300,minH:128,prefW:390,prefH:145};
     if(name.includes('ring')) p={...p,minW:205,minH:205,prefW:245,prefH:245,aspect:1,growth:'square'};
     if(name.includes('ladder')) p={...p,minW:235,minH:185,prefW:300,prefH:205};
@@ -321,16 +327,25 @@ function semanticPolicy(entry) {
     if(name.includes('confidence')) p={...p,minW:245,minH:165,prefW:330,prefH:185};
     if(name.includes('threshold')||name.includes('target')||name.includes('progress')||name.includes('capacity')||name.includes('rate')) p={...p,minW:225,minH:150,prefW:310,prefH:170};
   } else if(engine==='CoreChartEngine') {
-    p={...p,minW:320,minH:220,prefW:470,prefH:270,growth:'plot'};
+    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
     if(name==='sparkline') p={...p,minW:240,minH:130,prefW:340,prefH:150};
     if(name.includes('donut')||name.includes('pie')) p={...p,minW:235,minH:235,prefW:285,prefH:285,aspect:1,growth:'square'};
     if(name.includes('sankey')||name.includes('treemap')||name.includes('funnel')) p={...p,minW:350,minH:220,prefW:500,prefH:260};
   } else if(engine==='EngineeringChartEngine') {
-    p={...p,minW:330,minH:225,prefW:480,prefH:270,growth:'plot'};
-    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:310,minH:245,prefW:420,prefH:300};
+    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
+    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:418};
   } else if(engine==='TableEngine') {
     p={...p,minW:340,minH:210,prefW:480,prefH:260,growth:'data'};
     if(name.includes('dense')) p={...p,minH:235,prefH:300};
+    const rows=Array.isArray(entry.customTable?.rows)?entry.customTable.rows:Array.isArray(entry.rows)?entry.rows:null;
+    if(rows){
+      const rowCount=rows.filter(row=>Array.isArray(row)&&row.some(value=>value!==null&&value!==undefined&&String(value).trim()!=='')).length;
+      // Reserve space for the governed card title, table header, and complete
+      // row bodies. The former 70px allowance fit the stored grid but clipped
+      // live preview rows once the title and table chrome rendered.
+      const contentHeight=rowCount?136+rowCount*37:112;
+      p={...p,minH:Math.max(96,contentHeight),prefH:Math.max(108,contentHeight+12)};
+    }
   } else if(engine==='MatrixEngine') {
     p={...p,minW:290,minH:220,prefW:390,prefH:270,growth:'square'};
     if(name.includes('risk matrix')||name.includes('heatmap')||name.includes('correlation')) p={...p,minW:260,minH:250,prefW:320,prefH:300,aspect:1};
@@ -362,16 +377,34 @@ function semanticPolicy(entry) {
     if(name.includes('body narrative')||name.includes('narrative sequence')) p={...p,minW:320,minH:190,prefW:500,prefH:240};
     if(name.includes('section heading')||name.includes('eyebrow')||name.includes('footnote')||name.includes('metadata')) p={...p,minW:260,minH:84,prefW:440,prefH:100};
   } else if(engine==='ComparisonEngine') {
-    p={...p,minW:300,minH:175,prefW:430,prefH:210,growth:'horizontal'};
+    p={...p,minW:300,minH:116,prefW:430,prefH:150,growth:'horizontal'};
+    if(compositionRole(entry)==='supporting_analysis') p={...p,minH:104,prefH:132};
   } else if(['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) {
     p={...p,minW:280,minH:180,prefW:400,prefH:220,growth:'text'};
     if(name.includes('hero')) p={...p,minW:380,minH:190,prefW:540,prefH:230};
     if(name.includes('grid')||name.includes('register')||name.includes('cluster')) p={...p,minW:340,minH:220,prefW:470,prefH:270};
+    if(engine==='DecisionCompositeEngine'&&name.includes('risk callout')) p={...p,minH:78,prefH:94};
   } else if(engine==='SmartLayoutEngine') {
     p={...p,minW:230,minH:150,prefW:360,prefH:210,growth:'balanced'};
     if(name.includes('section divider')||name.includes('spacer')) p={...p,minW:320,minH:64,prefW:520,prefH:74,growth:'horizontal'};
   } else if(engine==='InteractionLayer'||engine==='EditorInfrastructure') {
     p={...p,minW:230,minH:155,prefW:330,prefH:195,growth:'balanced'};
+  }
+  if(engine==='TextEngine') {
+    const role=compositionRole(entry),copy=String(entry.text||entry.body||entry.content||'').trim(),innerW=Math.max(1,CANVAS.w-2*CANVAS.gap);
+    if(role==='context') {
+      const lines=Math.max(1,Math.ceil(copy.length/Math.max(44,Math.floor(innerW/7.2))));
+      p={...p,minH:62,prefH:Math.max(72,38+lines*18)};
+    } else if(role==='report_headline') {
+      const lines=Math.max(1,Math.ceil(copy.length/Math.max(40,Math.floor(innerW/12.4))));
+      p={...p,minH:86,prefH:Math.max(98,48+lines*30)};
+    } else if(role==='narrative_interpretation') {
+      const lines=Math.max(1,Math.ceil(copy.length/Math.max(48,Math.floor(innerW/7.4))));
+      p={...p,minH:98,prefH:Math.max(116,62+lines*22)};
+    } else if(role==='conclusion') {
+      const lines=Math.max(1,Math.ceil(copy.length/Math.max(42,Math.floor(innerW/8.2))));
+      p={...p,minH:82,prefH:Math.max(96,54+lines*21)};
+    }
   }
   const emphasis=defaultEmphasis(entry);
   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
@@ -406,15 +439,17 @@ function allocateRowWidths(row, innerW, gap) {
   let desireSum=desires.reduce((a,b)=>a+b,0);
   if(left>0&&desireSum>0){const used=Math.min(left,desireSum);widths=widths.map((w,i)=>w+used*desires[i]/desireSum);left-=used;}
   if(left>0){const weights=row.map(({entry})=>effectiveWeight(entry));const sum=weights.reduce((a,b)=>a+b,0)||1;widths=widths.map((w,i)=>w+left*weights[i]/sum);}
+  if(row.length===1&&row[0].policy.aspect)widths[0]=Math.min(widths[0],row[0].policy.prefW);
   return widths;
 }
 function semanticSmartLayout(items=viewItems()) {
-  const ordered=[...items].sort((a,b)=>a.order-b.order);
+  const ordered=compositionOrder(items,model().layoutPreset||'editorial');
   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
   const g=CANVAS.gap,innerW=Math.max(1,CANVAS.w-2*g),innerH=Math.max(1,CANVAS.h-2*g);
   const rows=[];let row=[];let minUsed=0;
-  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),forceOwnRow=role==='Headline'||(role==='Primary Evidence'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW;if(row.length&&(minUsed+need>innerW||forceOwnRow)){rows.push(row);row=[];minUsed=0;}row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1){rows.push(row);row=[];minUsed=0;}}
-  if(row.length)rows.push(row);
+  const flush=()=>{if(row.length){const role=compositionRole(row[0].entry);rows.push({members:row,section:compositionSection(row[0].entry,role).id});row=[];minUsed=0;}};
+  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),semanticRole=compositionRole(entry),section=compositionSection(entry,semanticRole).id,name=String(entry.element||entry.title||''),longNarrative=entry.engine==='TextEngine'&&String(entry.text||entry.body||'').trim().length>420,forceOwnRow=['report_headline','narrative_interpretation','conclusion'].includes(semanticRole)||entry.engine==='DiagramEngine'||longNarrative||(semanticRole==='primary_analysis'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,currentSection=row.length?compositionSection(row[0].entry,compositionRole(row[0].entry)).id:section;if(row.length&&(currentSection!==section||minUsed+need>innerW||forceOwnRow))flush();row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1)flush();}
+  flush();
   const solo=ordered.length===1&&rows.length===1;
   const fitToHull=(policy,w=innerW,h=innerH)=>{
     let width=Math.min(policy.maxW,w),height=Math.min(policy.maxH,h);
@@ -438,15 +473,16 @@ function semanticSmartLayout(items=viewItems()) {
     }
     return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
   };
-  const rowSpecs=rows.map((members)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}return {members,widths,height:Math.max(...desired)};});
-  const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height,0)+g*Math.max(0,rowSpecs.length-1)+2*g;
+  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=index===0||rows[index-1].section!==section;return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
+  rowSpecs.forEach((spec,index)=>{spec.gapAfter=index<rowSpecs.length-1?g+(spec.section!==rowSpecs[index+1].section?g*.5:0):0;});
+  const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height+r.gapAfter,0)+2*g+(rowSpecs[0]?.sectionStart?20:0);
   // Smart owns the safe hull. Solo composition uses only the useful semantic
   // height it needs; multi-element composition fills the report hull through
   // weighted row growth so hierarchy, not a centered island, determines mass.
   const layoutTargetH=solo?baseNeeded:CANVAS.h;
   const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
   let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
-  const usableH=resolvedTargetH-2*g-g*Math.max(0,rowSpecs.length-1);
+  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter,0);
   if(baseNeeded>resolvedTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
@@ -461,19 +497,8 @@ function semanticSmartLayout(items=viewItems()) {
       conflict=`Smart layout compacted ${ordered.length} elements to fit this ${resolvedTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  if(!solo&&baseNeeded<resolvedTargetH&&rowSpecs.length){
-    let extra=resolvedTargetH-baseNeeded;
-    const growthScore=spec=>Math.max(...spec.members.map(({entry,policy})=>{
-      const family={plot:5,data:4.5,media:4,square:4,vertical:2.5,horizontal:1.2,balanced:.6,text:0}[policy.growth]||0;
-      const role=suggestMessageRole(entry),roleWeight=role==='Primary Evidence' ? 1.45 : role==='Supporting Evidence' ? 1.15 : role==='Headline' ? .8 : 1;
-      return family*roleWeight;
-    }));
-    const capacity=spec=>{const maximum=Math.max(...spec.members.map(({policy})=>({plot:innerH,data:innerH,media:innerH,square:innerH,vertical:innerH,horizontal:innerH,balanced:innerH*.72,text:innerH*.62}[policy.growth]||innerH*.62)));return Math.max(0,maximum-spec.height);};
-    for(let pass=0;pass<4&&extra>.5;pass+=1){const candidates=rowSpecs.map(spec=>({spec,score:growthScore(spec),capacity:capacity(spec)})).filter(value=>value.score>0&&value.capacity>.5),scoreTotal=candidates.reduce((sum,value)=>sum+value.score,0);if(!candidates.length||!scoreTotal)break;let used=0;for(const value of candidates){const add=Math.min(value.capacity,extra*value.score/scoreTotal);value.spec.height+=add;used+=add;}if(used<.5)break;extra-=used;}
-    if(extra>.5){const share=extra/rowSpecs.length;rowSpecs.forEach(spec=>{spec.height+=share;});}
-  }
-  const rects=[];let y=g;
-  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:Math.min(spec.height,aspectHeight);if(policy.growth==='square')h=Math.min(spec.height,w);if(!policy.aspect&&policy.growth==='text')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.62,spec.height)));if(!policy.aspect&&policy.growth==='balanced')h=Math.min(spec.height,Math.max(policy.minH,Math.min(innerH*.72,spec.height)));h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+g;}
+  const rects=[];let y=g+(rowSpecs[0]?.sectionStart?20:0);
+  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));if(policy.growth==='square')h=Math.min(spec.height,w);h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,sectionStart:spec.sectionStart&&i===0,sectionTitle:spec.sectionTitle,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+spec.gapAfter;}
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
   return {rects,height:resolvedTargetH,conflict};
 }
@@ -629,7 +654,7 @@ function reapplyLocalRecovery() {
   for(const transaction of recovery.pending||[]){const before=parseCanonical(transaction.canonical_before||recovery.model);if(!transaction.ops?.every(op=>opPreconditionsMatch(probe.model,before,op)))return toast('Local edits overlap newer report changes; recovery draft is retained for review');try{probe.commit(probe.command(transaction.ops,transaction.label||'Recovered edit','recovery-probe'));ops.push(...transaction.ops);}catch{return toast('Local edits cannot be reapplied safely; recovery draft is retained');}}
   if(!ops.length)return false;const savedRecovery=ui.recovery;ui.recovery=null;const accepted=commitOps('Reapply retained local edits',ops,{announce:'Local edits reapplied'});if(accepted){ui.recovery={...savedRecovery,reapplying:true,reapply_commit_id:accepted.id};persistPendingState();updateSaveUi();}else{ui.recovery=savedRecovery;persistPendingState();updateSaveUi();}return !!accepted;
 }
-window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{},active=String(bootstrap.report_id||'default'),replyReport=String(p.report_id||p.report?.report_id||active);debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(['report.commit_result','report.conflict','report.error'].includes(m.type)&&replyReport!==active){debugEvent('warn','Ignored stale report reply',`${m.type} for ${replyReport} while ${active} is active`);return;}if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='dataset.binding_result'){const dataset=model().datasets.find(value=>String(value.id)===String(p.dataset_id));const rows=Array.isArray(p.result?.rows)&&Array.isArray(p.schema||dataset?.fields)?p.result.rows.map(row=>(p.schema||dataset.fields).map(field=>row?.[field.id]??null)):null;if(dataset&&rows){ui.datasetResults[dataset.id]={rows,filtered_total:p.result.filtered_total,total:p.result.total,revision:p.result.revision};invalidateResolvedData();renderAll();}return;}if(m.type==='reuse.preferences_result'){const apply=(bucket,records)=>{if(!Array.isArray(records))return;storage.set(bucket==='datasets'?'viz-stage-datasets':'viz-stage-assets',JSON.stringify(records));};apply('datasets',p.datasets);apply('assets',p.assets);if(p.bucket&&Array.isArray(p.records))apply(p.bucket,p.records);if(ui.stageD?.mode==='datasets'||ui.stageD?.mode==='assets')stageDRender();return;}if(m.type==='preset.preferences_result'){personalPresets=Array.isArray(p.presets)?p.presets:[];schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
+window.CompanyUIVisualizerBridge={receive(message){try{const m=typeof message==='string'?JSON.parse(message):message;if(!m||m.bridge_version!==BRIDGE_VERSION)return;const p=m.payload||{},active=String(bootstrap.report_id||'default'),replyReport=String(p.report_id||p.report?.report_id||active);debugEvent('inbound',m.type,typeof p.message==='string'?p.message:'Received from application');if(['report.commit_result','report.conflict','report.error'].includes(m.type)&&replyReport!==active){debugEvent('warn','Ignored stale report reply',`${m.type} for ${replyReport} while ${active} is active`);return;}if(m.type==='report.commit_result'){ui.pendingCommits.delete(p.commit_id);if(ui.saveInFlight===p.commit_id)ui.saveInFlight=null;if(ui.recovery?.reapply_commit_id===p.commit_id)ui.recovery=null;persistPendingState();updateSaveUi();dispatchNextPendingCommit();return;}if(m.type==='report.conflict'){ui.saveInFlight=null;replaceFromServer(p,'Report changed elsewhere; local edits retained for recovery',{preserveLocal:true});return;}if(m.type==='report.bootstrap'){replaceFromServer(p,'Report loaded',{restorePersisted:true});return;}if(m.type==='report.error'){if(!p.commit_id||ui.saveInFlight===p.commit_id)ui.saveInFlight=null;ui.persistenceFailure={message:p.message||'Save failed',commit_id:p.commit_id||null};if(p.report)replaceFromServer(p.report,'Save rejected; local edits retained for recovery',{preserveLocal:true});else{persistPendingState();updateSaveUi();toast(p.message||'Operation failed');}return;}if(m.type==='dataset.binding_result'){const dataset=model().datasets.find(value=>String(value.id)===String(p.dataset_id));const rows=Array.isArray(p.result?.rows)&&Array.isArray(p.schema||dataset?.fields)?p.result.rows.map(row=>(p.schema||dataset.fields).map(field=>row?.[field.id]??null)):null;if(dataset&&rows){ui.datasetResults[dataset.id]={rows,filtered_total:p.result.filtered_total,total:p.result.total,revision:p.result.revision};invalidateResolvedData();renderAll();}return;}if(m.type==='reuse.preferences_result'){const apply=(bucket,records)=>{if(!Array.isArray(records))return;storage.set(bucket==='datasets'?'viz-stage-datasets':'viz-stage-assets',JSON.stringify(records));};apply('datasets',p.datasets);apply('assets',p.assets);if(p.bucket&&Array.isArray(p.records))apply(p.bucket,p.records);if(ui.stageD?.mode==='datasets'||ui.stageD?.mode==='assets')stageDRender();return;}if(m.type==='preset.preferences_result'){personalPresets=normalizedPersonalPresets(p.presets);schedulePresetListRender();return;}if(m.type==='mapping.preferences_result'){mappingPresets=Array.isArray(p.presets)?p.presets:[];ui.mappingPresetsLoaded=true;if(ui.dataFirst?.intake)renderDataFirstDialog();return;}if(m.type==='application.notification')toast(p.message||'');}catch(error){debugEvent('error','Bridge receive failure',error?.stack||error);throw error;}},state(){return {editor_ready:$('.cui-visualizer-root')?.dataset.editorReady==='true',report_id:bootstrap.report_id,revision:store.revision,model:parseCanonical(store.serialize()),pending:ui.pendingCommits.size,inflight:ui.saveInFlight,recovery:!!ui.recovery};}};
 
 // Dataset replies are asynchronous. Keep older resource revisions out of the
 // current statistical projection before the generic bridge applies row state.
@@ -911,12 +936,48 @@ function syncCanvasDimensions() {
 }
 function nodeOverflow(node) {
   if (!node) return { x:0, y:0 };
-  let x=Math.max(0,node.scrollWidth-node.clientWidth); let y=Math.max(0,node.scrollHeight-node.clientHeight);
-  for (const child of node.querySelectorAll('.integrated-element-content,.gallery-card,.card-body,.table-wrap,.chart-wrap,.diagram-svg')) {
+  const rendered=node.querySelector('.integrated-element-content')||node;
+  let x=Math.max(0,rendered.scrollWidth-rendered.clientWidth); let y=Math.max(0,rendered.scrollHeight-rendered.clientHeight);
+  for (const child of rendered.querySelectorAll('.gallery-card,.card-body,.table-wrap,.chart-wrap,.diagram-svg,.viz-svg,.cs-static-chart,.cs-chart-svg,.plot-area,svg')) {
     x=Math.max(x,Math.max(0,child.scrollWidth-child.clientWidth));
     y=Math.max(y,Math.max(0,child.scrollHeight-child.clientHeight));
   }
   return {x,y};
+}
+function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
+  if(entry.engine==='TextEngine'){
+    const role=compositionRole(entry),headline=role==='report_headline',text=String(entry.text||entry.body||entry.content||'').trim();
+    const callout=['conclusion','decision_risk','action_status'].includes(role),lineChars=Math.max(20,Math.floor((viewportWidth-54)/(headline?10.4:callout?7.2:6.6)));
+    const lines=Math.max(1,text.split(/\n+/).reduce((sum,line)=>sum+Math.max(1,Math.ceil(line.length/lineChars)),0));
+    if(callout)return Math.max(112,lines*22+40);
+    return Math.max(headline?124:76,lines*(headline?23:20)+32);
+  }
+  if(entry.engine==='MetricEngine')return 132;
+  if(entry.engine==='ComparisonEngine')return 150;
+  if(entry.engine==='CoreChartEngine'||entry.engine==='EngineeringChartEngine')return 250;
+  if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
+  if(entry.engine==='DiagramEngine'){
+    const name=String(entry.element||entry.title||'').toLowerCase();
+    if(name.includes('process flow')){
+      const bounds=diagramRenderBounds(entry),contentWidth=Math.max(220,viewportWidth-68);
+      return Math.max(144,Math.min(240,Math.ceil(contentWidth*bounds.height/Math.max(1,bounds.width)+44)));
+    }
+    return 240;
+  }
+  if(entry.engine==='WaferFabEngine'&&String(entry.element||entry.title||'').toLowerCase().includes('wafer map'))return Math.min(320,Math.max(240,viewportWidth-72));
+  if(entry.engine==='ImageMediaEngine'||entry.engine==='WaferFabEngine'||entry.engine==='MatrixEngine')return 240;
+  if(entry.engine==='TimelineEngine')return 164;
+  if(['DecisionCompositeEngine','ProjectCompositeEngine','EvidenceCompositeEngine'].includes(entry.engine)){
+    const text=[entry.title,entry.statement,entry.detail,entry.summary,entry.owner,entry.status].filter(Boolean).join(' '),lines=Math.max(2,Math.ceil(text.length/40));
+    return Math.max(152,lines*20+72);
+  }
+  return 148;
+}
+function refreshMobileReaderHeights(viewportWidth=window.innerWidth) {
+  for(const entry of model().items){
+    const node=ui.componentNodes.get(entry.id);
+    if(node)node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry,viewportWidth)}px`);
+  }
 }
 function measureSmartContentRequirements(rm) {
   if(model().mode!=='smart'||ui.smartLayoutConflict) return false;
@@ -971,12 +1032,18 @@ function reconcileCanvas({ content = true } = {}) {
     node.classList.toggle('selected', ui.selected.has(entry.id));
     node.classList.toggle('locked', !!entry.locked);
     node.classList.toggle('grouped', !!entry.groupId);
+    node.dataset.engine=entry.engine||'';
     node.dataset.contentDensity=entry.contentDensity==='fill'?'fill':'fit';
     node.dataset.layoutGrowth=r.policy?.growth||'balanced';
     node.dataset.contentFit=r.policy?.contentFit===false?'fixed':'responsive';
+    node.dataset.compositionRole=compositionRole(entry);
+    node.dataset.compositionEmphasis=r.policy?.emphasis||'standard';
+    node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry)}px`);
     node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
     node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
+    node.style.order = String(Number.isFinite(Number(entry.order)) ? Number(entry.order) : 0);
+    syncComponentSectionHeading(node,r,entry);
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
     node.setAttribute('aria-label', `${typeDefaults[entry.type]?.title || entry.type}: ${entry.title}${entry.locked ? ', locked' : ''}${entry.groupId ? ', grouped' : ''}${ui.selected.has(entry.id) ? ', selected' : ''}`);
@@ -989,6 +1056,7 @@ function reconcileCanvas({ content = true } = {}) {
       if (activeKey) restoreFocusKey(node, activeKey);
     }
   }
+  syncCompositionSectionHeadings(layer,rm);
   renderGroups(rm);
   renderEditorChrome(rm);
   renderContext(rm);
@@ -1021,6 +1089,33 @@ function renderGroups(rm) {
   layer.innerHTML = specs.map(([gid, u]) => `<div class="group-outline" data-group="${esc(gid)}" style="left:${u.x - 4}px;top:${u.y - 4}px;width:${u.w + 8}px;height:${u.h + 8}px"></div>`).join('');
 }
 
+function syncComponentSectionHeading(node,rect,entry) {
+  if(model().mode==='smart'&&rect?.sectionStart){
+    node.dataset.sectionStart='true';
+    node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  } else {
+    delete node.dataset.sectionStart;
+    delete node.dataset.sectionTitle;
+  }
+}
+
+function syncCompositionSectionHeadings(layer,rm) {
+  if(!layer)return;
+  layer.querySelectorAll('.composition-section-heading').forEach(node=>node.remove());
+  if(model().mode!=='smart')return;
+  for(const rect of rm.values()){
+    if(!rect.sectionStart)continue;
+    const entry=item(rect.id),heading=document.createElement('div');
+    heading.className='composition-section-heading';
+    heading.setAttribute('role','heading');heading.setAttribute('aria-level','2');
+    heading.textContent=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,rect.y-18)}px`;
+    heading.style.width=`${Math.max(1,CANVAS.w-2*CANVAS.gap)}px`;
+    heading.style.order=String(Math.floor(Number(entry?.order)||0)-1);
+    layer.appendChild(heading);
+  }
+}
+
 function renderGeometryOnly() {
   const rm = rectMap();
   for (const [id, r] of rm.entries()) {
@@ -1028,6 +1123,7 @@ function renderGeometryOnly() {
     if (!node) continue;
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`;
   }
+  syncCompositionSectionHeadings($('#componentLayer'),rm);
   renderGroups(rm);
   renderEditorChrome(rm);
   renderContext(rm);
@@ -1362,7 +1458,8 @@ function bindDataDock(entry) {
     const type=engineToType[target.engine]||entry.type; const patch={engine:target.engine,type,element:target.element,view_type:target.view,mapping:binding.mapping};
     commitOps(`Change view to ${view}`,[{op:'item.patch',id:entry.id,patch}],{announce:`Changed view to ${view}`});
   });
-  const transformPanel=$('.data-transform-panel'),transformRoot=transformPanel||document;
+  const transformPanel=$('.data-transform-panel'),transformRoot=transformPanel;
+  if(transformRoot){
   $$('[data-multi-field-remove]',transformRoot).forEach(button=>button.addEventListener('click',()=>{const select=$(`[data-multi-field="${button.dataset.multiFieldRemove}"]`,transformRoot);if(select){const option=[...select.options].find(candidate=>candidate.value===button.dataset.fieldId);if(option)option.selected=false;}}));
   $('[data-transform-type]',transformRoot)?.addEventListener('change',event=>{const index=ui.transformEditor?.entryId===entry.id?ui.transformEditor.index:null;ui.transformEditor={entryId:entry.id,index,type:event.target.value};ui.transformDraft={entryId:entry.id,index,step:{...(Number.isInteger(index)?entry.transform_recipe?.steps?.[index]||{}:{}),type:event.target.value}};renderInspector();requestAnimationFrame(()=> $('[data-transform-type]')?.focus());});
   $$('input,select',transformRoot).filter(control=>!control.matches('[data-transform-type]')).forEach(control=>control.addEventListener('input',event=>{const type=$('[data-transform-type]',transformRoot)?.value,index=ui.transformEditor?.entryId===entry.id?ui.transformEditor.index:null,existing=Number.isInteger(index)?entry.transform_recipe?.steps?.[index]||{}:{},step=readHumanTransformStep(type,transformRoot,dataset.fields,existing),selector=event.target.dataset.multiField?`[data-multi-field="${event.target.dataset.multiField}"]`:`[${[...event.target.attributes].find(attribute=>attribute.name.startsWith('data-transform-'))?.name||'data-transform-type'}]`,start=event.target.selectionStart,end=event.target.selectionEnd;ui.transformEditor={entryId:entry.id,index,type};ui.transformDraft={entryId:entry.id,index,step};renderInspector();requestAnimationFrame(()=>{const next=$(selector,$('.data-transform-panel'));next?.focus({preventScroll:true});if(next&&typeof start==='number'&&next.setSelectionRange)next.setSelectionRange(start,end);});}));
@@ -1371,6 +1468,7 @@ function bindDataDock(entry) {
   $('[data-transform-action="clear"]',transformRoot)?.addEventListener('click',()=>{ui.transformEditor=null;ui.transformDraft=null;commitOps('Clear transforms',[{op:'item.patch',id:entry.id,patch:{transform_recipe:null}}],{announce:'Cleared transforms'});});
   $('[data-transform-action="save"]',transformRoot)?.addEventListener('click',()=>{const type=$('[data-transform-type]',transformRoot)?.value,steps=structuredClone(entry.transform_recipe?.steps||[]),editing=ui.transformEditor?.entryId===entry.id?ui.transformEditor:null,index=Number.isInteger(editing?.index)?editing.index:null,step=readHumanTransformStep(type,transformRoot,dataset.fields,index===null?{}:steps[index]);if(!type)return toast('Choose a transform operation');if(['filter','sort','rename','top_n','derive','aggregate','group','bin'].includes(type)&&!step.field&&!step.ranking_field&&!step.by)return toast('Choose the fields for this transform');if(type==='rename'&&!step.name)return toast('Enter a new field name');if(type==='top_n'&&(!Number.isInteger(step.n)||step.n<1))return toast('Enter a whole number greater than zero for N');if(index===null){step.id=localCommitId('transform-step');steps.push(step);}else steps[index]=step;ui.transformEditor=null;ui.transformDraft=null;const recipe={...(entry.transform_recipe||{}),id:entry.transform_recipe?.id||`recipe-${entry.id}`,source_dataset_id:entry.transform_recipe?.source_dataset_id||dataset.id,steps};commitOps(index===null?`Add ${type} transform`:`Edit ${type} transform`,[{op:'item.patch',id:entry.id,patch:{transform_recipe:recipe}}],{announce:`${index===null?'Added':'Updated'} ${type} transform`});});
   $$('[data-transform-step-action]',transformRoot).forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.transformStepAction,index=Number(button.dataset.transformIndex),steps=structuredClone(entry.transform_recipe?.steps||[]);if(!Number.isInteger(index)||!steps[index])return;if(action==='edit'){ui.transformEditor={entryId:entry.id,index,type:steps[index].type};ui.transformDraft=null;renderInspector();return;}if(action==='remove')steps.splice(index,1);else if(action==='up'&&index>0)[steps[index-1],steps[index]]=[steps[index],steps[index-1]];else if(action==='down'&&index<steps.length-1)[steps[index],steps[index+1]]=[steps[index+1],steps[index]];else return;ui.transformEditor=null;ui.transformDraft=null;const recipe=steps.length?{...(entry.transform_recipe||{}),steps}:{...entry.transform_recipe,steps:[]};commitOps(`${action==='remove'?'Remove':action==='up'||action==='down'?'Reorder':'Update'} transform`,[{op:'item.patch',id:entry.id,patch:{transform_recipe:recipe}}],{announce:`Transform ${action}`});}));
+  }
   $$('[data-paste-special]').forEach(button=>button.addEventListener('click',async()=>{const mode=button.dataset.pasteSpecial;if(mode==='dataset_data'||mode==='mapping'||mode==='style')return copySemanticSelection(mode);if(mode==='append-data'){if(ui.semanticClipboard?.dataset)return pasteSemanticPayload(ui.semanticClipboard,'append-data');try{const text=await navigator.clipboard?.readText?.();if(text&&await appendTextToSelection(text))return;}catch{/* paste event remains available */}return toast('Copy matching tabular data, then choose Append data');}if(!ui.semanticClipboard)return toast('Copy a visual, data, mapping, or style first');pasteSemanticPayload(ui.semanticClipboard,mode==='paste-data'?'data':mode);}));
   $$('[data-dataset-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.datasetAction;if(action==='add-row')update('Add dataset row',next=>next.rows.push(Array(next.fields.length).fill(null)));if(action==='add-column')update('Add dataset column',next=>{const index=next.fields.length;next.fields.push({id:`column_${index+1}`,name:`Column ${index+1}`,type:'unknown',nullable:true});next.rows=next.rows.map(row=>[...row,null]);});if(action==='delete-row')update('Delete dataset row',next=>next.rows.pop());if(action==='delete-column'&&dataset.fields.length>1)update('Delete dataset column',next=>{next.fields.pop();next.rows=next.rows.map(row=>row.slice(0,-1));});}));
   $$('[data-dataset-action]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.datasetAction;if(!['insert-row-above','insert-row-below','delete-rows','insert-column-left','insert-column-right','delete-columns'].includes(action))return;update(action.replaceAll('-',' '),next=>{const source={headers:next.fields.map(field=>field.name),rows:next.rows},selection=gridSelection(ui.dataDockRange,next.rows.length,next.fields.length),grid=applyGridAction(source,action,ui.dataDockRange);if(action.startsWith('insert-column')){const index=action.endsWith('left')?selection.firstColumn:selection.lastColumn+1,count=grid.headers.length-next.fields.length;next.fields.splice(index,0,...Array.from({length:count},(_,offset)=>{let id=`column_${index+offset+1}`;while(next.fields.some(field=>field.id===id))id=`${id}_new`;return{id,name:grid.headers[index+offset]||`Column ${index+offset+1}`,type:'unknown',nullable:true};}));}else if(action==='delete-columns'){next.fields.splice(selection.firstColumn,next.fields.length-grid.headers.length);}next.rows=grid.rows;});}));
@@ -1621,8 +1719,10 @@ function renderInspector() {
     const contentSection=inspectorSection(semanticSectionName(entry.engine||''),semanticInspectorMarkup(entry));
     const emphasis=defaultEmphasis(entry);
     const density=`<label for="iContentDensity">Vertical space</label><select id="iContentDensity"><option value="fit" ${(entry.contentDensity||'fit')==='fit'?'selected':''}>Fit content</option><option value="fill" ${entry.contentDensity==='fill'?'selected':''}>Fill component</option></select><small>Fit content avoids decorative top and bottom space. Use Fill only when the component needs a balanced card treatment.</small>`;
-    const messageRole=`<label for="iMessageRole">Message role</label><select id="iMessageRole" aria-describedby="iMessageRoleHelp">${MESSAGE_ROLES.map(role=>`<option value="${esc(role)}" ${suggestMessageRole(entry)===role?'selected':''}>${esc(role)}</option>`).join('')}</select><small id="iMessageRoleHelp">Guides Smart reading order and hierarchy; content and data stay unchanged.</small>`;
-    const layoutBody=model().mode==='smart'?`<div class="field">${messageRole}<label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field">${messageRole}<label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
+    const messageRole=`<label for="iMessageRole">Message role</label><select id="iMessageRole" aria-describedby="iMessageRoleHelp">${MESSAGE_ROLES.map(role=>`<option value="${esc(role)}" ${suggestMessageRole(entry)===role?'selected':''}>${esc(role)}</option>`).join('')}</select><small id="iMessageRoleHelp">Guides reading order and hierarchy; content and data stay unchanged.</small>`;
+    const compositionLabels={report_headline:'Report headline',context:'Context',hero_metric:'Key metric',primary_analysis:'Main analysis',supporting_analysis:'Supporting analysis',narrative_interpretation:'Interpretation',detailed_evidence:'Detailed evidence',causal_evidence:'Cause and process',decision_risk:'Decision and risk',action_status:'Actions and status',conclusion:'Conclusion and next step'};
+    const compositionIntent=`<label for="iCompositionRole">Composition role</label><select id="iCompositionRole" aria-describedby="iCompositionRoleHelp">${COMPOSITION_ROLES.map(role=>`<option value="${esc(role)}" ${compositionRole(entry)===role?'selected':''}>${esc(compositionLabels[role])}</option>`).join('')}</select><small id="iCompositionRoleHelp">Smart uses this intent to place the element in the report story.</small><label for="iSectionTitle">Section</label><input id="iSectionTitle" value="${esc(compositionSection(entry).title)}" maxlength="80" aria-label="Report section name">`;
+    const layoutBody=model().mode==='smart'?`<div class="field">${compositionIntent}${messageRole}<label>Visual emphasis</label><div class="emphasis-options" role="group" aria-label="Visual emphasis">${['compact','standard','prominent','hero'].map((level)=>`<button type="button" class="emphasis-option ${emphasis===level?'active':''}" data-emphasis="${level}">${level[0].toUpperCase()+level.slice(1)}</button>`).join('')}</div>${density}<small>Smart mode uses semantic size constraints plus this report-authoring emphasis.</small><details class="advanced-details"><summary>Advanced</summary><label for="iWeight">Raw layout weight</label><input id="iWeight" aria-label="Advanced layout weight" type="range" min=".45" max="3.4" step=".05" value="${entry.weight||1}"><div class="info-row"><span>Weight</span><b>${Number(entry.weight||1).toFixed(2)}</b></div></details><div class="info-row"><span>Intrinsic minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div></div>`:`<div class="field">${compositionIntent}${messageRole}<label>Size</label><div class="inline2"><input id="iW" aria-label="Width" value="${Math.round(actualRect?.w||entry.w||policy.minW)}" placeholder="Width"><input id="iH" aria-label="Height" value="${Math.round(actualRect?.h||entry.h||policy.minH)}" placeholder="Height"></div>${density}<div class="info-row"><span>Minimum</span><b>${Math.ceil(policy.minW)} × ${Math.ceil(policy.minH)}</b></div><small>${model().mode==='guided'?'Guided mode snaps placement and resize to the 14px safe margin, grid, peer edges, centers and equal gaps.':'Free mode keeps exact manual geometry with no snapping while still enforcing readable minimum size and valid canvas bounds.'}</small></div>`;
     const accessibility=entry.engine==='ImageMediaEngine'?inspectorSection('Accessibility / Export',`<div class="info-row"><span>Alt text</span><b>${String(entry.alt||'').trim()?'Ready':'Required'}</b></div><div class="info-row"><span>SVG</span><b>Visual export ready</b></div>`):inspectorSection('Accessibility / Export','<div class="info-row"><span>SVG</span><b>Visual export ready</b></div>');
     const reuseSection=reuseInspectorMarkup(entry);
     const group=model().groups[entry.groupId];const containerSection=group?inspectorSection('Container',`<div class="field"><label>Parent layout</label><div class="emphasis-options" role="group" aria-label="Container layout">${['free','row','grid','split'].map(kind=>`<button type="button" class="emphasis-option ${(group.layout?.kind||'free')===kind?'active':''}" data-container-layout="${kind}">${kind[0].toUpperCase()+kind.slice(1)}</button>`).join('')}</div><small>${group.items.length} children · persisted group container</small></div>`):'';
@@ -1634,6 +1734,15 @@ function renderInspector() {
     $('#iTextAlign')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content alignment',[{op:'item.patch',id:entry.id,patch:{textAlign:e.target.value}}]));
     $('#iContentDensity')?.addEventListener('change',(e)=>entry.locked?toast('Unlock the component before editing'):commitOps('Set content density',[{op:'item.patch',id:entry.id,patch:{contentDensity:e.target.value}}]));
     $('#iMessageRole')?.addEventListener('change',(e)=>{const result=applyMessageRole(model(),[entry.id],e.target.value);if(entry.locked)return toast('Unlock the component before editing');if(result.ops.length)commitOps(`Set message role · ${e.target.value}`,result.ops);});
+    $('#iCompositionRole')?.addEventListener('change',(e)=>{const result=applyCompositionRole(model(),[entry.id],e.target.value);if(entry.locked)return toast('Unlock the component before editing');if(result.ops.length)commitOps('Set composition role',result.ops);});
+    $('#iSectionTitle')?.addEventListener('change',(e)=>{
+      if(entry.locked)return toast('Unlock the component before editing');
+      const title=String(e.target.value||'').trim().slice(0,80)||'Analysis',id=title.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,48)||'analysis';
+      const patch={section_id:id,section_title:title};
+      if(Object.hasOwn(COMPOSITION_SECTIONS,id))patch.section_order=Object.keys(COMPOSITION_SECTIONS).indexOf(id);
+      else if(Object.hasOwn(entry,'section_order'))patch.section_order=null;
+      commitOps('Set report section',[{op:'item.patch',id:entry.id,patch}]);
+    });
     bindSemanticInspector(entry);
     bindDataDock(entry);
     bindReuseInspector(entry);
@@ -1734,7 +1843,12 @@ function preflight() {
   }
   if(ui.smartLayoutConflict)addIssue('smart-conflict',null,ui.smartLayoutConflict);
   if(!ui.pointerSession){const guides=Number(activeRoot?.dataset.snapGuideCount||0);if(guides){pf.staleGuides=guides;addIssue('stale-guide',null,`${guides} alignment guide(s) survived after interaction ended.`);}}
-  for(const button of $$('.tb,.mini-btn,.library-tab',activeRoot||document)){if(button.offsetParent!==null&&button.scrollWidth>button.clientWidth+1){pf.controls+=1;addIssue('control-wrap',null,`Control “${button.textContent.trim()}” does not fit on one line.`);}}
+  for(const button of $$('.tb,.mini-btn,.library-tab',activeRoot||document)){
+    if(button.closest('#libraryPane')&&activeRoot?.dataset.library!=='open')continue;
+    if(button.closest('#inspectorPane')&&activeRoot?.dataset.inspector!=='open')continue;
+    const bounds=button.getBoundingClientRect(),visible=button.offsetParent!==null&&bounds.width>0&&bounds.height>0&&bounds.right>0&&bounds.left<innerWidth&&bounds.bottom>0&&bounds.top<innerHeight;
+    if(visible&&button.scrollWidth>button.clientWidth+1){pf.controls+=1;addIssue('control-wrap',null,`Control “${button.textContent.trim()}” does not fit on one line.`);}
+  }
   if (pf.overlaps) pf.warnings.push(`${pf.overlaps} overlap${pf.overlaps===1?'':'s'}`);
   if (pf.out) pf.warnings.push(`${pf.out} safe-hull violation${pf.out===1?'':'s'}`);
   if (pf.min) pf.warnings.push(`${pf.min} intrinsic-size violation${pf.min===1?'':'s'}`);
@@ -2098,6 +2212,11 @@ function distribute(axis) {
 }
 function performModeSwitch(nextMode) {
   if (model().mode === nextMode) return;
+  if(nextMode==='smart') {
+    const next=composeReportModel(parseCanonical(store.serialize()),model().layoutPreset||'editorial');
+    commitOps('Change canvas mode',[{op:'model.replace',value:next}]);
+    return;
+  }
   const ops = [];
   if (model().mode === 'smart' && nextMode !== 'smart') { const sm = new Map(smartRects(model().items).map((r) => [r.id, r])),size=canvasSize(); model().items.forEach((entry) => { const r = sm.get(entry.id); ops.push({ op: 'item.patch', id: entry.id, patch: { x: r.x, y: r.y, w: r.w, h: r.h } }); });if(size.height>(Number(model().canvas?.height)||DEFAULT_CANVAS_SIZE.height))ops.push({op:'model.patch',patch:{canvas:{...model().canvas,height:size.height}}}); }
   ops.push({ op: 'model.patch', patch: { mode: nextMode } }); commitOps('Change canvas mode', ops);
@@ -2111,20 +2230,12 @@ function setMode(nextMode) {
   performModeSwitch(nextMode);
 }
 function applySuggestion(preset) {
-  const next=parseCanonical(store.serialize());
-  next.layoutPreset=preset;
-  next.mode='smart';
-  const orderMap=LAYOUT_ORDER[preset]||LAYOUT_ORDER.editorial;
-  if(orderMap){
-    const ranked=[...next.items].sort((a,b)=>orderMap.indexOf(a.type)-orderMap.indexOf(b.type));
-    const orderById=new Map(ranked.map((entry,index)=>[entry.id,index]));
-    next.items=next.items.map(entry=>({...entry,order:orderById.get(entry.id)??entry.order}));
-  }
+  const next=composeReportModel(parseCanonical(store.serialize()),preset);
   const accepted=commitOps('Apply built-in preset',[{op:'model.replace',value:next}],{announce:`${preset[0].toUpperCase()+preset.slice(1)} composition applied`});
   if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);renderPresetList();}
   return accepted;
 }
-function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const ops = [{ op: 'model.patch', patch: { mode: 'smart' } }, ...normalizeOrderOps()]; commitOps('Reflow report', ops, { announce: 'Smart composition reflowed' }); }
+function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const next=composeReportModel(parseCanonical(store.serialize()),model().layoutPreset||'editorial');commitOps('Compose report',[{op:'model.replace',value:next}],{announce:'Smart composition reapplied'}); }
 function setCanvasSize(width, height) {
   width=Math.round(Number(width)); height=Math.round(Number(height));
   if(!Number.isInteger(width)||!Number.isInteger(height)||width<640||width>3840||height<360||height>MAX_CANVAS_H)return toast('Page size must be 640–3840px wide and 360–4800px high');
@@ -2210,9 +2321,9 @@ function copySemanticSelection(kind='visual_full') {
   return writeSemanticClipboard(payload,kind==='visual_full'?'Visual copied':`${kind.replace('_',' ')} copied`);
 }
 
-function pasteCompositionPayload(payload) {
+function pasteCompositionPayload(payload,{preserveExistingDatasets=false}={}) {
   const size=canvasSize(),inset=model().mode==='guided'?CANVAS.gap:0;
-  const plan=pasteCompositionPlan(model(),payload,{mode:model().mode,canvasWidth:size.width,canvasHeight:size.height,inset});
+  const plan=pasteCompositionPlan(model(),payload,{mode:model().mode,canvasWidth:size.width,canvasHeight:size.height,inset,preserveExistingDatasets});
   if(!plan.ops.length)return false;
   const accepted=commitOps('Paste composition',plan.ops,{announce:`Pasted ${plan.newIds.length} elements`});
   if(accepted){ui.selected=new Set(plan.newIds);renderAll();}
@@ -2758,22 +2869,9 @@ function togglePreview() {
   ui.preview=entering;
   activeRoot?.classList.toggle('preview-mode',ui.preview);
   activeRoot?.setAttribute('data-preview-fit',ui.preview?'page':'');
-  const layer=$('#componentLayer'),hull=$('#hull');if(layer)layer.inert=ui.preview;if(hull)hull.setAttribute('aria-readonly',ui.preview?'true':'false');
+  const layer=$('#componentLayer'),hull=$('#hull');if(layer)layer.inert=false;if(hull)hull.setAttribute('aria-readonly',ui.preview?'true':'false');
   requestAnimationFrame(()=>fitZoom('page'));
 }
-const LAYOUT_ORDER=Object.freeze({
-  editorial:['text','metric','chart','comparison','timeline','table','image','diagram','risk','matrix','evidence','decision','project','engineering','wafer'],
-  executive:['metric','comparison','text','decision','chart','table','timeline','risk','evidence','project','image','diagram','matrix','engineering','wafer'],
-  technical:['engineering','wafer','diagram','chart','table','matrix','timeline','metric','text','evidence','decision','project','image','risk','comparison'],
-  scorecard:['metric','comparison','engineering','chart','table','text','decision','timeline','matrix','wafer','diagram','evidence','project','image','risk'],
-  narrative:['text','image','timeline','evidence','chart','metric','comparison','decision','project','table','diagram','risk','matrix','engineering','wafer'],
-  review:['metric','chart','table','comparison','text','timeline','decision','risk','evidence','project','matrix','engineering','wafer','diagram','image'],
-  investigation:['text','evidence','diagram','timeline','engineering','wafer','table','decision','metric','chart','risk','comparison','matrix','project','image'],
-  manufacturing:['wafer','engineering','matrix','chart','table','metric','text','evidence','decision','timeline','diagram','comparison','risk','project','image'],
-  roadmap:['timeline','project','decision','text','metric','chart','table','evidence','diagram','comparison','risk','matrix','engineering','wafer','image'],
-  comparison:['comparison','metric','chart','table','text','decision','risk','timeline','matrix','engineering','wafer','evidence','project','diagram','image'],
-  showcase:['project','metric','decision','evidence','image','timeline','chart','table','comparison','text','diagram','matrix','engineering','wafer','risk'],
-});
 const builtInPresets=Object.freeze([
   {id:'editorial',name:'Editorial Bento',description:'Balanced narrative and analytical hierarchy.'},
   {id:'executive',name:'Executive Decision',description:'KPIs, recommendation, decision, then evidence.'},
@@ -2799,11 +2897,19 @@ function normalizedPersonalPresets(raw) {
         const payload=structuredClone(value.payload);
         if(!payload||payload.kind!=='composition'||!Array.isArray(payload.items)||payload.items.length<2)continue;
         if(new Blob([JSON.stringify(payload)]).size>MAX_MODEL_BYTES)continue;
-        result.push({id,name,kind:'section',payload});
+        const contract=normalizedBindingContract(value.binding_contract)||buildReusableBindingContract({items:payload.items,datasets:payload.datasets||[]});
+        const reuse_mode=value.reuse_mode==='structure'?'structure':'copy';
+        const normalized={id,name,kind:'section',payload:reuse_mode==='structure'?reusableStructure(payload,contract):payload,reuse_mode,binding_contract:contract};
+        if(new Blob([JSON.stringify(normalized)]).size>MAX_MODEL_BYTES)continue;
+        result.push(normalized);
       } else {
         const modelValue=typeof value.model==='string'?parseCanonical(value.model):parseCanonical(serializeCanonical(value.model));
         if(modelBytes(modelValue)>MAX_MODEL_BYTES)continue;
-        result.push({id,name,kind:'report',model:modelValue});
+        const contract=normalizedBindingContract(value.binding_contract)||buildReusableBindingContract(modelValue);
+        const reuse_mode=value.reuse_mode==='structure'?'structure':'copy';
+        const normalized={id,name,kind:'report',model:reuse_mode==='structure'?reusableStructure(modelValue,contract):modelValue,reuse_mode,binding_contract:contract};
+        if(new Blob([JSON.stringify(normalized)]).size>MAX_MODEL_BYTES)continue;
+        result.push(normalized);
       }
       if(result.length>=50)break;
     } catch {/* isolate corrupt preset */}
@@ -2812,34 +2918,43 @@ function normalizedPersonalPresets(raw) {
 }
 function schedulePresetListRender(){if(presetRenderFrame)cancelAnimationFrame(presetRenderFrame);presetRenderFrame=requestAnimationFrame(()=>{presetRenderFrame=0;renderPresetList();});}
 function persistPersonalPresets(){personalPresets=normalizedPersonalPresets(personalPresets);storage.set('viz-prod-presets-cache',JSON.stringify(personalPresets));dispatchSemantic('preset.preferences_save_requested',{presets:personalPresets});schedulePresetListRender();}
-function savePresetNamed(name){
+function reusablePresetFields(content,kind,mode='structure'){
+  const source=kind==='section'?{items:content.items||[],datasets:content.datasets||[]} : content;
+  const binding_contract=buildReusableBindingContract(source),reuse_mode=mode==='copy'?'copy':'structure';
+  const reusable=reuse_mode==='structure'?reusableStructure(content,binding_contract):structuredClone(content);
+  return {reuse_mode,binding_contract,content:reusable};
+}
+function savePresetNamed(name,mode='structure'){
   const cleaned=String(name||'').trim().slice(0,80);
   if(!cleaned)return toast('Preset name cannot be blank');
-  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'report',model:parseCanonical(store.serialize())});
+  const content=parseCanonical(store.serialize()),saved=reusablePresetFields(content,'report',mode);
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'report',model:saved.content,reuse_mode:saved.reuse_mode,binding_contract:saved.binding_contract});
   persistPersonalPresets();
-  toast('Personal preset saved');
+  toast(saved.reuse_mode==='structure'?'Reusable report structure saved':'Report preset saved with source data');
 }
 function savePreset(){
-  $('#modalTitle').textContent='Save as preset';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly review layout"><small>Saves the complete current report. Personal presets are editable; built-in presets remain immutable.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save report preset</button></div></form>';
-  const form=$('#presetSaveForm');form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#presetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');savePresetNamed(name);closeModals();});
+  $('#modalTitle').textContent='Save report for reuse';$('#modalBody').innerHTML='<form class="modal-form" id="presetSaveForm"><label for="presetSaveName"><b>Preset name</b></label><input id="presetSaveName" maxlength="80" autocomplete="off" placeholder="Quarterly business review"><fieldset class="reuse-data-choice"><legend>Data source</legend><label><input type="radio" name="presetDataMode" value="structure" checked> Reuse structure with new data</label><small>Saves layout, style, analytical roles and field requirements without copying source values.</small><label><input type="radio" name="presetDataMode" value="copy"> Keep source data with this preset</label><small>Use when you want an explicit copy of the current report and its data.</small></fieldset><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save report preset</button></div></form>';
+  const form=$('#presetSaveForm');form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#presetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');savePresetNamed(name,$('input[name="presetDataMode"]:checked',form)?.value||'structure');closeModals();});
   $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});openModal($('#genericModal'),$('#presetSaveName'));
 }
 function saveSelectionPresetNamed(name){
   if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
+  const mode=arguments[1]||'structure';
   const cleaned=String(name||'').trim().slice(0,80);
   if(!cleaned)return toast('Preset name cannot be blank');
   const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
   if(!payload)return toast('Select 2+ elements to save a section preset');
-  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'section',payload});
+  const saved=reusablePresetFields(payload,'section',mode);
+  personalPresets.unshift({id:localCommitId('preset'),name:cleaned,kind:'section',payload:saved.content,reuse_mode:saved.reuse_mode,binding_contract:saved.binding_contract});
   persistPersonalPresets();
-  toast('Section preset saved');
+  toast(saved.reuse_mode==='structure'?'Reusable section saved':'Section preset saved with source data');
 }
 function saveSelectionPreset(){
   if(ui.selected.size<2)return toast('Select 2+ elements to save a section preset');
   $('#modalTitle').textContent='Save selection as preset';
-  $('#modalBody').innerHTML='<form class="modal-form" id="sectionPresetSaveForm"><label for="sectionPresetSaveName"><b>Section preset name</b></label><input id="sectionPresetSaveName" maxlength="80" autocomplete="off" placeholder="Fab evidence block"><small>Stores only the selected composition. Applying it later inserts an independent copy into the current report.</small><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save section preset</button></div></form>';
+  $('#modalBody').innerHTML='<form class="modal-form" id="sectionPresetSaveForm"><label for="sectionPresetSaveName"><b>Section preset name</b></label><input id="sectionPresetSaveName" maxlength="80" autocomplete="off" placeholder="Fab evidence block"><fieldset class="reuse-data-choice"><legend>Data source</legend><label><input type="radio" name="sectionDataMode" value="structure" checked> Reuse structure with new data</label><small>Keep the selected section, style and analytical field roles without source values.</small><label><input type="radio" name="sectionDataMode" value="copy"> Keep source data with this section</label></fieldset><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">Save section preset</button></div></form>';
   const form=$('#sectionPresetSaveForm');
-  form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#sectionPresetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');saveSelectionPresetNamed(name);closeModals();});
+  form.addEventListener('submit',(event)=>{event.preventDefault();const name=$('#sectionPresetSaveName').value;if(!String(name).trim())return toast('Enter a preset name');saveSelectionPresetNamed(name,$('input[name="sectionDataMode"]:checked',form)?.value||'structure');closeModals();});
   $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
   openModal($('#genericModal'),$('#sectionPresetSaveName'));
 }
@@ -2852,9 +2967,12 @@ function syncPresetSelectionAction() {
   button.title=count>=2?'Save the selected composition as an insertable Section preset':'Select 2+ elements to save a Section preset';
 }
 function presetPreviewMarkup(presetId, personal=false) {
-  const order=personal?['metric','chart','table','text','timeline']:((LAYOUT_ORDER[presetId]||LAYOUT_ORDER.editorial).slice(0,5));
+  const previewType={report_headline:'text',context:'text',hero_metric:'metric',primary_analysis:'chart',supporting_analysis:'chart',narrative_interpretation:'text',detailed_evidence:'table',causal_evidence:'diagram',decision_risk:'decision',action_status:'project',conclusion:'text'};
+  const order=personal?['metric','chart','table','text','timeline']:compositionRecipe(presetId).roles.slice(0,5).map(role=>previewType[role]||'text');
   return `<span class="preset-preview" aria-hidden="true">${order.map((type,index)=>`<i class="preset-preview-block preset-preview-${esc(type)}" style="--preset-index:${index}"></i>`).join('')}</span>`;
 }
+function presetContent(preset){return preset?.kind==='section'?preset.payload:preset?.model;}
+function presetHasSourceData(preset){return (preset?.kind==='section'?preset?.payload?.datasets:preset?.model?.datasets)?.length>0;}
 function renderPresetList(){
   syncPresetSelectionAction();
   const kind=String($('#presetKindFilter')?.value||'all');
@@ -2865,11 +2983,65 @@ function renderPresetList(){
   const host=$('#presetList');if(!host)return;
   const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>(kind==='all'||p.kind===kind)&&(!query||p.name.toLowerCase().includes(query)));
   host.innerHTML=shown.length?shown.map((p)=>{
-    const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=personalPresetSummary(p),applyLabel=p.kind==='section'?'Insert':'Apply';
-    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy">${presetPreviewMarkup(p.id,true)}<input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions"><button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button><button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
+    const index=personalPresets.findIndex(candidate=>candidate.id===p.id),summary=personalPresetSummary(p),applyLabel=p.kind==='section'?'Insert':'Apply',hasBindings=!!p.binding_contract?.slots?.length,sourceData=presetHasSourceData(p);
+    const applyAction=hasBindings?(sourceData?`<button class="mini-btn" data-loadpreset="${index}">${p.kind==='section'?'Insert with source data':'Apply with source data'}</button>`:`<button class="mini-btn" data-reusepreset="${index}">${p.kind==='section'?'Reuse section':'Reuse with new data'}</button>`):`<button class="mini-btn" data-loadpreset="${index}">${applyLabel}</button>`;
+    const remapAction=hasBindings&&sourceData?`<button class="mini-btn" data-reusepreset="${index}">${p.kind==='section'?'Reuse section':'Reuse with new data'}</button>`:'';
+    return `<div class="preset" data-preset-kind="${p.kind||'report'}"><div class="preset-copy">${presetPreviewMarkup(p.id,true)}<input class="preset-name-edit" data-preset-rename="${index}" value="${esc(p.name)}" aria-label="Preset name"><small>${esc(summary)}</small></div><div class="preset-actions">${applyAction}${remapAction}<button class="mini-btn" data-updatepreset="${index}">Update</button><button class="mini-btn" data-duplicatepreset="${index}">Duplicate</button><button class="mini-btn" data-deletepreset="${index}">Delete</button></div></div>`;
   }).join(''):`<div class="keyboard-help">${personalPresets.length?'No presets match this search.':'No personal presets yet. Save a report preset or select 2+ elements and save a Section preset.'}</div>`;
 }
-function loadPreset(index){
+function reuseRoleLabel(role,view){return String(role||'').startsWith('$reference:')?'Transform or recipe field':humanRoleLabel(role,{view})||'Field';}
+function reusableRecipeLabel(id){return String(id||'').split(/[-_]+/).filter(Boolean).map(word=>word[0]?.toUpperCase()+word.slice(1)).join(' ');}
+function renderReuseRemapDialog(focusKey=null){
+  const state=reuseApplyState;if(!state)return;
+  const datasets=model().datasets||[],contract=state.contract,plan=planReusableRemap(contract,datasets,state.selections),slots=contract.slots||[];
+  const sections=slots.map(source=>{
+    const slot=plan.slots.find(value=>value.identity===source.identity)||{},selection=state.selections[source.identity]||{},destination=datasets.find(value=>String(value.id)===String(selection.dataset_id||slot.dataset_id));
+    const byId=new Map((destination?.fields||[]).map(field=>[String(field.id),field]));
+    const fieldRows=source.bindings.flatMap(binding=>{
+      const known=new Set(binding.field_roles.map(value=>value.role)),roles=[...binding.field_roles,...binding.references,...binding.required_roles.filter(role=>!known.has(role)).map(role=>({role,field_name:'',field_type:'',required:true}))];
+      return roles.map(role=>{
+        const selected=String(selection.mappings?.[binding.item_id]?.[role.role]||slot.mapping?.[binding.item_id]?.[role.role]||'');
+        const label=reuseRoleLabel(role.role,binding.view),sourceLabel=role.field_name?` · source: ${role.field_name}`:'';
+        return `<label class="reuse-remap-role"><span><b>${esc(label)}</b><small>${esc(binding.element)}${esc(sourceLabel)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(binding.item_id)}" data-role="${esc(role.role)}" aria-label="${esc(label)} for ${esc(binding.element)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===selected?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
+      });
+    }).join('');
+    const issues=[...(slot.unresolved||[]).map(issue=>`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`),...(slot.problems||[]).map(issue=>issue.message||`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`)];
+    const status=slot.ready?'Ready':slot.ambiguous_dataset?'Choose a data source':slot.problems.length?'Data source is incompatible':'Needs field mapping';
+    const drives=source.bindings.map(binding=>binding.element).join(', ');
+    const recipes=[...new Set(source.bindings.map(binding=>binding.analysis_recipe_identity?.id).filter(Boolean))].map(reusableRecipeLabel),transforms=[...new Set(source.bindings.flatMap(binding=>(binding.transform_recipe?.steps||[]).map(step=>humanTransformTypeLabel(step.type))))];
+    const analyticalNotes=[recipes.length?`Analysis: ${recipes.join(', ')}`:'',transforms.length?`Transforms: ${transforms.join(', ')}`:''].filter(Boolean).join(' · ');
+    return `<section class="reuse-remap-slot" aria-labelledby="reuse-slot-${esc(source.identity)}"><header><div><h3 id="reuse-slot-${esc(source.identity)}">${esc(source.name||'Data source')}</h3><p>Used by ${esc(drives||'selected visuals')}</p></div><span class="reuse-remap-status ${slot.ready?'ready':slot.problems.length?'blocked':''}">${esc(status)}</span></header><label class="reuse-remap-dataset"><span>Data source</span><select data-remap-dataset="${esc(source.identity)}" aria-label="Data source for ${esc(source.name||'reusable section')}"><option value="">Choose a data source</option>${datasets.map(dataset=>`<option value="${esc(dataset.id)}" ${String(dataset.id)===String(destination?.id||'')?'selected':''}>${esc(dataset.name||'Untitled data')} · ${(dataset.fields||[]).length} fields</option>`).join('')}</select></label><p class="reuse-remap-schema">Source fields: ${esc(source.source_fields.map(field=>field.name).join(', ')||'No field names were saved')}${analyticalNotes?` · ${esc(analyticalNotes)}`:''}</p><div class="reuse-remap-fields">${fieldRows||'<p class="keyboard-help">This source has no mapped fields.</p>'}</div>${issues.length?`<ul class="reuse-remap-issues" aria-live="polite">${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:''}</section>`;
+  }).join('');
+  const manualItems=(contract.manual_value_items||[]).map(item=>`<li>${esc(({key_metric:'Key metric',comparison:'Comparison',evidence_table:'Evidence table'})[item.kind]||'Report value')} · ${esc(item.element)}</li>`).join('');
+  const manualReview=manualItems?`<section class="reuse-remap-slot" aria-labelledby="reuse-manual-values"><header><div><h3 id="reuse-manual-values">Values to review</h3><p>These entries are not linked to source fields. Their old values are excluded so they cannot be mistaken for the new data.</p></div><span class="reuse-remap-status">Review after applying</span></header><ul class="reuse-remap-issues">${manualItems}</ul></section>`:'';
+  const explanation=plan.ok?'The report will use the selected data sources. The saved preset and those data sources remain unchanged.':'Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.';
+  const sourceButton=state.sourceAvailable?'<button type="button" class="tb" data-remap-source-copy>Use source data</button>':'';
+  $('#modalTitle').textContent=state.preset.kind==='section'?'Reuse section with new data':'Reuse report with new data';
+  $('#modalBody').innerHTML=`<form class="modal-form reuse-remap-form" id="reuseRemapForm"><p class="reuse-remap-intro">${esc(explanation)}</p><div class="reuse-remap-slots">${sections||'<p>This preset has no linked data source. Its structure can be applied directly.</p>'}${manualReview}</div><div class="reuse-remap-consequence"><b>What will be applied</b><span>Structure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.</span></div><div class="reuse-remap-import"><span>Need another source? Add it through Data First, then reopen this workflow to map it.</span><button type="button" class="tb" data-remap-add-source>Add a data source</button></div><div class="reuse-remap-errors" role="status" aria-live="polite">${plan.ok?'All data roles are compatible.':plan.errors.map(error=>esc(error.reason||'Resolve the data source selection.')).join(' ')}</div><div class="modal-actions"><button type="button" class="tb" data-remap-cancel>Cancel</button>${sourceButton}<button type="submit" class="tb accent" ${plan.ok?'':'disabled'}>Apply reusable structure</button></div></form>`;
+  if(focusKey){requestAnimationFrame(()=>{const nodes=$$('#modalBody [data-remap-dataset], #modalBody [data-remap-role]');const node=focusKey.kind==='dataset'?nodes.find(value=>value.dataset.remapDataset===focusKey.slot):nodes.find(value=>value.dataset.remapRole===focusKey.slot&&value.dataset.remapItem===focusKey.itemId&&value.dataset.role===focusKey.role);node?.focus({preventScroll:true});});}
+}
+function reusePreset(index){
+  const saved=personalPresets[index];if(!saved)return;
+  try{
+    const content=presetContent(saved),contract=normalizedBindingContract(saved.binding_contract)||buildReusableBindingContract(saved.kind==='section'?{items:content.items||[],datasets:content.datasets||[]}:content);
+    const sourceAvailable=presetHasSourceData(saved),prepared=reusableStructure(content,contract),selections={};
+    const initial=planReusableRemap(contract,model().datasets,{});
+    for(const slot of initial.slots)if(slot.dataset_id)selections[slot.identity]={dataset_id:String(slot.dataset_id),mappings:structuredClone(slot.mapping||{})};
+    reuseApplyState={preset:saved,content:prepared,contract,selections,sourceAvailable};
+    renderReuseRemapDialog();openModal($('#genericModal'),$('#modalBody [data-remap-dataset]'));
+  }catch{toast('The reusable preset could not be prepared.');}
+}
+function commitReusablePreset(state,plan){
+  const mapped=applyReusableRemap(state.content,plan,model().datasets||[]);if(!mapped)return false;
+  if(state.preset.kind==='section')return !!pasteCompositionPayload(mapped,{preserveExistingDatasets:true});
+  const datasetsById=new Map((model().datasets||[]).map(dataset=>[String(dataset.id),dataset])),selectedIds=[...new Set(plan.slots.map(slot=>String(slot.dataset_id)).filter(Boolean))];
+  mapped.datasets=selectedIds.map(id=>datasetsById.get(id)).filter(Boolean).map(value=>structuredClone(value));
+  const savedMode=mapped.mode||'smart';const next=composeReportModel(mapped,mapped.layoutPreset||'editorial');next.mode=savedMode;
+  const accepted=commitOps('Reuse report preset',[{op:'model.replace',value:next}],{announce:'Report structure reused with selected data'});
+  if(accepted)ui.selected.clear();
+  return !!accepted;
+}
+function commitPresetSourceData(index){
   const saved=personalPresets[index];if(!saved)return;
   try{
     if(saved.kind==='section')return pasteCompositionPayload(structuredClone(saved.payload));
@@ -2880,15 +3052,32 @@ function loadPreset(index){
     if(accepted)renderPresetList();
   }catch{toast('Preset is corrupt and was not loaded');}
 }
+function confirmPresetSourceData(index){
+  const saved=personalPresets[index];if(!saved)return;
+  const section=saved.kind==='section',payload=section?saved.payload:saved.model,datasets=payload?.datasets||[],rows=datasets.reduce((sum,dataset)=>sum+(dataset.rows?.length||0),0),sources=datasets.map(dataset=>dataset.name||'Data source').join(', ')||'No data sources';
+  $('#modalTitle').textContent=section?'Insert section with source data':'Apply report with source data';
+  $('#modalBody').innerHTML=`<form class="modal-form" id="presetSourceConfirmForm"><p>${section?'This adds a copy of the saved section to the current report.':'This replaces the current report with the saved report structure and data.'}</p><div class="reuse-remap-consequence"><b>Included data</b><span>${esc(sources)} · ${rows} source rows. The preset and saved source remain unchanged.</span></div><div class="modal-actions"><button type="button" class="tb" data-close>Cancel</button><button type="submit" class="tb accent">${section?'Insert section':'Apply report'}</button></div></form>`;
+  const form=$('#presetSourceConfirmForm');form.addEventListener('submit',event=>{event.preventDefault();closeModals();commitPresetSourceData(index);});
+  $('[data-close]',form)?.addEventListener('click',closeModals,{once:true});
+  openModal($('#genericModal'),$('#presetSourceConfirmForm button[type="submit"]'));
+}
+function loadPreset(index){
+  const saved=personalPresets[index];if(!saved)return;
+  if(saved.reuse_mode==='structure'&&saved.binding_contract?.slots?.length)return reusePreset(index);
+  if(presetHasSourceData(saved))return confirmPresetSourceData(index);
+  return commitPresetSourceData(index);
+}
 function updatePreset(index){
   if(!personalPresets[index])return;
   if(personalPresets[index].kind==='section'){
     if(ui.selected.size<2)return toast('Select 2+ elements to update this section preset');
     const payload=buildCompositionClipboard(model(),[...ui.selected],{rects:clipboardRects()});
     if(!payload)return toast('Select 2+ elements to update this section preset');
-    personalPresets[index]={...personalPresets[index],payload};
+    const saved=reusablePresetFields(payload,'section',personalPresets[index].reuse_mode||'copy');
+    personalPresets[index]={...personalPresets[index],payload:saved.content,reuse_mode:saved.reuse_mode,binding_contract:saved.binding_contract};
   }else{
-    personalPresets[index]={...personalPresets[index],kind:'report',model:parseCanonical(store.serialize())};
+    const saved=reusablePresetFields(parseCanonical(store.serialize()),'report',personalPresets[index].reuse_mode||'copy');
+    personalPresets[index]={...personalPresets[index],kind:'report',model:saved.content,reuse_mode:saved.reuse_mode,binding_contract:saved.binding_contract};
   }
   persistPersonalPresets();toast('Preset updated');
 }
@@ -3104,7 +3293,7 @@ function renderCommands(query = '') {
 function openPalette() { ui.commandIndex = 0; $('#cmdInput').value = ''; $('#cmdInput').setAttribute('aria-expanded','true'); renderCommands(''); openModal($('#cmdModal'), $('#cmdInput')); }
 function executeCommandIndex(index) { const command=commands[index],state=commandActionState(command?.[3]);if(!state.enabled)return toast(state.reason);ui.recentCommands=[index,...ui.recentCommands.filter(value=>value!==index)].slice(0,8);storage.set('viz-command-recent',JSON.stringify(ui.recentCommands));closeModals();command?.[2](); }
 function openModal(modal, focusTarget = null) { if(!modal.classList.contains('show'))ui.modalReturnFocus=document.activeElement;modal.classList.add('show'); requestAnimationFrame(() => (focusTarget || $('button, input, select, textarea, [tabindex]:not([tabindex="-1"])', modal))?.focus()); }
-function closeModals() { if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;intakeClient.cancel();$$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
+function closeModals() { if(ui.dataFirst)ui.dataFirst.token+=1;if(ui.datasetRefresh)ui.datasetRefresh.token+=1;ui.dataFirst=null;ui.datasetRefresh=null;reuseApplyState=null;intakeClient.cancel();$$('.modal.show').forEach((m) => m.classList.remove('show')); $('#genericModal')?.classList.remove('page-size-modal'); $('#cmdInput')?.setAttribute('aria-expanded','false'); const target = ui.modalReturnFocus; ui.modalReturnFocus = null; target?.focus?.({ preventScroll: true }); }
 function trapModalFocus(e) {
   const modal = e.target.closest('.modal.show'); if (!modal || e.key !== 'Tab') return;
   const nodes = $$('button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])', modal).filter((n) => n.offsetParent !== null); if (!nodes.length) return;
@@ -3236,10 +3425,14 @@ function wireGlobal(signal) {
   const libraryDrag=(e)=>{const block=e.target.closest('[data-element][data-engine]');if(!block)return;e.dataTransfer.setData('application/x-viz-element',JSON.stringify({element:block.dataset.element,engine:block.dataset.engine}));e.dataTransfer.effectAllowed='copy';};
   on($('#fullLibrary'),'click',libraryClick);on($('#librarySections'),'click',libraryClick);on($('#fullLibrary'),'dragstart',libraryDrag);on($('#librarySections'),'dragstart',libraryDrag);
   on($('#builtinPresetList'),'click',(e)=>{const button=e.target.closest('[data-built-preset]');if(button)applySuggestion(button.dataset.builtPreset);});
-  on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
+  on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const reuse=e.target.closest('[data-reusepreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(reuse)reusePreset(+reuse.dataset.reusepreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
+  on($('#genericModal'),'change',(event)=>{if(!reuseApplyState)return;const dataset=event.target.closest('[data-remap-dataset]'),field=event.target.closest('[data-remap-role]');if(dataset){reuseApplyState.selections[dataset.dataset.remapDataset]={dataset_id:dataset.value,mappings:{}};return renderReuseRemapDialog({kind:'dataset',slot:dataset.dataset.remapDataset});}if(field){const slot=field.dataset.remapRole,itemId=field.dataset.remapItem,role=field.dataset.role,selection=reuseApplyState.selections[slot]||(reuseApplyState.selections[slot]={dataset_id:'',mappings:{}});selection.mappings[itemId]={...(selection.mappings[itemId]||{}),[role]:field.value};renderReuseRemapDialog({kind:'role',slot,itemId,role});}});
+  on($('#genericModal'),'click',(event)=>{if(event.target.closest('[data-remap-cancel]'))return closeModals();if(event.target.closest('[data-remap-add-source]')){reuseApplyState=null;closeModals();$('#pasteDataBtn').click();return;}if(event.target.closest('[data-remap-source-copy]')){const saved=reuseApplyState?.preset,index=personalPresets.findIndex(value=>value.id===saved?.id);if(index>=0)confirmPresetSourceData(index);}});
+  on($('#genericModal'),'submit',(event)=>{if(event.target?.id!=='reuseRemapForm'||!reuseApplyState)return;event.preventDefault();const state=reuseApplyState,plan=planReusableRemap(state.contract,model().datasets,state.selections);if(!plan.ok){renderReuseRemapDialog();return toast('Resolve the highlighted data source and field mapping before applying');}closeModals();if(!commitReusablePreset(state,plan))toast('The reusable preset could not be applied');});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
   const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);on($('#editorChromeLayer'),'pointerdown',onHullPointerDown);
+  on(activeRoot,'keydown',(event)=>{if(!ui.preview)return;const region=event.target.closest?.('.table-frame.table-scroll[role="region"]');if(!region)return;const step=Math.max(40,Math.round(region.clientWidth*.8));if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();region.scrollLeft+=event.key==='ArrowRight'?step:-step;}else if(event.key==='Home'||event.key==='End'){event.preventDefault();region.scrollLeft=event.key==='Home'?0:region.scrollWidth;}});
   on(hull,'dragover',(e)=>{if(ui.preview)return;e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{if(ui.preview)return;e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
@@ -3247,7 +3440,7 @@ function wireGlobal(signal) {
   on(window,'keydown',(e)=>{if(e.defaultPrevented)return;if(ui.preview){if(e.key==='Escape'){e.preventDefault();togglePreview();}return;}const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||document.activeElement?.isContentEditable;if($('.modal.show')){if(e.key==='Escape'){e.preventDefault();cancelPointerSession();closeModals();}return;}if(editing||e.target.closest?.('.q-dialog'))return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if(mobileShell()&&(ui.libraryOpen||ui.inspectorOpen)){setLibrary(false);setInspector(false);return;}if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
   on(window,'keyup',(e)=>{if(e.code==='Space')ui.space=false;});on(window,'blur',()=>{ui.space=false;cancelPointerSession('window-blur');});
   on($('#viewport'),'scroll',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
-  on(window,'resize',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
+  on(window,'resize',()=>{if(ui.preview)refreshMobileReaderHeights(window.innerWidth);if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
   on(window,'paste',async(e)=>{if(ui.preview||hasAuthoringTextFocus())return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await handleClipboardText(text);}});
   on(activeRoot,'dragover',(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();e.dataTransfer.dropEffect='copy';});
@@ -3257,7 +3450,7 @@ function wireGlobal(signal) {
 function setupResizeObserver() {
   window.__VIZ_RESIZE_OBSERVER__?.disconnect?.();
   if (typeof ResizeObserver==='undefined'||!$('#viewport')) return;
-  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.autoFit||ui.preview)fitZoom(ui.preview?(ui.previewFit||'page'):'page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
+  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.preview){refreshMobileReaderHeights(window.innerWidth);fitZoom(ui.previewFit||'page');}else if(ui.autoFit)fitZoom('page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
 }
 function buildSelfTest() {
   const result = { smartHull: preflight().coverage === 100, initialOverlaps: preflight().overlaps, revisionSafety: false, undoRedo: false, pointerLifecycle: true, resizeObserver: !!window.__VIZ_RESIZE_OBSERVER__, deterministic: false, noPointerMoveFullRender: true };

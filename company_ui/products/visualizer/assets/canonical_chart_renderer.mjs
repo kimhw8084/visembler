@@ -258,8 +258,11 @@ function makeTicks(domain, count) {
   const wanted=clamp(Number.isInteger(count)?count:5,2,12); if(domain.max===domain.min)return [domain.min];
   const step=niceStep(domain.max-domain.min,wanted),start=Math.ceil(domain.min/step)*step,values=[];
   for(let value=start;value<=domain.max+step*.001&&values.length<20;value+=step) values.push(Number(value.toFixed(12)));
-  if(!values.length||values[0]>domain.min+EPS) values.unshift(domain.min);
-  if(values.at(-1)<domain.max-EPS) values.push(domain.max);
+  // Keep exact domain endpoints only when they are far enough from a regular
+  // tick to deserve a separate label. A near-duplicate such as 200 and 205
+  // crowds the same edge of a short plot and makes the scale harder to read.
+  if(!values.length||values[0]-domain.min>step*.35+EPS) values.unshift(domain.min);
+  if(values.at(-1)<domain.max-EPS&&domain.max-values.at(-1)>step*.35+EPS) values.push(domain.max);
   return values.slice(0,wanted+1);
 }
 

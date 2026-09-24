@@ -2,20 +2,12 @@
 // decisions; the report model and the existing P0-P3 studios remain the
 // persistence and rendering authorities.
 import { productionTargetForView } from './authoring_data.mjs';
+import { COMPOSITION_ROLES, compositionOrder, compositionRole, compositionSection, legacyMessageRole } from './authoring_composition.mjs';
 
 export const STAGE_D_VERSION = 1;
 export const MESSAGE_ROLES = Object.freeze([
   'Headline', 'Primary Evidence', 'Supporting Evidence', 'Context', 'Risk', 'Action',
 ]);
-
-const ROLE_ORDER = Object.freeze({
-  Headline: 0,
-  'Primary Evidence': 1,
-  'Supporting Evidence': 2,
-  Context: 3,
-  Risk: 4,
-  Action: 5,
-});
 
 const ROLE_POLICY = Object.freeze({
   Headline: Object.freeze({ weight: 1.25, width: 1, minHeight: 132, emphasis: 'hero' }),
@@ -38,6 +30,7 @@ const roleForName = name => {
 };
 
 export function suggestMessageRole(entry = {}) {
+  if (entry.composition_role) return legacyMessageRole(compositionRole(entry));
   return MESSAGE_ROLES.includes(entry.message_role) ? entry.message_role : roleForName(entry.element || entry.title);
 }
 
@@ -100,9 +93,19 @@ export function contentIntakePlan(text, { imageMime = '' } = {}) {
 export function applyMessageRole(model, ids, role) {
   if (!MESSAGE_ROLES.includes(role)) throw new Error(`Unsupported message role: ${role}`);
   const selected = new Set((ids || []).map(String));
+  const canonical = { Headline:'report_headline', 'Primary Evidence':'primary_analysis', 'Supporting Evidence':'supporting_analysis', Context:'context', Risk:'decision_risk', Action:'action_status' }[role];
   return {
-    ops: (model?.items || []).filter(entry => selected.has(String(entry.id)) && !entry.locked).map(entry => ({ op: 'item.patch', id: entry.id, patch: { message_role: role, emphasis: rolePolicy(role).emphasis, weight: rolePolicy(role).weight } })),
+    ops: (model?.items || []).filter(entry => selected.has(String(entry.id)) && !entry.locked).map(entry => {
+      const section=compositionSection({...entry,composition_role:canonical},canonical);
+      return { op: 'item.patch', id: entry.id, patch: { message_role: role, composition_role:canonical, section_id:section.id, section_title:section.title, emphasis: rolePolicy(role).emphasis, weight: rolePolicy(role).weight } };
+    }),
   };
+}
+
+export function applyCompositionRole(model, ids, role) {
+  if (!COMPOSITION_ROLES.includes(role)) throw new Error(`Unsupported composition role: ${role}`);
+  const selected=new Set((ids||[]).map(String)),messageRole=legacyMessageRole(role),section=compositionSection({composition_role:role},role);
+  return {ops:(model?.items||[]).filter(entry=>selected.has(String(entry.id))&&!entry.locked).map(entry=>({op:'item.patch',id:entry.id,patch:{composition_role:role,message_role:messageRole,section_id:section.id,section_title:section.title}}))};
 }
 
 function canvasFor(model) {
@@ -131,20 +134,27 @@ export function layoutOperations(model = {}, { action = 'clean', mode = model.mo
   if (mode === 'free' || model.mode === 'free') return [];
   const canvas = canvasFor(model);
   const entries = (model.items || []).filter(entry => !entry.locked && !entry.pinned && !entry.pinned_layout);
-  const ordered = entries.slice().sort((a, b) => ROLE_ORDER[suggestMessageRole(a)] - ROLE_ORDER[suggestMessageRole(b)] || Number(a.order || 0) - Number(b.order || 0) || String(a.id).localeCompare(String(b.id)));
+  const ordered = compositionOrder(entries, model.layoutPreset || 'editorial');
   const gap = 14;
   const patches = [];
   let x = gap, y = gap, rowHeight = 0, column = 0;
   ordered.forEach((entry, index) => {
-    const role = suggestMessageRole(entry);
+    const role = suggestMessageRole(entry), semanticRole = compositionRole(entry), section = compositionSection(entry, semanticRole);
     const policy = rolePolicy(role);
     const size = validSize(entry, canvas);
     const squareEvidence=entry.engine==='WaferFabEngine'&&!/(matrix|timeline|profile|distribution|route)/i.test(entry.element||'');
-    const full = !squareEvidence&&(policy.width === 1 || role === 'Headline' || role === 'Primary Evidence');
+    const full = !squareEvidence&&(policy.width === 1 || ['report_headline','primary_analysis','narrative_interpretation','conclusion'].includes(semanticRole));
     const width = full ? Math.min(canvas.width - gap * 2, Math.max(size.width, canvas.width - gap * 2)) : Math.min(size.width, Math.floor((canvas.width - gap * 3) / 2));
     const height = action === 'fit' ? Math.max(policy.minHeight, Math.min(size.height, 420)) : size.height;
-    if (full) { if (column) { x = gap; y += rowHeight + gap; column = 0; rowHeight = 0; } patches.push({ op: 'item.patch', id: entry.id, patch: { x: gap, y, w: width, h: height, order: index, message_role: role } }); y += height + gap; }
-    else { if (column >= 2 || x + width > canvas.width - gap) { x = gap; y += rowHeight + gap; column = 0; rowHeight = 0; } patches.push({ op: 'item.patch', id: entry.id, patch: { x, y, w: width, h: height, order: index, message_role: role } }); x += width + gap; column += 1; rowHeight = Math.max(rowHeight, height); }
+    if (full) {
+      if (column) { x=gap;y+=rowHeight+gap;column=0;rowHeight=0; }
+      patches.push({op:'item.patch',id:entry.id,patch:{x:gap,y,w:width,h:height,order:index,message_role:role,composition_role:semanticRole,section_id:section.id,section_title:section.title}});
+      y+=height+gap;
+    } else {
+      if (column>=2||x+width>canvas.width-gap) {x=gap;y+=rowHeight+gap;column=0;rowHeight=0;}
+      patches.push({op:'item.patch',id:entry.id,patch:{x,y,w:width,h:height,order:index,message_role:role,composition_role:semanticRole,section_id:section.id,section_title:section.title}});
+      x+=width+gap;column+=1;rowHeight=Math.max(rowHeight,height);
+    }
   });
   if (action === 'balance') {
     const yMax = Math.max(...patches.map(op => Number(op.patch.y) + Number(op.patch.h)), 0);
