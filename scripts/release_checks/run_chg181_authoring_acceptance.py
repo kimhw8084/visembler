@@ -564,6 +564,7 @@ def pptx_chart_values(path: Path) -> list[dict]:
 
 
 def compose_and_validate(page, actions: Actions) -> dict:
+    semantic_before = page.evaluate("""()=>JSON.stringify(window.CompanyUIVisualizerBridge.state().model.items.map(item=>({id:item.id,engine:item.engine,element:item.element,view_type:item.view_type,variant:item.variant,mapping:item.mapping,data:item.data,rows:item.rows,transform_recipe:item.transform_recipe,transform_pipeline:item.transform_pipeline,analysis_recipe:item.analysis_recipe,statistical_recipe:item.statistical_recipe,engineering_recipe:item.engineering_recipe,chart_studio:item.chart_studio})))""")
     page.locator("#auto").click()
     settled(page)
     actions.note("Compose/Reflow report", "editor")
@@ -574,6 +575,7 @@ def compose_and_validate(page, actions: Actions) -> dict:
         "data_issue_count": len(result["dataIssues"]),
     }
     if summary["layout_issue_count"] or summary["data_issue_count"]:
+        summary["rendered_items"] = page.evaluate("""()=>[...document.querySelectorAll('.component')].map(node=>{const c=node.querySelector('.c-content'),content=c?.querySelector('.integrated-element-content')||c||node,box=content.getBoundingClientRect(),all=[c,content,...content.querySelectorAll('.gallery-card,.card-body,.table-wrap,.chart-wrap,.diagram-svg,.viz-svg,.cs-static-chart,.cs-chart-svg,.plot-area,svg')].filter(Boolean),metrics=all.map(child=>{const rect=child.getBoundingClientRect(),css=getComputedStyle(child);return {tag:child.tagName,className:child.getAttribute('class'),box:{width:rect.width,height:rect.height},scroll:{width:child.scrollWidth,height:child.scrollHeight},client:{width:child.clientWidth,height:child.clientHeight},css:{height:css.height,minHeight:css.minHeight,maxHeight:css.maxHeight,overflow:css.overflow}}}),overflow=metrics.slice(1).reduce((max,child)=>({x:Math.max(max.x,child.scroll.width-child.client.width),y:Math.max(max.y,child.scroll.height-child.client.height)}),{x:0,y:0});return {id:node.dataset.id,box:{width:box.width,height:box.height},overflow,metrics}})""")
         raise AssertionError(f"Smart composition is not export-ready after content fit: {json.dumps(summary, ensure_ascii=False)}")
     geometry = page.evaluate("window.__VIZ_PROD__.layoutGeometry()")
     rects = geometry["items"]
@@ -588,6 +590,18 @@ def compose_and_validate(page, actions: Actions) -> dict:
         raise AssertionError(f"Smart report geometry is not a bounded, non-overlapping composition: {json.dumps({'overlaps': overlaps, 'canvas': geometry['canvas'], 'items': rects}, ensure_ascii=False)}")
     serialized = page.evaluate("window.__VIZ_PROD__.serialize()")
     model = json.loads(serialized)
+    semantic_after = page.evaluate("""()=>JSON.stringify(window.CompanyUIVisualizerBridge.state().model.items.map(item=>({id:item.id,engine:item.engine,element:item.element,view_type:item.view_type,variant:item.variant,mapping:item.mapping,data:item.data,rows:item.rows,transform_recipe:item.transform_recipe,transform_pipeline:item.transform_pipeline,analysis_recipe:item.analysis_recipe,statistical_recipe:item.statistical_recipe,engineering_recipe:item.engineering_recipe,chart_studio:item.chart_studio})))""")
+    if semantic_before != semantic_after:
+        raise AssertionError("Whole-report composition must not change chart, data, transform, or analysis meaning.")
+    sections_with_multiple_items = {}
+    for rect in rects:
+        if rect.get("section"):
+            sections_with_multiple_items.setdefault(rect["section"], []).append(rect)
+    for section_name, section_items in sections_with_multiple_items.items():
+        if len(section_items) > 1 and len({item.get("sectionPattern") for item in section_items}) != 1:
+            raise AssertionError(f"Every item in {section_name!r} must share one derived section composition pattern.")
+        if len(section_items) > 1 and sum(item.get("compositionLevel") == "feature" for item in section_items) != 1:
+            raise AssertionError(f"{section_name!r} must expose one feature and its supporting items: {section_items}")
     items_by_id = {str(item.get("id")): item for item in model.get("items", [])}
     summary["geometry"] = {
         "canvas": geometry["canvas"],
@@ -600,14 +614,25 @@ def compose_and_validate(page, actions: Actions) -> dict:
                 "title": items_by_id.get(str(rect["id"]), {}).get("title"),
                 "role": items_by_id.get(str(rect["id"]), {}).get("composition_role"),
                 "section": items_by_id.get(str(rect["id"]), {}).get("section_title"),
+                "pattern": rect.get("sectionPattern"),
+                "level": rect.get("compositionLevel"),
             }
             for rect in rects
         ],
     }
-    visible_sections = page.locator("#componentLayer .composition-section-heading").evaluate_all("nodes=>nodes.map(node=>({title:node.textContent.trim(),role:node.getAttribute('role'),level:node.getAttribute('aria-level')}))")
+    visible_sections = page.locator("#componentLayer .composition-section-heading").evaluate_all("nodes=>nodes.map(node=>({title:node.textContent.trim(),section:node.dataset.section,top:parseFloat(node.style.top)||0,height:node.getBoundingClientRect().height,role:node.getAttribute('role'),level:node.getAttribute('aria-level')}))")
     if not visible_sections or any(not section["title"] or section["role"] != "heading" or section["level"] != "2" for section in visible_sections):
         raise AssertionError(f"Smart sections must have visible, accessible headings: {visible_sections}")
+    for heading in visible_sections:
+        section_items = [rect for rect in rects if str(rect.get("section")) == str(heading["section"])]
+        if not section_items:
+            raise AssertionError(f"Section heading {heading!r} has no matching composition group.")
+        first_y = min(float(rect["y"]) for rect in section_items)
+        expected_top = max(0.0, float(next((rect["sectionHeadingY"] for rect in section_items if rect.get("sectionStart")), first_y - 26)))
+        if abs(float(heading["top"]) - expected_top) > 0.5 or float(heading["top"]) + float(heading["height"]) > first_y + 0.5:
+            raise AssertionError(f"Section heading must sit above its first composed row without overlap: {heading!r}; row top={first_y}.")
     summary["geometry"]["visible_sections"] = visible_sections
+    summary["geometry"]["chart_data_semantics_unchanged"] = True
     return summary
 
 
@@ -671,12 +696,15 @@ def capture_report(page, output: Path, name: str, actions: Actions) -> dict:
     page.locator("#previewFitWidth").click()
     page.wait_for_timeout(300)
     mobile_overflow = page.evaluate("document.documentElement.scrollWidth-innerWidth")
-    mobile_reading = page.evaluate("""()=>{const root=document.querySelector('.cui-visualizer-root'),hull=document.querySelector('#hull'),layer=document.querySelector('#componentLayer'),items=[...document.querySelectorAll('#componentLayer>.component')],first=items[0]?.getBoundingClientRect(),second=items[1]?.getBoundingClientRect(),body=document.querySelector('.integrated-element-content'),rect=node=>{const r=node.getBoundingClientRect(),s=getComputedStyle(node);return {id:node.dataset.id,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,display:s.display,order:s.order,text:(node.innerText||'').slice(0,70)}};const textComponents=items.filter(node=>node.dataset.engine==='TextEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,deadSpace:Math.max(0,node.clientHeight-(card?.clientHeight||0)),clipped:!!card&&card.scrollHeight>card.clientHeight+2||!!copy&&copy.scrollHeight>copy.clientHeight+2}}),processFlows=items.filter(node=>node.dataset.engine==='DiagramEngine').map(node=>{const r=node.getBoundingClientRect(),svg=node.querySelector('.diagram-svg'),s=svg?.getBoundingClientRect();return{id:node.dataset.id,height:r.height,svgHeight:s?.height||0,svgWidth:s?.width||0}}),tableRegions=[...document.querySelectorAll('#componentLayer [role="region"][aria-label^="Scrollable table:"]')].map(node=>({label:node.getAttribute('aria-label'),tabIndex:node.tabIndex,clientWidth:node.clientWidth,scrollWidth:node.scrollWidth,scrollLeft:node.scrollLeft})),sections=[...document.querySelectorAll('#componentLayer .composition-section-heading')].map(node=>({title:node.textContent.trim(),role:node.getAttribute('role'),level:node.getAttribute('aria-level')}));return {hull_width:hull?.getBoundingClientRect().width||0,viewport_width:innerWidth,component_count:items.length,first_font_px:body?parseFloat(getComputedStyle(body).fontSize):0,ordered_flow:!!first&&!!second&&second.top>first.top+1,preview:root?.classList.contains('preview-mode'),layer:layer?{...rect(layer),flexDirection:getComputedStyle(layer).flexDirection}:null,items:items.map(rect).sort((a,b)=>a.y-b.y),text_components:textComponents,process_flows:processFlows,table_regions:tableRegions,sections}}""")
+    mobile_reading = page.evaluate("""()=>{const root=document.querySelector('.cui-visualizer-root'),hull=document.querySelector('#hull'),layer=document.querySelector('#componentLayer'),items=[...document.querySelectorAll('#componentLayer>.component')],first=items[0]?.getBoundingClientRect(),second=items[1]?.getBoundingClientRect(),body=document.querySelector('.integrated-element-content'),rect=node=>{const r=node.getBoundingClientRect(),s=getComputedStyle(node);return {id:node.dataset.id,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,display:s.display,order:s.order,text:(node.innerText||'').slice(0,70)}};const textComponents=items.filter(node=>node.dataset.engine==='TextEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,deadSpace:Math.max(0,node.clientHeight-(card?.clientHeight||0)),clipped:!!card&&card.scrollHeight>card.clientHeight+2||!!copy&&copy.scrollHeight>copy.clientHeight+2}}),comparisonMetrics=items.filter(node=>node.dataset.engine==='ComparisonEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body'),comparison=node.querySelector('.comparison');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,comparisonScroll:comparison?.scrollHeight||0,comparisonClient:comparison?.clientHeight||0}}),processFlows=items.filter(node=>node.dataset.engine==='DiagramEngine').map(node=>{const r=node.getBoundingClientRect(),svg=node.querySelector('.diagram-svg'),s=svg?.getBoundingClientRect();return{id:node.dataset.id,height:r.height,svgHeight:s?.height||0,svgWidth:s?.width||0}}),tableRegions=[...document.querySelectorAll('#componentLayer [role="region"][aria-label^="Scrollable table:"]')].map(node=>({label:node.getAttribute('aria-label'),tabIndex:node.tabIndex,clientWidth:node.clientWidth,scrollWidth:node.scrollWidth,scrollLeft:node.scrollLeft})),geometry=window.__VIZ_PROD__.layoutGeometry().items,sections=[...document.querySelectorAll('#componentLayer .composition-section-heading')].map(node=>{const members=geometry.filter(item=>String(item.section)===String(node.dataset.section));return{title:node.textContent.trim(),section:node.dataset.section,order:Number(getComputedStyle(node).order),first_component_order:members.length?Math.min(...members.map(item=>Number(item.order)||0)):null,role:node.getAttribute('role'),level:node.getAttribute('aria-level')}});return {hull_width:hull?.getBoundingClientRect().width||0,viewport_width:innerWidth,component_count:items.length,first_font_px:body?parseFloat(getComputedStyle(body).fontSize):0,ordered_flow:!!first&&!!second&&second.top>first.top+1,preview:root?.classList.contains('preview-mode'),layer:layer?{...rect(layer),flexDirection:getComputedStyle(layer).flexDirection}:null,items:items.map(rect).sort((a,b)=>a.y-b.y),reading_order:items.map(rect).sort((a,b)=>a.y-b.y).map(value=>Number(value.order)),text_components:textComponents,comparison_metrics:comparisonMetrics,process_flows:processFlows,table_regions:tableRegions,sections}}""")
     assert mobile_reading["hull_width"] <= 370 and mobile_reading["hull_width"] >= 340, "Mobile reading should use the narrow viewport width."
     assert mobile_reading["first_font_px"] >= 12 and mobile_reading["ordered_flow"], "Mobile preview must remain readable in composed single-column order."
     assert mobile_reading["sections"] and all(section["role"] == "heading" and section["level"] == "2" for section in mobile_reading["sections"]), "Mobile reading must retain accessible section hierarchy."
+    assert mobile_reading["reading_order"] == sorted(mobile_reading["reading_order"]), f"Mobile Preview must follow Smart composition order: {mobile_reading['reading_order']}"
+    assert all(section["first_component_order"] is not None and section["order"] == 2 * section["first_component_order"] for section in mobile_reading["sections"]), f"Each mobile section heading must precede its own first composed component: {mobile_reading['sections']}"
     assert not any(entry["clipped"] for entry in mobile_reading["text_components"]), f"Mobile narrative content must not be clipped: {mobile_reading['text_components']}"
     assert all(entry["deadSpace"] <= 72 for entry in mobile_reading["text_components"]), f"Mobile narrative cards must not reserve large empty bands: {mobile_reading['text_components']}"
+    assert all(entry["copyScroll"] <= entry["copyClient"] + 2 and entry["comparisonScroll"] <= entry["comparisonClient"] + 2 for entry in mobile_reading["comparison_metrics"]), f"Mobile comparison metrics must fit their authored card height: {mobile_reading['comparison_metrics']}"
     process_flow_ids={str(entry.get("id")) for entry in model(page).get("items",[]) if entry.get("engine")=="DiagramEngine" and "process flow" in str(entry.get("element",entry.get("title",""))).lower()}
     process_flows=[entry for entry in mobile_reading["process_flows"] if entry["id"] in process_flow_ids]
     assert not process_flow_ids or (len(process_flows)==len(process_flow_ids) and all(140 <= entry["height"] <= 205 and entry["svgHeight"] >= 96 for entry in process_flows)), f"Mobile process flow must remain readable without a blank display band: {process_flows}"
@@ -984,6 +1012,16 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
     source_slot_text = dialog.inner_text()
     assert "Region" in source_slot_text and "Revenue" in source_slot_text
     assert "used by" in source_slot_text.lower()
+    assert "used by 2 visuals" in source_slot_text.lower(), "The shared dataset slot must name both dependent visuals once."
+    assert field_labels == 3, f"Shared Category and Measurement requirements should be shown once per distinct source requirement: {field_labels}"
+    shared_control = dialog.locator("[data-remap-role]").first
+    assignments = json.loads(shared_control.get_attribute("data-remap-assignments") or "[]")
+    assert len(assignments) == 2, f"One shared selector must update both visual bindings: {assignments}"
+    shared_control.select_option(shared_control.input_value())
+    page.wait_for_timeout(80)
+    focused_shared = page.evaluate("""()=>({item:document.activeElement?.dataset?.remapItem,role:document.activeElement?.dataset?.role,slot:document.activeElement?.dataset?.remapRole})""")
+    assert focused_shared.get("item") == assignments[0]["itemId"], f"Field selection must restore keyboard focus after grouped remap refresh: {focused_shared}"
+    grouped_focus_restored = True
     page.keyboard.press("Tab")
     inside_after_tab = page.evaluate("()=>document.activeElement?.closest('#reuseRemapForm')!==null")
     assert inside_after_tab, "Tab must remain in the remap modal."
@@ -1148,6 +1186,12 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
         "preview_chart_summaries_after_remap":capture["preview_chart_summaries"],
         "reused_shared_visual_count": len(reused_charts),
         "automatic_field_control_count": auto_mapping_count,
+        "shared_slot_presentation": {
+            "dependent_visual_count": 2,
+            "distinct_field_controls": field_labels,
+            "first_control_assignments": assignments,
+            "focus_restored_after_field_change": grouped_focus_restored,
+        },
         "section_reuse": {
             "destination_dataset_id": section_dataset_id,
             "remapped_visual_count": len(new_section_charts),
@@ -1297,6 +1341,10 @@ def incompatible_challenge(page, host: NativeHost, actions: Actions, output: Pat
     assert apply.is_disabled(), "An incompatible value field must block the report remap."
     compatibility_text = dialog.inner_text()
     assert "incompatible" in compatibility_text.lower() or "numeric" in compatibility_text.lower(), compatibility_text
+    issue_messages = dialog.locator(".reuse-remap-issues li").all_inner_texts()
+    assert issue_messages and len(issue_messages) == len(set(issue_messages)), f"Remap diagnostics must be de-duplicated: {issue_messages}"
+    assert not any("incompatible type incompatible type" in message.lower() for message in issue_messages)
+    assert any("measurement" in message.lower() or "numeric" in message.lower() for message in issue_messages), issue_messages
     page.keyboard.press("Escape")
     dialog.wait_for(state="hidden", timeout=5_000)
     assert model(page) == before
@@ -1531,8 +1579,8 @@ def main() -> int:
         parser.error("--output must be new or empty.")
     output.mkdir(parents=True, exist_ok=True)
     report = {
-        "request": "CHG-181-r1",
-        "operation": "BUILD",
+        "request": "CHG-181-r2",
+        "operation": "FIX",
         "host": "native NiceGUI 3.15.0",
         "created_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "candidate_sha": __import__("subprocess").check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),

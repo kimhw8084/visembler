@@ -30,6 +30,42 @@ Canonical roles are `report_headline`, `context`, `hero_metric`,
 not element-type sort lists. Existing renderers and content-fit logic continue
 to own component visuals and export geometry.
 
+## Whole-report section grammar (R2)
+
+Smart composition derives one deterministic pattern for each semantic section
+from its roles, engines, item count, content requirements, available page width
+and selected recipe. The supported patterns are hero/opening band, compact KPI
+strip, feature/support analysis, balanced analytical pair, evidence/detail
+grid, narrative/evidence split, causal-flow feature, compact decision band,
+closing next step, and an editorial flow for content that does not match a
+specialized pattern. Patterns describe placement only; chart view, mapping,
+data, transformation, analysis recipe and source values are never rewritten to
+manufacture visual variety.
+
+Every section identifies its feature and supporting entries from composition
+role, explicit emphasis, recipe prominence and available content density.
+Feature/support rows use bounded width ratios only when the item minimums fit;
+otherwise the feature leads in its own row. Related before/current or
+reference/affected comparisons can use a balanced pair. Other paired analyses
+favor a feature/support hierarchy. Evidence grids and KPI strips break into
+readable rows when page width requires it.
+
+The row gap, section gap and heading height come from the shared
+`compositionSpacing` authority and have explicit minimum and maximum bounds.
+Item heights remain content-driven, and Smart canvas height follows the
+resulting content instead of stretching components to fill a saved blank page.
+The section heading and any section surface are derived browser state. No new
+section-layout field is required in report JSON. Older reports therefore get
+the same stable defaults; custom `section_id`, `section_title`,
+`section_order`, `composition_role` and emphasis continue to take effect.
+Guided and Free keep their stored manual geometry. Smart reflow remains one
+normal governed report edit with undo/redo and revision history.
+
+The narrow Preview uses the exact derived row order, including feature/support
+order, and collapses each section to one readable column. Browser acceptance
+checks section patterns, feature assignment, canvas bounds, overlap, accessible
+section headings, mobile ordering and unchanged chart/data semantics.
+
 ## Reusable analytical binding contract
 
 Personal report and section assets may include
@@ -73,9 +109,25 @@ the normal governed update path; the saved asset and source dataset are not
 modified. Undo/redo and report history therefore continue to describe one
 atomic change.
 
+## Shared-slot remap presentation (R2)
+
+The reusable-binding contract and planner stay unchanged. In the dialog,
+equivalent requirements such as chart `x` plus table `category`, or chart `y`
+plus table `value`, share one field selector when their source field identity,
+type and semantic tags match. Selecting it applies the same field to each
+underlying visual role in that slot. The slot shows its dependent visuals once,
+using human labels and concise chips. Different source requirements stay
+separate. Ambiguous and incompatible mappings remain visible as one concise
+diagnostic per distinct requirement, with field-level guidance; Apply stays
+disabled until the existing compatibility plan is ready. Focus restoration,
+Escape return, source-data copy, source immutability and atomic commit continue
+through the existing workflow.
+
 ## Verification
 
-The focused module suite is `tests/test_visualizer_chg181_semantic_reuse.py`.
+The focused module suites are
+`tests/test_visualizer_chg181_semantic_reuse.py` and
+`tests/test_visualizer_chg181_section_composition.py`.
 The maintained native browser journey is
 `scripts/release_checks/run_chg181_authoring_acceptance.py`; it exercises
 Report Hub, Data First, Inspector, reusable presets, remapping, Preview and
@@ -85,5 +137,5 @@ states are reviewed as report content. The full release authority remains
 `python scripts/verify_release.py --host-mode native` and binds its receipts to
 one stable source manifest.
 
-This BUILD produces R1 product and evidence candidates only. CHG-173 remains the
-separate independent whole-report outcome audit.
+R2 completes the bounded CHG-181 composition and remap-presentation repair.
+It is not a CHG-173 promotion or a company-managed target certification.

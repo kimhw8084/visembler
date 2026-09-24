@@ -30,10 +30,11 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
-import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
+import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection, sectionCompositionPlan, compositionSpacing } from './authoring_composition.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
 import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
+import { groupedRemapRequirements, summarizedRemapIssues, remapStatusSummary, remapVisualLabels } from './authoring_reuse_presentation.mjs';
 import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
 import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
 import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, mappingFromFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
@@ -327,13 +328,13 @@ function semanticPolicy(entry) {
     if(name.includes('confidence')) p={...p,minW:245,minH:165,prefW:330,prefH:185};
     if(name.includes('threshold')||name.includes('target')||name.includes('progress')||name.includes('capacity')||name.includes('rate')) p={...p,minW:225,minH:150,prefW:310,prefH:170};
   } else if(engine==='CoreChartEngine') {
-    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
+    p={...p,minW:380,minH:220,prefW:880,prefH:320,growth:'plot',aspect:680/330};
     if(name==='sparkline') p={...p,minW:240,minH:130,prefW:340,prefH:150};
     if(name.includes('donut')||name.includes('pie')) p={...p,minW:235,minH:235,prefW:285,prefH:285,aspect:1,growth:'square'};
     if(name.includes('sankey')||name.includes('treemap')||name.includes('funnel')) p={...p,minW:350,minH:220,prefW:500,prefH:260};
   } else if(engine==='EngineeringChartEngine') {
-    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
-    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:418};
+    p={...p,minW:380,minH:220,prefW:880,prefH:340,growth:'plot',aspect:680/330};
+    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:360};
   } else if(engine==='TableEngine') {
     p={...p,minW:340,minH:210,prefW:480,prefH:260,growth:'data'};
     if(name.includes('dense')) p={...p,minH:235,prefH:300};
@@ -360,7 +361,8 @@ function semanticPolicy(entry) {
     if(name.includes('process flow')) {
       const bounds=diagramRenderBounds(entry),heading=entry.showTitle===true||entry.show_title===true?78:38;
       const requiredH=Math.min(MAX_CANVAS_H-2*CANVAS.gap,Math.ceil(bounds.height+heading));
-      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap};
+      const horizontal=String(entry.direction||'right').toLowerCase()!=='down',contentAspect=bounds.width/Math.max(1,requiredH);
+      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap,aspect:horizontal?clamp(contentAspect,2.5,6):.8};
     }
     if(name.includes('architecture')||name.includes('swimlane')||name.includes('sequence')) p={...p,minW:380,minH:245,prefW:540,prefH:300};
     if(name.includes(' node')) p={...p,minW:190,minH:135,prefW:240,prefH:155,growth:'balanced'};
@@ -381,6 +383,7 @@ function semanticPolicy(entry) {
     if(compositionRole(entry)==='supporting_analysis') p={...p,minH:104,prefH:132};
   } else if(['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) {
     p={...p,minW:280,minH:180,prefW:400,prefH:220,growth:'text'};
+    if(engine==='ProjectCompositeEngine'&&compositionRole(entry)==='action_status') p={...p,minH:112,prefH:156};
     if(name.includes('hero')) p={...p,minW:380,minH:190,prefW:540,prefH:230};
     if(name.includes('grid')||name.includes('register')||name.includes('cluster')) p={...p,minW:340,minH:220,prefW:470,prefH:270};
     if(engine==='DecisionCompositeEngine'&&name.includes('risk callout')) p={...p,minH:78,prefH:94};
@@ -412,7 +415,7 @@ function semanticPolicy(entry) {
   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
   p.prefW=Math.min(p.maxW,Math.max(p.minW,p.prefW*scale));
   p.prefH=Math.min(p.maxH,Math.max(p.minH,p.prefH*(emphasis==='hero'?1.12:emphasis==='compact'?.9:1)));
-  const measured=name.includes('process flow')?null:ui.intrinsicOverrides.get(entry.id);
+  const measured=ui.intrinsicOverrides.get(entry.id);
   if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
   // This is the single source of truth for Smart/Guided defaults.  Keep the
   // policy inspectable so renderers and acceptance probes can distinguish a
@@ -431,11 +434,23 @@ function effectiveWeight(entry) {
   const presetWeight=priority?(priority.includes(entry.engine)?1.18:.92):1;
   return base*Math.sqrt(advanced)*presetWeight;
 }
-function allocateRowWidths(row, innerW, gap) {
+function allocateRowWidths(row, innerW, gap, ratios = null) {
   const available=Math.max(1,innerW-gap*(row.length-1));
   const mins=row.map(({policy})=>Math.min(available,policy.minW));
   const totalMin=mins.reduce((a,b)=>a+b,0);
   if(totalMin>available+.1){return mins.map((v)=>v*available/totalMin);}
+  if(Array.isArray(ratios)&&ratios.length===row.length&&ratios.every(value=>Number.isFinite(Number(value))&&Number(value)>0)){
+    const ratioTotal=ratios.reduce((sum,value)=>sum+Number(value),0)||1;
+    let widths=ratios.map((value,index)=>Math.max(mins[index],available*Number(value)/ratioTotal));
+    let overflow=widths.reduce((sum,value)=>sum+value,0)-available;
+    if(overflow>0){
+      const flexible=widths.map((value,index)=>Math.max(0,value-mins[index])),total=flexible.reduce((sum,value)=>sum+value,0)||1;
+      widths=widths.map((value,index)=>Math.max(mins[index],value-overflow*flexible[index]/total));
+    } else if(overflow<0){
+      const left=-overflow; widths=widths.map((value,index)=>value+left*Number(ratios[index])/ratioTotal);
+    }
+    return widths;
+  }
   let widths=[...mins],left=available-totalMin;
   const desires=row.map(({policy},i)=>Math.max(0,policy.prefW-widths[i]));
   let desireSum=desires.reduce((a,b)=>a+b,0);
@@ -448,10 +463,10 @@ function semanticSmartLayout(items=viewItems()) {
   const ordered=compositionOrder(items,model().layoutPreset||'editorial');
   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
   const g=CANVAS.gap,innerW=Math.max(1,CANVAS.w-2*g),innerH=Math.max(1,CANVAS.h-2*g);
-  const rows=[];let row=[];let minUsed=0;
-  const flush=()=>{if(row.length){const role=compositionRole(row[0].entry);rows.push({members:row,section:compositionSection(row[0].entry,role).id});row=[];minUsed=0;}};
-  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),semanticRole=compositionRole(entry),section=compositionSection(entry,semanticRole).id,name=String(entry.element||entry.title||''),longNarrative=entry.engine==='TextEngine'&&String(entry.text||entry.body||'').trim().length>420,forceOwnRow=['report_headline','narrative_interpretation','conclusion'].includes(semanticRole)||entry.engine==='DiagramEngine'||longNarrative||(semanticRole==='primary_analysis'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,currentSection=row.length?compositionSection(row[0].entry,compositionRole(row[0].entry)).id:section;if(row.length&&(currentSection!==section||minUsed+need>innerW||forceOwnRow))flush();row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1)flush();}
-  flush();
+  const preset=model().layoutPreset||'editorial',profiles=Object.fromEntries(ordered.map(entry=>[String(entry.id),semanticPolicy(entry)]));
+  const plans=sectionCompositionPlan(ordered,preset,CANVAS.w,profiles),sectionById=new Map(plans.map(section=>[section.id,section]));
+  const rowInputs=plans.flatMap(section=>section.rows.map(value=>({...value,items:value.ids.map(id=>ordered.find(entry=>String(entry.id)===id)).filter(Boolean)})));
+  const rows=rowInputs.map(spec=>({...spec,members:spec.items.map(entry=>({entry,policy:profiles[String(entry.id)]}))}));
   const solo=ordered.length===1&&rows.length===1;
   const fitToHull=(policy,w=innerW,h=innerH)=>{
     let width=Math.min(policy.maxW,w),height=Math.min(policy.maxH,h);
@@ -461,8 +476,8 @@ function semanticSmartLayout(items=viewItems()) {
   };
   const soloSize=({entry,policy})=>{
     const role=suggestMessageRole(entry),primary=role==='Primary Evidence'||role==='Headline';
-    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy);
-    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,innerH);
+    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy,innerW,Math.max(policy.minH,policy.prefH));
+    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,Math.max(policy.minH,policy.prefH));
     if(policy.growth==='horizontal'){
       // Horizontal families keep a readable band when no semantic aspect is
       // declared; process/data-flow diagrams carry their own aspect above.
@@ -475,16 +490,23 @@ function semanticSmartLayout(items=viewItems()) {
     }
     return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
   };
-  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=!solo&&(index===0||rows[index-1].section!==section);return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
-  rowSpecs.forEach((spec,index)=>{spec.gapAfter=index<rowSpecs.length-1?g+(spec.section!==rowSpecs[index+1].section?g*.5:0):0;});
-  const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height+r.gapAfter,0)+2*g+(rowSpecs[0]?.sectionStart?20:0);
-  // Smart owns the safe hull. Solo composition uses only the useful semantic
-  // height it needs; multi-element composition fills the report hull through
-  // weighted row growth so hierarchy, not a centered island, determines mass.
-  const layoutTargetH=solo?baseNeeded:CANVAS.h;
-  const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
+  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length});
+  const rowSpecs=rows.map((spec,index)=>{
+    const widths=allocateRowWidths(spec.members,innerW,g,spec.ratios);
+    const fitSizes=spec.members.map(({policy},i)=>policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],Math.max(policy.minH,policy.prefH)):{w:widths[i],h:Math.max(policy.minH,policy.prefH)});
+    spec.members.forEach(({policy},i)=>{if(policy.aspect||policy.growth==='square')widths[i]=Math.max(policy.minW,Math.min(widths[i],fitSizes[i].w));});
+    const desired=fitSizes.map(size=>size.h);
+    if(solo){const size=soloSize(spec.members[0]);widths[0]=size.w;desired[0]=size.h;}
+    const sectionStart=!solo&&spec.sectionStart;
+    const prior=rowInputs[index-1],gapAfter=index<rowInputs.length-1?(prior?.section===rowInputs[index+1].section?spacing.stackGap:Math.max(8,spacing.sectionGap-spacing.headingHeight)):0;
+    return {...spec,sectionStart,sectionTitle:spec.title||compositionSection(spec.members[0].entry,compositionRole(spec.members[0].entry)).title,widths,height:Math.max(...desired),leading:sectionStart?spacing.headingHeight:0,gapAfter};
+  });
+  const baseNeeded=rowSpecs.reduce((sum,spec)=>sum+spec.height+spec.leading+spec.gapAfter,0)+2*g;
+  // Smart composition owns content-fit height. Page whitespace is not used to
+  // inflate plots, tables or the spaces between semantic sections.
+  const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)));
   let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
-  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter,0);
+  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter+spec.leading,0);
   if(baseNeeded>resolvedTargetH) {
     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
@@ -499,8 +521,26 @@ function semanticSmartLayout(items=viewItems()) {
       conflict=`Smart layout compacted ${ordered.length} elements to fit this ${resolvedTargetH}px page. Increase Page size for their preferred space.`;
     }
   }
-  const rects=[];let y=g+(rowSpecs[0]?.sectionStart?20:0);
-  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));if(policy.growth==='square')h=Math.min(spec.height,w);h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,sectionStart:spec.sectionStart&&i===0,sectionTitle:spec.sectionTitle,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+spec.gapAfter;}
+  const responsiveOrder=new Map(rows.flatMap(spec=>spec.members.map(({entry})=>entry)).map((entry,index)=>[String(entry.id),index]));
+  const rects=[];let y=g;
+  for(const spec of rowSpecs){
+    y+=spec.leading;
+    const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);
+    let x=g+Math.max(0,(innerW-rowWidth)/2);
+    const headingItemId=spec.featureId&&spec.members.some(({entry})=>String(entry.id)===spec.featureId)?spec.featureId:String(spec.members[0]?.entry.id||'');
+    const sectionHeadingOrder=spec.sectionStart?Math.min(...spec.members.map(({entry})=>responsiveOrder.get(String(entry.id))??Number.MAX_SAFE_INTEGER)):null;
+    for(let i=0;i<spec.members.length;i+=1){
+      const {entry,policy}=spec.members[i],id=String(entry.id),w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;
+      let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight,Math.max(policy.minH,policy.prefH)):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));
+      if(policy.growth==='square')h=Math.min(spec.height,w);
+      h=Math.max(policy.minH,h);
+      let itemY=y;
+      if(spec.featureId&&id!==spec.featureId&&spec.members.length>1)itemY+=Math.max(0,(spec.height-h)/2);
+      rects.push({id:entry.id,x,y:itemY,w,h,order:responsiveOrder.get(id),section:spec.section,sectionStart:spec.sectionStart&&id===headingItemId,sectionHeadingY:spec.sectionStart?y-spacing.headingHeight:null,sectionHeadingOrder,sectionTitle:spec.sectionTitle,sectionPattern:spec.pattern,sectionIndex:sectionById.get(spec.section)?.order||0,compositionLevel:spec.featureId===id?'feature':'support',touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:itemY===g,B:false},policy});
+      x+=w+g;
+    }
+    y+=spec.height+spec.gapAfter;
+  }
   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
   return {rects,height:resolvedTargetH,conflict};
 }
@@ -894,7 +934,7 @@ function contentMarkup(entry, r) {
 function ensureCanvasScaffold() {
   const hull = $('#hull');
   if (!$('#componentLayer', hull)) {
-    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
+    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="composition-section-surface-layer" id="compositionSectionSurfaceLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
   }
   const scene=$('#scene');
   if(scene&&!$('#editorChromeLayer',scene)) scene.insertAdjacentHTML('beforeend','<div class="editor-chrome-layer" id="editorChromeLayer" data-editor-only aria-label="Selection and resize controls"></div>');
@@ -955,7 +995,7 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
     return Math.max(headline?124:76,lines*(headline?23:20)+32);
   }
   if(entry.engine==='MetricEngine')return 132;
-  if(entry.engine==='ComparisonEngine')return 150;
+  if(entry.engine==='ComparisonEngine')return 180;
   if(entry.engine==='CoreChartEngine'||entry.engine==='EngineeringChartEngine')return 250;
   if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
   if(entry.engine==='DiagramEngine'){
@@ -985,7 +1025,6 @@ function measureSmartContentRequirements(rm) {
   if(model().mode!=='smart'||ui.smartLayoutConflict) return false;
   let changed=false;
   for(const entry of model().items) {
-    if(entry.engine==='DiagramEngine'&&String(entry.element||entry.title||'').toLowerCase().includes('process flow'))continue;
     const r=rm.get(entry.id); const node=ui.componentNodes.get(entry.id); if(!r||!node)continue;
     const overflow=nodeOverflow($('.c-content',node));
     if(overflow.x<=1&&overflow.y<=1)continue;
@@ -1044,7 +1083,7 @@ function reconcileCanvas({ content = true } = {}) {
     node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
     node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
-    node.style.order = String(Number.isFinite(Number(entry.order)) ? Number(entry.order) : 0);
+    node.style.order = String(model().mode==='smart'&&Number.isFinite(Number(r.order))?Number(r.order)*2+1:(Number.isFinite(Number(entry.order))?Number(entry.order):0));
     syncComponentSectionHeading(node,r,entry);
     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
@@ -1060,6 +1099,7 @@ function reconcileCanvas({ content = true } = {}) {
   }
   syncCompositionSectionHeadings(layer,rm);
   renderGroups(rm);
+  renderCompositionSectionSurfaces(rm);
   renderEditorChrome(rm);
   renderContext(rm);
   renderMinimap(rm);
@@ -1091,18 +1131,49 @@ function renderGroups(rm) {
   layer.innerHTML = specs.map(([gid, u]) => `<div class="group-outline" data-group="${esc(gid)}" style="left:${u.x - 4}px;top:${u.y - 4}px;width:${u.w + 8}px;height:${u.h + 8}px"></div>`).join('');
 }
 
+function renderCompositionSectionSurfaces(rm) {
+  const layer=$('#compositionSectionSurfaceLayer');if(!layer)return;
+  layer.querySelectorAll('.composition-section-surface').forEach(node=>node.remove());
+  if(model().mode!=='smart')return;
+  const grouped=new Map();
+  for(const rect of rm.values()){
+    if(!rect.section||!['hero-opening-band','compact-kpi-strip','feature-support-analysis','balanced-analytical-pair','evidence-detail-grid','narrative-evidence-split','causal-flow-feature'].includes(rect.sectionPattern))continue;
+    if(!grouped.has(rect.section))grouped.set(rect.section,[]);grouped.get(rect.section).push(rect);
+  }
+  for(const [section,rects] of grouped){
+    const bounds=rectUnion(rects);if(!bounds)continue;
+    const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length}),heading=spacing.headingHeight;
+    const surface=document.createElement('div');surface.className='composition-section-surface';surface.dataset.pattern=rects[0].sectionPattern;surface.setAttribute('aria-hidden','true');
+    const left=Math.max(2,Math.min(bounds.x-12,CANVAS.w-4));
+    surface.style.left=`${left}px`;surface.style.top=`${Math.max(2,bounds.y-heading-7)}px`;
+    surface.style.width=`${Math.max(1,Math.min(bounds.w+24,CANVAS.w-4-left))}px`;surface.style.height=`${bounds.h+heading+19}px`;
+    surface.dataset.section=section;layer.appendChild(surface);
+  }
+}
+
 function syncComponentSectionHeading(node,rect,entry) {
-  if(model().mode==='smart'&&rect?.sectionStart){
-    node.dataset.sectionStart='true';
-    node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  if(model().mode==='smart'&&rect){
+    if(rect.sectionStart){
+      node.dataset.sectionStart='true';
+      node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+    } else {
+      delete node.dataset.sectionStart;
+      delete node.dataset.sectionTitle;
+    }
+    node.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
+    node.dataset.compositionLevel=rect.compositionLevel||'feature';
   } else {
     delete node.dataset.sectionStart;
     delete node.dataset.sectionTitle;
+    delete node.dataset.sectionPattern;
+    delete node.dataset.compositionLevel;
   }
 }
 
 function syncCompositionSectionHeadings(layer,rm) {
   if(!layer)return;
+  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length});
+  layer.style.setProperty('--viz-composition-row-gap',`${spacing.stackGap}px`);
   layer.querySelectorAll('.composition-section-heading').forEach(node=>node.remove());
   if(model().mode!=='smart')return;
   for(const rect of rm.values()){
@@ -1110,10 +1181,13 @@ function syncCompositionSectionHeadings(layer,rm) {
     const entry=item(rect.id),heading=document.createElement('div');
     heading.className='composition-section-heading';
     heading.setAttribute('role','heading');heading.setAttribute('aria-level','2');
-    heading.textContent=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
-    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,rect.y-18)}px`;
+    const index=String(Number(rect.sectionIndex||0)+1).padStart(2,'0'),title=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+    heading.innerHTML=`<span class="composition-section-index">${index}</span><b>${esc(title)}</b>`;
+    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,Number.isFinite(Number(rect.sectionHeadingY))?Number(rect.sectionHeadingY):rect.y-spacing.headingHeight)}px`;
     heading.style.width=`${Math.max(1,CANVAS.w-2*CANVAS.gap)}px`;
-    heading.style.order=String(Math.floor(Number(entry?.order)||0)-1);
+    heading.style.order=String(Number.isFinite(Number(rect.sectionHeadingOrder))?Number(rect.sectionHeadingOrder)*2:Number.isFinite(Number(rect.order))?Number(rect.order)*2:Math.floor(Number(entry?.order)||0)*2);
+    heading.dataset.section=rect.section||'';
+    heading.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
     layer.appendChild(heading);
   }
 }
@@ -2999,27 +3073,27 @@ function renderReuseRemapDialog(focusKey=null){
   const sections=slots.map(source=>{
     const slot=plan.slots.find(value=>value.identity===source.identity)||{},selection=state.selections[source.identity]||{},destination=datasets.find(value=>String(value.id)===String(selection.dataset_id||slot.dataset_id));
     const byId=new Map((destination?.fields||[]).map(field=>[String(field.id),field]));
-    const fieldRows=source.bindings.flatMap(binding=>{
-      const known=new Set(binding.field_roles.map(value=>value.role)),roles=[...binding.field_roles,...binding.references,...binding.required_roles.filter(role=>!known.has(role)).map(role=>({role,field_name:'',field_type:'',required:true}))];
-      return roles.map(role=>{
-        const selected=String(selection.mappings?.[binding.item_id]?.[role.role]||slot.mapping?.[binding.item_id]?.[role.role]||'');
-        const label=reuseRoleLabel(role.role,binding.view),sourceLabel=role.field_name?` · source: ${role.field_name}`:'';
-        return `<label class="reuse-remap-role"><span><b>${esc(label)}</b><small>${esc(binding.element)}${esc(sourceLabel)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(binding.item_id)}" data-role="${esc(role.role)}" aria-label="${esc(label)} for ${esc(binding.element)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===selected?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
-      });
+    const fieldRows=groupedRemapRequirements(source,slot,selection).map(requirement=>{
+      const label=requirement.label,first=requirement.assignments[0]||{itemId:'',roles:[]},role=first.roles[0]||requirement.role;
+      const sourceLabel=requirement.sourceField?`Source field: ${requirement.sourceField}${requirement.expectedTypeLabel?` · ${requirement.expectedTypeLabel}`:''}`:'Choose a field that meets this requirement';
+      const scope=requirement.shared?`${requirement.consumers.length} visuals`:(requirement.consumers[0]||'Visual');
+      const scopeSummary=requirement.shared?`Shared by ${scope}`:`Used by ${scope}`;
+      const assignments=esc(JSON.stringify(requirement.assignments));
+      return `<label class="reuse-remap-role"><span><b>${esc(label)}${requirement.required?' *':''}</b><small>${esc(sourceLabel)} · ${esc(scopeSummary)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(first.itemId)}" data-role="${esc(role)}" data-remap-assignments="${assignments}" aria-label="${esc(label)} for ${esc(scope)}: ${esc(requirement.consumersLabel)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===requirement.value?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
     }).join('');
-    const issues=[...(slot.unresolved||[]).map(issue=>`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`),...(slot.problems||[]).map(issue=>issue.message||`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`)];
+    const issues=summarizedRemapIssues(source,slot);
     const status=slot.ready?'Ready':slot.ambiguous_dataset?'Choose a data source':slot.problems.length?'Data source is incompatible':'Needs field mapping';
-    const drives=source.bindings.map(binding=>binding.element).join(', ');
+    const drives=remapVisualLabels(source.bindings);
     const recipes=[...new Set(source.bindings.map(binding=>binding.analysis_recipe_identity?.id).filter(Boolean))].map(reusableRecipeLabel),transforms=[...new Set(source.bindings.flatMap(binding=>(binding.transform_recipe?.steps||[]).map(step=>humanTransformTypeLabel(step.type))))];
     const analyticalNotes=[recipes.length?`Analysis: ${recipes.join(', ')}`:'',transforms.length?`Transforms: ${transforms.join(', ')}`:''].filter(Boolean).join(' · ');
-    return `<section class="reuse-remap-slot" aria-labelledby="reuse-slot-${esc(source.identity)}"><header><div><h3 id="reuse-slot-${esc(source.identity)}">${esc(source.name||'Data source')}</h3><p>Used by ${esc(drives||'selected visuals')}</p></div><span class="reuse-remap-status ${slot.ready?'ready':slot.problems.length?'blocked':''}">${esc(status)}</span></header><label class="reuse-remap-dataset"><span>Data source</span><select data-remap-dataset="${esc(source.identity)}" aria-label="Data source for ${esc(source.name||'reusable section')}"><option value="">Choose a data source</option>${datasets.map(dataset=>`<option value="${esc(dataset.id)}" ${String(dataset.id)===String(destination?.id||'')?'selected':''}>${esc(dataset.name||'Untitled data')} · ${(dataset.fields||[]).length} fields</option>`).join('')}</select></label><p class="reuse-remap-schema">Source fields: ${esc(source.source_fields.map(field=>field.name).join(', ')||'No field names were saved')}${analyticalNotes?` · ${esc(analyticalNotes)}`:''}</p><div class="reuse-remap-fields">${fieldRows||'<p class="keyboard-help">This source has no mapped fields.</p>'}</div>${issues.length?`<ul class="reuse-remap-issues" aria-live="polite">${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:''}</section>`;
+    return `<section class="reuse-remap-slot" aria-labelledby="reuse-slot-${esc(source.identity)}"><header><div><h3 id="reuse-slot-${esc(source.identity)}">${esc(source.name||'Data source')}</h3><p><b>Used by ${drives.length} visual${drives.length===1?'':'s'}</b><span class="reuse-remap-consumers">${drives.map(value=>`<span>${esc(value)}</span>`).join('')}</span></p></div><span class="reuse-remap-status ${slot.ready?'ready':slot.problems.length?'blocked':''}">${esc(status)}</span></header><label class="reuse-remap-dataset"><span>Data source</span><select data-remap-dataset="${esc(source.identity)}" aria-label="Data source for ${esc(source.name||'reusable section')}"><option value="">Choose a data source</option>${datasets.map(dataset=>`<option value="${esc(dataset.id)}" ${String(dataset.id)===String(destination?.id||'')?'selected':''}>${esc(dataset.name||'Untitled data')} · ${(dataset.fields||[]).length} fields</option>`).join('')}</select></label><p class="reuse-remap-schema">Source fields: ${esc(source.source_fields.map(field=>field.name).join(', ')||'No field names were saved')}${analyticalNotes?` · ${esc(analyticalNotes)}`:''}</p><div class="reuse-remap-fields">${fieldRows||'<p class="keyboard-help">This source has no mapped fields.</p>'}</div>${issues.length?`<ul class="reuse-remap-issues" aria-live="polite">${issues.map(issue=>`<li>${esc(issue.message)}</li>`).join('')}</ul>`:''}</section>`;
   }).join('');
   const manualItems=(contract.manual_value_items||[]).map(item=>`<li>${esc(({key_metric:'Key metric',comparison:'Comparison',evidence_table:'Evidence table'})[item.kind]||'Report value')} · ${esc(item.element)}</li>`).join('');
   const manualReview=manualItems?`<section class="reuse-remap-slot" aria-labelledby="reuse-manual-values"><header><div><h3 id="reuse-manual-values">Values to review</h3><p>These entries are not linked to source fields. Their old values are excluded so they cannot be mistaken for the new data.</p></div><span class="reuse-remap-status">Review after applying</span></header><ul class="reuse-remap-issues">${manualItems}</ul></section>`:'';
   const explanation=plan.ok?'The report will use the selected data sources. The saved preset and those data sources remain unchanged.':'Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.';
   const sourceButton=state.sourceAvailable?'<button type="button" class="tb" data-remap-source-copy>Use source data</button>':'';
   $('#modalTitle').textContent=state.preset.kind==='section'?'Reuse section with new data':'Reuse report with new data';
-  $('#modalBody').innerHTML=`<form class="modal-form reuse-remap-form" id="reuseRemapForm"><p class="reuse-remap-intro">${esc(explanation)}</p><div class="reuse-remap-slots">${sections||'<p>This preset has no linked data source. Its structure can be applied directly.</p>'}${manualReview}</div><div class="reuse-remap-consequence"><b>What will be applied</b><span>Structure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.</span></div><div class="reuse-remap-import"><span>Need another source? Add it through Data First, then reopen this workflow to map it.</span><button type="button" class="tb" data-remap-add-source>Add a data source</button></div><div class="reuse-remap-errors" role="status" aria-live="polite">${plan.ok?'All data roles are compatible.':plan.errors.map(error=>esc(error.reason||'Resolve the data source selection.')).join(' ')}</div><div class="modal-actions"><button type="button" class="tb" data-remap-cancel>Cancel</button>${sourceButton}<button type="submit" class="tb accent" ${plan.ok?'':'disabled'}>Apply reusable structure</button></div></form>`;
+  $('#modalBody').innerHTML=`<form class="modal-form reuse-remap-form" id="reuseRemapForm"><p class="reuse-remap-intro">${esc(explanation)}</p><div class="reuse-remap-slots">${sections||'<p>This preset has no linked data source. Its structure can be applied directly.</p>'}${manualReview}</div><div class="reuse-remap-consequence"><b>What will be applied</b><span>Structure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.</span></div><div class="reuse-remap-import"><span>Need another source? Add it through Data First, then reopen this workflow to map it.</span><button type="button" class="tb" data-remap-add-source>Add a data source</button></div><div class="reuse-remap-errors" role="status" aria-live="polite">${esc(remapStatusSummary(plan))}</div><div class="modal-actions"><button type="button" class="tb" data-remap-cancel>Cancel</button>${sourceButton}<button type="submit" class="tb accent" ${plan.ok?'':'disabled'}>Apply reusable structure</button></div></form>`;
   if(focusKey){requestAnimationFrame(()=>{const nodes=$$('#modalBody [data-remap-dataset], #modalBody [data-remap-role]');const node=focusKey.kind==='dataset'?nodes.find(value=>value.dataset.remapDataset===focusKey.slot):nodes.find(value=>value.dataset.remapRole===focusKey.slot&&value.dataset.remapItem===focusKey.itemId&&value.dataset.role===focusKey.role);node?.focus({preventScroll:true});});}
 }
 function reusePreset(index){
@@ -3429,7 +3503,7 @@ function wireGlobal(signal) {
   on($('#builtinPresetList'),'click',(e)=>{const button=e.target.closest('[data-built-preset]');if(button)applySuggestion(button.dataset.builtPreset);});
   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const reuse=e.target.closest('[data-reusepreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(reuse)reusePreset(+reuse.dataset.reusepreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
-  on($('#genericModal'),'change',(event)=>{if(!reuseApplyState)return;const dataset=event.target.closest('[data-remap-dataset]'),field=event.target.closest('[data-remap-role]');if(dataset){reuseApplyState.selections[dataset.dataset.remapDataset]={dataset_id:dataset.value,mappings:{}};return renderReuseRemapDialog({kind:'dataset',slot:dataset.dataset.remapDataset});}if(field){const slot=field.dataset.remapRole,itemId=field.dataset.remapItem,role=field.dataset.role,selection=reuseApplyState.selections[slot]||(reuseApplyState.selections[slot]={dataset_id:'',mappings:{}});selection.mappings[itemId]={...(selection.mappings[itemId]||{}),[role]:field.value};renderReuseRemapDialog({kind:'role',slot,itemId,role});}});
+  on($('#genericModal'),'change',(event)=>{if(!reuseApplyState)return;const dataset=event.target.closest('[data-remap-dataset]'),field=event.target.closest('[data-remap-role]');if(dataset){reuseApplyState.selections[dataset.dataset.remapDataset]={dataset_id:dataset.value,mappings:{}};return renderReuseRemapDialog({kind:'dataset',slot:dataset.dataset.remapDataset});}if(field){const slot=field.dataset.remapRole,itemId=field.dataset.remapItem,role=field.dataset.role,selection=reuseApplyState.selections[slot]||(reuseApplyState.selections[slot]={dataset_id:'',mappings:{}});let assignments=[];try{assignments=JSON.parse(field.dataset.remapAssignments||'[]');}catch{assignments=[{itemId,roles:[role]}];}for(const target of assignments){const current=selection.mappings[target.itemId]||(selection.mappings[target.itemId]={});for(const mappedRole of target.roles||[role])current[mappedRole]=field.value;}renderReuseRemapDialog({kind:'role',slot,itemId,role});}});
   on($('#genericModal'),'click',(event)=>{if(event.target.closest('[data-remap-cancel]'))return closeModals();if(event.target.closest('[data-remap-add-source]')){reuseApplyState=null;closeModals();$('#pasteDataBtn').click();return;}if(event.target.closest('[data-remap-source-copy]')){const saved=reuseApplyState?.preset,index=personalPresets.findIndex(value=>value.id===saved?.id);if(index>=0)confirmPresetSourceData(index);}});
   on($('#genericModal'),'submit',(event)=>{if(event.target?.id!=='reuseRemapForm'||!reuseApplyState)return;event.preventDefault();const state=reuseApplyState,plan=planReusableRemap(state.contract,model().datasets,state.selections);if(!plan.ok){renderReuseRemapDialog();return toast('Resolve the highlighted data source and field mapping before applying');}closeModals();if(!commitReusablePreset(state,plan))toast('The reusable preset could not be applied');});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
@@ -3474,7 +3548,7 @@ function init(root=$('.cui-visualizer-root')) {
   activeRoot.dataset.editorReady='true';
   const stagePanel=new URLSearchParams(location.search).get('panel');
   if(['assets','datasets','blueprints','roles','delivery'].includes(stagePanel))requestAnimationFrame(()=>stageDOpen(stagePanel));
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h})=>({id,x,y,w,h}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy,section,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionPattern,compositionLevel,order,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}

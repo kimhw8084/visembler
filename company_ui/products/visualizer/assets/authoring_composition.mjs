@@ -99,6 +99,214 @@ export function compositionSection(entry = {}, role = compositionRole(entry)) {
   return { id, title: String(entry.section_title || COMPOSITION_SECTIONS[id] || 'Analysis') };
 }
 
+const ROLE_FEATURE_WEIGHT = Object.freeze({
+  report_headline: 12, hero_metric: 11, primary_analysis: 10, causal_evidence: 10,
+  decision_risk: 9, narrative_interpretation: 8, detailed_evidence: 7,
+  conclusion: 7, supporting_analysis: 6, action_status: 5, context: 3,
+});
+const EMPHASIS_WEIGHT = Object.freeze({ compact: .72, standard: 1, prominent: 1.35, hero: 1.8 });
+const VISUAL_ENGINES = new Set(['CoreChartEngine','EngineeringChartEngine','TableEngine','DiagramEngine','WaferFabEngine','ImageMediaEngine','MatrixEngine','TimelineEngine']);
+
+function densityHint(entry = {}, profile = {}) {
+  const rows = entry.customTable?.rows || entry.rows || entry.data || [];
+  const copy = String(entry.text || entry.body || entry.content || '').trim();
+  const sourceCount = Array.isArray(rows) ? rows.length : 0;
+  return Math.min(2.5, Math.log2(1 + sourceCount) * .25 + Math.min(1.25, copy.length / 480) + Math.min(.75, Number(profile.minH || 0) / 600));
+}
+
+function featureScore(entry, preset, profile = {}) {
+  const role = compositionRole(entry);
+  const explicit = Object.hasOwn(EMPHASIS_WEIGHT, entry.emphasis);
+  const explicitEmphasis = explicit ? ({compact:.68,standard:1,prominent:1.48,hero:2.65}[entry.emphasis]||1) : 1;
+  const automaticEmphasis = explicit ? 1 : role === 'report_headline' || role === 'hero_metric' ? 1.35
+    : ['primary_analysis','causal_evidence','decision_risk','conclusion'].includes(role) ? 1.18 : 1;
+  const recipeIntent = compositionProminence(entry, preset);
+  const infoDensity = densityHint(entry, profile);
+  return (ROLE_FEATURE_WEIGHT[role] || 5) * explicitEmphasis * automaticEmphasis * recipeIntent + infoDensity;
+}
+
+function visualEntry(entry) { return VISUAL_ENGINES.has(entry.engine); }
+function relatedComparisonPair(entries) {
+  if (entries.length !== 2) return false;
+  const names = entries.map(entry => `${entry.element || ''} ${entry.title || ''}`.toLowerCase());
+  const has = pattern => names.some(value => pattern.test(value));
+  return entries.some(entry => entry.engine === 'ComparisonEngine') ||
+    (has(/before|baseline|reference|control/) && has(/after|current|affected|treatment/));
+}
+function usableInOneRow(ids, profiles, pageWidth, gap = 14) {
+  const minimum = ids.reduce((sum, id) => sum + Math.max(1, Number(profiles[id]?.minW) || 280), 0);
+  return minimum + gap * Math.max(0, ids.length - 1) <= Math.max(1, pageWidth - 28);
+}
+const row = (ids, ratios = null) => ({ ids: [...ids], ratios: ratios ? [...ratios] : null });
+
+function sectionPattern(section, preset, profiles, pageWidth) {
+  const entries = section.items, roles = entries.map(compositionRole), visuals = entries.filter(visualEntry);
+  const metrics = entries.filter(entry => ['hero_metric'].includes(compositionRole(entry)) || entry.engine === 'ComparisonEngine');
+  const narrative = entries.filter(entry => compositionRole(entry) === 'narrative_interpretation' || entry.engine === 'TextEngine' && compositionRole(entry) === 'context');
+  const headline = entries.find(entry => compositionRole(entry) === 'report_headline');
+  const hasEvidence = entries.some(entry => ['detailed_evidence','causal_evidence'].includes(compositionRole(entry)) || visualEntry(entry));
+  if (section.id === 'delivery' && entries.some(entry => ['conclusion','action_status'].includes(compositionRole(entry)))) return 'closing-next-step';
+  if (section.id === 'decision' && entries.some(entry => ['decision_risk','conclusion','action_status'].includes(compositionRole(entry)))) return 'compact-decision-band';
+  if (entries.some(entry => entry.engine === 'DiagramEngine' || compositionRole(entry) === 'causal_evidence')) return 'causal-flow-feature';
+  if (headline) return 'hero-opening-band';
+  if (metrics.length >= 2 && (section.id === 'performance' || metrics.length === entries.length)) return 'compact-kpi-strip';
+  if (visuals.length >= 2 && relatedComparisonPair(visuals)) return 'balanced-analytical-pair';
+  if (visuals.length >= 3) return 'feature-support-analysis';
+  if (narrative.length && hasEvidence) return 'narrative-evidence-split';
+  if (entries.filter(entry => compositionRole(entry) === 'detailed_evidence').length >= 1) return 'evidence-detail-grid';
+  if (visuals.length >= 2 && roles.some(role => ['primary_analysis','supporting_analysis'].includes(role))) return 'feature-support-analysis';
+  if (section.id === 'analysis' && visuals.length === 1 && roles.includes('primary_analysis')) return 'feature-support-analysis';
+  if (visuals.length >= 2 && !usableInOneRow(visuals.map(entry => String(entry.id)), profiles, pageWidth)) return 'feature-support-analysis';
+  return 'editorial-flow';
+}
+
+function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
+  const ids = section.items.map(entry => String(entry.id));
+  const byId = new Map(section.items.map(entry => [String(entry.id), entry]));
+  const supports = ids.filter(id => id !== featureId);
+  const fits = values => usableInOneRow(values, profiles, pageWidth);
+  const featureRow = (featureRatio = .64) => {
+    if (!featureId) return [];
+    const firstSupport = supports[0];
+    if (firstSupport && fits([featureId, firstSupport])) return [row([featureId, firstSupport], [featureRatio, 1 - featureRatio])];
+    return [row([featureId])];
+  };
+  if (pattern === 'hero-opening-band') {
+    const title = section.items.find(entry => compositionRole(entry) === 'report_headline');
+    const titleId = title ? String(title.id) : null;
+    const remainder = ids.filter(id => id !== titleId);
+    const metrics = remainder.filter(id => compositionRole(byId.get(id)) === 'hero_metric');
+    const context = remainder.filter(id => !metrics.includes(id));
+    const leadSupport = context[0] || metrics[0];
+    const splitLead = titleId && leadSupport && fits([titleId,leadSupport]);
+    const result = titleId ? [splitLead ? row([titleId,leadSupport],[.68,.32]) : row([titleId])] : [];
+    const usedLead = new Set(splitLead ? [titleId,leadSupport] : titleId ? [titleId] : []);
+    const remainingMetrics = metrics.filter(id=>!usedLead.has(id));
+    if(remainingMetrics.length)result.push(row(remainingMetrics));
+    const remainingContext = context.filter(id=>!usedLead.has(id));
+    for (let index=0; index<remainingContext.length;) {
+      const pair=remainingContext.slice(index,index+2);
+      if(pair.length===2&&fits(pair)){result.push(row(pair));index+=2;}
+      else {result.push(row([pair[0]]));index+=1;}
+    }
+    const used = new Set(result.flatMap(value => value.ids));
+    return [...result, ...ids.filter(id => !used.has(id)).map(id => row([id]))];
+  }
+  if (pattern === 'compact-kpi-strip') {
+    const kpis = section.items.filter(entry => compositionRole(entry) === 'hero_metric' || entry.engine === 'ComparisonEngine').map(entry => String(entry.id));
+    const orderedKpis = featureId && kpis.includes(featureId) ? [featureId,...kpis.filter(id=>id!==featureId)] : kpis;
+    const rest = ids.filter(id => !kpis.includes(id)), max = pageWidth >= 1280 ? 4 : 3, result = [];
+    for (let index = 0; index < orderedKpis.length; index += max) {
+      const group=orderedKpis.slice(index,index+max);
+      const ratios=group.length>1&&index===0?group.map((_,position)=>position===0?({2:.56,3:.42,4:.34}[group.length]||.3):(group.length===2?.44:group.length===3?.29:.22)):null;
+      result.push(row(group,ratios));
+    }
+    return [...result, ...rest.map(id => row([id]))];
+  }
+  if (pattern === 'causal-flow-feature') {
+    const diagram = section.items.find(entry => entry.engine === 'DiagramEngine') || section.items.find(entry => compositionRole(entry) === 'causal_evidence');
+    const id = String(diagram?.id || featureId || ids[0]), prose = section.items.find(entry => String(entry.id) !== id && ['TextEngine','DecisionCompositeEngine'].includes(entry.engine));
+    const result = prose && fits([id, String(prose.id)]) ? [row([id, String(prose.id)], [.62,.38])] : [row([id])];
+    const used = new Set(result.flatMap(value => value.ids));
+    return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
+  }
+  if (pattern === 'narrative-evidence-split') {
+    const prose = section.items.find(entry => ['narrative_interpretation','context'].includes(compositionRole(entry)) && entry.engine === 'TextEngine');
+    const evidence = section.items.find(entry => String(entry.id) !== String(prose?.id) && visualEntry(entry));
+    const shortProse = String(prose?.text || prose?.body || prose?.content || '').length <= 360;
+    const pair = prose && evidence && shortProse && fits([String(prose.id),String(evidence.id)]);
+    const result = pair ? [row([String(prose.id),String(evidence.id)],[.48,.52])] : prose ? [row([String(prose.id)])] : [];
+    const used = new Set(result.flatMap(value => value.ids));
+    return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
+  }
+  if (pattern === 'balanced-analytical-pair') {
+    const pair = section.items.filter(visualEntry).slice(0, 2).map(entry => String(entry.id));
+    if (pair.length === 2 && fits(pair)) return [row(pair,[.5,.5]), ...ids.filter(id => !pair.includes(id)).map(id => row([id]))];
+  }
+  if (pattern === 'evidence-detail-grid') {
+    const evidence = section.items.filter(entry => compositionRole(entry) === 'detailed_evidence').map(entry => String(entry.id));
+    const result = [];
+    for (let index = 0; index < evidence.length;) {
+      const pair = evidence.slice(index,index+2);
+      if (pair.length === 2 && fits(pair)) { result.push(row(pair)); index += 2; }
+      else { result.push(row([pair[0]])); index += 1; }
+    }
+    return [...result, ...ids.filter(id => !evidence.includes(id)).map(id => row([id]))];
+  }
+  if (pattern === 'compact-decision-band' || pattern === 'closing-next-step') {
+    if (fits(ids)) return [row(ids)];
+    return featureRow(.62).concat(supports.slice(featureRow(.62)[0]?.ids.length ? 1 : 0).map(id => row([id])));
+  }
+  if (pattern === 'feature-support-analysis') {
+    const visualIds=section.items.filter(visualEntry).map(entry=>String(entry.id));
+    if(visualIds.length>=3){
+      const featureVisual=featureId&&visualIds.includes(featureId)?featureId:visualIds[0];
+      const orderedVisuals=[featureVisual,...visualIds.filter(id=>id!==featureVisual)],result=[],used=new Set();
+      const first=orderedVisuals.slice(0,3);
+      if(first.length===3&&fits(first)){
+        result.push(row(first,[.39,.33,.28]));first.forEach(id=>used.add(id));
+      }else{
+        const support=orderedVisuals[1];
+        if(support&&fits([featureVisual,support])){result.push(row([featureVisual,support],[.64,.36]));used.add(featureVisual);used.add(support);}
+        else {result.push(row([featureVisual]));used.add(featureVisual);}
+      }
+      const remainingVisuals=orderedVisuals.filter(id=>!used.has(id));
+      for(let index=0;index<remainingVisuals.length;){
+        const pair=remainingVisuals.slice(index,index+2);
+        if(pair.length===2&&fits(pair)){result.push(row(pair,[.64,.36]));index+=2;}
+        else {result.push(row([pair[0]]));index+=1;}
+      }
+      return [...result,...ids.filter(id=>!visualIds.includes(id)).map(id=>row([id]))];
+    }
+    const result = featureRow(.64), used = new Set(result.flatMap(value => value.ids));
+    const remaining = supports.filter(id => !used.has(id));
+    for (let index = 0; index < remaining.length;) {
+      const pair = remaining.slice(index,index+2);
+      if (pair.length === 2 && fits(pair)) { result.push(row(pair)); index += 2; }
+      else { result.push(row([pair[0]])); index += 1; }
+    }
+    return result;
+  }
+  // Editorial flow packs short, compatible content together without turning
+  // a semantic section into an unbroken full-width column.
+  const result = []; let current = [];
+  for (const id of ids) {
+    const role = compositionRole(byId.get(id)), forceOwn = ['report_headline','narrative_interpretation','conclusion'].includes(role) || byId.get(id)?.engine === 'DiagramEngine';
+    if (forceOwn && current.length) { result.push(row(current)); current = []; }
+    const next = [...current,id];
+    if (current.length && !fits(next)) { result.push(row(current)); current = [id]; }
+    else current = next;
+    if (forceOwn) { result.push(row(current)); current = []; }
+  }
+  if (current.length) result.push(row(current));
+  return result;
+}
+
+export function sectionCompositionPlan(items = [], preset = 'editorial', pageWidth = 1440, profiles = {}) {
+  const grouped = new Map();
+  for (const entry of compositionOrder(items, preset)) {
+    const role = compositionRole(entry), section = compositionSection(entry, role);
+    if (!grouped.has(section.id)) grouped.set(section.id, { id: section.id, title: section.title, items: [], order: entry.section_order });
+    grouped.get(section.id).items.push(entry);
+  }
+  return [...grouped.values()].map((section,index) => {
+    const pattern = sectionPattern(section, preset, profiles, pageWidth);
+    const feature = [...section.items].sort((a,b) => featureScore(b,preset,profiles[String(b.id)]||{})-featureScore(a,preset,profiles[String(a.id)]||{}) || Number(a.order||0)-Number(b.order||0) || String(a.id).localeCompare(String(b.id)))[0];
+    const featureId = feature ? String(feature.id) : null;
+    const rows = rowsForSection(section, pattern, profiles, pageWidth, featureId);
+    return { id:section.id, title:section.title, order:index, pattern, featureId,
+      supportIds:section.items.map(entry=>String(entry.id)).filter(id=>id!==featureId),
+      rows:rows.map((value,rowIndex)=>({ ...value, section:section.id, title:section.title, pattern, featureId, rowIndex, sectionStart:rowIndex===0 })) };
+  });
+}
+
+export function compositionSpacing({ density = 'comfortable', itemCount = 1 } = {}) {
+  const scale = density === 'dense' ? -3 : density === 'compact' ? -1 : density === 'comfortable' ? 2 : 0;
+  const stackGap = Math.max(12,Math.min(20,16+scale));
+  const sectionGap = Math.max(20,Math.min(34,24+scale+Math.min(6,Math.floor(Math.max(0,itemCount-2)/2))));
+  return { stackGap, sectionGap, headingHeight:26, rowGap:Math.max(12,Math.min(18,14+Math.round(scale/2))) };
+}
+
 export function compositionProminence(entry = {}, preset = 'editorial') {
   const scale = Number(RECIPE_PROMINENCE[preset]?.[compositionRole(entry)] ?? 1);
   return Number.isFinite(scale) ? Math.max(1, Math.min(1.3, scale)) : 1;
