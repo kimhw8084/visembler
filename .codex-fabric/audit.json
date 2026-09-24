@@ -1,0 +1,594 @@
+{
+  "accepted_at": "2026-09-24T14:22:06Z",
+  "changed_files": [
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "CERTIFICATION_REPORT.json",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "LIVE_CERTIFICATION_READINESS.json",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "TEST_REPORT.json",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 25,
+      "deletions": 4,
+      "path": "company_ui/products/visualizer/assets/authoring_chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_clipboard.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 366,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_composition.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 9,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/assets/authoring_presets.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 237,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_reuse_contract.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 82,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs",
+      "status": "A"
+    },
+    {
+      "additions": 25,
+      "deletions": 15,
+      "path": "company_ui/products/visualizer/assets/authoring_stage_d.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 6,
+      "deletions": 3,
+      "path": "company_ui/products/visualizer/assets/canonical_chart_renderer.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 12,
+      "deletions": 11,
+      "path": "company_ui/products/visualizer/assets/element_renderer.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 90,
+      "deletions": 3,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 363,
+      "deletions": 93,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 39,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/page.py",
+      "status": "M"
+    },
+    {
+      "additions": 3,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 77,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/templates.py",
+      "status": "M"
+    },
+    {
+      "additions": 149,
+      "deletions": 0,
+      "path": "docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md",
+      "status": "A"
+    },
+    {
+      "additions": 13,
+      "deletions": 2,
+      "path": "scripts/release_checks/run_chg180_r1_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 1689,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg181_authoring_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 3,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_stage_a_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 5,
+      "deletions": 2,
+      "path": "scripts/verify_release.py",
+      "status": "M"
+    },
+    {
+      "additions": 52,
+      "deletions": 1,
+      "path": "tests/test_visualizer_chg179_semantic_parity.py",
+      "status": "M"
+    },
+    {
+      "additions": 186,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg181_section_composition.py",
+      "status": "A"
+    },
+    {
+      "additions": 373,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg181_semantic_reuse.py",
+      "status": "A"
+    },
+    {
+      "additions": 9,
+      "deletions": 2,
+      "path": "tests/test_visualizer_final_visual_remediation.py",
+      "status": "M"
+    },
+    {
+      "additions": 20,
+      "deletions": 9,
+      "path": "tests/test_visualizer_r15_authoring_depth.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 3,
+      "path": "tests/test_visualizer_wave1_trust_shell.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'from pptx import Presentation; p=\\\"/tmp/visembler-chg181-r2-chg180-export-pptx/powerpoints/dense-operations-editable.pptx\\\"; d=Presentation(p); print(\\\"slides\\\",len(d.slides)); [(print(\\\"SLIDE\\\",i+1),[(print(s.name,repr(s.text[:140]) if getattr(s,\\\"has_text_frame\\\",False) else \\\"\\\")) for s in sl.shapes if s.name.startswith(\\\"VIZ::Process Flow::\\\")]) for i,sl in enumerate(d.slides)]'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'from pptx import Presentation; p=Presentation(\\\"/tmp/visembler-chg181-r2-chg180-export-pptx/powerpoints/dense-operations-editable.pptx\\\"); [(print(s.name,[(x.get(\\\"descr\\\") or \\\"\\\") for x in s._element.xpath(\\\".//p:cNvPr\\\")])) for sl in p.slides for s in sl.shapes if s.name.startswith(\\\"VIZ::Process Flow::continuation-reference\\\")]'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '1,25p' scripts/release_checks/run_chg180_r1_acceptance.py && rtk proxy python -c 'from scripts.release_checks.run_chg180_r1_acceptance import structural_operations; print(structural_operations(__import__(\\\"pathlib\\\").Path(\\\"/tmp/visembler-chg181-r2-chg180-export-pptx/powerpoints/dense-operations-editable.pptx\\\")))'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'from scripts.release_checks.run_chg180_r1_acceptance import structural_operations; from pathlib import Path; print(structural_operations(Path(\\\"/tmp/visembler-chg181-r2-chg180-export-pptx/powerpoints/dense-operations-editable.pptx\\\")))' && rtk proxy git diff --check && rtk proxy git diff -- scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'from scripts.release_checks.run_chg180_r1_acceptance import structural_operations; from pathlib import Path; print(structural_operations(Path(\\\"/tmp/visembler-chg181-r2-chg180-export-pptx/powerpoints/dense-operations-editable.pptx\\\")))' && rtk proxy git diff --check && rtk proxy git diff -- scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git add scripts/release_checks/run_chg180_r1_acceptance.py && rtk git commit -m \"test: distinguish diagram continuation references\" && rtk git push origin fix/visembler-chg181-section-composition-r2 && rtk git rev-parse HEAD && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --output /tmp/visembler-chg181-r2-chg180-final'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --help && rtk proxy sed -n '300,335p' scripts/release_checks/run_chg180_r1_acceptance.py && rtk proxy rg -n \\\"BASE_SHA|requested-base|base-sha|candidate\\\" scripts/release_checks/run_chg179* scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --output /tmp/visembler-chg181-r2-chg180-final --candidate-sha b3ecb221986e51a712fea82adf5339a32d6b72b7 --candidate-tree d36220e2cf7bd93116765b4f0f1bba19ed682747'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg179_semantic_parity_acceptance.py --help && rtk proxy python scripts/release_checks/run_chg181_authoring_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg179_semantic_parity_acceptance.py --output /tmp/visembler-chg181-r2-chg179-final --base-sha 0a5692b1adb2d56ff1afe1f5f459075c0c299f30 --base-tree c503a9f59d3b3a18b0a6d50c416b0383156c28ea'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg181_authoring_acceptance.py --output /tmp/visembler-chg181-r2-final-candidate3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg181-r2-native-release-final-candidate3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg181-r2-final-candidate3 -maxdepth 3 -type f | sort | rtk proxy head -100'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg181-r2-carrier -maxdepth 3 -type f | sort | rtk proxy head -100 && rtk proxy du -sh /tmp/visembler-chg181-r2-carrier /tmp/visembler-chg181-r2-final-candidate3 /tmp/visembler-chg181-r2-native-release-final-candidate3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch && rtk proxy git rev-parse HEAD HEAD''^{tree} origin/fix/visembler-chg181-section-composition-r2 origin/main && rtk proxy git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-181-r2 refs/heads/codex-fabric/evidence/visembler/CHG-181-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg181-r2-carrier/whole-report/comparison -maxdepth 3 -type f | sort | head -100 && rtk proxy find /tmp/visembler-chg181-r2-carrier/whole-report/r2 -maxdepth 3 -type f | sort | head -80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /tmp/visembler-chg181-r2-carrier/identity.json && rtk proxy cat /tmp/visembler-chg181-r2-carrier/source/commit-chain.txt'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy command -v codex && rtk proxy codex mcp list'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_chg181_semantic_reuse.py tests/test_visualizer_chg181_section_composition.py && rtk proxy python -m company_ui.validate .'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 24101,
+        "output_sha256": "249c1cd81e4f5d45caac7f95a66ac565b7bc9bbd49c4c30ce964362ac76bbe32",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/tmp/visembler-chg181-r2-final-candidate3/chg181-native-acceptance.json\\\"); d=json.loads(p.read_text()); print(json.dumps({k:d.get(k) for k in [\\\"schema\\\",\\\"status\\\",\\\"candidate_sha\\\",\\\"candidate_tree\\\",\\\"created_at_utc\\\",\\\"runtime\\\",\\\"browser_errors\\\",\\\"reports\\\",\\\"reuse_vs_blank\\\",\\\"reuse_metrics\\\",\\\"cases\\\"] if k in d},indent=2)[:12000])' && rtk proxy file /tmp/visembler-chg181-r2-final-candidate3/whole-report-contact-sheet.png /tmp/visembler-chg181-r2-carrier/whole-report/comparison/r1/whole-report-contact-sheet.png\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/tmp/visembler-chg181-r2-final-candidate3/chg181-native-acceptance.json\\\").read_text()); print(list(d)); [(print(k,type(v).__name__, (list(v)[:40] if isinstance(v,dict) else len(v) if isinstance(v,list) else v))) for k,v in d.items() if k\"'!=\"runtime\"]; print(json.dumps(d.get(\"reuse_metrics\") or d.get(\"reuse_vs_blank\") or d.get(\"reuse\"),indent=2)[:9000])'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'from PIL import Image; import importlib.metadata; p=\\\"/tmp/visembler-chg181-r2-final-candidate3/executive-business-review-preview-desktop.png\\\"; i=Image.open(p); print(\\\"R2\\\",i.size,\\\"reportlab\\\",importlib.metadata.version(\\\"reportlab\\\")); p=\\\"/tmp/visembler-chg181-r2-carrier/whole-report/comparison/r1/executive-business-review-preview-desktop.png\\\"; print(\\\"R1\\\",Image.open(p).size)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy node container_tools/mark_artifact_operation_started.mjs --operation-kind create --expected-output-count 1 --output-format pdf'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg --files /Users/haewonkim/.codex /Applications/ChatGPT.app/Contents/Resources 2>/dev/null | rtk proxy rg 'mark_artifact_operation_started|pdf/SKILL.md' | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy node /Users/haewonkim/.codex/plugins/cache/openai-primary-runtime/pdf/26.905.11957/skills/pdf/container_tools/mark_artifact_operation_started.mjs --operation-kind create --expected-output-count 1 --output-format pdf'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_visembler_r1_r2_review_pdf.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pdfinfo /tmp/visembler-chg181-r2-carrier-final/whole-report/comparison/visembler-r1-vs-r2-complete-reports.pdf && rtk proxy pdftoppm -png -r 100 /tmp/visembler-chg181-r2-carrier-final/whole-report/comparison/visembler-r1-vs-r2-complete-reports.pdf /tmp/visembler-chg181-r2-r1-r2-review-page'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -lh /tmp/visembler-chg181-r2-r1-r2-review-page-*.png'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg181-r2-chg179-final -maxdepth 2 -type f | sort && rtk proxy find /tmp/visembler-chg181-r2-chg180-final -maxdepth 2 -type f | sort'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg181-r2-native-release-final-candidate3 -maxdepth 2 -type f | sort | tail -30 && rtk proxy cat /tmp/visembler-chg181-r2-native-release-final-candidate3/report/report.json'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; d=json.loads(pathlib.Path(\\\"/tmp/visembler-chg181-r2-final-candidate3/chg181-native-acceptance.json\\\").read_text()); print(\\\"benchmark fields\\\"); [(print(k,list(v))) for k,v in d[\\\"benchmarks\\\"].items()]; print(\\\"reuse\\\",json.dumps({k:d[\\\"reuse_challenge\\\"].get(k) for k in [\\\"followup_assembly_user_actions\\\",\\\"followup_assembly_context_switches\\\",\\\"followup_manual_component_inserts\\\",\\\"shared_slot_presentation\\\",\\\"analytical_bindings_reused\\\",\\\"source_dataset_identity_absent_from_remapped_model\\\",\\\"source_data_unchanged\\\",\\\"explicit_source_data_copy_mode\\\"]},indent=2)); print(\\\"blank\\\",json.dumps({k:d[\\\"blank_rebuild_comparison\\\"].get(k) for k in [\\\"user_actions\\\",\\\"context_switches\\\",\\\"manual_component_inserts\\\",\\\"manual_composition_setup_steps\\\"]},indent=2)); print(\\\"artifacts\\\",json.dumps(d[\\\"artifacts\\\"],indent=2)[:12000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; n=json.loads(pathlib.Path(\\\"/tmp/visembler-chg181-r2-native-release-final-candidate3/report.json\\\").read_text()); b=json.loads(pathlib.Path(\\\"/tmp/visembler-chg181-r2-carrier/whole-report/comparison/r1-baseline-hashes.json\\\").read_text()); p=pathlib.Path(\\\"/tmp/visembler-chg181-r2-final-candidate3/chg181-native-acceptance.json\\\"); a=json.loads(p.read_text()); print(\\\"native keys\\\",list(n)); print(\\\"native source\\\",n.get(\\\"source\\\")); print(\\\"candidate\\\",n.get(\\\"candidate\\\")); print(\\\"baseline\\\",json.dumps(b,indent=2)[:2000]); print(\\\"r1 logs tree\\\",__import__(\\\"subprocess\\\").check_output([\\\"rtk\\\",\\\"git\\\",\\\"show\\\",\\\"-s\\\",\\\"--format=%T\\\",\\\"6db05f969a11ddbe58d0df56da1e2c3f40b11bec\\\"],cwd=\\\"/Users/haewonkim/.codex-fabric/worktrees/CF-882b2086b09e5db3b75b4978\\\",text=True).strip()); print(\\\"native acceptance runtime\\\",a[\\\"native_runtime\\\"])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_visembler_chg181_r2_carrier.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_visembler_chg181_r2_carrier.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy find /tmp/visembler-chg181-r2-native-release-final-candidate3 -maxdepth 3 -type f | rtk proxy rg 'chart|diagram|stage'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy find /tmp/visembler-chg181-r2-native-release-final-candidate3 -maxdepth 3 -type f | rtk proxy rg 'stage|diagram|chart-studio|full-tests|report.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git status --porcelain=v1 && rtk proxy git rev-parse HEAD 'HEAD\"'^{tree}'\"' origin/fix/visembler-chg181-section-composition-r2 origin/main && rtk proxy git ls-remote origin refs/heads/fix/visembler-chg181-section-composition-r2 refs/heads/main refs/heads/project-os-artifacts/visembler/CHG-181-r2 refs/heads/codex-fabric/evidence/visembler/CHG-181-r2\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_visembler_chg181_r2_carrier.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rg -n \"shared.slot|human|category|incompatible type|Escape|focus|reuse.presentation|remap\" tests/test_visualizer_chg181_section_composition.py tests/test_visualizer_chg181_semantic_reuse.py tests/test_visualizer_final_visual_remediation.py scripts/release_checks/run_chg181_authoring_acceptance.py company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python /tmp/build_visembler_chg181_r2_carrier.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib, json, zipfile\nfrom pathlib import Path\nroot=Path('/tmp/visembler-chg181-r2-carrier-final')\nmanifest=json.loads((root/'MANIFEST.json').read_text())\nassert manifest['candidate_sha']=='b3ecb221986e51a712fea82adf5339a32d6b72b7'\nassert manifest['candidate_tree']=='d36220e2cf7bd93116765b4f0f1bba19ed682747'\nfor row in manifest['payload']:\n p=root/row['path']; data=p.read_bytes()\n assert len(data)==row['size_bytes'] and hashlib.sha256(data).hexdigest()==row['sha256'],row['path']\narchive=root/'visembler-chg181-r2.zip'\nassert hashlib.sha256(archive.read_bytes()).hexdigest()==(root/'visembler-chg181-r2.zip.sha256').read_text().split()[0]\nwith zipfile.ZipFile(archive) as z:\n assert z.testzip() is None\n names=set(z.namelist())\n assert 'MANIFEST.json' in names and 'INDEX.md' in names\nfor slug,_ in [('executive-business-review',''),('experiment-decision',''),('semiconductor-rca',''),('technical-status-review',''),('holdout-order-returns','')]:\n d=root/f'whole-report/r2/reports/{slug}'\n names={p.name for p in d.iterdir() if p.is_file()}\n expected={f'{slug}-editor-workspace-viewport.png',f'{slug}-preview-desktop.png',f'{slug}-preview-desktop-viewport.png',f'{slug}-preview-mobile.png',f'{slug}-preview-mobile-viewport.png',f'{slug}.pptx',f'{slug}.svg'}\n assert expected<=names,(slug,expected-names)\n receipt=json.loads((d/'report-observations.json').read_text())\n assert receipt['candidate_sha']==manifest['candidate_sha']\nidentity=json.loads((root/'identity.json').read_text())\nassert identity['fabric_audit']['candidate_bound'] is False\nassert identity['final_candidate']['remote_work_head_exact'] and identity['final_candidate']['worktree_clean']\nassert identity['candidate_bound_gates']['chg181_authoring_composition_reuse']['status']=='PASS'\nassert identity['candidate_bound_gates']['chg180_export_pptx']['status']=='PASS'\nassert identity['candidate_bound_gates']['native_release']['checks_status']=='PASS'\nprint(json.dumps({'manifest_payload_files':manifest['payload_file_count'],'zip_bytes':archive.stat().st_size,'zip_valid':True,'five_reports_complete':True,'final_candidate':'b3ecb221986e51a712fea82adf5339a32d6b72b7','fabric_audit':'not published; endpoint unavailable'},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport shutil\nsource=Path('/tmp/visembler-chg181-r2-carrier-final')\nstaging=Path('/tmp/visembler-chg181-r2-carrier-git')\nif staging.exists(): shutil.rmtree(staging)\nshutil.copytree(source,staging)\nprint(staging)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg181-r2-carrier-git init --initial-branch=carrier && rtk git -C /tmp/visembler-chg181-r2-carrier-git remote add origin https://github.com/kimhw8084/visembler.git && rtk git -C /tmp/visembler-chg181-r2-carrier-git add -A && rtk git -C /tmp/visembler-chg181-r2-carrier-git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg181-r2-carrier-git commit -m \"evidence: publish Visembler CHG-181 R2 candidate package\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg181-r2-carrier-git rev-parse HEAD && rtk git -C /tmp/visembler-chg181-r2-carrier-git status --short --branch && rtk proxy git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-181-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg181-r2-carrier-git push origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-181-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /tmp/visembler-chg181-r2-carrier-final/identity.json && rtk proxy cat /tmp/visembler-chg181-r2-carrier-final/evidence/native-release/native-release-binding.json && rtk proxy cat /tmp/visembler-chg181-r2-carrier-final/visembler-chg181-r2.zip.sha256'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git status --short --branch && rtk proxy git rev-parse HEAD 'HEAD\"'^{tree}'\"' origin/fix/visembler-chg181-section-composition-r2 origin/main && rtk proxy git log --format='%H %T %s' --reverse 0a5692b1adb2d56ff1afe1f5f459075c0c299f30..HEAD && rtk proxy git diff --check 0a5692b1adb2d56ff1afe1f5f459075c0c299f30..HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/fix/visembler-chg181-section-composition-r2 refs/heads/main refs/heads/project-os-artifacts/visembler/CHG-181-r2 refs/heads/codex-fabric/evidence/visembler/CHG-181-r2 && rtk git -C /tmp/visembler-chg181-r2-carrier-git rev-parse HEAD && rtk git -C /tmp/visembler-chg181-r2-carrier-git status --porcelain=v1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 818,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.04,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 60030336,
+      "fresh_input_tokens": 1202863,
+      "input_tokens": 61233199,
+      "non_reasoning_output_tokens": 114173,
+      "output_tokens": 301212,
+      "reasoning_output_tokens": 187039,
+      "total_processed_tokens": 61534411
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+      "subject": "test: distinguish diagram continuation references"
+    },
+    {
+      "sha": "5ae930a9d42c51f8de5daacffef0b96c68111dc0",
+      "subject": "fix(visembler): stabilize single-feature composition gates"
+    },
+    {
+      "sha": "aaf9ab371c19cffb726a2826047bd22b98bf8544",
+      "subject": "fix(visembler): add deterministic section-level report composition"
+    },
+    {
+      "sha": "14d9c80efe3daccdf0fe4ff59a108d4f66e718bf",
+      "subject": "Complete CHG-181 native recovery and composition fixes"
+    },
+    {
+      "sha": "6db05f969a11ddbe58d0df56da1e2c3f40b11bec",
+      "subject": "feat(visembler): CHG-181 semantic report composition and reuse"
+    }
+  ],
+  "diff": {
+    "additions": 3855,
+    "changed_files": 29,
+    "commit_count": 5,
+    "deletions": 166
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 5,
+    "items": [
+      {
+        "bytes": 972,
+        "path": "CERTIFICATION_REPORT.json",
+        "sha256": "1da8900f4f415e3f18e7743213505d9c4dc34062180e9a34df51ffe353f9a5c7"
+      },
+      {
+        "bytes": 740,
+        "path": "LIVE_CERTIFICATION_READINESS.json",
+        "sha256": "1250fdbff526a89ba2df0016e56e8d0399ca20c9efb7ed596852a3935897acff"
+      },
+      {
+        "bytes": 654,
+        "path": "TEST_REPORT.json",
+        "sha256": "2b4cda014c3245f6ffdffa99f5ed3ead15b9bdb249ba9aead99bb675cf873053"
+      },
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "4b864ce95708544109f25f8d5b9ec30eb71aa91e26e3b3618233fafd4aa3d8fd"
+      },
+      {
+        "bytes": 8930,
+        "path": "docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md",
+        "sha256": "5671028bfeb452207417648bdf9e47733c2dc9b8cf603e24c7df3785cdec9db8"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-24T16:37:44Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "0a5692b1adb2d56ff1afe1f5f459075c0c299f30",
+    "branch": "fix/visembler-chg181-section-composition-r2",
+    "detached_verify": false,
+    "head_sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+    "remote_exact_head": true,
+    "remote_head_sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "0a5692b1adb2d56ff1afe1f5f459075c0c299f30",
+    "work_branch": "fix/visembler-chg181-section-composition-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-882b2086b09e5db3b75b4978",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-181-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-181-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-181-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-24T14:22:07Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 8137,
+    "queue_seconds": 1,
+    "total_seconds": 8138
+  },
+  "transport": {
+    "bytes": 13089,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 12786,
+    "prompt_sha256": "5b797bbccf79c540da514e100fbcd0ece4f2a8bf316681be335a929ec1f28359",
+    "sha256": "882b2086b09e5db3b75b4978bce4c4041745aa7d55fd6332dd783006fee993dd"
+  }
+}
