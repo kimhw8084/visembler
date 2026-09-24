@@ -1,0 +1,4268 @@
+{
+  "ambiguity_case": {
+    "apply_ready_after_choice": true,
+    "blocked_before_choice": true,
+    "field_choice_required": true,
+    "source_report_id": "report-f3f2d3e9e9b248cea27b1984be17e059",
+    "target_report_id": "report-482a103a9d294e5f95a41418a8df846c"
+  },
+  "candidate_sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+  "candidate_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "incompatible_case": {
+    "blocked": true,
+    "compatibility_message": "Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.\n\nPasted data\n\nUsed by 1 visual\nVertical Bar\n\nData source is incompatible\nData source\nChoose a data source\nPasted data · 3 fields\n\nSource fields: Region, Revenue\n\nCategory *\nSource field: Region · Category · Used by Vertical Bar\nChoose a field\nRegion · Category\nRevenue · Date\nObservation · Whole number\nMeasurement *\nSource field: Revenue · Whole number · Used by Vertical Bar\nChoose a field\nRegion · Category\nRevenue · Date\nObservation · Whole number\nCategory\nSource field: Revenue · Whole number · Used by Vertical Bar\nChoose a field\nRegion · Category\nRevenue · Date\nObservation · Whole number\nChoose a compatible field for measurement.\nRevenue needs a numeric field for measurement.\nRevenue needs a compatible field for category.\nWhat will be applied\nStructure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.\nNeed another source? Add it through Data First, then reopen this workflow to map it.\nAdd a data source\nResolve the highlighted data source and field requirements before applying.\nCancel\nApply reusable structure",
+    "destination_dataset_id": "dataset-mufqhdnz-dtniqd",
+    "report_unchanged": true,
+    "source_report_id": "report-bd9b3939aa4346e5912b5b9bd3b28939",
+    "target_report_id": "report-e79493e5b29e4d3d8e05682f3f14b556"
+  },
+  "journey_action_log_sha256": {
+    "ambiguous-remap": "25717c53b933be89f4cadb16d942d4f3d870e465b34130ba5072cf3376d1aa5d",
+    "blank-rebuild": "989465ec729619cc27a0189dd50ee8505daf79c161781007063b285cb6df9993",
+    "executive-business-review": "269c8562054927170009a3ed2c442c04779bc95a22fc9340f16580c879d26d3d",
+    "experiment-decision": "dfa12407df8cee5823812c9157d348c67ea86157741da940df1b396c42853203",
+    "holdout": "29a4c6bb84b678f5752f98c8a7bdb325c21c92dcdd14425600f64006de5a0491",
+    "incompatible-remap": "631ffa7efe39c302cd3769a665f6bd724a86cf089c725e1de15307d385604f8f",
+    "reuse-remap": "a777a9caf15bfe79f1e756645ec58b42ec1f988bfa3c8f16e1391dc2ff2ffafc",
+    "semiconductor-rca": "7a666f44870a0146360790d33fbef647ed20fa9c5bf24095fc734ef8029ef805",
+    "technical-status-review": "570c926154b2c850860117c098764d47e41e772a49aaabd077029a52bf5f99b8"
+  },
+  "journey_action_logs": {
+    "ambiguous-remap": {
+      "context_switches": 5,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "save ambiguous-schema reusable report",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "explicitly choose an ambiguous Category field",
+          "context": "modal"
+        }
+      ],
+      "modal_openings": 6,
+      "report": "ambiguous-remap",
+      "user_actions": 19
+    },
+    "blank-rebuild": {
+      "context_switches": 20,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent · supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent · supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "insert Hero Title from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Body Narrative from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Hero KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Hero KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Before/After KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Clean Table from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Risk Callout from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Body Narrative from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Key Takeaway from component library",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent · report_headline",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent · context",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent · narrative_interpretation",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent · conclusion",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "apply Executive composition recipe",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit Hero Title",
+          "context": "editor"
+        },
+        {
+          "action": "edit Body Narrative",
+          "context": "editor"
+        },
+        {
+          "action": "edit Body Narrative",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "add evidence column",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Region",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Revenue",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Reading",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Source",
+          "context": "inspector"
+        },
+        {
+          "action": "clear source-specific evidence rows",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "enter 2 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 5,
+      "report": "blank-rebuild",
+      "user_actions": 88
+    },
+    "executive-business-review": {
+      "context_switches": 9,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from executive-business-review",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Quarterly context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "enter 3 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "populate the template's intended trend and distribution visuals",
+          "context": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 4,
+      "report": "executive-business-review",
+      "user_actions": 45
+    },
+    "experiment-decision": {
+      "context_switches": 11,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from experiment-decision",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Hypothesis and context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Interpretation",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "enter 3 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "name evidence column · Conversion",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Quality guardrail",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "open Data First",
+          "context": "inspector"
+        },
+        {
+          "action": "choose bar result",
+          "context": "inspector"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "inspector"
+        },
+        {
+          "action": "open Data First",
+          "context": "inspector"
+        },
+        {
+          "action": "choose bar result",
+          "context": "inspector"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "inspector"
+        },
+        {
+          "action": "populate the template's intended trend and distribution visuals",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 5,
+      "report": "experiment-decision",
+      "user_actions": 48
+    },
+    "holdout": {
+      "context_switches": 22,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "insert Line Chart from component library",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "map Returns into a second linked trend",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent · supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "insert Hero KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Hero KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Before/After KPI from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Clean Table from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Risk Callout from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Process Flow from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Hero Title from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Body Narrative from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Body Narrative from component library",
+          "context": "editor"
+        },
+        {
+          "action": "insert Key Takeaway from component library",
+          "context": "editor"
+        },
+        {
+          "action": "edit Hero Title",
+          "context": "editor"
+        },
+        {
+          "action": "edit Body Narrative",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent · context",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit Body Narrative",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "enter 5 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "name evidence column · Month",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Orders",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Returns",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit process-flow title",
+          "context": "editor"
+        },
+        {
+          "action": "edit review steps",
+          "context": "editor"
+        },
+        {
+          "action": "edit review path",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "apply Review composition recipe",
+          "context": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 5,
+      "report": "holdout-order-returns",
+      "user_actions": 87
+    },
+    "incompatible-remap": {
+      "context_switches": 5,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "save incompatible-schema reusable report",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "confirm incompatible data remains uncommitted",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 6,
+      "report": "incompatible-remap",
+      "user_actions": 19
+    },
+    "reuse-remap": {
+      "context_switches": 41,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from executive-business-review",
+          "context": "editor"
+        },
+        {
+          "action": "remove an unused empty template chart",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent · supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent · supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Quarterly context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Reading",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column · Source",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "enter 2 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save section preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable section structure",
+          "context": "modal"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "review explicit source-data copy consequences",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "editor"
+        },
+        {
+          "action": "apply report preset with source data",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open guided report remap",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "verify remap keyboard focus and Escape return",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "data-first"
+        },
+        {
+          "action": "open supported Data First intake from remap",
+          "context": "data-first"
+        },
+        {
+          "action": "context switch",
+          "from": "data-first",
+          "to": "editor"
+        },
+        {
+          "action": "apply remapped report preset",
+          "context": "editor"
+        },
+        {
+          "action": "verify undo, redo, autosave and reload",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Quarterly context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "enter 2 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "history"
+        },
+        {
+          "action": "verify governed history after reuse",
+          "context": "history"
+        },
+        {
+          "action": "open export menu",
+          "context": "history"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "history"
+        },
+        {
+          "action": "context switch",
+          "from": "history",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "apply remapped section preset",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "verify conflict recovery after remap",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 26,
+      "report": "reuse-remap",
+      "user_actions": 164
+    },
+    "semiconductor-rca": {
+      "context_switches": 9,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from semiconductor-rca",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Affected scope",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "enter 3 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose scatter result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "edit SPC observations",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 5,
+      "report": "semiconductor-rca",
+      "user_actions": 46
+    },
+    "technical-status-review": {
+      "context_switches": 7,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from technical-status-review",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Report context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Body Narrative",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "enter 3 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose line result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "populate the template's intended trend and distribution visuals",
+          "context": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 5,
+      "report": "technical-status-review",
+      "user_actions": 41
+    }
+  },
+  "reuse_challenge": {
+    "analytical_bindings_reused": [
+      {
+        "analysis_recipe": {},
+        "element": "Vertical Bar",
+        "field_names": [
+          "Region",
+          "Revenue",
+          "Revenue"
+        ],
+        "mapping_roles": [
+          "category",
+          "value",
+          "x"
+        ],
+        "transforms": []
+      },
+      {
+        "analysis_recipe": {},
+        "element": "Vertical Bar",
+        "field_names": [
+          "Region",
+          "Revenue",
+          "Revenue"
+        ],
+        "mapping_roles": [
+          "category",
+          "value",
+          "x"
+        ],
+        "transforms": []
+      }
+    ],
+    "automatic_compatible_mapping_steps": 0,
+    "automatic_field_control_count": 3,
+    "axis_label_overlaps": [
+      {
+        "chart": "c10",
+        "overlaps": []
+      },
+      {
+        "chart": "c11",
+        "overlaps": []
+      }
+    ],
+    "destination_dataset_id": "dataset-mufqgs1t-0k8jh0",
+    "destination_report_id": "report-d582e981d8344a41a639f263a0d4e266",
+    "destination_rows": [
+      [
+        "East",
+        180
+      ],
+      [
+        "West",
+        205
+      ]
+    ],
+    "editor_chart_summaries_after_remap": [
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields"
+    ],
+    "editor_destination_dataset_rows": [
+      [
+        "East",
+        180
+      ],
+      [
+        "West",
+        205
+      ]
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "explicit_field_choices_required": [],
+    "explicit_source_copy_preserved_rows": [
+      [
+        "East",
+        80
+      ],
+      [
+        "West",
+        95
+      ]
+    ],
+    "explicit_source_data_copy_mode": true,
+    "followup_assembly_context_switches": 5,
+    "followup_assembly_modal_openings": 5,
+    "followup_assembly_user_actions": 43,
+    "followup_manual_component_inserts": 0,
+    "guided_manual_value_review_labels": [
+      "Key metric",
+      "Comparison",
+      "Evidence table"
+    ],
+    "manual_values_reentered_for_new_data": {
+      "comparison": [
+        {
+          "after": 205,
+          "before": 180,
+          "composition_role": "hero_metric",
+          "element": "Before/After KPI",
+          "engine": "ComparisonEngine",
+          "groupId": null,
+          "id": "c5",
+          "locked": false,
+          "message_role": "Supporting Evidence",
+          "metric_format": {
+            "compact_divisor": null,
+            "compact_unit": "",
+            "kind": "auto",
+            "null_display": "—",
+            "percent_scale": "points",
+            "precision": null,
+            "prefix": "",
+            "signDisplay": "auto",
+            "suffix": "units"
+          },
+          "order": 4,
+          "section_id": "performance",
+          "section_title": "Performance",
+          "showTitle": true,
+          "title": "East to West revenue",
+          "type": "comparison",
+          "unit": "units",
+          "weight": 1,
+          "z": 5
+        }
+      ],
+      "evidence_rows": [
+        [
+          "East",
+          180,
+          "Comparison baseline",
+          "Destination extract"
+        ],
+        [
+          "West",
+          205,
+          "Leads by 25",
+          "Destination extract"
+        ]
+      ],
+      "metrics": [
+        {
+          "composition_role": "hero_metric",
+          "element": "Hero KPI",
+          "engine": "MetricEngine",
+          "groupId": null,
+          "id": "c3",
+          "locked": false,
+          "message_role": "Supporting Evidence",
+          "metric_format": {
+            "compact_divisor": null,
+            "compact_unit": "",
+            "kind": "auto",
+            "null_display": "—",
+            "percent_scale": "points",
+            "precision": null,
+            "prefix": "",
+            "signDisplay": "auto",
+            "suffix": "units"
+          },
+          "order": 2,
+          "section_id": "performance",
+          "section_title": "Performance",
+          "showTitle": true,
+          "title": "Regional revenue total",
+          "type": "metric",
+          "unit": "units",
+          "value": 385,
+          "weight": 1,
+          "z": 3
+        },
+        {
+          "composition_role": "hero_metric",
+          "element": "Hero KPI",
+          "emphasis": "prominent",
+          "engine": "MetricEngine",
+          "groupId": null,
+          "id": "c4",
+          "locked": false,
+          "message_role": "Supporting Evidence",
+          "metric_format": {
+            "compact_divisor": null,
+            "compact_unit": "",
+            "kind": "auto",
+            "null_display": "—",
+            "percent_scale": "points",
+            "precision": null,
+            "prefix": "",
+            "signDisplay": "auto",
+            "suffix": "units"
+          },
+          "order": 3,
+          "section_id": "performance",
+          "section_title": "Performance",
+          "showTitle": true,
+          "title": "West lead over East",
+          "type": "metric",
+          "unit": "units",
+          "value": 25,
+          "weight": 1,
+          "z": 4
+        }
+      ],
+      "narrative": {
+        "conclusion": "Next step: validate the West lead in the next operating window before shifting regional targets.",
+        "context": "Regional revenue review · East and West · destination data selected through guided remap.",
+        "headline": "West revenue leads East by 25 units in the newly selected data.",
+        "interpretation": "The destination extract totals 385 units. West is 25 units above East; the shared chart pair, metric hierarchy, comparison and evidence table now use the new rows.",
+        "risk": [
+          "Validate the West lead before shifting regional targets",
+          "The destination contains two regions; confirm the pattern in the next operating window.",
+          "Review"
+        ],
+        "rows": [
+          [
+            "East",
+            "180",
+            "Comparison baseline",
+            "Destination extract"
+          ],
+          [
+            "West",
+            "205",
+            "Leads by 25",
+            "Destination extract"
+          ]
+        ]
+      }
+    },
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [
+        {
+          "cardClient": 156,
+          "cardScroll": 156,
+          "comparisonClient": 0,
+          "comparisonScroll": 0,
+          "componentHeight": 180,
+          "copyClient": 89,
+          "copyScroll": 89,
+          "id": "c5"
+        }
+      ],
+      "component_count": 10,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 124,
+          "id": "c1",
+          "order": "1",
+          "position": "relative",
+          "text": "West revenue leads East by 25 units in the newly selected data.",
+          "w": 370,
+          "x": 10,
+          "y": 102
+        },
+        {
+          "display": "block",
+          "h": 76,
+          "id": "c2",
+          "order": "3",
+          "position": "relative",
+          "text": "Regional revenue review · East and West · destination data selected th",
+          "w": 370,
+          "x": 10,
+          "y": 244
+        },
+        {
+          "display": "block",
+          "h": 132,
+          "id": "c4",
+          "order": "5",
+          "position": "relative",
+          "text": "West lead over East\n25 units\nDelta —\nCurrent performance",
+          "w": 370,
+          "x": 10,
+          "y": 382
+        },
+        {
+          "display": "block",
+          "h": 132,
+          "id": "c3",
+          "order": "7",
+          "position": "relative",
+          "text": "Regional revenue total\n385 units\nDelta —\nCurrent performance",
+          "w": 370,
+          "x": 10,
+          "y": 532
+        },
+        {
+          "display": "block",
+          "h": 180,
+          "id": "c5",
+          "order": "9",
+          "position": "relative",
+          "text": "East to West revenue\nBefore\n180 units\nAfter\n205 units\n▲",
+          "w": 370,
+          "x": 10,
+          "y": 682
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c10",
+          "order": "11",
+          "position": "relative",
+          "text": "Regional revenue by area\nEast\nWest\n0\n100\n200\nRevenue\nVertical Bar: 2 r",
+          "w": 370,
+          "x": 10,
+          "y": 924
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c11",
+          "order": "13",
+          "position": "relative",
+          "text": "Regional revenue comparison\nEast\nWest\n0\n100\n200\nRevenue\nVertical Bar: ",
+          "w": 370,
+          "x": 10,
+          "y": 1192
+        },
+        {
+          "display": "block",
+          "h": 190,
+          "id": "c7",
+          "order": "15",
+          "position": "relative",
+          "text": "Regional revenue evidence\nREGION\tREVENUE\tREADING\tSOURCE\nEast\t180\tCompa",
+          "w": 370,
+          "x": 10,
+          "y": 1504
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c8",
+          "order": "17",
+          "position": "relative",
+          "text": "!\nValidate the West lead before shifting regional targets\n\nThe destina",
+          "w": 370,
+          "x": 10,
+          "y": 1756
+        },
+        {
+          "display": "block",
+          "h": 112,
+          "id": "c9",
+          "order": "19",
+          "position": "relative",
+          "text": "✓\nNext step: validate the West lead in the next operating window befor",
+          "w": 370,
+          "x": 10,
+          "y": 1990
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 2044,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "West revenue leads East by 25 units in the newly selected data.\n\nRegio",
+        "w": 370,
+        "x": 10,
+        "y": 58
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flows": [],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "opening",
+          "title": "01Executive summary"
+        },
+        {
+          "first_component_order": 2,
+          "level": "2",
+          "order": 4,
+          "role": "heading",
+          "section": "performance",
+          "title": "02Performance"
+        },
+        {
+          "first_component_order": 5,
+          "level": "2",
+          "order": 10,
+          "role": "heading",
+          "section": "analysis",
+          "title": "03Analysis"
+        },
+        {
+          "first_component_order": 7,
+          "level": "2",
+          "order": 14,
+          "role": "heading",
+          "section": "evidence",
+          "title": "04Regional evidence"
+        },
+        {
+          "first_component_order": 8,
+          "level": "2",
+          "order": 16,
+          "role": "heading",
+          "section": "decision",
+          "title": "05Decision"
+        },
+        {
+          "first_component_order": 9,
+          "level": "2",
+          "order": 18,
+          "role": "heading",
+          "section": "delivery",
+          "title": "06Decision and next step"
+        }
+      ],
+      "table_regions": [
+        {
+          "clientWidth": 344,
+          "keyboard_scroll_left": 34,
+          "label": "Scrollable table: Regional revenue evidence",
+          "scrollLeft": 0,
+          "scrollWidth": 378,
+          "tabIndex": 0
+        }
+      ],
+      "text_components": [
+        {
+          "cardClient": 86,
+          "cardScroll": 86,
+          "clipped": false,
+          "componentHeight": 124,
+          "copyClient": 86,
+          "copyScroll": 86,
+          "deadSpace": 38,
+          "id": "c1"
+        },
+        {
+          "cardClient": 39,
+          "cardScroll": 39,
+          "clipped": false,
+          "componentHeight": 76,
+          "copyClient": 39,
+          "copyScroll": 39,
+          "deadSpace": 37,
+          "id": "c2"
+        },
+        {
+          "cardClient": 85,
+          "cardScroll": 85,
+          "clipped": false,
+          "componentHeight": 112,
+          "copyClient": 85,
+          "copyScroll": 85,
+          "deadSpace": 27,
+          "id": "c9"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "narrative_intentionally_changed_after_reuse": {
+      "conclusion": "Next step: validate the West lead in the next operating window before shifting regional targets.",
+      "context": "Regional revenue review · East and West · destination data selected through guided remap.",
+      "headline": "West revenue leads East by 25 units in the newly selected data.",
+      "interpretation": "The destination extract totals 385 units. West is 25 units above East; the shared chart pair, metric hierarchy, comparison and evidence table now use the new rows.",
+      "risk": [
+        "Validate the West lead before shifting regional targets",
+        "The destination contains two regions; confirm the pattern in the next operating window.",
+        "Review"
+      ],
+      "rows": [
+        [
+          "East",
+          "180",
+          "Comparison baseline",
+          "Destination extract"
+        ],
+        [
+          "West",
+          "205",
+          "Leads by 25",
+          "Destination extract"
+        ]
+      ]
+    },
+    "new_value_visible_in_powerpoint": true,
+    "powerpoint_series_values": [
+      {
+        "categories": [
+          "East",
+          "West"
+        ],
+        "series": "Regional revenue by area",
+        "values": [
+          180.0,
+          205.0
+        ]
+      },
+      {
+        "categories": [
+          "East",
+          "West"
+        ],
+        "series": "Regional revenue comparison",
+        "values": [
+          180.0,
+          205.0
+        ]
+      }
+    ],
+    "preview_captured_after_remap": true,
+    "preview_chart_geometry": [
+      {
+        "component_height": 346.53662109375,
+        "component_width": 714.07177734375,
+        "element": "Vertical Bar",
+        "engine": "CoreChartEngine",
+        "id": "c10",
+        "plot_width": 677.2523193359375,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 214.4195556640625,
+        "svg_width": 677.2523193359375
+      },
+      {
+        "component_height": 294.7591552734375,
+        "component_width": 607.3865966796875,
+        "element": "Vertical Bar",
+        "engine": "CoreChartEngine",
+        "id": "c11",
+        "plot_width": 570.567138671875,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 162.64208984375,
+        "svg_width": 570.567138671875
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c10",
+        "titles": [
+          "Vertical Bar",
+          "East",
+          "West",
+          "Revenue · East · 180",
+          "Revenue · East · 180",
+          "Revenue · West · 205",
+          "Revenue · West · 205",
+          "Chart legend",
+          "Toggle Revenue series",
+          "Revenue"
+        ]
+      },
+      {
+        "chart": "c11",
+        "titles": [
+          "Vertical Bar",
+          "East",
+          "West",
+          "Revenue · East · 180",
+          "Revenue · East · 180",
+          "Revenue · West · 205",
+          "Revenue · West · 205",
+          "Chart legend",
+          "Toggle Revenue series",
+          "Revenue"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields"
+    ],
+    "preview_chart_summaries_after_remap": [
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+      "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 136.44873046875,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 1060.222900390625
+        },
+        "card": {
+          "h": 203.5902099609375,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 993.0814208984375
+        },
+        "id": "c7",
+        "item": {
+          "h": 240.40972900390625,
+          "w": 1702.3609619140625,
+          "x": 117.90243530273438,
+          "y": 974.6716918945312
+        },
+        "region": {
+          "h": 111.54150390625,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 1076.466796875
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.2779541015625,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1077.5498046875
+            },
+            "text": "REGION\tREVENUE\tREADING\tSOURCE",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.819580078125,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1113.8277587890625
+            },
+            "text": "East\t180\tComparison baseline\tDestination extract",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.2779541015625,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1150.6473388671875
+            },
+            "text": "West\t205\tLeads by 25\tDestination extract",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 109.37548828125,
+          "w": 1663.3756103515625,
+          "x": 137.39512634277344,
+          "y": 1077.5498046875
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "Regional revenue evidence\nREGION\tREVENUE\tREADING\tSOURCE\nEast\t180\tComparison baseline\tDestination extract\nWest\t205\tLeads by 25\tDestination extract"
+    ],
+    "remap_conflict_preserves_authoritative_edit_and_recovers_stale_draft": true,
+    "remapped_field_names": {
+      "Category": "Region",
+      "Value": "Revenue"
+    },
+    "reused_journey_context_switches": 41,
+    "reused_journey_modal_openings": 26,
+    "reused_journey_user_actions": 164,
+    "reused_shared_visual_count": 2,
+    "section_reuse": {
+      "axis_label_overlaps": [
+        {
+          "chart": "c1",
+          "overlaps": []
+        },
+        {
+          "chart": "c2",
+          "overlaps": []
+        },
+        {
+          "chart": "c3",
+          "overlaps": []
+        }
+      ],
+      "destination_dataset_id": "dataset-mufqgz7x-2j9flz",
+      "editor_horizontal_overflow_px": 0,
+      "mobile_preview_overflow_px": 0,
+      "mobile_reading": {
+        "comparison_metrics": [],
+        "component_count": 3,
+        "first_font_px": 13,
+        "hull_width": 370,
+        "items": [
+          {
+            "display": "block",
+            "h": 250,
+            "id": "c1",
+            "order": "1",
+            "position": "relative",
+            "text": "East\nWest\n0\n100\n200\n300\nRevenue\nVertical Bar: 2 rows · Category Region",
+            "w": 370,
+            "x": 10,
+            "y": 102
+          },
+          {
+            "display": "block",
+            "h": 250,
+            "id": "c2",
+            "order": "3",
+            "position": "relative",
+            "text": "Regional revenue by area copy\nEast\nWest\n0\n100\n200\n300\nRevenue\nVertical",
+            "w": 370,
+            "x": 10,
+            "y": 370
+          },
+          {
+            "display": "block",
+            "h": 250,
+            "id": "c3",
+            "order": "5",
+            "position": "relative",
+            "text": "Regional revenue comparison copy\nEast\nWest\n0\n100\n200\n300\nRevenue\nVerti",
+            "w": 370,
+            "x": 10,
+            "y": 638
+          }
+        ],
+        "layer": {
+          "display": "flex",
+          "flexDirection": "column",
+          "h": 830,
+          "id": null,
+          "order": "0",
+          "position": "relative",
+          "text": "East\nWest\n0\n100\n200\n300\nRevenue\nVertical Bar: 2 rows · Category Region",
+          "w": 370,
+          "x": 10,
+          "y": 58
+        },
+        "ordered_flow": true,
+        "preview": true,
+        "process_flows": [],
+        "reading_order": [
+          1,
+          3,
+          5
+        ],
+        "sections": [
+          {
+            "first_component_order": 0,
+            "level": "2",
+            "order": 0,
+            "role": "heading",
+            "section": "analysis",
+            "title": "01Analysis"
+          }
+        ],
+        "table_regions": [],
+        "text_components": [],
+        "viewport_width": 390
+      },
+      "new_values": [
+        [
+          "East",
+          280
+        ],
+        [
+          "West",
+          305
+        ]
+      ],
+      "powerpoint_series_values": [
+        {
+          "categories": [
+            "East",
+            "West"
+          ],
+          "series": "Vertical Bar",
+          "values": [
+            280.0,
+            305.0
+          ]
+        },
+        {
+          "categories": [
+            "East",
+            "West"
+          ],
+          "series": "Regional revenue by area copy",
+          "values": [
+            280.0,
+            305.0
+          ]
+        },
+        {
+          "categories": [
+            "East",
+            "West"
+          ],
+          "series": "Regional revenue comparison copy",
+          "values": [
+            280.0,
+            305.0
+          ]
+        }
+      ],
+      "preview_chart_geometry": [
+        {
+          "component_height": 316.4515380859375,
+          "component_width": 652.0911865234375,
+          "element": "Vertical Bar",
+          "engine": "CoreChartEngine",
+          "id": "c1",
+          "plot_width": 615.2716674804688,
+          "preserve_aspect": "xMidYMid meet",
+          "renderer_aspect": 2.0606060606060606,
+          "svg_height": 259.056396484375,
+          "svg_width": 615.2716674804688
+        },
+        {
+          "component_height": 267.7705993652344,
+          "component_width": 551.7681274414062,
+          "element": "Vertical Bar",
+          "engine": "CoreChartEngine",
+          "id": "c2",
+          "plot_width": 514.94873046875,
+          "preserve_aspect": "xMidYMid meet",
+          "renderer_aspect": 2.0606060606060606,
+          "svg_height": 135.65350341796875,
+          "svg_width": 514.94873046875
+        },
+        {
+          "component_height": 238.24391174316406,
+          "component_width": 468.162841796875,
+          "element": "Vertical Bar",
+          "engine": "CoreChartEngine",
+          "id": "c3",
+          "plot_width": 431.34326171875,
+          "preserve_aspect": "xMidYMid meet",
+          "renderer_aspect": 2.0606060606060606,
+          "svg_height": 106.12680053710938,
+          "svg_width": 431.34326171875
+        }
+      ],
+      "preview_chart_mark_titles": [
+        {
+          "chart": "c1",
+          "titles": [
+            "Vertical Bar",
+            "East",
+            "West",
+            "Revenue · East · 280",
+            "Revenue · East · 280",
+            "Revenue · West · 305",
+            "Revenue · West · 305",
+            "Chart legend",
+            "Toggle Revenue series",
+            "Revenue"
+          ]
+        },
+        {
+          "chart": "c2",
+          "titles": [
+            "Vertical Bar",
+            "East",
+            "West",
+            "Revenue · East · 280",
+            "Revenue · East · 280",
+            "Revenue · West · 305",
+            "Revenue · West · 305",
+            "Chart legend",
+            "Toggle Revenue series",
+            "Revenue"
+          ]
+        },
+        {
+          "chart": "c3",
+          "titles": [
+            "Vertical Bar",
+            "East",
+            "West",
+            "Revenue · East · 280",
+            "Revenue · East · 280",
+            "Revenue · West · 305",
+            "Revenue · West · 305",
+            "Chart legend",
+            "Toggle Revenue series",
+            "Revenue"
+          ]
+        }
+      ],
+      "preview_chart_summaries": [
+        "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+        "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+        "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields"
+      ],
+      "preview_table_geometry": [],
+      "preview_table_summaries": [],
+      "remapped_visual_count": 2,
+      "shared_dataset_slot_preserved": true,
+      "spatial_geometry": [],
+      "undo_redo": true
+    },
+    "shared_slot_presentation": {
+      "dependent_visual_count": 2,
+      "distinct_field_controls": 3,
+      "first_control_assignments": [
+        {
+          "itemId": "c10",
+          "roles": [
+            "category"
+          ]
+        },
+        {
+          "itemId": "c11",
+          "roles": [
+            "category"
+          ]
+        }
+      ],
+      "focus_restored_after_field_change": true
+    },
+    "source_copy_data_rows": [
+      [
+        "East",
+        80
+      ],
+      [
+        "West",
+        95
+      ]
+    ],
+    "source_data_copy_target_report_id": "report-2ceed5aa188a4cfa9a53817726d6c940",
+    "source_data_unchanged": true,
+    "source_dataset_id": "dataset-mufqgjgf-ovmuax",
+    "source_dataset_identity_absent_from_remapped_model": true,
+    "source_headline_reused_then_updated": "West revenue leads East by 15 units in the regional review.",
+    "source_report_capture": {
+      "axis_label_overlaps": [
+        {
+          "chart": "c10",
+          "overlaps": []
+        },
+        {
+          "chart": "c11",
+          "overlaps": []
+        }
+      ],
+      "content": {
+        "conclusion": "Next step: validate the West lead in the next operating window before shifting regional targets.",
+        "context": "Regional revenue review · East and West · source extract captured for the first report.",
+        "headline": "West revenue leads East by 15 units in the regional review.",
+        "interpretation": "Revenue totals 175 units across the two regions. West is 15 units above East; the report keeps the comparison visible before any regional target changes.",
+        "risk": [
+          "Validate the West lead before shifting regional targets",
+          "The current review compares two regions; confirm the pattern in the next operating window.",
+          "Review"
+        ],
+        "rows": [
+          [
+            "East",
+            "80",
+            "Comparison baseline",
+            "Source extract"
+          ],
+          [
+            "West",
+            "95",
+            "Leads by 15",
+            "Source extract"
+          ]
+        ]
+      },
+      "editor_horizontal_overflow_px": 0,
+      "mobile_preview_overflow_px": 0,
+      "mobile_reading": {
+        "comparison_metrics": [
+          {
+            "cardClient": 156,
+            "cardScroll": 156,
+            "comparisonClient": 0,
+            "comparisonScroll": 0,
+            "componentHeight": 180,
+            "copyClient": 89,
+            "copyScroll": 89,
+            "id": "c5"
+          }
+        ],
+        "component_count": 10,
+        "first_font_px": 13,
+        "hull_width": 370,
+        "items": [
+          {
+            "display": "block",
+            "h": 124,
+            "id": "c1",
+            "order": "1",
+            "position": "relative",
+            "text": "West revenue leads East by 15 units in the regional review.",
+            "w": 370,
+            "x": 10,
+            "y": 102
+          },
+          {
+            "display": "block",
+            "h": 76,
+            "id": "c2",
+            "order": "3",
+            "position": "relative",
+            "text": "Regional revenue review · East and West · source extract captured for ",
+            "w": 370,
+            "x": 10,
+            "y": 244
+          },
+          {
+            "display": "block",
+            "h": 132,
+            "id": "c4",
+            "order": "5",
+            "position": "relative",
+            "text": "West lead over East\n15 units\nDelta —\nCurrent performance",
+            "w": 370,
+            "x": 10,
+            "y": 382
+          },
+          {
+            "display": "block",
+            "h": 132,
+            "id": "c3",
+            "order": "7",
+            "position": "relative",
+            "text": "Regional revenue total\n175 units\nDelta —\nCurrent performance",
+            "w": 370,
+            "x": 10,
+            "y": 532
+          },
+          {
+            "display": "block",
+            "h": 180,
+            "id": "c5",
+            "order": "9",
+            "position": "relative",
+            "text": "East to West revenue\nBefore\n80 units\nAfter\n95 units\n▲",
+            "w": 370,
+            "x": 10,
+            "y": 682
+          },
+          {
+            "display": "block",
+            "h": 250,
+            "id": "c10",
+            "order": "11",
+            "position": "relative",
+            "text": "Regional revenue by area\nEast\nWest\n0\n50\n95\nRevenue\nVertical Bar: 2 row",
+            "w": 370,
+            "x": 10,
+            "y": 924
+          },
+          {
+            "display": "block",
+            "h": 250,
+            "id": "c11",
+            "order": "13",
+            "position": "relative",
+            "text": "Regional revenue comparison\nEast\nWest\n0\n50\n95\nRevenue\nVertical Bar: 2 ",
+            "w": 370,
+            "x": 10,
+            "y": 1192
+          },
+          {
+            "display": "block",
+            "h": 190,
+            "id": "c7",
+            "order": "15",
+            "position": "relative",
+            "text": "Regional revenue evidence\nREGION\tREVENUE\tREADING\tSOURCE\nEast\t80\tCompar",
+            "w": 370,
+            "x": 10,
+            "y": 1504
+          },
+          {
+            "display": "block",
+            "h": 172,
+            "id": "c8",
+            "order": "17",
+            "position": "relative",
+            "text": "!\nValidate the West lead before shifting regional targets\n\nThe current",
+            "w": 370,
+            "x": 10,
+            "y": 1756
+          },
+          {
+            "display": "block",
+            "h": 112,
+            "id": "c9",
+            "order": "19",
+            "position": "relative",
+            "text": "✓\nNext step: validate the West lead in the next operating window befor",
+            "w": 370,
+            "x": 10,
+            "y": 1990
+          }
+        ],
+        "layer": {
+          "display": "flex",
+          "flexDirection": "column",
+          "h": 2044,
+          "id": null,
+          "order": "0",
+          "position": "relative",
+          "text": "West revenue leads East by 15 units in the regional review.\n\nRegional ",
+          "w": 370,
+          "x": 10,
+          "y": 58
+        },
+        "ordered_flow": true,
+        "preview": true,
+        "process_flows": [],
+        "reading_order": [
+          1,
+          3,
+          5,
+          7,
+          9,
+          11,
+          13,
+          15,
+          17,
+          19
+        ],
+        "sections": [
+          {
+            "first_component_order": 0,
+            "level": "2",
+            "order": 0,
+            "role": "heading",
+            "section": "opening",
+            "title": "01Executive summary"
+          },
+          {
+            "first_component_order": 2,
+            "level": "2",
+            "order": 4,
+            "role": "heading",
+            "section": "performance",
+            "title": "02Performance"
+          },
+          {
+            "first_component_order": 5,
+            "level": "2",
+            "order": 10,
+            "role": "heading",
+            "section": "analysis",
+            "title": "03Analysis"
+          },
+          {
+            "first_component_order": 7,
+            "level": "2",
+            "order": 14,
+            "role": "heading",
+            "section": "evidence",
+            "title": "04Regional evidence"
+          },
+          {
+            "first_component_order": 8,
+            "level": "2",
+            "order": 16,
+            "role": "heading",
+            "section": "decision",
+            "title": "05Decision"
+          },
+          {
+            "first_component_order": 9,
+            "level": "2",
+            "order": 18,
+            "role": "heading",
+            "section": "delivery",
+            "title": "06Decision and next step"
+          }
+        ],
+        "table_regions": [
+          {
+            "clientWidth": 344,
+            "keyboard_scroll_left": 11,
+            "label": "Scrollable table: Regional revenue evidence",
+            "scrollLeft": 0,
+            "scrollWidth": 355,
+            "tabIndex": 0
+          }
+        ],
+        "text_components": [
+          {
+            "cardClient": 60,
+            "cardScroll": 60,
+            "clipped": false,
+            "componentHeight": 124,
+            "copyClient": 60,
+            "copyScroll": 60,
+            "deadSpace": 64,
+            "id": "c1"
+          },
+          {
+            "cardClient": 39,
+            "cardScroll": 39,
+            "clipped": false,
+            "componentHeight": 76,
+            "copyClient": 39,
+            "copyScroll": 39,
+            "deadSpace": 37,
+            "id": "c2"
+          },
+          {
+            "cardClient": 85,
+            "cardScroll": 85,
+            "clipped": false,
+            "componentHeight": 112,
+            "copyClient": 85,
+            "copyScroll": 85,
+            "deadSpace": 27,
+            "id": "c9"
+          }
+        ],
+        "viewport_width": 390
+      },
+      "pptx_chart_values": [
+        {
+          "categories": [
+            "East",
+            "West"
+          ],
+          "series": "Regional revenue by area",
+          "values": [
+            80.0,
+            95.0
+          ]
+        },
+        {
+          "categories": [
+            "East",
+            "West"
+          ],
+          "series": "Regional revenue comparison",
+          "values": [
+            80.0,
+            95.0
+          ]
+        }
+      ],
+      "pptx_texts": [
+        "Executive Statement\nWest revenue leads East by 15 units in the regional review.",
+        "Quarterly context\nRegional revenue review · East and West · source extract captured for the first report.",
+        "Regional revenue total\n175 units",
+        "West lead over East\n15 units",
+        "East to West revenue\n80 → 95\nunits",
+        "Risk Callout\nValidate the West lead before shifting regional targets\u000bThe current review compares two regions; confirm the pattern in the next operating window.\u000bReview",
+        "Key Takeaway\nNext step: validate the West lead in the next operating window before shifting regional targets.",
+        ""
+      ],
+      "preflight": {
+        "data_issue_count": 0,
+        "geometry": {
+          "bounded": true,
+          "canvas": {
+            "height": 1308,
+            "width": 1600
+          },
+          "chart_data_semantics_unchanged": true,
+          "item_count": 10,
+          "items": [
+            {
+              "compositionLevel": "feature",
+              "h": 122.93120000000002,
+              "id": "c1",
+              "level": "feature",
+              "order": 0,
+              "pattern": "hero-opening-band",
+              "role": "report_headline",
+              "section": "Executive summary",
+              "sectionHeadingOrder": 0,
+              "sectionHeadingY": 14,
+              "sectionPattern": "hero-opening-band",
+              "sectionStart": true,
+              "title": "Executive Statement",
+              "w": 1059.44,
+              "x": 14,
+              "y": 40
+            },
+            {
+              "compositionLevel": "support",
+              "h": 72,
+              "id": "c2",
+              "level": "support",
+              "order": 1,
+              "pattern": "hero-opening-band",
+              "role": "context",
+              "section": "Executive summary",
+              "sectionHeadingOrder": 0,
+              "sectionHeadingY": 14,
+              "sectionPattern": "hero-opening-band",
+              "sectionStart": false,
+              "title": "Quarterly context",
+              "w": 498.56,
+              "x": 1087.44,
+              "y": 65.46560000000001
+            },
+            {
+              "compositionLevel": "feature",
+              "h": 200,
+              "id": "c4",
+              "level": "feature",
+              "order": 2,
+              "pattern": "compact-kpi-strip",
+              "role": "hero_metric",
+              "section": "Performance",
+              "sectionHeadingOrder": 2,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionPattern": "compact-kpi-strip",
+              "sectionStart": true,
+              "title": "West lead over East",
+              "w": 648.48,
+              "x": 14,
+              "y": 196.93120000000002
+            },
+            {
+              "compositionLevel": "support",
+              "h": 205,
+              "id": "c3",
+              "level": "support",
+              "order": 3,
+              "pattern": "compact-kpi-strip",
+              "role": "hero_metric",
+              "section": "Performance",
+              "sectionHeadingOrder": 2,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionPattern": "compact-kpi-strip",
+              "sectionStart": false,
+              "title": "Regional revenue total",
+              "w": 447.76,
+              "x": 676.48,
+              "y": 202.43120000000002
+            },
+            {
+              "compositionLevel": "support",
+              "h": 216,
+              "id": "c5",
+              "level": "support",
+              "order": 4,
+              "pattern": "compact-kpi-strip",
+              "role": "hero_metric",
+              "section": "Performance",
+              "sectionHeadingOrder": 2,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionPattern": "compact-kpi-strip",
+              "sectionStart": false,
+              "title": "East to West revenue",
+              "w": 447.76,
+              "x": 1138.24,
+              "y": 196.93120000000002
+            },
+            {
+              "compositionLevel": "feature",
+              "h": 320,
+              "id": "c10",
+              "level": "feature",
+              "order": 5,
+              "pattern": "feature-support-analysis",
+              "role": "supporting_analysis",
+              "section": "Analysis",
+              "sectionHeadingOrder": 5,
+              "sectionHeadingY": 420.9312,
+              "sectionPattern": "feature-support-analysis",
+              "sectionStart": true,
+              "title": "Regional revenue by area",
+              "w": 659.3939393939394,
+              "x": 182.8630303030303,
+              "y": 446.9312
+            },
+            {
+              "compositionLevel": "support",
+              "h": 272.19176470588235,
+              "id": "c11",
+              "level": "support",
+              "order": 6,
+              "pattern": "feature-support-analysis",
+              "role": "supporting_analysis",
+              "section": "Analysis",
+              "sectionHeadingOrder": 5,
+              "sectionHeadingY": 420.9312,
+              "sectionPattern": "feature-support-analysis",
+              "sectionStart": false,
+              "title": "Regional revenue comparison",
+              "w": 560.88,
+              "x": 856.2569696969697,
+              "y": 470.8353176470588
+            },
+            {
+              "compositionLevel": "feature",
+              "h": 222,
+              "id": "c7",
+              "level": "feature",
+              "order": 7,
+              "pattern": "evidence-detail-grid",
+              "role": "detailed_evidence",
+              "section": "Regional evidence",
+              "sectionHeadingOrder": 7,
+              "sectionHeadingY": 774.9312,
+              "sectionPattern": "evidence-detail-grid",
+              "sectionStart": true,
+              "title": "Regional revenue evidence",
+              "w": 1572,
+              "x": 14,
+              "y": 800.9312
+            },
+            {
+              "compositionLevel": "feature",
+              "h": 101.52000000000001,
+              "id": "c8",
+              "level": "feature",
+              "order": 8,
+              "pattern": "compact-decision-band",
+              "role": "decision_risk",
+              "section": "Decision",
+              "sectionHeadingOrder": 8,
+              "sectionHeadingY": 1030.9312,
+              "sectionPattern": "compact-decision-band",
+              "sectionStart": true,
+              "title": "Risk Callout",
+              "w": 1572,
+              "x": 14,
+              "y": 1056.9312
+            },
+            {
+              "compositionLevel": "feature",
+              "h": 100.80000000000001,
+              "id": "c9",
+              "level": "feature",
+              "order": 9,
+              "pattern": "closing-next-step",
+              "role": "conclusion",
+              "section": "Decision and next step",
+              "sectionHeadingOrder": 9,
+              "sectionHeadingY": 1166.4512,
+              "sectionPattern": "closing-next-step",
+              "sectionStart": true,
+              "title": "Key Takeaway",
+              "w": 1572,
+              "x": 14,
+              "y": 1192.4512
+            }
+          ],
+          "overlaps": [],
+          "visible_sections": [
+            {
+              "height": 15.064849853515625,
+              "level": "2",
+              "role": "heading",
+              "section": "opening",
+              "title": "01Executive summary",
+              "top": 14
+            },
+            {
+              "height": 15.064849853515625,
+              "level": "2",
+              "role": "heading",
+              "section": "performance",
+              "title": "02Performance",
+              "top": 170.931
+            },
+            {
+              "height": 15.064849853515625,
+              "level": "2",
+              "role": "heading",
+              "section": "analysis",
+              "title": "03Analysis",
+              "top": 420.931
+            },
+            {
+              "height": 15.0648193359375,
+              "level": "2",
+              "role": "heading",
+              "section": "evidence",
+              "title": "04Regional evidence",
+              "top": 774.931
+            },
+            {
+              "height": 15.0648193359375,
+              "level": "2",
+              "role": "heading",
+              "section": "decision",
+              "title": "05Decision",
+              "top": 1030.93
+            },
+            {
+              "height": 15.0648193359375,
+              "level": "2",
+              "role": "heading",
+              "section": "delivery",
+              "title": "06Decision and next step",
+              "top": 1166.45
+            }
+          ]
+        },
+        "issues": [],
+        "layout_issue_count": 0
+      },
+      "preview_chart_geometry": [
+        {
+          "component_height": 346.53662109375,
+          "component_width": 714.07177734375,
+          "element": "Vertical Bar",
+          "engine": "CoreChartEngine",
+          "id": "c10",
+          "plot_width": 677.2523193359375,
+          "preserve_aspect": "xMidYMid meet",
+          "renderer_aspect": 2.0606060606060606,
+          "svg_height": 214.41949462890625,
+          "svg_width": 677.2523193359375
+        },
+        {
+          "component_height": 294.7591552734375,
+          "component_width": 607.3865356445312,
+          "element": "Vertical Bar",
+          "engine": "CoreChartEngine",
+          "id": "c11",
+          "plot_width": 570.567138671875,
+          "preserve_aspect": "xMidYMid meet",
+          "renderer_aspect": 2.0606060606060606,
+          "svg_height": 162.64208984375,
+          "svg_width": 570.567138671875
+        }
+      ],
+      "preview_chart_mark_titles": [
+        {
+          "chart": "c10",
+          "titles": [
+            "Vertical Bar",
+            "East",
+            "West",
+            "Revenue · East · 80",
+            "Revenue · East · 80",
+            "Revenue · West · 95",
+            "Revenue · West · 95",
+            "Chart legend",
+            "Toggle Revenue series",
+            "Revenue"
+          ]
+        },
+        {
+          "chart": "c11",
+          "titles": [
+            "Vertical Bar",
+            "East",
+            "West",
+            "Revenue · East · 80",
+            "Revenue · East · 80",
+            "Revenue · West · 95",
+            "Revenue · West · 95",
+            "Chart legend",
+            "Toggle Revenue series",
+            "Revenue"
+          ]
+        }
+      ],
+      "preview_chart_summaries": [
+        "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields",
+        "Vertical Bar: 2 rows · Category Region · Value Revenue · 2 fields"
+      ],
+      "preview_table_geometry": [
+        {
+          "body": {
+            "h": 136.44873046875,
+            "w": 1665.54150390625,
+            "x": 114.31219482421875,
+            "y": 1079.4617919921875
+          },
+          "card": {
+            "h": 203.5902099609375,
+            "w": 1665.54150390625,
+            "x": 114.31219482421875,
+            "y": 1012.3203125
+          },
+          "id": "c7",
+          "item": {
+            "h": 240.4097900390625,
+            "w": 1702.3609619140625,
+            "x": 95.90243530273438,
+            "y": 993.9105224609375
+          },
+          "region": {
+            "h": 111.54150390625,
+            "w": 1665.54150390625,
+            "x": 114.31219482421875,
+            "y": 1095.7056884765625
+          },
+          "rows": [
+            {
+              "color": "rgb(29, 29, 31)",
+              "display": "table-row",
+              "rect": {
+                "h": 36.278076171875,
+                "w": 1663.3756103515625,
+                "x": 115.39512634277344,
+                "y": 1096.78857421875
+              },
+              "text": "REGION\tREVENUE\tREADING\tSOURCE",
+              "visibility": "visible"
+            },
+            {
+              "color": "rgb(29, 29, 31)",
+              "display": "table-row",
+              "rect": {
+                "h": 36.8194580078125,
+                "w": 1663.3756103515625,
+                "x": 115.39512634277344,
+                "y": 1133.066650390625
+              },
+              "text": "East\t80\tComparison baseline\tSource extract",
+              "visibility": "visible"
+            },
+            {
+              "color": "rgb(29, 29, 31)",
+              "display": "table-row",
+              "rect": {
+                "h": 36.278076171875,
+                "w": 1663.3756103515625,
+                "x": 115.39512634277344,
+                "y": 1169.8861083984375
+              },
+              "text": "West\t95\tLeads by 15\tSource extract",
+              "visibility": "visible"
+            }
+          ],
+          "table": {
+            "h": 109.3756103515625,
+            "w": 1663.3756103515625,
+            "x": 115.39512634277344,
+            "y": 1096.78857421875
+          }
+        }
+      ],
+      "preview_table_summaries": [
+        "Regional revenue evidence\nREGION\tREVENUE\tREADING\tSOURCE\nEast\t80\tComparison baseline\tSource extract\nWest\t95\tLeads by 15\tSource extract"
+      ],
+      "saved_rows": [
+        [
+          "East",
+          80,
+          "Comparison baseline",
+          "Source extract"
+        ],
+        [
+          "West",
+          95,
+          "Leads by 15",
+          "Source extract"
+        ]
+      ],
+      "spatial_geometry": []
+    },
+    "source_report_id": "report-83841d0255854b1a97f82a053a764977",
+    "spatial_geometry": [],
+    "stale_manual_values_removed_before_destination_authoring": true,
+    "stale_value_absent_from_powerpoint": true,
+    "structure_reused": [
+      {
+        "element": "Executive Statement",
+        "role": "report_headline",
+        "section": "opening"
+      },
+      {
+        "element": "Body Narrative",
+        "role": "context",
+        "section": "opening"
+      },
+      {
+        "element": "Hero KPI",
+        "role": "hero_metric",
+        "section": "performance"
+      },
+      {
+        "element": "Hero KPI",
+        "role": "hero_metric",
+        "section": "performance"
+      },
+      {
+        "element": "Before/After KPI",
+        "role": "hero_metric",
+        "section": "performance"
+      },
+      {
+        "element": "Clean Table",
+        "role": "detailed_evidence",
+        "section": "evidence"
+      },
+      {
+        "element": "Risk Callout",
+        "role": "decision_risk",
+        "section": "decision"
+      },
+      {
+        "element": "Key Takeaway",
+        "role": "conclusion",
+        "section": "delivery"
+      },
+      {
+        "element": "Vertical Bar",
+        "role": "supporting_analysis",
+        "section": "analysis"
+      },
+      {
+        "element": "Vertical Bar",
+        "role": "supporting_analysis",
+        "section": "analysis"
+      }
+    ],
+    "style_and_composition_reused": {
+      "item_styles": [
+        {
+          "density": null,
+          "element": "Executive Statement",
+          "emphasis": null,
+          "role": "report_headline",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Body Narrative",
+          "emphasis": null,
+          "role": "context",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Hero KPI",
+          "emphasis": null,
+          "role": "hero_metric",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Hero KPI",
+          "emphasis": "prominent",
+          "role": "hero_metric",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Before/After KPI",
+          "emphasis": null,
+          "role": "hero_metric",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Clean Table",
+          "emphasis": null,
+          "role": "detailed_evidence",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Risk Callout",
+          "emphasis": null,
+          "role": "decision_risk",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Key Takeaway",
+          "emphasis": null,
+          "role": "conclusion",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Vertical Bar",
+          "emphasis": null,
+          "role": "supporting_analysis",
+          "style": {}
+        },
+        {
+          "density": null,
+          "element": "Vertical Bar",
+          "emphasis": null,
+          "role": "supporting_analysis",
+          "style": {}
+        }
+      ],
+      "layout_recipe": "executive",
+      "theme": null
+    },
+    "style_reused": {},
+    "undo_redo_reload_history": true
+  }
+}

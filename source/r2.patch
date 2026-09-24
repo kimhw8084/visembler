@@ -1,0 +1,1811 @@
+.../certification/certification_manifest.json      |  10 +-
+ .../visualizer/assets/authoring_composition.mjs    | 216 +++++++++++++++++++++
+ .../assets/authoring_reuse_presentation.mjs        |  82 ++++++++
+ .../visualizer/assets/integrated_editor.css        |  17 +-
+ .../visualizer/assets/integrated_editor.mjs        | 169 +++++++++++-----
+ docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md    |  66 ++++++-
+ scripts/release_checks/run_chg180_r1_acceptance.py |  15 +-
+ .../run_chg181_authoring_acceptance.py             |  56 +++++-
+ scripts/release_checks/run_stage_a_acceptance.py   |   4 +-
+ .../test_visualizer_chg181_section_composition.py  | 186 ++++++++++++++++++
+ tests/test_visualizer_final_visual_remediation.py  |   5 +-
+ tests/test_visualizer_r15_authoring_depth.py       |  13 +-
+ 12 files changed, 767 insertions(+), 72 deletions(-)
+
+diff --git a/company_ui/certification/certification_manifest.json b/company_ui/certification/certification_manifest.json
+index 5b3d071..c1a39f5 100644
+--- a/company_ui/certification/certification_manifest.json
++++ b/company_ui/certification/certification_manifest.json
+@@ -1,5 +1,5 @@
+ {
+-  "automated_tests": 1190,
++  "automated_tests": 1197,
+   "combined_css_bytes": 259922,
+   "framework_version": "3.0.0a1",
+   "hotfix_release": "v3.0.0a1 source-complete governed application platform",
+@@ -3060,7 +3060,7 @@
+     }
+   },
+   "phase_32_v2_release_candidate": {
+-    "automated_tests": 1190,
++    "automated_tests": 1197,
+     "canonical_viewport_widths": [
+       390,
+       430,
+@@ -3076,7 +3076,7 @@
+     "runtime_status": "PENDING in build sandbox"
+   },
+   "phase_35_v2_source_completion": {
+-    "automated_tests": 1190,
++    "automated_tests": 1197,
+     "governance": "0 errors / 0 warnings",
+     "release_sync_embedded_version_regression": true,
+     "runtime_browser_human_target_gates": "PENDING",
+@@ -3086,7 +3086,7 @@
+   },
+   "phase_38_v200rc5_p0_hardening": {
+     "async_accessibility_announcements": true,
+-    "automated_tests": 1190,
++    "automated_tests": 1197,
+     "browser_performance_probe": true,
+     "chart_accessibility_and_cleanup": true,
+     "chart_visibility_aware_update_coalescing": true,
+@@ -3109,7 +3109,7 @@
+     "adaptive_workspace_grid_engine": true,
+     "application_and_workspace_snapshot_restore": true,
+     "application_runtime_kernel": true,
+-    "automated_tests": 1190,
++    "automated_tests": 1197,
+     "governed_extension_registry": true,
+     "json_snapshot_persistence": true,
+     "lazy_equality_membership_indexes": true,
+diff --git a/company_ui/products/visualizer/assets/authoring_composition.mjs b/company_ui/products/visualizer/assets/authoring_composition.mjs
+index 90e7470..064472d 100644
+--- a/company_ui/products/visualizer/assets/authoring_composition.mjs
++++ b/company_ui/products/visualizer/assets/authoring_composition.mjs
+@@ -99,6 +99,222 @@ export function compositionSection(entry = {}, role = compositionRole(entry)) {
+   return { id, title: String(entry.section_title || COMPOSITION_SECTIONS[id] || 'Analysis') };
+ }
+ 
++const ROLE_FEATURE_WEIGHT = Object.freeze({
++  report_headline: 12, hero_metric: 11, primary_analysis: 10, causal_evidence: 10,
++  decision_risk: 9, narrative_interpretation: 8, detailed_evidence: 7,
++  conclusion: 7, supporting_analysis: 6, action_status: 5, context: 3,
++});
++const EMPHASIS_WEIGHT = Object.freeze({ compact: .72, standard: 1, prominent: 1.35, hero: 1.8 });
++const VISUAL_ENGINES = new Set(['CoreChartEngine','EngineeringChartEngine','TableEngine','DiagramEngine','WaferFabEngine','ImageMediaEngine','MatrixEngine','TimelineEngine']);
++
++function densityHint(entry = {}, profile = {}) {
++  const rows = entry.customTable?.rows || entry.rows || entry.data || [];
++  const copy = String(entry.text || entry.body || entry.content || '').trim();
++  const sourceCount = Array.isArray(rows) ? rows.length : 0;
++  return Math.min(2.5, Math.log2(1 + sourceCount) * .25 + Math.min(1.25, copy.length / 480) + Math.min(.75, Number(profile.minH || 0) / 600));
++}
++
++function featureScore(entry, preset, profile = {}) {
++  const role = compositionRole(entry);
++  const explicit = Object.hasOwn(EMPHASIS_WEIGHT, entry.emphasis);
++  const explicitEmphasis = explicit ? ({compact:.68,standard:1,prominent:1.48,hero:2.65}[entry.emphasis]||1) : 1;
++  const automaticEmphasis = explicit ? 1 : role === 'report_headline' || role === 'hero_metric' ? 1.35
++    : ['primary_analysis','causal_evidence','decision_risk','conclusion'].includes(role) ? 1.18 : 1;
++  const recipeIntent = compositionProminence(entry, preset);
++  const infoDensity = densityHint(entry, profile);
++  return (ROLE_FEATURE_WEIGHT[role] || 5) * explicitEmphasis * automaticEmphasis * recipeIntent + infoDensity;
++}
++
++function visualEntry(entry) { return VISUAL_ENGINES.has(entry.engine); }
++function relatedComparisonPair(entries) {
++  if (entries.length !== 2) return false;
++  const names = entries.map(entry => `${entry.element || ''} ${entry.title || ''}`.toLowerCase());
++  const has = pattern => names.some(value => pattern.test(value));
++  return entries.some(entry => entry.engine === 'ComparisonEngine') ||
++    (has(/before|baseline|reference|control/) && has(/after|current|affected|treatment/));
++}
++function usableInOneRow(ids, profiles, pageWidth, gap = 14) {
++  const minimum = ids.reduce((sum, id) => sum + Math.max(1, Number(profiles[id]?.minW) || 280), 0);
++  return minimum + gap * Math.max(0, ids.length - 1) <= Math.max(1, pageWidth - 28);
++}
++const row = (ids, ratios = null) => ({ ids: [...ids], ratios: ratios ? [...ratios] : null });
++
++function sectionPattern(section, preset, profiles, pageWidth) {
++  const entries = section.items, roles = entries.map(compositionRole), visuals = entries.filter(visualEntry);
++  const metrics = entries.filter(entry => ['hero_metric'].includes(compositionRole(entry)) || entry.engine === 'ComparisonEngine');
++  const narrative = entries.filter(entry => compositionRole(entry) === 'narrative_interpretation' || entry.engine === 'TextEngine' && compositionRole(entry) === 'context');
++  const headline = entries.find(entry => compositionRole(entry) === 'report_headline');
++  const hasEvidence = entries.some(entry => ['detailed_evidence','causal_evidence'].includes(compositionRole(entry)) || visualEntry(entry));
++  if (section.id === 'delivery' && entries.some(entry => ['conclusion','action_status'].includes(compositionRole(entry)))) return 'closing-next-step';
++  if (section.id === 'decision' && entries.some(entry => ['decision_risk','conclusion','action_status'].includes(compositionRole(entry)))) return 'compact-decision-band';
++  if (entries.some(entry => entry.engine === 'DiagramEngine' || compositionRole(entry) === 'causal_evidence')) return 'causal-flow-feature';
++  if (headline) return 'hero-opening-band';
++  if (metrics.length >= 2 && (section.id === 'performance' || metrics.length === entries.length)) return 'compact-kpi-strip';
++  if (visuals.length >= 2 && relatedComparisonPair(visuals)) return 'balanced-analytical-pair';
++  if (visuals.length >= 3) return 'feature-support-analysis';
++  if (narrative.length && hasEvidence) return 'narrative-evidence-split';
++  if (entries.filter(entry => compositionRole(entry) === 'detailed_evidence').length >= 1) return 'evidence-detail-grid';
++  if (visuals.length >= 2 && roles.some(role => ['primary_analysis','supporting_analysis'].includes(role))) return 'feature-support-analysis';
++  if (section.id === 'analysis' && visuals.length === 1 && roles.includes('primary_analysis')) return 'analytical-feature';
++  if (visuals.length >= 2 && !usableInOneRow(visuals.map(entry => String(entry.id)), profiles, pageWidth)) return 'feature-support-analysis';
++  return 'editorial-flow';
++}
++
++function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
++  const ids = section.items.map(entry => String(entry.id));
++  const byId = new Map(section.items.map(entry => [String(entry.id), entry]));
++  const supports = ids.filter(id => id !== featureId);
++  const fits = values => usableInOneRow(values, profiles, pageWidth);
++  const featureRow = (featureRatio = .64) => {
++    if (!featureId) return [];
++    const firstSupport = supports[0];
++    if (firstSupport && fits([featureId, firstSupport])) return [row([featureId, firstSupport], [featureRatio, 1 - featureRatio])];
++    return [row([featureId])];
++  };
++  if (pattern === 'hero-opening-band') {
++    const title = section.items.find(entry => compositionRole(entry) === 'report_headline');
++    const titleId = title ? String(title.id) : null;
++    const remainder = ids.filter(id => id !== titleId);
++    const metrics = remainder.filter(id => compositionRole(byId.get(id)) === 'hero_metric');
++    const context = remainder.filter(id => !metrics.includes(id));
++    const leadSupport = context[0] || metrics[0];
++    const splitLead = titleId && leadSupport && fits([titleId,leadSupport]);
++    const result = titleId ? [splitLead ? row([titleId,leadSupport],[.68,.32]) : row([titleId])] : [];
++    const usedLead = new Set(splitLead ? [titleId,leadSupport] : titleId ? [titleId] : []);
++    const remainingMetrics = metrics.filter(id=>!usedLead.has(id));
++    if(remainingMetrics.length)result.push(row(remainingMetrics));
++    const remainingContext = context.filter(id=>!usedLead.has(id));
++    for (let index=0; index<remainingContext.length;) {
++      const pair=remainingContext.slice(index,index+2);
++      if(pair.length===2&&fits(pair)){result.push(row(pair));index+=2;}
++      else {result.push(row([pair[0]]));index+=1;}
++    }
++    const used = new Set(result.flatMap(value => value.ids));
++    return [...result, ...ids.filter(id => !used.has(id)).map(id => row([id]))];
++  }
++  if (pattern === 'compact-kpi-strip') {
++    const kpis = section.items.filter(entry => compositionRole(entry) === 'hero_metric' || entry.engine === 'ComparisonEngine').map(entry => String(entry.id));
++    const orderedKpis = featureId && kpis.includes(featureId) ? [featureId,...kpis.filter(id=>id!==featureId)] : kpis;
++    const rest = ids.filter(id => !kpis.includes(id)), max = pageWidth >= 1280 ? 4 : 3, result = [];
++    for (let index = 0; index < orderedKpis.length; index += max) {
++      const group=orderedKpis.slice(index,index+max);
++      const ratios=group.length>1&&index===0?group.map((_,position)=>position===0?({2:.56,3:.42,4:.34}[group.length]||.3):(group.length===2?.44:group.length===3?.29:.22)):null;
++      result.push(row(group,ratios));
++    }
++    return [...result, ...rest.map(id => row([id]))];
++  }
++  if (pattern === 'causal-flow-feature') {
++    const diagram = section.items.find(entry => entry.engine === 'DiagramEngine') || section.items.find(entry => compositionRole(entry) === 'causal_evidence');
++    const id = String(diagram?.id || featureId || ids[0]), prose = section.items.find(entry => String(entry.id) !== id && ['TextEngine','DecisionCompositeEngine'].includes(entry.engine));
++    const evidence = section.items.find(entry => String(entry.id) !== id && visualEntry(entry) && entry.engine !== 'TableEngine');
++    const support = prose || evidence;
++    const shortProse = !prose || String(prose.text || prose.body || prose.content || '').length <= 360;
++    const result = support && shortProse && fits([id, String(support.id)]) ? [row([id, String(support.id)], [.62,.38])] : [row([id])];
++    const used = new Set(result.flatMap(value => value.ids));
++    return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
++  }
++  if (pattern === 'narrative-evidence-split') {
++    const prose = section.items.find(entry => ['narrative_interpretation','context'].includes(compositionRole(entry)) && entry.engine === 'TextEngine');
++    const evidence = section.items.find(entry => String(entry.id) !== String(prose?.id) && visualEntry(entry));
++    const shortProse = String(prose?.text || prose?.body || prose?.content || '').length <= 360;
++    const pair = prose && evidence && shortProse && fits([String(prose.id),String(evidence.id)]);
++    const result = pair ? [row([String(prose.id),String(evidence.id)],[.48,.52])] : prose ? [row([String(prose.id)])] : [];
++    const used = new Set(result.flatMap(value => value.ids));
++    return [...result, ...ids.filter(value => !used.has(value)).map(value => row([value]))];
++  }
++  if (pattern === 'analytical-feature') {
++    const result = featureId ? [row([featureId])] : [];
++    const used = new Set(result.flatMap(value => value.ids));
++    return [...result, ...ids.filter(id => !used.has(id)).map(id => row([id]))];
++  }
++  if (pattern === 'balanced-analytical-pair') {
++    const pair = section.items.filter(visualEntry).slice(0, 2).map(entry => String(entry.id));
++    if (pair.length === 2 && fits(pair)) return [row(pair,[.5,.5]), ...ids.filter(id => !pair.includes(id)).map(id => row([id]))];
++  }
++  if (pattern === 'evidence-detail-grid') {
++    const evidence = section.items.filter(entry => compositionRole(entry) === 'detailed_evidence').map(entry => String(entry.id));
++    const result = [];
++    for (let index = 0; index < evidence.length;) {
++      const pair = evidence.slice(index,index+2);
++      if (pair.length === 2 && fits(pair)) { result.push(row(pair)); index += 2; }
++      else { result.push(row([pair[0]])); index += 1; }
++    }
++    return [...result, ...ids.filter(id => !evidence.includes(id)).map(id => row([id]))];
++  }
++  if (pattern === 'compact-decision-band' || pattern === 'closing-next-step') {
++    if (fits(ids)) return [row(ids)];
++    return featureRow(.62).concat(supports.slice(featureRow(.62)[0]?.ids.length ? 1 : 0).map(id => row([id])));
++  }
++  if (pattern === 'feature-support-analysis') {
++    const visualIds=section.items.filter(visualEntry).map(entry=>String(entry.id));
++    if(visualIds.length>=3){
++      const featureVisual=featureId&&visualIds.includes(featureId)?featureId:visualIds[0];
++      const orderedVisuals=[featureVisual,...visualIds.filter(id=>id!==featureVisual)],result=[],used=new Set();
++      const first=orderedVisuals.slice(0,3);
++      if(first.length===3&&fits(first)){
++        result.push(row(first,[.39,.33,.28]));first.forEach(id=>used.add(id));
++      }else{
++        const support=orderedVisuals[1];
++        if(support&&fits([featureVisual,support])){result.push(row([featureVisual,support],[.64,.36]));used.add(featureVisual);used.add(support);}
++        else {result.push(row([featureVisual]));used.add(featureVisual);}
++      }
++      const remainingVisuals=orderedVisuals.filter(id=>!used.has(id));
++      for(let index=0;index<remainingVisuals.length;){
++        const pair=remainingVisuals.slice(index,index+2);
++        if(pair.length===2&&fits(pair)){result.push(row(pair,[.64,.36]));index+=2;}
++        else {result.push(row([pair[0]]));index+=1;}
++      }
++      return [...result,...ids.filter(id=>!visualIds.includes(id)).map(id=>row([id]))];
++    }
++    const result = featureRow(.64), used = new Set(result.flatMap(value => value.ids));
++    const remaining = supports.filter(id => !used.has(id));
++    for (let index = 0; index < remaining.length;) {
++      const pair = remaining.slice(index,index+2);
++      if (pair.length === 2 && fits(pair)) { result.push(row(pair)); index += 2; }
++      else { result.push(row([pair[0]])); index += 1; }
++    }
++    return result;
++  }
++  // Editorial flow packs short, compatible content together without turning
++  // a semantic section into an unbroken full-width column.
++  const result = []; let current = [];
++  for (const id of ids) {
++    const role = compositionRole(byId.get(id)), forceOwn = ['report_headline','narrative_interpretation','conclusion'].includes(role) || byId.get(id)?.engine === 'DiagramEngine';
++    if (forceOwn && current.length) { result.push(row(current)); current = []; }
++    const next = [...current,id];
++    if (current.length && !fits(next)) { result.push(row(current)); current = [id]; }
++    else current = next;
++    if (forceOwn) { result.push(row(current)); current = []; }
++  }
++  if (current.length) result.push(row(current));
++  return result;
++}
++
++export function sectionCompositionPlan(items = [], preset = 'editorial', pageWidth = 1440, profiles = {}) {
++  const grouped = new Map();
++  for (const entry of compositionOrder(items, preset)) {
++    const role = compositionRole(entry), section = compositionSection(entry, role);
++    if (!grouped.has(section.id)) grouped.set(section.id, { id: section.id, title: section.title, items: [], order: entry.section_order });
++    grouped.get(section.id).items.push(entry);
++  }
++  return [...grouped.values()].map((section,index) => {
++    const pattern = sectionPattern(section, preset, profiles, pageWidth);
++    const feature = [...section.items].sort((a,b) => featureScore(b,preset,profiles[String(b.id)]||{})-featureScore(a,preset,profiles[String(a.id)]||{}) || Number(a.order||0)-Number(b.order||0) || String(a.id).localeCompare(String(b.id)))[0];
++    const featureId = feature ? String(feature.id) : null;
++    const rows = rowsForSection(section, pattern, profiles, pageWidth, featureId);
++    return { id:section.id, title:section.title, order:index, pattern, featureId,
++      supportIds:section.items.map(entry=>String(entry.id)).filter(id=>id!==featureId),
++      rows:rows.map((value,rowIndex)=>({ ...value, section:section.id, title:section.title, pattern, featureId, rowIndex, sectionStart:rowIndex===0 })) };
++  });
++}
++
++export function compositionSpacing({ density = 'comfortable', itemCount = 1 } = {}) {
++  const scale = density === 'dense' ? -3 : density === 'compact' ? -1 : density === 'comfortable' ? 2 : 0;
++  const stackGap = Math.max(12,Math.min(20,16+scale));
++  const sectionGap = Math.max(20,Math.min(34,24+scale+Math.min(6,Math.floor(Math.max(0,itemCount-2)/2))));
++  return { stackGap, sectionGap, headingHeight:26, rowGap:Math.max(12,Math.min(18,14+Math.round(scale/2))) };
++}
++
+ export function compositionProminence(entry = {}, preset = 'editorial') {
+   const scale = Number(RECIPE_PROMINENCE[preset]?.[compositionRole(entry)] ?? 1);
+   return Number.isFinite(scale) ? Math.max(1, Math.min(1.3, scale)) : 1;
+diff --git a/company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs b/company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs
+new file mode 100644
+index 0000000..86bc905
+--- /dev/null
++++ b/company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs
+@@ -0,0 +1,82 @@
++import { humanFieldTypeLabel, humanRoleLabel } from './authoring_human.mjs';
++
++const text = value => String(value ?? '').trim();
++const roleFamily = role => ({ x:'category', label:'category', y:'measurement', value:'measurement', timestamp:'time', datetime:'time', reference_value:'reference_value', affected_value:'affected_value' }[role] || role);
++const roleName = (role, view = '') => {
++  if (String(role || '').startsWith('$reference:')) return 'Recipe field';
++  const family = roleFamily(role), fixed = { category:'Category', measurement:'Measurement', time:'Time', reference_value:'Reference', affected_value:'Affected', tool:'Tool', chamber:'Chamber', lot:'Lot', wafer:'Wafer', product:'Product', route:'Route', bin:'Bin' }[family];
++  return fixed || humanRoleLabel(role,{view}) || 'Field';
++};
++
++function bindingRoles(binding = {}) {
++  const known = new Set((binding.field_roles || []).map(value => value.role));
++  return [
++    ...(binding.field_roles || []),
++    ...(binding.references || []).map(value => ({ ...value, role: value.role, label: 'Recipe field' })),
++    ...(binding.required_roles || []).filter(role => !known.has(role)).map(role => ({ role, field_name: '', field_type: '', semantic_tags: [], required: true })),
++  ];
++}
++
++export function remapVisualLabels(bindings = []) {
++  const rows = (bindings || []).map(binding => ({ id:String(binding.item_id||''), name:text(binding.element||binding.item_id||'Visual') }));
++  const counts = new Map();
++  for (const row of rows) counts.set(row.name,(counts.get(row.name)||0)+1);
++  return rows.map((row,index)=>counts.get(row.name)>1?`${row.name} ${rows.filter((other,otherIndex)=>other.name===row.name&&otherIndex<=index).length}`:row.name);
++}
++
++export function groupedRemapRequirements(source = {}, slot = {}, selection = {}) {
++  const groups = new Map();
++  for (const binding of source.bindings || []) for (const requirement of bindingRoles(binding)) {
++    const family = roleFamily(requirement.role), label = requirement.label || roleName(requirement.role,binding.view);
++    const key = JSON.stringify([family, label, requirement.field_name, requirement.field_type, requirement.semantic_tags || [], requirement.required === true]);
++    if (!groups.has(key)) groups.set(key, { role: family, label, sourceField: text(requirement.field_name), sourceType: text(requirement.field_type), required: requirement.required === true, bindings: [] });
++    let target = groups.get(key).bindings.find(value=>value.itemId===String(binding.item_id));
++    if(!target){target={itemId:String(binding.item_id),element:text(binding.element||binding.item_id),view:binding.view||'',roles:[]};groups.get(key).bindings.push(target);}
++    if(!target.roles.includes(requirement.role))target.roles.push(requirement.role);
++  }
++  return [...groups.values()].map(group => {
++    const values = group.bindings.flatMap(binding=>binding.roles.map(role=>String(selection.mappings?.[binding.itemId]?.[role] || slot.mapping?.[binding.itemId]?.[role] || '')));
++    const commonValue = values.length && values.every(value => value === values[0]) ? values[0] : '';
++    const consumers = remapVisualLabels(group.bindings);
++    return { ...group, itemIds: group.bindings.map(binding => binding.itemId), assignments:group.bindings.map(binding=>({itemId:binding.itemId,roles:binding.roles})), consumers, value: commonValue,
++      consumersLabel: consumers.join(' · '), shared: group.bindings.length > 1,
++      expectedTypeLabel: group.sourceType ? humanFieldTypeLabel(group.sourceType) : '' };
++  });
++}
++
++function issueLabel(issue, source) {
++  const binding = (source.bindings || []).find(value => String(value.item_id) === String(issue.item_id));
++  return issue.label || roleName(issue.role, binding?.view);
++}
++
++function issueText(issue, label) {
++  const sourceField = text(issue.source_field);
++  if (issue.message) return text(issue.message).replace(/\s+/g, ' ');
++  if (issue.reason === 'ambiguous') return `${sourceField || label} matches more than one field. Choose the intended ${label.toLowerCase()} field.`;
++  if (issue.reason === 'incompatible type' || issue.reason === 'field type is incompatible') {
++    const requiredType = issue.role === 'time' ? 'a date or time field' : ['value','y','size','weight','reference_value','affected_value'].includes(issue.role) ? 'a numeric field' : 'a compatible field';
++    return `${sourceField || label} needs ${requiredType} for ${label.toLowerCase()}.`;
++  }
++  if (issue.reason === 'required field not found') return `Required source field ${sourceField || label} is missing.`;
++  if (issue.reason === 'required role is unmapped' || issue.reason === 'Choose a compatible field') return `Choose a compatible field for ${label.toLowerCase()}.`;
++  if (issue.reason === 'selected field is unavailable') return `The selected ${label.toLowerCase()} field is unavailable. Choose another field.`;
++  return sourceField ? `${sourceField}: ${text(issue.reason) || 'Review this field mapping.'}` : `${label}: ${text(issue.reason) || 'Review this field mapping.'}`;
++}
++
++export function summarizedRemapIssues(source = {}, slot = {}) {
++  const groups = new Map();
++  for (const [kind, issues] of [['unresolved', slot.unresolved || []], ['problem', slot.problems || []]]) for (const issue of issues) {
++    const label = issueLabel(issue, source), message = issueText(issue, label), key = `${label}|${message}`;
++    if (!groups.has(key)) groups.set(key, { label, message, itemIds: new Set(), elements: new Set(), kind });
++    const group = groups.get(key), binding = (source.bindings || []).find(value => String(value.item_id) === String(issue.item_id));
++    if (issue.item_id) group.itemIds.add(String(issue.item_id));
++    if (binding) group.elements.add(text(binding.element || binding.item_id));
++  }
++  return [...groups.values()].map(group => ({ ...group, itemIds: [...group.itemIds], elements: [...group.elements],
++    message: group.elements.size > 1 ? `${group.message} · Affects ${group.elements.size} visuals.` : group.message }));
++}
++
++export function remapStatusSummary(plan = {}) {
++  if (plan.ok) return 'All data requirements are compatible.';
++  return 'Resolve the highlighted data source and field requirements before applying.';
++}
+diff --git a/company_ui/products/visualizer/assets/integrated_editor.css b/company_ui/products/visualizer/assets/integrated_editor.css
+index 9117c60..06bb382 100644
+--- a/company_ui/products/visualizer/assets/integrated_editor.css
++++ b/company_ui/products/visualizer/assets/integrated_editor.css
+@@ -247,9 +247,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
+ .canvas-hull::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; box-shadow: var(--viz-shadow-canvas-inset); z-index: 70; }
+ .canvas-grid { position: absolute; inset: 0; background-image: linear-gradient(var(--viz-grid) 1px, transparent 1px), linear-gradient(90deg, var(--viz-grid) 1px, transparent 1px); background-size: 25px 25px; opacity: 0; pointer-events: none; }
+ .guided .canvas-grid, .free .canvas-grid { opacity: 1; }
+-.component-layer, .group-layer, .overlay-layer { position: absolute; inset: 0; }
++.component-layer, .group-layer, .composition-section-surface-layer, .overlay-layer { position: absolute; inset: 0; }
+ .component-layer { z-index: 10; }
+ .group-layer { z-index: 8; pointer-events: none; }
++.composition-section-surface-layer { z-index: 9; pointer-events:none; }
+ .overlay-layer { z-index: 65; pointer-events: none; }
+ .component {
+   position: absolute;
+@@ -1328,6 +1329,8 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+ .cui-visualizer-root .reuse-remap-slot header { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
+ .cui-visualizer-root .reuse-remap-slot h3 { margin:0; font-size:13px; }
+ .cui-visualizer-root .reuse-remap-slot p { margin:3px 0 0; color:var(--viz-muted); font-size:10px; line-height:1.35; }
++.cui-visualizer-root .reuse-remap-consumers { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
++.cui-visualizer-root .reuse-remap-consumers span { padding:2px 7px; border:1px solid var(--viz-line-soft); border-radius:999px; background:var(--viz-surface); color:var(--viz-ink-soft); font-size:10px; font-weight:650; }
+ .cui-visualizer-root .reuse-remap-status { flex:none; color:var(--viz-warn); font-size:10px; font-weight:800; }
+ .cui-visualizer-root .reuse-remap-status.ready { color:var(--viz-good); }
+ .cui-visualizer-root .reuse-remap-status.blocked { color:var(--viz-bad); }
+@@ -1593,7 +1596,7 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+ .cui-visualizer-root.preview-mode .c-head,
+ .cui-visualizer-root.preview-mode [data-editor-only],
+ .cui-visualizer-root.preview-mode .canvas-grid,
+-.cui-visualizer-root.preview-mode .group-layer,
++  .cui-visualizer-root.preview-mode .group-layer,
+ .cui-visualizer-root.preview-mode .overlay-layer,
+ .cui-visualizer-root.preview-mode .drop-ghost,
+ .cui-visualizer-root.preview-mode .lasso { display:none!important; }
+@@ -1884,8 +1887,14 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+ .cui-visualizer-root .data-first-correction input,.cui-visualizer-root .data-first-correction select { width:100%; box-sizing:border-box; border:1px solid var(--viz-line); border-radius:10px; padding:6px; background:var(--viz-surface); }
+ @media(max-width:700px){.cui-visualizer-root .human-data-tabs{grid-template-columns:repeat(3,minmax(0,1fr));}.cui-visualizer-root .human-shelf-list{grid-template-columns:1fr;}.cui-visualizer-root .data-first-stages{grid-template-columns:repeat(3,minmax(0,1fr));}.cui-visualizer-root .data-first-choice-layout{grid-template-columns:1fr;}.cui-visualizer-root .data-first-correction{grid-template-columns:1fr;}}
+ 
+-.cui-visualizer-root .composition-section-heading { position:absolute; z-index:60; height:14px; color:var(--viz-muted); font-size:11px; line-height:14px; font-weight:820; letter-spacing:.08em; text-transform:uppercase; pointer-events:none; }
++.cui-visualizer-root .composition-section-heading { position:absolute; display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:10px; min-height:26px; box-sizing:border-box; padding:4px 10px; border-bottom:1px solid var(--viz-line); color:var(--viz-ink); background:color-mix(in srgb,var(--viz-surface) 92%,transparent); font-size:16px; line-height:1.15; letter-spacing:-.02em; pointer-events:none; }
++.cui-visualizer-root .composition-section-surface { position:absolute; box-sizing:border-box; border:1px solid var(--viz-line-soft); border-left:3px solid color-mix(in srgb,var(--viz-accent) 58%,var(--viz-line)); border-radius:var(--viz-r-surface); background:var(--viz-surface-2); pointer-events:none; }
++.cui-visualizer-root .composition-section-index { color:var(--viz-accent); font-size:10px; line-height:1; font-weight:850; letter-spacing:.08em; font-variant-numeric:tabular-nums; }
++.cui-visualizer-root .composition-section-heading b { min-width:0; font-weight:780; }
++.cui-visualizer-root .component[data-composition-level="feature"] { border-color:color-mix(in srgb,var(--viz-accent) 28%,var(--viz-line)); box-shadow:var(--viz-shadow-1); }
+ .cui-visualizer-root .component[data-composition-emphasis="prominent"] .metric-value { font-size:var(--viz-type-metric-compact); }
+ @media(max-width:800px) {
+-  .cui-visualizer-root.preview-mode .composition-section-heading { position:relative!important; left:auto!important; top:auto!important; width:auto!important; height:14px; flex:0 0 14px; margin:0 12px -10px; }
++  .cui-visualizer-root.preview-mode .component-layer { gap:var(--viz-composition-row-gap,var(--viz-s-4)); }
++  .cui-visualizer-root.preview-mode .composition-section-heading { position:relative!important; left:auto!important; top:auto!important; width:auto!important; height:auto; min-height:30px; flex:0 0 auto; margin:0 12px -4px; }
++  .cui-visualizer-root.preview-mode .composition-section-surface-layer { display:none!important; }
+ }
+diff --git a/company_ui/products/visualizer/assets/integrated_editor.mjs b/company_ui/products/visualizer/assets/integrated_editor.mjs
+index e707a1d..d23992c 100644
+--- a/company_ui/products/visualizer/assets/integrated_editor.mjs
++++ b/company_ui/products/visualizer/assets/integrated_editor.mjs
+@@ -30,10 +30,11 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
+ import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
+ import { matchSizePatches } from './authoring_arrange.mjs';
+ import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
+-import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
++import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection, sectionCompositionPlan, compositionSpacing } from './authoring_composition.mjs';
+ import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
+ import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
+ import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
++import { groupedRemapRequirements, summarizedRemapIssues, remapStatusSummary, remapVisualLabels } from './authoring_reuse_presentation.mjs';
+ import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
+ import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
+ import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, mappingFromFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
+@@ -327,13 +328,13 @@ function semanticPolicy(entry) {
+     if(name.includes('confidence')) p={...p,minW:245,minH:165,prefW:330,prefH:185};
+     if(name.includes('threshold')||name.includes('target')||name.includes('progress')||name.includes('capacity')||name.includes('rate')) p={...p,minW:225,minH:150,prefW:310,prefH:170};
+   } else if(engine==='CoreChartEngine') {
+-    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
++    p={...p,minW:380,minH:220,prefW:880,prefH:320,growth:'plot',aspect:680/330};
+     if(name==='sparkline') p={...p,minW:240,minH:130,prefW:340,prefH:150};
+     if(name.includes('donut')||name.includes('pie')) p={...p,minW:235,minH:235,prefW:285,prefH:285,aspect:1,growth:'square'};
+     if(name.includes('sankey')||name.includes('treemap')||name.includes('funnel')) p={...p,minW:350,minH:220,prefW:500,prefH:260};
+   } else if(engine==='EngineeringChartEngine') {
+-    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
+-    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:418};
++    p={...p,minW:380,minH:220,prefW:880,prefH:340,growth:'plot',aspect:680/330};
++    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:360};
+   } else if(engine==='TableEngine') {
+     p={...p,minW:340,minH:210,prefW:480,prefH:260,growth:'data'};
+     if(name.includes('dense')) p={...p,minH:235,prefH:300};
+@@ -360,7 +361,8 @@ function semanticPolicy(entry) {
+     if(name.includes('process flow')) {
+       const bounds=diagramRenderBounds(entry),heading=entry.showTitle===true||entry.show_title===true?78:38;
+       const requiredH=Math.min(MAX_CANVAS_H-2*CANVAS.gap,Math.ceil(bounds.height+heading));
+-      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap};
++      const horizontal=String(entry.direction||'right').toLowerCase()!=='down',contentAspect=bounds.width/Math.max(1,requiredH);
++      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap,aspect:horizontal?clamp(contentAspect,2.5,6):.8};
+     }
+     if(name.includes('architecture')||name.includes('swimlane')||name.includes('sequence')) p={...p,minW:380,minH:245,prefW:540,prefH:300};
+     if(name.includes(' node')) p={...p,minW:190,minH:135,prefW:240,prefH:155,growth:'balanced'};
+@@ -381,6 +383,7 @@ function semanticPolicy(entry) {
+     if(compositionRole(entry)==='supporting_analysis') p={...p,minH:104,prefH:132};
+   } else if(['EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'].includes(engine)) {
+     p={...p,minW:280,minH:180,prefW:400,prefH:220,growth:'text'};
++    if(engine==='ProjectCompositeEngine'&&compositionRole(entry)==='action_status') p={...p,minH:112,prefH:156};
+     if(name.includes('hero')) p={...p,minW:380,minH:190,prefW:540,prefH:230};
+     if(name.includes('grid')||name.includes('register')||name.includes('cluster')) p={...p,minW:340,minH:220,prefW:470,prefH:270};
+     if(engine==='DecisionCompositeEngine'&&name.includes('risk callout')) p={...p,minH:78,prefH:94};
+@@ -412,7 +415,7 @@ function semanticPolicy(entry) {
+   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
+   p.prefW=Math.min(p.maxW,Math.max(p.minW,p.prefW*scale));
+   p.prefH=Math.min(p.maxH,Math.max(p.minH,p.prefH*(emphasis==='hero'?1.12:emphasis==='compact'?.9:1)));
+-  const measured=name.includes('process flow')?null:ui.intrinsicOverrides.get(entry.id);
++  const measured=ui.intrinsicOverrides.get(entry.id);
+   if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
+   // This is the single source of truth for Smart/Guided defaults.  Keep the
+   // policy inspectable so renderers and acceptance probes can distinguish a
+@@ -431,11 +434,23 @@ function effectiveWeight(entry) {
+   const presetWeight=priority?(priority.includes(entry.engine)?1.18:.92):1;
+   return base*Math.sqrt(advanced)*presetWeight;
+ }
+-function allocateRowWidths(row, innerW, gap) {
++function allocateRowWidths(row, innerW, gap, ratios = null) {
+   const available=Math.max(1,innerW-gap*(row.length-1));
+   const mins=row.map(({policy})=>Math.min(available,policy.minW));
+   const totalMin=mins.reduce((a,b)=>a+b,0);
+   if(totalMin>available+.1){return mins.map((v)=>v*available/totalMin);}
++  if(Array.isArray(ratios)&&ratios.length===row.length&&ratios.every(value=>Number.isFinite(Number(value))&&Number(value)>0)){
++    const ratioTotal=ratios.reduce((sum,value)=>sum+Number(value),0)||1;
++    let widths=ratios.map((value,index)=>Math.max(mins[index],available*Number(value)/ratioTotal));
++    let overflow=widths.reduce((sum,value)=>sum+value,0)-available;
++    if(overflow>0){
++      const flexible=widths.map((value,index)=>Math.max(0,value-mins[index])),total=flexible.reduce((sum,value)=>sum+value,0)||1;
++      widths=widths.map((value,index)=>Math.max(mins[index],value-overflow*flexible[index]/total));
++    } else if(overflow<0){
++      const left=-overflow; widths=widths.map((value,index)=>value+left*Number(ratios[index])/ratioTotal);
++    }
++    return widths;
++  }
+   let widths=[...mins],left=available-totalMin;
+   const desires=row.map(({policy},i)=>Math.max(0,policy.prefW-widths[i]));
+   let desireSum=desires.reduce((a,b)=>a+b,0);
+@@ -448,10 +463,10 @@ function semanticSmartLayout(items=viewItems()) {
+   const ordered=compositionOrder(items,model().layoutPreset||'editorial');
+   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
+   const g=CANVAS.gap,innerW=Math.max(1,CANVAS.w-2*g),innerH=Math.max(1,CANVAS.h-2*g);
+-  const rows=[];let row=[];let minUsed=0;
+-  const flush=()=>{if(row.length){const role=compositionRole(row[0].entry);rows.push({members:row,section:compositionSection(row[0].entry,role).id});row=[];minUsed=0;}};
+-  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),semanticRole=compositionRole(entry),section=compositionSection(entry,semanticRole).id,name=String(entry.element||entry.title||''),longNarrative=entry.engine==='TextEngine'&&String(entry.text||entry.body||'').trim().length>420,forceOwnRow=['report_headline','narrative_interpretation','conclusion'].includes(semanticRole)||entry.engine==='DiagramEngine'||longNarrative||(semanticRole==='primary_analysis'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,currentSection=row.length?compositionSection(row[0].entry,compositionRole(row[0].entry)).id:section;if(row.length&&(currentSection!==section||minUsed+need>innerW||forceOwnRow))flush();row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1)flush();}
+-  flush();
++  const preset=model().layoutPreset||'editorial',profiles=Object.fromEntries(ordered.map(entry=>[String(entry.id),semanticPolicy(entry)]));
++  const plans=sectionCompositionPlan(ordered,preset,CANVAS.w,profiles),sectionById=new Map(plans.map(section=>[section.id,section]));
++  const rowInputs=plans.flatMap(section=>section.rows.map(value=>({...value,items:value.ids.map(id=>ordered.find(entry=>String(entry.id)===id)).filter(Boolean)})));
++  const rows=rowInputs.map(spec=>({...spec,members:spec.items.map(entry=>({entry,policy:profiles[String(entry.id)]}))}));
+   const solo=ordered.length===1&&rows.length===1;
+   const fitToHull=(policy,w=innerW,h=innerH)=>{
+     let width=Math.min(policy.maxW,w),height=Math.min(policy.maxH,h);
+@@ -461,8 +476,9 @@ function semanticSmartLayout(items=viewItems()) {
+   };
+   const soloSize=({entry,policy})=>{
+     const role=suggestMessageRole(entry),primary=role==='Primary Evidence'||role==='Headline';
+-    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy);
+-    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,innerH);
++    if(['plot','media','square'].includes(policy.growth)||policy.aspect)return fitToHull({...policy,maxW:innerW},innerW,innerH);
++    if(policy.growth==='data')return fitToHull({...policy,maxW:innerW},innerW,Math.max(policy.minH,policy.prefH));
++    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,Math.max(policy.minH,policy.prefH));
+     if(policy.growth==='horizontal'){
+       // Horizontal families keep a readable band when no semantic aspect is
+       // declared; process/data-flow diagrams carry their own aspect above.
+@@ -475,16 +491,23 @@ function semanticSmartLayout(items=viewItems()) {
+     }
+     return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
+   };
+-  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=!solo&&(index===0||rows[index-1].section!==section);return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
+-  rowSpecs.forEach((spec,index)=>{spec.gapAfter=index<rowSpecs.length-1?g+(spec.section!==rowSpecs[index+1].section?g*.5:0):0;});
+-  const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height+r.gapAfter,0)+2*g+(rowSpecs[0]?.sectionStart?20:0);
+-  // Smart owns the safe hull. Solo composition uses only the useful semantic
+-  // height it needs; multi-element composition fills the report hull through
+-  // weighted row growth so hierarchy, not a centered island, determines mass.
+-  const layoutTargetH=solo?baseNeeded:CANVAS.h;
+-  const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
++  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length});
++  const rowSpecs=rows.map((spec,index)=>{
++    const widths=allocateRowWidths(spec.members,innerW,g,spec.ratios);
++    const fitSizes=spec.members.map(({policy},i)=>policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],Math.max(policy.minH,policy.prefH)):{w:widths[i],h:Math.max(policy.minH,policy.prefH)});
++    spec.members.forEach(({policy},i)=>{if(policy.aspect||policy.growth==='square')widths[i]=Math.max(policy.minW,Math.min(widths[i],fitSizes[i].w));});
++    const desired=fitSizes.map(size=>size.h);
++    if(solo){const size=soloSize(spec.members[0]);widths[0]=size.w;desired[0]=size.h;}
++    const sectionStart=!solo&&spec.sectionStart;
++    const prior=rowInputs[index-1],gapAfter=index<rowInputs.length-1?(prior?.section===rowInputs[index+1].section?spacing.stackGap:Math.max(8,spacing.sectionGap-spacing.headingHeight)):0;
++    return {...spec,sectionStart,sectionTitle:spec.title||compositionSection(spec.members[0].entry,compositionRole(spec.members[0].entry)).title,widths,height:Math.max(...desired),leading:sectionStart?spacing.headingHeight:0,gapAfter};
++  });
++  const baseNeeded=rowSpecs.reduce((sum,spec)=>sum+spec.height+spec.leading+spec.gapAfter,0)+2*g;
++  // Smart composition owns content-fit height. Page whitespace is not used to
++  // inflate plots, tables or the spaces between semantic sections.
++  const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)));
+   let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
+-  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter,0);
++  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter+spec.leading,0);
+   if(baseNeeded>resolvedTargetH) {
+     const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
+     const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
+@@ -499,8 +522,26 @@ function semanticSmartLayout(items=viewItems()) {
+       conflict=`Smart layout compacted ${ordered.length} elements to fit this ${resolvedTargetH}px page. Increase Page size for their preferred space.`;
+     }
+   }
+-  const rects=[];let y=g+(rowSpecs[0]?.sectionStart?20:0);
+-  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));if(policy.growth==='square')h=Math.min(spec.height,w);h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,sectionStart:spec.sectionStart&&i===0,sectionTitle:spec.sectionTitle,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+spec.gapAfter;}
++  const responsiveOrder=new Map(rows.flatMap(spec=>spec.members.map(({entry})=>entry)).map((entry,index)=>[String(entry.id),index]));
++  const rects=[];let y=g;
++  for(const spec of rowSpecs){
++    y+=spec.leading;
++    const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);
++    let x=g+Math.max(0,(innerW-rowWidth)/2);
++    const headingItemId=spec.featureId&&spec.members.some(({entry})=>String(entry.id)===spec.featureId)?spec.featureId:String(spec.members[0]?.entry.id||'');
++    const sectionHeadingOrder=spec.sectionStart?Math.min(...spec.members.map(({entry})=>responsiveOrder.get(String(entry.id))??Number.MAX_SAFE_INTEGER)):null;
++    for(let i=0;i<spec.members.length;i+=1){
++      const {entry,policy}=spec.members[i],id=String(entry.id),w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;
++      let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight,Math.max(policy.minH,policy.prefH)):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));
++      if(policy.growth==='square')h=Math.min(spec.height,w);
++      h=Math.max(policy.minH,h);
++      let itemY=y;
++      if(spec.featureId&&id!==spec.featureId&&spec.members.length>1)itemY+=Math.max(0,(spec.height-h)/2);
++      rects.push({id:entry.id,x,y:itemY,w,h,order:responsiveOrder.get(id),section:spec.section,sectionStart:spec.sectionStart&&id===headingItemId,sectionHeadingY:spec.sectionStart?y-spacing.headingHeight:null,sectionHeadingOrder,sectionTitle:spec.sectionTitle,sectionPattern:spec.pattern,sectionIndex:sectionById.get(spec.section)?.order||0,compositionLevel:spec.featureId===id?'feature':'support',touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:itemY===g,B:false},policy});
++      x+=w+g;
++    }
++    y+=spec.height+spec.gapAfter;
++  }
+   if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
+   return {rects,height:resolvedTargetH,conflict};
+ }
+@@ -894,7 +935,7 @@ function contentMarkup(entry, r) {
+ function ensureCanvasScaffold() {
+   const hull = $('#hull');
+   if (!$('#componentLayer', hull)) {
+-    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
++    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="composition-section-surface-layer" id="compositionSectionSurfaceLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
+   }
+   const scene=$('#scene');
+   if(scene&&!$('#editorChromeLayer',scene)) scene.insertAdjacentHTML('beforeend','<div class="editor-chrome-layer" id="editorChromeLayer" data-editor-only aria-label="Selection and resize controls"></div>');
+@@ -955,7 +996,7 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
+     return Math.max(headline?124:76,lines*(headline?23:20)+32);
+   }
+   if(entry.engine==='MetricEngine')return 132;
+-  if(entry.engine==='ComparisonEngine')return 150;
++  if(entry.engine==='ComparisonEngine')return 180;
+   if(entry.engine==='CoreChartEngine'||entry.engine==='EngineeringChartEngine')return 250;
+   if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
+   if(entry.engine==='DiagramEngine'){
+@@ -985,7 +1026,6 @@ function measureSmartContentRequirements(rm) {
+   if(model().mode!=='smart'||ui.smartLayoutConflict) return false;
+   let changed=false;
+   for(const entry of model().items) {
+-    if(entry.engine==='DiagramEngine'&&String(entry.element||entry.title||'').toLowerCase().includes('process flow'))continue;
+     const r=rm.get(entry.id); const node=ui.componentNodes.get(entry.id); if(!r||!node)continue;
+     const overflow=nodeOverflow($('.c-content',node));
+     if(overflow.x<=1&&overflow.y<=1)continue;
+@@ -1044,7 +1084,7 @@ function reconcileCanvas({ content = true } = {}) {
+     node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
+     node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
+     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
+-    node.style.order = String(Number.isFinite(Number(entry.order)) ? Number(entry.order) : 0);
++    node.style.order = String(model().mode==='smart'&&Number.isFinite(Number(r.order))?Number(r.order)*2+1:(Number.isFinite(Number(entry.order))?Number(entry.order):0));
+     syncComponentSectionHeading(node,r,entry);
+     node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
+     node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
+@@ -1060,6 +1100,7 @@ function reconcileCanvas({ content = true } = {}) {
+   }
+   syncCompositionSectionHeadings(layer,rm);
+   renderGroups(rm);
++  renderCompositionSectionSurfaces(rm);
+   renderEditorChrome(rm);
+   renderContext(rm);
+   renderMinimap(rm);
+@@ -1091,18 +1132,49 @@ function renderGroups(rm) {
+   layer.innerHTML = specs.map(([gid, u]) => `<div class="group-outline" data-group="${esc(gid)}" style="left:${u.x - 4}px;top:${u.y - 4}px;width:${u.w + 8}px;height:${u.h + 8}px"></div>`).join('');
+ }
+ 
++function renderCompositionSectionSurfaces(rm) {
++  const layer=$('#compositionSectionSurfaceLayer');if(!layer)return;
++  layer.querySelectorAll('.composition-section-surface').forEach(node=>node.remove());
++  if(model().mode!=='smart')return;
++  const grouped=new Map();
++  for(const rect of rm.values()){
++    if(!rect.section||!['hero-opening-band','compact-kpi-strip','feature-support-analysis','balanced-analytical-pair','evidence-detail-grid','narrative-evidence-split','causal-flow-feature'].includes(rect.sectionPattern))continue;
++    if(!grouped.has(rect.section))grouped.set(rect.section,[]);grouped.get(rect.section).push(rect);
++  }
++  for(const [section,rects] of grouped){
++    const bounds=rectUnion(rects);if(!bounds)continue;
++    const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length}),heading=spacing.headingHeight;
++    const surface=document.createElement('div');surface.className='composition-section-surface';surface.dataset.pattern=rects[0].sectionPattern;surface.setAttribute('aria-hidden','true');
++    const left=Math.max(2,Math.min(bounds.x-12,CANVAS.w-4));
++    surface.style.left=`${left}px`;surface.style.top=`${Math.max(2,bounds.y-heading-7)}px`;
++    surface.style.width=`${Math.max(1,Math.min(bounds.w+24,CANVAS.w-4-left))}px`;surface.style.height=`${bounds.h+heading+19}px`;
++    surface.dataset.section=section;layer.appendChild(surface);
++  }
++}
++
+ function syncComponentSectionHeading(node,rect,entry) {
+-  if(model().mode==='smart'&&rect?.sectionStart){
+-    node.dataset.sectionStart='true';
+-    node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
++  if(model().mode==='smart'&&rect){
++    if(rect.sectionStart){
++      node.dataset.sectionStart='true';
++      node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
++    } else {
++      delete node.dataset.sectionStart;
++      delete node.dataset.sectionTitle;
++    }
++    node.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
++    node.dataset.compositionLevel=rect.compositionLevel||'feature';
+   } else {
+     delete node.dataset.sectionStart;
+     delete node.dataset.sectionTitle;
++    delete node.dataset.sectionPattern;
++    delete node.dataset.compositionLevel;
+   }
+ }
+ 
+ function syncCompositionSectionHeadings(layer,rm) {
+   if(!layer)return;
++  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length});
++  layer.style.setProperty('--viz-composition-row-gap',`${spacing.stackGap}px`);
+   layer.querySelectorAll('.composition-section-heading').forEach(node=>node.remove());
+   if(model().mode!=='smart')return;
+   for(const rect of rm.values()){
+@@ -1110,10 +1182,13 @@ function syncCompositionSectionHeadings(layer,rm) {
+     const entry=item(rect.id),heading=document.createElement('div');
+     heading.className='composition-section-heading';
+     heading.setAttribute('role','heading');heading.setAttribute('aria-level','2');
+-    heading.textContent=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+-    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,rect.y-18)}px`;
++    const index=String(Number(rect.sectionIndex||0)+1).padStart(2,'0'),title=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
++    heading.innerHTML=`<span class="composition-section-index">${index}</span><b>${esc(title)}</b>`;
++    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,Number.isFinite(Number(rect.sectionHeadingY))?Number(rect.sectionHeadingY):rect.y-spacing.headingHeight)}px`;
+     heading.style.width=`${Math.max(1,CANVAS.w-2*CANVAS.gap)}px`;
+-    heading.style.order=String(Math.floor(Number(entry?.order)||0)-1);
++    heading.style.order=String(Number.isFinite(Number(rect.sectionHeadingOrder))?Number(rect.sectionHeadingOrder)*2:Number.isFinite(Number(rect.order))?Number(rect.order)*2:Math.floor(Number(entry?.order)||0)*2);
++    heading.dataset.section=rect.section||'';
++    heading.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
+     layer.appendChild(heading);
+   }
+ }
+@@ -2999,27 +3074,27 @@ function renderReuseRemapDialog(focusKey=null){
+   const sections=slots.map(source=>{
+     const slot=plan.slots.find(value=>value.identity===source.identity)||{},selection=state.selections[source.identity]||{},destination=datasets.find(value=>String(value.id)===String(selection.dataset_id||slot.dataset_id));
+     const byId=new Map((destination?.fields||[]).map(field=>[String(field.id),field]));
+-    const fieldRows=source.bindings.flatMap(binding=>{
+-      const known=new Set(binding.field_roles.map(value=>value.role)),roles=[...binding.field_roles,...binding.references,...binding.required_roles.filter(role=>!known.has(role)).map(role=>({role,field_name:'',field_type:'',required:true}))];
+-      return roles.map(role=>{
+-        const selected=String(selection.mappings?.[binding.item_id]?.[role.role]||slot.mapping?.[binding.item_id]?.[role.role]||'');
+-        const label=reuseRoleLabel(role.role,binding.view),sourceLabel=role.field_name?` · source: ${role.field_name}`:'';
+-        return `<label class="reuse-remap-role"><span><b>${esc(label)}</b><small>${esc(binding.element)}${esc(sourceLabel)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(binding.item_id)}" data-role="${esc(role.role)}" aria-label="${esc(label)} for ${esc(binding.element)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===selected?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
+-      });
++    const fieldRows=groupedRemapRequirements(source,slot,selection).map(requirement=>{
++      const label=requirement.label,first=requirement.assignments[0]||{itemId:'',roles:[]},role=first.roles[0]||requirement.role;
++      const sourceLabel=requirement.sourceField?`Source field: ${requirement.sourceField}${requirement.expectedTypeLabel?` · ${requirement.expectedTypeLabel}`:''}`:'Choose a field that meets this requirement';
++      const scope=requirement.shared?`${requirement.consumers.length} visuals`:(requirement.consumers[0]||'Visual');
++      const scopeSummary=requirement.shared?`Shared by ${scope}`:`Used by ${scope}`;
++      const assignments=esc(JSON.stringify(requirement.assignments));
++      return `<label class="reuse-remap-role"><span><b>${esc(label)}${requirement.required?' *':''}</b><small>${esc(sourceLabel)} · ${esc(scopeSummary)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(first.itemId)}" data-role="${esc(role)}" data-remap-assignments="${assignments}" aria-label="${esc(label)} for ${esc(scope)}: ${esc(requirement.consumersLabel)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===requirement.value?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
+     }).join('');
+-    const issues=[...(slot.unresolved||[]).map(issue=>`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`),...(slot.problems||[]).map(issue=>issue.message||`${issue.element}: ${reuseRoleLabel(issue.role,source.bindings.find(binding=>binding.item_id===issue.item_id)?.view)} · ${issue.reason}`)];
++    const issues=summarizedRemapIssues(source,slot);
+     const status=slot.ready?'Ready':slot.ambiguous_dataset?'Choose a data source':slot.problems.length?'Data source is incompatible':'Needs field mapping';
+-    const drives=source.bindings.map(binding=>binding.element).join(', ');
++    const drives=remapVisualLabels(source.bindings);
+     const recipes=[...new Set(source.bindings.map(binding=>binding.analysis_recipe_identity?.id).filter(Boolean))].map(reusableRecipeLabel),transforms=[...new Set(source.bindings.flatMap(binding=>(binding.transform_recipe?.steps||[]).map(step=>humanTransformTypeLabel(step.type))))];
+     const analyticalNotes=[recipes.length?`Analysis: ${recipes.join(', ')}`:'',transforms.length?`Transforms: ${transforms.join(', ')}`:''].filter(Boolean).join(' · ');
+-    return `<section class="reuse-remap-slot" aria-labelledby="reuse-slot-${esc(source.identity)}"><header><div><h3 id="reuse-slot-${esc(source.identity)}">${esc(source.name||'Data source')}</h3><p>Used by ${esc(drives||'selected visuals')}</p></div><span class="reuse-remap-status ${slot.ready?'ready':slot.problems.length?'blocked':''}">${esc(status)}</span></header><label class="reuse-remap-dataset"><span>Data source</span><select data-remap-dataset="${esc(source.identity)}" aria-label="Data source for ${esc(source.name||'reusable section')}"><option value="">Choose a data source</option>${datasets.map(dataset=>`<option value="${esc(dataset.id)}" ${String(dataset.id)===String(destination?.id||'')?'selected':''}>${esc(dataset.name||'Untitled data')} · ${(dataset.fields||[]).length} fields</option>`).join('')}</select></label><p class="reuse-remap-schema">Source fields: ${esc(source.source_fields.map(field=>field.name).join(', ')||'No field names were saved')}${analyticalNotes?` · ${esc(analyticalNotes)}`:''}</p><div class="reuse-remap-fields">${fieldRows||'<p class="keyboard-help">This source has no mapped fields.</p>'}</div>${issues.length?`<ul class="reuse-remap-issues" aria-live="polite">${issues.map(issue=>`<li>${esc(issue)}</li>`).join('')}</ul>`:''}</section>`;
++    return `<section class="reuse-remap-slot" aria-labelledby="reuse-slot-${esc(source.identity)}"><header><div><h3 id="reuse-slot-${esc(source.identity)}">${esc(source.name||'Data source')}</h3><p><b>Used by ${drives.length} visual${drives.length===1?'':'s'}</b><span class="reuse-remap-consumers">${drives.map(value=>`<span>${esc(value)}</span>`).join('')}</span></p></div><span class="reuse-remap-status ${slot.ready?'ready':slot.problems.length?'blocked':''}">${esc(status)}</span></header><label class="reuse-remap-dataset"><span>Data source</span><select data-remap-dataset="${esc(source.identity)}" aria-label="Data source for ${esc(source.name||'reusable section')}"><option value="">Choose a data source</option>${datasets.map(dataset=>`<option value="${esc(dataset.id)}" ${String(dataset.id)===String(destination?.id||'')?'selected':''}>${esc(dataset.name||'Untitled data')} · ${(dataset.fields||[]).length} fields</option>`).join('')}</select></label><p class="reuse-remap-schema">Source fields: ${esc(source.source_fields.map(field=>field.name).join(', ')||'No field names were saved')}${analyticalNotes?` · ${esc(analyticalNotes)}`:''}</p><div class="reuse-remap-fields">${fieldRows||'<p class="keyboard-help">This source has no mapped fields.</p>'}</div>${issues.length?`<ul class="reuse-remap-issues" aria-live="polite">${issues.map(issue=>`<li>${esc(issue.message)}</li>`).join('')}</ul>`:''}</section>`;
+   }).join('');
+   const manualItems=(contract.manual_value_items||[]).map(item=>`<li>${esc(({key_metric:'Key metric',comparison:'Comparison',evidence_table:'Evidence table'})[item.kind]||'Report value')} · ${esc(item.element)}</li>`).join('');
+   const manualReview=manualItems?`<section class="reuse-remap-slot" aria-labelledby="reuse-manual-values"><header><div><h3 id="reuse-manual-values">Values to review</h3><p>These entries are not linked to source fields. Their old values are excluded so they cannot be mistaken for the new data.</p></div><span class="reuse-remap-status">Review after applying</span></header><ul class="reuse-remap-issues">${manualItems}</ul></section>`:'';
+   const explanation=plan.ok?'The report will use the selected data sources. The saved preset and those data sources remain unchanged.':'Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.';
+   const sourceButton=state.sourceAvailable?'<button type="button" class="tb" data-remap-source-copy>Use source data</button>':'';
+   $('#modalTitle').textContent=state.preset.kind==='section'?'Reuse section with new data':'Reuse report with new data';
+-  $('#modalBody').innerHTML=`<form class="modal-form reuse-remap-form" id="reuseRemapForm"><p class="reuse-remap-intro">${esc(explanation)}</p><div class="reuse-remap-slots">${sections||'<p>This preset has no linked data source. Its structure can be applied directly.</p>'}${manualReview}</div><div class="reuse-remap-consequence"><b>What will be applied</b><span>Structure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.</span></div><div class="reuse-remap-import"><span>Need another source? Add it through Data First, then reopen this workflow to map it.</span><button type="button" class="tb" data-remap-add-source>Add a data source</button></div><div class="reuse-remap-errors" role="status" aria-live="polite">${plan.ok?'All data roles are compatible.':plan.errors.map(error=>esc(error.reason||'Resolve the data source selection.')).join(' ')}</div><div class="modal-actions"><button type="button" class="tb" data-remap-cancel>Cancel</button>${sourceButton}<button type="submit" class="tb accent" ${plan.ok?'':'disabled'}>Apply reusable structure</button></div></form>`;
++  $('#modalBody').innerHTML=`<form class="modal-form reuse-remap-form" id="reuseRemapForm"><p class="reuse-remap-intro">${esc(explanation)}</p><div class="reuse-remap-slots">${sections||'<p>This preset has no linked data source. Its structure can be applied directly.</p>'}${manualReview}</div><div class="reuse-remap-consequence"><b>What will be applied</b><span>Structure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.</span></div><div class="reuse-remap-import"><span>Need another source? Add it through Data First, then reopen this workflow to map it.</span><button type="button" class="tb" data-remap-add-source>Add a data source</button></div><div class="reuse-remap-errors" role="status" aria-live="polite">${esc(remapStatusSummary(plan))}</div><div class="modal-actions"><button type="button" class="tb" data-remap-cancel>Cancel</button>${sourceButton}<button type="submit" class="tb accent" ${plan.ok?'':'disabled'}>Apply reusable structure</button></div></form>`;
+   if(focusKey){requestAnimationFrame(()=>{const nodes=$$('#modalBody [data-remap-dataset], #modalBody [data-remap-role]');const node=focusKey.kind==='dataset'?nodes.find(value=>value.dataset.remapDataset===focusKey.slot):nodes.find(value=>value.dataset.remapRole===focusKey.slot&&value.dataset.remapItem===focusKey.itemId&&value.dataset.role===focusKey.role);node?.focus({preventScroll:true});});}
+ }
+ function reusePreset(index){
+@@ -3429,7 +3504,7 @@ function wireGlobal(signal) {
+   on($('#builtinPresetList'),'click',(e)=>{const button=e.target.closest('[data-built-preset]');if(button)applySuggestion(button.dataset.builtPreset);});
+   on($('#presetList'),'click',(e)=>{const load=e.target.closest('[data-loadpreset]');const reuse=e.target.closest('[data-reusepreset]');const update=e.target.closest('[data-updatepreset]');const dup=e.target.closest('[data-duplicatepreset]');const del=e.target.closest('[data-deletepreset]');if(load)loadPreset(+load.dataset.loadpreset);else if(reuse)reusePreset(+reuse.dataset.reusepreset);else if(update)updatePreset(+update.dataset.updatepreset);else if(dup)duplicatePreset(+dup.dataset.duplicatepreset);else if(del)deletePreset(+del.dataset.deletepreset);});
+   on($('#presetList'),'change',(e)=>{const input=e.target.closest('[data-preset-rename]');if(input)renamePreset(+input.dataset.presetRename,input.value);});
+-  on($('#genericModal'),'change',(event)=>{if(!reuseApplyState)return;const dataset=event.target.closest('[data-remap-dataset]'),field=event.target.closest('[data-remap-role]');if(dataset){reuseApplyState.selections[dataset.dataset.remapDataset]={dataset_id:dataset.value,mappings:{}};return renderReuseRemapDialog({kind:'dataset',slot:dataset.dataset.remapDataset});}if(field){const slot=field.dataset.remapRole,itemId=field.dataset.remapItem,role=field.dataset.role,selection=reuseApplyState.selections[slot]||(reuseApplyState.selections[slot]={dataset_id:'',mappings:{}});selection.mappings[itemId]={...(selection.mappings[itemId]||{}),[role]:field.value};renderReuseRemapDialog({kind:'role',slot,itemId,role});}});
++  on($('#genericModal'),'change',(event)=>{if(!reuseApplyState)return;const dataset=event.target.closest('[data-remap-dataset]'),field=event.target.closest('[data-remap-role]');if(dataset){reuseApplyState.selections[dataset.dataset.remapDataset]={dataset_id:dataset.value,mappings:{}};return renderReuseRemapDialog({kind:'dataset',slot:dataset.dataset.remapDataset});}if(field){const slot=field.dataset.remapRole,itemId=field.dataset.remapItem,role=field.dataset.role,selection=reuseApplyState.selections[slot]||(reuseApplyState.selections[slot]={dataset_id:'',mappings:{}});let assignments=[];try{assignments=JSON.parse(field.dataset.remapAssignments||'[]');}catch{assignments=[{itemId,roles:[role]}];}for(const target of assignments){const current=selection.mappings[target.itemId]||(selection.mappings[target.itemId]={});for(const mappedRole of target.roles||[role])current[mappedRole]=field.value;}renderReuseRemapDialog({kind:'role',slot,itemId,role});}});
+   on($('#genericModal'),'click',(event)=>{if(event.target.closest('[data-remap-cancel]'))return closeModals();if(event.target.closest('[data-remap-add-source]')){reuseApplyState=null;closeModals();$('#pasteDataBtn').click();return;}if(event.target.closest('[data-remap-source-copy]')){const saved=reuseApplyState?.preset,index=personalPresets.findIndex(value=>value.id===saved?.id);if(index>=0)confirmPresetSourceData(index);}});
+   on($('#genericModal'),'submit',(event)=>{if(event.target?.id!=='reuseRemapForm'||!reuseApplyState)return;event.preventDefault();const state=reuseApplyState,plan=planReusableRemap(state.contract,model().datasets,state.selections);if(!plan.ok){renderReuseRemapDialog();return toast('Resolve the highlighted data source and field mapping before applying');}closeModals();if(!commitReusablePreset(state,plan))toast('The reusable preset could not be applied');});
+   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
+@@ -3474,7 +3549,7 @@ function init(root=$('.cui-visualizer-root')) {
+   activeRoot.dataset.editorReady='true';
+   const stagePanel=new URLSearchParams(location.search).get('panel');
+   if(['assets','datasets','blueprints','roles','delivery'].includes(stagePanel))requestAnimationFrame(()=>stageDOpen(stagePanel));
+-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy})=>({id,x,y,w,h,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h})=>({id,x,y,w,h}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
++  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy,section,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionPattern,compositionLevel,order,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
+   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
+ }
+ function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}
+diff --git a/docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md b/docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md
+index 7711bac..dc3c41d 100644
+--- a/docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md
++++ b/docs/VISSEMBLER_CHG181_COMPOSITION_AND_REUSE.md
+@@ -30,6 +30,50 @@ Canonical roles are `report_headline`, `context`, `hero_metric`,
+ not element-type sort lists. Existing renderers and content-fit logic continue
+ to own component visuals and export geometry.
+ 
++## Whole-report section grammar (R2)
++
++Smart composition derives one deterministic pattern for each semantic section
++from its roles, engines, item count, content requirements, available page width
++and selected recipe. The supported patterns are hero/opening band, compact KPI
++strip, analytical feature, feature/support analysis, balanced analytical pair,
++evidence/detail grid, narrative/evidence split, causal-flow feature, compact
++decision band, closing next step, and an editorial flow for content that does
++not match a specialized pattern. A single analysis visual uses the
++analytical-feature pattern; it does not reserve an empty support column.
++Causal flow may pair with short interpretation or compatible visual evidence
++when the section's content fits, while dense evidence tables keep their
++available width. Patterns describe placement only; chart view, mapping, data,
++transformation, analysis recipe and source values are never rewritten to
++manufacture visual variety.
++
++Every section identifies its feature and supporting entries from composition
++role, explicit emphasis, recipe prominence and available content density.
++Feature/support rows use bounded width ratios only when the item minimums fit;
++otherwise the feature leads in its own row. Related before/current or
++reference/affected comparisons can use a balanced pair. Other paired analyses
++favor a feature/support hierarchy. Evidence grids and KPI strips break into
++readable rows when page width requires it.
++
++The row gap, section gap and heading height come from the shared
++`compositionSpacing` authority and have explicit minimum and maximum bounds.
++Item heights remain content-driven, and Smart canvas height follows the
++resulting content instead of stretching components to fill a saved blank page.
++An individually authored visual uses the available content hull for its
++standalone Smart canvas; multi-item reports retain intrinsic component heights.
++Stage A occupancy checks use that live Smart hull while keeping their existing
++area thresholds, since the persisted page height remains user-authored.
++The section heading and any section surface are derived browser state. No new
++section-layout field is required in report JSON. Older reports therefore get
++the same stable defaults; custom `section_id`, `section_title`,
++`section_order`, `composition_role` and emphasis continue to take effect.
++Guided and Free keep their stored manual geometry. Smart reflow remains one
++normal governed report edit with undo/redo and revision history.
++
++The narrow Preview uses the exact derived row order, including feature/support
++order, and collapses each section to one readable column. Browser acceptance
++checks section patterns, feature assignment, canvas bounds, overlap, accessible
++section headings, mobile ordering and unchanged chart/data semantics.
++
+ ## Reusable analytical binding contract
+ 
+ Personal report and section assets may include
+@@ -73,9 +117,25 @@ the normal governed update path; the saved asset and source dataset are not
+ modified. Undo/redo and report history therefore continue to describe one
+ atomic change.
+ 
++## Shared-slot remap presentation (R2)
++
++The reusable-binding contract and planner stay unchanged. In the dialog,
++equivalent requirements such as chart `x` plus table `category`, or chart `y`
++plus table `value`, share one field selector when their source field identity,
++type and semantic tags match. Selecting it applies the same field to each
++underlying visual role in that slot. The slot shows its dependent visuals once,
++using human labels and concise chips. Different source requirements stay
++separate. Ambiguous and incompatible mappings remain visible as one concise
++diagnostic per distinct requirement, with field-level guidance; Apply stays
++disabled until the existing compatibility plan is ready. Focus restoration,
++Escape return, source-data copy, source immutability and atomic commit continue
++through the existing workflow.
++
+ ## Verification
+ 
+-The focused module suite is `tests/test_visualizer_chg181_semantic_reuse.py`.
++The focused module suites are
++`tests/test_visualizer_chg181_semantic_reuse.py` and
++`tests/test_visualizer_chg181_section_composition.py`.
+ The maintained native browser journey is
+ `scripts/release_checks/run_chg181_authoring_acceptance.py`; it exercises
+ Report Hub, Data First, Inspector, reusable presets, remapping, Preview and
+@@ -85,5 +145,5 @@ states are reviewed as report content. The full release authority remains
+ `python scripts/verify_release.py --host-mode native` and binds its receipts to
+ one stable source manifest.
+ 
+-This BUILD produces R1 product and evidence candidates only. CHG-173 remains the
+-separate independent whole-report outcome audit.
++R2 completes the bounded CHG-181 composition and remap-presentation repair.
++It is not a CHG-173 promotion or a company-managed target certification.
+diff --git a/scripts/release_checks/run_chg180_r1_acceptance.py b/scripts/release_checks/run_chg180_r1_acceptance.py
+index 82a2159..3d22887 100644
+--- a/scripts/release_checks/run_chg180_r1_acceptance.py
++++ b/scripts/release_checks/run_chg180_r1_acceptance.py
+@@ -8,6 +8,7 @@ import hashlib
+ import importlib.metadata
+ import json
+ import os
++import re
+ import shutil
+ import subprocess
+ import sys
+@@ -231,16 +232,26 @@ def ui_contact_sheet(paths: list[Path], destination: Path) -> None:
+ def structural_operations(path: Path) -> dict:
+     presentation = Presentation(str(path))
+     shapes = [shape for slide in presentation.slides for shape in slide.shapes]
+-    nodes = [shape for shape in shapes if shape.name.startswith('VIZ::Process Flow::')]
++    # A continuation-reference is a slide-level pointer to the editable
++    # diagram on its continuation page, not an editable flow node.
++    node_name = re.compile(r'^VIZ::Process Flow::.+::node-\d+$')
++    nodes = [shape for shape in shapes if node_name.fullmatch(shape.name)]
++    continuation_refs = [shape for shape in shapes if shape.name == 'VIZ::Process Flow::continuation-reference']
+     labels = [shape.text for shape in nodes if getattr(shape, 'has_text_frame', False)]
+     connectors = [shape for shape in shapes if shape.shape_type == MSO_SHAPE_TYPE.LINE]
+     semantic = []
+-    for shape in nodes:
++    for shape in [*nodes, *continuation_refs]:
+         for node in shape._element.xpath('.//p:cNvPr'):
+             description = node.get('descr') or ''
+             if description.startswith('VisualizerSemantic:'):
+                 semantic.append(json.loads(description.removeprefix('VisualizerSemantic:')))
+     assert len(nodes) == len(FLOW_LABELS), f'Expected {len(FLOW_LABELS)} editable flow nodes, got {len(nodes)}.'
++    if len(presentation.slides) > 1:
++        assert len(continuation_refs) == 1, f'Expected one continuation reference for the multi-slide flow, got {len(continuation_refs)}.'
++        continuation_text = ' '.join((continuation_refs[0].text if getattr(continuation_refs[0], 'has_text_frame', False) else '').split()).lower()
++        assert 'continues on slides' in continuation_text, 'The continuation reference must identify the continuation slides.'
++    else:
++        assert not continuation_refs, 'A single-slide flow must not contain a continuation reference.'
+     assert len(connectors) >= len(FLOW_LABELS) - 1, f'Expected causal connectors, got {len(connectors)}.'
+     normalized_labels = ' '.join('\n'.join(labels).split())
+     assert all(' '.join(label.split()) in normalized_labels for label in FLOW_LABELS), 'PowerPoint flow labels are incomplete.'
+diff --git a/scripts/release_checks/run_chg181_authoring_acceptance.py b/scripts/release_checks/run_chg181_authoring_acceptance.py
+index e5a3efe..f575e0f 100644
+--- a/scripts/release_checks/run_chg181_authoring_acceptance.py
++++ b/scripts/release_checks/run_chg181_authoring_acceptance.py
+@@ -564,6 +564,7 @@ def pptx_chart_values(path: Path) -> list[dict]:
+ 
+ 
+ def compose_and_validate(page, actions: Actions) -> dict:
++    semantic_before = page.evaluate("""()=>JSON.stringify(window.CompanyUIVisualizerBridge.state().model.items.map(item=>({id:item.id,engine:item.engine,element:item.element,view_type:item.view_type,variant:item.variant,mapping:item.mapping,data:item.data,rows:item.rows,transform_recipe:item.transform_recipe,transform_pipeline:item.transform_pipeline,analysis_recipe:item.analysis_recipe,statistical_recipe:item.statistical_recipe,engineering_recipe:item.engineering_recipe,chart_studio:item.chart_studio})))""")
+     page.locator("#auto").click()
+     settled(page)
+     actions.note("Compose/Reflow report", "editor")
+@@ -574,6 +575,7 @@ def compose_and_validate(page, actions: Actions) -> dict:
+         "data_issue_count": len(result["dataIssues"]),
+     }
+     if summary["layout_issue_count"] or summary["data_issue_count"]:
++        summary["rendered_items"] = page.evaluate("""()=>[...document.querySelectorAll('.component')].map(node=>{const c=node.querySelector('.c-content'),content=c?.querySelector('.integrated-element-content')||c||node,box=content.getBoundingClientRect(),all=[c,content,...content.querySelectorAll('.gallery-card,.card-body,.table-wrap,.chart-wrap,.diagram-svg,.viz-svg,.cs-static-chart,.cs-chart-svg,.plot-area,svg')].filter(Boolean),metrics=all.map(child=>{const rect=child.getBoundingClientRect(),css=getComputedStyle(child);return {tag:child.tagName,className:child.getAttribute('class'),box:{width:rect.width,height:rect.height},scroll:{width:child.scrollWidth,height:child.scrollHeight},client:{width:child.clientWidth,height:child.clientHeight},css:{height:css.height,minHeight:css.minHeight,maxHeight:css.maxHeight,overflow:css.overflow}}}),overflow=metrics.slice(1).reduce((max,child)=>({x:Math.max(max.x,child.scroll.width-child.client.width),y:Math.max(max.y,child.scroll.height-child.client.height)}),{x:0,y:0});return {id:node.dataset.id,box:{width:box.width,height:box.height},overflow,metrics}})""")
+         raise AssertionError(f"Smart composition is not export-ready after content fit: {json.dumps(summary, ensure_ascii=False)}")
+     geometry = page.evaluate("window.__VIZ_PROD__.layoutGeometry()")
+     rects = geometry["items"]
+@@ -588,6 +590,18 @@ def compose_and_validate(page, actions: Actions) -> dict:
+         raise AssertionError(f"Smart report geometry is not a bounded, non-overlapping composition: {json.dumps({'overlaps': overlaps, 'canvas': geometry['canvas'], 'items': rects}, ensure_ascii=False)}")
+     serialized = page.evaluate("window.__VIZ_PROD__.serialize()")
+     model = json.loads(serialized)
++    semantic_after = page.evaluate("""()=>JSON.stringify(window.CompanyUIVisualizerBridge.state().model.items.map(item=>({id:item.id,engine:item.engine,element:item.element,view_type:item.view_type,variant:item.variant,mapping:item.mapping,data:item.data,rows:item.rows,transform_recipe:item.transform_recipe,transform_pipeline:item.transform_pipeline,analysis_recipe:item.analysis_recipe,statistical_recipe:item.statistical_recipe,engineering_recipe:item.engineering_recipe,chart_studio:item.chart_studio})))""")
++    if semantic_before != semantic_after:
++        raise AssertionError("Whole-report composition must not change chart, data, transform, or analysis meaning.")
++    sections_with_multiple_items = {}
++    for rect in rects:
++        if rect.get("section"):
++            sections_with_multiple_items.setdefault(rect["section"], []).append(rect)
++    for section_name, section_items in sections_with_multiple_items.items():
++        if len(section_items) > 1 and len({item.get("sectionPattern") for item in section_items}) != 1:
++            raise AssertionError(f"Every item in {section_name!r} must share one derived section composition pattern.")
++        if len(section_items) > 1 and sum(item.get("compositionLevel") == "feature" for item in section_items) != 1:
++            raise AssertionError(f"{section_name!r} must expose one feature and its supporting items: {section_items}")
+     items_by_id = {str(item.get("id")): item for item in model.get("items", [])}
+     summary["geometry"] = {
+         "canvas": geometry["canvas"],
+@@ -600,14 +614,25 @@ def compose_and_validate(page, actions: Actions) -> dict:
+                 "title": items_by_id.get(str(rect["id"]), {}).get("title"),
+                 "role": items_by_id.get(str(rect["id"]), {}).get("composition_role"),
+                 "section": items_by_id.get(str(rect["id"]), {}).get("section_title"),
++                "pattern": rect.get("sectionPattern"),
++                "level": rect.get("compositionLevel"),
+             }
+             for rect in rects
+         ],
+     }
+-    visible_sections = page.locator("#componentLayer .composition-section-heading").evaluate_all("nodes=>nodes.map(node=>({title:node.textContent.trim(),role:node.getAttribute('role'),level:node.getAttribute('aria-level')}))")
++    visible_sections = page.locator("#componentLayer .composition-section-heading").evaluate_all("nodes=>nodes.map(node=>({title:node.textContent.trim(),section:node.dataset.section,top:parseFloat(node.style.top)||0,height:node.getBoundingClientRect().height,role:node.getAttribute('role'),level:node.getAttribute('aria-level')}))")
+     if not visible_sections or any(not section["title"] or section["role"] != "heading" or section["level"] != "2" for section in visible_sections):
+         raise AssertionError(f"Smart sections must have visible, accessible headings: {visible_sections}")
++    for heading in visible_sections:
++        section_items = [rect for rect in rects if str(rect.get("section")) == str(heading["section"])]
++        if not section_items:
++            raise AssertionError(f"Section heading {heading!r} has no matching composition group.")
++        first_y = min(float(rect["y"]) for rect in section_items)
++        expected_top = max(0.0, float(next((rect["sectionHeadingY"] for rect in section_items if rect.get("sectionStart")), first_y - 26)))
++        if abs(float(heading["top"]) - expected_top) > 0.5 or float(heading["top"]) + float(heading["height"]) > first_y + 0.5:
++            raise AssertionError(f"Section heading must sit above its first composed row without overlap: {heading!r}; row top={first_y}.")
+     summary["geometry"]["visible_sections"] = visible_sections
++    summary["geometry"]["chart_data_semantics_unchanged"] = True
+     return summary
+ 
+ 
+@@ -671,12 +696,15 @@ def capture_report(page, output: Path, name: str, actions: Actions) -> dict:
+     page.locator("#previewFitWidth").click()
+     page.wait_for_timeout(300)
+     mobile_overflow = page.evaluate("document.documentElement.scrollWidth-innerWidth")
+-    mobile_reading = page.evaluate("""()=>{const root=document.querySelector('.cui-visualizer-root'),hull=document.querySelector('#hull'),layer=document.querySelector('#componentLayer'),items=[...document.querySelectorAll('#componentLayer>.component')],first=items[0]?.getBoundingClientRect(),second=items[1]?.getBoundingClientRect(),body=document.querySelector('.integrated-element-content'),rect=node=>{const r=node.getBoundingClientRect(),s=getComputedStyle(node);return {id:node.dataset.id,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,display:s.display,order:s.order,text:(node.innerText||'').slice(0,70)}};const textComponents=items.filter(node=>node.dataset.engine==='TextEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,deadSpace:Math.max(0,node.clientHeight-(card?.clientHeight||0)),clipped:!!card&&card.scrollHeight>card.clientHeight+2||!!copy&&copy.scrollHeight>copy.clientHeight+2}}),processFlows=items.filter(node=>node.dataset.engine==='DiagramEngine').map(node=>{const r=node.getBoundingClientRect(),svg=node.querySelector('.diagram-svg'),s=svg?.getBoundingClientRect();return{id:node.dataset.id,height:r.height,svgHeight:s?.height||0,svgWidth:s?.width||0}}),tableRegions=[...document.querySelectorAll('#componentLayer [role="region"][aria-label^="Scrollable table:"]')].map(node=>({label:node.getAttribute('aria-label'),tabIndex:node.tabIndex,clientWidth:node.clientWidth,scrollWidth:node.scrollWidth,scrollLeft:node.scrollLeft})),sections=[...document.querySelectorAll('#componentLayer .composition-section-heading')].map(node=>({title:node.textContent.trim(),role:node.getAttribute('role'),level:node.getAttribute('aria-level')}));return {hull_width:hull?.getBoundingClientRect().width||0,viewport_width:innerWidth,component_count:items.length,first_font_px:body?parseFloat(getComputedStyle(body).fontSize):0,ordered_flow:!!first&&!!second&&second.top>first.top+1,preview:root?.classList.contains('preview-mode'),layer:layer?{...rect(layer),flexDirection:getComputedStyle(layer).flexDirection}:null,items:items.map(rect).sort((a,b)=>a.y-b.y),text_components:textComponents,process_flows:processFlows,table_regions:tableRegions,sections}}""")
++    mobile_reading = page.evaluate("""()=>{const root=document.querySelector('.cui-visualizer-root'),hull=document.querySelector('#hull'),layer=document.querySelector('#componentLayer'),items=[...document.querySelectorAll('#componentLayer>.component')],first=items[0]?.getBoundingClientRect(),second=items[1]?.getBoundingClientRect(),body=document.querySelector('.integrated-element-content'),rect=node=>{const r=node.getBoundingClientRect(),s=getComputedStyle(node);return {id:node.dataset.id,x:r.x,y:r.y,w:r.width,h:r.height,position:s.position,display:s.display,order:s.order,text:(node.innerText||'').slice(0,70)}};const textComponents=items.filter(node=>node.dataset.engine==='TextEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,deadSpace:Math.max(0,node.clientHeight-(card?.clientHeight||0)),clipped:!!card&&card.scrollHeight>card.clientHeight+2||!!copy&&copy.scrollHeight>copy.clientHeight+2}}),comparisonMetrics=items.filter(node=>node.dataset.engine==='ComparisonEngine').map(node=>{const card=node.querySelector('.gallery-card'),copy=node.querySelector('.card-body'),comparison=node.querySelector('.comparison');return{id:node.dataset.id,componentHeight:node.clientHeight,cardScroll:card?.scrollHeight||0,cardClient:card?.clientHeight||0,copyScroll:copy?.scrollHeight||0,copyClient:copy?.clientHeight||0,comparisonScroll:comparison?.scrollHeight||0,comparisonClient:comparison?.clientHeight||0}}),processFlows=items.filter(node=>node.dataset.engine==='DiagramEngine').map(node=>{const r=node.getBoundingClientRect(),svg=node.querySelector('.diagram-svg'),s=svg?.getBoundingClientRect();return{id:node.dataset.id,height:r.height,svgHeight:s?.height||0,svgWidth:s?.width||0}}),tableRegions=[...document.querySelectorAll('#componentLayer [role="region"][aria-label^="Scrollable table:"]')].map(node=>({label:node.getAttribute('aria-label'),tabIndex:node.tabIndex,clientWidth:node.clientWidth,scrollWidth:node.scrollWidth,scrollLeft:node.scrollLeft})),geometry=window.__VIZ_PROD__.layoutGeometry().items,sections=[...document.querySelectorAll('#componentLayer .composition-section-heading')].map(node=>{const members=geometry.filter(item=>String(item.section)===String(node.dataset.section));return{title:node.textContent.trim(),section:node.dataset.section,order:Number(getComputedStyle(node).order),first_component_order:members.length?Math.min(...members.map(item=>Number(item.order)||0)):null,role:node.getAttribute('role'),level:node.getAttribute('aria-level')}});return {hull_width:hull?.getBoundingClientRect().width||0,viewport_width:innerWidth,component_count:items.length,first_font_px:body?parseFloat(getComputedStyle(body).fontSize):0,ordered_flow:!!first&&!!second&&second.top>first.top+1,preview:root?.classList.contains('preview-mode'),layer:layer?{...rect(layer),flexDirection:getComputedStyle(layer).flexDirection}:null,items:items.map(rect).sort((a,b)=>a.y-b.y),reading_order:items.map(rect).sort((a,b)=>a.y-b.y).map(value=>Number(value.order)),text_components:textComponents,comparison_metrics:comparisonMetrics,process_flows:processFlows,table_regions:tableRegions,sections}}""")
+     assert mobile_reading["hull_width"] <= 370 and mobile_reading["hull_width"] >= 340, "Mobile reading should use the narrow viewport width."
+     assert mobile_reading["first_font_px"] >= 12 and mobile_reading["ordered_flow"], "Mobile preview must remain readable in composed single-column order."
+     assert mobile_reading["sections"] and all(section["role"] == "heading" and section["level"] == "2" for section in mobile_reading["sections"]), "Mobile reading must retain accessible section hierarchy."
++    assert mobile_reading["reading_order"] == sorted(mobile_reading["reading_order"]), f"Mobile Preview must follow Smart composition order: {mobile_reading['reading_order']}"
++    assert all(section["first_component_order"] is not None and section["order"] == 2 * section["first_component_order"] for section in mobile_reading["sections"]), f"Each mobile section heading must precede its own first composed component: {mobile_reading['sections']}"
+     assert not any(entry["clipped"] for entry in mobile_reading["text_components"]), f"Mobile narrative content must not be clipped: {mobile_reading['text_components']}"
+     assert all(entry["deadSpace"] <= 72 for entry in mobile_reading["text_components"]), f"Mobile narrative cards must not reserve large empty bands: {mobile_reading['text_components']}"
++    assert all(entry["copyScroll"] <= entry["copyClient"] + 2 and entry["comparisonScroll"] <= entry["comparisonClient"] + 2 for entry in mobile_reading["comparison_metrics"]), f"Mobile comparison metrics must fit their authored card height: {mobile_reading['comparison_metrics']}"
+     process_flow_ids={str(entry.get("id")) for entry in model(page).get("items",[]) if entry.get("engine")=="DiagramEngine" and "process flow" in str(entry.get("element",entry.get("title",""))).lower()}
+     process_flows=[entry for entry in mobile_reading["process_flows"] if entry["id"] in process_flow_ids]
+     assert not process_flow_ids or (len(process_flows)==len(process_flow_ids) and all(140 <= entry["height"] <= 205 and entry["svgHeight"] >= 96 for entry in process_flows)), f"Mobile process flow must remain readable without a blank display band: {process_flows}"
+@@ -984,6 +1012,16 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
+     source_slot_text = dialog.inner_text()
+     assert "Region" in source_slot_text and "Revenue" in source_slot_text
+     assert "used by" in source_slot_text.lower()
++    assert "used by 2 visuals" in source_slot_text.lower(), "The shared dataset slot must name both dependent visuals once."
++    assert field_labels == 3, f"Shared Category and Measurement requirements should be shown once per distinct source requirement: {field_labels}"
++    shared_control = dialog.locator("[data-remap-role]").first
++    assignments = json.loads(shared_control.get_attribute("data-remap-assignments") or "[]")
++    assert len(assignments) == 2, f"One shared selector must update both visual bindings: {assignments}"
++    shared_control.select_option(shared_control.input_value())
++    page.wait_for_timeout(80)
++    focused_shared = page.evaluate("""()=>({item:document.activeElement?.dataset?.remapItem,role:document.activeElement?.dataset?.role,slot:document.activeElement?.dataset?.remapRole})""")
++    assert focused_shared.get("item") == assignments[0]["itemId"], f"Field selection must restore keyboard focus after grouped remap refresh: {focused_shared}"
++    grouped_focus_restored = True
+     page.keyboard.press("Tab")
+     inside_after_tab = page.evaluate("()=>document.activeElement?.closest('#reuseRemapForm')!==null")
+     assert inside_after_tab, "Tab must remain in the remap modal."
+@@ -1148,6 +1186,12 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
+         "preview_chart_summaries_after_remap":capture["preview_chart_summaries"],
+         "reused_shared_visual_count": len(reused_charts),
+         "automatic_field_control_count": auto_mapping_count,
++        "shared_slot_presentation": {
++            "dependent_visual_count": 2,
++            "distinct_field_controls": field_labels,
++            "first_control_assignments": assignments,
++            "focus_restored_after_field_change": grouped_focus_restored,
++        },
+         "section_reuse": {
+             "destination_dataset_id": section_dataset_id,
+             "remapped_visual_count": len(new_section_charts),
+@@ -1297,6 +1341,10 @@ def incompatible_challenge(page, host: NativeHost, actions: Actions, output: Pat
+     assert apply.is_disabled(), "An incompatible value field must block the report remap."
+     compatibility_text = dialog.inner_text()
+     assert "incompatible" in compatibility_text.lower() or "numeric" in compatibility_text.lower(), compatibility_text
++    issue_messages = dialog.locator(".reuse-remap-issues li").all_inner_texts()
++    assert issue_messages and len(issue_messages) == len(set(issue_messages)), f"Remap diagnostics must be de-duplicated: {issue_messages}"
++    assert not any("incompatible type incompatible type" in message.lower() for message in issue_messages)
++    assert any("measurement" in message.lower() or "numeric" in message.lower() for message in issue_messages), issue_messages
+     page.keyboard.press("Escape")
+     dialog.wait_for(state="hidden", timeout=5_000)
+     assert model(page) == before
+@@ -1531,8 +1579,8 @@ def main() -> int:
+         parser.error("--output must be new or empty.")
+     output.mkdir(parents=True, exist_ok=True)
+     report = {
+-        "request": "CHG-181-r1",
+-        "operation": "BUILD",
++        "request": "CHG-181-r2",
++        "operation": "FIX",
+         "host": "native NiceGUI 3.15.0",
+         "created_at_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+         "candidate_sha": __import__("subprocess").check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+diff --git a/scripts/release_checks/run_stage_a_acceptance.py b/scripts/release_checks/run_stage_a_acceptance.py
+index 5fb8fd8..2088a92 100644
+--- a/scripts/release_checks/run_stage_a_acceptance.py
++++ b/scripts/release_checks/run_stage_a_acceptance.py
+@@ -366,7 +366,9 @@ def assert_width_growth(page):
+ 
+ def _assert_solo(page, kind: str, min_width_share: float, min_area_share: float):
+     rect = page.evaluate('()=>__VIZ_PROD__.layoutRects()[0]')
+-    canvas = page.evaluate('()=>CompanyUIVisualizerBridge.state().model.canvas')
++    # Smart mode derives a content-fit canvas at runtime; the persisted page
++    # size remains user-authored and is not the visible safe hull.
++    canvas = page.evaluate('()=>__VIZ_PROD__.layoutGeometry().canvas')
+     width_share=rect['w']/canvas['width'];area_share=rect['w']*rect['h']/(canvas['width']*canvas['height'])
+     assert width_share >= min_width_share and area_share >= min_area_share and rect['y'] <= 20, (kind, rect, width_share, area_share)
+     node = page.locator('.component').first
+diff --git a/tests/test_visualizer_chg181_section_composition.py b/tests/test_visualizer_chg181_section_composition.py
+new file mode 100644
+index 0000000..bacac9b
+--- /dev/null
++++ b/tests/test_visualizer_chg181_section_composition.py
+@@ -0,0 +1,186 @@
++from __future__ import annotations
++
++import json
++import subprocess
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[1]
++
++
++def node_json(source: str) -> dict:
++    result = subprocess.run(
++        ["node", "--input-type=module", "--eval", source],
++        cwd=ROOT,
++        check=False,
++        capture_output=True,
++        text=True,
++        timeout=30,
++    )
++    if result.returncode:
++        raise AssertionError(f"Node fixture failed: {result.stderr.strip()}")
++    return json.loads(result.stdout)
++
++
++def test_section_grammar_selects_patterns_and_deterministic_feature_support() -> None:
++    result = node_json(
++        r'''
++import {sectionCompositionPlan} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
++const items=[
++ {id:'title',element:'Hero Title',engine:'TextEngine',composition_role:'report_headline',section_id:'opening',section_title:'Decision brief',order:0},
++ {id:'context',element:'Body Narrative',engine:'TextEngine',composition_role:'context',section_id:'opening',section_title:'Decision brief',order:1},
++ {id:'m1',element:'Hero KPI',engine:'MetricEngine',composition_role:'hero_metric',section_id:'performance',order:2,emphasis:'standard'},
++ {id:'m2',element:'Hero KPI',engine:'MetricEngine',composition_role:'hero_metric',section_id:'performance',order:3},
++ {id:'m3',element:'Before/After KPI',engine:'ComparisonEngine',composition_role:'hero_metric',section_id:'performance',order:4},
++ {id:'main',element:'Bar Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'analysis',order:5},
++ {id:'support',element:'Bar Chart',engine:'CoreChartEngine',composition_role:'supporting_analysis',section_id:'analysis',order:6},
++ {id:'risk',element:'Risk Callout',engine:'DecisionCompositeEngine',composition_role:'decision_risk',section_id:'decision',order:7},
++ {id:'next',element:'Project Card',engine:'ProjectCompositeEngine',composition_role:'action_status',section_id:'delivery',order:8},
++];
++const first=sectionCompositionPlan(items,'executive',1440,{main:{minW:380},support:{minW:380}}),second=sectionCompositionPlan(items,'executive',1440,{main:{minW:380},support:{minW:380}});
++const solo=sectionCompositionPlan([{id:'solo-chart',element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'analysis'}],'executive',1440,{'solo-chart':{minW:380}})[0];
++console.log(JSON.stringify({patterns:first.map(value=>[value.id,value.pattern]),stable:JSON.stringify(first)===JSON.stringify(second),opening:first.find(value=>value.id==='opening'),performance:first.find(value=>value.id==='performance'),analysis:first.find(value=>value.id==='analysis'),solo:{pattern:solo.pattern,featureId:solo.featureId,rows:solo.rows.map(row=>row.ids)},ids:first.flatMap(value=>value.rows.flatMap(row=>row.ids))}));
++'''
++    )
++    assert result["patterns"] == [
++        ["opening", "hero-opening-band"],
++        ["performance", "compact-kpi-strip"],
++        ["analysis", "feature-support-analysis"],
++        ["decision", "compact-decision-band"],
++        ["delivery", "closing-next-step"],
++    ]
++    assert result["stable"] is True
++    assert result["analysis"]["featureId"] == "main"
++    assert result["analysis"]["supportIds"] == ["support"]
++    assert result["analysis"]["rows"][0]["ids"] == ["main", "support"]
++    assert result["solo"] == {"pattern": "analytical-feature", "featureId": "solo-chart", "rows": [["solo-chart"]]}
++    assert result["patterns"][1] == ["performance", "compact-kpi-strip"]
++    assert result["patterns"][0] == ["opening", "hero-opening-band"]
++    assert result["opening"]["rows"][0]["ids"] == ["title", "context"]
++    assert result["opening"]["rows"][0]["ratios"] == [0.68, 0.32]
++    assert result["performance"]["featureId"] == "m2"
++    assert result["performance"]["rows"][0]["ids"] == ["m2", "m1", "m3"]
++    assert result["performance"]["rows"][0]["ratios"] == [0.42, 0.29, 0.29]
++    assert sorted(result["ids"]) == sorted(["title", "context", "m1", "m2", "m3", "main", "support", "risk", "next"])
++
++
++def test_section_patterns_cover_narrative_evidence_causal_and_detail_grid() -> None:
++    result = node_json(
++        r'''
++import {sectionCompositionPlan} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
++const model=[
++ {id:'n',element:'Body Narrative',engine:'TextEngine',text:'Short finding',composition_role:'narrative_interpretation',section_id:'analysis'},
++ {id:'photo',element:'Image Evidence',engine:'ImageMediaEngine',composition_role:'detailed_evidence',section_id:'analysis'},
++ {id:'story',element:'Body Narrative',engine:'TextEngine',text:'Long interpretation. '.repeat(24),composition_role:'narrative_interpretation',section_id:'multi-analysis'},
++ {id:'main',element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'multi-analysis'},
++ {id:'support1',element:'SPC Control Chart',engine:'EngineeringChartEngine',composition_role:'supporting_analysis',section_id:'multi-analysis'},
++ {id:'support2',element:'Box Plot',engine:'EngineeringChartEngine',composition_role:'supporting_analysis',section_id:'multi-analysis'},
++ {id:'flow',element:'Process Flow',engine:'DiagramEngine',composition_role:'causal_evidence',section_id:'evidence'},
++ {id:'ev1',element:'Evidence Table',engine:'TableEngine',composition_role:'detailed_evidence',section_id:'detail'},
++ {id:'ev2',element:'Image Evidence',engine:'ImageMediaEngine',composition_role:'detailed_evidence',section_id:'detail'},
++];
++const plan=sectionCompositionPlan(model,'technical',1440,{n:{minW:260},photo:{minW:280},story:{minW:320},main:{minW:380},support1:{minW:380},support2:{minW:380},flow:{minW:380},ev1:{minW:340},ev2:{minW:280}});
++console.log(JSON.stringify(plan.map(value=>({id:value.id,pattern:value.pattern,rows:value.rows.map(row=>row.ids)}))));
++'''
++    )
++    assert result == [
++        {"id": "multi-analysis", "pattern": "feature-support-analysis", "rows": [["main", "support1", "support2"], ["story"]]},
++        {"id": "analysis", "pattern": "narrative-evidence-split", "rows": [["n", "photo"]]},
++        {"id": "evidence", "pattern": "causal-flow-feature", "rows": [["flow"]]},
++        {"id": "detail", "pattern": "evidence-detail-grid", "rows": [["ev1", "ev2"]]},
++    ]
++
++
++def test_long_narrative_content_gets_its_own_intrinsic_row() -> None:
++    result = node_json(
++        r'''
++import {sectionCompositionPlan} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
++const items=[
++ {id:'story',element:'Body Narrative',engine:'TextEngine',text:'A measured interpretation that needs room. '.repeat(24),composition_role:'narrative_interpretation',section_id:'analysis',order:0},
++ {id:'plot',element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'analysis',order:1},
++];
++const plan=sectionCompositionPlan(items,'technical',1440,{story:{minW:320,prefH:500},plot:{minW:380,prefH:380}});
++console.log(JSON.stringify({pattern:plan[0].pattern,rows:plan[0].rows.map(row=>row.ids),contentFit:items[0].text.length>360&&plan[0].rows[0].ids.includes('story')&&plan[0].rows[0].ids.length===1}));
++'''
++    )
++    assert result == {"pattern": "narrative-evidence-split", "rows": [["story"], ["plot"]], "contentFit": True}
++
++
++def test_section_fallback_custom_metadata_emphasis_and_semantic_nonmutation() -> None:
++    result = node_json(
++        r'''
++import {sectionCompositionPlan,compositionSpacing} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
++const custom=[
++ {id:'a',element:'Line Chart',engine:'CoreChartEngine',view_type:'line',variant:'area',mapping:{x:'time',y:'value'},data:[['Mon',3]],transform_recipe:{id:'keep'},composition_role:'primary_analysis',section_id:'custom-intro',section_title:'Process context',section_order:4,order:2},
++ {id:'b',element:'Line Chart',engine:'CoreChartEngine',composition_role:'supporting_analysis',section_id:'custom-intro',section_title:'Process context',section_order:4,order:3,emphasis:'hero'},
++ {id:'legacy',element:'Clean Table',engine:'TableEngine',section_id:'appendix',section_title:'Appendix',section_order:8,order:4},
++];
++const before=JSON.stringify(custom),plan=sectionCompositionPlan(custom,'review',1100,{a:{minW:380,prefH:400},b:{minW:380,prefH:200}}),repeat=sectionCompositionPlan(custom,'review',1100,{a:{minW:380,prefH:400},b:{minW:380,prefH:200}}),gaps=['dense','compact','comfortable','unknown'].map(density=>compositionSpacing({density,itemCount:12}));
++console.log(JSON.stringify({pattern:plan[0].pattern,feature:plan[0].featureId,custom:plan[0].title,customOrder:plan[0].order,legacy:plan[1].pattern,legacyTitle:plan[1].title,stable:JSON.stringify(plan)===JSON.stringify(repeat),unmutated:before===JSON.stringify(custom),ids:plan.flatMap(section=>section.rows.flatMap(row=>row.ids)),gaps}));
++'''
++    )
++    assert result["pattern"] == "feature-support-analysis"
++    assert result["feature"] == "b"  # Explicit hero emphasis remains authoritative.
++    assert result["custom"] == "Process context"
++    assert result["customOrder"] == 0
++    assert result["legacy"] == "evidence-detail-grid"
++    assert result["legacyTitle"] == "Appendix"
++    assert result["stable"] is True
++    assert result["unmutated"] is True
++    assert result["ids"] == ["b", "a", "legacy"]
++    assert all(12 <= gap["stackGap"] <= 20 and 20 <= gap["sectionGap"] <= 34 for gap in result["gaps"])
++
++
++def test_section_width_fit_is_bounded_and_mobile_order_uses_composed_order() -> None:
++    result = node_json(
++        r'''
++import {sectionCompositionPlan} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
++const items=[{id:'a',element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis',section_id:'analysis',order:8},{id:'b',element:'Box Plot',engine:'EngineeringChartEngine',composition_role:'supporting_analysis',section_id:'analysis',order:2}];
++const plan=sectionCompositionPlan(items,'technical',720,{a:{minW:380},b:{minW:380}}),flat=plan.flatMap(section=>section.rows.flatMap(row=>row.ids)),path='company_ui/products/visualizer/assets/integrated_editor.mjs';
++console.log(JSON.stringify({rows:plan[0].rows.map(row=>row.ids),ratios:plan[0].rows.map(row=>row.ratios),allPlaced:flat.length===items.length&&new Set(flat).size===items.length,source:await (await import('node:fs/promises')).readFile(path,'utf8')}));
++'''
++    )
++    assert result["allPlaced"] is True
++    assert result["rows"] == [["a"], ["b"]]
++    # Smart mobile Preview follows the derived composition order, while other modes keep user order.
++    assert "model().mode==='smart'&&Number.isFinite(Number(r.order))?Number(r.order)*2+1" in result["source"]
++    assert "sectionCompositionPlan(ordered,preset,CANVAS.w,profiles)" in result["source"]
++    assert "Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))" in result["source"]
++    stage_a = (ROOT / "scripts/release_checks/run_stage_a_acceptance.py").read_text(encoding="utf-8")
++    assert "canvas = page.evaluate('()=>__VIZ_PROD__.layoutGeometry().canvas')" in stage_a
++    assert "area_share >= min_area_share" in stage_a
++
++
++def test_shared_remap_requirements_deduplicate_roles_and_summarize_incompatibility() -> None:
++    result = node_json(
++        r'''
++import {groupedRemapRequirements,summarizedRemapIssues,remapStatusSummary} from './company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs';
++const source={bindings:[
++ {item_id:'chart',element:'Line Chart',view:'line',required_roles:['x','y'],field_roles:[{role:'x',field_name:'Region',field_type:'categorical',semantic_tags:['category'],required:true},{role:'y',field_name:'Sales',field_type:'number',semantic_tags:['measurement'],required:true}],references:[]},
++ {item_id:'table',element:'Evidence Table',view:'table',required_roles:['category','value'],field_roles:[{role:'category',field_name:'Region',field_type:'categorical',semantic_tags:['category'],required:true},{role:'value',field_name:'Sales',field_type:'number',semantic_tags:['measurement'],required:true}],references:[]},
++]};
++const slot={mapping:{chart:{x:'region',y:'sales'},table:{category:'region',value:'sales'}},unresolved:[],problems:[
++ {item_id:'chart',role:'x',source_field:'Region',reason:'incompatible type'},
++ {item_id:'table',role:'category',source_field:'Region',reason:'incompatible type'},
++]};
++const requirements=groupedRemapRequirements(source,slot),issues=summarizedRemapIssues(source,slot);
++console.log(JSON.stringify({roles:requirements.map(value=>[value.label,value.itemIds,value.value,value.assignments]),issues:issues.map(value=>value.message),summary:remapStatusSummary({ok:false})}));
++'''
++    )
++    assert len(result["roles"]) == 2
++    assert [value[0] for value in result["roles"]] == ["Category", "Measurement"]
++    assert all(value[2] for value in result["roles"])
++    assert all(len(value[1]) == 2 for value in result["roles"])
++    assert result["issues"] == ["Region needs a compatible field for category. · Affects 2 visuals."]
++    assert result["summary"] == "Resolve the highlighted data source and field requirements before applying."
++
++
++def test_remap_focus_accessibility_and_fail_closed_apply_contract_remain_present() -> None:
++    source = (ROOT / "company_ui/products/visualizer/assets/integrated_editor.mjs").read_text()
++    css = (ROOT / "company_ui/products/visualizer/assets/integrated_editor.css").read_text()
++    assert "data-remap-assignments=\"${assignments}\"" in source
++    assert "aria-label=\"${esc(label)} for ${esc(scope)}: ${esc(requirement.consumersLabel)}\"" in source
++    assert "node?.focus({preventScroll:true})" in source
++    assert "data-remap-role" in source and "data-remap-dataset" in source
++    assert '<button type="submit" class="tb accent" ${plan.ok?' in source
++    assert "data-remap-assignments" in source and "selection.mappings[target.itemId]" in source
++    assert ".reuse-remap-consumers" in css
+diff --git a/tests/test_visualizer_final_visual_remediation.py b/tests/test_visualizer_final_visual_remediation.py
+index 4751ea6..c9da1ee 100644
+--- a/tests/test_visualizer_final_visual_remediation.py
++++ b/tests/test_visualizer_final_visual_remediation.py
+@@ -177,7 +177,10 @@ def test_layout_selection_and_tablet_contracts_are_explicit() -> None:
+     diagram_html = (ASSETS / "diagram_studio.html").read_text(encoding="utf-8")
+     diagram_js = (ASSETS / "diagram_studio.mjs").read_text(encoding="utf-8")
+     assert "const fitToHull=" in editor and "function semanticSmartLayout(items=viewItems())" in editor
+-    assert "function allocateRowWidths(row, innerW, gap)" in editor and "let y=g+(rowSpecs[0]?.sectionStart?20:0)" in editor
++    assert "function allocateRowWidths(row, innerW, gap, ratios = null)" in editor
++    assert "sectionCompositionPlan(ordered,preset,CANVAS.w,profiles)" in editor
++    assert "const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length})" in editor
++    assert "let y=g;" in editor and "sectionHeadingOrder" in editor
+     assert "compositionOrder(items,model().layoutPreset||'editorial')" in editor
+     assert "COMPOSITION_ROLES" in composition and "ROLE_SECTIONS" in composition
+     assert "innerW=Math.max(1,CANVAS.w-2*g)" in editor
+diff --git a/tests/test_visualizer_r15_authoring_depth.py b/tests/test_visualizer_r15_authoring_depth.py
+index f2b692e..26c5b84 100644
+--- a/tests/test_visualizer_r15_authoring_depth.py
++++ b/tests/test_visualizer_r15_authoring_depth.py
+@@ -79,7 +79,8 @@ def test_r19_layouts_and_page_size_are_authored_not_implicitly_resized():
+     composition = (PRODUCT / 'assets/authoring_composition.mjs').read_text(encoding='utf-8')
+     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
+     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
+-    assert "const layoutTargetH=solo?baseNeeded:CANVAS.h" in editor
++    assert "const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))" in editor
++    assert "const usableH=resolvedTargetH-2*g-rowSpecs.reduce" in editor
+     assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" not in html
+     assert 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' not in editor
+     assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
+@@ -113,10 +114,11 @@ def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_e
+     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
+ 
+     assert 'const fitToHull=(policy,w=innerW,h=innerH)=>' in editor
+-    assert 'const layoutTargetH=solo?baseNeeded:CANVAS.h' in editor
++    assert 'const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))' in editor
++    assert 'const solo=ordered.length===1&&rows.length===1' in editor
+     assert 'function semanticPolicy(entry)' in editor
+-    assert 'function allocateRowWidths(row, innerW, gap)' in editor
+-    assert 'policy.maxH' in editor and 'semanticRole=compositionRole(entry)' in editor
++    assert 'function allocateRowWidths(row, innerW, gap, ratios = null)' in editor
++    assert 'policy.maxH' in editor and 'const role=compositionRole(entry)' in editor
+     assert 'contentFitSummary' in stage and 'layoutOperations' in stage
+     assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' not in editor
+     assert 'Math.max(policy.minH,spec.height)' not in editor
+@@ -137,7 +139,8 @@ def test_r25_smart_layout_prioritizes_growth_capable_families_and_table_preview_
+ 
+     assert 'function effectiveWeight(entry)' in editor
+     assert 'const weights=row.map(({entry})=>effectiveWeight(entry))' in editor
+-    assert 'const baseNeeded=rowSpecs.reduce' in editor and 'resolvedTargetH=solo?' in editor
++    assert 'const baseNeeded=rowSpecs.reduce' in editor and 'const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)))' in editor
++    assert "if(['plot','media','square'].includes(policy.growth)||policy.aspect)return fitToHull({...policy,maxW:innerW},innerW,innerH)" in editor
+     assert 'const ROLE_SECTIONS = Object.freeze' in composition
+     assert "beginPointerSession($('#viewport')" in editor
+     assert "box.classList.add('active')" in editor
+
+Changes:
+
+company_ui/certification/certification_manifest.json
+  @@ -1,5 +1,5 @@
+  -  "automated_tests": 1190,
+  +  "automated_tests": 1197,
+     "combined_css_bytes": 259922,
+     "framework_version": "3.0.0a1",
+     "hotfix_release": "v3.0.0a1 source-complete governed application platform",
+  @@ -3060,7 +3060,7 @@
+  -    "automated_tests": 1190,
+  +    "automated_tests": 1197,
+       "canonical_viewport_widths": [
+         390,
+         430,
+  @@ -3076,7 +3076,7 @@
+  -    "automated_tests": 1190,
+  +    "automated_tests": 1197,
+       "governance": "0 errors / 0 warnings",
+       "release_sync_embedded_version_regression": true,
+       "runtime_browser_human_target_gates": "PENDING",
+  @@ -3086,7 +3086,7 @@
+  -    "automated_tests": 1190,
+  +    "automated_tests": 1197,
+       "browser_performance_probe": true,
+       "chart_accessibility_and_cleanup": true,
+       "chart_visibility_aware_update_coalescing": true,
+  @@ -3109,7 +3109,7 @@
+  -    "automated_tests": 1190,
+  +    "automated_tests": 1197,
+       "governed_extension_registry": true,
+       "json_snapshot_persistence": true,
+       "lazy_equality_membership_indexes": true,
+  +5 -5
+
+company_ui/products/visualizer/assets/authoring_composition.mjs
+  @@ -99,6 +99,222 @@ export function compositionSection(entry = {}, role = compositionRole(entry)) {
+  +const ROLE_FEATURE_WEIGHT = Object.freeze({
+  +  report_headline: 12, hero_metric: 11, primary_analysis: 10, causal_evidence: 10,
+  +  decision_risk: 9, narrative_interpretation: 8, detailed_evidence: 7,
+  +  conclusion: 7, supporting_analysis: 6, action_status: 5, context: 3,
+  +});
+  +const EMPHASIS_WEIGHT = Object.freeze({ compact: .72, standard: 1, prominent: 1.35, hero: 1.8 });
+  +const VISUAL_ENGINES = new Set(['CoreChartEngine','EngineeringChartEngine','TableEngine','DiagramEngine','WaferFabEngine','ImageMediaEngine','MatrixEngine','TimelineEngine']);
+  +
+  +function densityHint(entry = {}, profile = {}) {
+  +  const rows = entry.customTable?.rows || entry.rows || entry.data || [];
+  +  const copy = String(entry.text || entry.body || entry.content || '').trim();
+  +  const sourceCount = Array.isArray(rows) ? rows.length : 0;
+  +  return Math.min(2.5, Math.log2(1 + sourceCount) * .25 + Math.min(1.25, copy.length / 480) + Math.min(.75, Number(profile.minH || 0) / 600));
+  +}
+  +
+  +function featureScore(entry, preset, profile = {}) {
+  +  const role = compositionRole(entry);
+  +  const explicit = Object.hasOwn(EMPHASIS_WEIGHT, entry.emphasis);
+  +  const explicitEmphasis = explicit ? ({compact:.68,standard:1,prominent:1.48,hero:2.65}[entry.emphasis]||1) : 1;
+  +  const automaticEmphasis = explicit ? 1 : role === 'report_headline' || role === 'hero_metric' ? 1.35
+  +    : ['primary_analysis','causal_evidence','decision_risk','conclusion'].includes(role) ? 1.18 : 1;
+  +  const recipeIntent = compositionProminence(entry, preset);
+  +  const infoDensity = densityHint(entry, profile);
+  +  return (ROLE_FEATURE_WEIGHT[role] || 5) * explicitEmphasis * automaticEmphasis * recipeIntent + infoDensity;
+  +}
+  +
+  +function visualEntry(entry) { return VISUAL_ENGINES.has(entry.engine); }
+  +function relatedComparisonPair(entries) {
+  +  if (entries.length !== 2) return false;
+  +  const names = entries.map(entry => `${entry.element || ''} ${entry.title || ''}`.toLowerCase());
+  +  const has = pattern => names.some(value => pattern.test(value));
+  +  return entries.some(entry => entry.engine === 'ComparisonEngine') ||
+  +    (has(/before|baseline|reference|control/) && has(/after|current|affected|treatment/));
+  +}
+  +function usableInOneRow(ids, profiles, pageWidth, gap = 14) {
+  +  const minimum = ids.reduce((sum, id) => sum + Math.max(1, Number(profiles[id]?.minW) || 280), 0);
+  +  return minimum + gap * Math.max(0, ids.length - 1) <= Math.max(1, pageWidth - 28);
+  +}
+  +const row = (ids, ratios = null) => ({ ids: [...ids], ratios: ratios ? [...ratios] : null });
+  +
+  +function sectionPattern(section, preset, profiles, pageWidth) {
+  +  const entries = section.items, roles = entries.map(compositionRole), visuals = entries.filter(visualEntry);
+  +  const metrics = entries.filter(entry => ['hero_metric'].includes(compositionRole(entry)) || entry.engine === 'ComparisonEngine');
+  +  const narrative = entries.filter(entry => compositionRole(entry) === 'narrative_interpretation' || entry.engine === 'TextEngine' && compositionRole(entry) === 'context');
+  +  const headline = entries.find(entry => compositionRole(entry) === 'report_headline');
+  +  const hasEvidence = entries.some(entry => ['detailed_evidence','causal_evidence'].includes(compositionRole(entry)) || visualEntry(entry));
+  +  if (section.id === 'delivery' && entries.some(entry => ['conclusion','action_status'].includes(compositionRole(entry)))) return 'closing-next-step';
+  +  if (section.id === 'decision' && entries.some(entry => ['decision_risk','conclusion','action_status'].includes(compositionRole(entry)))) return 'compact-decision-band';
+  +  if (entries.some(entry => entry.engine === 'DiagramEngine' || compositionRole(entry) === 'causal_evidence')) return 'causal-flow-feature';
+  +  if (headline) return 'hero-opening-band';
+  +  if (metrics.length >= 2 && (section.id === 'performance' || metrics.length === entries.length)) return 'compact-kpi-strip';
+  +  if (visuals.length >= 2 && relatedComparisonPair(visuals)) return 'balanced-analytical-pair';
+  +  if (visuals.length >= 3) return 'feature-support-analysis';
+  +  if (narrative.length && hasEvidence) return 'narrative-evidence-split';
+  +  if (entries.filter(entry => compositionRole(entry) === 'detailed_evidence').length >= 1) return 'evidence-detail-grid';
+  +  if (visuals.length >= 2 && roles.some(role => ['primary_analysis','supporting_analysis'].includes(role))) return 'feature-support-analysis';
+  +  if (section.id === 'analysis' && visuals.length === 1 && roles.includes('primary_analysis')) return 'analytical-feature';
+  +  if (visuals.length >= 2 && !usableInOneRow(visuals.map(entry => String(entry.id)), profiles, pageWidth)) return 'feature-support-analysis';
+  +  return 'editorial-flow';
+  +}
+  +
+  +function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
+  +  const ids = section.items.map(entry => String(entry.id));
+  +  const byId = new Map(section.items.map(entry => [String(entry.id), entry]));
+  +  const supports = ids.filter(id => id !== featureId);
+  +  const fits = values => usableInOneRow(values, profiles, pageWidth);
+  +  const featureRow = (featureRatio = .64) => {
+  +    if (!featureId) return [];
+  +    const firstSupport = supports[0];
+  +    if (firstSupport && fits([featureId, firstSupport])) return [row([featureId, firstSupport], [featureRatio, 1 - featureRatio])];
+  +    return [row([featureId])];
+  +  };
+  +  if (pattern === 'hero-opening-band') {
+  +    const title = section.items.find(entry => compositionRole(entry) === 'report_headline');
+  +    const titleId = title ? String(title.id) : null;
+  +    const remainder = ids.filter(id => id !== titleId);
+  +    const metrics = remainder.filter(id => compositionRole(byId.get(id)) === 'hero_metric');
+  +    const context = remainder.filter(id => !metrics.includes(id));
+  +    const leadSupport = context[0] || metrics[0];
+  +    const splitLead = titleId && leadSupport && fits([titleId,leadSupport]);
+  +    const result = titleId ? [splitLead ? row([titleId,leadSupport],[.68,.32]) : row([titleId])] : [];
+  +    const usedLead = new Set(splitLead ? [titleId,leadSupport] : titleId ? [titleId] : []);
+  +    const remainingMetrics = metrics.filter(id=>!usedLead.has(id));
+  +    if(remainingMetrics.length)result.push(row(remainingMetrics));
+  +    const remainingContext = context.filter(id=>!usedLead.has(id));
+  +    for (let index=0; index<remainingContext.length;) {
+  +      const pair=remainingContext.slice(index,index+2);
+  +      if(pair.length===2&&fits(pair)){result.push(row(pair));index+=2;}
+  +      else {result.push(row([pair[0]]));index+=1;}
+  +    }
+  +    const used = new Set(result.flatMap(value => value.ids));
+  +    return [...result, ...ids.filter(id => !used.has(id)).map(id => row([id]))];
+  +  }
+  +  if (pattern === 'compact-kpi-strip') {
+  +    const kpis = section.items.filter(entry => compositionRole(entry) === 'hero_metric' || entry.engine === 'ComparisonEngine').map(entry => String(entry.id));
+  +    const orderedKpis = featureId && kpis.includes(featureId) ? [featureId,...kpis.filter(id=>id!==featureId)] : kpis;
+  +    const rest = ids.filter(id => !kpis.includes(id)), max = pageWidth >= 1280 ? 4 : 3, result = [];
+  +    for (let index = 0; index < orderedKpis.length; index += max) {
+  +      const group=orderedKpis.slice(index,index+max);
+  +      const ratios=group.length>1&&index===0?group.map((_,position)=>position===0?({2:.56,3:.42,4:.34}[group.length]||.3):(group.length===2?.44:group.length===3?.29:.22)):null;
+  ... (116 lines truncated)
+  +216 -0
+
+company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs
+  @@ -0,0 +1,82 @@
+  +import { humanFieldTypeLabel, humanRoleLabel } from './authoring_human.mjs';
+  +
+  +const text = value => String(value ?? '').trim();
+  +const roleFamily = role => ({ x:'category', label:'category', y:'measurement', value:'measurement', timestamp:'time', datetime:'time', reference_value:'reference_value', affected_value:'affected_value' }[role] || role);
+  +const roleName = (role, view = '') => {
+  +  if (String(role || '').startsWith('$reference:')) return 'Recipe field';
+  +  const family = roleFamily(role), fixed = { category:'Category', measurement:'Measurement', time:'Time', reference_value:'Reference', affected_value:'Affected', tool:'Tool', chamber:'Chamber', lot:'Lot', wafer:'Wafer', product:'Product', route:'Route', bin:'Bin' }[family];
+  +  return fixed || humanRoleLabel(role,{view}) || 'Field';
+  +};
+  +
+  +function bindingRoles(binding = {}) {
+  +  const known = new Set((binding.field_roles || []).map(value => value.role));
+  +  return [
+  +    ...(binding.field_roles || []),
+  +    ...(binding.references || []).map(value => ({ ...value, role: value.role, label: 'Recipe field' })),
+  +    ...(binding.required_roles || []).filter(role => !known.has(role)).map(role => ({ role, field_name: '', field_type: '', semantic_tags: [], required: true })),
+  +  ];
+  +}
+  +
+  +export function remapVisualLabels(bindings = []) {
+  +  const rows = (bindings || []).map(binding => ({ id:String(binding.item_id||''), name:text(binding.element||binding.item_id||'Visual') }));
+  +  const counts = new Map();
+  +  for (const row of rows) counts.set(row.name,(counts.get(row.name)||0)+1);
+  +  return rows.map((row,index)=>counts.get(row.name)>1?`${row.name} ${rows.filter((other,otherIndex)=>other.name===row.name&&otherIndex<=index).length}`:row.name);
+  +}
+  +
+  +export function groupedRemapRequirements(source = {}, slot = {}, selection = {}) {
+  +  const groups = new Map();
+  +  for (const binding of source.bindings || []) for (const requirement of bindingRoles(binding)) {
+  +    const family = roleFamily(requirement.role), label = requirement.label || roleName(requirement.role,binding.view);
+  +    const key = JSON.stringify([family, label, requirement.field_name, requirement.field_type, requirement.semantic_tags || [], requirement.required === true]);
+  +    if (!groups.has(key)) groups.set(key, { role: family, label, sourceField: text(requirement.field_name), sourceType: text(requirement.field_type), required: requirement.required === true, bindings: [] });
+  +    let target = groups.get(key).bindings.find(value=>value.itemId===String(binding.item_id));
+  +    if(!target){target={itemId:String(binding.item_id),element:text(binding.element||binding.item_id),view:binding.view||'',roles:[]};groups.get(key).bindings.push(target);}
+  +    if(!target.roles.includes(requirement.role))target.roles.push(requirement.role);
+  +  }
+  +  return [...groups.values()].map(group => {
+  +    const values = group.bindings.flatMap(binding=>binding.roles.map(role=>String(selection.mappings?.[binding.itemId]?.[role] || slot.mapping?.[binding.itemId]?.[role] || '')));
+  +    const commonValue = values.length && values.every(value => value === values[0]) ? values[0] : '';
+  +    const consumers = remapVisualLabels(group.bindings);
+  +    return { ...group, itemIds: group.bindings.map(binding => binding.itemId), assignments:group.bindings.map(binding=>({itemId:binding.itemId,roles:binding.roles})), consumers, value: commonValue,
+  +      consumersLabel: consumers.join(' · '), shared: group.bindings.length > 1,
+  +      expectedTypeLabel: group.sourceType ? humanFieldTypeLabel(group.sourceType) : '' };
+  +  });
+  +}
+  +
+  +function issueLabel(issue, source) {
+  +  const binding = (source.bindings || []).find(value => String(value.item_id) === String(issue.item_id));
+  +  return issue.label || roleName(issue.role, binding?.view);
+  +}
+  +
+  +function issueText(issue, label) {
+  +  const sourceField = text(issue.source_field);
+  +  if (issue.message) return text(issue.message).replace(/\s+/g, ' ');
+  +  if (issue.reason === 'ambiguous') return `${sourceField || label} matches more than one field. Choose the intended ${label.toLowerCase()} field.`;
+  +  if (issue.reason === 'incompatible type' || issue.reason === 'field type is incompatible') {
+  +    const requiredType = issue.role === 'time' ? 'a date or time field' : ['value','y','size','weight','reference_value','affected_value'].includes(issue.role) ? 'a numeric field' : 'a compatible field';
+  +    return `${sourceField || label} needs ${requiredType} for ${label.toLowerCase()}.`;
+  +  }
+  +  if (issue.reason === 'required field not found') return `Required source field ${sourceField || label} is missing.`;
+  +  if (issue.reason === 'required role is unmapped' || issue.reason === 'Choose a compatible field') return `Choose a compatible field for ${label.toLowerCase()}.`;
+  +  if (issue.reason === 'selected field is unavailable') return `The selected ${label.toLowerCase()} field is unavailable. Choose another field.`;
+  +  return sourceField ? `${sourceField}: ${text(issue.reason) || 'Review this field mapping.'}` : `${label}: ${text(issue.reason) || 'Review this field mapping.'}`;
+  +}
+  +
+  +export function summarizedRemapIssues(source = {}, slot = {}) {
+  +  const groups = new Map();
+  +  for (const [kind, issues] of [['unresolved', slot.unresolved || []], ['problem', slot.problems || []]]) for (const issue of issues) {
+  +    const label = issueLabel(issue, source), message = issueText(issue, label), key = `${label}|${message}`;
+  +    if (!groups.has(key)) groups.set(key, { label, message, itemIds: new Set(), elements: new Set(), kind });
+  +    const group = groups.get(key), binding = (source.bindings || []).find(value => String(value.item_id) === String(issue.item_id));
+  +    if (issue.item_id) group.itemIds.add(String(issue.item_id));
+  +    if (binding) group.elements.add(text(binding.element || binding.item_id));
+  +  }
+  +  return [...groups.values()].map(group => ({ ...group, itemIds: [...group.itemIds], elements: [...group.elements],
+  +    message: group.elements.size > 1 ? `${group.message} · Affects ${group.elements.size} visuals.` : group.message }));
+  +}
+  +
+  +export function remapStatusSummary(plan = {}) {
+  +  if (plan.ok) return 'All data requirements are compatible.';
+  +  return 'Resolve the highlighted data source and field requirements before applying.';
+  +}
+  +82 -0
+
+company_ui/products/visualizer/assets/integrated_editor.css
+  @@ -247,9 +247,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
+  -.component-layer, .group-layer, .overlay-layer { position: absolute; inset: 0; }
+  +.component-layer, .group-layer, .composition-section-surface-layer, .overlay-layer { position: absolute; inset: 0; }
+   .component-layer { z-index: 10; }
+   .group-layer { z-index: 8; pointer-events: none; }
+  +.composition-section-surface-layer { z-index: 9; pointer-events:none; }
+   .overlay-layer { z-index: 65; pointer-events: none; }
+   .component {
+     position: absolute;
+  @@ -1328,6 +1329,8 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+  +.cui-visualizer-root .reuse-remap-consumers { display:flex; gap:4px; flex-wrap:wrap; margin-top:5px; }
+  +.cui-visualizer-root .reuse-remap-consumers span { padding:2px 7px; border:1px solid var(--viz-line-soft); border-radius:999px; background:var(--viz-surface); color:var(--viz-ink-soft); font-size:10px; font-weight:650; }
+   .cui-visualizer-root .reuse-remap-status { flex:none; color:var(--viz-warn); font-size:10px; font-weight:800; }
+   .cui-visualizer-root .reuse-remap-status.ready { color:var(--viz-good); }
+   .cui-visualizer-root .reuse-remap-status.blocked { color:var(--viz-bad); }
+  @@ -1593,7 +1596,7 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+  -.cui-visualizer-root.preview-mode .group-layer,
+  +  .cui-visualizer-root.preview-mode .group-layer,
+   .cui-visualizer-root.preview-mode .overlay-layer,
+   .cui-visualizer-root.preview-mode .drop-ghost,
+   .cui-visualizer-root.preview-mode .lasso { display:none!important; }
+  @@ -1884,8 +1887,14 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
+  -.cui-visualizer-root .composition-section-heading { position:absolute; z-index:60; height:14px; color:var(--viz-muted); font-size:11px; line-height:14px; font-weight:820; letter-spacing:.08em; text-transform:uppercase; pointer-events:none; }
+  +.cui-visualizer-root .composition-section-heading { position:absolute; display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:10px; min-height:26px; box-sizing:border-box; padding:4px 10px; border-bottom:1px solid var(--viz-line); color:var(--viz-ink); background:color-mix(in srgb,var(--viz-surface) 92%,transparent); font-size:16px; line-height:1.15; letter-spacing:-.02em; pointer-events:none; }
+  +.cui-visualizer-root .composition-section-surface { position:absolute; box-sizing:border-box; border:1px solid var(--viz-line-soft); border-left:3px solid color-mix(in srgb,var(--viz-accent) 58%,var(--viz-line)); border-radius:var(--viz-r-surface); background:var(--viz-surface-2); pointer-events:none; }
+  +.cui-visualizer-root .composition-section-index { color:var(--viz-accent); font-size:10px; line-height:1; font-weight:850; letter-spacing:.08em; font-variant-numeric:tabular-nums; }
+  +.cui-visualizer-root .composition-section-heading b { min-width:0; font-weight:780; }
+  +.cui-visualizer-root .component[data-composition-level="feature"] { border-color:color-mix(in srgb,var(--viz-accent) 28%,var(--viz-line)); box-shadow:var(--viz-shadow-1); }
+   .cui-visualizer-root .component[data-composition-emphasis="prominent"] .metric-value { font-size:var(--viz-type-metric-compact); }
+   @media(max-width:800px) {
+  -  .cui-visualizer-root.preview-mode .composition-section-heading { position:relative!important; left:auto!important; top:auto!important; width:auto!important; height:14px; flex:0 0 14px; margin:0 12px -10px; }
+  +  .cui-visualizer-root.preview-mode .component-layer { gap:var(--viz-composition-row-gap,var(--viz-s-4)); }
+  +  .cui-visualizer-root.preview-mode .composition-section-heading { position:relative!important; left:auto!important; top:auto!important; width:auto!important; height:auto; min-height:30px; flex:0 0 auto; margin:0 12px -4px; }
+  +  .cui-visualizer-root.preview-mode .composition-section-surface-layer { display:none!important; }
+   }
+  +13 -4
+
+company_ui/products/visualizer/assets/integrated_editor.mjs
+  @@ -30,10 +30,11 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
+  -import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
+  +import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection, sectionCompositionPlan, compositionSpacing } from './authoring_composition.mjs';
+   import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
+   import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
+   import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
+  +import { groupedRemapRequirements, summarizedRemapIssues, remapStatusSummary, remapVisualLabels } from './authoring_reuse_presentation.mjs';
+   import { styleSnapshot, stylePastePlan, styleSummary } from './authoring_style.mjs';
+   import { batchSelectionState, batchPatchPlan, batchFieldLabel } from './authoring_batch.mjs';
+   import { normalizedFieldName, mappingSchemaSignature, hasUniqueNormalizedFields, mappingToFieldNames, mappingFromFieldNames, matchingMappingPresets } from './authoring_mapping_presets.mjs';
+  @@ -327,13 +328,13 @@ function semanticPolicy(entry) {
+  -    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
+  +    p={...p,minW:380,minH:220,prefW:880,prefH:320,growth:'plot',aspect:680/330};
+       if(name==='sparkline') p={...p,minW:240,minH:130,prefW:340,prefH:150};
+       if(name.includes('donut')||name.includes('pie')) p={...p,minW:235,minH:235,prefW:285,prefH:285,aspect:1,growth:'square'};
+       if(name.includes('sankey')||name.includes('treemap')||name.includes('funnel')) p={...p,minW:350,minH:220,prefW:500,prefH:260};
+     } else if(engine==='EngineeringChartEngine') {
+  -    p={...p,minW:380,minH:184,prefW:960,prefH:466,growth:'plot',aspect:680/330};
+  -    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:418};
+  +    p={...p,minW:380,minH:220,prefW:880,prefH:340,growth:'plot',aspect:680/330};
+  +    if(name.includes('response surface')||name.includes('contour')) p={...p,minW:420,minH:245,prefW:860,prefH:360};
+     } else if(engine==='TableEngine') {
+       p={...p,minW:340,minH:210,prefW:480,prefH:260,growth:'data'};
+       if(name.includes('dense')) p={...p,minH:235,prefH:300};
+  @@ -360,7 +361,8 @@ function semanticPolicy(entry) {
+  -      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap};
+  +      const horizontal=String(entry.direction||'right').toLowerCase()!=='down',contentAspect=bounds.width/Math.max(1,requiredH);
+  +      p={...p,minH:Math.max(p.minH,requiredH),prefH:Math.max(p.prefH,requiredH),maxH:MAX_CANVAS_H-2*CANVAS.gap,aspect:horizontal?clamp(contentAspect,2.5,6):.8};
+       }
+       if(name.includes('architecture')||name.includes('swimlane')||name.includes('sequence')) p={...p,minW:380,minH:245,prefW:540,prefH:300};
+       if(name.includes(' node')) p={...p,minW:190,minH:135,prefW:240,prefH:155,growth:'balanced'};
+  @@ -381,6 +383,7 @@ function semanticPolicy(entry) {
+  +    if(engine==='ProjectCompositeEngine'&&compositionRole(entry)==='action_status') p={...p,minH:112,prefH:156};
+       if(name.includes('hero')) p={...p,minW:380,minH:190,prefW:540,prefH:230};
+       if(name.includes('grid')||name.includes('register')||name.includes('cluster')) p={...p,minW:340,minH:220,prefW:470,prefH:270};
+       if(engine==='DecisionCompositeEngine'&&name.includes('risk callout')) p={...p,minH:78,prefH:94};
+  @@ -412,7 +415,7 @@ function semanticPolicy(entry) {
+  -  const measured=name.includes('process flow')?null:ui.intrinsicOverrides.get(entry.id);
+  +  const measured=ui.intrinsicOverrides.get(entry.id);
+     if(measured){p.minW=Math.max(p.minW,measured.w||0);p.minH=Math.max(p.minH,measured.h||0);p.prefW=Math.max(p.prefW,p.minW);p.prefH=Math.max(p.prefH,p.minH);}
+     // This is the single source of truth for Smart/Guided defaults.  Keep the
+     // policy inspectable so renderers and acceptance probes can distinguish a
+  @@ -431,11 +434,23 @@ function effectiveWeight(entry) {
+  -function allocateRowWidths(row, innerW, gap) {
+  +function allocateRowWidths(row, innerW, gap, ratios = null) {
+     const available=Math.max(1,innerW-gap*(row.length-1));
+     const mins=row.map(({policy})=>Math.min(available,policy.minW));
+     const totalMin=mins.reduce((a,b)=>a+b,0);
+     if(totalMin>available+.1){return mins.map((v)=>v*available/totalMin);}
+  +  if(Array.isArray(ratios)&&ratios.length===row.length&&ratios.every(value=>Number.isFinite(Number(value))&&Number(value)>0)){
+  +    const ratioTotal=ratios.reduce((sum,value)=>sum+Number(value),0)||1;
+  +    let widths=ratios.map((value,index)=>Math.max(mins[index],available*Number(value)/ratioTotal));
+  +    let overflow=widths.reduce((sum,value)=>sum+value,0)-available;
+  +    if(overflow>0){
+  +      const flexible=widths.map((value,index)=>Math.max(0,value-mins[index])),total=flexible.reduce((sum,value)=>sum+value,0)||1;
+  +      widths=widths.map((value,index)=>Math.max(mins[index],value-overflow*flexible[index]/total));
+  +    } else if(overflow<0){
+  +      const left=-overflow; widths=widths.map((value,index)=>value+left*Number(ratios[index])/ratioTotal);
+  +    }
+  +    return widths;
+  +  }
+     let widths=[...mins],left=available-totalMin;
+     const desires=row.map(({policy},i)=>Math.max(0,policy.prefW-widths[i]));
+     let desireSum=desires.reduce((a,b)=>a+b,0);
+  @@ -448,10 +463,10 @@ function semanticSmartLayout(items=viewItems()) {
+  -  const rows=[];let row=[];let minUsed=0;
+  -  const flush=()=>{if(row.length){const role=compositionRole(row[0].entry);rows.push({members:row,section:compositionSection(row[0].entry,role).id});row=[];minUsed=0;}};
+  -  for(const entry of ordered){const policy=semanticPolicy(entry),role=suggestMessageRole(entry),semanticRole=compositionRole(entry),section=compositionSection(entry,semanticRole).id,name=String(entry.element||entry.title||''),longNarrative=entry.engine==='TextEngine'&&String(entry.text||entry.body||'').trim().length>420,forceOwnRow=['report_headline','narrative_interpretation','conclusion'].includes(semanticRole)||entry.engine==='DiagramEngine'||longNarrative||(semanticRole==='primary_analysis'&&['plot','data','media'].includes(policy.growth)),need=(row.length?g:0)+policy.minW,currentSection=row.length?compositionSection(row[0].entry,compositionRole(row[0].entry)).id:section;if(row.length&&(currentSection!==section||minUsed+need>innerW||forceOwnRow))flush();row.push({entry,policy});minUsed+=(row.length>1?g:0)+policy.minW;if(forceOwnRow||policy.minW>innerW+.1)flush();}
+  -  flush();
+  +  const preset=model().layoutPreset||'editorial',profiles=Object.fromEntries(ordered.map(entry=>[String(entry.id),semanticPolicy(entry)]));
+  +  const plans=sectionCompositionPlan(ordered,preset,CANVAS.w,profiles),sectionById=new Map(plans.map(section=>[section.id,section]));
+  +  const rowInputs=plans.flatMap(section=>section.rows.map(value=>({...value,items:value.ids.map(id=>ordered.find(entry=>String(entry.id)===id)).filter(Boolean)})));
+  +  const rows=rowInputs.map(spec=>({...spec,members:spec.items.map(entry=>({entry,policy:profiles[String(entry.id)]}))}));
+     const solo=ordered.length===1&&rows.length===1;
+     const fitToHull=(policy,w=innerW,h=innerH)=>{
+       let width=Math.min(policy.maxW,w),height=Math.min(policy.maxH,h);
+  @@ -461,8 +476,9 @@ function semanticSmartLayout(items=viewItems()) {
+  -    if(['plot','data','media','square'].includes(policy.growth)||policy.aspect)return fitToHull(policy);
+  -    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,innerH);
+  +    if(['plot','media','square'].includes(policy.growth)||policy.aspect)return fitToHull({...policy,maxW:innerW},innerW,innerH);
+  +    if(policy.growth==='data')return fitToHull({...policy,maxW:innerW},innerW,Math.max(policy.minH,policy.prefH));
+  +    if(policy.growth==='vertical')return fitToHull({...policy,aspect:policy.aspect||.8},innerW,Math.max(policy.minH,policy.prefH));
+       if(policy.growth==='horizontal'){
+         // Horizontal families keep a readable band when no semantic aspect is
+         // declared; process/data-flow diagrams carry their own aspect above.
+  @@ -475,16 +491,23 @@ function semanticSmartLayout(items=viewItems()) {
+  -  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=!solo&&(index===0||rows[index-1].section!==section);return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
+  -  rowSpecs.forEach((spec,index)=>{spec.gapAfter=index<rowSpecs.length-1?g+(spec.section!==rowSpecs[index+1].section?g*.5:0):0;});
+  -  const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height+r.gapAfter,0)+2*g+(rowSpecs[0]?.sectionStart?20:0);
+  -  // Smart owns the safe hull. Solo composition uses only the useful semantic
+  -  // height it needs; multi-element composition fills the report hull through
+  -  // weighted row growth so hierarchy, not a centered island, determines mass.
+  -  const layoutTargetH=solo?baseNeeded:CANVAS.h;
+  -  const resolvedTargetH=solo?Math.ceil(layoutTargetH):Math.min(MAX_CANVAS_H,Math.max(CANVAS.h,Math.ceil(baseNeeded)));
+  +  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length});
+  +  const rowSpecs=rows.map((spec,index)=>{
+  +    const widths=allocateRowWidths(spec.members,innerW,g,spec.ratios);
+  +    const fitSizes=spec.members.map(({policy},i)=>policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],Math.max(policy.minH,policy.prefH)):{w:widths[i],h:Math.max(policy.minH,policy.prefH)});
+  +    spec.members.forEach(({policy},i)=>{if(policy.aspect||policy.growth==='square')widths[i]=Math.max(policy.minW,Math.min(widths[i],fitSizes[i].w));});
+  +    const desired=fitSizes.map(size=>size.h);
+  +    if(solo){const size=soloSize(spec.members[0]);widths[0]=size.w;desired[0]=size.h;}
+  +    const sectionStart=!solo&&spec.sectionStart;
+  +    const prior=rowInputs[index-1],gapAfter=index<rowInputs.length-1?(prior?.section===rowInputs[index+1].section?spacing.stackGap:Math.max(8,spacing.sectionGap-spacing.headingHeight)):0;
+  +    return {...spec,sectionStart,sectionTitle:spec.title||compositionSection(spec.members[0].entry,compositionRole(spec.members[0].entry)).title,widths,height:Math.max(...desired),leading:sectionStart?spacing.headingHeight:0,gapAfter};
+  +  });
+  +  const baseNeeded=rowSpecs.reduce((sum,spec)=>sum+spec.height+spec.leading+spec.gapAfter,0)+2*g;
+  +  // Smart composition owns content-fit height. Page whitespace is not used to
+  +  // inflate plots, tables or the spaces between semantic sections.
+  +  const resolvedTargetH=Math.min(MAX_CANVAS_H,Math.max(360,Math.ceil(baseNeeded)));
+     let conflict=baseNeeded>MAX_CANVAS_H?`Smart content requirements exceed the ${MAX_CANVAS_H}px page limit.`:null;
+  -  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter,0);
+  +  const usableH=resolvedTargetH-2*g-rowSpecs.reduce((sum,spec)=>sum+spec.gapAfter+spec.leading,0);
+     if(baseNeeded>resolvedTargetH) {
+       const desired=rowSpecs.map(spec=>spec.height),minimum=rowSpecs.map(spec=>Math.max(...spec.members.map(({policy})=>policy.minH)));
+       const minimumTotal=minimum.reduce((sum,height)=>sum+height,0);
+  @@ -499,8 +522,26 @@ function semanticSmartLayout(items=viewItems()) {
+  -  const rects=[];let y=g+(rowSpecs[0]?.sectionStart?20:0);
+  -  for(const spec of rowSpecs){const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);let x=g+Math.max(0,(innerW-rowWidth)/2);for(let i=0;i<spec.members.length;i+=1){const {entry,policy}=spec.members[i];const w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));if(policy.growth==='square')h=Math.min(spec.height,w);h=Math.max(policy.minH,h);rects.push({id:entry.id,x,y,w,h,sectionStart:spec.sectionStart&&i===0,sectionTitle:spec.sectionTitle,touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:y===g,B:false},policy});x+=w+g;}y+=spec.height+spec.gapAfter;}
+  +  const responsiveOrder=new Map(rows.flatMap(spec=>spec.members.map(({entry})=>entry)).map((entry,index)=>[String(entry.id),index]));
+  +  const rects=[];let y=g;
+  +  for(const spec of rowSpecs){
+  +    y+=spec.leading;
+  +    const rowWidth=spec.widths.reduce((sum,width)=>sum+width,0)+g*Math.max(0,spec.widths.length-1);
+  +    let x=g+Math.max(0,(innerW-rowWidth)/2);
+  +    const headingItemId=spec.featureId&&spec.members.some(({entry})=>String(entry.id)===spec.featureId)?spec.featureId:String(spec.members[0]?.entry.id||'');
+  +    const sectionHeadingOrder=spec.sectionStart?Math.min(...spec.members.map(({entry})=>responsiveOrder.get(String(entry.id))??Number.MAX_SAFE_INTEGER)):null;
+  +    for(let i=0;i<spec.members.length;i+=1){
+  +      const {entry,policy}=spec.members[i],id=String(entry.id),w=spec.widths[i],aspectHeight=policy.aspect?w/policy.aspect:spec.height;
+  +      let h=solo?spec.height:policy.aspect?Math.min(spec.height,aspectHeight,Math.max(policy.minH,policy.prefH)):entry.contentDensity==='fill'?spec.height:Math.min(spec.height,Math.max(policy.minH,policy.prefH));
+  +      if(policy.growth==='square')h=Math.min(spec.height,w);
+  +      h=Math.max(policy.minH,h);
+  +      let itemY=y;
+  +      if(spec.featureId&&id!==spec.featureId&&spec.members.length>1)itemY+=Math.max(0,(spec.height-h)/2);
+  +      rects.push({id:entry.id,x,y:itemY,w,h,order:responsiveOrder.get(id),section:spec.section,sectionStart:spec.sectionStart&&id===headingItemId,sectionHeadingY:spec.sectionStart?y-spacing.headingHeight:null,sectionHeadingOrder,sectionTitle:spec.sectionTitle,sectionPattern:spec.pattern,sectionIndex:sectionById.get(spec.section)?.order||0,compositionLevel:spec.featureId===id?'feature':'support',touch:{L:x===g,R:Math.abs(x+w-(CANVAS.w-g))<.2,T:itemY===g,B:false},policy});
+  +      x+=w+g;
+  +    }
+  +    y+=spec.height+spec.gapAfter;
+  +  }
+     if(rects.length){const maxBottom=Math.max(...rects.map(r=>r.y+r.h));if(maxBottom>resolvedTargetH-g+.5&&!conflict)conflict='Semantic minimum sizes exceed the current document safe hull.';for(const r of rects)r.touch.B=Math.abs(r.y+r.h-(resolvedTargetH-g))<.2;}
+     return {rects,height:resolvedTargetH,conflict};
+   }
+  @@ -894,7 +935,7 @@ function contentMarkup(entry, r) {
+  -    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
+  +    hull.innerHTML = '<div class="canvas-grid"></div><div class="group-layer" id="groupLayer"></div><div class="composition-section-surface-layer" id="compositionSectionSurfaceLayer"></div><div class="blank-start-surface" id="blankStartSurface" hidden><b>Start a report</b><span>Bring in data or add your first visual.</span><div><button type="button" data-blank-action="paste">Paste data</button><button type="button" data-blank-action="library">Open library / Add first element</button></div></div><div class="component-layer" id="componentLayer"></div><div class="drop-ghost" id="dropGhost"></div><div class="overlay-layer"><div class="guide v" id="guideV"></div><div class="guide h" id="guideH"></div><div class="lasso" id="lasso"></div></div>';
+     }
+     const scene=$('#scene');
+     if(scene&&!$('#editorChromeLayer',scene)) scene.insertAdjacentHTML('beforeend','<div class="editor-chrome-layer" id="editorChromeLayer" data-editor-only aria-label="Selection and resize controls"></div>');
+  @@ -955,7 +996,7 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
+  -  if(entry.engine==='ComparisonEngine')return 150;
+  +  if(entry.engine==='ComparisonEngine')return 180;
+     if(entry.engine==='CoreChartEngine'||entry.engine==='EngineeringChartEngine')return 250;
+     if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
+     if(entry.engine==='DiagramEngine'){
+  @@ -985,7 +1026,6 @@ function measureSmartContentRequirements(rm) {
+  -    if(entry.engine==='DiagramEngine'&&String(entry.element||entry.title||'').toLowerCase().includes('process flow'))continue;
+       const r=rm.get(entry.id); const node=ui.componentNodes.get(entry.id); if(!r||!node)continue;
+       const overflow=nodeOverflow($('.c-content',node));
+       if(overflow.x<=1&&overflow.y<=1)continue;
+  @@ -1044,7 +1084,7 @@ function reconcileCanvas({ content = true } = {}) {
+  -    node.style.order = String(Number.isFinite(Number(entry.order)) ? Number(entry.order) : 0);
+  +    node.style.order = String(model().mode==='smart'&&Number.isFinite(Number(r.order))?Number(r.order)*2+1:(Number.isFinite(Number(entry.order))?Number(entry.order):0));
+       syncComponentSectionHeading(node,r,entry);
+       node.setAttribute('aria-selected', ui.selected.has(entry.id) ? 'true' : 'false');
+       node.setAttribute('aria-disabled', entry.locked ? 'true' : 'false');
+  @@ -1060,6 +1100,7 @@ function reconcileCanvas({ content = true } = {}) {
+  +  renderCompositionSectionSurfaces(rm);
+     renderEditorChrome(rm);
+     renderContext(rm);
+     renderMinimap(rm);
+  @@ -1091,18 +1132,49 @@ function renderGroups(rm) {
+  +function renderCompositionSectionSurfaces(rm) {
+  +  const layer=$('#compositionSectionSurfaceLayer');if(!layer)return;
+  +  layer.querySelectorAll('.composition-section-surface').forEach(node=>node.remove());
+  +  if(model().mode!=='smart')return;
+  +  const grouped=new Map();
+  +  for(const rect of rm.values()){
+  +    if(!rect.section||!['hero-opening-band','compact-kpi-strip','feature-support-analysis','balanced-analytical-pair','evidence-detail-grid','narrative-evidence-split','causal-flow-feature'].includes(rect.sectionPattern))continue;
+  +    if(!grouped.has(rect.section))grouped.set(rect.section,[]);grouped.get(rect.section).push(rect);
+  +  }
+  +  for(const [section,rects] of grouped){
+  +    const bounds=rectUnion(rects);if(!bounds)continue;
+  +    const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length}),heading=spacing.headingHeight;
+  +    const surface=document.createElement('div');surface.className='composition-section-surface';surface.dataset.pattern=rects[0].sectionPattern;surface.setAttribute('aria-hidden','true');
+  +    const left=Math.max(2,Math.min(bounds.x-12,CANVAS.w-4));
+  +    surface.style.left=`${left}px`;surface.style.top=`${Math.max(2,bounds.y-heading-7)}px`;
+  +    surface.style.width=`${Math.max(1,Math.min(bounds.w+24,CANVAS.w-4-left))}px`;surface.style.height=`${bounds.h+heading+19}px`;
+  +    surface.dataset.section=section;layer.appendChild(surface);
+  +  }
+  +}
+  +
+   function syncComponentSectionHeading(node,rect,entry) {
+  -  if(model().mode==='smart'&&rect?.sectionStart){
+  -    node.dataset.sectionStart='true';
+  -    node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  +  if(model().mode==='smart'&&rect){
+  +    if(rect.sectionStart){
+  +      node.dataset.sectionStart='true';
+  +      node.dataset.sectionTitle=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  +    } else {
+  +      delete node.dataset.sectionStart;
+  +      delete node.dataset.sectionTitle;
+  +    }
+  +    node.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
+  +    node.dataset.compositionLevel=rect.compositionLevel||'feature';
+     } else {
+       delete node.dataset.sectionStart;
+       delete node.dataset.sectionTitle;
+  +    delete node.dataset.sectionPattern;
+  +    delete node.dataset.compositionLevel;
+     }
+   }
+   
+   function syncCompositionSectionHeadings(layer,rm) {
+     if(!layer)return;
+  +  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length});
+  +  layer.style.setProperty('--viz-composition-row-gap',`${spacing.stackGap}px`);
+     layer.querySelectorAll('.composition-section-heading').forEach(node=>node.remove());
+     if(model().mode!=='smart')return;
+     for(const rect of rm.values()){
+  @@ -1110,10 +1182,13 @@ function syncCompositionSectionHeadings(layer,rm) {
+  -    heading.textContent=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  -    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,rect.y-18)}px`;
+  +    const index=String(Number(rect.sectionIndex||0)+1).padStart(2,'0'),title=rect.sectionTitle||compositionSection(entry,compositionRole(entry)).title;
+  +    heading.innerHTML=`<span class="composition-section-index">${index}</span><b>${esc(title)}</b>`;
+  +    heading.style.left=`${CANVAS.gap}px`;heading.style.top=`${Math.max(0,Number.isFinite(Number(rect.sectionHeadingY))?Number(rect.sectionHeadingY):rect.y-spacing.headingHeight)}px`;
+       heading.style.width=`${Math.max(1,CANVAS.w-2*CANVAS.gap)}px`;
+  -    heading.style.order=String(Math.floor(Number(entry?.order)||0)-1);
+  +    heading.style.order=String(Number.isFinite(Number(rect.sectionHeadingOrder))?Number(rect.sectionHeadingOrder)*2:Number.isFinite(Number(rect.order))?Number(rect.order)*2:Math.floor(Number(entry?.order)||0)*2);
+  +    heading.dataset.section=rect.section||'';
+  +    heading.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
+       layer.appendChild(heading);
+     }
+   }
+  @@ -2999,27 +3074,27 @@ function renderReuseRemapDialog(focusKey=null){
+  -    const fieldRows=source.bindings.flatMap(binding=>{
+  -      const known=new Set(binding.field_roles.map(value=>value.role)),roles=[...binding.field_roles,...binding.references,...binding.required_roles.filter(role=>!known.has(role)).map(role=>({role,field_name:'',field_type:'',required:true}))];
+  -      return roles.map(role=>{
+  -        const selected=String(selection.mappings?.[binding.item_id]?.[role.role]||slot.mapping?.[binding.item_id]?.[role.role]||'');
+  -        const label=reuseRoleLabel(role.role,binding.view),sourceLabel=role.field_name?` · source: ${role.field_name}`:'';
+  -        return `<label class="reuse-remap-role"><span><b>${esc(label)}</b><small>${esc(binding.element)}${esc(sourceLabel)}</small></span><select data-remap-role="${esc(source.identity)}" data-remap-item="${esc(binding.item_id)}" data-role="${esc(role.role)}" aria-label="${esc(label)} for ${esc(binding.element)}" ${destination?'':'disabled'}><option value="">Choose a field</option>${(destination?.fields||[]).map(field=>`<option value="${esc(field.id)}" ${String(field.id)===selected?'selected':''}>${esc(field.name)} · ${esc(humanFieldTypeLabel(field.type))}</option>`).join('')}</select></label>`;
+  -      });
+
+... (more changes truncated)
+  +109 -41
+[full diff: rtk git diff --no-compact]

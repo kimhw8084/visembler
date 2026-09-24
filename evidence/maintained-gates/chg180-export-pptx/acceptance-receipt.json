@@ -1,0 +1,1434 @@
+{
+  "schema": "visembler-chg180-r1-native-acceptance.v1",
+  "status": "PASS",
+  "requested_base_sha": "797f874c5d5c5c7f522674b4a08cdd08bdbf31db",
+  "requested_base_tree": "e279190e4709e4914054e7098a0d1421723c8a6e",
+  "candidate_sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+  "candidate_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "capture_start_head": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+  "capture_start_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "source_files_sha256": {
+    "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs": "0fa1d5c1e960b8ecc90b963b22ed82317cb2d52ebe887de24abbb9231735c336",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs": "a614d806c55302745ba20de19ef43941056c7f06e6610fb0eac422b80737a144",
+    "company_ui/products/visualizer/assets/integrated_editor.html": "19a023ff3f5f852b1b2a0e9206387d0337aee0c048e4f3195d4e30095c26e2c8",
+    "company_ui/products/visualizer/page.py": "6c42d4d2b42067ca35ad71d7bae4b1bd99fc8afc11a4a6ea16842bb30c863ec8",
+    "company_ui/products/visualizer/ppt_service.py": "426ed6a5bac31ce93b4b11fbde4fa5ea614c44a96fd4b9509fca1b03a2d872fc",
+    "tests/test_visualizer_chg180_r1.py": "a82192346511c3cc285af878dc5ee9266bec0340b4840297e26acf757e4b6d09",
+    "scripts/release_checks/run_chg180_r1_acceptance.py": "38e3e71622a04e4bb16178ce23267ba166281c8124bc78088369460e7c052b89"
+  },
+  "runtime": {
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "python_pptx": "1.0.2",
+    "browser": {
+      "name": "Chromium",
+      "version": "151.0.7922.34"
+    }
+  },
+  "cases": [
+    {
+      "name": "Dense Operations Process Flow author, save, fresh reload, visible Validate, Preview and editable PowerPoint",
+      "status": "PASS",
+      "report_id": "chg180-r1-dense-operations",
+      "revision": 5,
+      "geometry_before_save": {
+        "revision": 5,
+        "layout": {
+          "canvas": {
+            "width": 1600,
+            "height": 2657
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1572,
+              "h": 152.32000000000002,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "editorial-flow",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 470.3030303030303,
+              "y": 226.32000000000002,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 200.32000000000002,
+              "sectionHeadingOrder": 1,
+              "sectionPattern": "analytical-feature",
+              "compositionLevel": "feature",
+              "order": 1
+            },
+            {
+              "id": "c6",
+              "x": 620,
+              "y": 580.32,
+              "w": 360,
+              "h": 1514,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 554.32,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 14,
+              "y": 2102.32,
+              "w": 1572,
+              "h": 222,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 2358.32,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 2332.32,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 4
+            },
+            {
+              "id": "c5",
+              "x": 14,
+              "y": 2486.32,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 2460.32,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 5
+            }
+          ]
+        },
+        "preflight": {
+          "coverage": 100,
+          "overlaps": 0,
+          "out": 0,
+          "min": 0,
+          "clipping": 0,
+          "plot": 0,
+          "controls": 0,
+          "staleGuides": 0,
+          "warnings": [],
+          "issues": [],
+          "layoutIssues": [],
+          "accessibilityIssues": [],
+          "dataIssues": []
+        },
+        "dom": {
+          "component": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 360,
+            "offsetHeight": 1514
+          },
+          "content": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 358,
+            "offsetHeight": 1512
+          },
+          "svg": {
+            "clientWidth": 326,
+            "clientHeight": 1480,
+            "scrollWidth": 326,
+            "scrollHeight": 1480,
+            "offsetWidth": null,
+            "offsetHeight": null
+          }
+        },
+        "svgViewBox": "36 36 224 1476",
+        "model": {
+          "mode": "smart",
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ],
+            "diagram": null,
+            "itemGeometry": {}
+          }
+        },
+        "persisted": {
+          "revision": 5,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "mode": "smart",
+          "items": [
+            {
+              "id": "c1",
+              "engine": "MetricEngine",
+              "element": "Hero KPI",
+              "order": 0,
+              "geometry": {}
+            },
+            {
+              "id": "c2",
+              "engine": "CoreChartEngine",
+              "element": "Line Chart",
+              "order": 1,
+              "geometry": {}
+            },
+            {
+              "id": "c3",
+              "engine": "TableEngine",
+              "element": "Clean Table",
+              "order": 2,
+              "geometry": {}
+            },
+            {
+              "id": "c4",
+              "engine": "DecisionCompositeEngine",
+              "element": "Risk Callout",
+              "order": 3,
+              "geometry": {}
+            },
+            {
+              "id": "c5",
+              "engine": "ProjectCompositeEngine",
+              "element": "Project Card",
+              "order": 4,
+              "geometry": {}
+            },
+            {
+              "id": "c6",
+              "engine": "DiagramEngine",
+              "element": "Process Flow",
+              "order": 5,
+              "geometry": {}
+            }
+          ],
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ]
+          }
+        }
+      },
+      "geometry_after_save": {
+        "revision": 5,
+        "layout": {
+          "canvas": {
+            "width": 1600,
+            "height": 2657
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1572,
+              "h": 152.32000000000002,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "editorial-flow",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 470.3030303030303,
+              "y": 226.32000000000002,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 200.32000000000002,
+              "sectionHeadingOrder": 1,
+              "sectionPattern": "analytical-feature",
+              "compositionLevel": "feature",
+              "order": 1
+            },
+            {
+              "id": "c6",
+              "x": 620,
+              "y": 580.32,
+              "w": 360,
+              "h": 1514,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 554.32,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 14,
+              "y": 2102.32,
+              "w": 1572,
+              "h": 222,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 2358.32,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 2332.32,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 4
+            },
+            {
+              "id": "c5",
+              "x": 14,
+              "y": 2486.32,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 2460.32,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 5
+            }
+          ]
+        },
+        "preflight": {
+          "coverage": 100,
+          "overlaps": 0,
+          "out": 0,
+          "min": 0,
+          "clipping": 0,
+          "plot": 0,
+          "controls": 0,
+          "staleGuides": 0,
+          "warnings": [],
+          "issues": [],
+          "layoutIssues": [],
+          "accessibilityIssues": [],
+          "dataIssues": []
+        },
+        "dom": {
+          "component": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 360,
+            "offsetHeight": 1514
+          },
+          "content": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 358,
+            "offsetHeight": 1512
+          },
+          "svg": {
+            "clientWidth": 326,
+            "clientHeight": 1480,
+            "scrollWidth": 326,
+            "scrollHeight": 1480,
+            "offsetWidth": null,
+            "offsetHeight": null
+          }
+        },
+        "svgViewBox": "36 36 224 1476",
+        "model": {
+          "mode": "smart",
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ],
+            "diagram": null,
+            "itemGeometry": {}
+          }
+        },
+        "persisted": {
+          "revision": 5,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "mode": "smart",
+          "items": [
+            {
+              "id": "c1",
+              "engine": "MetricEngine",
+              "element": "Hero KPI",
+              "order": 0,
+              "geometry": {}
+            },
+            {
+              "id": "c2",
+              "engine": "CoreChartEngine",
+              "element": "Line Chart",
+              "order": 1,
+              "geometry": {}
+            },
+            {
+              "id": "c3",
+              "engine": "TableEngine",
+              "element": "Clean Table",
+              "order": 2,
+              "geometry": {}
+            },
+            {
+              "id": "c4",
+              "engine": "DecisionCompositeEngine",
+              "element": "Risk Callout",
+              "order": 3,
+              "geometry": {}
+            },
+            {
+              "id": "c5",
+              "engine": "ProjectCompositeEngine",
+              "element": "Project Card",
+              "order": 4,
+              "geometry": {}
+            },
+            {
+              "id": "c6",
+              "engine": "DiagramEngine",
+              "element": "Process Flow",
+              "order": 5,
+              "geometry": {}
+            }
+          ],
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ]
+          }
+        }
+      },
+      "geometry_after_fresh_reload": {
+        "revision": 5,
+        "layout": {
+          "canvas": {
+            "width": 1600,
+            "height": 2657
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1572,
+              "h": 152.32000000000002,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "editorial-flow",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 470.3030303030303,
+              "y": 226.32000000000002,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 200.32000000000002,
+              "sectionHeadingOrder": 1,
+              "sectionPattern": "analytical-feature",
+              "compositionLevel": "feature",
+              "order": 1
+            },
+            {
+              "id": "c6",
+              "x": 620,
+              "y": 580.32,
+              "w": 360,
+              "h": 1514,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 554.32,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 14,
+              "y": 2102.32,
+              "w": 1572,
+              "h": 222,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 2358.32,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 2332.32,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 4
+            },
+            {
+              "id": "c5",
+              "x": 14,
+              "y": 2486.32,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 2460.32,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 5
+            }
+          ]
+        },
+        "preflight": {
+          "coverage": 100,
+          "overlaps": 0,
+          "out": 0,
+          "min": 0,
+          "clipping": 0,
+          "plot": 0,
+          "controls": 0,
+          "staleGuides": 0,
+          "warnings": [],
+          "issues": [],
+          "layoutIssues": [],
+          "accessibilityIssues": [],
+          "dataIssues": []
+        },
+        "dom": {
+          "component": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 360,
+            "offsetHeight": 1514
+          },
+          "content": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 358,
+            "offsetHeight": 1512
+          },
+          "svg": {
+            "clientWidth": 326,
+            "clientHeight": 1480,
+            "scrollWidth": 326,
+            "scrollHeight": 1480,
+            "offsetWidth": null,
+            "offsetHeight": null
+          }
+        },
+        "svgViewBox": "36 36 224 1476",
+        "model": {
+          "mode": "smart",
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ],
+            "diagram": null,
+            "itemGeometry": {}
+          }
+        },
+        "persisted": {
+          "revision": 5,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "mode": "smart",
+          "items": [
+            {
+              "id": "c1",
+              "engine": "MetricEngine",
+              "element": "Hero KPI",
+              "order": 0,
+              "geometry": {}
+            },
+            {
+              "id": "c2",
+              "engine": "CoreChartEngine",
+              "element": "Line Chart",
+              "order": 1,
+              "geometry": {}
+            },
+            {
+              "id": "c3",
+              "engine": "TableEngine",
+              "element": "Clean Table",
+              "order": 2,
+              "geometry": {}
+            },
+            {
+              "id": "c4",
+              "engine": "DecisionCompositeEngine",
+              "element": "Risk Callout",
+              "order": 3,
+              "geometry": {}
+            },
+            {
+              "id": "c5",
+              "engine": "ProjectCompositeEngine",
+              "element": "Project Card",
+              "order": 4,
+              "geometry": {}
+            },
+            {
+              "id": "c6",
+              "engine": "DiagramEngine",
+              "element": "Process Flow",
+              "order": 5,
+              "geometry": {}
+            }
+          ],
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ]
+          }
+        }
+      },
+      "visible_validation_title": "Ready to export",
+      "pptx_bytes": 39583,
+      "pptx_sha256": "e93dbe5144c95032e4709f384d587326945ea699054fd6fdcffb3567b9ae140a",
+      "powerpoint_structure": {
+        "slide_count": 2,
+        "editable_node_count": 9,
+        "connector_count": 8,
+        "node_labels": [
+          "Define affected wafer scope and customer impact",
+          "Contain material from the suspect process window",
+          "Verify measurement method against qualified standards",
+          "Compare affected and reference wafer populations",
+          "Inspect etch tool and chamber process history",
+          "Correlate recipe settings with die-level yield loss",
+          "Confirm the physical defect signature by inspection",
+          "Apply corrective action and verify effectiveness",
+          "Release production after engineering approval"
+        ],
+        "canonical_flow_metadata": {
+          "direction": "down",
+          "edges": [
+            [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window"
+            ],
+            [
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards"
+            ],
+            [
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations"
+            ],
+            [
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history"
+            ],
+            [
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss"
+            ],
+            [
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection"
+            ],
+            [
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness"
+            ],
+            [
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ]
+          ],
+          "element": "Process Flow",
+          "engine": "DiagramEngine",
+          "groupId": null,
+          "id": "c6",
+          "locked": false,
+          "message_role": "Supporting Evidence",
+          "nodes": [
+            "Define affected wafer scope and customer impact",
+            "Contain material from the suspect process window",
+            "Verify measurement method against qualified standards",
+            "Compare affected and reference wafer populations",
+            "Inspect etch tool and chamber process history",
+            "Correlate recipe settings with die-level yield loss",
+            "Confirm the physical defect signature by inspection",
+            "Apply corrective action and verify effectiveness",
+            "Release production after engineering approval"
+          ],
+          "order": 5,
+          "showTitle": false,
+          "textAlign": "left",
+          "title": "Process Flow",
+          "type": "diagram",
+          "weight": 1.5,
+          "z": 6,
+          "x": 620.0,
+          "y": 580.32,
+          "w": 360.0,
+          "h": 1514.0
+        }
+      },
+      "geometry_after_export_reload": {
+        "revision": 5,
+        "layout": {
+          "canvas": {
+            "width": 1600,
+            "height": 2657
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1572,
+              "h": 152.32000000000002,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "editorial-flow",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 470.3030303030303,
+              "y": 226.32000000000002,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 200.32000000000002,
+              "sectionHeadingOrder": 1,
+              "sectionPattern": "analytical-feature",
+              "compositionLevel": "feature",
+              "order": 1
+            },
+            {
+              "id": "c6",
+              "x": 620,
+              "y": 580.32,
+              "w": 360,
+              "h": 1514,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 554.32,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 14,
+              "y": 2102.32,
+              "w": 1572,
+              "h": 222,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 2358.32,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 2332.32,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 4
+            },
+            {
+              "id": "c5",
+              "x": 14,
+              "y": 2486.32,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 2460.32,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 5
+            }
+          ]
+        },
+        "preflight": {
+          "coverage": 100,
+          "overlaps": 0,
+          "out": 0,
+          "min": 0,
+          "clipping": 0,
+          "plot": 0,
+          "controls": 0,
+          "staleGuides": 0,
+          "warnings": [],
+          "issues": [],
+          "layoutIssues": [],
+          "accessibilityIssues": [],
+          "dataIssues": []
+        },
+        "dom": {
+          "component": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 360,
+            "offsetHeight": 1514
+          },
+          "content": {
+            "clientWidth": 358,
+            "clientHeight": 1512,
+            "scrollWidth": 358,
+            "scrollHeight": 1512,
+            "offsetWidth": 358,
+            "offsetHeight": 1512
+          },
+          "svg": {
+            "clientWidth": 326,
+            "clientHeight": 1480,
+            "scrollWidth": 326,
+            "scrollHeight": 1480,
+            "offsetWidth": null,
+            "offsetHeight": null
+          }
+        },
+        "svgViewBox": "36 36 224 1476",
+        "model": {
+          "mode": "smart",
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ],
+            "diagram": null,
+            "itemGeometry": {}
+          }
+        },
+        "persisted": {
+          "revision": 5,
+          "canvas": {
+            "width": 1600,
+            "height": 900
+          },
+          "mode": "smart",
+          "items": [
+            {
+              "id": "c1",
+              "engine": "MetricEngine",
+              "element": "Hero KPI",
+              "order": 0,
+              "geometry": {}
+            },
+            {
+              "id": "c2",
+              "engine": "CoreChartEngine",
+              "element": "Line Chart",
+              "order": 1,
+              "geometry": {}
+            },
+            {
+              "id": "c3",
+              "engine": "TableEngine",
+              "element": "Clean Table",
+              "order": 2,
+              "geometry": {}
+            },
+            {
+              "id": "c4",
+              "engine": "DecisionCompositeEngine",
+              "element": "Risk Callout",
+              "order": 3,
+              "geometry": {}
+            },
+            {
+              "id": "c5",
+              "engine": "ProjectCompositeEngine",
+              "element": "Project Card",
+              "order": 4,
+              "geometry": {}
+            },
+            {
+              "id": "c6",
+              "engine": "DiagramEngine",
+              "element": "Process Flow",
+              "order": 5,
+              "geometry": {}
+            }
+          ],
+          "flow": {
+            "id": "c6",
+            "element": "Process Flow",
+            "direction": "down",
+            "nodes": [
+              "Define affected wafer scope and customer impact",
+              "Contain material from the suspect process window",
+              "Verify measurement method against qualified standards",
+              "Compare affected and reference wafer populations",
+              "Inspect etch tool and chamber process history",
+              "Correlate recipe settings with die-level yield loss",
+              "Confirm the physical defect signature by inspection",
+              "Apply corrective action and verify effectiveness",
+              "Release production after engineering approval"
+            ],
+            "edges": [
+              [
+                "Define affected wafer scope and customer impact",
+                "Contain material from the suspect process window"
+              ],
+              [
+                "Contain material from the suspect process window",
+                "Verify measurement method against qualified standards"
+              ],
+              [
+                "Verify measurement method against qualified standards",
+                "Compare affected and reference wafer populations"
+              ],
+              [
+                "Compare affected and reference wafer populations",
+                "Inspect etch tool and chamber process history"
+              ],
+              [
+                "Inspect etch tool and chamber process history",
+                "Correlate recipe settings with die-level yield loss"
+              ],
+              [
+                "Correlate recipe settings with die-level yield loss",
+                "Confirm the physical defect signature by inspection"
+              ],
+              [
+                "Confirm the physical defect signature by inspection",
+                "Apply corrective action and verify effectiveness"
+              ],
+              [
+                "Apply corrective action and verify effectiveness",
+                "Release production after engineering approval"
+              ]
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "Semiconductor RCA native Validate and supported PowerPoint action for Wafer Map and Wafer Difference Map",
+      "status": "PASS",
+      "report_id": "chg180-r1-semiconductor-rca",
+      "revision": 1,
+      "visible_validation_title": "Ready to export",
+      "source_model_unchanged": true,
+      "pptx_bytes": 31606,
+      "pptx_sha256": "8cb5b9f46bd1355f97a8e110978e1b23655a6f27caf2dee207a1588b4f6878e9",
+      "powerpoint_structure": {
+        "slide_count": 1,
+        "slides": [
+          {
+            "kind": "wafer_map",
+            "title": "W07 affected yield by die",
+            "editable_die_count": 4,
+            "outline": "VIZ::W07 affected yield by die::wafer-outline",
+            "notch": "VIZ::W07 affected yield by die::orientation-notch",
+            "panel": "VIZ::W07 affected yield by die::spatial-panel",
+            "observations": [
+              {
+                "x": 0,
+                "y": 0,
+                "value": 98.1
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "value": 96.0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "value": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "value": null
+              }
+            ],
+            "metadata": {
+              "wafer_id": "W07",
+              "lot_id": "L2407",
+              "tool": "ETCH-08",
+              "chamber": "A",
+              "recipe": "REC-17",
+              "process": "Etch"
+            }
+          },
+          {
+            "kind": "wafer_difference",
+            "title": "W07 signed affected − reference",
+            "editable_die_count": 4,
+            "outline": "VIZ::W07 signed affected − reference::wafer-outline",
+            "notch": "VIZ::W07 signed affected − reference::orientation-notch",
+            "panel": "VIZ::W07 signed affected − reference::spatial-panel",
+            "observations": [
+              {
+                "x": 0,
+                "y": 0,
+                "value": null,
+                "reference_value": 100.0,
+                "affected_value": 100.0,
+                "delta": 0.0
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "value": null,
+                "reference_value": 100.0,
+                "affected_value": 95.0,
+                "delta": -5.0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "value": null,
+                "reference_value": 100.0,
+                "affected_value": 102.0,
+                "delta": 2.0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "value": null,
+                "reference_value": 102.0,
+                "affected_value": null,
+                "delta": null
+              }
+            ],
+            "metadata": {
+              "wafer_id": "W07",
+              "lot_id": "L2407",
+              "tool": "ETCH-08",
+              "chamber": "A",
+              "recipe": "REC-17",
+              "process": "Etch"
+            }
+          }
+        ],
+        "round_trip_item_ids": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      }
+    }
+  ],
+  "unexpected_browser_events": [],
+  "headless_pptx_renderer": {
+    "status": "MISSING",
+    "reason": "LibreOffice/soffice and pdftoppm are required for trusted headless PowerPoint rasterization.",
+    "available": {
+      "libreoffice_or_soffice": null,
+      "pdftoppm": "/opt/homebrew/bin/pdftoppm"
+    }
+  },
+  "ui_review_contact_sheet": "ui-review-contact-sheet.png",
+  "passed_cases": 2,
+  "total_cases": 2
+}

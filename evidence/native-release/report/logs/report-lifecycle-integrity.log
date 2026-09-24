@@ -1,0 +1,79 @@
+{
+  "schema": "visembler-chg178-report-lifecycle.v1",
+  "candidate_sha": "b3ecb221986e51a712fea82adf5339a32d6b72b7",
+  "cases": [
+    {
+      "name": "isolated sessions reject stale title and preserve draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 2,
+        "revision_after_a": 3,
+        "canonical_before_resolution": "CHG-178 title from session A",
+        "stale_draft_retained": "CHG-178 retained title from session B",
+        "conflict_visible": true
+      }
+    },
+    {
+      "name": "isolated sessions reject stale purpose and preserve draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 4,
+        "revision_after_a": 5,
+        "canonical_before_resolution": "Purpose saved by session A",
+        "stale_draft_retained": "Purpose retained from stale session B",
+        "revision_after_explicit_resolution": 6
+      }
+    },
+    {
+      "name": "Report Hub details conflict resolution and reload persistence",
+      "status": "PASS",
+      "details": {
+        "starting_revision": 6,
+        "revision_after_session_a": 8,
+        "canonical_before_resolution": "CHG-178 Hub title from session A",
+        "draft_title_and_purpose_preserved": true,
+        "revision_after_explicit_resolution": 10,
+        "hub_reload_title": "CHG-178 Hub draft from session B",
+        "hub_reload_purpose": "Hub purpose draft from session B",
+        "editor_reload_purpose": "Hub purpose draft from session B"
+      }
+    },
+    {
+      "name": "normal report edit conflict retains and safely reapplies non-overlapping draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 10,
+        "revision_after_session_a": 11,
+        "canonical_before_resolution": "Normal report edit saved by session A",
+        "retained_draft": "Retained component title from session B",
+        "visible_conflict_state": "Local edits need recovery",
+        "revision_after_explicit_resolution": 12,
+        "session_a_edit_preserved": "Normal report edit saved by session A"
+      }
+    },
+    {
+      "name": "visible history restore creates and reloads a new revision",
+      "status": "PASS",
+      "details": {
+        "restored_revision": 13,
+        "restored_title": "CHG-178 original title",
+        "restored_purpose": "Original report purpose",
+        "restored_model_exact": true,
+        "original_history_id_retained": "r1",
+        "checkpoint_history_id_retained": "r12-checkpoint-c5779d9a2d",
+        "reloaded_hub_title": "CHG-178 original title",
+        "reloaded_hub_purpose": "Original report purpose"
+      }
+    }
+  ],
+  "unexpected_browser_events": [],
+  "fixture": {
+    "report_id": "chg178-1790266824",
+    "starting_revision": 2,
+    "historical_revision": 1,
+    "historical_title": "CHG-178 original title",
+    "historical_description": "Original report purpose"
+  },
+  "status": "PASS",
+  "case_count": 5
+}
