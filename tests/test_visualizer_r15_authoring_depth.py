@@ -76,13 +76,16 @@ def test_r19_layouts_and_page_size_are_authored_not_implicitly_resized():
     model = canonical_model({'canvas': {'width': 1600, 'height': 900}})
     assert model['canvas'] == {'width': 1600, 'height': 900}
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
+    composition = (PRODUCT / 'assets/authoring_composition.mjs').read_text(encoding='utf-8')
     html = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     assert "const layoutTargetH=solo?baseNeeded:CANVAS.h" in editor
     assert "id=\"pageSizeBtn\"" in html and "id=\"layoutBtn\"" not in html
     assert 'function setCanvasSize(width, height)' in editor and 'function openLayoutGallery()' not in editor
     assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
-    assert editor.count("{id:'") >= 10 and 'const LAYOUT_ORDER=Object.freeze' in editor
+    assert 'composeReportModel' in editor and 'compositionRecipe' in editor
+    assert 'const RECIPE_ROLES = Object.freeze' in composition
+    assert all(f'{name}:' in composition for name in ('editorial','executive','technical','scorecard','narrative','review','investigation','manufacturing','roadmap','comparison','showcase'))
     assert 'component[data-content-density="fit"]' in css
     assert 'width:8px; height:8px' in css and 'component.selected::before { inset:0!important' in css
 
@@ -105,12 +108,16 @@ def test_r22_minimap_is_opt_in_at_startup():
 
 def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_explicit():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
+    stage = (PRODUCT / 'assets/authoring_stage_d.mjs').read_text(encoding='utf-8')
     shell = (PRODUCT / 'assets/integrated_editor.html').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
 
     assert 'const fitToHull=(policy,w=innerW,h=innerH)=>' in editor
     assert 'const layoutTargetH=solo?baseNeeded:CANVAS.h' in editor
-    assert 'const capacity=spec=>{const maximum=' in editor
+    assert 'function semanticPolicy(entry)' in editor
+    assert 'function allocateRowWidths(row, innerW, gap)' in editor
+    assert 'policy.maxH' in editor and 'semanticRole=compositionRole(entry)' in editor
+    assert 'contentFitSummary' in stage and 'layoutOperations' in stage
     assert 'const h=solo?spec.height:Math.min(spec.height,familyCap)' not in editor
     assert 'Math.max(policy.minH,spec.height)' not in editor
     assert 'show or hide the element library' in shell.lower()
@@ -123,19 +130,20 @@ def test_r23_smart_layout_uses_family_aware_row_height_and_authoring_panes_are_e
 
 def test_r25_smart_layout_prioritizes_growth_capable_families_and_table_preview_is_not_capped_at_five_rows():
     editor = (PRODUCT / 'assets/integrated_editor.mjs').read_text(encoding='utf-8')
+    composition = (PRODUCT / 'assets/authoring_composition.mjs').read_text(encoding='utf-8')
     renderer = (PRODUCT / 'assets/element_renderer.mjs').read_text(encoding='utf-8')
     css = (PRODUCT / 'assets/integrated_editor.css').read_text(encoding='utf-8')
     page = (PRODUCT / 'page.py').read_text(encoding='utf-8')
 
-    assert 'if(!solo&&baseNeeded<resolvedTargetH&&rowSpecs.length)' in editor
-    assert 'const growthScore=spec=>' in editor
-    assert 'plot:5,data:4.5,media:4,square:4' in editor
-    assert 'for(const spec of rowSpecs)spec.height+=extra/rowSpecs.length' not in editor
+    assert 'function effectiveWeight(entry)' in editor
+    assert 'const weights=row.map(({entry})=>effectiveWeight(entry))' in editor
+    assert 'const baseNeeded=rowSpecs.reduce' in editor and 'resolvedTargetH=solo?' in editor
+    assert 'const ROLE_SECTIONS = Object.freeze' in composition
     assert "beginPointerSession($('#viewport')" in editor
     assert "box.classList.add('active')" in editor
     assert ".lasso.active{display:block!important" in css
     assert "&&!hull.contains(event.target)" not in editor
-    assert "id:'showcase'" in editor
+    assert "showcase: ['report_headline'" in composition
     assert '(bound.rows||[]).slice(0,5)' not in renderer
     assert '.minimap { display:none; }' in css
     assert "ui.button('History',on_click=open_history)" not in page

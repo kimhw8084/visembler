@@ -49,6 +49,20 @@ const RECIPE_ROLES = Object.freeze({
   showcase: ['report_headline','hero_metric','decision_risk','primary_analysis','detailed_evidence','supporting_analysis','narrative_interpretation','action_status','conclusion','context','causal_evidence'],
 });
 
+const RECIPE_PROMINENCE = Object.freeze({
+  editorial: {},
+  executive: { report_headline: 1.12, hero_metric: 1.18, decision_risk: 1.08, conclusion: 1.05 },
+  technical: { primary_analysis: 1.24, causal_evidence: 1.2, detailed_evidence: 1.16, supporting_analysis: 1.06 },
+  scorecard: { hero_metric: 1.24, detailed_evidence: 1.1, decision_risk: 1.08 },
+  narrative: { narrative_interpretation: 1.24, context: 1.1, conclusion: 1.12 },
+  review: { primary_analysis: 1.14, detailed_evidence: 1.1, decision_risk: 1.12 },
+  investigation: { causal_evidence: 1.22, detailed_evidence: 1.18, narrative_interpretation: 1.08 },
+  manufacturing: { hero_metric: 1.1, primary_analysis: 1.12, causal_evidence: 1.22, detailed_evidence: 1.12, action_status: 1.08 },
+  roadmap: { action_status: 1.22, decision_risk: 1.15, context: 1.08 },
+  comparison: { primary_analysis: 1.12, supporting_analysis: 1.14, hero_metric: 1.08 },
+  showcase: { report_headline: 1.18, hero_metric: 1.16, detailed_evidence: 1.12 },
+});
+
 const low = value => String(value ?? '').trim().toLowerCase();
 
 function explicitOrNameRole(entry = {}) {
@@ -83,6 +97,11 @@ export function legacyMessageRole(role) {
 export function compositionSection(entry = {}, role = compositionRole(entry)) {
   const id = String(entry.section_id || ROLE_SECTIONS[role] || 'analysis');
   return { id, title: String(entry.section_title || COMPOSITION_SECTIONS[id] || 'Analysis') };
+}
+
+export function compositionProminence(entry = {}, preset = 'editorial') {
+  const scale = Number(RECIPE_PROMINENCE[preset]?.[compositionRole(entry)] ?? 1);
+  return Number.isFinite(scale) ? Math.max(1, Math.min(1.3, scale)) : 1;
 }
 
 export function compositionOrder(items = [], preset = 'editorial') {
@@ -127,5 +146,5 @@ export function composeReportModel(model = {}, preset = model.layoutPreset || 'e
 }
 
 export function compositionRecipe(preset = 'editorial') {
-  return { id: preset, version: COMPOSITION_VERSION, roles: [...(RECIPE_ROLES[preset] || RECIPE_ROLES.editorial)] };
+  return { id: preset, version: COMPOSITION_VERSION, roles: [...(RECIPE_ROLES[preset] || RECIPE_ROLES.editorial)], prominence: structuredClone(RECIPE_PROMINENCE[preset] || RECIPE_PROMINENCE.editorial) };
 }

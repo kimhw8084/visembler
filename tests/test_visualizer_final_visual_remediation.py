@@ -172,11 +172,15 @@ def test_final_visual_verifier_keeps_old_probe_evidence_and_element_contracts() 
 
 def test_layout_selection_and_tablet_contracts_are_explicit() -> None:
     editor = (ASSETS / "integrated_editor.mjs").read_text(encoding="utf-8")
+    composition = (ASSETS / "authoring_composition.mjs").read_text(encoding="utf-8")
     css = (ASSETS / "integrated_editor.css").read_text(encoding="utf-8")
     diagram_html = (ASSETS / "diagram_studio.html").read_text(encoding="utf-8")
     diagram_js = (ASSETS / "diagram_studio.mjs").read_text(encoding="utf-8")
-    assert "const fitToHull=" in editor and "const growthScore=spec=>" in editor and "let y=g" in editor
-    assert "const safeW=Math.max(1,CANVAS.w-2*CANVAS.gap)" in editor
+    assert "const fitToHull=" in editor and "function semanticSmartLayout(items=viewItems())" in editor
+    assert "function allocateRowWidths(row, innerW, gap)" in editor and "let y=g+(rowSpecs[0]?.sectionStart?20:0)" in editor
+    assert "compositionOrder(items,model().layoutPreset||'editorial')" in editor
+    assert "COMPOSITION_ROLES" in composition and "ROLE_SECTIONS" in composition
+    assert "innerW=Math.max(1,CANVAS.w-2*g)" in editor
     assert "editor-chrome-layer" in editor and "renderEditorChrome(rm)" in editor
     assert "--viz-layer-editor-chrome" in css and "pointer-events:none" in css
     assert "data-responsive-priority=\"secondary\"" in editor or "data-responsive-priority=\"secondary\"" in (ASSETS / "integrated_editor.html").read_text(encoding="utf-8")

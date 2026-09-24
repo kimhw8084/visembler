@@ -11,6 +11,7 @@ import argparse
 import copy
 import hashlib
 import json
+import re
 import sys
 import tempfile
 import time
@@ -47,6 +48,10 @@ def semiconductor_wafer_fixture() -> str:
             value = 88.4 + ((x * 7 + y * 11) % 6) / 10 if affected else 98.1 + ((x * 5 + y * 3) % 8) / 10
             rows.append(f"{x}\t{y}\t{value:.1f}")
     return "\n".join(rows) + "\n"
+
+
+def exact_numeric_tokens(value: str) -> set[float]:
+    return {float(token) for token in re.findall(r"(?<!\d)\d+(?:\.\d+)?(?!\d)", value)}
 
 DATA = {
     "executive-business-review": "Quarter\tRetention\nQ1\t91.8\nQ2\t93.2\nQ3\t94.1\nQ4\t94.6\n",
@@ -638,7 +643,7 @@ def capture_report(page, output: Path, name: str, actions: Actions) -> dict:
     page.locator("#previewFitWidth").click()
     page.locator("#toast").evaluate("node=>{node.classList.remove('show');node.textContent=''}")
     preview_chart_summaries=page.locator("#componentLayer .cs-static-summary").all_inner_texts()
-    preview_chart_mark_titles=page.locator("#componentLayer .cs-chart-svg").evaluate_all("svgs=>svgs.map(svg=>({chart:svg.closest('.component')?.dataset.id,titles:[...svg.querySelectorAll('title')].map(node=>node.textContent)}))")
+    preview_chart_mark_titles=page.locator("#componentLayer .cs-chart-svg").evaluate_all("svgs=>svgs.map(svg=>({chart:svg.closest('.component')?.dataset.id,titles:[...svg.querySelectorAll('title,[aria-label]')].map(node=>node.getAttribute('aria-label')||node.textContent)}))")
     preview_table_summaries=page.locator('#componentLayer .component[data-engine="TableEngine"]').evaluate_all("nodes=>nodes.map(node=>node.innerText)")
     preview_table_geometry=page.locator('#componentLayer .component[data-engine="TableEngine"]').evaluate_all("nodes=>nodes.map(node=>{const rect=e=>{const r=e?.getBoundingClientRect();return r?{x:r.x,y:r.y,w:r.width,h:r.height}:null},region=node.querySelector('.table-frame'),table=region?.querySelector('table'),rows=[...(table?.querySelectorAll('tr')||[])];return{id:node.dataset.id,item:rect(node),card:rect(node.querySelector('.gallery-card')),body:rect(node.querySelector('.card-body')),region:rect(region),table:rect(table),rows:rows.map(row=>({text:row.innerText,rect:rect(row),color:getComputedStyle(row).color,display:getComputedStyle(row).display,visibility:getComputedStyle(row).visibility}))}})")
     axis_label_overlaps=page.locator("svg.cs-chart-svg").evaluate_all("svgs=>svgs.map(svg=>{const labels=[...svg.querySelectorAll('.cs-axis-label')].map(node=>{const r=node.getBBox();return{text:node.textContent.trim(),x:r.x,y:r.y,w:r.width,h:r.height}}),overlaps=[];labels.forEach((left,index)=>labels.slice(index+1).forEach(right=>{const x=Math.min(left.x+left.w,right.x+right.w)-Math.max(left.x,right.x),y=Math.min(left.y+left.h,right.y+right.h)-Math.max(left.y,right.y);if(x>1&&y>1)overlaps.push({left:left.text,right:right.text})}));return{chart:svg.closest('.component')?.dataset.id,overlaps}})")
@@ -1065,7 +1070,8 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
     capture = capture_report(page, output, "reuse-remapped-report", actions)
     assert any("2 rows" in summary and "Region" in summary and "Revenue" in summary for summary in capture["preview_chart_summaries"]), f"Preview must show the destination source's chart projection: {capture['preview_chart_summaries']}"
     rendered_mark_text = json.dumps(capture["preview_chart_mark_titles"])
-    assert "180" in rendered_mark_text and "205" in rendered_mark_text and "80" not in rendered_mark_text and "95" not in rendered_mark_text, f"The remapped Preview must plot destination values and omit source values: {capture['preview_chart_mark_titles']}"
+    rendered_mark_values = exact_numeric_tokens(rendered_mark_text)
+    assert {180.0, 205.0} <= rendered_mark_values and not ({80.0, 95.0} & rendered_mark_values), f"The remapped Preview must plot destination values and omit source values: {capture['preview_chart_mark_titles']}"
     assert any(all(value in summary for value in ("East", "180", "West", "205")) for summary in capture["preview_table_summaries"]), f"The remapped report must render destination evidence rows in Preview: {capture['preview_table_summaries']}"
     source_after = host.repository.get(source_id).model
     assert hashlib.sha256(json.dumps(source_after, sort_keys=True).encode()).hexdigest() == source_digest
@@ -1102,7 +1108,8 @@ def remap_report_challenge(page, host: NativeHost, output: Path, actions: Action
     assert any("East" in series["categories"] and "West" in series["categories"] for series in section_chart_values), f"PowerPoint categories must retain the new destination labels: {section_chart_values}"
     section_capture = capture_report(page, output, "reuse-remapped-section", actions)
     section_mark_text = json.dumps(section_capture["preview_chart_mark_titles"])
-    assert "280" in section_mark_text and "305" in section_mark_text and "80" not in section_mark_text and "95" not in section_mark_text, f"The remapped section Preview must use only its destination data: {section_capture['preview_chart_mark_titles']}"
+    section_mark_values = exact_numeric_tokens(section_mark_text)
+    assert {280.0, 305.0} <= section_mark_values and not ({80.0, 95.0} & section_mark_values), f"The remapped section Preview must use only its destination data: {section_capture['preview_chart_mark_titles']}"
 
     page.goto(f"{host.url}/visualizer?report={quote(target_id)}", wait_until="domcontentloaded")
     ready(page)

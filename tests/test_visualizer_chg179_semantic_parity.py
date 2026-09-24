@@ -119,12 +119,13 @@ const refreshed=intakeText('Value\tMonth\n0\tJan\n2.5\tFeb\n3\tMar');
 const refresh=planDatasetRefresh({dataset:ds,intake:refreshed,items:[created],selectedId:created.id,viewForEntry:()=> 'line'});
 const rebound=refresh.mappings[0].mapping;
 const projected=projectDataEntry({...created,mapping:rebound},{...refreshed,id:'d1'},rebound);
-console.log(JSON.stringify({mapping:created.mapping,savedMapping:saved.mapping,reloadedMapping:reloaded.mapping,svgHasLabels:['Jan','Feb','Mar'].every(label=>svg.includes(label)),refreshValid:refresh.valid,refreshedMapping:rebound,projected:projected.data}));
+console.log(JSON.stringify({mapping:created.mapping,savedMapping:saved.mapping,reloadedMapping:reloaded.mapping,svgHasLabels:['Jan','Feb','Mar'].every(label=>svg.includes(label)),svgExposesExactPoints:['Jan 0','Feb 2','Mar 3'].every(label=>svg.includes(label)),refreshValid:refresh.valid,refreshedMapping:rebound,projected:projected.data}));
 ''')
     assert result['mapping']['x'] == 'month_1'
     assert result['savedMapping']['x'] == 'month_1'
     assert result['reloadedMapping']['x'] == 'month_1'
     assert result['svgHasLabels'] is True
+    assert result['svgExposesExactPoints'] is True
     assert result['refreshValid'] is True
     assert result['refreshedMapping']['x'] == 'month_2'
     assert result['projected'] == [['Jan', 0], ['Feb', 2.5], ['Mar', 3]]

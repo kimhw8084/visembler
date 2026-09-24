@@ -30,7 +30,7 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
-import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
+import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection } from './authoring_composition.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
 import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
@@ -406,6 +406,8 @@ function semanticPolicy(entry) {
       p={...p,minH:82,prefH:Math.max(96,54+lines*21)};
     }
   }
+  const recipeScale=compositionProminence(entry,model().layoutPreset||'editorial');
+  p.prefW=Math.min(p.maxW,p.prefW*recipeScale);p.prefH=Math.min(p.maxH,p.prefH*recipeScale);
   const emphasis=defaultEmphasis(entry);
   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
   p.prefW=Math.min(p.maxW,Math.max(p.minW,p.prefW*scale));
@@ -473,7 +475,7 @@ function semanticSmartLayout(items=viewItems()) {
     }
     return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
   };
-  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=index===0||rows[index-1].section!==section;return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
+  const rowSpecs=rows.map(({members,section},index)=>{const widths=allocateRowWidths(members,innerW,g);const desired=members.map(({policy},i)=>{const size=policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],innerH):{w:widths[i],h:Math.max(policy.minH,policy.prefH)};return size.h;});if(solo){const size=soloSize(members[0]);widths[0]=size.w;desired[0]=size.h;}const sectionStart=!solo&&(index===0||rows[index-1].section!==section);return {members,section,sectionStart,sectionTitle:compositionSection(members[0].entry,compositionRole(members[0].entry)).title,widths,height:Math.max(...desired)};});
   rowSpecs.forEach((spec,index)=>{spec.gapAfter=index<rowSpecs.length-1?g+(spec.section!==rowSpecs[index+1].section?g*.5:0):0;});
   const baseNeeded=rowSpecs.reduce((sum,r)=>sum+r.height+r.gapAfter,0)+2*g+(rowSpecs[0]?.sectionStart?20:0);
   // Smart owns the safe hull. Solo composition uses only the useful semantic

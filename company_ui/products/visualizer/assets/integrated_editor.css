@@ -1446,6 +1446,12 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
   border-color:var(--viz-line)!important;
   box-shadow:var(--viz-shadow-component)!important;
 }
+.cui-visualizer-root .component .gallery-card:hover {
+  transform:none!important;
+  border-color:var(--viz-line-soft)!important;
+  box-shadow:var(--viz-shadow-component)!important;
+}
+.cui-visualizer-root .component .cs-chart-svg { text-rendering:geometricPrecision; }
 .cui-visualizer-root .component.selected {
   border-color:var(--viz-accent)!important;
   box-shadow:none!important;

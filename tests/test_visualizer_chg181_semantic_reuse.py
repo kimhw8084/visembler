@@ -83,7 +83,7 @@ def source_model() -> dict:
 def test_chg181_composition_roles_and_named_recipes_are_deterministic_and_legacy_safe() -> None:
     result = node_json(
         r'''
-import {compositionRole,composeReportModel,compositionRecipe} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
+import {compositionRole,composeReportModel,compositionRecipe,compositionProminence} from './company_ui/products/visualizer/assets/authoring_composition.mjs';
 const legacy={mode:'guided',layoutPreset:'editorial',canvas:{width:1200,height:900},items:[
  {id:'risk',element:'Risk Callout',engine:'DecisionCompositeEngine',order:0,message_role:'Risk'},
  {id:'metric',element:'Hero KPI',engine:'MetricEngine',type:'metric',order:1},
@@ -96,7 +96,7 @@ const legacy={mode:'guided',layoutPreset:'editorial',canvas:{width:1200,height:9
  {id:'takeaway',element:'Key Takeaway',engine:'TextEngine',type:'text',order:7},
 ]};
 const executive=composeReportModel(legacy,'executive'),technical=composeReportModel(legacy,'technical');
-console.log(JSON.stringify({roles:legacy.items.map(compositionRole),executive:executive.items.map(x=>[x.id,x.composition_role,x.section_id,x.order]),technical:technical.items.map(x=>[x.id,x.order]),smart:executive.mode,legacyUntouched:legacy.items.every(x=>!x.composition_role),recipe:compositionRecipe('investigation').roles.slice(0,4)}));
+console.log(JSON.stringify({roles:legacy.items.map(compositionRole),executive:executive.items.map(x=>[x.id,x.composition_role,x.section_id,x.order]),technical:technical.items.map(x=>[x.id,x.order]),smart:executive.mode,legacyUntouched:legacy.items.every(x=>!x.composition_role),recipe:compositionRecipe('investigation').roles.slice(0,4),prominence:{executiveMetric:compositionProminence({element:'Hero KPI',engine:'MetricEngine'},'executive'),technicalAnalysis:compositionProminence({element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis'},'technical'),manufacturingAnalysis:compositionProminence({element:'Line Chart',engine:'CoreChartEngine',composition_role:'primary_analysis'},'manufacturing')}}));
 '''
     )
     assert result["roles"] == ["decision_risk", "hero_metric", "hero_metric", "report_headline", "primary_analysis", "narrative_interpretation", "detailed_evidence", "causal_evidence", "conclusion"]
@@ -109,6 +109,7 @@ console.log(JSON.stringify({roles:legacy.items.map(compositionRole),executive:ex
     assert executive_order.index("table") < executive_order.index("diagram")
     assert technical_order.index("diagram") < technical_order.index("table")
     assert result["recipe"] == ["report_headline", "context", "hero_metric", "primary_analysis"]
+    assert result["prominence"] == {"executiveMetric": 1.18, "technicalAnalysis": 1.24, "manufacturingAnalysis": 1.12}
 
 
 def test_chg181_smart_composition_has_stable_non_overlapping_bounded_rectangles() -> None:
