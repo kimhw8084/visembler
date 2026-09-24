@@ -1,0 +1,941 @@
+{
+  "ambiguity_case": {
+    "apply_ready_after_choice": true,
+    "blocked_before_choice": true,
+    "field_choice_required": true,
+    "source_report_id": "report-e20518643d634f8f90fcf550a5772189",
+    "target_report_id": "report-bb143d5dcf2240f7aae82dec7f9cec1f"
+  },
+  "candidate_sha": "14d9c80efe3daccdf0fe4ff59a108d4f66e718bf",
+  "candidate_tree": "4de38b5e788db659064c2e8bd9351c0f56505ba1",
+  "history_and_conflict_receipts": {
+    "automatic_compatible_mapping_steps": 0,
+    "destination_dataset_id": "dataset-mufi9wlt-rbe5yq",
+    "explicit_field_choices_required": [],
+    "explicit_source_copy_preserved_rows": [
+      [
+        "East",
+        80
+      ],
+      [
+        "West",
+        95
+      ]
+    ],
+    "remap_conflict_preserves_authoritative_edit_and_recovers_stale_draft": true,
+    "source_copy_data_rows": [
+      [
+        "East",
+        80
+      ],
+      [
+        "West",
+        95
+      ]
+    ],
+    "source_data_copy_target_report_id": "report-db925e1194974345801ac6137113204f",
+    "source_data_unchanged": true,
+    "source_dataset_id": "dataset-mufi9nqg-sithkt",
+    "source_dataset_identity_absent_from_remapped_model": true,
+    "undo_redo_reload_history": true
+  },
+  "incompatible_case": {
+    "blocked": true,
+    "compatibility_message": "Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.\n\nPasted data\n\nUsed by Vertical Bar\n\nData source is incompatible\nData source\nChoose a data source\nPasted data \u00b7 3 fields\n\nSource fields: Region, Revenue\n\nCategory\nVertical Bar \u00b7 source: Region\nChoose a field\nRegion \u00b7 Category\nRevenue \u00b7 Date\nObservation \u00b7 Whole number\nMeasurement\nVertical Bar \u00b7 source: Revenue\nChoose a field\nRegion \u00b7 Category\nRevenue \u00b7 Date\nObservation \u00b7 Whole number\nX\nVertical Bar \u00b7 source: Revenue\nChoose a field\nRegion \u00b7 Category\nRevenue \u00b7 Date\nObservation \u00b7 Whole number\nVertical Bar: Measurement \u00b7 required role is unmapped\nVertical Bar: Measurement \u00b7 incompatible type\nVertical Bar: X \u00b7 incompatible type\nWhat will be applied\nStructure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.\nNeed another source? Add it through Data First, then reopen this workflow to map it.\nAdd a data source\nincompatible type incompatible type\nCancel\nApply reusable structure",
+    "destination_dataset_id": "dataset-mufiahx7-wcqzf8",
+    "report_unchanged": true,
+    "source_report_id": "report-5d6cef95a80042019ba90a4dce5b6e97",
+    "target_report_id": "report-f35538830b294c8c9da5b08f3f69e1ff"
+  },
+  "journey_action_log_sha256": {
+    "ambiguous-remap": "25717c53b933be89f4cadb16d942d4f3d870e465b34130ba5072cf3376d1aa5d",
+    "incompatible-remap": "631ffa7efe39c302cd3769a665f6bd724a86cf089c725e1de15307d385604f8f",
+    "reuse-remap": "a777a9caf15bfe79f1e756645ec58b42ec1f988bfa3c8f16e1391dc2ff2ffafc"
+  },
+  "journey_action_logs": {
+    "ambiguous-remap": {
+      "context_switches": 5,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "save ambiguous-schema reusable report",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "explicitly choose an ambiguous Category field",
+          "context": "modal"
+        }
+      ],
+      "modal_openings": 6,
+      "report": "ambiguous-remap",
+      "user_actions": 19
+    },
+    "incompatible-remap": {
+      "context_switches": 5,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "save incompatible-schema reusable report",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "confirm incompatible data remains uncommitted",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 6,
+      "report": "incompatible-remap",
+      "user_actions": 19
+    },
+    "reuse-remap": {
+      "context_switches": 41,
+      "events": [
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "hub"
+        },
+        {
+          "action": "context switch",
+          "from": "hub",
+          "to": "editor"
+        },
+        {
+          "action": "create report from executive-business-review",
+          "context": "editor"
+        },
+        {
+          "action": "remove an unused empty template chart",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "set report intent \u00b7 supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "set report intent \u00b7 supporting_analysis",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Quarterly context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column \u00b7 Reading",
+          "context": "inspector"
+        },
+        {
+          "action": "name evidence column \u00b7 Source",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "enter 2 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "inspector"
+        },
+        {
+          "action": "show component title",
+          "context": "inspector"
+        },
+        {
+          "action": "context switch",
+          "from": "inspector",
+          "to": "editor"
+        },
+        {
+          "action": "Compose/Reflow report",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "export report SVG",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save section preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable section structure",
+          "context": "modal"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "review explicit source-data copy consequences",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "editor"
+        },
+        {
+          "action": "apply report preset with source data",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open guided report remap",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "presets"
+        },
+        {
+          "action": "verify remap keyboard focus and Escape return",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "data-first"
+        },
+        {
+          "action": "open supported Data First intake from remap",
+          "context": "data-first"
+        },
+        {
+          "action": "context switch",
+          "from": "data-first",
+          "to": "editor"
+        },
+        {
+          "action": "apply remapped report preset",
+          "context": "editor"
+        },
+        {
+          "action": "verify undo, redo, autosave and reload",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iValue",
+          "context": "editor"
+        },
+        {
+          "action": "edit iTarget",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDelta",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit iBefore",
+          "context": "editor"
+        },
+        {
+          "action": "edit iAfter",
+          "context": "editor"
+        },
+        {
+          "action": "edit iUnit",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Quarterly context",
+          "context": "editor"
+        },
+        {
+          "action": "edit Key Takeaway",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatement",
+          "context": "editor"
+        },
+        {
+          "action": "edit iDetail",
+          "context": "editor"
+        },
+        {
+          "action": "edit iStatus",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "enter 2 evidence rows in table editor",
+          "context": "editor"
+        },
+        {
+          "action": "edit component title",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open reusable preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "modal"
+        },
+        {
+          "action": "open save report preset",
+          "context": "modal"
+        },
+        {
+          "action": "save reusable report structure",
+          "context": "modal"
+        },
+        {
+          "action": "context switch",
+          "from": "modal",
+          "to": "history"
+        },
+        {
+          "action": "verify governed history after reuse",
+          "context": "history"
+        },
+        {
+          "action": "open export menu",
+          "context": "history"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "history"
+        },
+        {
+          "action": "context switch",
+          "from": "history",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "open Report Hub blueprint chooser",
+          "context": "editor"
+        },
+        {
+          "action": "create report from blank",
+          "context": "editor"
+        },
+        {
+          "action": "open Data First",
+          "context": "editor"
+        },
+        {
+          "action": "choose bar result",
+          "context": "editor"
+        },
+        {
+          "action": "commit governed dataset and mapping",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "presets"
+        },
+        {
+          "action": "open personal preset library",
+          "context": "presets"
+        },
+        {
+          "action": "context switch",
+          "from": "presets",
+          "to": "editor"
+        },
+        {
+          "action": "apply remapped section preset",
+          "context": "editor"
+        },
+        {
+          "action": "open export menu",
+          "context": "editor"
+        },
+        {
+          "action": "export editable PowerPoint",
+          "context": "editor"
+        },
+        {
+          "action": "context switch",
+          "from": "editor",
+          "to": "preview"
+        },
+        {
+          "action": "open report Preview",
+          "context": "preview"
+        },
+        {
+          "action": "context switch",
+          "from": "preview",
+          "to": "editor"
+        },
+        {
+          "action": "return to editing",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "edit Executive Statement",
+          "context": "editor"
+        },
+        {
+          "action": "verify conflict recovery after remap",
+          "context": "editor"
+        }
+      ],
+      "modal_openings": 26,
+      "report": "reuse-remap",
+      "user_actions": 164
+    }
+  },
+  "request": "CHG-181-r1"
+}

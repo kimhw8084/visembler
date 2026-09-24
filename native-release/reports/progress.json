@@ -1,0 +1,368 @@
+[
+  {
+    "name": "repository-contracts",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_repository_contracts.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/repository-contracts.json"
+    ],
+    "log": "logs/repository-contracts.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 1.901
+  },
+  {
+    "name": "company-boundary-model",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_user_acceptance.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/company-boundary-model.json"
+    ],
+    "log": "logs/company-boundary-model.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.253
+  },
+  {
+    "name": "company-boundary-browser",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_boundary_browser_gate.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/company-boundary-browser.json"
+    ],
+    "log": "logs/company-boundary-browser.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 6.117
+  },
+  {
+    "name": "company-readiness-local",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_production_readiness.py",
+      "--data-dir",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/company-readiness-data",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/company-readiness-local.json"
+    ],
+    "log": "logs/company-readiness-local.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.346
+  },
+  {
+    "name": "company-capacity",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_capacity.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/company-capacity.json"
+    ],
+    "log": "logs/company-capacity.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 22.767
+  },
+  {
+    "name": "element-coverage",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/verify_element_coverage.py",
+      "--json"
+    ],
+    "log": "logs/element-coverage.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.046
+  },
+  {
+    "name": "delivery-tests",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_visualizer_completion_delivery.py",
+      "tests/test_visualizer_production_closeout.py",
+      "--tb=short",
+      "--junitxml=/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/delivery-tests.xml"
+    ],
+    "log": "logs/delivery-tests.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.544
+  },
+  {
+    "name": "full-tests",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "-m",
+      "pytest",
+      "--tb=short",
+      "--junitxml=/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/full-tests.xml"
+    ],
+    "log": "logs/full-tests.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 112.982
+  },
+  {
+    "name": "syntax-integrated_editor.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/integrated_editor.mjs"
+    ],
+    "log": "logs/syntax-integrated_editor.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.048
+  },
+  {
+    "name": "syntax-element_renderer.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/element_renderer.mjs"
+    ],
+    "log": "logs/syntax-element_renderer.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.044
+  },
+  {
+    "name": "syntax-authoring_dataset_refresh.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/authoring_dataset_refresh.mjs"
+    ],
+    "log": "logs/syntax-authoring_dataset_refresh.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.024
+  },
+  {
+    "name": "syntax-authoring_portability.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/authoring_portability.mjs"
+    ],
+    "log": "logs/syntax-authoring_portability.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.024
+  },
+  {
+    "name": "syntax-authoring_intake_client.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/authoring_intake_client.mjs"
+    ],
+    "log": "logs/syntax-authoring_intake_client.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.023
+  },
+  {
+    "name": "syntax-authoring_composition.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/authoring_composition.mjs"
+    ],
+    "log": "logs/syntax-authoring_composition.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.024
+  },
+  {
+    "name": "syntax-authoring_reuse_contract.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5/company_ui/products/visualizer/assets/authoring_reuse_contract.mjs"
+    ],
+    "log": "logs/syntax-authoring_reuse_contract.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.024
+  },
+  {
+    "name": "persistence-source-probe",
+    "command": [
+      "node",
+      "scripts/release_checks/probe_persistence.mjs",
+      "--repo",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-94c4cbc5fae95025ebfdd8d5",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/persistence-source.json"
+    ],
+    "log": "logs/persistence-source-probe.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.088
+  },
+  {
+    "name": "git-diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "log": "logs/git-diff-check.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.024
+  },
+  {
+    "name": "elements",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_editor_workflows.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/elements",
+      "--native"
+    ],
+    "log": "logs/elements.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 62.531
+  },
+  {
+    "name": "data",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_data_workflows.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/data",
+      "--native"
+    ],
+    "log": "logs/data.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 22.508
+  },
+  {
+    "name": "performance",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/measure_editor.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/performance",
+      "--native"
+    ],
+    "log": "logs/performance.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 3.213
+  },
+  {
+    "name": "report-lifecycle-integrity",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/report-lifecycle-integrity"
+    ],
+    "log": "logs/report-lifecycle-integrity.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 8.318
+  },
+  {
+    "name": "chg181-authoring-composition-reuse",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chg181_authoring_acceptance.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/chg181-authoring-composition-reuse"
+    ],
+    "log": "logs/chg181-authoring-composition-reuse.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 111.235
+  },
+  {
+    "name": "chart-studio",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chart_studio_acceptance.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/chart-studio"
+    ],
+    "log": "logs/chart-studio.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 40.812
+  },
+  {
+    "name": "report-hub-browser-errors",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_report_hub_browser_error_gate.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/report-hub-browser-errors"
+    ],
+    "log": "logs/report-hub-browser-errors.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 11.453
+  },
+  {
+    "name": "native-recovery",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_native_recovery.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/native-recovery"
+    ],
+    "log": "logs/native-recovery.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 8.479
+  },
+  {
+    "name": "worker-lifecycle",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_worker_lifecycle.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/worker-lifecycle"
+    ],
+    "log": "logs/worker-lifecycle.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 17.606
+  },
+  {
+    "name": "operations-drill",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_operations_drill.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/operations-drill"
+    ],
+    "log": "logs/operations-drill.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 8.56
+  },
+  {
+    "name": "native-acceptance",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_native_acceptance.py",
+      "--output",
+      "/Users/haewonkim/.codex-fabric/runs/CHG-181-r1-fresh-native-20260924-r2/native-acceptance"
+    ],
+    "log": "logs/native-acceptance.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 6.606
+  }
+]
