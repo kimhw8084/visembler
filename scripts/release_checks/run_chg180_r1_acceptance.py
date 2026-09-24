@@ -8,6 +8,7 @@ import hashlib
 import importlib.metadata
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -231,16 +232,26 @@ def ui_contact_sheet(paths: list[Path], destination: Path) -> None:
 def structural_operations(path: Path) -> dict:
     presentation = Presentation(str(path))
     shapes = [shape for slide in presentation.slides for shape in slide.shapes]
-    nodes = [shape for shape in shapes if shape.name.startswith('VIZ::Process Flow::')]
+    # A continuation-reference is a slide-level pointer to the editable
+    # diagram on its continuation page, not an editable flow node.
+    node_name = re.compile(r'^VIZ::Process Flow::.+::node-\d+$')
+    nodes = [shape for shape in shapes if node_name.fullmatch(shape.name)]
+    continuation_refs = [shape for shape in shapes if shape.name == 'VIZ::Process Flow::continuation-reference']
     labels = [shape.text for shape in nodes if getattr(shape, 'has_text_frame', False)]
     connectors = [shape for shape in shapes if shape.shape_type == MSO_SHAPE_TYPE.LINE]
     semantic = []
-    for shape in nodes:
+    for shape in [*nodes, *continuation_refs]:
         for node in shape._element.xpath('.//p:cNvPr'):
             description = node.get('descr') or ''
             if description.startswith('VisualizerSemantic:'):
                 semantic.append(json.loads(description.removeprefix('VisualizerSemantic:')))
     assert len(nodes) == len(FLOW_LABELS), f'Expected {len(FLOW_LABELS)} editable flow nodes, got {len(nodes)}.'
+    if len(presentation.slides) > 1:
+        assert len(continuation_refs) == 1, f'Expected one continuation reference for the multi-slide flow, got {len(continuation_refs)}.'
+        continuation_text = ' '.join((continuation_refs[0].text if getattr(continuation_refs[0], 'has_text_frame', False) else '').split()).lower()
+        assert 'continues on slides' in continuation_text, 'The continuation reference must identify the continuation slides.'
+    else:
+        assert not continuation_refs, 'A single-slide flow must not contain a continuation reference.'
     assert len(connectors) >= len(FLOW_LABELS) - 1, f'Expected causal connectors, got {len(connectors)}.'
     normalized_labels = ' '.join('\n'.join(labels).split())
     assert all(' '.join(label.split()) in normalized_labels for label in FLOW_LABELS), 'PowerPoint flow labels are incomplete.'
