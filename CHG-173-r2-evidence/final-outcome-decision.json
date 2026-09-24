@@ -1,0 +1,171 @@
+{
+  "schema": "visembler-chg173-r2-final-outcome.v1",
+  "project": "visembler",
+  "request": "CHG-173-r2",
+  "operation": "VERIFY",
+  "fabric_job": "CF-b9df14e01c976669d5e32a36",
+  "source_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "target": "main",
+  "verdict": "NO-GO",
+  "criteria": [
+    {
+      "criterion": "candidate_identity_zero_source_change",
+      "status": "PASS",
+      "evidence": "source-runtime-identity.json; Git readback receipt will be added after publication"
+    },
+    {
+      "criterion": "five_complete_mixed_element_reports",
+      "status": "PASS",
+      "evidence": "reports/executive-business-review; reports/semiconductor-rca; reports/experiment-decision; reports/technical-status-review; reports/supply-chain-holdout"
+    },
+    {
+      "criterion": "fresh_holdout_data_shape",
+      "status": "PASS",
+      "evidence": "reports/supply-chain-holdout; benchmark-brief.md"
+    },
+    {
+      "criterion": "blank_template_recomposition_reuse_start_modes",
+      "status": "PASS",
+      "evidence": "authoring/action-count-summary.md; reports/blank-equivalent; reports/reuse"
+    },
+    {
+      "criterion": "deterministic_action_context_modal_insert_mapping_style_history_logs",
+      "status": "PASS",
+      "evidence": "authoring/action-logs; run/receipts/fresh-outcome-acceptance.json"
+    },
+    {
+      "criterion": "template_smart_compose_reduce_design_burden",
+      "status": "PASS",
+      "evidence": "authoring/action-count-summary.md; run/receipts/fresh-outcome-acceptance.json"
+    },
+    {
+      "criterion": "reuse_remix_practical_leverage_over_blank",
+      "status": "PASS",
+      "evidence": "authoring/reuse-vs-blank-comparison.json: 25 actions, 10 context switches, 10 insertions and 8 repeated setup/layout actions avoided"
+    },
+    {
+      "criterion": "source_assets_saved_and_reused_by_guided_remap",
+      "status": "PASS",
+      "evidence": "authoring/remap-compatibility-history-conflict.json; reports/reuse"
+    },
+    {
+      "criterion": "shared_slot_mapping_transforms_and_destination_data",
+      "status": "PASS",
+      "evidence": "authoring/remap-compatibility-history-conflict.json; run/receipts/postflight-report-inventory.json"
+    },
+    {
+      "criterion": "source_data_immutability_no_stale_identity_or_values",
+      "status": "PASS",
+      "evidence": "run/receipts/postflight-report-inventory.json; authoring/remap-compatibility-history-conflict.json"
+    },
+    {
+      "criterion": "ambiguity_requires_explicit_choice",
+      "status": "PASS",
+      "evidence": "reports/remap-diagnostics/ambiguous-remap-choice-required.png; authoring/remap-compatibility-history-conflict.json"
+    },
+    {
+      "criterion": "incompatible_data_is_blocked",
+      "status": "PASS",
+      "evidence": "reports/remap-diagnostics/incompatible-remap-blocked.png"
+    },
+    {
+      "criterion": "incompatible_data_diagnostic_is_truthful_and_actionable",
+      "status": "FAIL",
+      "evidence": "diagnostics/whole-report-findings-register.json#F-REMAP-01; reports/remap-diagnostics/incompatible-remap-blocked.png"
+    },
+    {
+      "criterion": "intentional_source_data_copy_mode",
+      "status": "PASS",
+      "evidence": "reports/reuse/explicit-source-copy-confirmation.png; authoring/remap-compatibility-history-conflict.json"
+    },
+    {
+      "criterion": "undo_redo_reload_history_conflict_recovery",
+      "status": "PASS",
+      "evidence": "authoring/remap-compatibility-history-conflict.json; release/chg178 history receipts"
+    },
+    {
+      "criterion": "CHG178_stale_edit_and_history_restore",
+      "status": "PASS",
+      "evidence": "release/chg178/dedicated-lifecycle-run/receipt.json: four stale-conflict cases PASS; release/chg178/chg178-history-selection-and-restore.json direct UI selection+restore PASS. Dedicated runner’s later history wait failure is retained."
+    },
+    {
+      "criterion": "CHG179_metric_unit_precision_and_category_parity",
+      "status": "PASS",
+      "evidence": "release/chg179/chg179-semantic-parity.json"
+    },
+    {
+      "criterion": "CHG180_process_flow_and_wafer_export_structure",
+      "status": "PASS",
+      "evidence": "release/chg180/acceptance-receipt.json; release/chg180/rasterized-slides"
+    },
+    {
+      "criterion": "desktop_editor_preview_and_full_report_pixel_evidence",
+      "status": "PASS",
+      "evidence": "reports/** editor/Preview captures; visual-review/fresh-whole-report-desktop.pdf"
+    },
+    {
+      "criterion": "narrow_mobile_responsive_composition_and_legibility",
+      "status": "FAIL",
+      "evidence": "diagnostics/whole-report-findings-register.json#F-RESP-01; reports/supply-chain-holdout/supply-chain-capacity-holdout-reading-narrow-320.png; reports/technical-status-review/technical-status-review-reading-narrow-320.png"
+    },
+    {
+      "criterion": "SVG_export_visual_readability",
+      "status": "PASS",
+      "evidence": "exports/svg-browser-renders/receipt.json and full-report PNGs"
+    },
+    {
+      "criterion": "PPTX_export_structural_semantics",
+      "status": "PASS",
+      "evidence": "exports/export-structure-and-semantics.json"
+    },
+    {
+      "criterion": "PPTX_export_visible_text_hierarchy_and_meaning",
+      "status": "FAIL",
+      "evidence": "diagnostics/whole-report-findings-register.json#F-EXP-01; exports/pptx-review/rasters; same rendering issue in baseline/chg181-r2/rendered-pptx/rasters"
+    },
+    {
+      "criterion": "golden_ui_v3_principal_report_craft",
+      "status": "FAIL",
+      "evidence": "diagnostics/whole-report-findings-register.json#F-CRAFT-01; visual-review/golden-ui-v3-review.md; visual-review/fresh-versus-chg181-r2-desktop.pdf"
+    },
+    {
+      "criterion": "no_known_material_defects_or_positive_ev_craft_improvements_left",
+      "status": "FAIL",
+      "evidence": "Findings F-EXP-01, F-RESP-01, F-REMAP-01 and F-CRAFT-01"
+    },
+    {
+      "criterion": "maintained_native_release_verifier_all_gates",
+      "status": "PASS",
+      "evidence": "release/native-release/report.json; PASS_LOCAL_INTERNAL_PILOT and all maintained checks PASS"
+    },
+    {
+      "criterion": "Artifact_Bridge_canonical_run",
+      "status": "BLOCKED",
+      "evidence": "diagnostics/evidence-provider-probe.json; no configured Artifact Bridge tool. Full Git-first carrier is the available fallback."
+    },
+    {
+      "criterion": "candidate_bound_evidence_refs_and_artifact_carrier",
+      "status": "PASS",
+      "evidence": "refs/heads/project-os-artifacts/visembler/CHG-173-r2 and refs/heads/codex-fabric/evidence/visembler/CHG-173-r2; remote readback receipt added after publication"
+    },
+    {
+      "criterion": "company_managed_production_certification",
+      "status": "BLOCKED",
+      "evidence": "Not performed. CHG-21 is separate; no company-managed or Production Gold claim is made."
+    }
+  ],
+  "material_findings": [
+    "F-EXP-01",
+    "F-RESP-01",
+    "F-REMAP-01",
+    "F-CRAFT-01"
+  ],
+  "scope_limit": "Verification only. No Product, source, configuration, dependency, or test changes were made. Smallest separately governable fix scopes are in diagnostics/whole-report-findings-register.json.",
+  "evidence_limits": [
+    "No controlled human-preference study.",
+    "No native-device accessibility certification.",
+    "No field-performance or universal authoring-time SLA claim.",
+    "No CHG-21 company-managed target certification or Production Gold claim."
+  ]
+}

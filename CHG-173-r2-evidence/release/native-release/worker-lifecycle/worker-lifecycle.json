@@ -1,0 +1,35 @@
+{
+  "scope": "native NiceGUI + real browser Worker",
+  "cases": [
+    {
+      "name": "worker-load-failure-visible",
+      "status": "PASS",
+      "worker_requests": 1,
+      "visible_error": "Data parser failed. Paste again to retry."
+    },
+    {
+      "name": "worker-retry-after-failure",
+      "status": "PASS",
+      "rows": 30000
+    },
+    {
+      "name": "worker-cancel-stale-result-isolated",
+      "status": "PASS"
+    },
+    {
+      "name": "worker-retry-after-cancel",
+      "status": "PASS"
+    }
+  ],
+  "unexpected_errors": [],
+  "expected_fault_events": [
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:57685/_cui_visualizer/assets/authoring_data_worker.mjs :: net::ERR_ABORTED"
+    }
+  ],
+  "passed": 4,
+  "total": 4,
+  "status": "PASS",
+  "source_editor_sha256": "a614d806c55302745ba20de19ef43941056c7f06e6610fb0eac422b80737a144"
+}

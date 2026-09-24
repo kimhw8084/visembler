@@ -1,0 +1,442 @@
+{
+  "schema": "visembler-chg173-r2-product-run-postflight.v1",
+  "source_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "run_runtime": {
+    "nicegui": "3.15.0",
+    "browser": "151.0.7922.34",
+    "base_url": "http://127.0.0.1:59768",
+    "ephemeral_port": 59768
+  },
+  "postflight_status": "PASS",
+  "scope": "Read-only postflight of persisted Product reports and captured supported UI artifacts after all creation, edit, remap, preview, narrow-reading and export actions.",
+  "original_automation_finalizer": "FAIL_AFTER_WORKFLOWS",
+  "original_finalizer_error": "'ReportRecord' object has no attribute 'id'",
+  "original_traceback": "Traceback (most recent call last):\n  File \"/tmp/visembler-chg173-r2-CF-b9df14e01c976669d5e32a36/fresh_outcome_benchmark.py\", line 975, in main\n    result[\"persisted_reports\"]=[{\"id\":r.id,\"title\":r.title,\"revision\":r.revision,\"report_path\":str(r.id)} for r in records]\n                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/visembler-chg173-r2-CF-b9df14e01c976669d5e32a36/fresh_outcome_benchmark.py\", line 975, in <listcomp>\n    result[\"persisted_reports\"]=[{\"id\":r.id,\"title\":r.title,\"revision\":r.revision,\"report_path\":str(r.id)} for r in records]\n                                       ^^^^\nAttributeError: 'ReportRecord' object has no attribute 'id'\n",
+  "explanation": "All five benchmark reports and reuse/blank/section/remap scenes had completed; automation failed only while serializing the final inventory because ReportRecord exposes report_id, not id. This receipt verifies the app-owned persisted records and required artifacts without editing them.",
+  "report_record_count_in_run_data": 26,
+  "benchmark_records": [
+    {
+      "benchmark_key": "executive-business-review",
+      "report_id": "report-0222b5edf25c45af8c1a3d323f4ef901",
+      "title": "FY26 Retention and Growth Review",
+      "revision": 63,
+      "model_sha256": "9deb26bc913fe957f21b0de7ac1087fc45845a3660dd370acf4dd795513d5e9a",
+      "runtime_record_sha256": "62019719f6ecdb040f5933a09f3aba1b67576950a6adc0a8eb9ff660b4271466",
+      "items": 10,
+      "engines": {
+        "TextEngine": 3,
+        "MetricEngine": 2,
+        "ComparisonEngine": 1,
+        "CoreChartEngine": 2,
+        "TableEngine": 1,
+        "DecisionCompositeEngine": 1
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvf4w9-e6qkvj",
+          "name": "Pasted data",
+          "rows": 4,
+          "fields": [
+            "Quarter",
+            "Retention",
+            "Bookings"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "semiconductor-rca",
+      "report_id": "report-abfe745ad66b452798900152bf7853cf",
+      "title": "ETCH-08 Chamber A · Lot WQ-7314 RCA",
+      "revision": 46,
+      "model_sha256": "1739a3d24686a9a000c62a99c595aa06523f42b999e8f43943e28901dbb1810c",
+      "runtime_record_sha256": "eb098f48de3de78fa69023093fc4d860c64f704d798714c1ef1aacd15017f39c",
+      "items": 11,
+      "engines": {
+        "TextEngine": 2,
+        "MetricEngine": 1,
+        "ComparisonEngine": 1,
+        "WaferFabEngine": 1,
+        "EngineeringChartEngine": 1,
+        "CoreChartEngine": 1,
+        "TableEngine": 1,
+        "DiagramEngine": 1,
+        "EvidenceCompositeEngine": 1,
+        "ProjectCompositeEngine": 1
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvh6l3-bl0d00",
+          "name": "Pasted data",
+          "rows": 113,
+          "fields": [
+            "Die X",
+            "Die Y",
+            "Yield"
+          ]
+        },
+        {
+          "id": "dataset-mufvh8t7-xuoxpc",
+          "name": "Pasted data",
+          "rows": 16,
+          "fields": [
+            "Population",
+            "Thickness nm"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "experiment-decision",
+      "report_id": "report-a6248128141d43888b668951738f539a",
+      "title": "Onboarding reminder · randomized experiment decision",
+      "revision": 42,
+      "model_sha256": "1c288532bcf7a8fbf30019e44ba993bc397873822ddf14086fe9729eb06fd2c0",
+      "runtime_record_sha256": "ad4c020a4b25bc5e14dba5c0390392745f577b9c03450725b06e66a45afc6e35",
+      "items": 9,
+      "engines": {
+        "TextEngine": 3,
+        "MetricEngine": 1,
+        "ComparisonEngine": 1,
+        "CoreChartEngine": 2,
+        "TableEngine": 1,
+        "DecisionCompositeEngine": 1
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvhlz5-5cgkbu",
+          "name": "Pasted data",
+          "rows": 8,
+          "fields": [
+            "Week",
+            "Cohort",
+            "Completion"
+          ]
+        },
+        {
+          "id": "dataset-mufvho4o-2cmdjs",
+          "name": "Pasted data",
+          "rows": 12,
+          "fields": [
+            "Cohort",
+            "Completion"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "technical-status-review",
+      "report_id": "report-1d6b57af58064cb2a151b0677298ee6f",
+      "title": "Line 4 weekly operating and reliability review",
+      "revision": 47,
+      "model_sha256": "28f1a7f14c27807f32d703fd3643939ff28b648e3452a1e0367cc404daef654e",
+      "runtime_record_sha256": "2d6af0786c158ea928eb0a085e7af97d1860f0fd909051b78a64155f10e045ac",
+      "items": 12,
+      "engines": {
+        "TextEngine": 3,
+        "MetricEngine": 2,
+        "CoreChartEngine": 1,
+        "EngineeringChartEngine": 1,
+        "TableEngine": 1,
+        "DiagramEngine": 1,
+        "EvidenceCompositeEngine": 1,
+        "DecisionCompositeEngine": 1,
+        "ProjectCompositeEngine": 1
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvi0jt-176oc3",
+          "name": "Pasted data",
+          "rows": 4,
+          "fields": [
+            "Shift",
+            "Yield"
+          ]
+        },
+        {
+          "id": "dataset-mufvi2oa-rngifm",
+          "name": "Pasted data",
+          "rows": 6,
+          "fields": [
+            "Sample",
+            "Measurement",
+            "LSL",
+            "USL"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "supply-chain-capacity-holdout",
+      "report_id": "report-f39ad9ae24a543f691c52dbba6d4ae05",
+      "title": "Northstar component capacity and supplier exposure review",
+      "revision": 78,
+      "model_sha256": "f7c10b3ae8cc4fbcee77bc3417e2f25c53f9aea34666cab946dfbb14e5864820",
+      "runtime_record_sha256": "7bba1b374c2d43239d93bf1f093ddfc356451a8275eb3a2242695846a49b843a",
+      "items": 12,
+      "engines": {
+        "CoreChartEngine": 2,
+        "MetricEngine": 2,
+        "ComparisonEngine": 1,
+        "TableEngine": 1,
+        "DecisionCompositeEngine": 1,
+        "DiagramEngine": 1,
+        "TextEngine": 4
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvidpr-f91h77",
+          "name": "Pasted data",
+          "rows": 8,
+          "fields": [
+            "Week",
+            "Demand units",
+            "Confirmed capacity",
+            "Actuator lead days"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "reuse-remapped-service-incident",
+      "report_id": "report-538c47701a6f44d59ca3f5dc4f7a7c5d",
+      "title": "Edge API incident review · INC-2026-0918-447",
+      "revision": 52,
+      "model_sha256": "7b0ee4c6eea5b3388bf0c090707d02fed1ae8d81b9778d5d9a6cfde21eaa2d62",
+      "runtime_record_sha256": "cfb7146772e9384cb29c00516132596f3d22a5d7a43628724e8f018920ba3018",
+      "items": 10,
+      "engines": {
+        "TextEngine": 3,
+        "MetricEngine": 2,
+        "ComparisonEngine": 1,
+        "CoreChartEngine": 2,
+        "TableEngine": 1,
+        "DecisionCompositeEngine": 1
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvfmw7-w8t72j",
+          "name": "Pasted data",
+          "rows": 6,
+          "fields": [
+            "Incident week",
+            "P1 incidents",
+            "Customer impact hours"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "blank-service-incident-equivalent",
+      "report_id": "report-498c8e6ed56542919d6554deb531af9a",
+      "title": "Edge API incident review · INC-2026-0918-447",
+      "revision": 76,
+      "model_sha256": "9eae24ce3267c0b4b5566767f9cda90b4c966b2a82a74b48b905b8720ad12338",
+      "runtime_record_sha256": "12f3f9a765db7c39e4aff6b0f456245721b897c20f573991341dff0d21673b1b",
+      "items": 12,
+      "engines": {
+        "CoreChartEngine": 2,
+        "MetricEngine": 2,
+        "ComparisonEngine": 1,
+        "TableEngine": 1,
+        "DecisionCompositeEngine": 1,
+        "DiagramEngine": 1,
+        "TextEngine": 4
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvg1od-o2h3qs",
+          "name": "Pasted data",
+          "rows": 6,
+          "fields": [
+            "Incident week",
+            "P1 incidents",
+            "Customer impact hours"
+          ]
+        }
+      ]
+    },
+    {
+      "benchmark_key": "reused-service-analysis-section",
+      "report_id": "report-19acd058aa4d45ca974f8283877dd72a",
+      "title": "INC-2026-0918-447 · reusable weekly trend section",
+      "revision": 11,
+      "model_sha256": "d334c4e3eb5a519d02759462e98dcdba74df013da1fef27b3b4370753a2db1c5",
+      "runtime_record_sha256": "4acdd4fb95216142bb63de65152c2ea315a1929ebcd36be051ff6f651dc1deaa",
+      "items": 2,
+      "engines": {
+        "CoreChartEngine": 2
+      },
+      "datasets": [
+        {
+          "id": "dataset-mufvge6b-6rm2gy",
+          "name": "Pasted data",
+          "rows": 5,
+          "fields": [
+            "Incident week",
+            "P1 incidents",
+            "Customer impact hours"
+          ]
+        }
+      ]
+    }
+  ],
+  "source_immutability": {
+    "report_id": "report-0222b5edf25c45af8c1a3d323f4ef901",
+    "expected_model_sha256": "9deb26bc913fe957f21b0de7ac1087fc45845a3660dd370acf4dd795513d5e9a",
+    "persisted_model_sha256": "9deb26bc913fe957f21b0de7ac1087fc45845a3660dd370acf4dd795513d5e9a",
+    "unchanged": true
+  },
+  "reuse_destination": {
+    "report_id": "report-538c47701a6f44d59ca3f5dc4f7a7c5d",
+    "source_report_id": "report-0222b5edf25c45af8c1a3d323f4ef901",
+    "source_dataset_id": "dataset-mufvf4w9-e6qkvj",
+    "destination_dataset_id": "dataset-mufvfmw7-w8t72j",
+    "destination_rows_match": true,
+    "source_identity_absent": true,
+    "stale_values_absent": true,
+    "undo_redo_reload_history": {
+      "undo": true,
+      "redo": true,
+      "reload": true,
+      "history_entries": 50
+    },
+    "conflict_recovery": {
+      "detected": true,
+      "draft_saved_as_new_revision": true,
+      "final_headline": "Next step: publish the customer reconciliation and reopen rollout after the matched shard passes its 30-minute saturation probe."
+    }
+  },
+  "remap_diagnostics": {
+    "ambiguous": {
+      "apply_disabled_before_choice": true,
+      "candidate_options": [
+        "Choose a field",
+        "Service week · Category",
+        "SERVICE WEEK · Category",
+        "SLA cases · Whole number"
+      ],
+      "apply_enabled_after_explicit_choice": true,
+      "report_id": "report-c65ea766438f496ebd0fc63f32248690"
+    },
+    "incompatible": {
+      "apply_disabled": true,
+      "diagnostic": "Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.\n\nPasted data\n\nUsed by 1 visual\nPareto\n\nNeeds field mapping\nData source\nChoose a data source\nPasted data · 2 fields\n\nSource fields: Cycle, Failure count\n\nCategory *\nSource field: Cycle · Category · Used by Pareto\nChoose a field\nColumn 1 · Category\nColumn 2 · Category\nMeasurement *\nSource field: Failure count · Whole number · Used by Pareto\nChoose a field\nColumn 1 · Category\nColumn 2 · Category\nCategory\nSource field: Failure count · Whole number · Used by Pareto\nChoose a field\nColumn 1 · Category\nColumn 2 · Category\nRequired source field Cycle is missing.\nRequired source field Failure count is missing.\nFailure count: field not found\nWhat will be applied\nStructure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.\nNeed another source? Add it through Data First, then reopen this workflow to map it.\nAdd a data source\nResolve the highlighted data source and field requirements before applying.\nCancel\nApply reusable structure",
+      "report_unchanged": true,
+      "report_id": "report-32ba6b0ad16c4884a976beb4a022f718"
+    }
+  },
+  "browser_errors": [],
+  "required_captures": [
+    {
+      "benchmark_key": "executive-business-review",
+      "path": "benchmarks-rerun12/executive-business-review/executive-business-review-shared-refresh-final-editor-desktop.png",
+      "bytes": 193743,
+      "sha256": "9d7f44d56cc1b30c4eedc5b7d4eb4ec8e476cbfcf6901c5e70fc7d5fe4e5badd"
+    },
+    {
+      "benchmark_key": "executive-business-review",
+      "path": "benchmarks-rerun12/executive-business-review/executive-business-review-shared-refresh-final-preview-desktop.png",
+      "bytes": 171927,
+      "sha256": "2776f0cd7903750600f65e54615968192596297b9dd2ed59a8ebb47e03fe05f9"
+    },
+    {
+      "benchmark_key": "executive-business-review",
+      "path": "benchmarks-rerun12/executive-business-review/executive-business-review-shared-refresh-final-preview-mobile.png",
+      "bytes": 121160,
+      "sha256": "cc84c4d93054cfd8987368383a5beef44d5799641003124d9f077eeb83b33b0f"
+    },
+    {
+      "benchmark_key": "semiconductor-rca",
+      "path": "benchmarks-rerun12/semiconductor-rca/semiconductor-rca-editor-desktop-final.png",
+      "bytes": 182055,
+      "sha256": "471c5b9a4118dc723d207876dd4535e405ddfed6e1326ecf00a265f452de2dd8"
+    },
+    {
+      "benchmark_key": "semiconductor-rca",
+      "path": "benchmarks-rerun12/semiconductor-rca/semiconductor-rca-preview-desktop.png",
+      "bytes": 194735,
+      "sha256": "eadd686dfa25da6c99207a2c87f7172f839dcfd9a78bf9bfa0f90be12e4e6c42"
+    },
+    {
+      "benchmark_key": "semiconductor-rca",
+      "path": "benchmarks-rerun12/semiconductor-rca/semiconductor-rca-preview-mobile.png",
+      "bytes": 144036,
+      "sha256": "0a6bc5557906b77acd431641d4c6990538d96bf00130f3e7b1c894cdd757d292"
+    },
+    {
+      "benchmark_key": "experiment-decision",
+      "path": "benchmarks-rerun12/experiment-decision/experiment-decision-editor-desktop-final.png",
+      "bytes": 204275,
+      "sha256": "16582a1c8cf2b205336440befb7952604888b18a20f149b9cf543398ee1dc060"
+    },
+    {
+      "benchmark_key": "experiment-decision",
+      "path": "benchmarks-rerun12/experiment-decision/experiment-decision-preview-desktop.png",
+      "bytes": 178121,
+      "sha256": "da2ea9de71ce3a42e62fea9926274f278c7144d31f8def734537e6181158acc2"
+    },
+    {
+      "benchmark_key": "experiment-decision",
+      "path": "benchmarks-rerun12/experiment-decision/experiment-decision-preview-mobile.png",
+      "bytes": 118565,
+      "sha256": "dcbb5c890a58b7a5e1266de76cb44ffcb8e87b5272308531086174bd62063595"
+    },
+    {
+      "benchmark_key": "technical-status-review",
+      "path": "benchmarks-rerun12/technical-status-review/technical-status-review-editor-desktop-final.png",
+      "bytes": 261325,
+      "sha256": "751173d023473276cd2c4561d8a088cdad08b12661c0dd3faa45712dd94b6232"
+    },
+    {
+      "benchmark_key": "technical-status-review",
+      "path": "benchmarks-rerun12/technical-status-review/technical-status-review-preview-desktop.png",
+      "bytes": 224959,
+      "sha256": "b42e730b5f20975a3ba1061086b0b9a4bc2435cbb938322bf015486d0e27f271"
+    },
+    {
+      "benchmark_key": "technical-status-review",
+      "path": "benchmarks-rerun12/technical-status-review/technical-status-review-preview-mobile.png",
+      "bytes": 145696,
+      "sha256": "c1eb06165597268e8473e7463fb325be9867e89a4a49a34413714527ef9cc676"
+    },
+    {
+      "benchmark_key": "technical-status-review",
+      "path": "benchmarks-rerun12/technical-status-review/technical-status-review-reading-narrow-320.png",
+      "bytes": 140943,
+      "sha256": "fdc7f356df463a9815679e84e5325abd52dd5f120cd35126e1bfe21e14ccc258"
+    },
+    {
+      "benchmark_key": "supply-chain-capacity-holdout",
+      "path": "benchmarks-rerun12/supply-chain-holdout/supply-chain-capacity-holdout-editor-desktop.png",
+      "bytes": 259605,
+      "sha256": "4d09d81f5d5faaf2affb98dfb9d0e7c22108dfd47493b9f2cf87b1dc0600d1cb"
+    },
+    {
+      "benchmark_key": "supply-chain-capacity-holdout",
+      "path": "benchmarks-rerun12/supply-chain-holdout/supply-chain-capacity-holdout-preview-desktop.png",
+      "bytes": 225146,
+      "sha256": "79ecf1472dc8a4ac7217cb495cd6234bb66111d626ddfa7a58dee13d9f90ba33"
+    },
+    {
+      "benchmark_key": "supply-chain-capacity-holdout",
+      "path": "benchmarks-rerun12/supply-chain-holdout/supply-chain-capacity-holdout-preview-mobile.png",
+      "bytes": 146132,
+      "sha256": "472bcf754dcbf7064bd6cc2c5f2c7746a7e7c049ad9a22ef7a4cc238c73b45d4"
+    },
+    {
+      "benchmark_key": "supply-chain-capacity-holdout",
+      "path": "benchmarks-rerun12/supply-chain-holdout/supply-chain-capacity-holdout-reading-narrow-320.png",
+      "bytes": 144878,
+      "sha256": "b6586d81a79b8aed5d6610d3bad362e3a0f4b1f388cb828eade1d28ee9ceda22"
+    }
+  ],
+  "export_rendering": {
+    "status": "PASS",
+    "receipt": "export-review/renderer-provenance-and-export-review.json",
+    "export_count": 9,
+    "raster_pages": 10
+  },
+  "decision": "NO-GO"
+}

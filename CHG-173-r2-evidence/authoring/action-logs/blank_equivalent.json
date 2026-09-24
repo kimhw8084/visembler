@@ -1,0 +1,878 @@
+{
+  "report_id": "report-498c8e6ed56542919d6554deb531af9a",
+  "title": "Edge API incident review · INC-2026-0918-447",
+  "revision": 76,
+  "items": 12,
+  "roles": [
+    "causal_evidence",
+    "conclusion",
+    "context",
+    "decision_risk",
+    "detailed_evidence",
+    "hero_metric",
+    "narrative_interpretation",
+    "primary_analysis",
+    "report_headline",
+    "supporting_analysis"
+  ],
+  "datasets": 1,
+  "layoutPreset": "review",
+  "pptx_chart_values": [
+    {
+      "series": "P1 incidents per week",
+      "values": [
+        42.0,
+        37.0,
+        31.0,
+        25.0,
+        19.0,
+        15.0
+      ],
+      "categories": [
+        "W36-1",
+        "W36-2",
+        "W36-3",
+        "W36-4",
+        "W36-5",
+        "W36-6"
+      ]
+    },
+    {
+      "series": "Customer impact hours per week",
+      "values": [
+        136.0,
+        102.0,
+        84.0,
+        61.0,
+        39.0,
+        22.0
+      ],
+      "categories": [
+        "W36-1",
+        "W36-2",
+        "W36-3",
+        "W36-4",
+        "W36-5",
+        "W36-6"
+      ]
+    }
+  ],
+  "captures": {
+    "editor_horizontal_overflow_px": 0,
+    "preview_desktop": {
+      "viewport": {
+        "w": 1800,
+        "doc": 1800
+      },
+      "chart_geometry": [
+        {
+          "id": "c1",
+          "element": "Line Chart",
+          "x": 946.5652465820312,
+          "y": 574.6317138671875,
+          "w": 814.0394897460938,
+          "h": 395.04833984375,
+          "svgAspect": 2.0606060606060606
+        },
+        {
+          "id": "c2",
+          "element": "Line Chart",
+          "x": 584.03857421875,
+          "y": 978.343505859375,
+          "w": 714.07177734375,
+          "h": 346.53662109375,
+          "svgAspect": 2.0606060606060606
+        }
+      ],
+      "axis_label_overlaps": [
+        {
+          "id": "c1",
+          "overlaps": []
+        },
+        {
+          "id": "c2",
+          "overlaps": []
+        }
+      ]
+    },
+    "mobile_reading": {
+      "width": 390,
+      "documentWidth": 390,
+      "hullWidth": 370,
+      "firstFont": 13,
+      "items": [
+        {
+          "id": "c1",
+          "engine": "CoreChartEngine",
+          "role": "group",
+          "name": "Line Chart: P1 incidents per week",
+          "x": 10,
+          "y": 1150,
+          "w": 370,
+          "h": 250,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 250,
+          "clientH": 250,
+          "text": "P1 incidents per week\nW36-1\nW36-2\nW36-3\nW36-4\nW36-5\nW36-6\n15\n20\n30\n40\nP1 incidents\nLine Chart: 6 rows · X Incident week · Y P1 incidents · 3 fields"
+        },
+        {
+          "id": "c2",
+          "engine": "CoreChartEngine",
+          "role": "group",
+          "name": "Line Chart: Customer impact hours per week",
+          "x": 10,
+          "y": 1418,
+          "w": 370,
+          "h": 250,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 250,
+          "clientH": 250,
+          "text": "Customer impact hours per week\nW36-1\nW36-2\nW36-3\nW36-4\nW36-5\nW36-6\n22\n50\n100\n136\nValue\nLine Chart: 6 rows · X Incident week · Y Customer impact hours · 3 fields"
+        },
+        {
+          "id": "c3",
+          "engine": "MetricEngine",
+          "role": "group",
+          "name": "Hero KPI: Availability during event",
+          "x": 10,
+          "y": 616,
+          "w": 370,
+          "h": 132,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 132,
+          "clientH": 132,
+          "text": "Availability during event\n99.42%\nDelta -0.48\nTarget 99.9%"
+        },
+        {
+          "id": "c4",
+          "engine": "MetricEngine",
+          "role": "group",
+          "name": "Hero KPI: Latest weekly customer impact hours · from 136h",
+          "x": 10,
+          "y": 766,
+          "w": 370,
+          "h": 132,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 132,
+          "clientH": 132,
+          "text": "Latest weekly customer impact hours · from 136h\n22 hours\nDelta -114\nTarget 8 hours"
+        },
+        {
+          "id": "c5",
+          "engine": "ComparisonEngine",
+          "role": "group",
+          "name": "Before/After KPI: P1 incidents · initial to latest",
+          "x": 10,
+          "y": 418,
+          "w": 370,
+          "h": 180,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 180,
+          "clientH": 180,
+          "text": "P1 incidents · initial to latest\nBefore\n42 cases\nAfter\n15 cases\n▲"
+        },
+        {
+          "id": "c6",
+          "engine": "TableEngine",
+          "role": "group",
+          "name": "Clean Table: Clean Table",
+          "x": 10,
+          "y": 1892,
+          "w": 370,
+          "h": 190,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 190,
+          "clientH": 190,
+          "text": "SERVICE / INCIDENT REFERENCE\tIMPACT\tOWNER\tSTATUS\nedge-api / INC-2026-0918-447\t96 min degraded\tPlatform Reliability\tReconciliation pending\ntenant-gateway / TRACE"
+        },
+        {
+          "id": "c7",
+          "engine": "DecisionCompositeEngine",
+          "role": "group",
+          "name": "Decision Needed: Risk Callout",
+          "x": 10,
+          "y": 2144,
+          "w": 370,
+          "h": 192,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 192,
+          "clientH": 192,
+          "text": "!\nKeep production rollout gated on the matched-shard saturation probe\n\nCore traffic recovered, but high-value customer retries exceeded the 90-minute objective."
+        },
+        {
+          "id": "c8",
+          "engine": "DiagramEngine",
+          "role": "group",
+          "name": "Process Flow: Incident response and release gate",
+          "x": 10,
+          "y": 1730,
+          "w": 370,
+          "h": 144,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 144,
+          "clientH": 144,
+          "text": "Incident response and release gate\nScope tenant impact\nIsolate retry queue\nReplay delayed callbacks\nVerify matched shard\nReopen rollout gate"
+        },
+        {
+          "id": "c9",
+          "engine": "TextEngine",
+          "role": "group",
+          "name": "Key Takeaway: Hero Title",
+          "x": 10,
+          "y": 102,
+          "w": 370,
+          "h": 124,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 124,
+          "clientH": 124,
+          "text": "INC-2026-0918-447 restored core traffic, but a long-tail retry storm left high-value customers degraded for 96 minutes."
+        },
+        {
+          "id": "c10",
+          "engine": "TextEngine",
+          "role": "group",
+          "name": "Key Takeaway: Body Narrative",
+          "x": 10,
+          "y": 244,
+          "w": 370,
+          "h": 112,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 112,
+          "clientH": 112,
+          "text": "Edge API · us-central-2 / shard 17 · incident window 2026-09-18 14:06–15:42 UTC · 31,884 requests failed or retried · incident commander: Platform Reliability."
+        },
+        {
+          "id": "c11",
+          "engine": "TextEngine",
+          "role": "group",
+          "name": "Key Takeaway: Body Narrative",
+          "x": 10,
+          "y": 960,
+          "w": 370,
+          "h": 172,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 172,
+          "clientH": 172,
+          "text": "P1 tickets decline from 42 to 15 and customer impact from 136 to 22 hours across six weekly checks after queue isolation. The decline tracks the mitigated perio"
+        },
+        {
+          "id": "c12",
+          "engine": "TextEngine",
+          "role": "group",
+          "name": "Key Takeaway: Key Takeaway",
+          "x": 10,
+          "y": 2398,
+          "w": 370,
+          "h": 128,
+          "scrollW": 370,
+          "clientW": 370,
+          "scrollH": 137,
+          "clientH": 128,
+          "text": "✓\nNext step: keep the retry governor at 0.82, publish the customer reconciliation, and reopen rollout only after the matched shard passes the 30-minute saturati"
+        }
+      ],
+      "headings": [
+        {
+          "text": "01\nOverview",
+          "role": "heading",
+          "level": "2",
+          "y": 58
+        },
+        {
+          "text": "02\nPerformance",
+          "role": "heading",
+          "level": "2",
+          "y": 374
+        },
+        {
+          "text": "03\nAnalysis",
+          "role": "heading",
+          "level": "2",
+          "y": 916
+        },
+        {
+          "text": "04\nEvidence",
+          "role": "heading",
+          "level": "2",
+          "y": 1686
+        },
+        {
+          "text": "05\nDecision",
+          "role": "heading",
+          "level": "2",
+          "y": 2100
+        },
+        {
+          "text": "06\nNext steps",
+          "role": "heading",
+          "level": "2",
+          "y": 2354
+        }
+      ],
+      "regions": [
+        {
+          "label": "Scrollable table: Clean Table",
+          "tabIndex": 0,
+          "client": 344,
+          "scroll": 606
+        }
+      ],
+      "flowDirection": "column"
+    },
+    "spatial_geometry": [],
+    "preview_chart_summaries": [
+      "Line Chart: 6 rows · X Incident week · Y P1 incidents · 3 fields",
+      "Line Chart: 6 rows · X Incident week · Y Customer impact hours · 3 fields"
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "id": "c1",
+        "titles": [
+          "Line Chart",
+          "W36-1",
+          "W36-2",
+          "W36-3",
+          "W36-4",
+          "W36-5",
+          "W36-6",
+          "P1 incidents · 6 points · W36-1 42 · W36-2 37 · W36-3 31 · W36-4 25 · W36-5 19 · W36-6 15",
+          "P1 incidents",
+          "P1 incidents · W36-1 · 38",
+          "P1 incidents · W36-1 · 38",
+          "P1 incidents · W36-2 · 80.963",
+          "P1 incidents · W36-2 · 80.963",
+          "P1 incidents · W36-3 · 132.5185",
+          "P1 incidents · W36-3 · 132.5185",
+          "P1 incidents · W36-4 · 184.0741",
+          "P1 incidents · W36-4 · 184.0741",
+          "P1 incidents · W36-5 · 235.6296",
+          "P1 incidents · W36-5 · 235.6296",
+          "P1 incidents · W36-6 · 270",
+          "P1 incidents · W36-6 · 270",
+          "Chart legend",
+          "Toggle P1 incidents series",
+          "P1 incidents"
+        ]
+      },
+      {
+        "id": "c2",
+        "titles": [
+          "Line Chart",
+          "W36-1",
+          "W36-2",
+          "W36-3",
+          "W36-4",
+          "W36-5",
+          "W36-6",
+          "Value · 6 points · W36-1 136 · W36-2 102 · W36-3 84 · W36-4 61 · W36-5 39 · W36-6 22",
+          "Value",
+          "Value · W36-1 · 38",
+          "Value · W36-1 · 38",
+          "Value · W36-2 · 107.193",
+          "Value · W36-2 · 107.193",
+          "Value · W36-3 · 143.8246",
+          "Value · W36-3 · 143.8246",
+          "Value · W36-4 · 190.6316",
+          "Value · W36-4 · 190.6316",
+          "Value · W36-5 · 235.4035",
+          "Value · W36-5 · 235.4035",
+          "Value · W36-6 · 270",
+          "Value · W36-6 · 270",
+          "Chart legend",
+          "Toggle Value series",
+          "Value"
+        ]
+      }
+    ],
+    "preview_table_summaries": [
+      "SERVICE / INCIDENT REFERENCE\tIMPACT\tOWNER\tSTATUS\nedge-api / INC-2026-0918-447\t96 min degraded\tPlatform Reliability\tReconciliation pending\ntenant-gateway / TRACE-73A91F2C\t1,842 retrying accounts\tEdge Operations\tRetry governor 0.82\nbilling-webhook / INC-2026-0919-021\t14 late callbacks\tPayments SRE\tReplay verified"
+    ]
+  },
+  "action_counts": {
+    "semantic_action_events": 107,
+    "context_switches": 28,
+    "modal_openings": 7,
+    "component_insertions": 10,
+    "mapping_actions": 4,
+    "manual_styling_layout_actions": 8,
+    "undo_events": 0,
+    "redo_events": 0,
+    "save_reload_points": 2,
+    "events": [
+      {
+        "action": "open Report Hub blueprint chooser",
+        "context": "hub"
+      },
+      {
+        "action": "context switch",
+        "from": "hub",
+        "to": "editor"
+      },
+      {
+        "action": "create report from blank",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "modal"
+      },
+      {
+        "action": "open Edit report details",
+        "context": "modal"
+      },
+      {
+        "action": "context switch",
+        "from": "modal",
+        "to": "hub"
+      },
+      {
+        "action": "save report title and purpose",
+        "context": "hub"
+      },
+      {
+        "action": "context switch",
+        "from": "hub",
+        "to": "editor"
+      },
+      {
+        "action": "return to report editor",
+        "context": "editor"
+      },
+      {
+        "action": "open Data First",
+        "context": "editor"
+      },
+      {
+        "action": "choose scatter result",
+        "context": "editor"
+      },
+      {
+        "action": "commit governed dataset and mapping",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "choose line visual for time-series analysis",
+        "context": "inspector"
+      },
+      {
+        "action": "map Customer impact hours as trend value",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "duplicate linked analytical chart",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "insert Hero KPI from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Hero KPI from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Before/After KPI from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Clean Table from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Risk Callout from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Process Flow from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Hero Title from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Body Narrative from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Body Narrative from component library",
+        "context": "editor"
+      },
+      {
+        "action": "insert Key Takeaway from component library",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "set report intent · report_headline",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · context",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · narrative_interpretation",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · conclusion",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · causal_evidence",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · detailed_evidence",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · supporting_analysis",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit Hero Title",
+        "context": "editor"
+      },
+      {
+        "action": "edit Body Narrative",
+        "context": "editor"
+      },
+      {
+        "action": "edit Body Narrative",
+        "context": "editor"
+      },
+      {
+        "action": "edit Key Takeaway",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit value",
+        "context": "editor"
+      },
+      {
+        "action": "edit target",
+        "context": "editor"
+      },
+      {
+        "action": "edit delta",
+        "context": "editor"
+      },
+      {
+        "action": "edit unit",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit value",
+        "context": "editor"
+      },
+      {
+        "action": "edit target",
+        "context": "editor"
+      },
+      {
+        "action": "edit delta",
+        "context": "editor"
+      },
+      {
+        "action": "edit unit",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit before",
+        "context": "editor"
+      },
+      {
+        "action": "edit after",
+        "context": "editor"
+      },
+      {
+        "action": "edit unit",
+        "context": "editor"
+      },
+      {
+        "action": "edit statement",
+        "context": "editor"
+      },
+      {
+        "action": "edit detail",
+        "context": "editor"
+      },
+      {
+        "action": "edit status",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "add evidence column",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Service / incident reference",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Impact",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Owner",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Status",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "enter 3 evidence rows in table editor",
+        "context": "editor"
+      },
+      {
+        "action": "edit workflow nodes",
+        "context": "editor"
+      },
+      {
+        "action": "edit workflow edges",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "presets"
+      },
+      {
+        "action": "open personal preset library",
+        "context": "presets"
+      },
+      {
+        "action": "context switch",
+        "from": "presets",
+        "to": "editor"
+      },
+      {
+        "action": "apply Review Smart composition recipe",
+        "context": "editor"
+      },
+      {
+        "action": "close authoring side panel before export validation",
+        "context": "editor"
+      },
+      {
+        "action": "close authoring side panel before export validation",
+        "context": "editor"
+      },
+      {
+        "action": "Compose/Reflow report",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "modal"
+      },
+      {
+        "action": "open Edit report details",
+        "context": "modal"
+      },
+      {
+        "action": "context switch",
+        "from": "modal",
+        "to": "hub"
+      },
+      {
+        "action": "save report title and purpose",
+        "context": "hub"
+      },
+      {
+        "action": "context switch",
+        "from": "hub",
+        "to": "editor"
+      },
+      {
+        "action": "return to report editor",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "preview"
+      },
+      {
+        "action": "open report Preview",
+        "context": "preview"
+      },
+      {
+        "action": "context switch",
+        "from": "preview",
+        "to": "editor"
+      },
+      {
+        "action": "return to editing",
+        "context": "editor"
+      },
+      {
+        "action": "open export menu",
+        "context": "editor"
+      },
+      {
+        "action": "export editable PowerPoint",
+        "context": "editor"
+      },
+      {
+        "action": "export report SVG",
+        "context": "editor"
+      }
+    ],
+    "dom_task_events_delta": {
+      "click": 51,
+      "input": 109,
+      "change": 68,
+      "keydown": 82
+    }
+  },
+  "model_sha256": "9eae24ce3267c0b4b5566767f9cda90b4c966b2a82a74b48b905b8720ad12338"
+}

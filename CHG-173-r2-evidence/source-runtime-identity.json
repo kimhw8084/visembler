@@ -1,0 +1,410 @@
+{
+  "project": "visembler",
+  "request": "CHG-173-r2",
+  "operation": "VERIFY",
+  "fabric_job": "CF-b9df14e01c976669d5e32a36",
+  "target": "main",
+  "source_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "work_branch": "verify/visembler-chg173-world-class-outcome-r2",
+  "work_branch_head": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "remote_main_head": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_commits": 0,
+  "product_diff_files": 0,
+  "worktree_status": "clean",
+  "runtime": {
+    "nicegui": "3.15.0",
+    "browser": "151.0.7922.34",
+    "base_url": "http://127.0.0.1:59768",
+    "ephemeral_port": 59768
+  },
+  "CHG181_R2_reference": {
+    "commit": "0d3b9f1035076979026b2162f77cb0a419711c3a",
+    "tree": "157d7a32bf550e71c03a5b7ada9c19b0624a1070",
+    "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747"
+  },
+  "maintained_native_release": {
+    "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+    "checks_status": "PASS",
+    "remaining_release_validation": [],
+    "checks": [
+      {
+        "name": "repository-contracts",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_repository_contracts.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/repository-contracts.json"
+        ],
+        "log": "logs/repository-contracts.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 2.713
+      },
+      {
+        "name": "company-boundary-model",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_company_user_acceptance.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/company-boundary-model.json"
+        ],
+        "log": "logs/company-boundary-model.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.21
+      },
+      {
+        "name": "company-boundary-browser",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_company_boundary_browser_gate.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/company-boundary-browser.json"
+        ],
+        "log": "logs/company-boundary-browser.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 6.039
+      },
+      {
+        "name": "company-readiness-local",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_company_production_readiness.py",
+          "--data-dir",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/company-readiness-data",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/company-readiness-local.json"
+        ],
+        "log": "logs/company-readiness-local.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.33
+      },
+      {
+        "name": "company-capacity",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_company_capacity.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/company-capacity.json"
+        ],
+        "log": "logs/company-capacity.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 22.843
+      },
+      {
+        "name": "element-coverage",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/verify_element_coverage.py",
+          "--json"
+        ],
+        "log": "logs/element-coverage.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.044
+      },
+      {
+        "name": "delivery-tests",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "-m",
+          "pytest",
+          "tests/test_visualizer_completion_delivery.py",
+          "tests/test_visualizer_production_closeout.py",
+          "--tb=short",
+          "--junitxml=/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/delivery-tests.xml"
+        ],
+        "log": "logs/delivery-tests.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.536
+      },
+      {
+        "name": "full-tests",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "-m",
+          "pytest",
+          "--tb=short",
+          "--junitxml=/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/full-tests.xml"
+        ],
+        "log": "logs/full-tests.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 113.856
+      },
+      {
+        "name": "syntax-integrated_editor.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/integrated_editor.mjs"
+        ],
+        "log": "logs/syntax-integrated_editor.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.048
+      },
+      {
+        "name": "syntax-element_renderer.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/element_renderer.mjs"
+        ],
+        "log": "logs/syntax-element_renderer.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "syntax-authoring_dataset_refresh.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/authoring_dataset_refresh.mjs"
+        ],
+        "log": "logs/syntax-authoring_dataset_refresh.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "syntax-authoring_portability.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/authoring_portability.mjs"
+        ],
+        "log": "logs/syntax-authoring_portability.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.023
+      },
+      {
+        "name": "syntax-authoring_intake_client.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/authoring_intake_client.mjs"
+        ],
+        "log": "logs/syntax-authoring_intake_client.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "syntax-authoring_composition.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/authoring_composition.mjs"
+        ],
+        "log": "logs/syntax-authoring_composition.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "syntax-authoring_reuse_contract.mjs",
+        "command": [
+          "node",
+          "--check",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/company_ui/products/visualizer/assets/authoring_reuse_contract.mjs"
+        ],
+        "log": "logs/syntax-authoring_reuse_contract.mjs.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "persistence-source-probe",
+        "command": [
+          "node",
+          "scripts/release_checks/probe_persistence.mjs",
+          "--repo",
+          "/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/persistence-source.json"
+        ],
+        "log": "logs/persistence-source-probe.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.09
+      },
+      {
+        "name": "git-diff-check",
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "log": "logs/git-diff-check.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 0.024
+      },
+      {
+        "name": "elements",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_editor_workflows.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/elements",
+          "--native"
+        ],
+        "log": "logs/elements.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 62.116
+      },
+      {
+        "name": "data",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_data_workflows.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/data",
+          "--native"
+        ],
+        "log": "logs/data.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 22.979
+      },
+      {
+        "name": "performance",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/measure_editor.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/performance",
+          "--native"
+        ],
+        "log": "logs/performance.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 3.144
+      },
+      {
+        "name": "report-lifecycle-integrity",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/report-lifecycle-integrity"
+        ],
+        "log": "logs/report-lifecycle-integrity.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 7.716
+      },
+      {
+        "name": "chg181-authoring-composition-reuse",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_chg181_authoring_acceptance.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/chg181-authoring-composition-reuse"
+        ],
+        "log": "logs/chg181-authoring-composition-reuse.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 110.4
+      },
+      {
+        "name": "chart-studio",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_chart_studio_acceptance.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/chart-studio"
+        ],
+        "log": "logs/chart-studio.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 40.459
+      },
+      {
+        "name": "report-hub-browser-errors",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_report_hub_browser_error_gate.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/report-hub-browser-errors"
+        ],
+        "log": "logs/report-hub-browser-errors.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 11.059
+      },
+      {
+        "name": "native-recovery",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_native_recovery.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/native-recovery"
+        ],
+        "log": "logs/native-recovery.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 8.4
+      },
+      {
+        "name": "worker-lifecycle",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_worker_lifecycle.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/worker-lifecycle"
+        ],
+        "log": "logs/worker-lifecycle.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 17.655
+      },
+      {
+        "name": "operations-drill",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_operations_drill.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/operations-drill"
+        ],
+        "log": "logs/operations-drill.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 9.113
+      },
+      {
+        "name": "native-acceptance",
+        "command": [
+          "/opt/anaconda3/bin/python3",
+          "scripts/release_checks/run_native_acceptance.py",
+          "--output",
+          "/private/tmp/visembler-chg173-r2-native-CF-b9df14e01c976669d5e32a36/native-acceptance"
+        ],
+        "log": "logs/native-acceptance.log",
+        "returncode": 0,
+        "status": "PASS",
+        "elapsed_seconds": 6.265
+      },
+      {
+        "name": "source-stability",
+        "status": "PASS"
+      },
+      {
+        "name": "frozen-connector",
+        "status": "PASS"
+      }
+    ],
+    "runtime": null
+  },
+  "artifact_bridge": "unavailable in configured tools; Git-first carrier used",
+  "fabric_audit_publisher": "unavailable in configured tools; requested candidate-bound Git evidence ref will be published"
+}

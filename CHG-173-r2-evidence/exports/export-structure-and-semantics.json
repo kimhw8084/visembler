@@ -1,0 +1,998 @@
+{
+  "schema": "visembler-chg173-r2-export-structure.v1",
+  "candidate_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "candidate_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "method": "Read-only extraction from actual supported export bytes with python-pptx/XML; source exports retained byte-for-byte.",
+  "pptx": [
+    {
+      "path": "reports/blank-equivalent/blank-service-incident-equivalent.pptx",
+      "sha256": "146fec3b668e47823332d909839f5ae978e955dc2687bc477419ec6b8d2d8a79",
+      "bytes": 47733,
+      "slide_count": 2,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 13,
+          "text_shapes": 9,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Hero Title\nINC-2026-0918-447 restored core traffic, but a long-tail retry storm left high-value customers degraded for 96 minutes.",
+            "Body Narrative\nEdge API · us-central-2 / shard 17 · incident window 2026-09-18 14:06–15:42 UTC · 31,884 requests failed or retried · incident commander: Platform Reliability.",
+            "Availability during event\n99.42%",
+            "Latest weekly customer impact hours · from 136h\n22 hours",
+            "P1 incidents · initial to latest\n42 → 15\ncases",
+            "Body Narrative\nP1 tickets decline from 42 to 15 and customer impact from 136 to 22 hours across six weekly checks after queue isolation. The decline tracks the mitigated period; it does not prove the retry governor alone caused recovery. The next deploy must retain per-tenant queue ceilings and compare the matched traffic cohort.",
+            "Diagram continues on slides 2–2",
+            "Risk Callout\nKeep production rollout gated on the matched-shard saturation probe\u000bCore traffic recovered, but high-value customer retries exceeded the 90-minute objective. Do not convert observed recovery into causal proof.\u000bMonitor",
+            "Key Takeaway\nNext step: keep the retry governor at 0.82, publish the customer reconciliation, and reopen rollout only after the matched shard passes the 30-minute saturation probe."
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Service / incident reference",
+                  "Impact",
+                  "Owner",
+                  "Status"
+                ],
+                [
+                  "edge-api / INC-2026-0918-447",
+                  "96 min degraded",
+                  "Platform Reliability",
+                  "Reconciliation pending"
+                ],
+                [
+                  "tenant-gateway / TRACE-73A91F2C",
+                  "1,842 retrying accounts",
+                  "Edge Operations",
+                  "Retry governor 0.82"
+                ],
+                [
+                  "billing-webhook / INC-2026-0919-021",
+                  "14 late callbacks",
+                  "Payments SRE",
+                  "Replay verified"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "P1 incidents per week",
+                  "values": [
+                    42.0,
+                    37.0,
+                    31.0,
+                    25.0,
+                    19.0,
+                    15.0
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Customer impact hours per week",
+                  "values": [
+                    136.0,
+                    102.0,
+                    84.0,
+                    61.0,
+                    39.0,
+                    22.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 9,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 1
+          }
+        },
+        {
+          "index": 2,
+          "shape_count": 10,
+          "text_shapes": 6,
+          "chart_count": 0,
+          "table_count": 0,
+          "picture_count": 0,
+          "text": [
+            "Incident response and release gate · Continued 1/1",
+            "Scope tenant impact",
+            "Isolate retry queue",
+            "Replay delayed\ncallbacks",
+            "Verify matched shard",
+            "Reopen rollout gate"
+          ],
+          "tables": [],
+          "charts": [],
+          "shape_types": {
+            "TEXT_BOX (17)": 1,
+            "AUTO_SHAPE (1)": 5,
+            "LINE (9)": 4
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/executive-business-review/executive-business-review.pptx",
+      "sha256": "6da4aff9e7ecbab888c03870e1226b34132951c86ce7b6549748c11f76724fa4",
+      "bytes": 44668,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 11,
+          "text_shapes": 7,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nRetention improved for a second quarter, but the public sector renewal gap still threatens FY26 expansion.",
+            "Quarterly context\nFY26 Q1–Q4 close · enterprise and public sector portfolios · constant-currency bookings · renewal cohort excludes acquired accounts.",
+            "FY26 renewal rate\n92.9%",
+            "Constant-currency bookings\n14.1 $M",
+            "Renewal rate · Q1 to Q4\n87.9 → 92.9\n%",
+            "Risk Callout\nHold public-sector expansion until the renewal gate clears\u000bTwo delayed procurement cycles remain unsigned. Keep the current enterprise plan and review those contracts at the next finance checkpoint.\u000bWatch",
+            "Key Takeaway\nNext step: keep the enterprise hiring plan, but release the public-sector expansion budget only after the named renewals are signed."
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Portfolio",
+                  "Renewals",
+                  "Rate",
+                  "Evidence / risk"
+                ],
+                [
+                  "Enterprise North",
+                  "1842",
+                  "94.1%",
+                  "Above 91% guardrail; stable cohort"
+                ],
+                [
+                  "Public Sector West",
+                  "684",
+                  "84.7%",
+                  "Two contracts delayed; budget gated"
+                ],
+                [
+                  "Strategic Accounts",
+                  "213",
+                  "92.9%",
+                  "FY26 Q4 close; largest renewals drive bookings"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Quarterly retention",
+                  "values": [
+                    88.3,
+                    90.1,
+                    91.7,
+                    92.9
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Bookings by quarter",
+                  "values": [
+                    11.1,
+                    11.7,
+                    12.9,
+                    14.1
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 7,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 1
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/experiment-decision/experiment-decision.pptx",
+      "sha256": "bfa7653437feeac9540298d41e24f02278bc195034ed3090577807d32e18e8bc",
+      "bytes": 44849,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 10,
+          "text_shapes": 6,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nThe reminder increased completion, although the week-four uplift is not enough to rule out a novelty effect.",
+            "Hypothesis and context\nExperiment E-26-041 · eligible new accounts · randomized 1:1 · four weeks · 12,804 assigned · conversion measured within 7 days.",
+            "Treatment completion\n24.8%",
+            "Completion · control to treatment\n21.8 → 24.8\n%",
+            "Interpretation\nTreatment completion rose from 21.1% to 24.8%; control moved from 21.0% to 21.8%. The observed separation is consistent across four weeks, while the support-contact guardrail moved by +0.08 points against a +0.15 limit. This descriptive comparison does not prove the effect will persist after the novelty period.",
+            "Recommendation\nExtend to 25% exposure with a support-contact stop\u000bThe four-week signal is promising but does not establish persistence. Stop if support-contact change exceeds +0.15 points.\u000bLimited rollout"
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Cohort",
+                  "Assigned",
+                  "Completion",
+                  "Support-contact change"
+                ],
+                [
+                  "Control",
+                  "6402",
+                  "21.8%",
+                  "+0.00 pt"
+                ],
+                [
+                  "Treatment",
+                  "6402",
+                  "24.8%",
+                  "+0.08 pt"
+                ],
+                [
+                  "Eligible holdout",
+                  "1104",
+                  "21.5%",
+                  "No post-assignment exclusion"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Conversion by week",
+                  "values": [
+                    21.0,
+                    21.1,
+                    21.3,
+                    22.4,
+                    21.6,
+                    23.5,
+                    21.8,
+                    24.8
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Outcome distribution by cohort",
+                  "values": [
+                    20.3,
+                    20.9,
+                    21.0,
+                    21.8,
+                    22.1,
+                    21.3,
+                    21.1,
+                    22.4,
+                    23.5,
+                    24.8,
+                    24.1,
+                    23.6
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 6,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 1
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/reuse/reuse-remapped-service-incident-final.pptx",
+      "sha256": "6933d2a9d8cf2f36663f056aabd92b55c9339eaf3e5bef98aba094f8a9417339",
+      "bytes": 44845,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 11,
+          "text_shapes": 7,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nINC-2026-0918-447 · retry governor remains gated until the matched-shard probe clears.",
+            "Quarterly context\nEdge API · us-central-2 / shard 17 · incident window 2026-09-18 14:06–15:42 UTC · 31,884 requests failed or retried · incident commander: Platform Reliability.",
+            "Availability during event\n99.42%",
+            "Latest weekly customer impact hours · from 136h\n22 hours",
+            "P1 incidents · initial to latest\n42 → 15\ncases",
+            "Risk Callout\nKeep production rollout gated on the matched-shard saturation probe\u000bCore traffic recovered, but high-value customer retries exceeded the 90-minute objective. Do not convert observed recovery into causal proof.\u000bMonitor",
+            "Key Takeaway\nNext step: publish the customer reconciliation and reopen rollout after the matched shard passes its 30-minute saturation probe."
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Service / incident reference",
+                  "Impact",
+                  "Owner",
+                  "Status"
+                ],
+                [
+                  "edge-api / INC-2026-0918-447",
+                  "96 min degraded",
+                  "Platform Reliability",
+                  "Reconciliation pending"
+                ],
+                [
+                  "tenant-gateway / TRACE-73A91F2C",
+                  "1,842 retrying accounts",
+                  "Edge Operations",
+                  "Retry governor 0.82"
+                ],
+                [
+                  "billing-webhook / INC-2026-0919-021",
+                  "14 late callbacks",
+                  "Payments SRE",
+                  "Replay verified"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "P1 incidents per week",
+                  "values": [
+                    42.0,
+                    37.0,
+                    31.0,
+                    25.0,
+                    19.0,
+                    15.0
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Customer impact hours per week",
+                  "values": [
+                    136.0,
+                    102.0,
+                    84.0,
+                    61.0,
+                    39.0,
+                    22.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 7,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 1
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/reuse/reuse-remapped-service-incident.pptx",
+      "sha256": "5fb387cdcce52928e2e9d7a94fdb1950df2398fb3282838e6d9c9b10607763e1",
+      "bytes": 44880,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 11,
+          "text_shapes": 7,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nINC-2026-0918-447 restored core traffic, but a long-tail retry storm left high-value customers degraded for 96 minutes.",
+            "Quarterly context\nEdge API · us-central-2 / shard 17 · incident window 2026-09-18 14:06–15:42 UTC · 31,884 requests failed or retried · incident commander: Platform Reliability.",
+            "Availability during event\n99.42%",
+            "Latest weekly customer impact hours · from 136h\n22 hours",
+            "P1 incidents · initial to latest\n42 → 15\ncases",
+            "Risk Callout\nKeep production rollout gated on the matched-shard saturation probe\u000bCore traffic recovered, but high-value customer retries exceeded the 90-minute objective. Do not convert observed recovery into causal proof.\u000bMonitor",
+            "Key Takeaway\nNext step: keep the retry governor at 0.82, publish the customer reconciliation, and reopen rollout only after the matched shard passes the 30-minute saturation probe."
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Service / incident reference",
+                  "Impact",
+                  "Owner",
+                  "Status"
+                ],
+                [
+                  "edge-api / INC-2026-0918-447",
+                  "96 min degraded",
+                  "Platform Reliability",
+                  "Reconciliation pending"
+                ],
+                [
+                  "tenant-gateway / TRACE-73A91F2C",
+                  "1,842 retrying accounts",
+                  "Edge Operations",
+                  "Retry governor 0.82"
+                ],
+                [
+                  "billing-webhook / INC-2026-0919-021",
+                  "14 late callbacks",
+                  "Payments SRE",
+                  "Replay verified"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "P1 incidents per week",
+                  "values": [
+                    42.0,
+                    37.0,
+                    31.0,
+                    25.0,
+                    19.0,
+                    15.0
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Customer impact hours per week",
+                  "values": [
+                    136.0,
+                    102.0,
+                    84.0,
+                    61.0,
+                    39.0,
+                    22.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 7,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 1
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/reuse/reused-service-analysis-section.pptx",
+      "sha256": "018b6f6a603c01fe3ddfa57bf3caa1d409406041ab77b80b0ee6fc4cafa0ecb2",
+      "bytes": 42084,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 3,
+          "text_shapes": 0,
+          "chart_count": 2,
+          "table_count": 0,
+          "picture_count": 0,
+          "text": [],
+          "tables": [],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Quarterly retention copy",
+                  "values": [
+                    51.0,
+                    43.0,
+                    34.0,
+                    26.0,
+                    18.0
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Bookings by quarter copy",
+                  "values": [
+                    154.0,
+                    129.0,
+                    97.0,
+                    63.0,
+                    41.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "CHART (3)": 2,
+            "TEXT_BOX (17)": 1
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/semiconductor-rca/semiconductor-rca.pptx",
+      "sha256": "c1f872abd8a3d4787ff73a0d3f5bbf4252867691c0c37708806cc2a2af40099a",
+      "bytes": 52147,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 150,
+          "text_shapes": 17,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nLot WQ-7314 shows a localized edge-band yield loss after the September 18 ETCH-08 chamber A run.",
+            "Affected scope\nWafer WQ-7314 · route R17B · ETCH-08 / chamber A · inline metrology sample 4,812 · paired reference wafer WQ-7298.",
+            "Affected edge-band yield\n91.8%",
+            "Affected vs paired-reference yield\n98 → 91.8\n%",
+            "Verified finding\nSignal · WQ-7314 edge-band yield is below the paired reference.\u000bNine lower-right edge-band records average 91.8% versus a 98.0% paired-reference mean. Pressure shift begins after PM-44719; cause remains unconfirmed. Keep the lot contained through endpoint calibration and matched rerun.\u000bNeeds verification",
+            "Corrective action\nContain WQ-7314 pending chamber requalification\u000bDo not release the lot from one correlated pressure trace. Verify endpoint calibration and a matched chamber B rerun.\u000bContain",
+            "Affected die yield",
+            "113 observations · 0 missing · Value 91.8 to 98",
+            "N · NOTCH",
+            "MEASURED VALUE",
+            "91.8",
+            "98",
+            "Process Flow",
+            "Excursion signal",
+            "Compare affected\nand reference",
+            "Verify chamber\nmechanism",
+            "Confirm\ncorrective\naction"
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 4,
+              "cells": [
+                [
+                  "Measure",
+                  "Affected",
+                  "Reference",
+                  "Review"
+                ],
+                [
+                  "Edge-band yield",
+                  "91.8%",
+                  "98.0%",
+                  "Contain pending matched rerun"
+                ],
+                [
+                  "Film thickness",
+                  "798.0 nm",
+                  "802.1 nm",
+                  "Check endpoint calibration"
+                ],
+                [
+                  "Pressure offset",
+                  "+2.4 kPa",
+                  "Baseline",
+                  "Association only; verify"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Process stability and specification",
+                  "values": [
+                    801.4,
+                    802.0,
+                    799.8,
+                    798.2,
+                    797.1
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Control versus affected distribution",
+                  "values": [
+                    801.4,
+                    803.1,
+                    800.8,
+                    802.7,
+                    801.9,
+                    803.4,
+                    800.5,
+                    802.2,
+                    798.0,
+                    797.2,
+                    799.1,
+                    796.8,
+                    798.7,
+                    797.5,
+                    799.3,
+                    796.9
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 136,
+            "CHART (3)": 2,
+            "TEXT_BOX (17)": 8,
+            "TABLE (19)": 1,
+            "LINE (9)": 3
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/supply-chain-holdout/supply-chain-capacity-holdout.pptx",
+      "sha256": "8e90f8f2f573da6eb4041019c8e05bcf7cc3f27c07a95ec14e986018d7a13a73",
+      "bytes": 47199,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 21,
+          "text_shapes": 13,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Hero Title\nThe Q4 capacity plan covers baseline demand, but a long-lead actuator constraint leaves the launch buffer exposed.",
+            "Body Narrative\nNorthstar launch · weeks 38–45 · supplier feed closed 2026-09-23 18:00 UTC · demand scenario P70 · allocation review for Operations and Procurement.",
+            "P70 capacity headroom\n2.7%",
+            "Actuator lead time\n116 days",
+            "Confirmed capacity · W38 to W45\n120000 → 142000\nunits",
+            "Body Narrative\nConfirmed capacity exceeds the P70 baseline by 2.7% in aggregate. Another 27,500 actuator units remain unconfirmed across two suppliers; the 116-day lead time makes that small buffer fragile. Do not treat planned capacity as firm supply until the dated allocation lands.",
+            "Risk Callout\nReserve critical actuator supply before releasing the balance\u000bAggregate headroom hides a concentrated 16-week lead-time constraint. Do not treat unconfirmed supplier allocation as available capacity.\u000bAt risk",
+            "Key Takeaway\nNext step: reserve 18,000 qualified actuators now, then release the remaining build only after supplier NC-8841 confirms its dated allocation.",
+            "Allocation decision path",
+            "Reconcile\nP70 demand",
+            "Reserve\nqualified\nactuators",
+            "Confirm\ndate-coded\nallocation",
+            "Release\nremaining\nbuild"
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 5,
+              "cells": [
+                [
+                  "Supplier / part",
+                  "Committed",
+                  "Unconfirmed",
+                  "Lead time",
+                  "Decision evidence"
+                ],
+                [
+                  "Northstar Motion / AX-8841",
+                  "72000",
+                  "18000",
+                  "116 days",
+                  "Reserve qualified stock now"
+                ],
+                [
+                  "Apex Controls / actuator-22B",
+                  "54000",
+                  "9500",
+                  "98 days",
+                  "Date-coded allocation pending"
+                ],
+                [
+                  "Orion Systems / NX-041-REV-C",
+                  "39000",
+                  "0",
+                  "42 days",
+                  "Capacity confirmed through W45"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Demand by week",
+                  "values": [
+                    112000.0,
+                    117000.0,
+                    121000.0,
+                    125000.0,
+                    130000.0,
+                    134000.0,
+                    139000.0,
+                    144000.0
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Confirmed capacity by week",
+                  "values": [
+                    120000.0,
+                    124000.0,
+                    126000.0,
+                    130000.0,
+                    132000.0,
+                    136000.0,
+                    140000.0,
+                    142000.0
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 13,
+            "CHART (3)": 2,
+            "TABLE (19)": 1,
+            "TEXT_BOX (17)": 2,
+            "LINE (9)": 3
+          }
+        }
+      ]
+    },
+    {
+      "path": "reports/technical-status-review/technical-status-review.pptx",
+      "sha256": "f91110a0e6d09df462bb06d37fc11dbe26cd6de57f47c9ac6d3916fd9d4402b9",
+      "bytes": 46779,
+      "slide_count": 1,
+      "slides": [
+        {
+          "index": 1,
+          "shape_count": 21,
+          "text_shapes": 13,
+          "chart_count": 2,
+          "table_count": 1,
+          "picture_count": 0,
+          "text": [
+            "Executive Statement\nLine 4 output recovered after maintenance, but two unresolved control checks still constrain the Friday capacity release.",
+            "Report context\nPlant 6 · Line 4 · review window 2026-09-14 through 2026-09-20 · batches L4-260918-A-7741 / B-7742 · owner: Process Engineering.",
+            "First-pass yield\n96.2%",
+            "Unplanned downtime\n7.4 h",
+            "Body Narrative\nFirst-pass yield improved from 94.6% to 96.2% after the valve service. Downtime remains 7.4 hours, above the 6-hour limit. Sample 19 is outside the SPC centerline pattern but inside the product specification; treat this as a process signal for investigation, not a customer defect or capability claim.",
+            "Evidence Card\nMeasurement system remains within the qualified reference range.\u000bSample: 30 parts · method: inline metrology · source: shift B inspection.\u000bVerified",
+            "Risk Callout\nKeep Friday capacity release conditional\u000bAwait pressure calibration, matched sample 20, and Quality sign-off. A point inside specifications can still warrant a control-chart investigation.\u000bReview",
+            "Project Card\nComplete chamber verification and update the runbook.\u000bOwner: Equipment Engineering · due next shift · evidence: paired control lot.\u000bActive",
+            "Process Flow",
+            "Detect",
+            "Contain",
+            "Verify",
+            "Release"
+          ],
+          "tables": [
+            {
+              "rows": 4,
+              "columns": 5,
+              "cells": [
+                [
+                  "Area / identifier",
+                  "Status",
+                  "Owner",
+                  "Due",
+                  "Evidence"
+                ],
+                [
+                  "ETCH-08-A / PM-44719",
+                  "Calibration open",
+                  "Equipment Eng.",
+                  "09-25",
+                  "Pressure offset +2.4 kPa"
+                ],
+                [
+                  "Line 4 / sample 20",
+                  "Matched rerun",
+                  "Process Eng.",
+                  "09-25",
+                  "SPC sequence 15–20"
+                ],
+                [
+                  "Batch L4-260918-B-7742",
+                  "Release gated",
+                  "Quality",
+                  "09-26",
+                  "Await sign-off; no capability claim"
+                ]
+              ]
+            }
+          ],
+          "charts": [
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Yield by shift",
+                  "values": [
+                    94.6,
+                    95.2,
+                    96.2,
+                    95.8
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "LINE_MARKERS (65)",
+              "series": [
+                {
+                  "name": "Critical measurement trend",
+                  "values": [
+                    95.1,
+                    95.4,
+                    95.3,
+                    95.7,
+                    94.4,
+                    95.8
+                  ]
+                }
+              ]
+            }
+          ],
+          "shape_types": {
+            "AUTO_SHAPE (1)": 13,
+            "CHART (3)": 2,
+            "TEXT_BOX (17)": 2,
+            "LINE (9)": 3,
+            "TABLE (19)": 1
+          }
+        }
+      ]
+    }
+  ],
+  "svg": [
+    {
+      "path": "reports/blank-equivalent/blank-service-incident-equivalent.svg",
+      "sha256": "39c7a7670c89552da21d534222302594e26c7a7c4ca7e47e24cef79bd000cfd6",
+      "bytes": 876060,
+      "viewBox": "0 0 1600 1950",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/00-blank-service-incident-equivalent.png",
+      "browser_render_sha256": "66ba8a5563889bf5f66dc498db22c8ccd2c46398239d945979c9a23fe5884c92"
+    },
+    {
+      "path": "reports/executive-business-review/executive-business-review.svg",
+      "sha256": "a9e75c19dbb16be408c966813ce02155f9a2664d8c6a1230b3878442f4a4ed7f",
+      "bytes": 701972,
+      "viewBox": "0 0 1600 1327",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/01-executive-business-review.png",
+      "browser_render_sha256": "b881752a50190d4830bf22bb757085648ee2e078d3b97ef824f3ae14edf812f9"
+    },
+    {
+      "path": "reports/experiment-decision/experiment-decision.svg",
+      "sha256": "d20792643c67f8ceaa16148fabd98fcd7a20d9eed19444f0e684d84599eda483",
+      "bytes": 742896,
+      "viewBox": "0 0 1600 1600",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/02-experiment-decision.png",
+      "browser_render_sha256": "e19a5df83f5293eb5c60ce0a18f972ec697610ddb8245a8484a7e2bf6f9a58cd"
+    },
+    {
+      "path": "reports/reuse/reuse-remapped-service-incident-final.svg",
+      "sha256": "3a98dfcae43b6809fb9ff4af9beed5d3558e5e4d08bd25f4ae3a567d1d580e7e",
+      "bytes": 758629,
+      "viewBox": "0 0 1600 1327",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/03-reuse-remapped-service-incident-final.png",
+      "browser_render_sha256": "25df967db839903077f045393c8d6c125f352c2d8d68b0ee842aae69a65175a2"
+    },
+    {
+      "path": "reports/reuse/reuse-remapped-service-incident.svg",
+      "sha256": "c0b979a91bfe8f98529ebfb75c4010c79d84a5df8d4e891b21d4b0e18505d3c8",
+      "bytes": 758700,
+      "viewBox": "0 0 1600 1327",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/04-reuse-remapped-service-incident.png",
+      "browser_render_sha256": "2f4faf0dfc09578db04936d133866aeba007b6c1832849a17f082f1e705fe066"
+    },
+    {
+      "path": "reports/reuse/reused-service-analysis-section.svg",
+      "sha256": "c2183d2b7ab2afa53eed731bf7344e32a11581e7f7954015270f49f84e078a1a",
+      "bytes": 368791,
+      "viewBox": "0 0 1600 374",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/05-reused-service-analysis-section.png",
+      "browser_render_sha256": "a00d61e71d4100b2c7fe63875860bb46ad78accf67d8ce05d4a739d2b72a23f9"
+    },
+    {
+      "path": "reports/semiconductor-rca/semiconductor-rca.svg",
+      "sha256": "e0c7d840bcad95c7daaa4b5624e18b0d3df1e44afac1c3617b54a8298e01064e",
+      "bytes": 1431401,
+      "viewBox": "0 0 1600 1711",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/06-semiconductor-rca.png",
+      "browser_render_sha256": "f481ffc9ad8277224a9cbf0b530097ea8eeb0e6fd70cc022490c6f5a829d4479"
+    },
+    {
+      "path": "reports/supply-chain-holdout/supply-chain-capacity-holdout.svg",
+      "sha256": "58ae06c2cfaff9b82b032b95d903d576b608fb7c2df047730d3a79a860d503be",
+      "bytes": 896865,
+      "viewBox": "0 0 1600 1950",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/07-supply-chain-capacity-holdout.png",
+      "browser_render_sha256": "af93a39d6ce162ece73c36f7ecb9c6714d9b1d06b051258405970461e650828f"
+    },
+    {
+      "path": "reports/technical-status-review/technical-status-review.svg",
+      "sha256": "aac0c52a9ca59f9e3deeb08a4940bc4ad87b3b5b9aa55dd2591ff7cfc83fd19e",
+      "bytes": 762980,
+      "viewBox": "0 0 1600 2282",
+      "foreignObject_count": 1,
+      "browser_render_path": "exports/svg-browser-renders/08-technical-status-review.png",
+      "browser_render_sha256": "bc7b4f5110038440ec66a3acf8c484aee3406c1a215fb8004abfe8c07dfe6103"
+    }
+  ],
+  "raster_findings": {
+    "fresh_pptx": "Visible text omissions/clipping in qualified LibreOffice rendering; body/KPI/decision content remains in package structure.",
+    "chg181_r2_baseline_pptx": "Same visible text omission pattern under the same LibreOffice version and rasterizer.",
+    "fresh_svg": "Full report content remains visible in browser-native Chromium rendering."
+  }
+}

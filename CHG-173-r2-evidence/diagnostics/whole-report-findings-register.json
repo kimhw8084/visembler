@@ -1,0 +1,64 @@
+{
+  "schema": "visembler-chg173-r2-findings.v1",
+  "source_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "findings": [
+    {
+      "id": "F-EXP-01",
+      "type": "objective export defect",
+      "priority": "P1",
+      "criterion": "Supported PPTX export preserves complete report hierarchy and meaning",
+      "status": "FAIL",
+      "finding": "Every fresh exported PPTX retains headline, KPI, narrative, decision and next-step strings in the editable package structure, but the qualified LibreOffice raster omits or clips their visible values. The same behavior occurs in the five accepted CHG-181 R2 baseline decks under the same renderer, so it is inherited rather than a new source regression. It still fails the user outcome/export gate. Charts and tables render; the fresh RCA spatial wafer and Process Flow are visible.",
+      "evidence": [
+        "exports/pptx-review/renderer-provenance-and-export-review.json",
+        "exports/pptx-review/rasters/08__executive-business-review__executive-business-review-1.png",
+        "exports/pptx-review/rasters/03__semiconductor-rca__semiconductor-rca-1.png",
+        "baseline/chg181-r2/rendered-pptx/rasters/00__executive-business-review__executive-business-review-1.png"
+      ],
+      "smallest_fix_scope": "Governed PPTX text-box export layout and raster regression coverage for headline/context, KPI/comparison, narrative/evidence, risk/decision, next-step, including text contrast and containment. Do not redesign non-export Product surfaces as part of this fix."
+    },
+    {
+      "id": "F-RESP-01",
+      "type": "objective responsive defect",
+      "priority": "P1",
+      "criterion": "Narrow reading keeps long values, evidence and flow readable without clipping",
+      "status": "FAIL",
+      "finding": "At a 320 px reading width, the capacity comparison values 120000 and 142000 wrap so the last zero falls onto a separate line. The horizontal four-step allocation flow is reduced to very small labels, and the multi-column evidence table shows only part of its right side without an obvious visual scroll cue.",
+      "evidence": [
+        "reports/supply-chain-holdout/supply-chain-capacity-holdout-reading-narrow-320.png",
+        "reports/technical-status-review/technical-status-review-reading-narrow-320.png",
+        "run/receipts/fresh-outcome-acceptance.json"
+      ],
+      "smallest_fix_scope": "Responsive numeric comparison sizing/wrapping and narrow-width Process Flow composition; preserve a discoverable, keyboard-operable table scroll affordance. Verify at the recorded 320/390 widths."
+    },
+    {
+      "id": "F-REMAP-01",
+      "type": "task clarity / semantic mapping",
+      "priority": "P1",
+      "criterion": "Incompatible destination data blocks with a truthful, actionable diagnostic",
+      "status": "FAIL",
+      "finding": "Apply is disabled, so no invalid remap occurs. With the text-valued destination for numeric Failure count, the dialog exposes generic Column 1/Column 2 choices and says required source fields are missing / Failure count field not found. It does not explain the visible type incompatibility or preserve recognizable destination header names.",
+      "evidence": [
+        "reports/remap-diagnostics/incompatible-remap-blocked.png",
+        "authoring/remap-compatibility-history-conflict.json"
+      ],
+      "smallest_fix_scope": "Remap field inspection and diagnostics: retain pasted header identity; distinguish exact-name/type mismatch from missing field; say which target role is incompatible and why; keep Apply blocked. Add focused same-name wrong-type and missing-name evidence cases in a later governed fix."
+    },
+    {
+      "id": "F-CRAFT-01",
+      "type": "whole-report craft concern",
+      "priority": "P1 for this request",
+      "criterion": "Fresh complete reports demonstrate principal-designer-quality art direction beyond correct automatic arrangement",
+      "status": "FAIL",
+      "finding": "Across the five fresh genres the eye is still led by the same numbered section stack, neutral bordered cards, generic line/box chart and table grammar, and repeated risk/next-step callouts. Relative to accepted CHG-181 R2 there is no obvious positive-EV improvement in report character, visual hierarchy or content-specific composition. The hierarchy communicates the task correctly in the browser, but it reads as a consistent template family rather than reports deliberately art-directed for each decision and data shape. This is a reasoned Visual Director assessment, not a quantified preference score.",
+      "evidence": [
+        "visual-review/fresh-versus-chg181-r2-desktop.pdf",
+        "visual-review/fresh-whole-report-desktop.pdf",
+        "baseline/chg181-r2/visual-comparison/whole-report/visembler-r1-vs-r2-complete-reports.pdf",
+        "visual-review/golden-ui-v3-review.md"
+      ],
+      "smallest_fix_scope": "A separately governed whole-report composition/design-system iteration. Define role-specific typographic and density hierarchy, feature/support relationships, analytical/evidence placement, and content-driven whitespace for mixed reports; then test full report scenes across the five genres and fresh holdouts. Keep framework layout tokens and primitives."
+    }
+  ]
+}

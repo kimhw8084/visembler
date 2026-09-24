@@ -1,0 +1,66 @@
+{
+  "schema": "visembler-chg178-report-lifecycle.v1",
+  "candidate_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "cases": [
+    {
+      "name": "isolated sessions reject stale title and preserve draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 2,
+        "revision_after_a": 3,
+        "canonical_before_resolution": "CHG-178 title from session A",
+        "stale_draft_retained": "CHG-178 retained title from session B",
+        "conflict_visible": true
+      }
+    },
+    {
+      "name": "isolated sessions reject stale purpose and preserve draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 4,
+        "revision_after_a": 5,
+        "canonical_before_resolution": "Purpose saved by session A",
+        "stale_draft_retained": "Purpose retained from stale session B",
+        "revision_after_explicit_resolution": 6
+      }
+    },
+    {
+      "name": "Report Hub details conflict resolution and reload persistence",
+      "status": "PASS",
+      "details": {
+        "starting_revision": 6,
+        "revision_after_session_a": 8,
+        "canonical_before_resolution": "CHG-178 Hub title from session A",
+        "draft_title_and_purpose_preserved": true,
+        "revision_after_explicit_resolution": 10,
+        "hub_reload_title": "CHG-178 Hub draft from session B",
+        "hub_reload_purpose": "Hub purpose draft from session B",
+        "editor_reload_purpose": "Hub purpose draft from session B"
+      }
+    },
+    {
+      "name": "normal report edit conflict retains and safely reapplies non-overlapping draft",
+      "status": "PASS",
+      "details": {
+        "revision_loaded_by_both": 10,
+        "revision_after_session_a": 11,
+        "canonical_before_resolution": "Normal report edit saved by session A",
+        "retained_draft": "Retained component title from session B",
+        "visible_conflict_state": "Local edits need recovery",
+        "revision_after_explicit_resolution": 12,
+        "session_a_edit_preserved": "Normal report edit saved by session A"
+      }
+    }
+  ],
+  "unexpected_browser_events": [],
+  "fixture": {
+    "report_id": "chg178-1790272816",
+    "starting_revision": 2,
+    "historical_revision": 1,
+    "historical_title": "CHG-178 original title",
+    "historical_description": "Original report purpose"
+  },
+  "status": "FAIL",
+  "error": "TimeoutError: Page.wait_for_function: Timeout 8000ms exceeded.",
+  "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-b9df14e01c976669d5e32a36/scripts/release_checks/run_chg178_report_lifecycle_acceptance.py\", line 291, in main\n    history_page.wait_for_function('()=>document.querySelector(\"[data-testid=report-history] [data-history-id=\\\\\"r1\\\\\"]\")?.dataset.selected===\"true\"', timeout=8_000)\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 12761, in wait_for_function\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_page.py\", line 1151, in wait_for_function\n    return await self._main_frame.wait_for_function(**locals_to_params(locals()))\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 940, in wait_for_function\n    await self._channel.send(\"waitForFunction\", self._timeout, params)\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 8000ms exceeded.\n"
+}
