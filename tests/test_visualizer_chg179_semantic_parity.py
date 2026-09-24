@@ -119,12 +119,13 @@ const refreshed=intakeText('Value\tMonth\n0\tJan\n2.5\tFeb\n3\tMar');
 const refresh=planDatasetRefresh({dataset:ds,intake:refreshed,items:[created],selectedId:created.id,viewForEntry:()=> 'line'});
 const rebound=refresh.mappings[0].mapping;
 const projected=projectDataEntry({...created,mapping:rebound},{...refreshed,id:'d1'},rebound);
-console.log(JSON.stringify({mapping:created.mapping,savedMapping:saved.mapping,reloadedMapping:reloaded.mapping,svgHasLabels:['Jan','Feb','Mar'].every(label=>svg.includes(label)),refreshValid:refresh.valid,refreshedMapping:rebound,projected:projected.data}));
+console.log(JSON.stringify({mapping:created.mapping,savedMapping:saved.mapping,reloadedMapping:reloaded.mapping,svgHasLabels:['Jan','Feb','Mar'].every(label=>svg.includes(label)),svgExposesExactPoints:['Jan 0','Feb 2','Mar 3'].every(label=>svg.includes(label)),refreshValid:refresh.valid,refreshedMapping:rebound,projected:projected.data}));
 ''')
     assert result['mapping']['x'] == 'month_1'
     assert result['savedMapping']['x'] == 'month_1'
     assert result['reloadedMapping']['x'] == 'month_1'
     assert result['svgHasLabels'] is True
+    assert result['svgExposesExactPoints'] is True
     assert result['refreshValid'] is True
     assert result['refreshedMapping']['x'] == 'month_2'
     assert result['projected'] == [['Jan', 0], ['Feb', 2.5], ['Mar', 3]]
@@ -157,6 +158,56 @@ def test_powerpoint_projection_keeps_category_labels_and_formats_bound_metric() 
     assert format_metric_value(projected[1]['value'], projected[1], projected[1]['_metric_field']) == '0%'
     with pytest.raises(VisualizerContractError, match='Percent data is paired with currency formatting'):
         export_pptx(None, report)
+
+
+def test_powerpoint_line_uses_canonical_y_when_legacy_value_alias_is_stale() -> None:
+    report = canonical_model(
+        {
+            'datasets': [
+                {
+                    'id': 'd1',
+                    'name': 'Order returns',
+                    'revision': 1,
+                    'fields': [
+                        {'id': 'date', 'name': 'Date', 'type': 'date', 'semantic_tags': ['time']},
+                        {'id': 'orders', 'name': 'Orders', 'type': 'integer'},
+                        {'id': 'returns', 'name': 'Returns', 'type': 'integer'},
+                    ],
+                    'rows': [
+                        ['2026-01-01', 1280, 42],
+                        ['2026-02-01', 1395, 38],
+                        ['2026-03-01', 1522, 35],
+                        ['2026-04-01', 1611, 31],
+                    ],
+                }
+            ],
+            'items': [
+                {
+                    'id': 'returns',
+                    'type': 'chart',
+                    'engine': 'CoreChartEngine',
+                    'element': 'Line Chart',
+                    'title': 'Returns',
+                    'order': 0,
+                    'dataset_id': 'd1',
+                    'mapping': {'x': 'date', 'time': 'date', 'y': 'returns', 'value': 'orders'},
+                }
+            ],
+        }
+    )
+    projected = bound_export_items(report)
+    assert projected[0]['data'] == [
+        ('2026-01-01', 42),
+        ('2026-02-01', 38),
+        ('2026-03-01', 35),
+        ('2026-04-01', 31),
+    ]
+    deck = Presentation(io.BytesIO(export_pptx(None, report)))
+    chart = next(shape.chart for slide in deck.slides for shape in slide.shapes if getattr(shape, 'has_chart', False))
+    assert [point.label for point in chart.plots[0].categories] == [
+        '2026-01-01', '2026-02-01', '2026-03-01', '2026-04-01'
+    ]
+    assert list(chart.series[0].values) == [42, 38, 35, 31]
 
 
 def test_dataset_resource_field_validation_keeps_metric_format_metadata(tmp_path) -> None:

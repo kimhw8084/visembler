@@ -366,7 +366,9 @@ def assert_width_growth(page):
 
 def _assert_solo(page, kind: str, min_width_share: float, min_area_share: float):
     rect = page.evaluate('()=>__VIZ_PROD__.layoutRects()[0]')
-    canvas = page.evaluate('()=>CompanyUIVisualizerBridge.state().model.canvas')
+    # Smart mode derives a content-fit canvas at runtime; the persisted page
+    # size remains user-authored and is not the visible safe hull.
+    canvas = page.evaluate('()=>__VIZ_PROD__.layoutGeometry().canvas')
     width_share=rect['w']/canvas['width'];area_share=rect['w']*rect['h']/(canvas['width']*canvas['height'])
     assert width_share >= min_width_share and area_share >= min_area_share and rect['y'] <= 20, (kind, rect, width_share, area_share)
     node = page.locator('.component').first

@@ -56,6 +56,7 @@ export function pasteCompositionPlan(model, payload, {
   canvasHeight=900,
   inset=0,
   offset=24,
+  preserveExistingDatasets=false,
 }={}) {
   if(payload?.kind!=='composition'||!Array.isArray(payload.items)||payload.items.length<2) {
     return {ops:[],newIds:[],nextId:Number(model?.nextId)||1};
@@ -78,8 +79,13 @@ export function pasteCompositionPlan(model, payload, {
   const datasetIdMap=new Map();
   const clonedDatasets=[];
   (payload.datasets||[]).forEach((dataset,index)=>{
+    const sourceId=String(dataset?.id||'');
+    if(preserveExistingDatasets&&existingDatasetIds.has(sourceId)) {
+      datasetIdMap.set(sourceId,sourceId);
+      return;
+    }
     const id=uniqueId(existingDatasetIds,`dataset-paste-${baseNext}-${index+1}`);
-    datasetIdMap.set(String(dataset.id),id);
+    datasetIdMap.set(sourceId,id);
     clonedDatasets.push({
       ...clone(dataset),
       id,

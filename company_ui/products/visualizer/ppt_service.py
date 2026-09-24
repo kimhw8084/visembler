@@ -139,7 +139,9 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
             entry['observations']=observations
             entry.update({key:first(key) for key in ('wafer_id','lot_id','tool','chamber','recipe','process')})
         else:
-            label=index('category') if index('category')>=0 else (index('label') if index('label')>=0 else (index('time') if index('time')>=0 else index('x'))); value=index('value') if index('value')>=0 else index('y')
+            label=index('category') if index('category')>=0 else (index('label') if index('label')>=0 else (index('time') if index('time')>=0 else index('x')))
+            trend_visual=engine=='CoreChartEngine' and str(entry.get('element') or '') in {'Line Chart','Multi-Line','Area Chart','Scatter Plot','Regression Scatter'}
+            value=index('y') if trend_visual and index('y')>=0 else (index('value') if index('value')>=0 else index('y'))
             points=[(str(row[label] if label>=0 and label<len(row) else ''),row[value] if value>=0 and value<len(row) else None) for row in rows]
             if engine in {'CoreChartEngine','EngineeringChartEngine'}: entry['data']=points;entry['rows']=[{'label':label,'value':value} for label,value in points];entry['observations']=[{'label':label,'value':value} for label,value in points]
             elif engine=='MetricEngine':

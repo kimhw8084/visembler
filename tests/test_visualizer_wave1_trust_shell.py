@@ -40,9 +40,10 @@ def test_wave1_runtime_asset_graph_cannot_reuse_the_old_cached_vendor_namespace(
 
 def test_wave1_builtin_preset_apply_is_one_transactional_model_replace() -> None:
     editor = _read(ASSETS / 'integrated_editor.mjs')
-    assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in editor
-    assert "next.layoutPreset=preset" in editor
-    assert "next.mode='smart'" in editor
+    apply = editor[editor.index('function applySuggestion('):editor.index('function autoLayout()', editor.index('function applySuggestion('))]
+    assert "composeReportModel(parseCanonical(store.serialize()),preset)" in apply
+    assert "commitOps('Apply built-in preset',[{op:'model.replace',value:next}]" in apply
+    assert "commitOps('Compose report',[{op:'model.replace',value:next}]" in editor
 
 
 def test_export_surface_uses_canonical_json_and_governed_editable_visual_outputs() -> None:
