@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "kind": "codex-fabric-audit-evidence",
+  "job_id": "CF-69df7ab4eafc11457f9b98a4",
+  "project_id": "visembler",
+  "project": "visembler",
+  "request": "CHG-173-r3",
+  "change": "CHG-173",
+  "operation": "VERIFY",
+  "status": "VERIFY_COMPLETE_AWAITING_INDEPENDENT_AUDIT",
+  "started_at": "2026-09-25T21:24:59.044642Z",
+  "finished_at": "2026-09-25T21:24:59.044642Z",
+  "error_code": null,
+  "source_changed": false,
+  "target_unchanged": true,
+  "git": {
+    "base_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "head_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "base_tree": "08719bb4afbe3c508cb296a4505001e36141cd4e",
+    "branch": "verify/visembler-chg173-world-class-outcome-r3",
+    "work_branch": "verify/visembler-chg173-world-class-outcome-r3",
+    "remote_exact_head": true,
+    "remote_head_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "base_is_ancestor": true,
+    "worktree_clean": true,
+    "target_branch": "main",
+    "target_head_observed_after_execution": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "target_drifted_since_acceptance": false,
+    "target_unchanged": true,
+    "source_changed": false,
+    "evidence_commit_parent_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb"
+  },
+  "artifact": {
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-173-r3",
+    "commit": "dfe6455d2222d8eff3d1a67dc19bb0902f0871e6",
+    "sole_parent": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "carrier_manifest_sha256": "267bf20eeef86c8a1729fcdfdb45e82b462077ab0d1f0ae3df4672d13abae086"
+  },
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-173-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-173-r3"
+  },
+  "evidence_manifest": {
+    "version": 1,
+    "count": 1,
+    "items": [
+      {
+        "path": ".codex-fabric/CHG-173-r3-binding.json",
+        "bytes": 1170,
+        "sha256": "67b709f97484868b0444fe4694d662c321b86245ab3f06eb58295eb20e264f91"
+      }
+    ]
+  },
+  "checks": [
+    {
+      "type": "source_identity",
+      "status": "PASS",
+      "sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+      "tree": "08719bb4afbe3c508cb296a4505001e36141cd4e"
+    },
+    {
+      "type": "remote_main_unchanged",
+      "status": "PASS",
+      "observed_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb"
+    },
+    {
+      "type": "verification_branch_remote_exact",
+      "status": "PASS",
+      "ref": "refs/heads/verify/visembler-chg173-world-class-outcome-r3",
+      "sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb"
+    },
+    {
+      "type": "native_release",
+      "status": "PASS_LOCAL_INTERNAL_PILOT"
+    },
+    {
+      "type": "whole_report_evidence",
+      "status": "NO_GO_FINDINGS_RECORDED",
+      "p1_findings": [
+        "R3-RESP-01",
+        "R3-EXPORT-01"
+      ]
+    },
+    {
+      "type": "package_manifest_local_hash_validation",
+      "status": "PASS",
+      "file_count": 435,
+      "sha256": "267bf20eeef86c8a1729fcdfdb45e82b462077ab0d1f0ae3df4672d13abae086"
+    },
+    {
+      "type": "source_mutation",
+      "status": "PASS",
+      "changed": false
+    }
+  ],
+  "producer_self_verdict": "NO_GO",
+  "managed_target_certification": "PENDING_SEPARATE_CHG-21",
+  "accepted_at": "2026-09-25T21:24:59.044642Z",
+  "evidence_commit_sole_parent": "353d8c648be0d88db2777f68e577a4ec47d8a6bb"
+}
