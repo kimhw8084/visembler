@@ -284,6 +284,8 @@ def main() -> int:
                         lambda value: any(entry.get('checkpoint') and entry.get('label') == 'CHG-178 pre-restore checkpoint' for entry in host.repository.list_history(report_id)),
                     )
                     checkpoint_entry = next(entry for entry in host.repository.list_history(report_id) if entry.get('checkpoint') and entry.get('label') == 'CHG-178 pre-restore checkpoint')
+                    checkpoint_card = history.locator(f'[data-history-id="{checkpoint_entry["history_id"]}"]')
+                    checkpoint_card.wait_for(state='visible', timeout=10_000)
                     old_revision = resolved_model.revision
                     historical = history.locator('[data-history-id="r1"]')
                     historical.wait_for(timeout=10_000)
