@@ -267,6 +267,86 @@ export function insertSubflow(value, subflow, origin = {x:64,y:64}) { let diagra
 
 export function diagramSummary(value) { const diagram=normalizeDiagram(value); return `${diagram.nodes.length} nodes · ${diagram.edges.length} connectors · ${diagram.swimlanes.length} lanes · ${diagram.layers.length} layers`; }
 
+function wrappedReadingLines(value,maxChars=28) {
+  const words=clean(value).split(/\s+/).filter(Boolean),lines=[];let line='';
+  for(const word of words){
+    if(!line){line=word;continue;}
+    if(`${line} ${word}`.length<=maxChars){line+=` ${word}`;continue;}
+    lines.push(line);line=word;
+  }
+  if(line)lines.push(line);
+  return lines.length?lines:[''];
+}
+
+function renderCompactDiagramReadingSvg(diagram,nodes,edges,options={}) {
+  const width=320,nodeX=8,nodeWidth=144,columnGap=16,lineHeight=16,nodeGap=8,top=5,positions=new Map(),rowHeights=[];
+  nodes.forEach((node,index)=>{
+    const row=Math.floor(index/2),column=row%2===0?index%2:1-(index%2),labelLines=wrappedReadingLines(node.label,20),secondaryLines=node.secondary?wrappedReadingLines(node.secondary,20):[],height=Math.max(36,(labelLines.length+secondaryLines.length)*lineHeight+8),x=nodeX+column*(nodeWidth+columnGap);
+    rowHeights[row]=Math.max(rowHeights[row]||0,height);
+    positions.set(node.id,{node,index,row,column,x,width:nodeWidth,height,labelLines,secondaryLines});
+  });
+  let cursor=top;
+  for(let row=0;row<rowHeights.length;row+=1){
+    for(const position of positions.values())if(position.row===row)position.y=cursor;
+    cursor+=rowHeights[row]+(row<rowHeights.length-1?nodeGap:0);
+  }
+  const height=Math.max(96,cursor+top);
+  const edgeMarkup=edges.map((edge,index)=>{
+    const source=positions.get(edge.source),target=positions.get(edge.target);if(!source||!target)return '';
+    const sourceCenter=source.x+source.width/2,targetCenter=target.x+target.width/2;
+    let path,labelX=(sourceCenter+targetCenter)/2,labelY=(source.y+source.height/2+target.y+target.height/2)/2;
+    if(source.row===target.row){
+      const forward=targetCenter>sourceCenter,sx=forward?source.x+source.width:source.x,ex=forward?target.x:target.x+target.width,sy=source.y+source.height/2;
+      path=`M${sx} ${sy} L${ex} ${sy}`;
+    }else if(target.row>source.row&&source.column===target.column){
+      const sy=source.y+source.height,ey=target.y;
+      path=`M${sourceCenter} ${sy} L${targetCenter} ${ey}`;labelX=sourceCenter+8;labelY=(sy+ey)/2;
+    }else{
+      const route=index%2?width-4:4,sx=targetCenter>sourceCenter?source.x+source.width:source.x,ex=targetCenter>sourceCenter?target.x:target.x+target.width,sy=source.y+source.height/2,ey=target.y+target.height/2;
+      path=`M${sx} ${sy} L${route} ${sy} L${route} ${ey} L${ex} ${ey}`;labelX=route===4?route+3:route-3;labelY=(sy+ey)/2;
+    }
+    const labels=(edge.labels||[]).map(label=>label.text).filter(Boolean),title=`${source.node.label} → ${target.node.label}${labels.length?` · ${labels.join(' · ')}`:''}`;
+    const labelMarkup=labels.map((label,labelIndex)=>`<text class="diagram-reading-edge-label" x="${labelX+8}" y="${labelY+labelIndex*12}" text-anchor="start">${svgEscape(label)}</text>`).join('');
+    return `<g data-diagram-edge="${svgEscape(edge.id)}" data-edge-order="${index}" data-source-id="${svgEscape(edge.source)}" data-target-id="${svgEscape(edge.target)}"><title>${svgEscape(title)}</title><path d="${path}" marker-end="${edge.endMarker==='none'?'':'url(#diagram-reading-arrow)'}"${edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':''}/>${labelMarkup}</g>`;
+  }).join('');
+  const nodeMarkup=nodes.map((node,index)=>{
+    const position=positions.get(node.id),center=position.x+position.width/2,shape=node.shape==='decision'?`<path class="diagram-reading-node-shape" d="M${center} ${position.y}L${position.x+position.width} ${position.y+position.height/2}L${center} ${position.y+position.height}L${position.x} ${position.y+position.height/2}Z"/>`:`<rect class="diagram-reading-node-shape" x="${position.x}" y="${position.y}" width="${position.width}" height="${position.height}" rx="8"/>`;
+    const labelLines=position.labelLines.map((line,lineIndex)=>`<tspan x="${center}" dy="${lineIndex?lineHeight:0}">${svgEscape(line)}</tspan>`).join(''),secondaryLines=position.secondaryLines.map((line,lineIndex)=>`<tspan x="${center}" dy="${lineIndex?lineHeight:0}">${svgEscape(line)}</tspan>`).join(''),labelHeight=position.labelLines.length*lineHeight,secondaryHeight=position.secondaryLines.length*lineHeight,totalHeight=labelHeight+secondaryHeight,labelStart=position.y+(position.height-totalHeight)/2+lineHeight*.78;
+    return `<g data-diagram-node="${svgEscape(node.id)}" data-node-order="${index}" data-shape="${svgEscape(node.shape)}"><title>Step ${index+1}: ${svgEscape(node.label)}${node.secondary?` · ${svgEscape(node.secondary)}`:''}</title>${shape}<text class="diagram-reading-label" data-direct="diagram-node:${index}" x="${center}" y="${labelStart}" text-anchor="middle">${labelLines}</text>${secondaryLines?`<text class="diagram-node-secondary diagram-reading-secondary" x="${center}" y="${labelStart+labelHeight}" text-anchor="middle">${secondaryLines}</text>`:''}</g>`;
+  }).join('');
+  const semanticName=options.label||`Process flow, ${nodes.length} steps`,accessibleDescription=[semanticName,...nodes.map((node,index)=>`Step ${index+1}: ${node.label}`),...edges.flatMap(edge=>(edge.labels||[]).map(label=>`Connector ${label.text}`))].join('; ');
+  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection diagram-medium-reading" data-reading-layout="stacked" data-reading-columns="2" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="right" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="serpentine" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
+}
+
+export function renderDiagramReadingSvg(value={},options={}) {
+  const diagram=value?.engine?diagramFromEntry(value):normalizeDiagram(value),visibleLayers=new Set(diagram.layers.filter(layer=>layer.visible!==false).map(layer=>layer.id));
+  const nodes=diagram.nodes.filter(node=>visibleLayers.has(node.layer)),nodeIds=new Set(nodes.map(node=>node.id)),edges=diagram.edges.filter(edge=>visibleLayers.has(edge.layer)&&nodeIds.has(edge.source)&&nodeIds.has(edge.target));
+  if(options.layout==='compact')return renderCompactDiagramReadingSvg(diagram,nodes,edges,options);
+  const width=320,nodeX=24,nodeWidth=272,leftRoute=10,rightRoute=width-10,nodeGap=46,lineHeight=22,top=18,center=nodeX+nodeWidth/2,positions=new Map();let cursor=top;
+  nodes.forEach((node,index)=>{
+    const labelLines=wrappedReadingLines(node.label,25),secondaryLines=node.secondary?wrappedReadingLines(node.secondary,28):[],height=Math.max(62,(labelLines.length+secondaryLines.length)*lineHeight+26);
+    positions.set(node.id,{node,index,y:cursor,height,labelLines,secondaryLines});cursor+=height+nodeGap;
+  });
+  const height=Math.max(120,cursor-nodeGap+top);
+  const edgeMarkup=edges.map((edge,index)=>{
+    const source=positions.get(edge.source),target=positions.get(edge.target);if(!source||!target)return '';
+    const forward=target.index>source.index,startY=forward?source.y+source.height:source.y,endY=forward?target.y:target.y+target.height,adjacent=Math.abs(target.index-source.index)===1,route=index%2?rightRoute:leftRoute;
+    const path=adjacent?`M${center} ${startY} L${center} ${endY}`:`M${center} ${startY} L${center} ${startY+(forward?10:-10)} L${route} ${startY+(forward?10:-10)} L${route} ${endY+(forward?-10:10)} L${center} ${endY+(forward?-10:10)} L${center} ${endY}`;
+    const labels=(edge.labels||[]).map(label=>label.text).filter(Boolean),title=`${source.node.label} → ${target.node.label}${labels.length?` · ${labels.join(' · ')}`:''}`;
+    const labelMarkup=labels.map((label,labelIndex)=>`<text class="diagram-reading-edge-label" x="${center+18}" y="${(startY+endY)/2+labelIndex*14}" text-anchor="start">${svgEscape(label)}</text>`).join('');
+    return `<g data-diagram-edge="${svgEscape(edge.id)}" data-edge-order="${index}" data-source-id="${svgEscape(edge.source)}" data-target-id="${svgEscape(edge.target)}"><title>${svgEscape(title)}</title><path d="${path}" marker-end="${edge.endMarker==='none'?'':'url(#diagram-reading-arrow)'}"${edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':''}/>${labelMarkup}</g>`;
+  }).join('');
+  const nodeMarkup=nodes.map((node,index)=>{
+    const position=positions.get(node.id),shape=node.shape==='decision'?`<path class="diagram-reading-node-shape" d="M${center} ${position.y}L${nodeX+nodeWidth} ${position.y+position.height/2}L${center} ${position.y+position.height}L${nodeX} ${position.y+position.height/2}Z"/>`:`<rect class="diagram-reading-node-shape" x="${nodeX}" y="${position.y}" width="${nodeWidth}" height="${position.height}" rx="9"/>`;
+    const labelHeight=position.labelLines.length*lineHeight,secondaryHeight=position.secondaryLines.length*lineHeight,totalHeight=labelHeight+secondaryHeight,labelStart=position.y+(position.height-totalHeight)/2+lineHeight*.8;
+    const labels=position.labelLines.map((line,lineIndex)=>`<tspan x="${center}" dy="${lineIndex?lineHeight:0}">${svgEscape(line)}</tspan>`).join('');
+    const secondary=position.secondaryLines.map((line,lineIndex)=>`<tspan x="${center}" dy="${lineIndex?lineHeight:0}">${svgEscape(line)}</tspan>`).join('');
+    return `<g data-diagram-node="${svgEscape(node.id)}" data-node-order="${index}" data-shape="${svgEscape(node.shape)}"><title>Step ${index+1}: ${svgEscape(node.label)}${node.secondary?` · ${svgEscape(node.secondary)}`:''}</title>${shape}<text class="diagram-reading-label" data-direct="diagram-node:${index}" x="${center}" y="${labelStart}" text-anchor="middle">${labels}</text>${secondary?`<text class="diagram-node-secondary diagram-reading-secondary" x="${center}" y="${labelStart+labelHeight}" text-anchor="middle">${secondary}</text>`:''}</g>`;
+  }).join('');
+  const semanticName=options.label||`Process flow, ${nodes.length} steps`,accessibleDescription=[semanticName,...nodes.map((node,index)=>`Step ${index+1}: ${node.label}`),...edges.flatMap(edge=>(edge.labels||[]).map(label=>`Connector ${label.text}`))].join('; ');
+  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection diagram-narrow-reading" data-reading-layout="stacked" data-reading-columns="1" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="down" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="down" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
+}
+
 const svgEscape=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 function staticPath(points,routing) {
   if(!points.length)return '';
@@ -293,5 +373,6 @@ export function renderDiagramSvg(value={},options={}) {
   const groups=diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(group=>`<g class="diagram-static-group"><rect x="${group.x}" y="${group.y}" width="${group.width}" height="${group.height}" rx="10"/><text x="${group.x+12}" y="${group.y+20}">${svgEscape(group.label)}</text></g>`).join('');
   const edges=diagram.edges.filter(edge=>visibleLayers.has(edge.layer)&&nodeIds.has(edge.source)&&nodeIds.has(edge.target)).map(edge=>{const points=routeEdge(diagram,edge),dash=edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':'';const labels=(edge.labels||[]).map((label,index)=>{const fraction=label.position==='source'?.25:label.position==='target'?.75:.5,point=staticPoint(points,fraction);return `<text class="diagram-edge-label" data-edge-label="${svgEscape(label.id||index)}" x="${point.x+finite(label.offset,0)}" y="${point.y-7-index*14}" text-anchor="middle">${svgEscape(label.text)}</text>`;}).join('');return `<g data-diagram-edge="${svgEscape(edge.id)}"><path d="${staticPath(points,edge.routing)}" stroke="${svgEscape(edge.style.color||'currentColor')}" stroke-width="${edge.style.width}" fill="none" marker-end="${edge.endMarker==='none'?'':'url(#diagram-static-arrow)'}"${dash}/>${labels}</g>`;}).join('');
   const nodeMarkup=nodes.map((node,index)=>{const shape=node.shape==='decision'?`<path d="M${node.x+node.width/2} ${node.y}L${node.x+node.width} ${node.y+node.height/2}L${node.x+node.width/2} ${node.y+node.height}L${node.x} ${node.y+node.height/2}Z"/>`:`<rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${['start','end'].includes(node.shape)?node.height/2:9}"/>`;return `<g data-diagram-node="${svgEscape(node.id)}" data-shape="${svgEscape(node.shape)}">${shape}<text data-direct="diagram-node:${index}" x="${node.x+node.width/2}" y="${node.y+node.height/2+(node.secondary?-6:4)}" text-anchor="middle">${svgEscape(node.label)}</text>${node.secondary?`<text class="diagram-node-secondary" x="${node.x+node.width/2}" y="${node.y+node.height/2+13}" text-anchor="middle">${svgEscape(node.secondary)}</text>`:''}</g>`;}).join('');
-  return `<svg class="diagram-svg flow-svg diagram-studio-static" data-graph-plan="canonical-${nodes.length}-${diagram.edges.length}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${diagram.edges.length}" data-direction="${diagram.layout.direction}" viewBox="${minX} ${minY} ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${svgEscape(options.label||diagramSummary(diagram))}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-static-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${lanes}${groups}${edges}${nodeMarkup}</svg>`;
+  const className=options.className?` ${svgEscape(options.className)}`:'';
+  return `<svg class="diagram-svg flow-svg diagram-studio-static${className}" data-graph-plan="canonical-${nodes.length}-${diagram.edges.length}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${diagram.edges.length}" data-direction="${diagram.layout.direction}" viewBox="${minX} ${minY} ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${svgEscape(options.label||diagramSummary(diagram))}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-static-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${lanes}${groups}${edges}${nodeMarkup}</svg>`;
 }

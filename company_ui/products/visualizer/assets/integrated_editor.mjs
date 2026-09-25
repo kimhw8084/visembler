@@ -967,6 +967,50 @@ function contentSignature(entry, r) {
   };
   return JSON.stringify(data);
 }
+function syncTableScrollAffordance(region) {
+  if(!region)return;
+  const shell=region.closest('.table-scroll-shell'),hint=shell?.querySelector('.table-scroll-hint'),label=region.dataset.tableLabel||'Data table';
+  if(!ui.preview){
+    shell?.classList.remove('has-overflow','can-scroll-left','can-scroll-right');
+    if(hint)hint.hidden=true;
+    region.removeAttribute('aria-describedby');
+    region.setAttribute('aria-label',`Scrollable table: ${label}`);
+    return;
+  }
+  const maximum=Math.max(0,region.scrollWidth-region.clientWidth),overflow=maximum>1,left=region.scrollLeft>1,right=region.scrollLeft<maximum-1;
+  shell?.classList.toggle('has-overflow',overflow);
+  shell?.classList.toggle('can-scroll-left',overflow&&left);
+  shell?.classList.toggle('can-scroll-right',overflow&&right);
+  region.setAttribute('aria-label',`${overflow?'Scrollable table':'Table'}: ${label}`);
+  if(!hint)return;
+  hint.hidden=!overflow;
+  if(!overflow){region.removeAttribute('aria-describedby');hint.textContent='';return;}
+  hint.textContent=left&&!right?'End of table. Scroll left for earlier columns. Use Left Arrow or swipe.':left?'Scroll either way for more columns. Use Left/Right Arrow, Home/End, or swipe.':'Scroll right for more columns. Use Right Arrow, End, or swipe.';
+  region.setAttribute('aria-describedby',hint.id);
+}
+function fitPreviewNumericTokens(root=activeRoot) {
+  if(!ui.preview||!root)return;
+  const containers='.metric-value,.before-after-kpi b,.comparison b,.asis-tobe>div>span,.quality-shift>span,.time-compression-live b,.reduction-visual b,.delta-metric b,.capacity-metric>b,.rate-metric>b,.metric-strip b,.metric-pair b,.metric-ladder b';
+  root.querySelectorAll('.numeric-token').forEach(token=>{
+    token.style.removeProperty('font-size');
+    const units=[...token.querySelectorAll('.comparison-unit')];units.forEach(unit=>unit.style.removeProperty('font-size'));
+    const box=token.closest(containers);if(!box)return;
+    const available=box.clientWidth,natural=token.scrollWidth,size=Number.parseFloat(getComputedStyle(token).fontSize)||0;
+    if(available<=0||natural<=available+1||size<=0)return;
+    const unitSizes=units.map(unit=>Number.parseFloat(getComputedStyle(unit).fontSize)||size*.36),minimumScale=Math.min(1,8/size);let scale=Math.min(1,available/natural);
+    for(let pass=0;pass<8;pass++){
+      scale=Math.max(minimumScale,scale);token.style.fontSize=`${size*scale}px`;
+      units.forEach((unit,index)=>{unit.style.fontSize=`${Math.max(8,unitSizes[index]*scale)}px`;});
+      const measured=token.scrollWidth;if(measured<=available||scale<=minimumScale)break;
+      scale=Math.max(minimumScale,scale*available/measured);
+    }
+  });
+}
+function syncPreviewReadingAffordances(root=activeRoot) {
+  if(!root)return;
+  root.querySelectorAll('.table-frame.table-scroll[role="region"]').forEach(syncTableScrollAffordance);
+  fitPreviewNumericTokens(root);
+}
 function syncCanvasDimensions() {
   if (!activeRoot) return;
   syncCanvasSpec();
@@ -1001,7 +1045,7 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
   if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
   if(entry.engine==='DiagramEngine'){
     const name=String(entry.element||entry.title||'').toLowerCase();
-    if(name.includes('process flow')){
+    if(name.includes('process flow')||name.includes('data flow')){
       const bounds=diagramRenderBounds(entry),contentWidth=Math.max(220,viewportWidth-68);
       return Math.max(144,Math.min(240,Math.ceil(contentWidth*bounds.height/Math.max(1,bounds.width)+44)));
     }
@@ -1861,6 +1905,7 @@ function renderAll() {
   ui.contentMeasurePass=pass;
   reconcileCanvas({content:false});
   renderInspector(); renderActiveFilters(); setZoom(ui.zoom, false); syncModeButtons();
+  requestAnimationFrame(()=>syncPreviewReadingAffordances());
   if(focusedComponentId&&ui.componentNodes.has(focusedComponentId))requestAnimationFrame(()=>ui.componentNodes.get(focusedComponentId)?.focus({preventScroll:true}));
 }
 
@@ -2685,7 +2730,8 @@ function renderDataFirstDialog() {
   const view=recommendation.contract_view||recommendation.view,contract=contractFor(view),validation=contract.validate(state.mapping,intake.fields),target=productionTargetForView(recommendation.view);
   const cards=recommendations.map(candidate=>{const active=candidate.view===recommendation.view,targetName=candidate.production_target?.element||productionTargetForView(candidate.view)?.element;return `<button type="button" class="data-first-recommendation ${active?'active':''}" data-data-first-view="${esc(candidate.view)}" aria-pressed="${active?'true':'false'}"><b>${esc(targetName)}</b><span>${esc(candidate.reason)}</span><small>${candidate.confidence>=.9?'High confidence':candidate.confidence>=.75?'Good fit':'Safe fallback'} · Preview only until Create</small></button>`;}).join('');
   const previewDataset=datasetFromIntake(intake,'data-first-preview','Preview');
-  const previewMarkup=target?renderDataFirstPreview({target,view:recommendation.view,mapping:state.mapping||{},dataset:previewDataset}):'';
+  const previewId=selected?`data-first-preview-${selected.id}`:`c${model().nextId}`;
+  const previewMarkup=target?renderDataFirstPreview({id:previewId,target,view:recommendation.view,mapping:state.mapping||{},dataset:previewDataset}):'';
   const preview=`<div class="data-first-live-preview" aria-label="Live result preview"><span class="human-eyebrow">Live preview · not saved</span>${previewMarkup}<small>${esc(candidatePreviewReason(recommendation))}</small></div>`;
   const error=state.mappingError?`<div class="data-first-status error" id="dataFirstValidation" role="alert">${esc(state.mappingError)}</div>`:validation.valid?'':`<div class="data-first-status error" id="dataFirstValidation" role="alert">${esc(mappingProblem(validation))}</div>`;
   const matches=state.matches||[],saved=state.savedPresetId&&mappingPresets.find(preset=>preset.id===state.savedPresetId),savedUi=saved?`<div class="data-first-saved" aria-live="polite"><b>Using saved mapping · ${esc(saved.name)}</b><button type="button" class="link-button" id="dataFirstDetected">Use detected mapping</button><button type="button" class="link-button" data-forget-mapping="${esc(saved.id)}">Forget</button></div>`:matches.length>1?`<div class="data-first-saved"><b>Compatible saved assistance</b><div class="data-first-saved-list">${matches.map(match=>`<button type="button" class="tb" data-use-mapping="${esc(match.preset.id)}">${esc(match.preset.name)} · ${esc(productionTargetForView(match.preset.view)?.element||match.preset.view)}</button>`).join('')}</div></div>`:'';
@@ -2947,7 +2993,7 @@ function togglePreview() {
   activeRoot?.classList.toggle('preview-mode',ui.preview);
   activeRoot?.setAttribute('data-preview-fit',ui.preview?'page':'');
   const layer=$('#componentLayer'),hull=$('#hull');if(layer)layer.inert=false;if(hull)hull.setAttribute('aria-readonly',ui.preview?'true':'false');
-  requestAnimationFrame(()=>fitZoom('page'));
+  requestAnimationFrame(()=>{fitZoom('page');requestAnimationFrame(()=>syncPreviewReadingAffordances());});
 }
 const builtInPresets=Object.freeze([
   {id:'editorial',name:'Editorial Bento',description:'Balanced narrative and analytical hierarchy.'},
@@ -3509,7 +3555,9 @@ function wireGlobal(signal) {
   on($('#genericModal'),'submit',(event)=>{if(event.target?.id!=='reuseRemapForm'||!reuseApplyState)return;event.preventDefault();const state=reuseApplyState,plan=planReusableRemap(state.contract,model().datasets,state.selections);if(!plan.ok){renderReuseRemapDialog();return toast('Resolve the highlighted data source and field mapping before applying');}closeModals();if(!commitReusablePreset(state,plan))toast('The reusable preset could not be applied');});
   on($('#inspector'),'click',(e)=>{const suggestion=e.target.closest('[data-suggestion]');if(suggestion)applySuggestion(suggestion.dataset.suggestion);const container=e.target.closest('[data-container-layout]');if(container)return setContainerLayout(container.dataset.containerLayout);const action=e.target.closest('[data-inspector]');if(!action)return;const value=action.dataset.inspector;if(value==='align-left')align('left');else if(value==='align-center')align('center');else if(value==='align-right')align('right');else if(value==='align-top')align('top');else if(value==='align-middle')align('middle');else if(value==='align-bottom')align('bottom');else if(value==='distribute-x')distribute('x');else if(value==='distribute-y')distribute('y');else if(value==='match-width')matchSize('width');else if(value==='match-height')matchSize('height');else if(value==='match-size')matchSize('size');else if(value==='group')groupSelected();else if(value==='ungroup')ungroupSelected();else if(value==='lock')toggleLock();else if(value==='duplicate')duplicateSelected();else if(value==='delete')deleteSelected();});
   const hull=$('#hull'); on(hull,'click',onHullClick);on(hull,'dblclick',onHullDoubleClick);on(hull,'pointerdown',onHullPointerDown);on(hull,'keydown',onHullKeyDown);on($('#editorChromeLayer'),'pointerdown',onHullPointerDown);
-  on(activeRoot,'keydown',(event)=>{if(!ui.preview)return;const region=event.target.closest?.('.table-frame.table-scroll[role="region"]');if(!region)return;const step=Math.max(40,Math.round(region.clientWidth*.8));if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();region.scrollLeft+=event.key==='ArrowRight'?step:-step;}else if(event.key==='Home'||event.key==='End'){event.preventDefault();region.scrollLeft=event.key==='Home'?0:region.scrollWidth;}});
+  on(activeRoot,'scroll',(event)=>{const region=event.target.closest?.('.table-frame.table-scroll[role="region"]');if(region)syncTableScrollAffordance(region);},{capture:true,passive:true});
+  on(activeRoot,'focusin',(event)=>{const region=event.target.closest?.('.table-frame.table-scroll[role="region"]');if(region)syncTableScrollAffordance(region);});
+  on(activeRoot,'keydown',(event)=>{if(!ui.preview)return;const region=event.target.closest?.('.table-frame.table-scroll[role="region"]');if(!region)return;const step=Math.max(40,Math.round(region.clientWidth*.8));if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();region.scrollLeft+=event.key==='ArrowRight'?step:-step;syncTableScrollAffordance(region);}else if(event.key==='Home'||event.key==='End'){event.preventDefault();region.scrollLeft=event.key==='Home'?0:Math.max(0,region.scrollWidth-region.clientWidth);syncTableScrollAffordance(region);}});
   on(hull,'dragover',(e)=>{if(ui.preview)return;e.preventDefault();showDropGhost(e);});on(hull,'dragleave',(e)=>{if(!hull.contains(e.relatedTarget))$('#dropGhost').style.display='none';});on(hull,'drop',(e)=>{if(ui.preview)return;e.preventDefault();$('#dropGhost').style.display='none';const encoded=e.dataTransfer.getData('application/x-viz-element');if(encoded){try{const payload=JSON.parse(encoded);return addLibraryElement(payload.element,payload.engine,logicalPoint(e));}catch{/* fall through */}}const type=e.dataTransfer.getData('application/x-viz-type')||e.dataTransfer.getData('text/plain');if(typeDefaults[type])addComponent(type,logicalPoint(e));});
   on(hull,'mouseover',(e)=>{const node=e.target.closest('[data-point], [data-behavior-point]');if(node)showTip(e,node);});on(hull,'mousemove',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]'))moveTip(e);});on(hull,'mouseout',(e)=>{if(e.target.closest('[data-point], [data-behavior-point]')&&!e.relatedTarget?.closest?.('[data-point], [data-behavior-point]'))hideTip();});
   on($('#cmdInput'),'input',(e)=>{ui.commandIndex=0;renderCommands(e.target.value);}); on($('#cmdInput'),'keydown',(e)=>{const options=$$('[data-command]',$('#cmdList'));if(e.key==='ArrowDown'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex+1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='ArrowUp'){e.preventDefault();ui.commandIndex=clamp(ui.commandIndex-1,0,Math.max(0,options.length-1));renderCommands(e.target.value);}else if(e.key==='Enter'){e.preventDefault();const active=$('[aria-selected="true"]',$('#cmdList'));if(active)executeCommandIndex(+active.dataset.command);}}); on($('#cmdList'),'click',(e)=>{const node=e.target.closest('[data-command]');if(node)executeCommandIndex(+node.dataset.command);});
@@ -3517,7 +3565,7 @@ function wireGlobal(signal) {
   on(window,'keydown',(e)=>{if(e.defaultPrevented)return;if(ui.preview){if(e.key==='Escape'){e.preventDefault();togglePreview();}return;}const tag=document.activeElement?.tagName;const editing=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||document.activeElement?.isContentEditable;if($('.modal.show')){if(e.key==='Escape'){e.preventDefault();cancelPointerSession();closeModals();}return;}if(editing||e.target.closest?.('.q-dialog'))return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='a'&&!editing){e.preventDefault();selectAllComponents();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='d'&&!editing){e.preventDefault();duplicateSelected();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openPalette();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redo():undo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='y'){e.preventDefault();redo();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='c'&&!editing){e.preventDefault();copySemanticSelection(e.shiftKey?'dataset_data':'visual_full');return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='x'&&!editing){e.preventDefault();cutSemanticSelection();return;}if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='v'&&!editing&&ui.semanticClipboard){e.preventDefault();if(ui.semanticClipboard.kind==='composition')pasteSemanticClipboard();else pasteSemanticPayload(ui.semanticClipboard,e.shiftKey?'independent':'auto');return;}if(e.key==='Escape'){cancelPointerSession();if(mobileShell()&&(ui.libraryOpen||ui.inspectorOpen)){setLibrary(false);setInspector(false);return;}if($('.modal.show'))closeModals();else{ui.selected.clear();reconcileCanvas({content:false});renderInspector();}return;}if(editing)return;if(e.code==='Space'){ui.space=true;e.preventDefault();}if(e.key==='Delete'||e.key==='Backspace')deleteSelected();if(e.key.toLowerCase()==='g'&&!e.metaKey&&!e.ctrlKey)groupSelected();if(e.key.toLowerCase()==='l'&&!e.metaKey&&!e.ctrlKey)toggleLock();if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)&&model().mode!=='smart'&&ui.selected.size){e.preventDefault();if(e.altKey){keyboardResizeSelected(e);return;}const step=e.shiftKey?10:1;const dx=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0;const dy=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;const inset=model().mode==='guided'?CANVAS.gap:0;const ops=[...ui.selected].filter((id)=>!item(id).locked).map((id)=>{const entry=item(id);return{op:'item.patch',id,patch:{x:clamp(entry.x+dx,inset,CANVAS.w-inset-entry.w),y:clamp(entry.y+dy,inset,CANVAS.h-inset-entry.h)}};});if(ops.length)commitOps('Nudge selection',ops);}});
   on(window,'keyup',(e)=>{if(e.code==='Space')ui.space=false;});on(window,'blur',()=>{ui.space=false;cancelPointerSession('window-blur');});
   on($('#viewport'),'scroll',()=>{if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
-  on(window,'resize',()=>{if(ui.preview)refreshMobileReaderHeights(window.innerWidth);if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
+  on(window,'resize',()=>{if(ui.preview){refreshMobileReaderHeights(window.innerWidth);requestAnimationFrame(()=>syncPreviewReadingAffordances());}if(ui.selected.size)requestAnimationFrame(()=>renderContext(rectMap()));},{passive:true});
   on(window,'error',(event)=>debugEvent('error','Window error',event.error?.stack||event.message)); on(window,'unhandledrejection',(event)=>debugEvent('error','Unhandled rejection',event.reason?.stack||event.reason));
   on(window,'paste',async(e)=>{if(ui.preview||hasAuthoringTextFocus())return;const image=[...(e.clipboardData?.files||[])].find((file)=>String(file.type||'').startsWith('image/'));if(image){e.preventDefault();try{await pasteImage(image);}catch(err){toast(String(err.message||err));}return;}const text=e.clipboardData?.getData('text/plain');const semantic=semanticPayloadFromText(text);if(semantic&&pasteSemanticPayload(semantic)){e.preventDefault();return;}if(text){e.preventDefault();await handleClipboardText(text);}});
   on(activeRoot,'dragover',(e)=>{if(ui.preview)return;const file=[...(e.dataTransfer?.files||[])][0];if(!file)return;e.preventDefault();e.dataTransfer.dropEffect='copy';});
@@ -3527,7 +3575,7 @@ function wireGlobal(signal) {
 function setupResizeObserver() {
   window.__VIZ_RESIZE_OBSERVER__?.disconnect?.();
   if (typeof ResizeObserver==='undefined'||!$('#viewport')) return;
-  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.preview){refreshMobileReaderHeights(window.innerWidth);fitZoom(ui.previewFit||'page');}else if(ui.autoFit)fitZoom('page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
+  let raf=0; const observer=new ResizeObserver(()=>{ui.resizeEpoch+=1;cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{if(ui.preview){refreshMobileReaderHeights(window.innerWidth);fitZoom(ui.previewFit||'page');requestAnimationFrame(()=>syncPreviewReadingAffordances());}else if(ui.autoFit)fitZoom('page');else renderGeometryOnly();});}); observer.observe($('#viewport')); window.__VIZ_RESIZE_OBSERVER__=observer;
 }
 function buildSelfTest() {
   const result = { smartHull: preflight().coverage === 100, initialOverlaps: preflight().overlaps, revisionSafety: false, undoRedo: false, pointerLifecycle: true, resizeObserver: !!window.__VIZ_RESIZE_OBSERVER__, deterministic: false, noPointerMoveFullRender: true };
