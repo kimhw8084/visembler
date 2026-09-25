@@ -42,7 +42,7 @@ function profile(name, values, index) {
 function headerConfidence(rows) {
   if(rows.length<2) return {present:false,confidence:0,source_row:null};
   const first=rows[0], rest=rows.slice(1,Math.min(rows.length,12)); let score=0;
-  first.forEach((value,index)=>{ const label=String(value??'').trim(), recognized=Object.values(SEMANTIC_ALIASES).some(aliases=>aliases.includes(slug(label))); const below=rest.map(row=>row[index]??''); if(label && !numeric.test(label) && !dateOnly.test(label)) score+=1; if(recognized)score+=1; if(below.some(value=>numeric.test(String(value??'').trim().replace(/[,$€£¥%\s]/g,'')))) score+=1; });
+  first.forEach((value,index)=>{ const label=String(value??'').trim(), tokens=slug(label).split('_').filter(Boolean), recognized=Object.values(SEMANTIC_ALIASES).some(aliases=>aliases.includes(slug(label))||tokens.some(token=>aliases.includes(token))); const below=rest.map(row=>row[index]??''); if(label && !numeric.test(label) && !dateOnly.test(label)) score+=1; if(recognized)score+=1; if(below.some(value=>numeric.test(String(value??'').trim().replace(/[,$€£¥%\s]/g,'')))) score+=1; });
   const confidence=Math.min(1,score/Math.max(1,first.length*2)); return {present:confidence>=.65,confidence,source_row:confidence>=.65?0:null};
 }
 export function intakeText(text) {
