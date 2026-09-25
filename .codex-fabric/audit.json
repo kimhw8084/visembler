@@ -1,0 +1,411 @@
+{
+  "accepted_at": "2026-09-24T22:53:10Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 196,
+      "deletions": 11,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 417,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 3120,
+      "deletions": 0,
+      "path": "tests/fixtures/chg206/whole_report_models.json",
+      "status": "A"
+    },
+    {
+      "additions": 224,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg206_pptx_visible_text.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/visible-text-findings.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/visible-text-findings.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/renderer-provenance.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/renderer-provenance.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/structural-inspection.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/structural-inspection.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks-summary.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks-summary.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/source-changes.patch /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/source-changes.patch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/reader-index.md /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/README.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp -R /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/changed-source /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/focused-export-tests.log /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp -R /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/r2-baseline /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/company-ui-validate.log /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/repository-contracts.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/chg206-pptx-acceptance.log /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/chg179/chg179-semantic-parity.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/chg179/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/chg180/acceptance-receipt.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/chg180/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/verify-release/report.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/verify-release/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/chg181/chg181-native-acceptance.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/chg181/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/verify-release/full-tests.xml /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/verify-release/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/checks/verify-release/logs/full-tests.log /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/checks/verify-release/logs/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp -R /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,json,zipfile\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308')\nmanifest=json.loads((root/'MANIFEST.json').read_text())\nassert hashlib.sha256((root/'MANIFEST.json').read_bytes()).hexdigest()==(root/'MANIFEST.json.sha256').read_text().split()[0]\nfor row in manifest['files']:\n p=root/row['path']; assert p.is_file(),row['path']; assert p.stat().st_size==row['bytes'],row['path']; assert hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256'],row['path']\nassert len(manifest['files'])==759\nz=zipfile.ZipFile(root/'deterministic-bundle.zip')\nassert z.testzip() is None\nassert len(z.namelist())==761, len(z.namelist())\nassert hashlib.sha256((root/'deterministic-bundle.zip').read_bytes()).hexdigest()==(root/'deterministic-bundle.zip.sha256').read_text().split()[0]\nrebuilt=Path('/tmp/chg206-r1-deterministic-rebuild.zip')\nwith zipfile.ZipFile(rebuilt,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9,strict_timestamps=True) as out:\n for p in sorted(root.rglob('*')):\n  if not p.is_file() or p.is_symlink(): continue\n  rel=p.relative_to(root).as_posix()\n  if rel in {'deterministic-bundle.zip','deterministic-bundle.zip.sha256'}: continue\n  info=zipfile.ZipInfo('CHG-206-r1/'+rel,(1980,1,1,0,0,0)); info.create_system=3; info.external_attr=(0o100644<<16); info.compress_type=zipfile.ZIP_DEFLATED\n  out.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)\nh1=hashlib.sha256((root/'deterministic-bundle.zip').read_bytes()).hexdigest(); h2=hashlib.sha256(rebuilt.read_bytes()).hexdigest()\nassert h1==h2,(h1,h2)\nprint(json.dumps({'manifest_entries_verified':len(manifest['files']),'archive_entries':len(z.namelist()),'archive_crc':'PASS','deterministic_rebuild_sha256':h2,'deterministic_rebuild_matches':True},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git show -s --format='%H%n%T%n%P%n%s' HEAD && rtk git diff --name-only 47a988064deac544dfdca360e046a9cb20f5c282...HEAD && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg206-pptx-visible-text-r1 refs/heads/project-os-artifacts/visembler/CHG-206-r1 refs/heads/codex-fabric/evidence/visembler/CHG-206-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 add CHG-206-r1 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 diff --cached --stat && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 commit -m \\\"evidence: package Visembler CHG-206 R1 PowerPoint fix\\\" && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 rev-parse HEAD && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show -s --format='%H %T %P %s' HEAD && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk du -sh /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles && rtk find /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles -type f | rtk wc -l'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,json,zipfile\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308')\nidx=root/'reader-index.md'; text=idx.read_text(); anchor='The actual editable PPTX files are in \"'`powerpoint-acceptance/exports/`; the corresponding PDF conversions are in `powerpoint-acceptance/pptx-review/pdf/`; the 144 dpi Poppler images reviewed at full resolution are in `powerpoint-acceptance/pptx-review/rasters/`.'\"'\ntext=text.replace(anchor,anchor+' Per-report LibreOffice profile state is ephemeral and excluded from the Git carrier/archive; renderer provenance, profile scope and exact commands remain recorded.')\nidx.write_text(text)\nexclude_prefix='powerpoint-acceptance/pptx-review/profiles/'\ndef digest(p): return hashlib.sha256(p.read_bytes()).hexdigest()\nexclude={'MANIFEST.json','MANIFEST.json.sha256','deterministic-bundle.zip','deterministic-bundle.zip.sha256'}\nfiles=[]\nfor p in sorted(root.rglob('*')):\n if not p.is_file() or p.is_symlink(): continue\n rel=p.relative_to(root).as_posix()\n if rel in exclude or rel.startswith(exclude_prefix): continue\n files.append({'path':rel,'sha256':digest(p),'bytes':p.stat().st_size})\nmanifest={'schema':'visembler-chg206-r1-evidence-manifest.v1','project':'visembler','request':'CHG-206-r1','operation':'FIX','fabric_job_id':'CF-335e326a4b753e8a2e6d9e08','source':{'commit':'47a988064deac544dfdca360e046a9cb20f5c282','tree':'d36220e2cf7bd93116765b4f0f1bba19ed682747'},'candidate':{'commit':'7011308605d1d2158849efdbc8aa30a8840cb17e','tree':'d932f22966508ba6fdb630b6f66e1a01818b7b03','parent':'47a988064deac544dfdca360e046a9cb20f5c282','branch':'fix/visembler-chg206-pptx-visible-text-r1'},'immutable_refs':{'source_candidate':'refs/heads/fix/visembler-chg206-pptx-visible-text-r1','artifact_carrier':'refs/heads/project-os-artifacts/visembler/CHG-206-r1','runtime_fabric_evidence':'refs/heads/codex-fabric/evidence/visembler/CHG-206-r1'},'excluded_ephemeral_paths':[{'path':exclude_prefix,'reason':'Per-run LibreOffice user-profile state; signature, version, hash, profile scope and conversion commands are preserved in renderer-provenance.json.'}],'payload_file_count':len(files),'payload_bytes':sum(x['bytes'] for x in files),'files':files}\nmp=root/'MANIFEST.json';mp.write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\\\\n');(root/'MANIFEST.json.sha256').write_text(digest(mp)+'  MANIFEST.json\\\\n')\nzp=root/'deterministic-bundle.zip'\nwith zipfile.ZipFile(zp,'w',compression=zipfile.ZIP_DEFLATED,compresslevel=9,strict_timestamps=True) as z:\n for p in sorted(root.rglob('*')):\n  if not p.is_file() or p.is_symlink(): continue\n  rel=p.relative_to(root).as_posix()\n  if rel in {'deterministic-bundle.zip','deterministic-bundle.zip.sha256'} or rel.startswith(exclude_prefix): continue\n  info=zipfile.ZipInfo('CHG-206-r1/'+rel,(1980,1,1,0,0,0));info.create_system=3;info.external_attr=(0o100644<<16);info.compress_type=zipfile.ZIP_DEFLATED\n  z.writestr(info,p.read_bytes(),compress_type=zipfile.ZIP_DEFLATED,compresslevel=9)\n(root/'deterministic-bundle.zip.sha256').write_text(digest(zp)+'  deterministic-bundle.zip\\\\n')\nprint(json.dumps({'payload_files':len(files),'excluded_ephemeral_files':sum(p.is_file() for p in (root/'powerpoint-acceptance/pptx-review/profiles').rglob('*')),'manifest_sha256':digest(mp),'bundle_sha256':digest(zp),'bundle_bytes':zp.stat().st_size},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 rm -r CHG-206-r1/powerpoint-acceptance/pptx-review/profiles'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/MANIFEST.json /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/MANIFEST.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/deterministic-bundle.zip.sha256 /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/deterministic-bundle.zip.sha256'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/MANIFEST.json.sha256 /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/MANIFEST.json.sha256'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/reader-index.md /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/README.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cp /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/deterministic-bundle.zip /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08/CHG-206-r1/deterministic-bundle.zip'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 add -A CHG-206-r1 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 diff --cached --stat && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 commit --amend --no-edit && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show -s --format='%H %T %P %s' HEAD && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 status --short --branch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin 7011308605d1d2158849efdbc8aa30a8840cb17e:refs/heads/fix/visembler-chg206-pptx-visible-text-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 push origin f4522db8bf9952d35d806dea29ff9d9db7219992:refs/heads/project-os-artifacts/visembler/CHG-206-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg206-pptx-visible-text-r1 refs/heads/project-os-artifacts/visembler/CHG-206-r1 refs/heads/codex-fabric/evidence/visembler/CHG-206-r1 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 fetch --no-tags origin refs/heads/project-os-artifacts/visembler/CHG-206-r1 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show FETCH_HEAD:CHG-206-r1/MANIFEST.json.sha256 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show FETCH_HEAD:CHG-206-r1/reader-index.md'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/bin/projectos-integrate-stdin && rtk find /Users/haewonkim/.codex-fabric/current -maxdepth 2 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,300p' /Users/haewonkim/.codex-fabric/libexec/projectos_integrate.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show -s --format='%H%n%T%n%P%n%s' FETCH_HEAD && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show FETCH_HEAD:CHG-206-r1/README.md && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show FETCH_HEAD:CHG-206-r1/deterministic-bundle.zip.sha256 && rtk git -C /tmp/visembler-chg206-r1-carrier-CF-335e326a4b753e8a2e6d9e08 show FETCH_HEAD:CHG-206-r1/MANIFEST.json.sha256\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\"'^def canonical_job_state|canonical_job_state'\"\\\\(' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '946,970p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\"'^def _git_ref_component'\"' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2723,2744p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport os, subprocess, sys\nscript=Path('/tmp/visembler-chg206-r1-publish-terminal-evidence.py')\nlog=Path('/tmp/visembler-chg206-r1-publish-terminal-evidence.jsonl')\nscript.write_text(r'''import json,subprocess,time\nfrom pathlib import Path\nJOB='CF-335e326a4b753e8a2e6d9e08'\nCLI='/Users/haewonkim/.codex-fabric/bin/fabricctl'\nREPO='/Users/haewonkim/.codex-fabric/repos/visembler'\nLOG=Path('/tmp/visembler-chg206-r1-publish-terminal-evidence.jsonl')\ndef record(obj):\n with LOG.open('a',encoding='utf-8') as f: f.write(json.dumps(obj,sort_keys=True)+'\\\\\\\\n')\ndef invoke(args):\n try: return subprocess.run(['rtk',CLI,*args],cwd=REPO,text=True,capture_output=True,timeout=180)\n except Exception as e: return None\nrecord({'event':'watch_started','job_id':JOB,'expected_ref':'refs/heads/codex-fabric/evidence/visembler/CHG-206-r1','started_at':time.time()})\nterminal=None\nfor n in range(720):\n p=invoke(['status',JOB])\n if p and p.returncode==0:\n  try: status=json.loads(p.stdout)\n  except Exception: status={}\n  state=status.get('job_state')\n  if state and state not in {'RUNNING','UNKNOWN','QUEUED','DISPATCHED'}:\n   terminal=state; break\n time.sleep(5)\nif terminal is None:\n record({'event':'watch_timeout','job_id':JOB,'error':'job did not become terminal within one hour'})\n raise SystemExit(2)\nrecord({'event':'terminal_state_observed','job_id':JOB,'job_state':terminal,'observed_at':time.time()})\nfor attempt in range(1,7):\n p=invoke(['publish-evidence',JOB])\n if p and p.returncode==0:\n  try: result=json.loads(p.stdout)\n  except Exception: result={'stdout':p.stdout[-2000:]}\n  if result.get('published') is True:\n   record({'event':'evidence_published','job_id':JOB,'job_state':terminal,'attempt':attempt,'publication':result,'verified_remote_ref':result.get('ref'),'verified_remote_commit':result.get('commit_sha'),'published_at':time.time()})\n   raise SystemExit(0)\n  error={'returncode':p.returncode,'stdout':p.stdout[-2000:],'stderr':p.stderr[-1000:]}\n else:\n  error={'returncode':p.returncode if p else None,'stdout':p.stdout[-2000:] if p else '', 'stderr':p.stderr[-1000:] if p else 'invoke failed'}\n record({'event':'publication_retry','job_id':JOB,'attempt':attempt,'error':error,'at':time.time()})\n time.sleep(10)\nrecord({'event':'publication_failed','job_id':JOB,'job_state':terminal,'at':time.time()})\nraise SystemExit(3)\n''')\nscript.chmod(0o700)\nfd=log.open('a',encoding='utf-8')\np=subprocess.Popen([sys.executable,str(script)],stdin=subprocess.DEVNULL,stdout=fd,stderr=fd,start_new_session=True,close_fds=True,cwd='/Users/haewonkim/.codex-fabric/repos/visembler')\nfd.close()\nprint(json.dumps({'watcher_pid':p.pid,'script':str(script),'log':str(log),'state':'WAITING_FOR_FABRIC_JOB_TERMINAL'}))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk pgrep -alf visembler-chg206-r1-publish-terminal-evidence && rtk cat /tmp/visembler-chg206-r1-publish-terminal-evidence.jsonl && rtk sed -n '1,20p' /tmp/visembler-chg206-r1-publish-terminal-evidence.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk kill -TERM 73429'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pwd && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg206-pptx-visible-text-r1 refs/heads/project-os-artifacts/visembler/CHG-206-r1 refs/heads/codex-fabric/evidence/visembler/CHG-206-r1 && rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-335e326a4b753e8a2e6d9e08'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nfrom pathlib import Path\nimport os, subprocess, sys\n\njob = \\\"CF-335e326a4b753e8a2e6d9e08\\\"\nfabricctl = \\\"/Users/haewonkim/.codex-fabric/bin/fabricctl\\\"\nwatcher = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence.py\\\")\nlog = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.jsonl\\\")\npidfile = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.pid\\\")\nsource = r'''#\"'!/usr/bin/env python3\nimport json\nimport subprocess\nimport time\nfrom pathlib import Path\n\nJOB = \"CF-335e326a4b753e8a2e6d9e08\"\nFABRICCTL = \"/Users/haewonkim/.codex-fabric/bin/fabricctl\"\nLOG = Path(\"/tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.jsonl\")\nNONTERMINAL = {\"RUNNING\", \"UNKNOWN\", \"QUEUED\", \"DISPATCHED\", \"STARTING\", \"ACCEPTED\", \"CREATED\", \"WAITING\", \"PENDING\"}\n\ndef record(obj):\n    with LOG.open(\"a\", encoding=\"utf-8\") as stream:\n        stream.write(json.dumps(obj, sort_keys=True) + \"'\"\\\\\\\\n\\\")\n\ndef call(*args):\n    return subprocess.run([\\\"rtk\\\", FABRICCTL, *args], text=True, capture_output=True, check=False)\n\nwhile True:\n    result = call(\\\"status\\\", JOB)\n    try:\n        status = json.loads(result.stdout)\n        state = str(status.get(\\\"job_state\\\", \\\"UNKNOWN\\\")).upper()\n    except Exception:\n        state = \\\"UNKNOWN\\\"\n        status = {\\\"stdout\\\": result.stdout, \\\"stderr\\\": result.stderr, \\\"returncode\\\": result.returncode}\n    record({\\\"phase\\\": \\\"status\\\", \\\"state\\\": state, \\\"returncode\\\": result.returncode, \\\"status\\\": status})\n    if result.returncode == 0 and state not in NONTERMINAL:\n        break\n    time.sleep(5)\n\nfor attempt in range(1, 13):\n    published = call(\\\"publish-evidence\\\", JOB)\n    record({\\\"phase\\\": \\\"publish-evidence\\\", \\\"attempt\\\": attempt, \\\"returncode\\\": published.returncode, \\\"stdout\\\": published.stdout, \\\"stderr\\\": published.stderr})\n    if published.returncode == 0:\n        break\n    time.sleep(8)\n'''\nwatcher.write_text(source, encoding=\\\"utf-8\\\")\nwatcher.chmod(0o700)\n# Inspect the generated newline expression before launching.\ntext = watcher.read_text(encoding=\\\"utf-8\\\")\nassert 'stream.write(json.dumps(obj, sort_keys=True) + \\\"\\\\\\\\n\\\")' in text\nwith log.open(\\\"w\\\", encoding=\\\"utf-8\\\") as stream:\n    stream.write(\\\"\\\")\nproc = subprocess.Popen([sys.executable, str(watcher)], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)\npidfile.write_text(str(proc.pid) + \\\"\\\\n\\\", encoding=\\\"utf-8\\\")\nprint(f\\\"watcher_pid={proc.pid}\\\")\nprint(f\\\"watcher={watcher}\\\")\nprint(f\\\"log={log}\\\")\nPY\nrtk sed -n '1,36p' /tmp/visembler-chg206-r1-publish-terminal-evidence.py\nrtk cat /tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.pid\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nfrom pathlib import Path\nimport subprocess, sys\n\nwatcher = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence.py\\\")\nlog = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.jsonl\\\")\npidfile = Path(\\\"/tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.pid\\\")\nsource = watcher.read_text(encoding=\\\"utf-8\\\")\nslash = chr(92)\nwrong = 'stream.write(json.dumps(obj, sort_keys=True) + \\\"' + slash * 2 + 'n\\\")'\nright = 'stream.write(json.dumps(obj, sort_keys=True) + \\\"' + slash + 'n\\\")'\nassert wrong in source\nsource = source.replace(wrong, right)\nwatcher.write_text(source, encoding=\\\"utf-8\\\")\nwatcher.chmod(0o700)\ncheck = watcher.read_text(encoding=\\\"utf-8\\\")\nassert right in check and wrong not in check\nwith log.open(\\\"w\\\", encoding=\\\"utf-8\\\") as stream:\n    stream.write(\\\"\\\")\nproc = subprocess.Popen([sys.executable, str(watcher)], stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True, close_fds=True)\npidfile.write_text(str(proc.pid) + \\\"\\\\n\\\", encoding=\\\"utf-8\\\")\nprint(f\\\"watcher_pid={proc.pid}\\\")\nprint(f\\\"watcher={watcher}\\\")\nprint(f\\\"log={log}\\\")\nPY\nrtk sed -n '1,18p' /tmp/visembler-chg206-r1-publish-terminal-evidence.py\nrtk cat /tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.pid\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-335e326a4b753e8a2e6d9e08 && rtk cat /tmp/visembler-chg206-r1-publish-terminal-evidence-attempt2.jsonl && rtk ps -p 82473 -o pid=,stat=,command='",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python3 - <<'PY'\nfrom pathlib import Path\nimport hashlib, json, zipfile\nroot = Path('/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308')\nmanifest = json.loads((root/'MANIFEST.json').read_text())\nbundle = root/'deterministic-bundle.zip'\nsha = hashlib.sha256(bundle.read_bytes()).hexdigest()\nexpected = (root/'deterministic-bundle.zip.sha256').read_text().split()[0]\nwith zipfile.ZipFile(bundle) as z:\n    bad = z.testzip()\nprint(json.dumps({'manifest_entries':len(manifest.get('files',[])), 'bundle_bytes':bundle.stat().st_size, 'bundle_sha256':sha, 'sidecar_matches':sha==expected, 'zip_crc_check':bad or 'PASS'}, sort_keys=True))\nPY\nrtk git status --short --branch\nrtk git show -s --format='%H %T %P' HEAD\nrtk git remote -v\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/reproduction-root-cause.json && rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/acceptance-receipt.json && rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/artifact-bridge-status.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 1062,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.17,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 65302144,
+      "fresh_input_tokens": 1215774,
+      "input_tokens": 66517918,
+      "non_reasoning_output_tokens": 124609,
+      "output_tokens": 332482,
+      "reasoning_output_tokens": 207873,
+      "total_processed_tokens": 66850400
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+      "subject": "fix(visembler): make exported report text render reliably"
+    }
+  ],
+  "diff": {
+    "additions": 3962,
+    "changed_files": 5,
+    "commit_count": 1,
+    "deletions": 16
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "18e1a3f5df757d8ec2d4c519a7243f166255c8fdb7282c91e8af7e229771d638"
+      },
+      {
+        "bytes": 88411,
+        "path": "tests/fixtures/chg206/whole_report_models.json",
+        "sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-25T01:15:29Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+    "branch": "fix/visembler-chg206-pptx-visible-text-r1",
+    "detached_verify": false,
+    "head_sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+    "remote_exact_head": true,
+    "remote_head_sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "47a988064deac544dfdca360e046a9cb20f5c282",
+    "work_branch": "fix/visembler-chg206-pptx-visible-text-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-335e326a4b753e8a2e6d9e08",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-206-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-206-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-206-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-24T22:53:10Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 8539,
+    "queue_seconds": 0,
+    "total_seconds": 8539
+  },
+  "transport": {
+    "bytes": 6998,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 6698,
+    "prompt_sha256": "0f1f38de0b12948aa6c2bde25bfc76de45c48e7805398ed6eaeb71889ec3686d",
+    "sha256": "335e326a4b753e8a2e6d9e08c4c5eb7af88717b9f8134812288357a42d9aac92"
+  }
+}
