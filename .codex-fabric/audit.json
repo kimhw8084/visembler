@@ -1,0 +1,458 @@
+{
+  "accepted_at": "2026-09-25T19:48:51Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 215,
+      "deletions": 24,
+      "path": "company_ui/products/visualizer/assets/authoring_composition.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 29,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 57,
+      "deletions": 14,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/domain.py",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/vendor/production_core/core/editor_store.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 545,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg209_visual_director_matrix.py",
+      "status": "A"
+    },
+    {
+      "additions": 257,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg209_visual_director.py",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "tests/test_visualizer_final_visual_remediation.py",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "tests/test_visualizer_wave6_preset_library_ux.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && cat /Users/haewonkim/.codex/RTK.md && cat /Users/haewonkim/.codex/law.md && cat company_ui/ai/construction_manifest.json 2>/dev/null || true && git status --short --branch && git remote -v && git show -s --format='%H %T %P' HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git fetch origin main'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /tmp/chg209-carrier-9be45ba'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show-ref | rtk proxy rg 'visembler/CHG-209|visembler-chg209'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git rev-parse origin/main && rtk git show -s --format='%H %T' origin/main\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse build/visembler-chg209-art-direction-r1 verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git cat-file -e 9be45ba677875a54f1e9a3d488e53c483e879336''^{commit} && rtk git show -s --format='\"'%H %T %P' 9be45ba677875a54f1e9a3d488e53c483e879336 && rtk git merge-base --is-ancestor 57967b84084140e30b06276469a1beedd322ec67 9be45ba677875a54f1e9a3d488e53c483e879336\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-209-r1 refs/heads/project-os-artifacts/visembler/CHG-209-r2 refs/heads/codex-fabric/evidence/visembler/CHG-209-r1 refs/heads/codex-fabric/evidence/visembler/CHG-209-r2 refs/heads/verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-tree --name-only refs/heads/project-os-artifacts/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show refs/heads/project-os-artifacts/visembler/CHG-209-r1:carrier-manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show refs/heads/project-os-artifacts/visembler/CHG-209-r1:identity.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show refs/heads/project-os-artifacts/visembler/CHG-209-r1:reader/INDEX.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show 3208920a7ee69f927dc302c893b90e38d1083f97:.codex-fabric/audit.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show -s --format='%H %T %P' refs/heads/project-os-artifacts/visembler/CHG-209-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git archive refs/heads/project-os-artifacts/visembler/CHG-209-r1 | rtk proxy tar -x -C /tmp'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json, subprocess, hashlib, struct, sys\ncommit='refs/heads/project-os-artifacts/visembler/CHG-209-r1'\ndef show(path):\n    p=subprocess.run(['rtk','git','show',f'{commit}:{path}'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n    if p.returncode: raise RuntimeError(path+': '+p.stderr.decode(errors='replace'))\n    return p.stdout\nmanifest=json.loads(show('carrier-manifest.json'))\nidentity=json.loads(show('identity.json'))\nexpected={\n 'project':'visembler','request':'CHG-209-r1','operation':'BUILD','job':'CF-7d157abafc298218c63ae72e',\n 'authoritative_base':{'sha':'57967b84084140e30b06276469a1beedd322ec67','tree':'54bed4c474db5da055eae508fbb5a302f97a0334'},\n 'candidate':{'sha':'9be45ba677875a54f1e9a3d488e53c483e879336','tree':'08719bb4afbe3c508cb296a4505001e36141cd4e'}\n}\nchecks=[]\nfor k,v in expected.items(): checks.append((f'identity.{k}', identity.get(k)==v))\nfail=[]; total=0\nfor item in manifest['artifacts']:\n    data=show(item['path']); total += len(data)\n    actual=hashlib.sha256(data).hexdigest()\n    if len(data)\"'!=item['\"'bytes'] or actual\"'!=item['\"'sha256']:\n        fail.append({'path':item['path'],'bytes':len(data),'expected_bytes':item['bytes'],'sha256':actual,'expected_sha256':item['sha256']})\nchecks += [('manifest count',manifest.get('artifact_count')==len(manifest['artifacts'])),('manifest hash disagreements',len(fail)==0)]\nrequired=[\n 'reader/INDEX.md','direction/rule-profile-inventory.json','direction/anti-special-case-proof.json',\n 'scenes/per-scene-decisions.json','browser/matrix-receipt-base.json','browser/matrix-receipt-candidate.json',\n 'browser/dom-geometry-accessibility.json','user-control/reversibility.json',\n 'semantics/source-data-reuse-immutability.json','exports/export-regression-base.json',\n 'exports/export-regression-candidate.json','exports/export-regression-summary.json',\n 'native-release/report.json','native-release/binding.json','tests/focused-and-native-summary.json',\n 'visual/screenshot-inventory.json','visual/contact-sheets/desktop-1440-base-v-candidate.png',\n 'visual/contact-sheets/narrow-390-base-v-candidate.png','visual/contact-sheets/narrow-320-dense-base-v-candidate.png'\n]\npaths={x['path'] for x in manifest['artifacts']}\nchecks += [('required package files',all(p in paths for p in required))]\npngs=[x['path'] for x in manifest['artifacts'] if x['path'].endswith('.png')]\npng_results={}\nfor path in pngs:\n    data=show(path)\n    ok=data[:8]==b'\\\\x89PNG\\\\r\\\\n\\\\x1a\\\\n' and data[12:16]==b'IHDR'\n    dims=struct.unpack('>II',data[16:24]) if ok else None\n    png_results[path]={'signature_ihdr':ok,'dimensions':dims}\nfirst=png_results[pngs[0]] if pngs else None\n# Read retained summaries and surface specific matrix counts/claims.\nfor path in ['tests/focused-and-native-summary.json','native-release/report.json','visual/screenshot-inventory.json']:\n    d=json.loads(show(path))\n    print('SUMMARY',path,json.dumps(d,ensure_ascii=False)[:7000])\nprint('IDENTITY_CHECKS',json.dumps(checks))\nprint('HASH_DISAGREEMENTS',json.dumps(fail))\nprint('MANIFEST',json.dumps({'sha256':hashlib.sha256(show('carrier-manifest.json')).hexdigest(),'file_count':len(manifest['artifacts']),'manifest_artifact_bytes':total,'manifest_file_bytes':sum(x['bytes'] for x in manifest['artifacts']),'png_count':len(pngs)}))\nprint('PNG_SAMPLE',json.dumps({'path':pngs[0] if pngs else None,**(first or {})}))\nprint('PNG_ALL_VALID',all(x['signature_ihdr'] and x['dimensions'][0]>0 and x['dimensions'][1]>0 for x in png_results.values()))\nprint('PNG_PATHS',json.dumps(pngs))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json, subprocess, hashlib, struct, collections\ncommit='refs/heads/project-os-artifacts/visembler/CHG-209-r1'\ndef show(path):\n    p=subprocess.run(['rtk','proxy','git','show',f'{commit}:{path}'],stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n    if p.returncode: raise RuntimeError(path+': '+p.stderr.decode(errors='replace'))\n    return p.stdout\nmanifest_bytes=show('carrier-manifest.json')\nmanifest=json.loads(manifest_bytes)\nidentity=json.loads(show('identity.json'))\nexpected={\n 'project':'visembler','request':'CHG-209-r1','operation':'BUILD','job':'CF-7d157abafc298218c63ae72e',\n 'authoritative_base':{'sha':'57967b84084140e30b06276469a1beedd322ec67','tree':'54bed4c474db5da055eae508fbb5a302f97a0334'},\n 'candidate':{'sha':'9be45ba677875a54f1e9a3d488e53c483e879336','tree':'08719bb4afbe3c508cb296a4505001e36141cd4e'}\n}\nchecks=[]\nfor k,v in expected.items():\n    actual=identity.get(k)\n    ok=(actual==v) if not isinstance(v,dict) else all(actual.get(x)==y for x,y in v.items())\n    checks.append((f'identity.{k}',ok))\nfail=[]; total=0\nfor item in manifest['artifacts']:\n    data=show(item['path']); total += len(data)\n    actual=hashlib.sha256(data).hexdigest()\n    if len(data)\"'!=item['\"'bytes'] or actual\"'!=item['\"'sha256']:\n        fail.append({'path':item['path'],'bytes':len(data),'expected_bytes':item['bytes'],'sha256':actual,'expected_sha256':item['sha256']})\nchecks += [('manifest count',manifest.get('artifact_count')==len(manifest['artifacts'])),('manifest hash disagreements',len(fail)==0)]\nrequired=[\n 'reader/INDEX.md','direction/rule-profile-inventory.json','direction/anti-special-case-proof.json',\n 'scenes/per-scene-decisions.json','browser/matrix-receipt-base.json','browser/matrix-receipt-candidate.json',\n 'browser/dom-geometry-accessibility.json','user-control/reversibility.json',\n 'semantics/source-data-reuse-immutability.json','exports/export-regression-base.json',\n 'exports/export-regression-candidate.json','exports/export-regression-summary.json',\n 'native-release/report.json','native-release/binding.json','tests/focused-and-native-summary.json',\n 'visual/screenshot-inventory.json','visual/contact-sheets/desktop-1440-base-v-candidate.png',\n 'visual/contact-sheets/narrow-390-base-v-candidate.png','visual/contact-sheets/narrow-320-dense-base-v-candidate.png'\n]\npaths={x['path'] for x in manifest['artifacts']}\nchecks += [('required package files',all(p in paths for p in required))]\ninv=json.loads(show('visual/screenshot-inventory.json'))\nby=collections.defaultdict(collections.Counter)\nfor item in inv['screenshots']:\n    by[item['side']][item['scene']+'|'+item['path'].split('/')[-1]]+=1\ninventory_counts={}\nfor side in ('base','candidate'):\n    entries=[x for x in inv['screenshots'] if x['side']==side]\n    inventory_counts[side]={\n      'desktop_scene_count':sum(x['path'].endswith('/desktop-1440.png') for x in entries),\n      'narrow_390_scene_count':sum(x['path'].endswith('/narrow-390.png') for x in entries),\n      'narrow_320':sorted(x['scene'] for x in entries if x['path'].endswith('/narrow-320.png'))}\nchecks += [('six desktop and six 390 per side',all(inventory_counts[s]['desktop_scene_count']==6 and inventory_counts[s]['narrow_390_scene_count']==6 for s in ('base','candidate'))),\n ('320 D/E per side',all(inventory_counts[s]['narrow_320']==['D-technical','E-holdout-mixed'] for s in ('base','candidate'))),\n ('no human-preference claim withheld', 'human preference' in identity.get('claims_withheld',[]))]\npngs=[x['path'] for x in manifest['artifacts'] if x['path'].endswith('.png')]\npng_results={}\nfor path in pngs:\n    data=show(path)\n    ok=data[:8]==b'\\\\x89PNG\\\\r\\\\n\\\\x1a\\\\n' and data[12:16]==b'IHDR'\n    dims=struct.unpack('>II',data[16:24]) if ok else None\n    png_results[path]={'ok':ok,'dimensions':dims}\nchecks += [('all PNG signatures/dimensions',all(x['ok'] and x['dimensions'][0]>0 and x['dimensions'][1]>0 for x in png_results.values()))]\nsummary=json.loads(show('tests/focused-and-native-summary.json'))\nprint('CHECKS',json.dumps(checks))\nprint('HASH_DISAGREEMENTS',json.dumps(fail))\nprint('MANIFEST',json.dumps({'sha256':hashlib.sha256(manifest_bytes).hexdigest(),'file_count':len(manifest['artifacts']),'manifest_artifact_bytes':total,'listed_bytes_sum':sum(x['bytes'] for x in manifest['artifacts']),'png_count':len(pngs)}))\nprint('INVENTORY_COUNTS',json.dumps(inventory_counts))\nprint('SUMMARY_CLAIMS',json.dumps({'candidate_sha':summary.get('candidate_sha'),'native_release_status':summary.get('native_release_status'),'all_required_gates_passed':summary.get('all_required_gates_passed'),'full_pytest':summary.get('full_pytest'),'identity_claims_withheld':identity.get('claims_withheld')}))\nprint('PNG_SAMPLE',json.dumps({'path':pngs[0],'dimensions':png_results[pngs[0]]['dimensions'],'bytes':len(show(pngs[0]))}))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1427,
+        "output_sha256": "b0ca6089df87d8cf667e58296c397fe30f802c992ab11819dbee1f0189470b4b",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la .codex-fabric'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import os; print(\\\"\\\\n\\\".join(k for k in os.environ if any(t in k.lower() for t in (\\\"fabric\\\",\\\"job_id\\\",\\\"jobid\\\"))))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy command -v codex-fabric; rtk proxy command -v fabric; rtk proxy command -v codex'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git reset --hard 9be45ba677875a54f1e9a3d488e53c483e879336'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json, subprocess, os\nrepo='.'\ncandidate='9be45ba677875a54f1e9a3d488e53c483e879336'\nr1_ref='refs/heads/project-os-artifacts/visembler/CHG-209-r1'\nr1_commit='0d4f753cc90e911332c2654286468fafb26c1afe'\nr2_ref='refs/heads/project-os-artifacts/visembler/CHG-209-r2'\nmanifest_sha='4cdcacabd20f99578dc5ae0b40c9a96dffb47c4d076e40fb57fbb1ee2e20c779'\nreceipt={\n 'schema_version':1,\n 'r2':{'request':'CHG-209-r2','job':'CF-83ace3c2628d81917a6a8f68','operation':'VERIFY'},\n 'r1':{'request':'CHG-209-r1','job':'CF-7d157abafc298218c63ae72e','candidate':candidate,'candidate_tree':'08719bb4afbe3c508cb296a4505001e36141cd4e'},\n 'recovery_source':{'kind':'existing_local_git_carrier_ref','ref':r1_ref,'commit':r1_commit},\n 'r1_remote_artifact_ref':{'ref':'refs/heads/project-os-artifacts/visembler/CHG-209-r1','state_before_recovery':'absent'},\n 'scope':{'product_changed':False,'browser_recapture':False},\n 'recovered_package':{'manifest_path':'carrier-manifest.json','manifest_sha256':manifest_sha,'manifest_file_count':53,'manifest_listed_bytes':7007443},\n 'r2_remote_carrier':{'ref':r2_ref,'commit':'this containing carrier commit; resolve its SHA from the named remote ref'},\n 'remote_readback_verification':{'result_at_receipt_creation':'PENDING_POST_PUSH','required':'verify manifest and all 53 listed blobs; read three comparison contact sheets and one candidate canonical PNG through GitHub'}\n}\ndef git(*args, input=None, env=None):\n p=subprocess.run(['rtk','proxy','git',*args],input=input,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)\n if p.returncode: raise SystemExit(p.stderr.decode(errors='replace'))\n return p.stdout.decode().strip()\nblob=git('hash-object','-w','--stdin',input=(json.dumps(receipt,indent=2,ensure_ascii=False)+'\\\\n').encode())\nindex='/tmp/chg209-r2-evidence-recovery-index'\nenv=os.environ.copy(); env['GIT_INDEX_FILE']=index\ngit('read-tree','56803bbcd164e8523db112557c4b2e8897a005d6',env=env)\ngit('update-index','--add','--cacheinfo',f'100644,{blob},recovery/transport-recovery.json',env=env)\ntree=git('write-tree',env=env)\ncommit=git('commit-tree',tree,'-p',candidate,'-m','CHG-209 R2 recovered R1 evidence carrier')\ngit('update-ref',f'refs/heads/project-os-artifacts/visembler/CHG-209-r2',commit,'0000000000000000000000000000000000000000')\nprint(json.dumps({'receipt_blob':blob,'tree':tree,'commit':commit,'ref':r2_ref},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD refs/heads/verify/visembler-chg209-evidence-recovery-r2 && rtk git diff --quiet 9be45ba677875a54f1e9a3d488e53c483e879336 refs/heads/verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show -s --format='%H %T %P' refs/heads/project-os-artifacts/visembler/CHG-209-r2 && rtk git diff-tree --no-commit-id --name-status -r 0d4f753cc90e911332c2654286468fafb26c1afe refs/heads/project-os-artifacts/visembler/CHG-209-r2\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-209-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin e52ad45ce4a4b879f54d9a8b6acdeef231d2c999:refs/heads/project-os-artifacts/visembler/CHG-209-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git fetch origin refs/heads/project-os-artifacts/visembler/CHG-209-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json, subprocess, hashlib, sys\nref='refs/heads/project-os-artifacts/visembler/CHG-209-r2'\nexpected_commit='e52ad45ce4a4b879f54d9a8b6acdeef231d2c999'\nexpected_parent='9be45ba677875a54f1e9a3d488e53c483e879336'\ndef git(*args):\n p=subprocess.run(['rtk','proxy','git',*args],stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n if p.returncode: raise RuntimeError(p.stderr.decode(errors='replace'))\n return p.stdout\nremote=subprocess.run(['rtk','git','ls-remote','origin',ref],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,check=True).stdout.strip()\nif remote.split()[0] \"'!= expected_commit: raise SystemExit('\"'remote ref mismatch: '+remote)\ncommitline=git('show','-s','--format=%H %T %P',ref).decode().strip().split()\nif len(commitline)\"'!=3 or commitline[0]!=expected_commit or commitline[2]!=expected_parent: raise SystemExit('\"'carrier commit identity/parent mismatch: '+str(commitline))\ndef show(path): return git('show',f'{ref}:{path}')\nmanifest_bytes=show('carrier-manifest.json')\nmanifest=json.loads(manifest_bytes)\nfail=[]\nfor item in manifest['artifacts']:\n data=show(item['path'])\n got=hashlib.sha256(data).hexdigest()\n if len(data)\"'!=item['\"'bytes'] or got\"'!=item['\"'sha256']: fail.append(item['path'])\nif fail: raise SystemExit('manifest blob verification failures: '+repr(fail))\nidentity=json.loads(show('identity.json'))\nif identity['project']\"'!='\"'visembler' or identity['request']\"'!='\"'CHG-209-r1' or identity['operation']\"'!='\"'BUILD' or identity['job']\"'!='\"'CF-7d157abafc298218c63ae72e': raise SystemExit('identity mismatch')\nif identity['authoritative_base']['sha']\"'!='\"'57967b84084140e30b06276469a1beedd322ec67' or identity['candidate']['sha']\"'!=expected_parent or identity['\"'candidate']['tree']\"'!='\"'08719bb4afbe3c508cb296a4505001e36141cd4e': raise SystemExit('candidate identity mismatch')\npaths=set(git('ls-tree','-r','--name-only',ref).decode().splitlines())\nexpected_paths={x['path'] for x in manifest['artifacts']}|{'carrier-manifest.json','recovery/transport-recovery.json'}\nif paths\"'!=expected_paths: raise SystemExit('\"'unexpected carrier paths or missing package file: '+repr(sorted(paths\"'^expected_paths)))\nreceipt=json.loads(show('\"'recovery/transport-recovery.json'))\nif receipt['recovered_package']['manifest_sha256']\"'!=hashlib.sha256(manifest_bytes).hexdigest(): raise SystemExit('\"'recovery receipt manifest hash mismatch')\nif receipt['remote_readback_verification']['result_at_receipt_creation']\"'!='\"'PENDING_POST_PUSH': raise SystemExit('unexpected receipt readback field')\nprint(json.dumps({'remote_ref':ref,'remote_commit':remote.split()[0],'tree':commitline[1],'sole_parent':commitline[2],'manifest_hash':hashlib.sha256(manifest_bytes).hexdigest(),'manifest_file_count':len(manifest['artifacts']),'manifest_listed_bytes':sum(x['bytes'] for x in manifest['artifacts']),'all_manifest_blobs_verified':True,'extra_carrier_paths':sorted(paths-{x['path'] for x in manifest['artifacts']}-{'carrier-manifest.json'}),'identity_verified':True,'reader_available':bool(show('reader/INDEX.md')),'recovery_receipt_verified':True},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse refs/heads/project-os-artifacts/visembler/CHG-209-r2:visual/contact-sheets/desktop-1440-base-v-candidate.png refs/heads/project-os-artifacts/visembler/CHG-209-r2:visual/contact-sheets/narrow-390-base-v-candidate.png refs/heads/project-os-artifacts/visembler/CHG-209-r2:visual/contact-sheets/narrow-320-dense-base-v-candidate.png refs/heads/project-os-artifacts/visembler/CHG-209-r2:visual/candidate/scenes/A-executive/screenshots/desktop-1440.png'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/build/visembler-chg209-art-direction-r1 refs/heads/codex-fabric/evidence/visembler/CHG-209-r1 refs/heads/codex-fabric/evidence/visembler/CHG-209-r2 refs/heads/project-os-artifacts/visembler/CHG-209-r1 refs/heads/project-os-artifacts/visembler/CHG-209-r2 refs/heads/verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy codex --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg --files | rtk proxy rg -i 'fabric|audit|evidence|project.?os|atlas'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n -i 'Golden Visual Atlas Evidence Publisher|Evidence Publisher.*Recovery|project.?os.*evidence' /Users/haewonkim/.codex /Users/haewonkim/.codex-fabric --glob '*.md' --glob '*.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /Users/haewonkim/.codex-fabric/jobs/CF-83ace3c2628d81917a6a8f68 /Users/haewonkim/.codex-fabric/results/CF-83ace3c2628d81917a6a8f68 /Users/haewonkim/.codex-fabric/worktrees/CF-83ace3c2628d81917a6a8f68-evidence'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /Users/haewonkim/.codex-fabric && rtk proxy ls -la /Users/haewonkim/.codex-fabric/jobs | rtk proxy tail -20'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /Users/haewonkim/.codex-fabric/bin /Users/haewonkim/.codex-fabric/current/bin /Users/haewonkim/.codex-fabric/codex-runtime'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /Users/haewonkim/.codex-fabric/bin/fabricctl'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /Users/haewonkim/.codex-fabric/codex-runtime/CF-83ace3c2628d81917a6a8f68'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rg --files /Users/haewonkim/.codex-fabric/codex-runtime/CF-83ace3c2628d81917a6a8f68'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'publish-evidence|def publish_evidence|publish_evidence' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '3030,3098p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-83ace3c2628d81917a6a8f68'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-83ace3c2628d81917a6a8f68'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git show -s --format='%H %T %P' HEAD && rtk git show -s --format='%H %T %P' refs/heads/project-os-artifacts/visembler/CHG-209-r2 && rtk git diff --name-status 9be45ba677875a54f1e9a3d488e53c483e879336 refs/heads/verify/visembler-chg209-evidence-recovery-r2\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/build/visembler-chg209-art-direction-r1 refs/heads/codex-fabric/evidence/visembler/CHG-209-r1 refs/heads/codex-fabric/evidence/visembler/CHG-209-r2 refs/heads/project-os-artifacts/visembler/CHG-209-r1 refs/heads/project-os-artifacts/visembler/CHG-209-r2 refs/heads/verify/visembler-chg209-evidence-recovery-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 130,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 95.33,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 2610688,
+      "fresh_input_tokens": 127774,
+      "input_tokens": 2738462,
+      "non_reasoning_output_tokens": 11774,
+      "output_tokens": 41708,
+      "reasoning_output_tokens": 29934,
+      "total_processed_tokens": 2780170
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+      "subject": "Synchronize history lifecycle acceptance"
+    },
+    {
+      "sha": "9719125bf253c2e79ef87d983c10fae324292af1",
+      "subject": "Keep narrow decision evidence readable"
+    },
+    {
+      "sha": "383ec13470354bc15e7a79340e51094cd98afce8",
+      "subject": "Build semantic whole-report visual direction"
+    },
+    {
+      "sha": "4014ec25d76f3da20132e1db7e4f29dc7af1b8fa",
+      "subject": "Build task-grounded whole-report visual direction"
+    }
+  ],
+  "diff": {
+    "additions": 1135,
+    "changed_files": 12,
+    "commit_count": 4,
+    "deletions": 49
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "beee6de89439b74fdfe160b748764bfcbf6b209efdbd49ff825ed50b197be7b3"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-25T20:05:58Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "57967b84084140e30b06276469a1beedd322ec67",
+    "branch": "verify/visembler-chg209-evidence-recovery-r2",
+    "detached_verify": false,
+    "head_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+    "remote_exact_head": true,
+    "remote_head_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "57967b84084140e30b06276469a1beedd322ec67",
+    "work_branch": "verify/visembler-chg209-evidence-recovery-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-83ace3c2628d81917a6a8f68",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-209-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-209-r2"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-209-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-25T19:48:51Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1027,
+    "queue_seconds": 0,
+    "total_seconds": 1027
+  },
+  "transport": {
+    "bytes": 10301,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 9995,
+    "prompt_sha256": "f7d445b728d618fe23621db7173770085e072f8b4ca1f934bb56ddb1fc6e51db",
+    "sha256": "83ace3c2628d81917a6a8f6879657d729047fd8b87b16d76aa0f8b4d95251747"
+  }
+}
