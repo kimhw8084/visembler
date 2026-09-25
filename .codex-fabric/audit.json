@@ -1,0 +1,406 @@
+{
+  "accepted_at": "2026-09-25T13:09:01Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 82,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 4,
+      "path": "company_ui/products/visualizer/assets/authoring_preview.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 22,
+      "deletions": 10,
+      "path": "company_ui/products/visualizer/assets/element_renderer.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 55,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 54,
+      "deletions": 6,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_chg181_authoring_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 528,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg207_narrow_reading_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": null,
+      "deletions": null,
+      "path": "tests/fixtures/chg207/chg173-r2-supply-chain-reading-320-before.png",
+      "status": "A"
+    },
+    {
+      "additions": 142,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg207_narrow_reading.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"pwd && git status --short --branch && git remote -v && git branch --list 'fix/visembler-chg207-narrow-reading-r1' 'verify/visembler-chg207-evidence-bind-r2' && git show-ref | rg 'visembler/CHG-207-(r1|r2)|visembler-chg207' || true && cat /Users/haewonkim/.codex/RTK.md && cat /Users/haewonkim/.codex/law.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git fetch origin main '+refs/heads/project-os-artifacts/visembler/CHG-207-r1:refs/remotes/origin/project-os-artifacts/visembler/CHG-207-r1' '+refs/heads/codex-fabric/evidence/visembler/CHG-207-r1:refs/remotes/origin/codex-fabric/evidence/visembler/CHG-207-r1' && rtk git status --short --branch && rtk git show -s --format='%H%n%T%n%P' origin/main && rtk git show -s --format='%H%n%T%n%P' 07011f61938510a525f8f9a1e747a3e1817520da && rtk git show -s --format='%H%n%T%n%P' d4e620decff7d0f885321648a58bd827654c1ab5 && rtk git merge-base --is-ancestor 5dfdd5eba77a45b63aa2e5290cb7609a573e9efc 07011f61938510a525f8f9a1e747a3e1817520da; printf 'ancestor_exit=%s\\\\n' \\\"\"'$?\"; rtk git ls-tree -r --name-only d4e620decff7d0f885321648a58bd827654c1ab5 -- .codex-fabric/audit.json; rtk git ls-remote --heads origin '\"'project-os-artifacts/visembler/CHG-207-r2' 'codex-fabric/evidence/visembler/CHG-207-r2' 'verify/visembler-chg207-evidence-bind-r2' 'main'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sh -c 'env | cut -d= -f1 | sort | rg -i \\\"fabric|codex|job|project\\\" || true; command -v fabric || true; command -v codex-fabric || true; command -v project-os || true; command -v rtk || true'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la && rtk rg --files -g '*fabric*' -g '*project*os*' -g 'AGENTS.md' -g 'README*' -g 'pyproject.toml' -g 'package.json' . | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-remote --heads origin 'fix/visembler-chg207-narrow-reading-r1' 'project-os-artifacts/visembler/CHG-207-r1' 'codex-fabric/evidence/visembler/CHG-207-r1' 'verify/visembler-chg207-evidence-bind-r2' 'project-os-artifacts/visembler/CHG-207-r2' 'codex-fabric/evidence/visembler/CHG-207-r2'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sh -c 'ls -1 /Users/haewonkim/.local/bin | rg -i \\\"fabric|codex|project|evidence\\\" || true; ls -1 /Users/haewonkim/.codex-fabric 2>/dev/null | head -80'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sh -c 'git config --local --list --show-origin | rg -i \\\"fabric|project|branch|remote\\\" || true; git worktree list --porcelain'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sh -c 'find /Users/haewonkim/.codex-fabric -maxdepth 4 -type f 2>/dev/null | rg -i \\\"(job|manifest|audit|artifact|fabric|project.os)\\\" | head -100'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/bin'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-031dc32e97627093c417937e && rtk find /Users/haewonkim/.codex-fabric/jobs/CF-031dc32e97627093c417937e -maxdepth 3 -type f'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric -maxdepth 2 -type f -name '*031dc32e97627093c417937e*' -o -path '*/current/*' -type f\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/bin/fabricctl /Users/haewonkim/.codex-fabric/bin/projectos-integrate-stdin'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/current && rtk ls -la /Users/haewonkim/.codex-fabric/jobs | tail -40'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n --hidden --glob '\"'!locks/**'\"' --glob '\"'!repos/**'\"' 'CF-031dc32e97627093c417937e|CHG-207-r2|evidence.bind.r2' /Users/haewonkim/.codex-fabric/current /Users/haewonkim/.codex-fabric/jobs /Users/haewonkim/.codex-fabric/state /Users/haewonkim/.codex-fabric/config\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-031dc32e97627093c417937e.running/job.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/current && rtk rg -n 'audit.json|native evidence|evidence ref|publish.*evidence|artifact' /Users/haewonkim/.codex-fabric/current/fabric.py /Users/haewonkim/.codex-fabric/current  \"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2740,3078p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '3880,4010p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs /Users/haewonkim/.codex-fabric/artifacts /Users/haewonkim/.codex-fabric/results /Users/haewonkim/.codex-fabric/runs -maxdepth 2 -type d | rg 'CF-031dc32e97627093c417937e' || true\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-031dc32e97627093c417937e'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'source_changed|head_sha|remote_head_sha|base_is_ancestor|remote_exact_head|worktree_clean|execution_outcome|VERIFY' /Users/haewonkim/.codex-fabric/current/fabric.py | head -180\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '3780,3895p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '2400,2470p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'artifacts|artifact' /Users/haewonkim/.codex-fabric/current/fabric.py | head -120 && rtk ls -la /Users/haewonkim/.codex-fabric/artifacts | head -100 && rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-031dc32e97627093c417937e 2>/dev/null || true && rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-031dc32e97627093c417937e.running\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-044dc968600667a197348544 && rtk git rev-parse --verify HEAD && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git reset --hard 07011f61938510a525f8f9a1e747a3e1817520da'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/verify/visembler-chg207-evidence-bind-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD HEAD''^{tree} && rtk git ls-remote --heads origin main verify/visembler-chg207-evidence-bind-r2 project-os-artifacts/visembler/CHG-207-r2 codex-fabric/evidence/visembler/CHG-207-r2 fix/visembler-chg207-narrow-reading-r1 project-os-artifacts/visembler/CHG-207-r1 codex-fabric/evidence/visembler/CHG-207-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3 -c 'from pathlib import Path\nroot = Path('\\\\''/Users/haewonkim/.codex-fabric/artifacts/CF-031dc32e97627093c417937e/evidence-binding'\\\\'')\nif root.exists():\n    raise SystemExit('\\\\''job-owned evidence-binding output already exists; refusing overwrite'\\\\'')\nroot.mkdir(parents=True)\npayloads = {\\\"candidate.json\\\":\\\"{\\\\n  \\\\\\\"identity\\\\\\\": {\\\\n    \\\\\\\"repository\\\\\\\": \\\\\\\"kimhw8084/visembler\\\\\\\",\\\\n    \\\\\\\"project\\\\\\\": \\\\\\\"visembler\\\\\\\",\\\\n    \\\\\\\"change\\\\\\\": \\\\\\\"CHG-207\\\\\\\",\\\\n    \\\\\\\"request\\\\\\\": \\\\\\\"CHG-207-r2\\\\\\\",\\\\n    \\\\\\\"operation\\\\\\\": \\\\\\\"VERIFY\\\\\\\",\\\\n    \\\\\\\"fabric_job\\\\\\\": \\\\\\\"CF-031dc32e97627093c417937e\\\\\\\"\\\\n  },\\\\n  \\\\\\\"base\\\\\\\": {\\\\n    \\\\\\\"branch\\\\\\\": \\\\\\\"main\\\\\\\",\\\\n    \\\\\\\"sha\\\\\\\": \\\\\\\"5dfdd5eba77a45b63aa2e5290cb7609a573e9efc\\\\\\\",\\\\n    \\\\\\\"tree\\\\\\\": \\\\\\\"d932f22966508ba6fdb630b6f66e1a01818b7b03\\\\\\\"\\\\n  },\\\\n  \\\\\\\"accepted_candidate\\\\\\\": {\\\\n    \\\\\\\"head\\\\\\\": \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\",\\\\n    \\\\\\\"tree\\\\\\\": \\\\\\\"c33f29fcd911056c06b6be315170fbdac72beebd\\\\\\\"\\\\n  },\\\\n  \\\\\\\"source_changed\\\\\\\": false,\\\\n  \\\\\\\"browser_capture_launched\\\\\\\": false,\\\\n  \\\\\\\"product_commits\\\\\\\": 0,\\\\n  \\\\\\\"product_changed_files\\\\\\\": 0\\\\n}\\\\n\\\",\\\"recovered-authority.json\\\":\\\"{\\\\n  \\\\\\\"project\\\\\\\": \\\\\\\"visembler\\\\\\\",\\\\n  \\\\\\\"change\\\\\\\": \\\\\\\"CHG-207\\\\\\\",\\\\n  \\\\\\\"r1\\\\\\\": {\\\\n    \\\\\\\"request\\\\\\\": \\\\\\\"CHG-207-r1\\\\\\\",\\\\n    \\\\\\\"fabric_job\\\\\\\": \\\\\\\"CF-044dc968600667a197348544\\\\\\\",\\\\n    \\\\\\\"substantive_authority\\\\\\\": {\\\\n      \\\\\\\"status\\\\\\\": \\\\\\\"GO\\\\\\\",\\\\n      \\\\\\\"authority\\\\\\\": \\\\\\\"Independent CHG-207 source, browser, and release acceptance remains R1.\\\\\\\",\\\\n      \\\\\\\"r2_scope\\\\\\\": \\\\\\\"Integration evidence binding only; no UI, source, or release quality re-evaluation.\\\\\\\"\\\\n    },\\\\n    \\\\\\\"candidate\\\\\\\": {\\\\n      \\\\\\\"head\\\\\\\": \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\",\\\\n      \\\\\\\"tree\\\\\\\": \\\\\\\"c33f29fcd911056c06b6be315170fbdac72beebd\\\\\\\"\\\\n    },\\\\n    \\\\\\\"work_branch\\\\\\\": \\\\\\\"fix/visembler-chg207-narrow-reading-r1\\\\\\\",\\\\n    \\\\\\\"refs\\\\\\\": {\\\\n      \\\\\\\"artifact\\\\\\\": {\\\\n        \\\\\\\"ref\\\\\\\": \\\\\\\"refs/heads/project-os-artifacts/visembler/CHG-207-r1\\\\\\\",\\\\n        \\\\\\\"commit\\\\\\\": \\\\\\\"d4e620decff7d0f885321648a58bd827654c1ab5\\\\\\\"\\\\n      },\\\\n      \\\\\\\"native_evidence\\\\\\\": {\\\\n        \\\\\\\"ref\\\\\\\": \\\\\\\"refs/heads/codex-fabric/evidence/visembler/CHG-207-r1\\\\\\\",\\\\n        \\\\\\\"commit\\\\\\\": \\\\\\\"d4e620decff7d0f885321648a58bd827654c1ab5\\\\\\\"\\\\n      }\\\\n    },\\\\n    \\\\\\\"carrier_commit\\\\\\\": {\\\\n      \\\\\\\"commit\\\\\\\": \\\\\\\"d4e620decff7d0f885321648a58bd827654c1ab5\\\\\\\",\\\\n      \\\\\\\"parents\\\\\\\": [\\\\n        \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\"\\\\n      ],\\\\n      \\\\\\\"canonical_native_audit_path_present\\\\\\\": false\\\\n    }\\\\n  },\\\\n  \\\\\\\"integration_attempt_1\\\\\\\": {\\\\n    \\\\\\\"status\\\\\\\": \\\\\\\"BLOCKED\\\\\\\",\\\\n    \\\\\\\"code\\\\\\\": \\\\\\\"COMMAND_FAILED\\\\\\\",\\\\n    \\\\\\\"stage\\\\\\\": \\\\\\\"before PR or merge\\\\\\\",\\\\n    \\\\\\\"error\\\\\\\": \\\\\\\"git fatal: path '\\\\''.codex-fabric/audit.json'\\\\'' does not exist in '\\\\''d4e620decff7d0f885321648a58bd827654c1ab5'\\\\''\\\\\\\"\\\\n  },\\\\n  \\\\\\\"r1_immutable\\\\\\\": true,\\\\n  \\\\\\\"immutable_statement\\\\\\\": \\\\\\\"R1 Product, artifact, and evidence refs remain unchanged and retain their original lineage.\\\\\\\"\\\\n}\\\\n\\\",\\\"promotion-binding.json\\\":\\\"{\\\\n  \\\\\\\"accepted_head\\\\\\\": \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\",\\\\n  \\\\\\\"accepted_tree\\\\\\\": \\\\\\\"c33f29fcd911056c06b6be315170fbdac72beebd\\\\\\\",\\\\n  \\\\\\\"audited_base\\\\\\\": {\\\\n    \\\\\\\"branch\\\\\\\": \\\\\\\"main\\\\\\\",\\\\n    \\\\\\\"sha\\\\\\\": \\\\\\\"5dfdd5eba77a45b63aa2e5290cb7609a573e9efc\\\\\\\",\\\\n    \\\\\\\"tree\\\\\\\": \\\\\\\"d932f22966508ba6fdb630b6f66e1a01818b7b03\\\\\\\"\\\\n  },\\\\n  \\\\\\\"target_branch\\\\\\\": \\\\\\\"main\\\\\\\",\\\\n  \\\\\\\"r2_work_branch\\\\\\\": \\\\\\\"verify/visembler-chg207-evidence-bind-r2\\\\\\\",\\\\n  \\\\\\\"remote_work_branch_head\\\\\\\": \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\",\\\\n  \\\\\\\"remote_exact_head\\\\\\\": true,\\\\n  \\\\\\\"base_is_ancestor\\\\\\\": true,\\\\n  \\\\\\\"target_observations\\\\\\\": {\\\\n    \\\\\\\"before\\\\\\\": \\\\\\\"5dfdd5eba77a45b63aa2e5290cb7609a573e9efc\\\\\\\",\\\\n    \\\\\\\"after_work_branch_push\\\\\\\": \\\\\\\"5dfdd5eba77a45b63aa2e5290cb7609a573e9efc\\\\\\\",\\\\n    \\\\\\\"target_drifted_since_acceptance\\\\\\\": false\\\\n  },\\\\n  \\\\\\\"integration_evidence_request\\\\\\\": \\\\\\\"CHG-207-r2\\\\\\\",\\\\n  \\\\\\\"expected_native_audit_path\\\\\\\": \\\\\\\".codex-fabric/audit.json\\\\\\\",\\\\n  \\\\\\\"expected_evidence_commit_parent\\\\\\\": \\\\\\\"07011f61938510a525f8f9a1e747a3e1817520da\\\\\\\"\\\\n}\\\\n\\\",\\\"validation.md\\\":\\\"# CHG-207 R2 evidence binding\\\\n\\\\nR2 reconciles Git identity and native evidence routing for the independently accepted CHG-207 R1 candidate. It does not re-evaluate UI, source, browser, or release quality. Substantive acceptance remains CHG-207-r1 (Fabric job CF-044dc968600667a197348544).\\\\n\\\\nThe accepted candidate remains at 07011f61938510a525f8f9a1e747a3e1817520da with tree c33f29fcd911056c06b6be315170fbdac72beebd. The audited base is main@5dfdd5eba77a45b63aa2e5290cb7609a573e9efc with tree d932f22966508ba6fdb630b6f66e1a01818b7b03. The R2 work branch was pushed at the exact accepted head; the base is an ancestor and the worktree is clean.\\\\n\\\\nR1 refs are preserved at their original commit d4e620decff7d0f885321648a58bd827654c1ab5, whose sole parent is the accepted head. The integration failure was caused by the absence of .codex-fabric/audit.json in that historical R1 carrier. R1 remains immutable historical accepted evidence.\\\\n\\\\nR2 made no Product changes or Product commits and did not launch browser capture. This package records the expected native path and parent for Fabric'\\\\''s normal evidence publisher. Native audit verification and Project OS integration routing remain downstream checks.\\\\n\\\"}\nfor name, content in payloads.items():\n    (root / name).write_text(content, encoding='\\\\''utf-8'\\\\'')\nprint('\\\\''\\\\n'\\\\''.join(str(root / name) for name in payloads))\n'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree add --detach /tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e 07011f61938510a525f8f9a1e747a3e1817520da'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3 -c 'from pathlib import Path\nimport shutil\nsrc = Path('\\\\''/Users/haewonkim/.codex-fabric/artifacts/CF-031dc32e97627093c417937e/evidence-binding'\\\\'')\ndst = Path('\\\\''/tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e/evidence-binding'\\\\'')\nif dst.exists():\n    raise SystemExit('\\\\''artifact worktree destination already exists; refusing overwrite'\\\\'')\nshutil.copytree(src, dst)\nprint(f'\\\\''copied {len(list(dst.iterdir()))} package files'\\\\'')\n'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e add -- evidence-binding && rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e write-tree && rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e status --short'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git worktree list --porcelain && rtk proxy sh -c 'ls -ld /tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e /tmp/visembler-chg207-r2-artifact-031dc32e 2>/dev/null || true'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e write-tree && rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e diff --cached --name-only'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e diff --cached --name-only && rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e config user.name && rtk git -C /tmp/visembler-chg207-r2-artifact-031dc32e config user.email'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git config user.name && rtk git config user.email && rtk git worktree list --porcelain'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /private/tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e -c user.name='Haewon Kim' -c user.email=kimhw8084@gmail.com commit-tree f8749c8c5216653db202e814f302405122c96b6f -p 07011f61938510a525f8f9a1e747a3e1817520da -m 'evidence: bind CHG-207 R2 candidate'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show -s --format='%H%n%T%n%P' 0af67bbc95b6ec29baf7fae03ae2a21c1ef6bb34 && rtk git diff-tree --no-commit-id --name-only -r 0af67bbc95b6ec29baf7fae03ae2a21c1ef6bb34 && rtk git ls-remote --heads origin project-os-artifacts/visembler/CHG-207-r2\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin 0af67bbc95b6ec29baf7fae03ae2a21c1ef6bb34:refs/heads/project-os-artifacts/visembler/CHG-207-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove --force /private/tmp/visembler-chg207-r2-artifact-031dc32e97627093c417937e'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git fetch origin '+refs/heads/project-os-artifacts/visembler/CHG-207-r2:refs/remotes/origin/project-os-artifacts/visembler/CHG-207-r2'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD HEAD''^{tree} && rtk git ls-remote --heads origin main verify/visembler-chg207-evidence-bind-r2 project-os-artifacts/visembler/CHG-207-r2 codex-fabric/evidence/visembler/CHG-207-r2 fix/visembler-chg207-narrow-reading-r1 project-os-artifacts/visembler/CHG-207-r1 codex-fabric/evidence/visembler/CHG-207-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-list --parents -n 1 origin/project-os-artifacts/visembler/CHG-207-r2 && rtk git ls-tree -r --name-only origin/project-os-artifacts/visembler/CHG-207-r2 && rtk git show origin/project-os-artifacts/visembler/CHG-207-r2:evidence-binding/candidate.json && rtk git ls-tree -r --name-only d4e620decff7d0f885321648a58bd827654c1ab5 -- .codex-fabric/audit.json && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-031dc32e97627093c417937e'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 95,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 95.14,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 1834496,
+      "fresh_input_tokens": 93656,
+      "input_tokens": 1928152,
+      "non_reasoning_output_tokens": 7144,
+      "output_tokens": 30930,
+      "reasoning_output_tokens": 23786,
+      "total_processed_tokens": 1959082
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "07011f61938510a525f8f9a1e747a3e1817520da",
+      "subject": "Fix narrow Visualizer report reading"
+    }
+  ],
+  "diff": {
+    "additions": 894,
+    "changed_files": 10,
+    "commit_count": 1,
+    "deletions": 28
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "d0ee19fcb3a7e9cb36f204581f24d9764ef285ee6cee4d04bbcc101503e34d99"
+      },
+      {
+        "bytes": 144878,
+        "path": "tests/fixtures/chg207/chg173-r2-supply-chain-reading-320-before.png",
+        "sha256": "b6586d81a79b8aed5d6610d3bad362e3a0f4b1f388cb828eade1d28ee9ceda22"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-25T13:19:03Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5dfdd5eba77a45b63aa2e5290cb7609a573e9efc",
+    "branch": "verify/visembler-chg207-evidence-bind-r2",
+    "detached_verify": false,
+    "head_sha": "07011f61938510a525f8f9a1e747a3e1817520da",
+    "remote_exact_head": true,
+    "remote_head_sha": "07011f61938510a525f8f9a1e747a3e1817520da",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5dfdd5eba77a45b63aa2e5290cb7609a573e9efc",
+    "work_branch": "verify/visembler-chg207-evidence-bind-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-031dc32e97627093c417937e",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-207-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-207-r2"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-207-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-25T13:09:01Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 602,
+    "queue_seconds": 0,
+    "total_seconds": 602
+  },
+  "transport": {
+    "bytes": 8488,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 8186,
+    "prompt_sha256": "d0a9ca76a957f905360e7253f9b2b58be763bd5c9bcee61fd2044014033b7d7d",
+    "sha256": "031dc32e97627093c417937ef0fc6af81b51a1e268d23e0c99ef41c71e8a20fc"
+  }
+}
