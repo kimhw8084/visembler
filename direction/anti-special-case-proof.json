@@ -1,0 +1,348 @@
+{
+  "result": "PASS",
+  "rule_inventory": {
+    "version": 1,
+    "classifierInputs": [
+      "semantic composition roles and section mix",
+      "engine/evidence mix",
+      "evidence row count and text length",
+      "data/evidence density",
+      "explicit layout preset",
+      "explicit whole-report direction choice"
+    ],
+    "forbiddenInputs": [
+      "report id",
+      "report title",
+      "fixture name",
+      "benchmark name",
+      "screenshot coordinate"
+    ],
+    "presetFallbacks": {
+      "executive": "decision-led",
+      "technical": "dense-operations",
+      "investigation": "causal-investigation",
+      "manufacturing": "causal-investigation",
+      "comparison": "allocation-comparison",
+      "review": "conditional-evidence",
+      "narrative": "sparse-decision",
+      "scorecard": "monitoring",
+      "roadmap": "allocation-comparison",
+      "showcase": "editorial"
+    },
+    "profiles": [
+      {
+        "id": "decision-led",
+        "label": "Decision led",
+        "recipe": "executive",
+        "traits": [
+          "decision first",
+          "cohort evidence forward",
+          "aggregate metrics in support"
+        ],
+        "negativeIdentity": "KPI scorecard",
+        "primaryRoles": [
+          "detailed_evidence",
+          "primary_analysis",
+          "decision_risk"
+        ],
+        "sectionOrder": [
+          "opening",
+          "evidence",
+          "analysis",
+          "decision",
+          "delivery",
+          "performance"
+        ],
+        "prominence": {
+          "detailed_evidence": 1.45,
+          "primary_analysis": 1.35,
+          "decision_risk": 1.3,
+          "hero_metric": 0.72
+        },
+        "surfaces": [
+          "evidence-detail-grid",
+          "feature-support-analysis",
+          "compact-decision-band"
+        ],
+        "treatment": "evidence-led"
+      },
+      {
+        "id": "conditional-evidence",
+        "label": "Conditional evidence",
+        "recipe": "review",
+        "traits": [
+          "treatment comparison",
+          "caveat beside evidence",
+          "conditional decision close"
+        ],
+        "negativeIdentity": "chart showcase",
+        "primaryRoles": [
+          "primary_analysis",
+          "supporting_analysis",
+          "narrative_interpretation",
+          "decision_risk"
+        ],
+        "sectionOrder": [
+          "opening",
+          "analysis",
+          "evidence",
+          "decision",
+          "delivery",
+          "performance"
+        ],
+        "prominence": {
+          "primary_analysis": 1.18,
+          "supporting_analysis": 1.16,
+          "narrative_interpretation": 1.16,
+          "decision_risk": 1.12,
+          "hero_metric": 0.82
+        },
+        "surfaces": [
+          "conditional-evidence-pair",
+          "compact-decision-band"
+        ],
+        "treatment": "paired-caveat"
+      },
+      {
+        "id": "causal-investigation",
+        "label": "Causal investigation",
+        "recipe": "investigation",
+        "traits": [
+          "causal flow as feature",
+          "spatial evidence contained",
+          "action adjacent to findings"
+        ],
+        "negativeIdentity": "generic chart gallery",
+        "primaryRoles": [
+          "causal_evidence",
+          "detailed_evidence",
+          "decision_risk",
+          "action_status"
+        ],
+        "sectionOrder": [
+          "opening",
+          "evidence",
+          "decision",
+          "delivery",
+          "analysis",
+          "performance"
+        ],
+        "prominence": {
+          "causal_evidence": 1.3,
+          "detailed_evidence": 1.2,
+          "action_status": 1.16,
+          "hero_metric": 0.84
+        },
+        "surfaces": [
+          "causal-flow-feature",
+          "evidence-detail-grid",
+          "closing-next-step"
+        ],
+        "treatment": "causal-chain"
+      },
+      {
+        "id": "dense-operations",
+        "label": "Dense operations",
+        "recipe": "technical",
+        "traits": [
+          "evidence grouped for scanning",
+          "tight within-group rhythm",
+          "decision held near operating evidence"
+        ],
+        "negativeIdentity": "dashboard with blank bands",
+        "primaryRoles": [
+          "primary_analysis",
+          "detailed_evidence",
+          "decision_risk",
+          "action_status"
+        ],
+        "sectionOrder": [
+          "opening",
+          "analysis",
+          "evidence",
+          "decision",
+          "delivery",
+          "performance"
+        ],
+        "prominence": {
+          "primary_analysis": 1.14,
+          "detailed_evidence": 1.16,
+          "decision_risk": 1.12,
+          "action_status": 1.08,
+          "hero_metric": 0.86
+        },
+        "surfaces": [
+          "feature-support-analysis",
+          "evidence-detail-grid",
+          "compact-decision-band"
+        ],
+        "treatment": "scan-dense"
+      },
+      {
+        "id": "allocation-comparison",
+        "label": "Allocation comparison",
+        "recipe": "comparison",
+        "traits": [
+          "comparison as feature",
+          "constraints grouped with evidence",
+          "next action follows headroom"
+        ],
+        "negativeIdentity": "isolated metric tiles",
+        "primaryRoles": [
+          "primary_analysis",
+          "detailed_evidence",
+          "decision_risk",
+          "action_status"
+        ],
+        "sectionOrder": [
+          "opening",
+          "performance",
+          "analysis",
+          "evidence",
+          "decision",
+          "delivery"
+        ],
+        "prominence": {
+          "primary_analysis": 1.18,
+          "detailed_evidence": 1.16,
+          "decision_risk": 1.12,
+          "action_status": 1.12,
+          "hero_metric": 0.9
+        },
+        "surfaces": [
+          "allocation-comparison",
+          "allocation-evidence-grid",
+          "evidence-detail-grid",
+          "closing-next-step"
+        ],
+        "treatment": "constraint-pair"
+      },
+      {
+        "id": "sparse-decision",
+        "label": "Sparse decision",
+        "recipe": "narrative",
+        "traits": [
+          "decision statement leads",
+          "evidence stays legible",
+          "open reading rhythm"
+        ],
+        "negativeIdentity": "empty KPI dashboard",
+        "primaryRoles": [
+          "report_headline",
+          "decision_risk",
+          "narrative_interpretation",
+          "conclusion"
+        ],
+        "sectionOrder": [
+          "opening",
+          "decision",
+          "analysis",
+          "evidence",
+          "delivery",
+          "performance"
+        ],
+        "prominence": {
+          "report_headline": 1.12,
+          "decision_risk": 1.2,
+          "narrative_interpretation": 1.14,
+          "conclusion": 1.12,
+          "hero_metric": 0.88
+        },
+        "surfaces": [
+          "compact-decision-band",
+          "closing-next-step"
+        ],
+        "treatment": "open-decision"
+      },
+      {
+        "id": "monitoring",
+        "label": "Monitoring review",
+        "recipe": "scorecard",
+        "traits": [
+          "current state beside trend",
+          "limits remain distinct",
+          "supporting measures stay quiet"
+        ],
+        "negativeIdentity": "decorative trend wall",
+        "primaryRoles": [
+          "primary_analysis",
+          "decision_risk",
+          "detailed_evidence"
+        ],
+        "sectionOrder": [
+          "opening",
+          "analysis",
+          "decision",
+          "evidence",
+          "performance",
+          "delivery"
+        ],
+        "prominence": {
+          "primary_analysis": 1.18,
+          "decision_risk": 1.1,
+          "hero_metric": 0.92
+        },
+        "surfaces": [
+          "analytical-feature",
+          "feature-support-analysis",
+          "compact-decision-band"
+        ],
+        "treatment": "monitoring"
+      },
+      {
+        "id": "editorial",
+        "label": "Editorial flow",
+        "recipe": "editorial",
+        "traits": [
+          "clear narrative sequence",
+          "evidence follows context",
+          "even reading rhythm"
+        ],
+        "negativeIdentity": "one-size dashboard",
+        "primaryRoles": [
+          "report_headline",
+          "primary_analysis",
+          "narrative_interpretation"
+        ],
+        "sectionOrder": [
+          "opening",
+          "performance",
+          "analysis",
+          "evidence",
+          "decision",
+          "delivery"
+        ],
+        "prominence": {},
+        "surfaces": [
+          "hero-opening-band",
+          "feature-support-analysis",
+          "narrative-evidence-split"
+        ],
+        "treatment": "editorial"
+      }
+    ]
+  },
+  "production_classifier_source": "company_ui/products/visualizer/assets/authoring_composition.mjs",
+  "production_classifier_sha256": "6200b3ec5fb2b2a0765ea256b5a247c41fc16af59aa5e7c0242cf7e38cb1c839",
+  "classifier_function_sha256": "aee9fac4f835e6e3b59735071ca966965072775480789a0514e96045a8d5f461",
+  "production_classifier_excludes_fixture_ids_titles_coordinates": {
+    "forbidden_terms": [
+      "executive-business-review",
+      "experiment-decision",
+      "semiconductor-rca",
+      "technical-status-review",
+      "supply-chain-capacity-holdout",
+      "report_id",
+      "benchmark",
+      "screenshot",
+      "fixture_name",
+      "\"x\":",
+      "\"y\":"
+    ],
+    "all_absent_from_classifier": true,
+    "known_fixture_ids_and_titles_absent_from_composition_editor_css_and_task_vocabulary": true,
+    "evidence": "test_visualizer_chg209_visual_director.py::test_direction_is_stable_when_report_and_item_names_change_and_profiles_are_not_title_classifiers"
+  },
+  "renamed_shape_determinism_test": "PASS; renamed report and item identifiers/titles preserve profile, traits and section plan",
+  "holdout_policy": "Scenes E and F were introduced in the matrix only after production direction rules were implemented; their IDs, titles and terms are not classifier inputs."
+}

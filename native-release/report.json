@@ -1,0 +1,438 @@
+{
+  "created_at": "2026-09-25T18:22:13Z",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.11.7 (main, Dec 15 2023, 12:09:56) [Clang 14.0.6 ]",
+  "host_mode": "native",
+  "source_editor_sha256": "3fceb6688eb3d5a2162e46cb2ce5d5c65dd875ee0d2a30784b7ffb93ef658923",
+  "source_page_sha256": "6c42d4d2b42067ca35ad71d7bae4b1bd99fc8afc11a4a6ea16842bb30c863ec8",
+  "checks": [
+    {
+      "name": "repository-contracts",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_repository_contracts.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/repository-contracts.json"
+      ],
+      "log": "logs/repository-contracts.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 3.137
+    },
+    {
+      "name": "company-boundary-model",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_user_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/company-boundary-model.json"
+      ],
+      "log": "logs/company-boundary-model.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.522
+    },
+    {
+      "name": "company-boundary-browser",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_boundary_browser_gate.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/company-boundary-browser.json"
+      ],
+      "log": "logs/company-boundary-browser.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 8.505
+    },
+    {
+      "name": "company-readiness-local",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_production_readiness.py",
+        "--data-dir",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/company-readiness-data",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/company-readiness-local.json"
+      ],
+      "log": "logs/company-readiness-local.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.402
+    },
+    {
+      "name": "company-capacity",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_company_capacity.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/company-capacity.json"
+      ],
+      "log": "logs/company-capacity.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 31.859
+    },
+    {
+      "name": "element-coverage",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/verify_element_coverage.py",
+        "--json"
+      ],
+      "log": "logs/element-coverage.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.046
+    },
+    {
+      "name": "delivery-tests",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "-m",
+        "pytest",
+        "tests/test_visualizer_completion_delivery.py",
+        "tests/test_visualizer_production_closeout.py",
+        "--tb=short",
+        "--junitxml=/private/tmp/chg209-native-release-9be45ba-retry2/delivery-tests.xml"
+      ],
+      "log": "logs/delivery-tests.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.757
+    },
+    {
+      "name": "full-tests",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "-m",
+        "pytest",
+        "--tb=short",
+        "--junitxml=/private/tmp/chg209-native-release-9be45ba-retry2/full-tests.xml"
+      ],
+      "log": "logs/full-tests.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 139.775
+    },
+    {
+      "name": "syntax-integrated_editor.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/integrated_editor.mjs"
+      ],
+      "log": "logs/syntax-integrated_editor.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.048
+    },
+    {
+      "name": "syntax-element_renderer.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/element_renderer.mjs"
+      ],
+      "log": "logs/syntax-element_renderer.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.047
+    },
+    {
+      "name": "syntax-authoring_dataset_refresh.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/authoring_dataset_refresh.mjs"
+      ],
+      "log": "logs/syntax-authoring_dataset_refresh.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.048
+    },
+    {
+      "name": "syntax-authoring_portability.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/authoring_portability.mjs"
+      ],
+      "log": "logs/syntax-authoring_portability.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.04
+    },
+    {
+      "name": "syntax-authoring_intake_client.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/authoring_intake_client.mjs"
+      ],
+      "log": "logs/syntax-authoring_intake_client.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.044
+    },
+    {
+      "name": "syntax-authoring_composition.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/authoring_composition.mjs"
+      ],
+      "log": "logs/syntax-authoring_composition.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.038
+    },
+    {
+      "name": "syntax-authoring_reuse_contract.mjs",
+      "command": [
+        "node",
+        "--check",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e/company_ui/products/visualizer/assets/authoring_reuse_contract.mjs"
+      ],
+      "log": "logs/syntax-authoring_reuse_contract.mjs.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.041
+    },
+    {
+      "name": "persistence-source-probe",
+      "command": [
+        "node",
+        "scripts/release_checks/probe_persistence.mjs",
+        "--repo",
+        "/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/persistence-source.json"
+      ],
+      "log": "logs/persistence-source-probe.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.14
+    },
+    {
+      "name": "git-diff-check",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "log": "logs/git-diff-check.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 0.025
+    },
+    {
+      "name": "elements",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_editor_workflows.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/elements",
+        "--native"
+      ],
+      "log": "logs/elements.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 84.17
+    },
+    {
+      "name": "data",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_data_workflows.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/data",
+        "--native"
+      ],
+      "log": "logs/data.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 29.36
+    },
+    {
+      "name": "performance",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/measure_editor.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/performance",
+        "--native"
+      ],
+      "log": "logs/performance.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 4.492
+    },
+    {
+      "name": "report-lifecycle-integrity",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/report-lifecycle-integrity"
+      ],
+      "log": "logs/report-lifecycle-integrity.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 11.013
+    },
+    {
+      "name": "chg181-authoring-composition-reuse",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chg181_authoring_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/chg181-authoring-composition-reuse"
+      ],
+      "log": "logs/chg181-authoring-composition-reuse.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 133.633
+    },
+    {
+      "name": "chg208-remap-diagnostics",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chg208_remap_diagnostics_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/chg208-remap-diagnostics"
+      ],
+      "log": "logs/chg208-remap-diagnostics.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 6.905
+    },
+    {
+      "name": "chart-studio",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_chart_studio_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/chart-studio"
+      ],
+      "log": "logs/chart-studio.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 53.767
+    },
+    {
+      "name": "report-hub-browser-errors",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_report_hub_browser_error_gate.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/report-hub-browser-errors"
+      ],
+      "log": "logs/report-hub-browser-errors.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 15.465
+    },
+    {
+      "name": "native-recovery",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_native_recovery.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/native-recovery"
+      ],
+      "log": "logs/native-recovery.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 10.182
+    },
+    {
+      "name": "worker-lifecycle",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_worker_lifecycle.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/worker-lifecycle"
+      ],
+      "log": "logs/worker-lifecycle.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 19.993
+    },
+    {
+      "name": "operations-drill",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_operations_drill.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/operations-drill"
+      ],
+      "log": "logs/operations-drill.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 11.499
+    },
+    {
+      "name": "native-acceptance",
+      "command": [
+        "/opt/anaconda3/bin/python",
+        "scripts/release_checks/run_native_acceptance.py",
+        "--output",
+        "/private/tmp/chg209-native-release-9be45ba-retry2/native-acceptance"
+      ],
+      "log": "logs/native-acceptance.log",
+      "returncode": 0,
+      "status": "PASS",
+      "elapsed_seconds": 7.832
+    },
+    {
+      "name": "source-stability",
+      "status": "PASS"
+    },
+    {
+      "name": "frozen-connector",
+      "status": "PASS"
+    }
+  ],
+  "required_gates": [
+    "chart-studio",
+    "chg181-authoring-composition-reuse",
+    "chg208-remap-diagnostics",
+    "company-boundary-browser",
+    "company-boundary-model",
+    "company-capacity",
+    "company-readiness-local",
+    "data",
+    "delivery-tests",
+    "element-coverage",
+    "elements",
+    "frozen-connector",
+    "full-tests",
+    "git-diff-check",
+    "native-acceptance",
+    "native-recovery",
+    "operations-drill",
+    "performance",
+    "persistence-source-probe",
+    "report-hub-browser-errors",
+    "report-lifecycle-integrity",
+    "repository-contracts",
+    "source-stability",
+    "syntax-authoring_composition.mjs",
+    "syntax-authoring_dataset_refresh.mjs",
+    "syntax-authoring_intake_client.mjs",
+    "syntax-authoring_portability.mjs",
+    "syntax-authoring_reuse_contract.mjs",
+    "syntax-element_renderer.mjs",
+    "syntax-integrated_editor.mjs",
+    "worker-lifecycle"
+  ],
+  "remaining_release_validation": [],
+  "checks_status": "PASS",
+  "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "company_boundary_status": "READY_FOR_COMPANY_TARGET_CERTIFICATION",
+  "managed_target_status": "PENDING",
+  "supported_scope": "single local/internal-pilot instance; shared-network identity/authorization/hosting remain organization-managed",
+  "git_status_at_start": [],
+  "reason": "All bounded local/internal-pilot gates passed on this exact source."
+}

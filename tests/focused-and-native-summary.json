@@ -1,0 +1,179 @@
+{
+  "candidate_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+  "native_verifier_command": "python scripts/verify_release.py --output /tmp/chg209-native-release-9be45ba-retry2 --host-mode native",
+  "native_release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "checks_status": "PASS",
+  "remaining_release_validation": [],
+  "full_pytest": {
+    "tests": 1215,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "focused_regression_modules": {
+    "test_visualizer_chg209_visual_director": {
+      "passed": 6,
+      "failed": 0,
+      "test_names": [
+        "test_direction_profiles_derive_from_semantic_inventory_and_preserve_recipe_authority",
+        "test_direction_is_stable_when_report_and_item_names_change_and_profiles_are_not_title_classifiers",
+        "test_free_manual_rectangles_direction_choice_reuse_and_data_contract_are_preserved",
+        "test_visual_direction_choice_round_trips_through_shared_model_and_history",
+        "test_fresh_mixed_holdout_has_new_task_fields_and_consistent_decision_evidence",
+        "test_export_plan_rounds_fractional_element_dimensions_to_nearest_emu"
+      ]
+    },
+    "test_visualizer_chg181_semantic_reuse": {
+      "passed": 14,
+      "failed": 0,
+      "test_names": [
+        "test_chg181_composition_roles_and_named_recipes_are_deterministic_and_legacy_safe",
+        "test_chg181_smart_composition_has_stable_non_overlapping_bounded_rectangles",
+        "test_chg181_builtin_templates_include_canonical_semantic_intent",
+        "test_chg181_binding_contract_groups_shared_data_and_reuses_new_data_atomically",
+        "test_chg181_remap_fails_closed_for_ambiguous_and_incompatible_fields",
+        "test_chg181_remap_blocks_a_schema_match_that_cannot_run_its_saved_analysis_recipe",
+        "test_chg181_reused_bar_summary_keeps_category_and_value_roles_visible",
+        "test_chg181_short_bar_scale_avoids_near_duplicate_endpoint_ticks",
+        "test_chg181_spatial_reports_clip_wafer_cells_to_company_geometry",
+        "test_chg181_structure_remap_does_not_create_empty_dataset_recipe_identity",
+        "test_chg181_normalization_and_visible_reuse_choice_preserve_legacy_and_copy_modes",
+        "test_chg181_structure_only_preferences_reject_cross_report_dataset_identity",
+        "test_chg181_corrupt_and_oversized_binding_records_do_not_poison_legacy_presets",
+        "test_chg181_structure_reuse_clears_unbound_values_and_names_manual_review"
+      ]
+    },
+    "test_visualizer_chg181_section_composition": {
+      "passed": 7,
+      "failed": 0,
+      "test_names": [
+        "test_section_grammar_selects_patterns_and_deterministic_feature_support",
+        "test_section_patterns_cover_narrative_evidence_causal_and_detail_grid",
+        "test_long_narrative_content_gets_its_own_intrinsic_row",
+        "test_section_fallback_custom_metadata_emphasis_and_semantic_nonmutation",
+        "test_section_width_fit_is_bounded_and_mobile_order_uses_composed_order",
+        "test_shared_remap_requirements_deduplicate_roles_and_summarize_incompatibility",
+        "test_remap_focus_accessibility_and_fail_closed_apply_contract_remain_present"
+      ]
+    },
+    "test_visualizer_chg206_pptx_visible_text": {
+      "passed": 5,
+      "failed": 0,
+      "test_names": [
+        "test_chg206_report_text_is_explicit_readable_and_contained",
+        "test_compact_r2_context_rectangle_fits_at_readable_minimum",
+        "test_dense_long_narrative_uses_bounded_editable_fit_without_clipping",
+        "test_tall_slide_headline_uses_readable_condensed_fallback_inside_assigned_box",
+        "test_decision_and_action_composite_segments_keep_distinct_roles"
+      ]
+    },
+    "test_visualizer_chg207_narrow_reading": {
+      "passed": 3,
+      "failed": 0,
+      "test_names": [
+        "test_metric_and_comparison_values_use_atomic_formatted_tokens",
+        "test_narrow_flow_is_a_reading_projection_of_the_canonical_graph",
+        "test_renderer_preserves_focusable_table_contract_and_preview_breakpoints"
+      ]
+    },
+    "test_visualizer_chg208_remap_diagnostics": {
+      "passed": 4,
+      "failed": 0,
+      "test_names": [
+        "test_chg173_failure_paste_keeps_header_identity_and_observed_category_type",
+        "test_chg208_missing_ambiguous_and_unavailable_have_distinct_diagnostics",
+        "test_chg208_shared_failure_summarizes_once_and_retains_field_identity",
+        "test_chg208_browser_acceptance_is_registered_with_native_release_verifier"
+      ]
+    },
+    "test_visualizer_accessibility_authoring": {
+      "passed": 2,
+      "failed": 0,
+      "test_names": [
+        "test_keyboard_resize_uses_the_same_bounded_geometry_contract_as_pointer_resize",
+        "test_accessibility_contracts_cover_canvas_palette_grid_summary_focus_and_motion"
+      ]
+    },
+    "test_visualizer_authoring_p0": {
+      "passed": 16,
+      "failed": 0,
+      "test_names": [
+        "test_dataset_binding_persists_without_copying_rows_into_item",
+        "test_editor_replaces_shared_datasets_through_the_dependency_commit_path",
+        "test_editor_persistence_uses_one_pending_pipeline_and_retains_conflict_recovery",
+        "test_personal_preset_list_exposes_every_server_supported_preset",
+        "test_data_dock_and_unbound_tables_preserve_large_range_editing_contracts",
+        "test_element_maturity_audit_covers_the_registered_catalog_and_renderer_uses_semantic_payloads",
+        "test_container_layout_metadata_persists_with_group_membership",
+        "test_ppt_projection_uses_the_current_bound_dataset",
+        "test_authoring_modules_cover_contracts_intake_and_transforms",
+        "test_authoring_data_preserves_engineering_numeric_and_typed_dimensions",
+        "test_paste_recommendations_bind_the_matching_validated_view_contract",
+        "test_guided_and_free_canvas_geometry_contracts",
+        "test_dataset_bound_engineering_variants_use_the_production_analysis_renderer",
+        "test_engineering_factor_mapping_overrides_unmapped_numeric_columns",
+        "test_dataset_bound_wafer_renderer_keeps_semiconductor_identity_context",
+        "test_specialty_dataset_views_use_matrix_timeline_and_graph_semantics"
+      ]
+    },
+    "test_visualizer_performance": {
+      "passed": 2,
+      "failed": 0,
+      "test_names": [
+        "test_large_data_intake_and_preview_benchmark_contract",
+        "test_performance_contract_is_wired_into_authoring_paths"
+      ]
+    },
+    "test_phase13_performance": {
+      "passed": 10,
+      "failed": 0,
+      "test_names": [
+        "test_ttl_cache_bounded",
+        "test_ttl_expiry",
+        "test_monitor_budgets",
+        "test_monitor_bounded",
+        "test_lazy_resource",
+        "test_single_flight",
+        "test_concurrency_gate",
+        "test_retry_policy",
+        "test_run_blocking",
+        "test_analytical_controller_latest"
+      ]
+    }
+  },
+  "release_gate_statuses": {
+    "repository-contracts": "PASS",
+    "company-boundary-model": "PASS",
+    "company-boundary-browser": "PASS",
+    "company-readiness-local": "PASS",
+    "company-capacity": "PASS",
+    "element-coverage": "PASS",
+    "delivery-tests": "PASS",
+    "full-tests": "PASS",
+    "syntax-integrated_editor.mjs": "PASS",
+    "syntax-element_renderer.mjs": "PASS",
+    "syntax-authoring_dataset_refresh.mjs": "PASS",
+    "syntax-authoring_portability.mjs": "PASS",
+    "syntax-authoring_intake_client.mjs": "PASS",
+    "syntax-authoring_composition.mjs": "PASS",
+    "syntax-authoring_reuse_contract.mjs": "PASS",
+    "persistence-source-probe": "PASS",
+    "git-diff-check": "PASS",
+    "elements": "PASS",
+    "data": "PASS",
+    "performance": "PASS",
+    "report-lifecycle-integrity": "PASS",
+    "chg181-authoring-composition-reuse": "PASS",
+    "chg208-remap-diagnostics": "PASS",
+    "chart-studio": "PASS",
+    "report-hub-browser-errors": "PASS",
+    "native-recovery": "PASS",
+    "worker-lifecycle": "PASS",
+    "operations-drill": "PASS",
+    "native-acceptance": "PASS",
+    "source-stability": "PASS",
+    "frozen-connector": "PASS"
+  },
+  "required_gate_count": 31,
+  "all_required_gates_passed": true
+}

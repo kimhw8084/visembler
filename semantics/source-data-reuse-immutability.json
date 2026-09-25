@@ -1,0 +1,74 @@
+{
+  "base_sha": "57967b84084140e30b06276469a1beedd322ec67",
+  "candidate_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+  "fixture": {
+    "path": "tests/fixtures/chg206/whole_report_models.json",
+    "sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb",
+    "sha256_recorded_in_both_matrices": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb",
+    "unchanged": true
+  },
+  "scene_inputs": {
+    "A-executive": {
+      "sha256": "70e3876e997f5532bc3c684bf8bbe2683fec9efb1b7969a6b0dee78f8aeaf482",
+      "same_between_base_candidate": true
+    },
+    "B-experiment": {
+      "sha256": "47d661dc5fb9bb4986f6710f87631b535ea0202be3704135bdfdb0158d3166d1",
+      "same_between_base_candidate": true
+    },
+    "C-causal": {
+      "sha256": "f7ad6628b28e737563f86b354afd877ee16dab239aa037e6112d3c6ba0fa7325",
+      "same_between_base_candidate": true
+    },
+    "D-technical": {
+      "sha256": "3befadde73ee6f1ce8f1181ce142ed73e1aadf79a544e9757cad9975e5d456b5",
+      "same_between_base_candidate": true
+    },
+    "E-holdout-mixed": {
+      "sha256": "73f7998c158effe5c2fbcd7f17c32668445be1260365fe81690f072c536f6767",
+      "same_between_base_candidate": true
+    },
+    "F-holdout-sparse": {
+      "sha256": "11531fd71611c375916e721328a83cd504f52d5a059fb0576cc131e26945b3b5",
+      "same_between_base_candidate": true
+    }
+  },
+  "all_scene_input_hashes_match": true,
+  "semantic_contract_tests": {
+    "free_manual_geometry_unchanged": true,
+    "datasets_rows_mappings_and_source_identity_unchanged_by_composition": true,
+    "reuse_binding_contract_unchanged_by_direction_choice": true,
+    "structure_reuse_retains_auto_choice": true,
+    "source": "tests/test_visualizer_chg209_visual_director.py::test_free_manual_rectangles_direction_choice_reuse_and_data_contract_are_preserved"
+  },
+  "chg181_native_acceptance": "PASS; see tests/chg181-native-acceptance.json",
+  "changed_product_and_test_files": [
+    "company_ui/certification/certification_manifest.json",
+    "company_ui/products/visualizer/assets/authoring_composition.mjs",
+    "company_ui/products/visualizer/assets/integrated_editor.css",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs",
+    "company_ui/products/visualizer/domain.py",
+    "company_ui/products/visualizer/ppt_service.py",
+    "company_ui/products/visualizer/vendor/production_core/core/editor_store.mjs",
+    "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+    "scripts/release_checks/run_chg209_visual_director_matrix.py",
+    "tests/test_visualizer_chg209_visual_director.py",
+    "tests/test_visualizer_final_visual_remediation.py",
+    "tests/test_visualizer_wave6_preset_library_ux.py"
+  ],
+  "candidate_file_sha256": {
+    "company_ui/certification/certification_manifest.json": "beee6de89439b74fdfe160b748764bfcbf6b209efdbd49ff825ed50b197be7b3",
+    "company_ui/products/visualizer/assets/authoring_composition.mjs": "6200b3ec5fb2b2a0765ea256b5a247c41fc16af59aa5e7c0242cf7e38cb1c839",
+    "company_ui/products/visualizer/assets/integrated_editor.css": "61f9f9ca8d192a011060892df5ce1cd4e7b0d7fb0e56bd8eda9e7fd6d2b11a4e",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs": "3fceb6688eb3d5a2162e46cb2ce5d5c65dd875ee0d2a30784b7ffb93ef658923",
+    "company_ui/products/visualizer/domain.py": "d312de3fc375c2587ef3ded9badcdba662574450b913e6a62d705c41026ba3a5",
+    "company_ui/products/visualizer/ppt_service.py": "4241d5a347166741987de699f4adc1e45a965a241edaf8050e48bcdc5052a4c5",
+    "company_ui/products/visualizer/vendor/production_core/core/editor_store.mjs": "1423fe93f97aea6563e350d4f817ba1bfc2c2a8e961bb0d903c0286f3217a95a",
+    "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py": "5d9984e2df0796bbf3436bd5f2455d3272f64d1fc7e7cb41213b9917bad69eac",
+    "scripts/release_checks/run_chg209_visual_director_matrix.py": "3c2c77d2b25cca06b1fc7815f7d71a398d5c4f424885fd9e42341e1cea09aa55",
+    "tests/test_visualizer_chg209_visual_director.py": "6edb0dfe4f9e78bc7546c6c8df625cc781cfb996822552ffae08401efaf5bbd1",
+    "tests/test_visualizer_final_visual_remediation.py": "c6c7623c1c0a9cc39e0258cd24e456a6fbbbeacf56a30fbea69a926f0f5618f2",
+    "tests/test_visualizer_wave6_preset_library_ux.py": "5ed378932e3772c1fc7278573eecd598fd624fd346ef939580181d025fff1511"
+  },
+  "boundary": "The implementation changes composition direction, explicit-choice persistence, shared semantic surfaces and fractional PPTX geometry normalization. Report fixture values, mappings, missing-value behavior, filters and source identity were not altered by this change."
+}

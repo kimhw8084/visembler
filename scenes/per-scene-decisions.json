@@ -1,0 +1,2023 @@
+{
+  "schema_version": 1,
+  "base_sha": "57967b84084140e30b06276469a1beedd322ec67",
+  "candidate_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+  "fixture_sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb",
+  "scenes": {
+    "A-executive": {
+      "decision_context": {
+        "title": "Executive cohort decision",
+        "person": "CFO and regional commercial lead",
+        "context": "Quarterly retention review before the next intervention window.",
+        "task": "Decide whether the South cohort needs a targeted retention action.",
+        "decision": "Direct the intervention using cohort evidence; aggregate revenue is context.",
+        "current_truth": "North and West are on plan; South is below the retention target.",
+        "tone": "Decisive and evidence led, with aggregate growth as context.",
+        "misunderstanding": "A reader could mistake total growth for evidence that every cohort is healthy."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "70e3876e997f5532bc3c684bf8bbe2683fec9efb1b7969a6b0dee78f8aeaf482",
+        "input_model_sha256_candidate": "70e3876e997f5532bc3c684bf8bbe2683fec9efb1b7969a6b0dee78f8aeaf482",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 10,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 3,
+            "primary_analysis": 2,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 2,
+            "ComparisonEngine": 1,
+            "CoreChartEngine": 2,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 370,
+          "evidenceCount": 3,
+          "visualCount": 3,
+          "density": "dense"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "compact-kpi-strip",
+        "feature-support-analysis",
+        "evidence-detail-grid",
+        "compact-decision-band",
+        "closing-next-step"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "decision-led",
+        "label": "Decision led",
+        "inferredDirection": "decision-led",
+        "authority": "layout-preset",
+        "recipeAuthority": "layout-preset",
+        "explicit": true,
+        "directionExplicit": false,
+        "recipeId": "executive",
+        "requestedLayoutPreset": "executive",
+        "traits": [
+          "decision first",
+          "cohort evidence forward",
+          "aggregate metrics in support"
+        ],
+        "negativeIdentity": "KPI scorecard",
+        "density": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "focus": {
+          "primaryRoles": [
+            "detailed_evidence",
+            "primary_analysis",
+            "decision_risk"
+          ],
+          "supportRoles": [
+            "report_headline",
+            "context",
+            "hero_metric",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "causal_evidence",
+            "action_status",
+            "conclusion"
+          ]
+        },
+        "prominence": {
+          "detailed_evidence": 1.45,
+          "primary_analysis": 1.35,
+          "decision_risk": 1.3,
+          "hero_metric": 0.72
+        },
+        "sectionTreatment": {
+          "mode": "evidence-led",
+          "surfaces": [
+            "evidence-detail-grid",
+            "feature-support-analysis",
+            "compact-decision-band"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "tight",
+          "betweenGroups": "tight"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "earned"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 10,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 3,
+            "primary_analysis": 2,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 2,
+            "ComparisonEngine": 1,
+            "CoreChartEngine": 2,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 370,
+          "evidenceCount": 3,
+          "visualCount": 3,
+          "density": "dense"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "evidence-detail-grid",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "decision",
+          "pattern": "compact-decision-band",
+          "role": "Risk",
+          "level": "feature"
+        },
+        {
+          "section": "delivery",
+          "pattern": "closing-next-step",
+          "role": "Action",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "support"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "decision first",
+          "cohort evidence forward",
+          "aggregate metrics in support"
+        ],
+        "negative_identity": "KPI scorecard",
+        "density": "dense",
+        "hierarchy": {
+          "strongest_salience": [
+            "detailed_evidence",
+            "primary_analysis",
+            "decision_risk"
+          ],
+          "recipe": "executive",
+          "authority": "layout-preset"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "tight",
+            "betweenGroups": "tight"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "evidence-detail-grid",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "decision",
+              "pattern": "compact-decision-band",
+              "role": "Risk",
+              "level": "feature"
+            },
+            {
+              "section": "delivery",
+              "pattern": "closing-next-step",
+              "role": "Action",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "support"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "evidence-led",
+          "surfaces": [
+            "evidence-detail-grid",
+            "feature-support-analysis",
+            "compact-decision-band"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    },
+    "B-experiment": {
+      "decision_context": {
+        "title": "Conditional experiment readout",
+        "person": "Product experimentation lead and quality owner",
+        "context": "Four week randomized onboarding test with a quality guardrail.",
+        "task": "Choose whether to expand treatment beyond a limited rollout.",
+        "decision": "Continue only as a limited rollout while the quality and retention caveats remain open.",
+        "current_truth": "Treatment conversion is higher in the observed sample; long term retention is unknown.",
+        "tone": "Measured and conditional; sample limits stay adjacent to the treatment evidence.",
+        "misunderstanding": "The trend may be read as proof of durable lift without its sample caveat."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "47d661dc5fb9bb4986f6710f87631b535ea0202be3704135bdfdb0158d3166d1",
+        "input_model_sha256_candidate": "47d661dc5fb9bb4986f6710f87631b535ea0202be3704135bdfdb0158d3166d1",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 9,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "supporting_analysis": 1,
+            "primary_analysis": 1,
+            "detailed_evidence": 1,
+            "narrative_interpretation": 1,
+            "decision_risk": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 1,
+            "ComparisonEngine": 1,
+            "CoreChartEngine": 2,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 548,
+          "evidenceCount": 3,
+          "visualCount": 3,
+          "density": "compact"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "compact-kpi-strip",
+        "narrative-evidence-split",
+        "evidence-detail-grid",
+        "compact-decision-band"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "conditional-evidence",
+        "label": "Conditional evidence",
+        "inferredDirection": "conditional-evidence",
+        "authority": "semantic-auto",
+        "recipeAuthority": "layout-preset",
+        "explicit": false,
+        "directionExplicit": false,
+        "recipeId": "comparison",
+        "requestedLayoutPreset": "comparison",
+        "traits": [
+          "treatment comparison",
+          "caveat beside evidence",
+          "conditional decision close"
+        ],
+        "negativeIdentity": "chart showcase",
+        "density": {
+          "evidence": "compact",
+          "spacing": "compact"
+        },
+        "focus": {
+          "primaryRoles": [
+            "primary_analysis",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "decision_risk"
+          ],
+          "supportRoles": [
+            "report_headline",
+            "context",
+            "hero_metric",
+            "detailed_evidence",
+            "causal_evidence",
+            "action_status",
+            "conclusion"
+          ]
+        },
+        "prominence": {
+          "primary_analysis": 1.18,
+          "supporting_analysis": 1.16,
+          "narrative_interpretation": 1.16,
+          "decision_risk": 1.12,
+          "hero_metric": 0.82
+        },
+        "sectionTreatment": {
+          "mode": "paired-caveat",
+          "surfaces": [
+            "conditional-evidence-pair",
+            "compact-decision-band"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "standard",
+          "betweenGroups": "clear"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "earned"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 9,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "supporting_analysis": 1,
+            "primary_analysis": 1,
+            "detailed_evidence": 1,
+            "narrative_interpretation": 1,
+            "decision_risk": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 1,
+            "ComparisonEngine": 1,
+            "CoreChartEngine": 2,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 548,
+          "evidenceCount": 3,
+          "visualCount": 3,
+          "density": "compact"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "conditional-evidence-pair",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "conditional-evidence-pair",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "conditional-evidence-pair",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "evidence-detail-grid",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "decision",
+          "pattern": "compact-decision-band",
+          "role": "Risk",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "support"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "treatment comparison",
+          "caveat beside evidence",
+          "conditional decision close"
+        ],
+        "negative_identity": "chart showcase",
+        "density": "compact",
+        "hierarchy": {
+          "strongest_salience": [
+            "primary_analysis",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "decision_risk"
+          ],
+          "recipe": "comparison",
+          "authority": "semantic-auto"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "standard",
+            "betweenGroups": "clear"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "conditional-evidence-pair",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "conditional-evidence-pair",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "conditional-evidence-pair",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "evidence-detail-grid",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "decision",
+              "pattern": "compact-decision-band",
+              "role": "Risk",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "support"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "paired-caveat",
+          "surfaces": [
+            "conditional-evidence-pair",
+            "compact-decision-band"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "compact",
+          "spacing": "compact"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    },
+    "C-causal": {
+      "decision_context": {
+        "title": "Causal yield investigation",
+        "person": "Process engineer, equipment owner, and lot disposition lead",
+        "context": "Affected lot compared with spatial and paired reference evidence.",
+        "task": "Determine the containment needed before lot release.",
+        "decision": "Contain the affected lot until chamber verification agrees with the paired reference run.",
+        "current_truth": "The local yield loss aligns with chamber drift; causal certainty remains under verification.",
+        "tone": "Investigative, traceable, and explicit about what is verified.",
+        "misunderstanding": "A shared headline weight could imply the mechanism is already proven."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "f7ad6628b28e737563f86b354afd877ee16dab239aa037e6112d3c6ba0fa7325",
+        "input_model_sha256_candidate": "f7ad6628b28e737563f86b354afd877ee16dab239aa037e6112d3c6ba0fa7325",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "primary_analysis": 3,
+            "detailed_evidence": 2,
+            "causal_evidence": 1,
+            "narrative_interpretation": 1,
+            "action_status": 1
+          },
+          "engineCounts": {
+            "TextEngine": 2,
+            "MetricEngine": 1,
+            "ComparisonEngine": 1,
+            "WaferFabEngine": 2,
+            "EngineeringChartEngine": 1,
+            "CoreChartEngine": 1,
+            "TableEngine": 1,
+            "DiagramEngine": 1,
+            "EvidenceCompositeEngine": 1,
+            "ProjectCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 210,
+          "evidenceCount": 6,
+          "visualCount": 6,
+          "density": "dense"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "compact-kpi-strip",
+        "feature-support-analysis",
+        "causal-flow-feature",
+        "closing-next-step"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "causal-investigation",
+        "label": "Causal investigation",
+        "inferredDirection": "causal-investigation",
+        "authority": "layout-preset",
+        "recipeAuthority": "layout-preset",
+        "explicit": true,
+        "directionExplicit": false,
+        "recipeId": "investigation",
+        "requestedLayoutPreset": "investigation",
+        "traits": [
+          "causal flow as feature",
+          "spatial evidence contained",
+          "action adjacent to findings"
+        ],
+        "negativeIdentity": "generic chart gallery",
+        "density": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "focus": {
+          "primaryRoles": [
+            "causal_evidence",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "supportRoles": [
+            "report_headline",
+            "context",
+            "hero_metric",
+            "primary_analysis",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "conclusion"
+          ]
+        },
+        "prominence": {
+          "causal_evidence": 1.3,
+          "detailed_evidence": 1.2,
+          "action_status": 1.16,
+          "hero_metric": 0.84
+        },
+        "sectionTreatment": {
+          "mode": "causal-chain",
+          "surfaces": [
+            "causal-flow-feature",
+            "evidence-detail-grid",
+            "closing-next-step"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "tight",
+          "betweenGroups": "tight"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "earned"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "primary_analysis": 3,
+            "detailed_evidence": 2,
+            "causal_evidence": 1,
+            "narrative_interpretation": 1,
+            "action_status": 1
+          },
+          "engineCounts": {
+            "TextEngine": 2,
+            "MetricEngine": 1,
+            "ComparisonEngine": 1,
+            "WaferFabEngine": 2,
+            "EngineeringChartEngine": 1,
+            "CoreChartEngine": 1,
+            "TableEngine": 1,
+            "DiagramEngine": 1,
+            "EvidenceCompositeEngine": 1,
+            "ProjectCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 210,
+          "evidenceCount": 6,
+          "visualCount": 6,
+          "density": "dense"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "delivery",
+          "pattern": "closing-next-step",
+          "role": "Action",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "feature-support-analysis",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "support"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "causal flow as feature",
+          "spatial evidence contained",
+          "action adjacent to findings"
+        ],
+        "negative_identity": "generic chart gallery",
+        "density": "dense",
+        "hierarchy": {
+          "strongest_salience": [
+            "causal_evidence",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "recipe": "investigation",
+          "authority": "layout-preset"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "tight",
+            "betweenGroups": "tight"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "delivery",
+              "pattern": "closing-next-step",
+              "role": "Action",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "feature-support-analysis",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "support"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "causal-chain",
+          "surfaces": [
+            "causal-flow-feature",
+            "evidence-detail-grid",
+            "closing-next-step"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    },
+    "D-technical": {
+      "decision_context": {
+        "title": "Dense operating review",
+        "person": "Shift operations lead and reliability engineering",
+        "context": "Line 4 shift, control chart, evidence table, and open release actions.",
+        "task": "Review operating evidence together and decide whether capacity can be released.",
+        "decision": "Keep the recipe locked until the paired-lot check closes both open items.",
+        "current_truth": "The overnight trend recovered; the next paired-lot result is still pending.",
+        "tone": "Compact, technical, and scannable without hiding supporting evidence.",
+        "misunderstanding": "Large gaps may separate the decision from the operating evidence that qualifies it."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "3befadde73ee6f1ce8f1181ce142ed73e1aadf79a544e9757cad9975e5d456b5",
+        "input_model_sha256_candidate": "3befadde73ee6f1ce8f1181ce142ed73e1aadf79a544e9757cad9975e5d456b5",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "supporting_analysis": 1,
+            "primary_analysis": 1,
+            "detailed_evidence": 2,
+            "causal_evidence": 1,
+            "decision_risk": 1,
+            "action_status": 1,
+            "narrative_interpretation": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 2,
+            "CoreChartEngine": 1,
+            "EngineeringChartEngine": 1,
+            "TableEngine": 1,
+            "DiagramEngine": 1,
+            "EvidenceCompositeEngine": 1,
+            "DecisionCompositeEngine": 1,
+            "ProjectCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 550,
+          "evidenceCount": 5,
+          "visualCount": 4,
+          "density": "dense"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "compact-kpi-strip",
+        "narrative-evidence-split",
+        "causal-flow-feature",
+        "compact-decision-band",
+        "closing-next-step"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "dense-operations",
+        "label": "Dense operations",
+        "inferredDirection": "dense-operations",
+        "authority": "layout-preset",
+        "recipeAuthority": "layout-preset",
+        "explicit": true,
+        "directionExplicit": false,
+        "recipeId": "technical",
+        "requestedLayoutPreset": "technical",
+        "traits": [
+          "evidence grouped for scanning",
+          "tight within-group rhythm",
+          "decision held near operating evidence"
+        ],
+        "negativeIdentity": "dashboard with blank bands",
+        "density": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "focus": {
+          "primaryRoles": [
+            "primary_analysis",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "supportRoles": [
+            "report_headline",
+            "context",
+            "hero_metric",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "causal_evidence",
+            "conclusion"
+          ]
+        },
+        "prominence": {
+          "primary_analysis": 1.14,
+          "detailed_evidence": 1.16,
+          "decision_risk": 1.12,
+          "action_status": 1.08,
+          "hero_metric": 0.86
+        },
+        "sectionTreatment": {
+          "mode": "scan-dense",
+          "surfaces": [
+            "feature-support-analysis",
+            "evidence-detail-grid",
+            "compact-decision-band"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "title",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "tight",
+          "betweenGroups": "tight"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "open"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "hero_metric": 2,
+            "supporting_analysis": 1,
+            "primary_analysis": 1,
+            "detailed_evidence": 2,
+            "causal_evidence": 1,
+            "decision_risk": 1,
+            "action_status": 1,
+            "narrative_interpretation": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "MetricEngine": 2,
+            "CoreChartEngine": 1,
+            "EngineeringChartEngine": 1,
+            "TableEngine": 1,
+            "DiagramEngine": 1,
+            "EvidenceCompositeEngine": 1,
+            "DecisionCompositeEngine": 1,
+            "ProjectCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 550,
+          "evidenceCount": 5,
+          "visualCount": 4,
+          "density": "dense"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "dense-evidence-grid",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "dense-evidence-grid",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "dense-evidence-grid",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "decision",
+          "pattern": "compact-decision-band",
+          "role": "Risk",
+          "level": "feature"
+        },
+        {
+          "section": "delivery",
+          "pattern": "closing-next-step",
+          "role": "Action",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "performance",
+          "pattern": "compact-kpi-strip",
+          "role": "Supporting Evidence",
+          "level": "support"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "evidence grouped for scanning",
+          "tight within-group rhythm",
+          "decision held near operating evidence"
+        ],
+        "negative_identity": "dashboard with blank bands",
+        "density": "dense",
+        "hierarchy": {
+          "strongest_salience": [
+            "primary_analysis",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "recipe": "technical",
+          "authority": "layout-preset"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "tight",
+            "betweenGroups": "tight"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "dense-evidence-grid",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "dense-evidence-grid",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "dense-evidence-grid",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "decision",
+              "pattern": "compact-decision-band",
+              "role": "Risk",
+              "level": "feature"
+            },
+            {
+              "section": "delivery",
+              "pattern": "closing-next-step",
+              "role": "Action",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "performance",
+              "pattern": "compact-kpi-strip",
+              "role": "Supporting Evidence",
+              "level": "support"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "scan-dense",
+          "surfaces": [
+            "feature-support-analysis",
+            "evidence-detail-grid",
+            "compact-decision-band"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "title",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    },
+    "E-holdout-mixed": {
+      "decision_context": {
+        "title": "Fresh mixed evidence holdout",
+        "person": "Regional cold-chain planner and depot operations",
+        "context": "Fresh synthetic delivery-capacity review with trend, allocation, comparison, and lead-time evidence.",
+        "task": "Allocate reserve capacity across three depots while one supplier date remains unconfirmed.",
+        "decision": "Reserve qualified stock for the constrained route and keep the uncertain supplier allocation provisional.",
+        "current_truth": "Demand exceeds the confirmed buffer in two weeks; one lead-time estimate is not yet committed.",
+        "tone": "Operational and constraint led, with comparison and next action kept together.",
+        "misunderstanding": "A point estimate could be mistaken for committed capacity while one date is provisional."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "73f7998c158effe5c2fbcd7f17c32668445be1260365fe81690f072c536f6767",
+        "input_model_sha256_candidate": "73f7998c158effe5c2fbcd7f17c32668445be1260365fe81690f072c536f6767",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "primary_analysis": 1,
+            "supporting_analysis": 1,
+            "hero_metric": 3,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "causal_evidence": 1,
+            "report_headline": 1,
+            "context": 2,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "CoreChartEngine": 2,
+            "MetricEngine": 2,
+            "ComparisonEngine": 1,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1,
+            "DiagramEngine": 1,
+            "TextEngine": 4
+          },
+          "rowCount": 15,
+          "textLength": 538,
+          "evidenceCount": 4,
+          "visualCount": 4,
+          "density": "dense"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "compact-kpi-strip",
+        "narrative-evidence-split",
+        "causal-flow-feature",
+        "compact-decision-band",
+        "closing-next-step"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "allocation-comparison",
+        "label": "Allocation comparison",
+        "inferredDirection": "allocation-comparison",
+        "authority": "layout-preset",
+        "recipeAuthority": "layout-preset",
+        "explicit": true,
+        "directionExplicit": false,
+        "recipeId": "comparison",
+        "requestedLayoutPreset": "comparison",
+        "traits": [
+          "comparison as feature",
+          "constraints grouped with evidence",
+          "next action follows headroom"
+        ],
+        "negativeIdentity": "isolated metric tiles",
+        "density": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "focus": {
+          "primaryRoles": [
+            "primary_analysis",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "supportRoles": [
+            "report_headline",
+            "context",
+            "hero_metric",
+            "supporting_analysis",
+            "narrative_interpretation",
+            "causal_evidence",
+            "conclusion"
+          ]
+        },
+        "prominence": {
+          "primary_analysis": 1.18,
+          "detailed_evidence": 1.16,
+          "decision_risk": 1.12,
+          "action_status": 1.12,
+          "hero_metric": 0.9
+        },
+        "sectionTreatment": {
+          "mode": "constraint-pair",
+          "surfaces": [
+            "allocation-comparison",
+            "allocation-evidence-grid",
+            "evidence-detail-grid",
+            "closing-next-step"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "tight",
+          "betweenGroups": "tight"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "earned"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 12,
+          "roleCounts": {
+            "primary_analysis": 1,
+            "supporting_analysis": 1,
+            "hero_metric": 3,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "causal_evidence": 1,
+            "report_headline": 1,
+            "context": 2,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "CoreChartEngine": 2,
+            "MetricEngine": 2,
+            "ComparisonEngine": 1,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1,
+            "DiagramEngine": 1,
+            "TextEngine": 4
+          },
+          "rowCount": 15,
+          "textLength": 538,
+          "evidenceCount": 4,
+          "visualCount": 4,
+          "density": "dense"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "performance",
+          "pattern": "allocation-comparison",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "performance",
+          "pattern": "allocation-comparison",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "performance",
+          "pattern": "allocation-comparison",
+          "role": "Supporting Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "allocation-evidence-grid",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "analysis",
+          "pattern": "allocation-evidence-grid",
+          "role": "Supporting Evidence",
+          "level": "support"
+        },
+        {
+          "section": "analysis",
+          "pattern": "allocation-evidence-grid",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "evidence",
+          "pattern": "causal-flow-feature",
+          "role": "Primary Evidence",
+          "level": "support"
+        },
+        {
+          "section": "decision",
+          "pattern": "compact-decision-band",
+          "role": "Risk",
+          "level": "feature"
+        },
+        {
+          "section": "delivery",
+          "pattern": "closing-next-step",
+          "role": "Action",
+          "level": "feature"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "comparison as feature",
+          "constraints grouped with evidence",
+          "next action follows headroom"
+        ],
+        "negative_identity": "isolated metric tiles",
+        "density": "dense",
+        "hierarchy": {
+          "strongest_salience": [
+            "primary_analysis",
+            "detailed_evidence",
+            "decision_risk",
+            "action_status"
+          ],
+          "recipe": "comparison",
+          "authority": "layout-preset"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "tight",
+            "betweenGroups": "tight"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "performance",
+              "pattern": "allocation-comparison",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "performance",
+              "pattern": "allocation-comparison",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "performance",
+              "pattern": "allocation-comparison",
+              "role": "Supporting Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "allocation-evidence-grid",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "analysis",
+              "pattern": "allocation-evidence-grid",
+              "role": "Supporting Evidence",
+              "level": "support"
+            },
+            {
+              "section": "analysis",
+              "pattern": "allocation-evidence-grid",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "evidence",
+              "pattern": "causal-flow-feature",
+              "role": "Primary Evidence",
+              "level": "support"
+            },
+            {
+              "section": "decision",
+              "pattern": "compact-decision-band",
+              "role": "Risk",
+              "level": "feature"
+            },
+            {
+              "section": "delivery",
+              "pattern": "closing-next-step",
+              "role": "Action",
+              "level": "feature"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "constraint-pair",
+          "surfaces": [
+            "allocation-comparison",
+            "allocation-evidence-grid",
+            "evidence-detail-grid",
+            "closing-next-step"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "dense",
+          "spacing": "dense"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    },
+    "F-holdout-sparse": {
+      "decision_context": {
+        "title": "Fresh sparse release decision",
+        "person": "Quality approver and release manager",
+        "context": "A small evidence packet for a batch release with one unresolved validation result.",
+        "task": "Decide whether to release the batch or hold it for one more sample.",
+        "decision": "Hold the batch until the missing validation sample is reviewed.",
+        "current_truth": "Two checks pass; the third result is unavailable, so the evidence is incomplete.",
+        "tone": "Direct and open, with uncertainty visible before the next step.",
+        "misunderstanding": "The two passing checks could obscure the missing validation result."
+      },
+      "semantic_input": {
+        "input_model_sha256_base": "11531fd71611c375916e721328a83cd504f52d5a059fb0576cc131e26945b3b5",
+        "input_model_sha256_candidate": "11531fd71611c375916e721328a83cd504f52d5a059fb0576cc131e26945b3b5",
+        "unchanged": true,
+        "profile_inventory": {
+          "itemCount": 5,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 246,
+          "evidenceCount": 1,
+          "visualCount": 1,
+          "density": "comfortable"
+        }
+      },
+      "base_observed_section_patterns": [
+        "hero-opening-band",
+        "evidence-detail-grid",
+        "compact-decision-band",
+        "closing-next-step"
+      ],
+      "candidate_direction": {
+        "version": 1,
+        "id": "sparse-decision",
+        "label": "Sparse decision",
+        "inferredDirection": "sparse-decision",
+        "authority": "semantic-auto",
+        "recipeAuthority": "semantic-auto",
+        "explicit": false,
+        "directionExplicit": false,
+        "recipeId": "narrative",
+        "requestedLayoutPreset": "editorial",
+        "traits": [
+          "decision statement leads",
+          "evidence stays legible",
+          "open reading rhythm"
+        ],
+        "negativeIdentity": "empty KPI dashboard",
+        "density": {
+          "evidence": "comfortable",
+          "spacing": "comfortable"
+        },
+        "focus": {
+          "primaryRoles": [
+            "report_headline",
+            "decision_risk",
+            "narrative_interpretation",
+            "conclusion"
+          ],
+          "supportRoles": [
+            "context",
+            "hero_metric",
+            "primary_analysis",
+            "supporting_analysis",
+            "detailed_evidence",
+            "causal_evidence",
+            "action_status"
+          ]
+        },
+        "prominence": {
+          "report_headline": 1.12,
+          "decision_risk": 1.2,
+          "narrative_interpretation": 1.14,
+          "conclusion": 1.12,
+          "hero_metric": 0.88
+        },
+        "sectionTreatment": {
+          "mode": "open-decision",
+          "surfaces": [
+            "compact-decision-band",
+            "closing-next-step"
+          ]
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "spacing": {
+          "withinGroup": "open",
+          "betweenGroups": "clear"
+        },
+        "containment": {
+          "sectionRadius": "surface",
+          "featureRadius": "surface",
+          "borderFamily": "soft-surface",
+          "surfaceMode": "open"
+        },
+        "emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        },
+        "inventory": {
+          "itemCount": 5,
+          "roleCounts": {
+            "report_headline": 1,
+            "context": 1,
+            "detailed_evidence": 1,
+            "decision_risk": 1,
+            "conclusion": 1
+          },
+          "engineCounts": {
+            "TextEngine": 3,
+            "TableEngine": 1,
+            "DecisionCompositeEngine": 1
+          },
+          "rowCount": 3,
+          "textLength": 246,
+          "evidenceCount": 1,
+          "visualCount": 1,
+          "density": "comfortable"
+        }
+      },
+      "candidate_observed_plan": [
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Headline",
+          "level": "feature"
+        },
+        {
+          "section": "opening",
+          "pattern": "hero-opening-band",
+          "role": "Context",
+          "level": "support"
+        },
+        {
+          "section": "decision",
+          "pattern": "compact-decision-band",
+          "role": "Risk",
+          "level": "feature"
+        },
+        {
+          "section": "evidence",
+          "pattern": "evidence-detail-grid",
+          "role": "Primary Evidence",
+          "level": "feature"
+        },
+        {
+          "section": "delivery",
+          "pattern": "closing-next-step",
+          "role": "Action",
+          "level": "feature"
+        }
+      ],
+      "candidate_design_readout": {
+        "character": [
+          "decision statement leads",
+          "evidence stays legible",
+          "open reading rhythm"
+        ],
+        "negative_identity": "empty KPI dashboard",
+        "density": "comfortable",
+        "hierarchy": {
+          "strongest_salience": [
+            "report_headline",
+            "decision_risk",
+            "narrative_interpretation",
+            "conclusion"
+          ],
+          "recipe": "narrative",
+          "authority": "semantic-auto"
+        },
+        "spacing_grouping": {
+          "spacing": {
+            "withinGroup": "open",
+            "betweenGroups": "clear"
+          },
+          "sections": [
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Headline",
+              "level": "feature"
+            },
+            {
+              "section": "opening",
+              "pattern": "hero-opening-band",
+              "role": "Context",
+              "level": "support"
+            },
+            {
+              "section": "decision",
+              "pattern": "compact-decision-band",
+              "role": "Risk",
+              "level": "feature"
+            },
+            {
+              "section": "evidence",
+              "pattern": "evidence-detail-grid",
+              "role": "Primary Evidence",
+              "level": "feature"
+            },
+            {
+              "section": "delivery",
+              "pattern": "closing-next-step",
+              "role": "Action",
+              "level": "feature"
+            }
+          ]
+        },
+        "surfaces": {
+          "mode": "open-decision",
+          "surfaces": [
+            "compact-decision-band",
+            "closing-next-step"
+          ]
+        },
+        "data_density_treatment": {
+          "evidence": "comfortable",
+          "spacing": "comfortable"
+        },
+        "typography": {
+          "headline": "hero",
+          "section": "section",
+          "feature": "title",
+          "support": "body"
+        },
+        "semantic_emphasis": {
+          "feature": "accent",
+          "risk": "warn",
+          "favorable": "good",
+          "neutral": "ink"
+        },
+        "responsive_recomposition": {
+          "order": "feature-before-support",
+          "pairedEvidence": "stack-at-narrow",
+          "preserveReadableMinimums": true
+        }
+      }
+    }
+  }
+}
