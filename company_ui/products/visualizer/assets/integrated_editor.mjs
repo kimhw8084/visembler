@@ -30,7 +30,7 @@ import { PERFORMANCE_LIMITS, sampledRows } from './authoring_performance.mjs';
 import { duplicateSelectionPlan, isAdditiveSelectionGesture, selectionLockState, selectionLockPlan, structuralSelectionState, selectionActionEligibility, layerSelectionPlan } from './authoring_selection.mjs';
 import { matchSizePatches } from './authoring_arrange.mjs';
 import { buildCompositionClipboard, pasteCompositionPlan } from './authoring_clipboard.mjs';
-import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection, sectionCompositionPlan, compositionSpacing } from './authoring_composition.mjs';
+import { COMPOSITION_ROLES, COMPOSITION_SECTIONS, VISUAL_DIRECTION_CHOICES, composeReportModel, compositionOrder, compositionProminence, compositionRecipe, compositionRole, compositionSection, sectionCompositionPlan, compositionSpacing, visualDirectorInventory, visualDirectorProfile } from './authoring_composition.mjs';
 import { reuseCapabilities, reuseClipboardLabel } from './authoring_reuse.mjs';
 import { personalPresetSummary, clonePersonalPreset } from './authoring_presets.mjs';
 import { applyReusableRemap, buildReusableBindingContract, normalizedBindingContract, planReusableRemap, reusableStructure } from './authoring_reuse_contract.mjs';
@@ -269,6 +269,15 @@ const ui = {
 };
 
 function model() { return store.model; }
+const visualDirectionCache = new WeakMap();
+function currentVisualDirection(items=model().items) {
+  const preset=model().layoutPreset||'editorial',choice=model().visualDirectionChoice;
+  const cached=visualDirectionCache.get(items),key=`${preset}|${choice??''}`;
+  if(cached?.key===key)return cached.value;
+  const value=visualDirectorProfile(items,{layoutPreset:preset,choice});
+  visualDirectionCache.set(items,{key,value});
+  return value;
+}
 function item(id) { return model().items.find((entry) => entry.id === id); }
 function invalidateResolvedData() { ui.projectionEpoch+=1; ui.resolvedDataCache.clear(); }
 function canvasSize() {
@@ -409,7 +418,8 @@ function semanticPolicy(entry) {
       p={...p,minH:82,prefH:Math.max(96,54+lines*21)};
     }
   }
-  const recipeScale=compositionProminence(entry,model().layoutPreset||'editorial');
+  const direction=currentVisualDirection();
+  const recipeScale=compositionProminence(entry,model().layoutPreset||'editorial',direction);
   p.prefW=Math.min(p.maxW,p.prefW*recipeScale);p.prefH=Math.min(p.maxH,p.prefH*recipeScale);
   const emphasis=defaultEmphasis(entry);
   const scale={compact:.84,standard:1,prominent:1.18,hero:1.38}[emphasis]||1;
@@ -432,7 +442,8 @@ function effectiveWeight(entry) {
     executive:['MetricEngine','ComparisonEngine','DecisionCompositeEngine','TextEngine'],technical:['TableEngine','DiagramEngine','TimelineEngine','EngineeringChartEngine','WaferFabEngine'],scorecard:['MetricEngine','ComparisonEngine','EngineeringChartEngine'],narrative:['TextEngine','ImageMediaEngine','TimelineEngine','EvidenceCompositeEngine'],review:['MetricEngine','CoreChartEngine','TableEngine'],investigation:['TextEngine','EvidenceCompositeEngine','DiagramEngine','TimelineEngine'],manufacturing:['WaferFabEngine','EngineeringChartEngine','MatrixEngine'],roadmap:['TimelineEngine','ProjectCompositeEngine','DecisionCompositeEngine'],comparison:['ComparisonEngine','MetricEngine','CoreChartEngine'],showcase:['ProjectCompositeEngine','MetricEngine','DecisionCompositeEngine','EvidenceCompositeEngine','ImageMediaEngine'],
   }[preset];
   const presetWeight=priority?(priority.includes(entry.engine)?1.18:.92):1;
-  return base*Math.sqrt(advanced)*presetWeight;
+  const directionWeight=Math.max(.7,Math.min(1.35,Number(currentVisualDirection().prominence?.[compositionRole(entry)]??1)));
+  return base*Math.sqrt(advanced)*presetWeight*Math.sqrt(directionWeight);
 }
 function allocateRowWidths(row, innerW, gap, ratios = null) {
   const available=Math.max(1,innerW-gap*(row.length-1));
@@ -460,10 +471,12 @@ function allocateRowWidths(row, innerW, gap, ratios = null) {
   return widths;
 }
 function semanticSmartLayout(items=viewItems()) {
-  const ordered=compositionOrder(items,model().layoutPreset||'editorial');
+  const direction=currentVisualDirection(items);
+  const ordered=compositionOrder(items,model().layoutPreset||'editorial',direction);
   if(!ordered.length)return {rects:[],height:CANVAS.h,conflict:null};
   const g=CANVAS.gap,innerW=Math.max(1,CANVAS.w-2*g),innerH=Math.max(1,CANVAS.h-2*g);
   const preset=model().layoutPreset||'editorial',profiles=Object.fromEntries(ordered.map(entry=>[String(entry.id),semanticPolicy(entry)]));
+  profiles.visualDirection=direction;
   const plans=sectionCompositionPlan(ordered,preset,CANVAS.w,profiles),sectionById=new Map(plans.map(section=>[section.id,section]));
   const rowInputs=plans.flatMap(section=>section.rows.map(value=>({...value,items:value.ids.map(id=>ordered.find(entry=>String(entry.id)===id)).filter(Boolean)})));
   const rows=rowInputs.map(spec=>({...spec,members:spec.items.map(entry=>({entry,policy:profiles[String(entry.id)]}))}));
@@ -491,7 +504,7 @@ function semanticSmartLayout(items=viewItems()) {
     }
     return {w:innerW,h:Math.min(innerH,Math.max(policy.minH,policy.prefH))};
   };
-  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length});
+  const spacing=compositionSpacing({density:model().density||direction.density.spacing,itemCount:ordered.length,direction:direction.id});
   const rowSpecs=rows.map((spec,index)=>{
     const widths=allocateRowWidths(spec.members,innerW,g,spec.ratios);
     const fitSizes=spec.members.map(({policy},i)=>policy.aspect||policy.growth==='square'?fitToHull(policy,widths[i],Math.max(policy.minH,policy.prefH)):{w:widths[i],h:Math.max(policy.minH,policy.prefH)});
@@ -1180,15 +1193,16 @@ function renderCompositionSectionSurfaces(rm) {
   const layer=$('#compositionSectionSurfaceLayer');if(!layer)return;
   layer.querySelectorAll('.composition-section-surface').forEach(node=>node.remove());
   if(model().mode!=='smart')return;
+  const direction=currentVisualDirection();
   const grouped=new Map();
   for(const rect of rm.values()){
-    if(!rect.section||!['hero-opening-band','compact-kpi-strip','feature-support-analysis','balanced-analytical-pair','evidence-detail-grid','narrative-evidence-split','causal-flow-feature'].includes(rect.sectionPattern))continue;
+    if(!rect.section||!direction.sectionTreatment.surfaces.includes(rect.sectionPattern))continue;
     if(!grouped.has(rect.section))grouped.set(rect.section,[]);grouped.get(rect.section).push(rect);
   }
   for(const [section,rects] of grouped){
     const bounds=rectUnion(rects);if(!bounds)continue;
-    const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length}),heading=spacing.headingHeight;
-    const surface=document.createElement('div');surface.className='composition-section-surface';surface.dataset.pattern=rects[0].sectionPattern;surface.setAttribute('aria-hidden','true');
+    const spacing=compositionSpacing({density:model().density||direction.density.spacing,itemCount:model().items.length,direction:direction.id}),heading=spacing.headingHeight;
+    const surface=document.createElement('div');surface.className='composition-section-surface';surface.dataset.pattern=rects[0].sectionPattern;surface.dataset.direction=direction.id;surface.dataset.containment=direction.containment.surfaceMode;surface.setAttribute('aria-hidden','true');
     const left=Math.max(2,Math.min(bounds.x-12,CANVAS.w-4));
     surface.style.left=`${left}px`;surface.style.top=`${Math.max(2,bounds.y-heading-7)}px`;
     surface.style.width=`${Math.max(1,Math.min(bounds.w+24,CANVAS.w-4-left))}px`;surface.style.height=`${bounds.h+heading+19}px`;
@@ -1207,17 +1221,21 @@ function syncComponentSectionHeading(node,rect,entry) {
     }
     node.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
     node.dataset.compositionLevel=rect.compositionLevel||'feature';
+    const direction=currentVisualDirection();
+    node.dataset.compositionFocus=direction.focus.primaryRoles.includes(compositionRole(entry))?'primary':'support';
   } else {
     delete node.dataset.sectionStart;
     delete node.dataset.sectionTitle;
     delete node.dataset.sectionPattern;
     delete node.dataset.compositionLevel;
+    delete node.dataset.compositionFocus;
   }
 }
 
 function syncCompositionSectionHeadings(layer,rm) {
   if(!layer)return;
-  const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:model().items.length});
+  const direction=currentVisualDirection();
+  const spacing=compositionSpacing({density:model().density||direction.density.spacing,itemCount:model().items.length,direction:direction.id});
   layer.style.setProperty('--viz-composition-row-gap',`${spacing.stackGap}px`);
   layer.querySelectorAll('.composition-section-heading').forEach(node=>node.remove());
   if(model().mode!=='smart')return;
@@ -1233,6 +1251,7 @@ function syncCompositionSectionHeadings(layer,rm) {
     heading.style.order=String(Number.isFinite(Number(rect.sectionHeadingOrder))?Number(rect.sectionHeadingOrder)*2:Number.isFinite(Number(rect.order))?Number(rect.order)*2:Math.floor(Number(entry?.order)||0)*2);
     heading.dataset.section=rect.section||'';
     heading.dataset.sectionPattern=rect.sectionPattern||'editorial-flow';
+    heading.dataset.direction=direction.id;
     layer.appendChild(heading);
   }
 }
@@ -1889,13 +1908,32 @@ function renderInspector() {
 function renderCanvasInspector(p) {
   const pf = preflight();
   const size=canvasSize();
-  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row page-size-row"><span>Page size <b>${size.width} × ${size.height}</b></span><button class="tb" id="inspectorPageSize" aria-label="Change page size">Change</button></div><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}`;
+  const direction=currentVisualDirection();
+  p.innerHTML = `<div class="inspector-identity"><span>Report</span><b>Canvas</b></div>${inspectorSection('Overview',`<div class="info-row"><span>Mode</span><b>${model().mode[0].toUpperCase()+model().mode.slice(1)}</b></div><div class="info-row"><span>Visual direction</span><b>${esc(direction.label)}</b></div><div class="info-row page-size-row"><span>Page size <b>${size.width} × ${size.height}</b></span><button class="tb" id="inspectorPageSize" aria-label="Change page size">Change</button></div><div class="info-row"><span>Elements</span><b>${model().items.length}</b></div><div class="info-row"><span>Layout warnings</span><b>${pf.warnings.length}</b></div><div class="info-row"><span>Locked</span><b>${model().items.filter((entry)=>entry.locked).length}</b></div>`)}`;
   $('#inspectorPageSize')?.addEventListener('click',openPageSize);
+}
+
+function syncVisualDirectorRoot() {
+  if(!activeRoot)return;
+  const direction=currentVisualDirection();
+  activeRoot.dataset.visualDirection=direction.id;
+  activeRoot.dataset.visualDirectionAuthority=direction.authority;
+  activeRoot.dataset.visualDirectionRecipe=direction.recipeId;
+  activeRoot.dataset.visualDensity=direction.inventory.density;
+}
+
+function visualDirectionPanelMarkup() {
+  const profile=currentVisualDirection(),choice=model().visualDirectionChoice;
+  const selected=choice==='auto'||VISUAL_DIRECTION_CHOICES.some(value=>value.id===choice)?choice:'auto';
+  const provenance=selected==='auto'?'Recommended from the selected layout recipe and composition/evidence shape.':'Your direction choice.';
+  const summary=`${profile.traits.join(' · ')}. Negative identity: ${profile.negativeIdentity}. Density: ${profile.inventory.density}.`;
+  return `<div class="preset-direction"><label for="visualDirectionSelect">Whole-report direction</label><select id="visualDirectionSelect" aria-describedby="visualDirectionHelp"><option value="auto" ${selected==='auto'?'selected':''}>Auto recommendation</option>${VISUAL_DIRECTION_CHOICES.map(value=>`<option value="${esc(value.id)}" ${selected===value.id?'selected':''}>${esc(value.label)}</option>`).join('')}</select><small id="visualDirectionHelp">${esc(profile.label)} · ${esc(provenance)} ${esc(summary)}</small></div>`;
 }
 
 function renderAll() {
   const focusedComponentId=document.activeElement?.matches?.('.component')?document.activeElement.dataset.id:null;
   if(!ui.pointerSession)clearTransientInteractionVisuals('render-idle');
+  syncVisualDirectorRoot();
   let pass=0; let changed=false;
   do {
     reconcileCanvas({ content: true });
@@ -2356,6 +2394,11 @@ function applySuggestion(preset) {
   const accepted=commitOps('Apply built-in preset',[{op:'model.replace',value:next}],{announce:`${preset[0].toUpperCase()+preset.slice(1)} composition applied`});
   if(accepted){ui.selected.clear();activeRoot?.setAttribute('data-active-preset',preset);renderPresetList();}
   return accepted;
+}
+function setVisualDirection(choice) {
+  if(choice!=='auto'&&!VISUAL_DIRECTION_CHOICES.some(value=>value.id===choice))return;
+  if(choice===model().visualDirectionChoice)return;
+  if(commitOps('Set whole-report direction',[{op:'model.patch',patch:{visualDirectionChoice:choice}}]))renderPresetList();
 }
 function autoLayout() { cancelPointerSession('reflow');clearTransientInteractionVisuals('reflow');const next=composeReportModel(parseCanonical(store.serialize()),model().layoutPreset||'editorial');commitOps('Compose report',[{op:'model.replace',value:next}],{announce:'Smart composition reapplied'}); }
 function setCanvasSize(width, height) {
@@ -3100,9 +3143,9 @@ function renderPresetList(){
   syncPresetSelectionAction();
   const kind=String($('#presetKindFilter')?.value||'all');
   const built=$('#builtinPresetList');
-  if(built)built.innerHTML=kind==='section'
+  if(built)built.innerHTML=visualDirectionPanelMarkup()+(kind==='section'
     ?'<div class="keyboard-help">Built-in presets are full-report layouts. Switch to All or Reports to use them.</div>'
-    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy">${presetPreviewMarkup(p.id)}<b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}" ${model().layoutPreset===p.id?'disabled title="This preset is already applied"':''}>${model().layoutPreset===p.id?'Applied':'Apply'}</button></div>`).join('');
+    :builtInPresets.map((p)=>`<div class="preset"><div class="preset-copy">${presetPreviewMarkup(p.id)}<b>${esc(p.name)}</b><small>${esc(p.description)}</small></div><button class="mini-btn" data-built-preset="${p.id}" ${model().layoutPreset===p.id?'disabled title="This preset is already applied"':''}>${model().layoutPreset===p.id?'Applied':'Apply'}</button></div>`).join(''));
   const host=$('#presetList');if(!host)return;
   const query=ui.presetQuery.trim().toLowerCase(),shown=personalPresets.filter(p=>(kind==='all'||p.kind===kind)&&(!query||p.name.toLowerCase().includes(query)));
   host.innerHTML=shown.length?shown.map((p)=>{
@@ -3542,7 +3585,7 @@ function wireGlobal(signal) {
   on($('#pasteDataBtn'),'click',()=>openDataFirstDialog());
   on($('#blankStartSurface'),'click',(event)=>{const action=event.target.closest('[data-blank-action]')?.dataset.blankAction;if(action==='paste')openDataFirstDialog();if(action==='library'){setLibrary(true);requestAnimationFrame(()=>$('#componentSearch')?.focus());}});
   $$('.pal').forEach((p)=>{p.draggable=true;on(p,'click',()=>addComponent(p.dataset.type));on(p,'dragstart',(e)=>{e.dataTransfer.setData('application/x-viz-type',p.dataset.type);e.dataTransfer.effectAllowed='copy';});});
-  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();}); on($('#presetKindFilter'),'change',renderPresetList);
+  $$('[data-library-tab]').forEach((button)=>on(button,'click',()=>setLibraryTab(button.dataset.libraryTab))); on($('#presetSearch'),'input',(event)=>{ui.presetQuery=event.target.value;renderPresetList();}); on($('#presetKindFilter'),'change',renderPresetList);on($('#builtinPresetList'),'change',(event)=>{const select=event.target.closest('#visualDirectionSelect');if(select)setVisualDirection(select.value);});
   on($('#componentSearch'),'input',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#engineFilter'),'change',()=>{ui.libraryLimit=60;renderLibrary();}); on($('#libraryMore'),'click',()=>{ui.libraryLimit+=60;renderLibrary();});
   const libraryClick=(e)=>{const favorite=e.target.closest('[data-favorite]');if(favorite){e.preventDefault();e.stopPropagation();return toggleFavorite(favorite.dataset.favorite);}const block=e.target.closest('[data-element][data-engine]');if(block)addLibraryElement(block.dataset.element,block.dataset.engine);};
   const libraryDrag=(e)=>{const block=e.target.closest('[data-element][data-engine]');if(!block)return;e.dataTransfer.setData('application/x-viz-element',JSON.stringify({element:block.dataset.element,engine:block.dataset.engine}));e.dataTransfer.effectAllowed='copy';};
@@ -3597,7 +3640,7 @@ function init(root=$('.cui-visualizer-root')) {
   activeRoot.dataset.editorReady='true';
   const stagePanel=new URLSearchParams(location.search).get('panel');
   if(['assets','datasets','blueprints','roles','delivery'].includes(stagePanel))requestAnimationFrame(()=>stageDOpen(stagePanel));
-  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),layoutRects:()=>committedRects().map(({id,x,y,w,h,policy,section,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionPattern,compositionLevel,order,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
+  window.__VIZ_PROD__={store,ui,preflight,buildSelfTest,serialize:()=>store.serialize(),visualDirection:()=>currentVisualDirection(),visualDirectorInventory:()=>visualDirectorInventory(model().items),setVisualDirection,layoutRects:()=>committedRects().map(({id,x,y,w,h,policy,section,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionPattern,compositionLevel,order,growth:policy?.growth,contentFit:policy?.contentFit,role:suggestMessageRole(item(id))})),layoutGeometry:()=>{const items=committedRects().map(({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order})=>({id,x,y,w,h,section,sectionStart,sectionHeadingY,sectionHeadingOrder,sectionPattern,compositionLevel,order}));return {canvas:{width:CANVAS.w,height:CANVAS.h},items};},placementGhost:()=>{const ghost=$('#dropGhost');if(!ghost||ghost.hidden||getComputedStyle(ghost).display==='none')return null;const rect=ghost.getBoundingClientRect();return {x:parseFloat(ghost.style.left)||0,y:parseFloat(ghost.style.top)||0,w:parseFloat(ghost.style.width)||0,h:parseFloat(ghost.style.height)||0,screenX:rect.left,screenY:rect.top,screenW:rect.width,screenH:rect.height,mode:ghost.dataset.placementMode||''};},setTheme:(theme)=>{const value=['dark','corporate'].includes(theme)?theme:'light';document.documentElement.setAttribute('data-theme',value);activeRoot?.setAttribute('data-theme',value);},cancelPointerSession,renderAll,renderGeometryOnly,setZoom,fitZoom,setInspector,addLibraryElement,renderLibrary,snapDelta,snapResizeRect,exportSvgMarkup,stageDOpenIntake,stageDOpen,stageDCleanLayout,stageDOpenBlueprints:()=>stageDOpen('blueprints'),stageDOpenRoles:()=>stageDOpen('roles'),stageDOpenDelivery:()=>stageDOpen('delivery'),stageDContentPlan:(text)=>contentIntakePlan(text),stageDFitSummary:()=>contentFitSummary(model()),stageDCommands:STAGE_D_COMMANDS};
   if(new URLSearchParams(location.search).get('qa')==='1')setTimeout(buildSelfTest,120); return true;
 }
 function installRootObserver(){if(window.__CUI_VISUALIZER_ROOT_OBSERVER__)return;const observer=new MutationObserver(()=>{const root=$('.cui-visualizer-root');if(root&&root!==activeRoot)init(root);});observer.observe(document.documentElement,{subtree:true,childList:true});window.__CUI_VISUALIZER_ROOT_OBSERVER__=observer;}

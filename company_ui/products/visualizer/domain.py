@@ -65,6 +65,8 @@ def canonical_model(value: Mapping[str, Any] | None = None) -> dict[str, Any]:
             dataset.setdefault('row_count', len(dataset.get('rows') or []))
     canvas=_canonical_canvas(src.get('canvas'))
     model={'schema_version':SCHEMA_VERSION,'authoring_schema':AUTHORING_SCHEMA,'datasets':datasets,'items':json.loads(json.dumps(items)),'groups':json.loads(json.dumps(groups)),'mode':mode,'layoutPreset':str(src.get('layoutPreset') or 'editorial'),'crossFilter':src.get('crossFilter'),'canvas':canvas,'nextId':next_id}
+    if 'visualDirectionChoice' in src:
+        model['visualDirectionChoice'] = src['visualDirectionChoice']
     # Compound filters are an additive v1 projection.  Preserve them when
     # present so a server bootstrap cannot collapse a visible compound
     # session to the first predicate while retaining the full DataSession.
@@ -110,6 +112,8 @@ def validate_model(model: Mapping[str, Any]) -> None:
     if model['canvas'] != _canonical_canvas(model['canvas']): raise VisualizerContractError('invalid canvas dimensions')
     if not isinstance(model['items'], list) or not isinstance(model['groups'], Mapping) or not isinstance(model['datasets'], list): raise VisualizerContractError('invalid items/groups/datasets')
     if not isinstance(model['nextId'], int) or model['nextId'] < 1: raise VisualizerContractError('nextId must be positive integer')
+    if 'visualDirectionChoice' in model and (not isinstance(model['visualDirectionChoice'], str) or not model['visualDirectionChoice'] or len(model['visualDirectionChoice']) > 64):
+        raise VisualizerContractError('visualDirectionChoice must be a short string when present')
     dataset_ids=set()
     for dataset in model['datasets']:
         if not isinstance(dataset, Mapping): raise VisualizerContractError('every dataset must be object')
