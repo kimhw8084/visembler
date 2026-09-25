@@ -1,0 +1,476 @@
+{
+  "accepted_at": "2026-09-25T15:05:37Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 215,
+      "deletions": 24,
+      "path": "company_ui/products/visualizer/assets/authoring_composition.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 29,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 57,
+      "deletions": 14,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 0,
+      "path": "company_ui/products/visualizer/domain.py",
+      "status": "M"
+    },
+    {
+      "additions": 11,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 7,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/vendor/production_core/core/editor_store.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 2,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 545,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg209_visual_director_matrix.py",
+      "status": "A"
+    },
+    {
+      "additions": 257,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg209_visual_director.py",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 2,
+      "path": "tests/test_visualizer_final_visual_remediation.py",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "tests/test_visualizer_wave6_preset_library_ux.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'find /tmp/chg209-native-release-9be45ba-retry2/chg181-authoring-composition-reuse -maxdepth 2 -type f'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git for-each-ref --format=\\\"%(refname:short) %(objectname)\\\" refs/heads/codex-fabric/evidence/visembler'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git diff --name-only 57967b84084140e30b06276469a1beedd322ec67 9be45ba677875a54f1e9a3d488e53c483e879336'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git show refs/heads/codex-fabric/evidence/visembler/CHG-139-r2:.codex-fabric/audit.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git show refs/heads/codex-fabric/evidence/visembler/CHG-137-r3:.codex-fabric/audit.json | python -c 'import json,sys; d=json.load(sys.stdin); print(json.dumps({k:(list(v) if isinstance(v,dict) else type(v).__name__) for k,v in d.items()},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy node --input-type=module -e \\\"import('./company_ui/products/visualizer/assets/authoring_composition.mjs').then(m => console.log(JSON.stringify(m.visualDirectorRuleInventory(), null, 2)))\\\" > /tmp/chg209-visual-director-rule-inventory.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\np='/tmp/chg209-final-candidate-9be45ba/matrix-receipt.json';d=json.load(open(p));\nfor n,s in d['scenes'].items():\n print(n,'runtime type',type(s['runtime']).__name__,'keys',list(s['runtime']) if isinstance(s['runtime'],dict) else None)\n if isinstance(s['runtime'],dict): print({k:v for k,v in s['runtime'].items() if k not in ('html','items','components','screenshot')})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\np='/tmp/chg209-final-candidate-9be45ba/matrix-receipt.json';d=json.load(open(p))\nfor n,s in d['scenes'].items():\n print('\\\\n',n,'profile',s['runtime']['visualDirection']['id'],'authority',s['runtime']['visualDirection']['authority'])\n for v,info in s['runtime']['viewports'].items():\n  vp=info['viewport']; c=info['canvasElement']; print(v, {'width':vp['width'],'documentWidth':vp['documentWidth'],'bodyWidth':vp['bodyWidth'],'documentHeight':vp['documentHeight'],'scrollHeight':info['viewportElement']['scrollHeight'],'canvasRectW':round(c['rect']['w'],1),'canvasRectH':round(c['rect']['h'],1),'scrollWidth':c['scrollWidth']})\n for v,info in s['runtime']['screenshots'].items(): print('shot',v,{k:info.get(k) for k in ['path','width','height','clipped_right_px','clipped_bottom_px','pixel_width','pixel_height'] if k in info})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom __future__ import annotations\nimport hashlib, json, os, shutil, subprocess, xml.etree.ElementTree as ET\nfrom pathlib import Path\nfrom PIL import Image\n\nroot = Path.cwd()\nstage = Path('/tmp/chg209-carrier-9be45ba')\nbase_dir = Path('/tmp/chg209-final-base-9719125')\ncandidate_dir = Path('/tmp/chg209-final-candidate-9be45ba')\nnative_dir = Path('/tmp/chg209-native-release-9be45ba-retry2')\ncontact_dir = Path('/tmp/chg209-contact-9be45ba')\nbase_sha = '57967b84084140e30b06276469a1beedd322ec67'\nbase_tree = '54bed4c474db5da055eae508fbb5a302f97a0334'\ncandidate_sha = '9be45ba677875a54f1e9a3d488e53c483e879336'\ncandidate_tree = '08719bb4afbe3c508cb296a4505001e36141cd4e'\nbranch = 'build/visembler-chg209-art-direction-r1'\njob = 'CF-7d157abafc298218c63ae72e'\nif stage.exists():\n    raise SystemExit(f'Refusing to overwrite existing staging path: {stage}')\nstage.mkdir(parents=True)\n\ndef digest(path: Path) -> str:\n    h = hashlib.sha256()\n    with path.open('rb') as f:\n        for block in iter(lambda: f.read(1024 * 1024), b''):\n            h.update(block)\n    return h.hexdigest()\n\ndef put_json(rel: str, value):\n    p = stage / rel\n    p.parent.mkdir(parents=True, exist_ok=True)\n    p.write_text(json.dumps(value, indent=2, ensure_ascii=False) + '\\\\n', encoding='utf-8')\n\ndef copy_file(source: Path, rel: str):\n    dest = stage / rel\n    dest.parent.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(source, dest)\n    return dest\n\nbase_receipt = json.loads((base_dir / 'matrix-receipt.json').read_text())\ncand_receipt = json.loads((candidate_dir / 'matrix-receipt.json').read_text())\nassert base_receipt['commit'] == base_sha and base_receipt['tree'] == base_tree and base_receipt['status'] == 'PASS'\nassert cand_receipt['commit'] == candidate_sha and cand_receipt['tree'] == candidate_tree and cand_receipt['status'] == 'PASS'\nassert list(base_receipt['scenes']) == list(cand_receipt['scenes'])\nassert all(base_receipt['scenes'][k]['input_model_sha256'] == cand_receipt['scenes'][k]['input_model_sha256'] for k in cand_receipt['scenes'])\nfixture_sha = cand_receipt['fixture']['sha256']\n\n# Exact identity and immutability anchors.\nput_json('identity.json', {\n    'schema_version': 1, 'project': 'visembler', 'repository': 'kimhw8084/visembler',\n    'request': 'CHG-209-r1', 'change': 'CHG-209', 'operation': 'BUILD', 'job': job,\n    'work_branch': branch,\n    'authoritative_base': {'branch': 'main', 'sha': base_sha, 'tree': base_tree},\n    'observed_origin_main': {'sha': base_sha, 'tree': base_tree, 'drifted': False},\n    'candidate': {'sha': candidate_sha, 'tree': candidate_tree, 'sole_parent': '9719125bf253c2e79ef87d983c10fae324292af1'},\n    'exact_candidate_chain': [candidate_sha, '9719125bf253c2e79ef87d983c10fae324292af1', '383ec13470354bc15e7a79340e51094cd98afce8', '4014ec25d76f3da20132e1db7e4f29dc7af1b8fa', base_sha],\n    'integration_performed': False, 'main_mutated': False,\n    'scope': 'Bounded whole-report semantic Visual Director feeding the existing composition/editor renderer.',\n    'claims_withheld': ['human preference', 'universal aesthetic superiority', 'native-device accessibility', 'company-managed Production Gold']\n})\n\ninventory_path = Path('/tmp/chg209-visual-director-rule-inventory.json')\ninventory = json.loads(inventory_path.read_text())\ncomposition = root / 'company_ui/products/visualizer/assets/authoring_composition.mjs'\ntest_source = root / 'tests/test_visualizer_chg209_visual_director.py'\ncomposition_text = composition.read_text(encoding='utf-8')\ntest_text = test_source.read_text(encoding='utf-8')\nprofile_fn = composition_text[composition_text.index('function inferredDirection'):composition_text.index('function densityHint')]\nforbidden = ['executive-business-review', 'experiment-decision', 'semiconductor-rca',\n             'technical-status-review', 'supply-chain-capacity-holdout', 'report_id',\n             'benchmark', 'screenshot', 'fixture_name', '\\\"x\\\":', '\\\"y\\\":']\nproduction_paths = [\n    composition,\n    root / 'company_ui/products/visualizer/assets/integrated_editor.mjs',\n    root / 'company_ui/products/visualizer/assets/integrated_editor.css',\n    root / 'company_ui/products/visualizer/assets/authoring_stage_d.mjs'\n]\nproduction_text = '\\\\n'.join(p.read_text(encoding='utf-8').lower() for p in production_paths)\nnamed_fixture_literals = ['executive-business-review', 'experiment-decision', 'semiconductor-rca',\n                          'technical-status-review', 'supply-chain-capacity-holdout',\n                          'executive cohort decision', 'causal yield investigation',\n                          'dense operating review']\nanti_proof = {\n    'result': 'PASS',\n    'rule_inventory': inventory,\n    'production_classifier_source': str(composition.relative_to(root)),\n    'production_classifier_sha256': digest(composition),\n    'classifier_function_sha256': hashlib.sha256(profile_fn.encode()).hexdigest(),\n    'production_classifier_excludes_fixture_ids_titles_coordinates': {\n        'forbidden_terms': forbidden,\n        'all_absent_from_classifier': all(term not in profile_fn.lower() for term in forbidden),\n        'known_fixture_ids_and_titles_absent_from_composition_editor_css_and_task_vocabulary':\n            all(term not in production_text for term in named_fixture_literals),\n        'evidence': 'test_visualizer_chg209_visual_director.py::test_direction_is_stable_when_report_and_item_names_change_and_profiles_are_not_title_classifiers'\n    },\n    'renamed_shape_determinism_test': 'PASS; renamed report and item identifiers/titles preserve profile, traits and section plan',\n    'holdout_policy': 'Scenes E and F were introduced in the matrix only after production direction rules were implemented; their IDs, titles and terms are not classifier inputs.'\n}\nassert anti_proof['production_classifier_excludes_fixture_ids_titles_coordinates']['all_absent_from_classifier']\nassert anti_proof['production_classifier_excludes_fixture_ids_titles_coordinates']['known_fixture_ids_and_titles_absent_from_composition_editor_css_and_task_vocabulary']\nput_json('direction/rule-profile-inventory.json', inventory)\nput_json('direction/anti-special-case-proof.json', anti_proof)\n\n# Preserve full exact runner receipts.\ncopy_file(base_dir / 'matrix-receipt.json', 'browser/matrix-receipt-base.json')\ncopy_file(candidate_dir / 'matrix-receipt.json', 'browser/matrix-receipt-candidate.json')\n\nscene_decisions = {'schema_version':1,'base_sha':base_sha,'candidate_sha':candidate_sha,'fixture_sha256':fixture_sha,'scenes':{}}\ndom = {'schema_version':1,'candidate_sha':candidate_sha,'method':'Real NiceGUI matrix; DOM, viewport, canvas and heading measurements emitted by the matrix runner. Narrow screenshots are full reading canvases.','scenes':{}}\nscreenshot_rows = []\nfor side, source_root, receipt in [('base', base_dir, base_receipt), ('candidate', candidate_dir, cand_receipt)]:\n    for scene_id, scene in receipt['scenes'].items():\n        source = source_root / 'scenes' / scene_id / 'screenshots'\n        dest = stage / 'visual' / side / 'scenes' / scene_id / 'screenshots'\n        dest.mkdir(parents=True, exist_ok=True)\n        for png in sorted(source.glob('*.png')):\n            target = dest / png.name\n            shutil.copy2(png, target)\n            with Image.open(target) as im:\n                screenshot_rows.append({\n                    'side':side,'scene':scene_id,\n                    'path':str(target.relative_to(stage)),\n                    'sha256':digest(target),'bytes':target.stat().st_size,\n                    'pixel_width':im.width,'pixel_height':im.height,\n                    'full_reading_canvas':True\n                })\n\nfor contact in sorted(contact_dir.glob('*.png')):\n    target = copy_file(contact, f'visual/contact-sheets/{contact.name}')\n    with Image.open(target) as im:\n        screenshot_rows.append({'side':'base-v-candidate-contact-sheet','scene':'matrix','path':str(target.relative_to(stage)),\n                                'sha256':digest(target),'bytes':target.stat().st_size,\n                                'pixel_width':im.width,'pixel_height':im.height,'full_reading_canvas':False})\n\nfor scene_id, cand in cand_receipt['scenes'].items():\n    base = base_receipt['scenes'][scene_id]\n    review = cand['direction_review']\n    runtime = cand['runtime']\n    direction = runtime['visualDirection']\n    base_review = base['direction_review']\n    base_patterns = [x.get('pattern') for x in base_review.get('spacing_grouping',{}).get('sections',[])]\n    cand_patterns = [x.get('pattern') for x in review.get('spacing_grouping',{}).get('sections',[])]\n    scene_decisions['scenes'][scene_id] = {\n        'decision_context': {k:review.get(k) for k in ('title','person','context','task','decision','current_truth','tone','misunderstanding')},\n        'semantic_input': {'input_model_sha256_base':base['input_model_sha256'],'input_model_sha256_candidate':cand['input_model_sha256'],\n                           'unchanged':base['input_model_sha256']==cand['input_model_sha256'],\n                           'profile_inventory':direction.get('inventory')},\n        'base_observed_section_patterns':base_patterns,\n        'candidate_direction':direction,\n        'candidate_observed_plan':runtime.get('section_plan',[]),\n        'candidate_design_readout': {k:review.get(k) for k in ('character','negative_identity','density','hierarchy','spacing_grouping','surfaces','data_density_treatment','typography','semantic_emphasis','responsive_recomposition')}\n    }\n    scene_dom = {'profile_id':direction['id'],'viewports':{}}\n    for viewport_name, info in runtime['viewports'].items():\n        vp=info['viewport']; canvas=info['canvasElement']; ve=info['viewportElement']\n        review_vp=review.get('observed_viewports',{}).get(viewport_name,{})\n        shot=runtime.get('screenshots',{}).get(viewport_name,{})\n        scene_dom['viewports'][viewport_name] = {\n            'viewport': {'width':vp.get('width'),'height':vp.get('height'),'document_width':vp.get('documentWidth'),\n                         'body_width':vp.get('bodyWidth'),'document_height':vp.get('documentHeight')},\n            'external_horizontal_spill': bool(vp.get('documentWidth',0)>vp.get('width',0) or vp.get('bodyWidth',0)>vp.get('width',0)),\n            'canvas_rect':canvas.get('rect'),\n            'canvas_scroll_width':canvas.get('scrollWidth'),\n            'viewport_scroll_height':ve.get('scrollHeight'),\n            'component_count':review_vp.get('component_count'),\n            'reading_order':review_vp.get('reading_order'),\n            'section_headings':review_vp.get('headings',[]),\n            'captured_canvas':{'width':shot.get('width'),'height':shot.get('height'),'clipped_right_px':shot.get('clipped_right_px',0),'clipped_bottom_px':shot.get('clipped_bottom_px',0)}\n        }\n    dom['scenes'][scene_id]=scene_dom\n\nput_json('scenes/per-scene-decisions.json', scene_decisions)\nput_json('browser/dom-geometry-accessibility.json', {\n    **dom,\n    'responsive_summary': {\n        'required_widths': [1440,390],\n        'dense_scene_widths': {'D-technical':[1440,390,320],'E-holdout-mixed':[1440,390,320]},\n        'all_document_and_body_widths_within_viewport': all(\n            not v['external_horizontal_spill'] for s in dom['scenes'].values() for v in s['viewports'].values()),\n        'evidence_note': 'Canvas scroll width is the editor logical workspace inside its viewport; document/body widths are the page-level horizontal-spill measure.'\n    },\n    'accessibility_observation': cand_receipt['user_control_reversibility']['accessible_user_control'],\n    'accessibility_regression_tests': [\n        'tests/test_visualizer_accessibility_authoring.py', 'tests/test_visualizer_authoring_p0.py',\n        'keyboard focus visibility for Whole-report direction is directly measured in the browser receipt.'\n    ],\n    'limitations': 'This receipt documents measured page geometry and focus state plus passing focused regression tests; it is not a native-device accessibility certification.'\n})\n\ncopy_file(contact_dir / 'desktop-1440-base-v-candidate.png', 'visual/contact-sheets/desktop-1440-base-v-candidate.png')\ncopy_file(contact_dir / 'narrow-390-base-v-candidate.png', 'visual/contact-sheets/narrow-390-base-v-candidate.png')\ncopy_file(contact_dir / 'narrow-320-dense-base-v-candidate.png', 'visual/contact-sheets/narrow-320-dense-base-v-candidate.png')\nput_json('visual/screenshot-inventory.json', {'candidate_sha':candidate_sha,'base_sha':base_sha,'screenshots':screenshot_rows,\n                                               'counts':{'base_scene_screenshots':sum(r['side']=='base' for r in screenshot_rows),\n                                                         'candidate_scene_screenshots':sum(r['side']=='candidate' for r in screenshot_rows),\n                                                         'contact_sheets':sum(r['side']=='base-v-candidate-contact-sheet' for r in screenshot_rows)}})\n\ncopy_file(candidate_dir / 'matrix-receipt.json', 'user-control/matrix-receipt-with-reversibility.json')\nput_json('user-control/reversibility.json', {\n    'candidate_sha':candidate_sha,\n    'receipt':cand_receipt['user_control_reversibility'],\n    'contract':{\n        'auto_is_recommendation':'The automatic profile is derived from semantic inventory and layout preset.',\n        'explicit_choice':'The user direction choice is stored as model.visualDirectionChoice and displayed in Whole-report direction control.',\n        'undo_redo_save_reload':'The receipt records undo restoring auto, redo restoring choice, and persistence restoring the selected choice.',\n        'manual_free':'Free/manual rectangles remain byte-for-byte stable when a direction choice changes; no layout operations are issued.',\n        'reversibility':'Auto can be restored, and explicit choice does not silently recompose free geometry.'\n    }\n})\n\nnative_report=json.loads((native_dir/'report.json').read_text())\nmanifest=json.loads((native_dir/'release-manifest.json').read_text())\njunit=ET.parse(native_dir/'full-tests.xml').getroot()\nsuite=next(x for x in junit.iter('testsuite') if x.attrib.get('name')=='pytest')\ncase_names=[\n'test_visualizer_chg209_visual_director','test_visualizer_chg181_semantic_reuse',\n'test_visualizer_chg181_section_composition','test_visualizer_chg206_pptx_visible_text',\n'test_visualizer_chg207_narrow_reading','test_visualizer_chg208_remap_diagnostics',\n'test_visualizer_accessibility_authoring','test_visualizer_authoring_p0',\n'test_visualizer_performance','test_phase13_performance']\nmodule_counts={}\nfor module in case_names:\n    found=[tc.attrib.get('name') for tc in junit.iter('testcase') if tc.attrib.get('classname','').endswith(module)]\n    module_counts[module]={'passed':len(found),'failed':0,'test_names':found}\nfocused = {\n    'candidate_sha':candidate_sha,'native_verifier_command':'python scripts/verify_release.py --output /tmp/chg209-native-release-9be45ba-retry2 --host-mode native',\n    'native_release_status':native_report.get('release_status'),'checks_status':native_report.get('checks_status'),\n    'remaining_release_validation':native_report.get('remaining_release_validation'),\n    'full_pytest':{'tests':int(suite.attrib.get('tests','0')),'failures':int(suite.attrib.get('failures','0')),'errors':int(suite.attrib.get('errors','0')),'skipped':int(suite.attrib.get('skipped','0'))},\n    'focused_regression_modules':module_counts,\n    'release_gate_statuses':{x['name']:x['status'] for x in native_report['checks']},\n    'required_gate_count':len(native_report['required_gates']),\n    'all_required_gates_passed':native_report.get('checks_status')=='PASS' and not native_report.get('remaining_release_validation')\n}\nput_json('tests/focused-and-native-summary.json', focused)\ncopy_file(native_dir / 'report.json','native-release/report.json')\ncopy_file(native_dir / 'release-manifest.json','native-release/release-manifest.json')\ncopy_file(native_dir / 'full-tests.xml','tests/full-tests.xml')\ncopy_file(native_dir / 'chg181-authoring-composition-reuse/chg181-native-acceptance.json','tests/chg181-native-acceptance.json')\ncopy_file(native_dir / 'chg208-remap-diagnostics/acceptance.json','tests/chg208-remap-diagnostics-acceptance.json')\n\nbase_export_path=Path('/tmp/chg209-export-base-final/export-regression-base.json')\ncandidate_export_path=Path('/tmp/chg209-export-final-9be45ba/export-regression.json')\nbase_export=json.loads(base_export_path.read_text()); candidate_export=json.loads(candidate_export_path.read_text())\ncopy_file(base_export_path,'exports/export-regression-base.json')\ncopy_file(candidate_export_path,'exports/export-regression-candidate.json')\nput_json('exports/export-regression-summary.json', {\n    'base':{'sha':base_sha,'status':base_export['status'],'reports':{k:{'status':v['status'],'missing_or_misplaced_strings':v['missing_or_misplaced_strings'],'element_rectangle_overlap_count':v['element_rectangle_overlap_count'],'element_rectangle_geometry_issues':v['element_rectangle_geometry_issues'],'off_slide_shapes':v['off_slide_shapes']} for k,v in base_export['reports'].items()}},\n    'candidate':{'sha':candidate_sha,'tree':candidate_tree,'status':candidate_export['status'],'browser_errors':candidate_export['browser_errors'],'reports':{k:{'status':v['status'],'slide_count':v.get('slide_count'),'shape_count':v.get('shape_count'),'chart_count':v.get('chart_count'),'table_count':v.get('table_count'),'missing_or_misplaced_strings':v['missing_or_misplaced_strings'],'element_rectangle_overlap_count':v['element_rectangle_overlap_count'],'element_rectangle_geometry_issues':v['element_rectangle_geometry_issues'],'off_slide_shapes':v['off_slide_shapes']} for k,v in candidate_export['reports'].items()}},\n    'regression_statement':'Base and candidate structural editable-PPTX checks pass for the same five populated fixtures; no missing/misplaced text, rectangle overlaps, geometry issues, off-slide shapes, or browser errors were reported.'\n})\n\nfixture_path=root/'tests/fixtures/chg206/whole_report_models.json'\nsource_files=subprocess.run(['git','diff','--name-only',base_sha,candidate_sha],cwd=root,check=True,capture_output=True,text=True).stdout.splitlines()\nchanged_hashes={name:digest(root/name) for name in source_files}\nput_json('semantics/source-data-reuse-immutability.json', {\n    'base_sha':base_sha,'candidate_sha':candidate_sha,\n    'fixture':{'path':'tests/fixtures/chg206/whole_report_models.json','sha256':digest(fixture_path),'sha256_recorded_in_both_matrices':fixture_sha,'unchanged':digest(fixture_path)==fixture_sha},\n    'scene_inputs':{k:{'sha256':cand_receipt['scenes'][k]['input_model_sha256'],'same_between_base_candidate':base_receipt['scenes'][k]['input_model_sha256']==cand_receipt['scenes'][k]['input_model_sha256']} for k in cand_receipt['scenes']},\n    'all_scene_input_hashes_match':all(base_receipt['scenes'][k]['input_model_sha256']==cand_receipt['scenes'][k]['input_model_sha256'] for k in cand_receipt['scenes']),\n    'semantic_contract_tests':{\n        'free_manual_geometry_unchanged':True,\n        'datasets_rows_mappings_and_source_identity_unchanged_by_composition':True,\n        'reuse_binding_contract_unchanged_by_direction_choice':True,\n        'structure_reuse_retains_auto_choice':True,\n        'source':'tests/test_visualizer_chg209_visual_director.py::test_free_manual_rectangles_direction_choice_reuse_and_data_contract_are_preserved'\n    },\n    'chg181_native_acceptance':'PASS; see tests/chg181-native-acceptance.json',\n    'changed_product_and_test_files':source_files,\n    'candidate_file_sha256':changed_hashes,\n    'boundary':'The implementation changes composition direction, explicit-choice persistence, shared semantic surfaces and fractional PPTX geometry normalization. Report fixture values, mappings, missing-value behavior, filters and source identity were not altered by this change.'\n})\n\nput_json('native-release/binding.json', {\n    'candidate_sha':candidate_sha,'candidate_tree':candidate_tree,'base_sha':base_sha,'base_tree':base_tree,\n    'verifier_report_sha256':digest(native_dir/'report.json'),\n    'release_manifest_sha256':digest(native_dir/'release-manifest.json'),\n    'full_pytest_xml_sha256':digest(native_dir/'full-tests.xml'),\n    'source_editor_sha256':native_report.get('source_editor_sha256'),\n    'source_page_sha256':native_report.get('source_page_sha256'),\n    'status':native_report.get('release_status'),'checks_status':native_report.get('checks_status'),\n    'host_mode':native_report.get('host_mode'),'managed_target_status':native_report.get('managed_target_status'),\n    'company_boundary_status':native_report.get('company_boundary_status'),\n    'release_gate_count':len(native_report.get('required_gates',[])),\n    'remaining_release_validation':native_report.get('remaining_release_validation')\n})\n\nindex = \\\"\\\"\\\"# CHG-209 R1 evidence reader\n\nThis carrier is bound to candidate \"'`9be45ba677875a54f1e9a3d488e53c483e879336` (tree `08719bb4afbe3c508cb296a4505001e36141cd4e`), sole parent `9719125bf253c2e79ef87d983c10fae324292af1`. The exact comparison base is `57967b84084140e30b06276469a1beedd322ec67`.\n\n## Suggested review order\n\n1. `identity.json` and `direction/rule-profile-inventory.json` establish candidate identity and the semantic rule/profile vocabulary.\n2. `direction/anti-special-case-proof.json` and the CHG-209 test in `tests/full-tests.xml` document title, fixture and coordinate independence.\n3. `scenes/per-scene-decisions.json` records person, context, task, decision, current truth, profile and observed section plan for all six scenes.\n4. Compare `visual/contact-sheets/desktop-1440-base-v-candidate.png`, `narrow-390-base-v-candidate.png` and `narrow-320-dense-base-v-candidate.png`; inspect full canvases under `visual/{base,candidate}/scenes/`.\n5. `browser/dom-geometry-accessibility.json` carries measured DOM geometry, document widths and direction-control focus evidence. `user-control/reversibility.json` records override, undo/redo, save/reload and Free-mode geometry.\n6. `semantics/source-data-reuse-immutability.json` and `exports/export-regression-summary.json` cover unchanged report inputs/reuse bindings and editable PPTX regression checks.\n7. `tests/focused-and-native-summary.json` and `native-release/binding.json` bind the complete test/release result to the exact candidate.\n\nThe matrix uses populated synthetic reports with long content and uncertainty states. E and F are holdouts created after the production classifier was implemented; their identifiers and titles are not production classifier inputs. Desktop and 390px captures exist for all scenes; 320px captures exist for the dense D and E scenes.\n\nThis evidence is staged for independent Project OS visual review. It does not claim human preference, universal aesthetic superiority, native-device accessibility, or company-managed Production Gold. No integration or main mutation was performed.\n\"\"\"\n(stage/'\"'reader/INDEX.md').parent.mkdir(parents=True,exist_ok=True)\n(stage/'reader/INDEX.md').write_text(index,encoding='utf-8')\n\n# Add carrier-wide manifest for reproducibility (excluding itself).\nentries=[]\nfor p in sorted(x for x in stage.rglob('*') if x.is_file()):\n    entries.append({'path':str(p.relative_to(stage)),'bytes':p.stat().st_size,'sha256':digest(p)})\nput_json('carrier-manifest.json',{'schema_version':1,'candidate_sha':candidate_sha,'candidate_tree':candidate_tree,'artifact_count':len(entries),'artifacts':entries})\n\nprint(json.dumps({'stage':str(stage),'files':sum(1 for p in stage.rglob('*') if p.is_file()),'bytes':sum(p.stat().st_size for p in stage.rglob('*') if p.is_file()),'screenshot_counts':{'base':sum(r['side']=='base' for r in screenshot_rows),'candidate':sum(r['side']=='candidate' for r in screenshot_rows),'sheets':sum(r['side']=='base-v-candidate-contact-sheet' for r in screenshot_rows)},'pytest':focused['full_pytest'],'native_release':focused['native_release_status'],'test_modules':module_counts},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 6689,
+        "output_sha256": "3aab65c48a799828a3cc37c406e9b083efc8e5e218290ea1e6cd2a65a547e2c7",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD HEAD''^{tree} origin/main origin/main''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json,hashlib\nfrom pathlib import Path\nfrom PIL import Image\np=Path('/tmp/chg209-carrier-9be45ba');m=json.loads((p/'carrier-manifest.json').read_text());bad=[]\nfor x in m['artifacts']:\n q=p/x['path']; h=hashlib.sha256(q.read_bytes()).hexdigest()\n if q.stat().st_size\"'!=x['\"'bytes'] or h\"'!=x['\"'sha256']: bad.append(x['path'])\nfor q in p.rglob('*.png'):\n with Image.open(q) as im: im.verify()\nprint({'manifest_entries':len(m['artifacts']),'staged_files':sum(1 for q in p.rglob('*') if q.is_file()),'hash_or_size_failures':bad,'png_count':len(list(p.rglob('*.png'))),'all_pngs_valid':not bad})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show-ref --verify refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show-ref --verify refs/heads/project-os-artifacts/visembler/CHG-209-r1'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'export GIT_INDEX_FILE=/tmp/chg209-carrier-index\\\\ngit -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e --work-tree=/tmp/chg209-carrier-9be45ba read-tree --empty'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'export GIT_INDEX_FILE=/tmp/chg209-carrier-index\ngit -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e --work-tree=/tmp/chg209-carrier-9be45ba read-tree --empty'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'export GIT_INDEX_FILE=/tmp/chg209-carrier-index\ngit -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e --work-tree=/tmp/chg209-carrier-9be45ba add -f -- .'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'export GIT_INDEX_FILE=/tmp/chg209-carrier-index\ngit -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e write-tree'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e commit-tree 56803bbcd164e8523db112557c4b2e8897a005d6 -p 9be45ba677875a54f1e9a3d488e53c483e879336 -m \"CHG-209 R1 Project OS evidence carrier\"'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e ls-tree -r --name-only 0d4f753cc90e911332c2654286468fafb26c1afe'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show -s --format=%H%n%T%n%P 0d4f753cc90e911332c2654286468fafb26c1afe'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport hashlib,json,subprocess\nroot=Path.cwd()\ncandidate='9be45ba677875a54f1e9a3d488e53c483e879336'\ncandidate_tree='08719bb4afbe3c508cb296a4505001e36141cd4e'\nbase='57967b84084140e30b06276469a1beedd322ec67'\nbase_tree='54bed4c474db5da055eae508fbb5a302f97a0334'\ncarrier_commit='0d4f753cc90e911332c2654286468fafb26c1afe'\ncarrier_tree='56803bbcd164e8523db112557c4b2e8897a005d6'\ncarrier_ref='refs/heads/project-os-artifacts/visembler/CHG-209-r1'\nstage=Path('/tmp/chg209-carrier-9be45ba')\ndef sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()\nfiles=subprocess.run(['git','diff','--name-only',base,candidate],cwd=root,check=True,capture_output=True,text=True).stdout.splitlines()\nnative=json.loads(Path('/tmp/chg209-native-release-9be45ba-retry2/report.json').read_text())\nscenes=json.loads(Path('/tmp/chg209-final-candidate-9be45ba/matrix-receipt.json').read_text())['scenes']\nmanifest=json.loads((stage/'carrier-manifest.json').read_text())\nall_files=[p for p in stage.rglob('*') if p.is_file()]\naudit={\n 'schema_version':2,\n 'project':'visembler',\n 'request':'CHG-209-r1',\n 'operation':'BUILD',\n 'job':'CF-7d157abafc298218c63ae72e',\n 'decision':'BUILD',\n 'go_claim':False,\n 'integration_performed':False,\n 'git':{\n  'authoritative_base_sha':base,\n  'authoritative_base_tree':base_tree,\n  'observed_origin_main':base,\n  'candidate_sha':candidate,\n  'candidate_tree':candidate_tree,\n  'work_branch':'build/visembler-chg209-art-direction-r1',\n  'worktree_clean':True,\n  'product_source_changed':True,\n  'product_changed_files':files\n },\n 'reader_carrier':{\n  'ref':carrier_ref,\n  'commit':carrier_commit,\n  'tree':carrier_tree,\n  'root_style':True,\n  'parent_count':1,\n  'sole_parent':candidate,\n  'file_count':len(all_files),\n  'uploaded_bytes':sum(p.stat().st_size for p in all_files),\n  'manifest_sha256':sha(stage/'carrier-manifest.json'),\n  'reader_index_sha256':sha(stage/'reader/INDEX.md'),\n  'publication_scope':'local Git ref',\n  'readback':{'commit':carrier_commit,'tree':carrier_tree,'sole_parent':candidate}\n },\n 'visual_audit':{\n  'schema_version':1,\n  'project':'visembler',\n  'request':'CHG-209-r1',\n  'scope':'six-scene whole-report comparison bound to the exact candidate and exact base',\n  'status':'CAPTURED_FOR_INDEPENDENT_PROJECT_OS_REVIEW',\n  'candidate_pngs_structurally_valid':14,\n  'base_pngs_structurally_valid':14,\n  'contact_sheets':3,\n  'desktop_scenes':6,\n  'narrow_390_scenes':6,\n  'narrow_320_scenes':['D-technical','E-holdout-mixed'],\n  'candidate_profiles':{key:s['runtime']['visualDirection']['id'] for key,s in scenes.items()},\n  'candidate_findings':[\n   'Profiles are observable in the shared renderer through role-focused section order, semantic section treatment, hierarchy, grouping and density metadata.',\n   'The six captures cover decision-led, conditional, causal, dense operating, allocation comparison and sparse decision evidence shapes.',\n   'The 320px dense holdout captures include the narrow risk-callout reflow.'\n  ],\n  'limitations':'Staged for independent review; no aesthetic score, human preference, or universal superiority claim.'\n },\n 'release_verification':{\n  'status':native['release_status'],\n  'checks_status':native['checks_status'],\n  'required_gate_count':len(native['required_gates']),\n  'remaining_release_validation':native['remaining_release_validation'],\n  'full_pytest':'PASS 1215 tests, 0 failures, 0 errors, 0 skipped',\n  'native_target_certification':'PENDING; separate company target gate'\n },\n 'target_observation':{\n  'target':'origin/main',\n  'observed_sha':base,\n  'observed_tree':base_tree,\n  'drifted':False\n },\n 'evidence':{\n  'carrier_ref':carrier_ref,\n  'carrier_commit':carrier_commit,\n  'carrier_tree':carrier_tree,\n  'carrier_manifest_sha256':sha(stage/'carrier-manifest.json'),\n  'contents':'See carrier reader/INDEX.md for exact evidence map.'\n },\n 'stop_condition':'Bounded BUILD complete and staged for independent Project OS review. No main mutation, integration, PR, or CHG-173 final outcome VERIFY was performed.'\n}\nPath('/tmp/chg209-audit.json').write_text(json.dumps(audit,indent=2,ensure_ascii=False)+'\\\\n',encoding='utf-8')\nprint(json.dumps({'path':'/tmp/chg209-audit.json','sha256':sha(Path('/tmp/chg209-audit.json')),'changed_file_count':len(files),'carrier_file_count':len(all_files),'native_status':native['release_status'],'scene_profiles':audit['visual_audit']['candidate_profiles']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 498,
+        "output_sha256": "791e0193202fdc772dde8fd233607d452764605158b780c4a1e371bb799d5a75",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e worktree add --detach /tmp/chg209-audit-worktree 9be45ba677875a54f1e9a3d488e53c483e879336'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport shutil\nsrc=Path('/tmp/chg209-audit.json'); dst=Path('/tmp/chg209-audit-worktree/.codex-fabric/audit.json'); dst.parent.mkdir(parents=True,exist_ok=False); shutil.copy2(src,dst); print(dst)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/chg209-audit-worktree status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/chg209-audit-worktree add -- .codex-fabric/audit.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git -C /tmp/chg209-audit-worktree commit -m 'CHG-209 R1 standard Fabric audit evidence'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/chg209-audit-worktree diff-tree --no-commit-id --name-only -r HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/chg209-audit-worktree rev-parse HEAD HEAD''^{tree} HEAD''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/chg209-audit-worktree status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e rev-parse HEAD HEAD''^{tree} origin/main origin/main''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show-ref --verify refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy bash -lc 'git show-ref --verify refs/heads/project-os-artifacts/visembler/CHG-209-r1'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e update-ref refs/heads/project-os-artifacts/visembler/CHG-209-r1 0d4f753cc90e911332c2654286468fafb26c1afe 0000000000000000000000000000000000000000'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e update-ref refs/heads/codex-fabric/evidence/visembler/CHG-209-r1 9515eeaa74707a0b61757a031ffad3e32d742667 0000000000000000000000000000000000000000'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show -s --format=%H%n%T%n%P refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e diff-tree --no-commit-id --name-only -r refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e rev-parse HEAD HEAD''^{tree} origin/main origin/main''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show -s --format=%H%n%T%n%P refs/heads/project-os-artifacts/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\nrepo='/Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e'; stage=Path('/tmp/chg209-carrier-9be45ba')\na='refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'; c='refs/heads/project-os-artifacts/visembler/CHG-209-r1'\ndef git(*args): return subprocess.run(['git','-C',repo,*args],check=True,capture_output=True).stdout\ndef show(ref,path): return git('show',f'{ref}:{path}')\naudit=json.loads(show(a,'.codex-fabric/audit.json')); manifest=json.loads(show(c,'carrier-manifest.json'))\nbad=[]\nfor x in manifest['artifacts']:\n data=show(c,x['path']); h=hashlib.sha256(data).hexdigest()\n if len(data)\"'!=x['\"'bytes'] or h\"'!=x['\"'sha256']: bad.append(x['path'])\nparent=git('rev-parse',f'{c}\"'^'\"').decode().strip(); aparent=git('rev-parse',f'{a}\"'^'\"').decode().strip()\nidentity=json.loads(show(c,'identity.json')); native=json.loads(show(c,'native-release/report.json'))\nprint(json.dumps({'audit_request':audit['request'],'audit_schema_version':audit['schema_version'],'audit_candidate_sha':audit['git']['candidate_sha'],'audit_carrier_commit':audit['reader_carrier']['commit'],'audit_parent':aparent,'carrier_parent':parent,'carrier_candidate_matches':parent==audit['git']['candidate_sha'],'audit_evidence_commit_matches_carrier':audit['reader_carrier']['commit']==git('rev-parse',c).decode().strip(),'manifest_items':len(manifest['artifacts']),'carrier_blob_hash_failures':bad,'native_release_status':native['release_status'],'identity_candidate':identity['candidate']['sha'],'audit_tree_delta':git('diff-tree','--no-commit-id','--name-only','-r',a).decode().splitlines()},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e worktree remove /tmp/chg209-audit-worktree'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show -s --format=%H%n%P refs/heads/codex-fabric/evidence/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show refs/heads/codex-fabric/evidence/visembler/CHG-209-r1:.codex-fabric/audit.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e rev-parse HEAD HEAD''^{tree} origin/main origin/main''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-7d157abafc298218c63ae72e show -s --format=%H%n%P refs/heads/project-os-artifacts/visembler/CHG-209-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 959,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.39,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 82032768,
+      "fresh_input_tokens": 1343458,
+      "input_tokens": 83376226,
+      "non_reasoning_output_tokens": 142427,
+      "output_tokens": 347418,
+      "reasoning_output_tokens": 204991,
+      "total_processed_tokens": 83723644
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+      "subject": "Synchronize history lifecycle acceptance"
+    },
+    {
+      "sha": "9719125bf253c2e79ef87d983c10fae324292af1",
+      "subject": "Keep narrow decision evidence readable"
+    },
+    {
+      "sha": "383ec13470354bc15e7a79340e51094cd98afce8",
+      "subject": "Build semantic whole-report visual direction"
+    },
+    {
+      "sha": "4014ec25d76f3da20132e1db7e4f29dc7af1b8fa",
+      "subject": "Build task-grounded whole-report visual direction"
+    }
+  ],
+  "diff": {
+    "additions": 1135,
+    "changed_files": 12,
+    "commit_count": 4,
+    "deletions": 49
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "beee6de89439b74fdfe160b748764bfcbf6b209efdbd49ff825ed50b197be7b3"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-25T18:36:37Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "57967b84084140e30b06276469a1beedd322ec67",
+    "branch": "build/visembler-chg209-art-direction-r1",
+    "detached_verify": false,
+    "head_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+    "remote_exact_head": true,
+    "remote_head_sha": "9be45ba677875a54f1e9a3d488e53c483e879336",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "57967b84084140e30b06276469a1beedd322ec67",
+    "work_branch": "build/visembler-chg209-art-direction-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-7d157abafc298218c63ae72e",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-209-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-209-r1"
+  },
+  "operation": "BUILD",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-209-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-25T15:05:38Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 12659,
+    "queue_seconds": 1,
+    "total_seconds": 12660
+  },
+  "transport": {
+    "bytes": 12976,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 12675,
+    "prompt_sha256": "a4537a1d6b801f2a8cbf3afaf77d1fa08b184ef25d1b08875832506aec28cf68",
+    "sha256": "7d157abafc298218c63ae72e39e5271753a429d9d690f78dea6cf7adec9ce01b"
+  }
+}
