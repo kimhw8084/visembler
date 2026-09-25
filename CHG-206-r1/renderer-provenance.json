@@ -1,0 +1,182 @@
+{
+  "candidate_sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+  "candidate_tree": "d932f22966508ba6fdb630b6f66e1a01818b7b03",
+  "renderer": {
+    "app_bundle_path": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app",
+    "binary_path": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+    "binary_sha256": "820ce37c7f7f496f73516d932109b1254463b33a993ceae0cfbaabac62f164bf",
+    "codesign_verify_command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "codesign_verify_output": "",
+    "codesign_verify_returncode": 0,
+    "gatekeeper_assessment_command": [
+      "spctl",
+      "--assess",
+      "--type",
+      "execute",
+      "--verbose",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "gatekeeper_output": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app: accepted\nsource=Notarized Developer ID\n",
+    "gatekeeper_returncode": 0,
+    "name": "LibreOffice",
+    "profile_scope": "job-owned per-report LibreOffice user profile",
+    "raster_dpi": 144,
+    "rasterizer": "Poppler pdftoppm",
+    "rasterizer_path": "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+    "rasterizer_sha256": "9a44364d0fa42a43c3efdb2cbab47d275973c4a5856c1109f6bf4513def6bb54",
+    "rasterizer_version": "pdftoppm version 26.09.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC",
+    "signature_command": [
+      "codesign",
+      "-dv",
+      "--verbose=4",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "signature_output": "Executable=/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice\nIdentifier=org.libreoffice.script\nFormat=app bundle with Mach-O thin (arm64)\nCodeDirectory v=20500 size=450 flags=0x10000(runtime) hashes=3+7 location=embedded\nVersionPlatform=1\nVersionMin=720896\nVersionSDK=1705216\nHash type=sha256 size=32\nCandidateCDHash sha256=5db61e07d0ed6bb1e13e515b7326050e256ad1c9\nCandidateCDHashFull sha256=5db61e07d0ed6bb1e13e515b7326050e256ad1c9b0f4bb800ec8f454b5ddb95c\nHash choices=sha256\nCMSDigest=5db61e07d0ed6bb1e13e515b7326050e256ad1c9b0f4bb800ec8f454b5ddb95c\nCMSDigestType=2\nExecutable Segment base=0\nExecutable Segment limit=16384\nExecutable Segment flags=0x1\nPage size=16384\nCDHash=5db61e07d0ed6bb1e13e515b7326050e256ad1c9\nSignature size=8996\nAuthority=Developer ID Application: The Document Foundation (7P5S3ZLCN7)\nAuthority=Developer ID Certification Authority\nAuthority=Apple Root CA\nTimestamp=Aug 21, 2026 at 10:25:13\nInfo.plist entries=24\nTeamIdentifier=7P5S3ZLCN7\nRuntime Version=26.5.0\nSealed Resources version=2 rules=13 files=14004\nInternal requirements count=1 size=184\n",
+    "signature_returncode": 0,
+    "version": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77"
+  },
+  "reports": {
+    "executive-business-review": {
+      "libreoffice_command": [
+        "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "--headless",
+        "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/executive-business-review",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/executive-business-review.pptx"
+      ],
+      "libreoffice_returncode": 0,
+      "pdf_sha256": "4c12d67999494a6c969325634c383269c6a63e2a15076784bc8ea39e5941e533",
+      "pdftoppm_command": [
+        "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+        "-png",
+        "-r",
+        "144",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/executive-business-review.pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/executive-business-review"
+      ],
+      "pdftoppm_returncode": 0,
+      "pptx_sha256": "28314547aca6b4b47c7f4cf9d656643b6868f524deb4bb42977b0a2ab233daaa",
+      "raster_sha256": [
+        "cd07af9e2c502bca76f5de2c79d1c47ca886d656be37791625b57cf0fa019de3"
+      ]
+    },
+    "experiment-decision": {
+      "libreoffice_command": [
+        "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "--headless",
+        "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/experiment-decision",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/experiment-decision.pptx"
+      ],
+      "libreoffice_returncode": 0,
+      "pdf_sha256": "263addef3b620a9c090d2eabf27f42696b135630069feb73c6b4a51826f30f4d",
+      "pdftoppm_command": [
+        "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+        "-png",
+        "-r",
+        "144",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/experiment-decision.pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/experiment-decision"
+      ],
+      "pdftoppm_returncode": 0,
+      "pptx_sha256": "c0944f7c95084850e87aaedd3bb9fdebf7bbe95bcf0e42f8383d804542c3fe26",
+      "raster_sha256": [
+        "d4c3b8be148a94a7b02054bb9d0066dabc181ebbc7d0106badb0a6ac89955d56"
+      ]
+    },
+    "semiconductor-rca": {
+      "libreoffice_command": [
+        "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "--headless",
+        "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/semiconductor-rca",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/semiconductor-rca.pptx"
+      ],
+      "libreoffice_returncode": 0,
+      "pdf_sha256": "c61f39a0d95600be3f58a5f90e351ac50fd812cae543f1c4a86f0ace625ff11e",
+      "pdftoppm_command": [
+        "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+        "-png",
+        "-r",
+        "144",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/semiconductor-rca.pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/semiconductor-rca"
+      ],
+      "pdftoppm_returncode": 0,
+      "pptx_sha256": "11422830f2d67f87ab55c26e93da65deb1151fbb997dbd977c1de974626ff9ef",
+      "raster_sha256": [
+        "fefe8d83b1a4fa1c4d6e86b2afa9ef877a0cde2fe8b18eae176991b7de275107"
+      ]
+    },
+    "supply-chain-capacity-holdout": {
+      "libreoffice_command": [
+        "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "--headless",
+        "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/supply-chain-capacity-holdout",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/supply-chain-capacity-holdout.pptx"
+      ],
+      "libreoffice_returncode": 0,
+      "pdf_sha256": "61ba285101485fe0f25ef2f3e9f553e0833eedd11eb1b4cf3bd507caef5d19de",
+      "pdftoppm_command": [
+        "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+        "-png",
+        "-r",
+        "144",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/supply-chain-capacity-holdout.pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/supply-chain-capacity-holdout"
+      ],
+      "pdftoppm_returncode": 0,
+      "pptx_sha256": "66198a40328ccb4b015dc70ca37dc4fcc2fac096e927dbf3e9a13f8b2caddc05",
+      "raster_sha256": [
+        "a97776f641a34409b7dac265c39d45c5244110a408dcd75f19c2fb79bd1ecb74"
+      ]
+    },
+    "technical-status-review": {
+      "libreoffice_command": [
+        "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+        "--headless",
+        "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/technical-status-review",
+        "--convert-to",
+        "pdf",
+        "--outdir",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/technical-status-review.pptx"
+      ],
+      "libreoffice_returncode": 0,
+      "pdf_sha256": "92bcceef36ad921d6294451856d8dd86b5b8bd7c19fa8d80a9da6e889974c8e1",
+      "pdftoppm_command": [
+        "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+        "-png",
+        "-r",
+        "144",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/technical-status-review.pdf",
+        "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/technical-status-review"
+      ],
+      "pdftoppm_returncode": 0,
+      "pptx_sha256": "8474b4f6de013724a334a2852808fcace41e8b458e5976a57cf33770d241da8e",
+      "raster_sha256": [
+        "8b84ea9f74f8449b5e3c89a056922464bf2fb97f5a81b003bb1a14e44366caa5"
+      ]
+    }
+  },
+  "schema": "visembler-chg206-renderer-provenance.v1"
+}

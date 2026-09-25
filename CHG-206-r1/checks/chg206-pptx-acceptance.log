@@ -1,0 +1,4715 @@
+{
+  "schema": "visembler-chg206-visible-text-acceptance.v1",
+  "project": "visembler",
+  "request": "CHG-206-r1",
+  "operation": "FIX",
+  "fabric_job_id": "CF-335e326a4b753e8a2e6d9e08",
+  "candidate_sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+  "candidate_tree": "d932f22966508ba6fdb630b6f66e1a01818b7b03",
+  "source_sha": "47a988064deac544dfdca360e046a9cb20f5c282",
+  "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747",
+  "r2_source_evidence": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence",
+  "r2_carrier_sha": "7224c0815142557e2362e2ca4e6201e67006126c",
+  "established_root_cause": {
+    "reproduction": "CHG-173 R2 Executive Business Review PPTX and its qualified LibreOffice raster",
+    "observed_xml": "body paragraphs and KPI values lacked explicit run foreground colors; generic body text frames inherited vertical-middle anchoring, wrapping, insets and fit/overflow behavior from the template/theme",
+    "pixel_failure": "R2 raster retains headings, charts and tables while omitting or clipping headline/context values, KPI values, decision/risk and next-step text",
+    "bounded_authority": "generic report text and KPI shapes only; DiagramEngine and WaferFabEngine renderers remain specialized"
+  },
+  "fixture_notes": [
+    "The five exported report models are the persisted CHG-173 R2 whole-report models.",
+    "The RCA adds a clearly labeled synthetic paired-die subset solely so this acceptance fixture exercises the CHG-180 Wafer Difference Map renderer alongside its original Wafer Map and Process Flow."
+  ],
+  "reports": {
+    "executive-business-review": {
+      "title": "FY26 Retention and Growth Review",
+      "report_id": "chg206-executive-business-review",
+      "source_report_id": "report-0222b5edf25c45af8c1a3d323f4ef901",
+      "source_revision": 63,
+      "supported_action": "#exportBtn → #exportPptAction (Editable PowerPoint)",
+      "pptx_sha256": "28314547aca6b4b47c7f4cf9d656643b6868f524deb4bb42977b0a2ab233daaa",
+      "pptx_bytes": 44964,
+      "structure": {
+        "path": "executive-business-review.pptx",
+        "sha256": "28314547aca6b4b47c7f4cf9d656643b6868f524deb4bb42977b0a2ab233daaa",
+        "bytes": 44964,
+        "slide_count": 1,
+        "shape_count": 11,
+        "text_shape_count": 8,
+        "chart_count": 2,
+        "table_count": 1,
+        "items": [
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Executive Statement",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "report headline",
+            "text": "Retention improved for a second quarter, but the public sector renewal gap still threatens FY26 expansion.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Quarterly context",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Quarterly context"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "context subhead",
+            "text": "FY26 Q1–Q4 close · enterprise and public sector portfolios · constant-currency bookings · renewal cohort excludes acquired accounts.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Quarterly context"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "FY26 renewal rate",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::FY26 renewal rate KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "92.9%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::FY26 renewal rate KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::FY26 renewal rate KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "Constant-currency bookings",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Constant-currency bookings KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "14.1 $M",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Constant-currency bookings KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "$M",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Constant-currency bookings KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "ComparisonEngine",
+            "role": "metric title",
+            "text": "Renewal rate · Q1 to Q4",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Renewal rate · Q1 to Q4 KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "ComparisonEngine",
+            "role": "comparison value",
+            "text": "87.9% → 92.9%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Renewal rate · Q1 to Q4 KPI"
+          },
+          {
+            "item_id": "c6",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Quarterly retention",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 6"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Portfolio",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Renewals",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Rate",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Evidence / risk",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Enterprise North",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "1842",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "94.1%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Above 91% guardrail; stable cohort",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Public Sector West",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "684",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "84.7%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Two contracts delayed; budget gated",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Strategic Accounts",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "213",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "92.9%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "FY26 Q4 close; largest renewals drive bookings",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DecisionCompositeEngine",
+            "role": "text heading",
+            "text": "Risk Callout",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DecisionCompositeEngine",
+            "role": "risk decision",
+            "text": "Hold public-sector expansion until the renewal gate clears",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DecisionCompositeEngine",
+            "role": "evidence detail",
+            "text": "Two delayed procurement cycles remain unsigned. Keep the current enterprise plan and review those contracts at the next finance checkpoint.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DecisionCompositeEngine",
+            "role": "action status",
+            "text": "Watch",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c9",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Key Takeaway",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Key Takeaway"
+          },
+          {
+            "item_id": "c9",
+            "engine": "TextEngine",
+            "role": "conclusion next step",
+            "text": "Next step: keep the enterprise hiring plan, but release the public-sector expansion budget only after the named renewals are signed.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Key Takeaway"
+          },
+          {
+            "item_id": "c10",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Bookings by quarter",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 10"
+          }
+        ],
+        "text_roles": [
+          {
+            "shape": "VIZ::Executive Statement",
+            "roles": [
+              "text heading",
+              "report headline"
+            ],
+            "text": "Executive Statement\nRetention improved for a second quarter, but the public sector renewal gap still threatens FY26 expansion.",
+            "geometry_emu": {
+              "left": 106680,
+              "top": 304799,
+              "width": 8072931,
+              "height": 936735
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Executive Statement",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Retention improved for a second quarter, but the public sector renewal gap still threatens FY26 expansion.",
+                "family": "Arial",
+                "size_pt": 17.5,
+                "bold": true,
+                "color_rgb": "172B43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Quarterly context",
+            "roles": [
+              "text heading",
+              "context subhead"
+            ],
+            "text": "Quarterly context\nFY26 Q1–Q4 close · enterprise and public sector portfolios · constant-currency bookings · renewal cohort excludes acquired accounts.",
+            "geometry_emu": {
+              "left": 8286291,
+              "top": 498847,
+              "width": 3799026,
+              "height": 548639
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Quarterly context",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "FY26 Q1–Q4 close · enterprise and public sector portfolios · constant-currency bookings · renewal cohort excludes acquired accounts.",
+                "family": "Arial Narrow",
+                "size_pt": 9.5,
+                "bold": false,
+                "color_rgb": "374A60"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::FY26 renewal rate KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "FY26 renewal rate\n92.9%",
+            "geometry_emu": {
+              "left": 5154777,
+              "top": 1571109,
+              "width": 3411930,
+              "height": 1369600
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "FY26 renewal rate",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "92.9%",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Constant-currency bookings KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "Constant-currency bookings\n14.1 $M",
+            "geometry_emu": {
+              "left": 106680,
+              "top": 1500615,
+              "width": 4941416,
+              "height": 1371599
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Constant-currency bookings",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "14.1 $M",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Renewal rate · Q1 to Q4 KPI",
+            "roles": [
+              "metric title",
+              "comparison value"
+            ],
+            "text": "Renewal rate · Q1 to Q4\n87.9% → 92.9%",
+            "geometry_emu": {
+              "left": 8673387,
+              "top": 1500615,
+              "width": 3411930,
+              "height": 1510588
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Renewal rate · Q1 to Q4",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "87.9% → 92.9%",
+                "family": "Arial",
+                "size_pt": 20.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Risk Callout",
+            "roles": [
+              "text heading",
+              "risk decision",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Risk Callout\nHold public-sector expansion until the renewal gate clears\nTwo delayed procurement cycles remain unsigned. Keep the current enterprise plan and review those contracts at the next finance checkpoint.\nWatch",
+            "geometry_emu": {
+              "left": 106680,
+              "top": 8200423,
+              "width": 11978638,
+              "height": 773582
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Risk Callout",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Hold public-sector expansion until the renewal gate clears",
+                "family": "Arial",
+                "size_pt": 11.0,
+                "bold": true,
+                "color_rgb": "682B31"
+              },
+              {
+                "text": "Two delayed procurement cycles remain unsigned. Keep the current enterprise plan and review those contracts at the next finance checkpoint.",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": "Watch",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Key Takeaway",
+            "roles": [
+              "text heading",
+              "conclusion next step"
+            ],
+            "text": "Key Takeaway\nNext step: keep the enterprise hiring plan, but release the public-sector expansion budget only after the named renewals are signed.",
+            "geometry_emu": {
+              "left": 106680,
+              "top": 9233085,
+              "width": 11978638,
+              "height": 768095
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Key Takeaway",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Next step: keep the enterprise hiring plan, but release the public-sector expansion budget only after the named renewals are signed.",
+                "family": "Arial",
+                "size_pt": 12.5,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          }
+        ],
+        "spatial": {},
+        "browser_geometry": {
+          "canvas": {
+            "width": 1600,
+            "height": 1327
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1059.44,
+              "h": 122.93120000000002,
+              "section": "opening",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 1087.44,
+              "y": 65.46560000000001,
+              "w": 498.56,
+              "h": 72,
+              "section": "opening",
+              "sectionStart": false,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "support",
+              "order": 1
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 196.93120000000002,
+              "w": 648.48,
+              "h": 180,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 676.48,
+              "y": 206.18240000000003,
+              "w": 447.76,
+              "h": 179.73760000000001,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c5",
+              "x": 1138.24,
+              "y": 196.93120000000002,
+              "w": 447.76,
+              "h": 198.24,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 170.93120000000002,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 4
+            },
+            {
+              "id": "c6",
+              "x": 182.8630303030303,
+              "y": 429.1712,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 403.1712,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "feature",
+              "order": 5
+            },
+            {
+              "id": "c10",
+              "x": 856.2569696969697,
+              "y": 453.0753176470588,
+              "w": 560.88,
+              "h": 272.19176470588235,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 403.1712,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "support",
+              "order": 6
+            },
+            {
+              "id": "c7",
+              "x": 14,
+              "y": 783.1712,
+              "w": 1572,
+              "h": 259,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 757.1712,
+              "sectionHeadingOrder": 7,
+              "sectionPattern": "evidence-detail-grid",
+              "compositionLevel": "feature",
+              "order": 7
+            },
+            {
+              "id": "c8",
+              "x": 14,
+              "y": 1076.1712,
+              "w": 1572,
+              "h": 101.52000000000001,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 1050.1712,
+              "sectionHeadingOrder": 8,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 8
+            },
+            {
+              "id": "c9",
+              "x": 14,
+              "y": 1211.6912,
+              "w": 1572,
+              "h": 100.80000000000001,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 1185.6912,
+              "sectionHeadingOrder": 9,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 9
+            }
+          ]
+        },
+        "element_rectangle_overlap_count": 0,
+        "element_rectangle_geometry_issues": [],
+        "off_slide_shapes": [],
+        "missing_or_misplaced_strings": [],
+        "status": "PASS"
+      },
+      "raster": {
+        "pdf": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/executive-business-review.pdf",
+        "pdf_sha256": "4c12d67999494a6c969325634c383269c6a63e2a15076784bc8ea39e5941e533",
+        "libreoffice_command": [
+          "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+          "--headless",
+          "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/executive-business-review",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/executive-business-review.pptx"
+        ],
+        "libreoffice_environment": {
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "libreoffice_returncode": 0,
+        "libreoffice_stdout": "convert /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/executive-business-review.pptx as a Impress document -> /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/executive-business-review.pdf using filter : impress_pdf_Export\n",
+        "libreoffice_stderr": "Fontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\nFontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\n",
+        "pdftoppm_command": [
+          "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+          "-png",
+          "-r",
+          "144",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/executive-business-review.pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/executive-business-review"
+        ],
+        "pdftoppm_returncode": 0,
+        "pdftoppm_stdout": "",
+        "pdftoppm_stderr": "",
+        "rasters": [
+          {
+            "path": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/executive-business-review-1.png",
+            "sha256": "cd07af9e2c502bca76f5de2c79d1c47ca886d656be37791625b57cf0fa019de3",
+            "bytes": 225204
+          }
+        ]
+      },
+      "comparison": {
+        "r2_pptx_sha256": "6da4aff9e7ecbab888c03870e1226b34132951c86ce7b6549748c11f76724fa4",
+        "r2_raster": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence/exports/pptx-review/rasters/08__executive-business-review__executive-business-review-1.png",
+        "r2_raster_sha256": "f39ea919df8028727bb0c7c25e8c2221f6d2e9b5d8d07cef281b8b17be047672",
+        "candidate_raster": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/executive-business-review-1.png",
+        "candidate_raster_sha256": "cd07af9e2c502bca76f5de2c79d1c47ca886d656be37791625b57cf0fa019de3"
+      }
+    },
+    "semiconductor-rca": {
+      "title": "ETCH-08 Chamber A · Lot WQ-7314 RCA",
+      "report_id": "chg206-semiconductor-rca",
+      "source_report_id": "report-abfe745ad66b452798900152bf7853cf",
+      "source_revision": 46,
+      "supported_action": "#exportBtn → #exportPptAction (Editable PowerPoint)",
+      "pptx_sha256": "11422830f2d67f87ab55c26e93da65deb1151fbb997dbd977c1de974626ff9ef",
+      "pptx_bytes": 54124,
+      "structure": {
+        "path": "semiconductor-rca.pptx",
+        "sha256": "11422830f2d67f87ab55c26e93da65deb1151fbb997dbd977c1de974626ff9ef",
+        "bytes": 54124,
+        "slide_count": 1,
+        "shape_count": 172,
+        "text_shape_count": 166,
+        "chart_count": 2,
+        "table_count": 1,
+        "items": [
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Executive Statement",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "report headline",
+            "text": "Lot WQ-7314 shows a localized edge-band yield loss after the September 18 ETCH-08 chamber A run.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Affected scope",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected scope"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "context subhead",
+            "text": "Wafer WQ-7314 · route R17B · ETCH-08 / chamber A · inline metrology sample 4,812 · paired reference wafer WQ-7298.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected scope"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "Affected edge-band yield",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected edge-band yield KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "91.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected edge-band yield KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected edge-band yield KPI"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ComparisonEngine",
+            "role": "metric title",
+            "text": "Affected vs paired-reference yield",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected vs paired-reference yield KPI"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ComparisonEngine",
+            "role": "comparison value",
+            "text": "98% → 91.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected vs paired-reference yield KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "WaferFabEngine",
+            "role": "text heading",
+            "text": "Affected die yield",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Affected die yield::spatial-panel"
+          },
+          {
+            "item_id": "c5",
+            "engine": "EngineeringChartEngine",
+            "role": "text heading",
+            "text": "Process stability and specification",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 6"
+          },
+          {
+            "item_id": "c6",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Control versus affected distribution",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 7"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Measure",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Affected",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Reference",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Review",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Edge-band yield",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "91.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "98.0%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Contain pending matched rerun",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Film thickness",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "798.0 nm",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "802.1 nm",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Check endpoint calibration",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Pressure offset",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "+2.4 kPa",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Baseline",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Association only; verify",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "text heading",
+            "text": "Process Flow",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Excursion signal::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Excursion signal",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Excursion signal::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Compare affected and reference",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Excursion signal::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Verify chamber mechanism",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Excursion signal::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Confirm corrective action",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Excursion signal::node-1"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "text heading",
+            "text": "Verified finding",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Verified finding"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "narrative interpretation",
+            "text": "Signal · WQ-7314 edge-band yield is below the paired reference.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Verified finding"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "evidence detail",
+            "text": "Nine lower-right edge-band records average 91.8% versus a 98.0% paired-reference mean. Pressure shift begins after PM-44719; cause remains unconfirmed. Keep the lot contained through endpoint calibration and matched rerun.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Verified finding"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "action status",
+            "text": "Needs verification",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Verified finding"
+          },
+          {
+            "item_id": "c10",
+            "engine": "ProjectCompositeEngine",
+            "role": "text heading",
+            "text": "Corrective action",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Corrective action"
+          },
+          {
+            "item_id": "c10",
+            "engine": "ProjectCompositeEngine",
+            "role": "risk decision",
+            "text": "Contain WQ-7314 pending chamber requalification",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Corrective action"
+          },
+          {
+            "item_id": "c10",
+            "engine": "ProjectCompositeEngine",
+            "role": "conclusion next step",
+            "text": "Do not release the lot from one correlated pressure trace. Verify endpoint calibration and a matched chamber B rerun.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Corrective action"
+          },
+          {
+            "item_id": "c10",
+            "engine": "ProjectCompositeEngine",
+            "role": "action status",
+            "text": "Contain",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Corrective action"
+          },
+          {
+            "item_id": "c12",
+            "engine": "WaferFabEngine",
+            "role": "text heading",
+            "text": "Synthetic paired-die renderer subset Δ",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Synthetic paired-die renderer subset Δ::spatial-panel"
+          }
+        ],
+        "text_roles": [
+          {
+            "shape": "VIZ::Executive Statement",
+            "roles": [
+              "text heading",
+              "report headline"
+            ],
+            "text": "Executive Statement\nLot WQ-7314 shows a localized edge-band yield loss after the September 18 ETCH-08 chamber A run.",
+            "geometry_emu": {
+              "left": 90454,
+              "top": 258442,
+              "width": 6845093,
+              "height": 709164
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Executive Statement",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Lot WQ-7314 shows a localized edge-band yield loss after the September 18 ETCH-08 chamber A run.",
+                "family": "Arial",
+                "size_pt": 17.5,
+                "bold": true,
+                "color_rgb": "172B43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Affected scope",
+            "roles": [
+              "text heading",
+              "context subhead"
+            ],
+            "text": "Affected scope\nWafer WQ-7314 · route R17B · ETCH-08 / chamber A · inline metrology sample 4,812 · paired reference wafer WQ-7298.",
+            "geometry_emu": {
+              "left": 7026002,
+              "top": 380426,
+              "width": 3221220,
+              "height": 465195
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Affected scope",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Wafer WQ-7314 · route R17B · ETCH-08 / chamber A · inline metrology sample 4,812 · paired reference wafer WQ-7298.",
+                "family": "Arial Narrow",
+                "size_pt": 9.5,
+                "bold": false,
+                "color_rgb": "374A60"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Affected edge-band yield KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "Affected edge-band yield\n91.8%",
+            "geometry_emu": {
+              "left": 5818045,
+              "top": 1219587,
+              "width": 4429178,
+              "height": 1201755
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Affected edge-band yield",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "91.8%",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Affected vs paired-reference yield KPI",
+            "roles": [
+              "metric title",
+              "comparison value"
+            ],
+            "text": "Affected vs paired-reference yield\n98% → 91.8%",
+            "geometry_emu": {
+              "left": 90454,
+              "top": 1187282,
+              "width": 5637135,
+              "height": 1266365
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Affected vs paired-reference yield",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "98% → 91.8%",
+                "family": "Arial",
+                "size_pt": 20.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Verified finding",
+            "roles": [
+              "text heading",
+              "narrative interpretation",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Verified finding\nSignal · WQ-7314 edge-band yield is below the paired reference.\nNine lower-right edge-band records average 91.8% versus a 98.0% paired-reference mean. Pressure shift begins after PM-44719; cause remains unconfirmed. Keep the lot contained through endpoint calibration and matched rerun.\nNeeds verification",
+            "geometry_emu": {
+              "left": 90454,
+              "top": 4727936,
+              "width": 10156768,
+              "height": 1535145
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Verified finding",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Signal · WQ-7314 edge-band yield is below the paired reference.",
+                "family": "Arial",
+                "size_pt": 11.5,
+                "bold": false,
+                "color_rgb": "253649"
+              },
+              {
+                "text": "Nine lower-right edge-band records average 91.8% versus a 98.0% paired-reference mean. Pressure shift begins after PM-44719; cause remains unconfirmed. Keep the lot contained through endpoint calibration and matched rerun.",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": "Needs verification",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Corrective action",
+            "roles": [
+              "text heading",
+              "risk decision",
+              "conclusion next step",
+              "action status"
+            ],
+            "text": "Corrective action\nContain WQ-7314 pending chamber requalification\nDo not release the lot from one correlated pressure trace. Verify endpoint calibration and a matched chamber B rerun.\nContain",
+            "geometry_emu": {
+              "left": 90454,
+              "top": 11092199,
+              "width": 10156768,
+              "height": 1007923
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Corrective action",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Contain WQ-7314 pending chamber requalification",
+                "family": "Arial",
+                "size_pt": 11.0,
+                "bold": true,
+                "color_rgb": "682B31"
+              },
+              {
+                "text": "Do not release the lot from one correlated pressure trace. Verify endpoint calibration and a matched chamber B rerun.",
+                "family": "Arial",
+                "size_pt": 12.5,
+                "bold": true,
+                "color_rgb": "17324E"
+              },
+              {
+                "text": "Contain",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          }
+        ],
+        "spatial": {
+          "c4": {
+            "kind": "Wafer Map",
+            "die_primitives": 113,
+            "title_visible": true
+          },
+          "c8": {
+            "kind": "Process Flow",
+            "nodes": 4,
+            "labels": [
+              "Excursion signal",
+              "Compare affected\nand reference",
+              "Verify chamber\nmechanism",
+              "Confirm\ncorrective action"
+            ],
+            "connectors": 3
+          },
+          "c12": {
+            "kind": "Wafer Difference Map",
+            "die_primitives": 4,
+            "title_visible": true
+          }
+        },
+        "browser_geometry": {
+          "canvas": {
+            "width": 1600,
+            "height": 1887
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1059.44,
+              "h": 109.76,
+              "section": "opening",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 1087.44,
+              "y": 58.88,
+              "w": 498.56,
+              "h": 72,
+              "section": "opening",
+              "sectionStart": false,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "support",
+              "order": 1
+            },
+            {
+              "id": "c11",
+              "x": 14,
+              "y": 183.76,
+              "w": 872.4800000000001,
+              "h": 196,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 900.4800000000001,
+              "y": 188.76,
+              "w": 685.52,
+              "h": 186,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 160.07999999999993,
+              "y": 413.76,
+              "w": 310,
+              "h": 310,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "feature",
+              "order": 4
+            },
+            {
+              "id": "c5",
+              "x": 484.0799999999999,
+              "y": 445.1264705882353,
+              "w": 509.52000000000004,
+              "h": 247.26705882352942,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "support",
+              "order": 5
+            },
+            {
+              "id": "c6",
+              "x": 1007.5999999999999,
+              "y": 458.76,
+              "w": 432.32000000000005,
+              "h": 220,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "support",
+              "order": 6
+            },
+            {
+              "id": "c9",
+              "x": 14,
+              "y": 731.76,
+              "w": 1572,
+              "h": 237.60000000000002,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "feature-support-analysis",
+              "compositionLevel": "support",
+              "order": 7
+            },
+            {
+              "id": "c8",
+              "x": 127.12,
+              "y": 1003.36,
+              "w": 965.96,
+              "h": 170,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 977.36,
+              "sectionHeadingOrder": 8,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 8
+            },
+            {
+              "id": "c12",
+              "x": 1107.08,
+              "y": 1003.36,
+              "w": 365.79999999999995,
+              "h": 365.79999999999995,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": 977.36,
+              "sectionHeadingOrder": 8,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 9
+            },
+            {
+              "id": "c7",
+              "x": 14,
+              "y": 1377.1599999999999,
+              "w": 1572,
+              "h": 305.62,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 10
+            },
+            {
+              "id": "c10",
+              "x": 14,
+              "y": 1716.7799999999997,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 1690.7799999999997,
+              "sectionHeadingOrder": 11,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 11
+            }
+          ]
+        },
+        "element_rectangle_overlap_count": 0,
+        "element_rectangle_geometry_issues": [],
+        "off_slide_shapes": [],
+        "missing_or_misplaced_strings": [],
+        "status": "PASS"
+      },
+      "raster": {
+        "pdf": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/semiconductor-rca.pdf",
+        "pdf_sha256": "c61f39a0d95600be3f58a5f90e351ac50fd812cae543f1c4a86f0ace625ff11e",
+        "libreoffice_command": [
+          "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+          "--headless",
+          "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/semiconductor-rca",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/semiconductor-rca.pptx"
+        ],
+        "libreoffice_environment": {
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "libreoffice_returncode": 0,
+        "libreoffice_stdout": "convert /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/semiconductor-rca.pptx as a Impress document -> /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/semiconductor-rca.pdf using filter : impress_pdf_Export\n",
+        "libreoffice_stderr": "Fontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\nFontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\n",
+        "pdftoppm_command": [
+          "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+          "-png",
+          "-r",
+          "144",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/semiconductor-rca.pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/semiconductor-rca"
+        ],
+        "pdftoppm_returncode": 0,
+        "pdftoppm_stdout": "",
+        "pdftoppm_stderr": "",
+        "rasters": [
+          {
+            "path": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/semiconductor-rca-1.png",
+            "sha256": "fefe8d83b1a4fa1c4d6e86b2afa9ef877a0cde2fe8b18eae176991b7de275107",
+            "bytes": 351417
+          }
+        ]
+      },
+      "comparison": {
+        "r2_pptx_sha256": "c1f872abd8a3d4787ff73a0d3f5bbf4252867691c0c37708806cc2a2af40099a",
+        "r2_raster": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence/exports/pptx-review/rasters/03__semiconductor-rca__semiconductor-rca-1.png",
+        "r2_raster_sha256": "5eebd5fc50b30a37dc91b0ac5be1448f2935335641eb69b833742b0636db0146",
+        "candidate_raster": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/semiconductor-rca-1.png",
+        "candidate_raster_sha256": "fefe8d83b1a4fa1c4d6e86b2afa9ef877a0cde2fe8b18eae176991b7de275107"
+      }
+    },
+    "experiment-decision": {
+      "title": "Onboarding reminder · randomized experiment decision",
+      "report_id": "chg206-experiment-decision",
+      "source_report_id": "report-a6248128141d43888b668951738f539a",
+      "source_revision": 42,
+      "supported_action": "#exportBtn → #exportPptAction (Editable PowerPoint)",
+      "pptx_sha256": "c0944f7c95084850e87aaedd3bb9fdebf7bbe95bcf0e42f8383d804542c3fe26",
+      "pptx_bytes": 45148,
+      "structure": {
+        "path": "experiment-decision.pptx",
+        "sha256": "c0944f7c95084850e87aaedd3bb9fdebf7bbe95bcf0e42f8383d804542c3fe26",
+        "bytes": 45148,
+        "slide_count": 1,
+        "shape_count": 10,
+        "text_shape_count": 7,
+        "chart_count": 2,
+        "table_count": 1,
+        "items": [
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Executive Statement",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "report headline",
+            "text": "The reminder increased completion, although the week-four uplift is not enough to rule out a novelty effect.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Hypothesis and context",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Hypothesis and context"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "context subhead",
+            "text": "Experiment E-26-041 · eligible new accounts · randomized 1:1 · four weeks · 12,804 assigned · conversion measured within 7 days.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Hypothesis and context"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "Treatment completion",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Treatment completion KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "24.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Treatment completion KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Treatment completion KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "ComparisonEngine",
+            "role": "metric title",
+            "text": "Completion · control to treatment",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Completion · control to treatment KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "ComparisonEngine",
+            "role": "comparison value",
+            "text": "21.8% → 24.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Completion · control to treatment KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Outcome distribution by cohort",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 6"
+          },
+          {
+            "item_id": "c6",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Conversion by week",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 5"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Cohort",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Assigned",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Completion",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Support-contact change",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Control",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "6402",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "21.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "+0.00 pt",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Treatment",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "6402",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "24.8%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "+0.08 pt",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Eligible holdout",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "1104",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "21.5%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "No post-assignment exclusion",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Assignment and guardrail evidence"
+          },
+          {
+            "item_id": "c8",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Interpretation",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Interpretation"
+          },
+          {
+            "item_id": "c8",
+            "engine": "TextEngine",
+            "role": "narrative interpretation",
+            "text": "Treatment completion rose from 21.1% to 24.8%; control moved from 21.0% to 21.8%. The observed separation is consistent across four weeks, while the support-contact guardrail moved by +0.08 points against a +0.15 limit. This descriptive comparison does not prove the effect will persist after the novelty period.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Interpretation"
+          },
+          {
+            "item_id": "c9",
+            "engine": "DecisionCompositeEngine",
+            "role": "text heading",
+            "text": "Recommendation",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Recommendation"
+          },
+          {
+            "item_id": "c9",
+            "engine": "DecisionCompositeEngine",
+            "role": "conclusion next step",
+            "text": "Extend to 25% exposure with a support-contact stop",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Recommendation"
+          },
+          {
+            "item_id": "c9",
+            "engine": "DecisionCompositeEngine",
+            "role": "risk decision",
+            "text": "The four-week signal is promising but does not establish persistence. Stop if support-contact change exceeds +0.15 points.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Recommendation"
+          },
+          {
+            "item_id": "c9",
+            "engine": "DecisionCompositeEngine",
+            "role": "action status",
+            "text": "Limited rollout",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Recommendation"
+          }
+        ],
+        "text_roles": [
+          {
+            "shape": "VIZ::Executive Statement",
+            "roles": [
+              "text heading",
+              "report headline"
+            ],
+            "text": "Executive Statement\nThe reminder increased completion, although the week-four uplift is not enough to rule out a novelty effect.",
+            "geometry_emu": {
+              "left": 106679,
+              "top": 304800,
+              "width": 8072931,
+              "height": 836371
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Executive Statement",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "The reminder increased completion, although the week-four uplift is not enough to rule out a novelty effect.",
+                "family": "Arial",
+                "size_pt": 17.5,
+                "bold": true,
+                "color_rgb": "172B43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Hypothesis and context",
+            "roles": [
+              "text heading",
+              "context subhead"
+            ],
+            "text": "Hypothesis and context\nExperiment E-26-041 · eligible new accounts · randomized 1:1 · four weeks · 12,804 assigned · conversion measured within 7 days.",
+            "geometry_emu": {
+              "left": 8286291,
+              "top": 448666,
+              "width": 3799026,
+              "height": 548639
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Hypothesis and context",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Experiment E-26-041 · eligible new accounts · randomized 1:1 · four weeks · 12,804 assigned · conversion measured within 7 days.",
+                "family": "Arial Narrow",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "374A60"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Treatment completion KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "Treatment completion\n24.8%",
+            "geometry_emu": {
+              "left": 6861656,
+              "top": 1442161,
+              "width": 5223661,
+              "height": 1409699
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Treatment completion",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "24.8%",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Completion · control to treatment KPI",
+            "roles": [
+              "metric title",
+              "comparison value"
+            ],
+            "text": "Completion · control to treatment\n21.8% → 24.8%",
+            "geometry_emu": {
+              "left": 106679,
+              "top": 1400251,
+              "width": 6648296,
+              "height": 1493519
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Completion · control to treatment",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "21.8% → 24.8%",
+                "family": "Arial",
+                "size_pt": 20.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Interpretation",
+            "roles": [
+              "text heading",
+              "narrative interpretation"
+            ],
+            "text": "Interpretation\nTreatment completion rose from 21.1% to 24.8%; control moved from 21.0% to 21.8%. The observed separation is consistent across four weeks, while the support-contact guardrail moved by +0.08 points against a +0.15 limit. This descriptive comparison does not prove the effect will persist after the novelty period.",
+            "geometry_emu": {
+              "left": 379623,
+              "top": 4076395,
+              "width": 5698540,
+              "height": 883919
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Interpretation",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Treatment completion rose from 21.1% to 24.8%; control moved from 21.0% to 21.8%. The observed separation is consistent across four weeks, while the support-contact guardrail moved by +0.08 points against a +0.15 limit. This descriptive comparison does not prove the effect will persist after the novelty period.",
+                "family": "Arial Narrow",
+                "size_pt": 11.5,
+                "bold": false,
+                "color_rgb": "253649"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Recommendation",
+            "roles": [
+              "text heading",
+              "conclusion next step",
+              "risk decision",
+              "action status"
+            ],
+            "text": "Recommendation\nExtend to 25% exposure with a support-contact stop\nThe four-week signal is promising but does not establish persistence. Stop if support-contact change exceeds +0.15 points.\nLimited rollout",
+            "geometry_emu": {
+              "left": 106679,
+              "top": 11216334,
+              "width": 11978638,
+              "height": 716279
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Recommendation",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Extend to 25% exposure with a support-contact stop",
+                "family": "Arial",
+                "size_pt": 12.5,
+                "bold": true,
+                "color_rgb": "17324E"
+              },
+              {
+                "text": "The four-week signal is promising but does not establish persistence. Stop if support-contact change exceeds +0.15 points.",
+                "family": "Arial",
+                "size_pt": 11.0,
+                "bold": true,
+                "color_rgb": "682B31"
+              },
+              {
+                "text": "Limited rollout",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          }
+        ],
+        "spatial": {},
+        "browser_geometry": {
+          "canvas": {
+            "width": 1600,
+            "height": 1580
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1059.44,
+              "h": 109.76,
+              "section": "opening",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 1087.44,
+              "y": 58.88,
+              "w": 498.56,
+              "h": 72,
+              "section": "opening",
+              "sectionStart": false,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "support",
+              "order": 1
+            },
+            {
+              "id": "c4",
+              "x": 14,
+              "y": 183.76,
+              "w": 872.4800000000001,
+              "h": 196,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 900.4800000000001,
+              "y": 189.26,
+              "w": 685.52,
+              "h": 185,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c8",
+              "x": 49.819393939393876,
+              "y": 534.96,
+              "w": 747.8399999999999,
+              "h": 116,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 4
+            },
+            {
+              "id": "c6",
+              "x": 811.6593939393938,
+              "y": 413.76,
+              "w": 738.5212121212122,
+              "h": 358.40000000000003,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "feature",
+              "order": 5
+            },
+            {
+              "id": "c5",
+              "x": 424.1454545454546,
+              "y": 780.1600000000001,
+              "w": 751.7090909090908,
+              "h": 364.79999999999995,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 6
+            },
+            {
+              "id": "c7",
+              "x": 14,
+              "y": 1178.96,
+              "w": 1572,
+              "h": 259,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 1152.96,
+              "sectionHeadingOrder": 7,
+              "sectionPattern": "evidence-detail-grid",
+              "compositionLevel": "feature",
+              "order": 7
+            },
+            {
+              "id": "c9",
+              "x": 14,
+              "y": 1471.96,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 1445.96,
+              "sectionHeadingOrder": 8,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 8
+            }
+          ]
+        },
+        "element_rectangle_overlap_count": 0,
+        "element_rectangle_geometry_issues": [],
+        "off_slide_shapes": [],
+        "missing_or_misplaced_strings": [],
+        "status": "PASS"
+      },
+      "raster": {
+        "pdf": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/experiment-decision.pdf",
+        "pdf_sha256": "263addef3b620a9c090d2eabf27f42696b135630069feb73c6b4a51826f30f4d",
+        "libreoffice_command": [
+          "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+          "--headless",
+          "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/experiment-decision",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/experiment-decision.pptx"
+        ],
+        "libreoffice_environment": {
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "libreoffice_returncode": 0,
+        "libreoffice_stdout": "convert /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/experiment-decision.pptx as a Impress document -> /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/experiment-decision.pdf using filter : impress_pdf_Export\n",
+        "libreoffice_stderr": "Fontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\nFontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\n",
+        "pdftoppm_command": [
+          "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+          "-png",
+          "-r",
+          "144",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/experiment-decision.pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/experiment-decision"
+        ],
+        "pdftoppm_returncode": 0,
+        "pdftoppm_stdout": "",
+        "pdftoppm_stderr": "",
+        "rasters": [
+          {
+            "path": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/experiment-decision-1.png",
+            "sha256": "d4c3b8be148a94a7b02054bb9d0066dabc181ebbc7d0106badb0a6ac89955d56",
+            "bytes": 244774
+          }
+        ]
+      },
+      "comparison": {
+        "r2_pptx_sha256": "bfa7653437feeac9540298d41e24f02278bc195034ed3090577807d32e18e8bc",
+        "r2_raster": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence/exports/pptx-review/rasters/07__experiment-decision__experiment-decision-1.png",
+        "r2_raster_sha256": "5d6e8b4e8222faaba8fb1af3a1c6adda670a097b9a7b4d2501e3d6b45e4692c8",
+        "candidate_raster": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/experiment-decision-1.png",
+        "candidate_raster_sha256": "d4c3b8be148a94a7b02054bb9d0066dabc181ebbc7d0106badb0a6ac89955d56"
+      }
+    },
+    "technical-status-review": {
+      "title": "Line 4 weekly operating and reliability review",
+      "report_id": "chg206-technical-status-review",
+      "source_report_id": "report-1d6b57af58064cb2a151b0677298ee6f",
+      "source_revision": 47,
+      "supported_action": "#exportBtn → #exportPptAction (Editable PowerPoint)",
+      "pptx_sha256": "8474b4f6de013724a334a2852808fcace41e8b458e5976a57cf33770d241da8e",
+      "pptx_bytes": 47245,
+      "structure": {
+        "path": "technical-status-review.pptx",
+        "sha256": "8474b4f6de013724a334a2852808fcace41e8b458e5976a57cf33770d241da8e",
+        "bytes": 47245,
+        "slide_count": 1,
+        "shape_count": 21,
+        "text_shape_count": 15,
+        "chart_count": 2,
+        "table_count": 1,
+        "items": [
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Executive Statement",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c1",
+            "engine": "TextEngine",
+            "role": "report headline",
+            "text": "Line 4 output recovered after maintenance, but two unresolved control checks still constrain the Friday capacity release.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Executive Statement"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Report context",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Report context"
+          },
+          {
+            "item_id": "c2",
+            "engine": "TextEngine",
+            "role": "context subhead",
+            "text": "Plant 6 · Line 4 · review window 2026-09-14 through 2026-09-20 · batches L4-260918-A-7741 / B-7742 · owner: Process Engineering.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Report context"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "First-pass yield",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::First-pass yield KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "96.2%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::First-pass yield KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::First-pass yield KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "Unplanned downtime",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Unplanned downtime KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "7.4 h",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Unplanned downtime KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "h",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Unplanned downtime KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Yield by shift",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 5"
+          },
+          {
+            "item_id": "c6",
+            "engine": "EngineeringChartEngine",
+            "role": "text heading",
+            "text": "Critical measurement trend",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 6"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Area / identifier",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Status",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Owner",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Due",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Evidence",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "ETCH-08-A / PM-44719",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Calibration open",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Equipment Eng.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "09-25",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Pressure offset +2.4 kPa",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Line 4 / sample 20",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Matched rerun",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Process Eng.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "09-25",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "SPC sequence 15–20",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Batch L4-260918-B-7742",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Release gated",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Quality",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "09-26",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Await sign-off; no capability claim",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "text heading",
+            "text": "Process Flow",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Detect::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Detect",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Detect::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Contain",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Detect::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Verify",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Detect::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Release",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Process Flow::Detect::node-1"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "text heading",
+            "text": "Evidence Card",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Evidence Card"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "narrative interpretation",
+            "text": "Measurement system remains within the qualified reference range.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Evidence Card"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "evidence detail",
+            "text": "Sample: 30 parts · method: inline metrology · source: shift B inspection.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Evidence Card"
+          },
+          {
+            "item_id": "c9",
+            "engine": "EvidenceCompositeEngine",
+            "role": "action status",
+            "text": "Verified",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Evidence Card"
+          },
+          {
+            "item_id": "c10",
+            "engine": "DecisionCompositeEngine",
+            "role": "text heading",
+            "text": "Risk Callout",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c10",
+            "engine": "DecisionCompositeEngine",
+            "role": "risk decision",
+            "text": "Keep Friday capacity release conditional",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c10",
+            "engine": "DecisionCompositeEngine",
+            "role": "evidence detail",
+            "text": "Await pressure calibration, matched sample 20, and Quality sign-off. A point inside specifications can still warrant a control-chart investigation.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c10",
+            "engine": "DecisionCompositeEngine",
+            "role": "action status",
+            "text": "Review",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ProjectCompositeEngine",
+            "role": "text heading",
+            "text": "Project Card",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Project Card"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ProjectCompositeEngine",
+            "role": "conclusion next step",
+            "text": "Complete chamber verification and update the runbook.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Project Card"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ProjectCompositeEngine",
+            "role": "evidence detail",
+            "text": "Owner: Equipment Engineering · due next shift · evidence: paired control lot.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Project Card"
+          },
+          {
+            "item_id": "c11",
+            "engine": "ProjectCompositeEngine",
+            "role": "action status",
+            "text": "Active",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Project Card"
+          },
+          {
+            "item_id": "c12",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Body Narrative",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          },
+          {
+            "item_id": "c12",
+            "engine": "TextEngine",
+            "role": "narrative interpretation",
+            "text": "First-pass yield improved from 94.6% to 96.2% after the valve service. Downtime remains 7.4 hours, above the 6-hour limit. Sample 19 is outside the SPC centerline pattern but inside the product specification; treat this as a process signal for investigation, not a customer defect or capability claim.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          }
+        ],
+        "text_roles": [
+          {
+            "shape": "VIZ::Executive Statement",
+            "roles": [
+              "text heading",
+              "report headline"
+            ],
+            "text": "Executive Statement\nLine 4 output recovered after maintenance, but two unresolved control checks still constrain the Friday capacity release.",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 215596,
+              "width": 5710296,
+              "height": 591597
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Executive Statement",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Line 4 output recovered after maintenance, but two unresolved control checks still constrain the Friday capacity release.",
+                "family": "Arial",
+                "size_pt": 14.0,
+                "bold": true,
+                "color_rgb": "172B43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Report context",
+            "roles": [
+              "text heading",
+              "context subhead"
+            ],
+            "text": "Report context · Plant 6 · Line 4 · review window 2026-09-14 through 2026-09-20 · batches L4-260918-A-7741 / B-7742 · owner: Process Engineering.",
+            "geometry_emu": {
+              "left": 5861214,
+              "top": 317358,
+              "width": 2687198,
+              "height": 388074
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Report context",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": " · Plant 6 · Line 4 · review window 2026-09-14 through 2026-09-20 · batches L4-260918-A-7741 / B-7742 · owner: Process Engineering.",
+                "family": "Arial Narrow",
+                "size_pt": 8.0,
+                "bold": false,
+                "color_rgb": "374A60"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::First-pass yield KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "First-pass yield\n96.2%",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 990451,
+              "width": 4702597,
+              "height": 1002525
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "First-pass yield",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "96.2%",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Unplanned downtime KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "Unplanned downtime\n7.4 h",
+            "geometry_emu": {
+              "left": 4853515,
+              "top": 990451,
+              "width": 3694897,
+              "height": 1002525
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Unplanned downtime",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "7.4 h",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Body Narrative",
+            "roles": [
+              "text heading",
+              "narrative interpretation"
+            ],
+            "text": "Body Narrative · First-pass yield improved from 94.6% to 96.2% after the valve service. Downtime remains 7.4 hours, above the 6-hour limit. Sample 19 is outside the SPC centerline pattern but inside the product specification; treat this as a process signal for investigation, not a customer defect or capability claim.",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 2923185,
+              "width": 4030797,
+              "height": 625230
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Body Narrative",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": " · First-pass yield improved from 94.6% to 96.2% after the valve service. Downtime remains 7.4 hours, above the 6-hour limit. Sample 19 is outside the SPC centerline pattern but inside the product specification; treat this as a process signal for investigation, not a customer defect or capability claim.",
+                "family": "Arial Narrow",
+                "size_pt": 9.5,
+                "bold": false,
+                "color_rgb": "253649"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Evidence Card",
+            "roles": [
+              "text heading",
+              "narrative interpretation",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Evidence Card\nMeasurement system remains within the qualified reference range.\nSample: 30 parts · method: inline metrology · source: shift B inspection.\nVerified",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 9025775,
+              "width": 8472954,
+              "height": 1375507
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Evidence Card",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Measurement system remains within the qualified reference range.",
+                "family": "Arial",
+                "size_pt": 11.5,
+                "bold": false,
+                "color_rgb": "253649"
+              },
+              {
+                "text": "Sample: 30 parts · method: inline metrology · source: shift B inspection.",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": "Verified",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Risk Callout",
+            "roles": [
+              "text heading",
+              "risk decision",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Risk Callout · Keep Friday capacity release conditional\nAwait pressure calibration, matched sample 20, and Quality sign-off. A point inside specifications can still warrant a control-chart investigation. · Review",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 10584540,
+              "width": 8472954,
+              "height": 506652
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Risk Callout",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": " · Keep Friday capacity release conditional",
+                "family": "Arial",
+                "size_pt": 11.0,
+                "bold": true,
+                "color_rgb": "682B31"
+              },
+              {
+                "text": "Await pressure calibration, matched sample 20, and Quality sign-off. A point inside specifications can still warrant a control-chart investigation.",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": " · Review",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Project Card",
+            "roles": [
+              "text heading",
+              "conclusion next step",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Project Card\nComplete chamber verification and update the runbook.\nOwner: Equipment Engineering · due next shift · evidence: paired control lot.\nActive",
+            "geometry_emu": {
+              "left": 75458,
+              "top": 11274450,
+              "width": 8472954,
+              "height": 840827
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Project Card",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Complete chamber verification and update the runbook.",
+                "family": "Arial",
+                "size_pt": 12.5,
+                "bold": true,
+                "color_rgb": "17324E"
+              },
+              {
+                "text": "Owner: Equipment Engineering · due next shift · evidence: paired control lot.",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": "Active",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          }
+        ],
+        "spatial": {
+          "c8": {
+            "kind": "Process Flow",
+            "nodes": 4,
+            "labels": [
+              "Detect",
+              "Contain",
+              "Verify",
+              "Release"
+            ],
+            "connectors": 3
+          }
+        },
+        "browser_geometry": {
+          "canvas": {
+            "width": 1600,
+            "height": 2262
+          },
+          "items": [
+            {
+              "id": "c1",
+              "x": 14,
+              "y": 40,
+              "w": 1059.44,
+              "h": 109.76,
+              "section": "opening",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c2",
+              "x": 1087.44,
+              "y": 58.88,
+              "w": 498.56,
+              "h": 72,
+              "section": "opening",
+              "sectionStart": false,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "support",
+              "order": 1
+            },
+            {
+              "id": "c3",
+              "x": 14,
+              "y": 183.76,
+              "w": 872.4800000000001,
+              "h": 186,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c4",
+              "x": 900.4800000000001,
+              "y": 183.76,
+              "w": 685.52,
+              "h": 186,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c12",
+              "x": 14,
+              "y": 542.3429411764706,
+              "w": 747.8399999999999,
+              "h": 116,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 377.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 4
+            },
+            {
+              "id": "c6",
+              "x": 775.8399999999999,
+              "y": 403.76,
+              "w": 810.1600000000001,
+              "h": 393.16588235294125,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 377.76,
+              "sectionHeadingOrder": 4,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "feature",
+              "order": 5
+            },
+            {
+              "id": "c5",
+              "x": 450.5212121212121,
+              "y": 804.9258823529412,
+              "w": 698.9575757575758,
+              "h": 339.20000000000005,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 6
+            },
+            {
+              "id": "c8",
+              "x": 389.36,
+              "y": 1178.1258823529413,
+              "w": 821.28,
+              "h": 170,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 1152.1258823529413,
+              "sectionHeadingOrder": 7,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 7
+            },
+            {
+              "id": "c7",
+              "x": 14,
+              "y": 1356.1258823529413,
+              "w": 1572,
+              "h": 300.44,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 8
+            },
+            {
+              "id": "c9",
+              "x": 14,
+              "y": 1674.5658823529413,
+              "w": 1572,
+              "h": 255.2,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 9
+            },
+            {
+              "id": "c10",
+              "x": 14,
+              "y": 1963.7658823529414,
+              "w": 1572,
+              "h": 94,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 1937.7658823529414,
+              "sectionHeadingOrder": 10,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 10
+            },
+            {
+              "id": "c11",
+              "x": 14,
+              "y": 2091.7658823529414,
+              "w": 1572,
+              "h": 156,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 2065.7658823529414,
+              "sectionHeadingOrder": 11,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 11
+            }
+          ]
+        },
+        "element_rectangle_overlap_count": 0,
+        "element_rectangle_geometry_issues": [],
+        "off_slide_shapes": [],
+        "missing_or_misplaced_strings": [],
+        "status": "PASS"
+      },
+      "raster": {
+        "pdf": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/technical-status-review.pdf",
+        "pdf_sha256": "92bcceef36ad921d6294451856d8dd86b5b8bd7c19fa8d80a9da6e889974c8e1",
+        "libreoffice_command": [
+          "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+          "--headless",
+          "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/technical-status-review",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/technical-status-review.pptx"
+        ],
+        "libreoffice_environment": {
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "libreoffice_returncode": 0,
+        "libreoffice_stdout": "convert /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/technical-status-review.pptx as a Impress document -> /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/technical-status-review.pdf using filter : impress_pdf_Export\n",
+        "libreoffice_stderr": "Fontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\nFontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\n",
+        "pdftoppm_command": [
+          "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+          "-png",
+          "-r",
+          "144",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/technical-status-review.pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/technical-status-review"
+        ],
+        "pdftoppm_returncode": 0,
+        "pdftoppm_stdout": "",
+        "pdftoppm_stderr": "",
+        "rasters": [
+          {
+            "path": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/technical-status-review-1.png",
+            "sha256": "8b84ea9f74f8449b5e3c89a056922464bf2fb97f5a81b003bb1a14e44366caa5",
+            "bytes": 284448
+          }
+        ]
+      },
+      "comparison": {
+        "r2_pptx_sha256": "f91110a0e6d09df462bb06d37fc11dbe26cd6de57f47c9ac6d3916fd9d4402b9",
+        "r2_raster": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence/exports/pptx-review/rasters/06__technical-status-review__technical-status-review-1.png",
+        "r2_raster_sha256": "123ed373a33b18916f79934bda055a7b22cd42f79be6be5e97bb22710030c324",
+        "candidate_raster": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/technical-status-review-1.png",
+        "candidate_raster_sha256": "8b84ea9f74f8449b5e3c89a056922464bf2fb97f5a81b003bb1a14e44366caa5"
+      }
+    },
+    "supply-chain-capacity-holdout": {
+      "title": "Northstar component capacity and supplier exposure review",
+      "report_id": "chg206-supply-chain-capacity-holdout",
+      "source_report_id": "report-f39ad9ae24a543f691c52dbba6d4ae05",
+      "source_revision": 78,
+      "supported_action": "#exportBtn → #exportPptAction (Editable PowerPoint)",
+      "pptx_sha256": "66198a40328ccb4b015dc70ca37dc4fcc2fac096e927dbf3e9a13f8b2caddc05",
+      "pptx_bytes": 47569,
+      "structure": {
+        "path": "supply-chain-capacity-holdout.pptx",
+        "sha256": "66198a40328ccb4b015dc70ca37dc4fcc2fac096e927dbf3e9a13f8b2caddc05",
+        "bytes": 47569,
+        "slide_count": 1,
+        "shape_count": 21,
+        "text_shape_count": 15,
+        "chart_count": 2,
+        "table_count": 1,
+        "items": [
+          {
+            "item_id": "c1",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Demand by week",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 6"
+          },
+          {
+            "item_id": "c2",
+            "engine": "CoreChartEngine",
+            "role": "text heading",
+            "text": "Confirmed capacity by week",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "Chart 7"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "P70 capacity headroom",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::P70 capacity headroom KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "2.7%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::P70 capacity headroom KPI"
+          },
+          {
+            "item_id": "c3",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "%",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::P70 capacity headroom KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric title",
+            "text": "Actuator lead time",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Actuator lead time KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "116 days",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Actuator lead time KPI"
+          },
+          {
+            "item_id": "c4",
+            "engine": "MetricEngine",
+            "role": "metric value",
+            "text": "days",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Actuator lead time KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "ComparisonEngine",
+            "role": "metric title",
+            "text": "Confirmed capacity · W38 to W45",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Confirmed capacity · W38 to W45 KPI"
+          },
+          {
+            "item_id": "c5",
+            "engine": "ComparisonEngine",
+            "role": "comparison value",
+            "text": "120000 units → 142000 units",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Confirmed capacity · W38 to W45 KPI"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Supplier / part",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Committed",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Unconfirmed",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Lead time",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Decision evidence",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Northstar Motion / AX-8841",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "72000",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "18000",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "116 days",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Reserve qualified stock now",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Apex Controls / actuator-22B",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "54000",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "9500",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "98 days",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Date-coded allocation pending",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Orion Systems / NX-041-REV-C",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "39000",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "0",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "42 days",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c6",
+            "engine": "TableEngine",
+            "role": "evidence detail",
+            "text": "Capacity confirmed through W45",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Clean Table"
+          },
+          {
+            "item_id": "c7",
+            "engine": "DecisionCompositeEngine",
+            "role": "text heading",
+            "text": "Risk Callout",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c7",
+            "engine": "DecisionCompositeEngine",
+            "role": "risk decision",
+            "text": "Reserve critical actuator supply before releasing the balance",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c7",
+            "engine": "DecisionCompositeEngine",
+            "role": "evidence detail",
+            "text": "Aggregate headroom hides a concentrated 16-week lead-time constraint. Do not treat unconfirmed supplier allocation as available capacity.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c7",
+            "engine": "DecisionCompositeEngine",
+            "role": "action status",
+            "text": "At risk",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Risk Callout"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "text heading",
+            "text": "Allocation decision path",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Allocation decision path::Reconcile P70 demand::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Reconcile P70 demand",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Allocation decision path::Reconcile P70 demand::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Reserve qualified actuators",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Allocation decision path::Reconcile P70 demand::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Confirm date-coded allocation",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Allocation decision path::Reconcile P70 demand::node-1"
+          },
+          {
+            "item_id": "c8",
+            "engine": "DiagramEngine",
+            "role": "engineering spatial label",
+            "text": "Release remaining build",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Allocation decision path::Reconcile P70 demand::node-1"
+          },
+          {
+            "item_id": "c9",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Hero Title",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Hero Title"
+          },
+          {
+            "item_id": "c9",
+            "engine": "TextEngine",
+            "role": "report headline",
+            "text": "The Q4 capacity plan covers baseline demand, but a long-lead actuator constraint leaves the launch buffer exposed.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Hero Title"
+          },
+          {
+            "item_id": "c10",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Body Narrative",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          },
+          {
+            "item_id": "c10",
+            "engine": "TextEngine",
+            "role": "context subhead",
+            "text": "Northstar launch · weeks 38–45 · supplier feed closed 2026-09-23 18:00 UTC · demand scenario P70 · allocation review for Operations and Procurement.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          },
+          {
+            "item_id": "c11",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Body Narrative",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          },
+          {
+            "item_id": "c11",
+            "engine": "TextEngine",
+            "role": "narrative interpretation",
+            "text": "Confirmed capacity exceeds the P70 baseline by 2.7% in aggregate. Another 27,500 actuator units remain unconfirmed across two suppliers; the 116-day lead time makes that small buffer fragile. Do not treat planned capacity as firm supply until the dated allocation lands.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Body Narrative"
+          },
+          {
+            "item_id": "c12",
+            "engine": "TextEngine",
+            "role": "text heading",
+            "text": "Key Takeaway",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Key Takeaway"
+          },
+          {
+            "item_id": "c12",
+            "engine": "TextEngine",
+            "role": "conclusion next step",
+            "text": "Next step: reserve 18,000 qualified actuators now, then release the remaining build only after supplier NC-8841 confirms its dated allocation.",
+            "present_in_expected_element": true,
+            "role_matches_element_metadata": true,
+            "shape": "VIZ::Key Takeaway"
+          }
+        ],
+        "text_roles": [
+          {
+            "shape": "VIZ::Hero Title",
+            "roles": [
+              "text heading",
+              "report headline"
+            ],
+            "text": "Hero Title\nThe Q4 capacity plan covers baseline demand, but a long-lead actuator constraint leaves the launch buffer exposed.",
+            "geometry_emu": {
+              "left": 87532,
+              "top": 250092,
+              "width": 6623944,
+              "height": 686253
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Hero Title",
+                "family": "Arial",
+                "size_pt": 10.0,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "The Q4 capacity plan covers baseline demand, but a long-lead actuator constraint leaves the launch buffer exposed.",
+                "family": "Arial Narrow",
+                "size_pt": 17.0,
+                "bold": true,
+                "color_rgb": "172B43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Body Narrative",
+            "roles": [
+              "text heading",
+              "context subhead"
+            ],
+            "text": "Body Narrative\nNorthstar launch · weeks 38–45 · supplier feed closed 2026-09-23 18:00 UTC · demand scenario P70 · allocation review for Operations and Procurement.",
+            "geometry_emu": {
+              "left": 6799008,
+              "top": 271225,
+              "width": 3117150,
+              "height": 643987
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Body Narrative",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Northstar launch · weeks 38–45 · supplier feed closed 2026-09-23 18:00 UTC · demand scenario P70 · allocation review for Operations and Procurement.",
+                "family": "Arial Narrow",
+                "size_pt": 10.5,
+                "bold": false,
+                "color_rgb": "374A60"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::P70 capacity headroom KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "P70 capacity headroom\n2.7%",
+            "geometry_emu": {
+              "left": 4229560,
+              "top": 1180185,
+              "width": 2799532,
+              "height": 1162929
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "P70 capacity headroom",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "2.7%",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Actuator lead time KPI",
+            "roles": [
+              "metric title",
+              "metric value"
+            ],
+            "text": "Actuator lead time\n116 days",
+            "geometry_emu": {
+              "left": 7116626,
+              "top": 1180185,
+              "width": 2799532,
+              "height": 1162929
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Actuator lead time",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "116 days",
+                "family": "Arial",
+                "size_pt": 24.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Confirmed capacity · W38 to W45 KPI",
+            "roles": [
+              "metric title",
+              "comparison value"
+            ],
+            "text": "Confirmed capacity · W38 to W45\n120000 units → 142000 units",
+            "geometry_emu": {
+              "left": 87532,
+              "top": 1148923,
+              "width": 4054496,
+              "height": 1225452
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Confirmed capacity · W38 to W45",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "374A60"
+              },
+              {
+                "text": "120000 units → 142000 units",
+                "family": "Arial",
+                "size_pt": 20.0,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Body Narrative",
+            "roles": [
+              "text heading",
+              "narrative interpretation"
+            ],
+            "text": "Body Narrative\nConfirmed capacity exceeds the P70 baseline by 2.7% in aggregate. Another 27,500 actuator units remain unconfirmed across two suppliers; the 116-day lead time makes that small buffer fragile. Do not treat planned capacity as firm supply until the dated allocation lands.",
+            "geometry_emu": {
+              "left": 270258,
+              "top": 3364741,
+              "width": 4675725,
+              "height": 725267
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Body Narrative",
+                "family": "Arial",
+                "size_pt": 9.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Confirmed capacity exceeds the P70 baseline by 2.7% in aggregate. Another 27,500 actuator units remain unconfirmed across two suppliers; the 116-day lead time makes that small buffer fragile. Do not treat planned capacity as firm supply until the dated allocation lands.",
+                "family": "Arial Narrow",
+                "size_pt": 9.5,
+                "bold": false,
+                "color_rgb": "253649"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Risk Callout",
+            "roles": [
+              "text heading",
+              "risk decision",
+              "evidence detail",
+              "action status"
+            ],
+            "text": "Risk Callout\nReserve critical actuator supply before releasing the balance\nAggregate headroom hides a concentrated 16-week lead-time constraint. Do not treat unconfirmed supplier allocation as available capacity.\nAt risk",
+            "geometry_emu": {
+              "left": 87532,
+              "top": 10631798,
+              "width": 9828626,
+              "height": 658242
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Risk Callout",
+                "family": "Arial",
+                "size_pt": 10.0,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Reserve critical actuator supply before releasing the balance",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "682B31"
+              },
+              {
+                "text": "Aggregate headroom hides a concentrated 16-week lead-time constraint. Do not treat unconfirmed supplier allocation as available capacity.",
+                "family": "Arial",
+                "size_pt": 10.0,
+                "bold": false,
+                "color_rgb": "37485C"
+              },
+              {
+                "text": "At risk",
+                "family": "Arial",
+                "size_pt": 10.0,
+                "bold": true,
+                "color_rgb": "2B4F43"
+              }
+            ]
+          },
+          {
+            "shape": "VIZ::Key Takeaway",
+            "roles": [
+              "text heading",
+              "conclusion next step"
+            ],
+            "text": "Key Takeaway\nNext step: reserve 18,000 qualified actuators now, then release the remaining build only after supplier NC-8841 confirms its dated allocation.",
+            "geometry_emu": {
+              "left": 87532,
+              "top": 11502619,
+              "width": 9828626,
+              "height": 600221
+            },
+            "background_rgb": "FFFFFF",
+            "wrap": true,
+            "anchor": "TOP (1)",
+            "margins_emu": {
+              "left": 27432,
+              "right": 27432,
+              "top": 0,
+              "bottom": 0
+            },
+            "fit": "none",
+            "fonts": [
+              {
+                "text": "Key Takeaway",
+                "family": "Arial",
+                "size_pt": 10.5,
+                "bold": true,
+                "color_rgb": "1C2B3E"
+              },
+              {
+                "text": "Next step: reserve 18,000 qualified actuators now, then release the remaining build only after supplier NC-8841 confirms its dated allocation.",
+                "family": "Arial",
+                "size_pt": 12.5,
+                "bold": true,
+                "color_rgb": "17324E"
+              }
+            ]
+          }
+        ],
+        "spatial": {
+          "c8": {
+            "kind": "Process Flow",
+            "nodes": 4,
+            "labels": [
+              "Reconcile\nP70 demand",
+              "Reserve\nqualified\nactuators",
+              "Confirm\ndate-coded\nallocation",
+              "Release\nremaining\nbuild"
+            ],
+            "connectors": 3
+          }
+        },
+        "browser_geometry": {
+          "canvas": {
+            "width": 1600,
+            "height": 1950
+          },
+          "items": [
+            {
+              "id": "c9",
+              "x": 14,
+              "y": 40,
+              "w": 1059.44,
+              "h": 109.76,
+              "section": "opening",
+              "sectionStart": true,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "feature",
+              "order": 0
+            },
+            {
+              "id": "c10",
+              "x": 1087.44,
+              "y": 43.38,
+              "w": 498.56,
+              "h": 103,
+              "section": "opening",
+              "sectionStart": false,
+              "sectionHeadingY": 14,
+              "sectionHeadingOrder": 0,
+              "sectionPattern": "hero-opening-band",
+              "compositionLevel": "support",
+              "order": 1
+            },
+            {
+              "id": "c5",
+              "x": 14,
+              "y": 183.76,
+              "w": 648.48,
+              "h": 196,
+              "section": "performance",
+              "sectionStart": true,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "feature",
+              "order": 2
+            },
+            {
+              "id": "c3",
+              "x": 676.48,
+              "y": 188.76,
+              "w": 447.76,
+              "h": 186,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 3
+            },
+            {
+              "id": "c4",
+              "x": 1138.24,
+              "y": 188.76,
+              "w": 447.76,
+              "h": 186,
+              "section": "performance",
+              "sectionStart": false,
+              "sectionHeadingY": 157.76,
+              "sectionHeadingOrder": 2,
+              "sectionPattern": "compact-kpi-strip",
+              "compositionLevel": "support",
+              "order": 4
+            },
+            {
+              "id": "c11",
+              "x": 43.22545454545457,
+              "y": 538.16,
+              "w": 747.8399999999999,
+              "h": 116,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 5
+            },
+            {
+              "id": "c1",
+              "x": 805.0654545454545,
+              "y": 413.76,
+              "w": 751.7090909090908,
+              "h": 364.79999999999995,
+              "section": "analysis",
+              "sectionStart": true,
+              "sectionHeadingY": 387.76,
+              "sectionHeadingOrder": 5,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "feature",
+              "order": 6
+            },
+            {
+              "id": "c2",
+              "x": 470.3030303030303,
+              "y": 786.56,
+              "w": 659.3939393939394,
+              "h": 320,
+              "section": "analysis",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "narrative-evidence-split",
+              "compositionLevel": "support",
+              "order": 7
+            },
+            {
+              "id": "c8",
+              "x": 457.8,
+              "y": 1140.56,
+              "w": 684.4,
+              "h": 233,
+              "section": "evidence",
+              "sectionStart": true,
+              "sectionHeadingY": 1114.56,
+              "sectionHeadingOrder": 8,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "feature",
+              "order": 8
+            },
+            {
+              "id": "c6",
+              "x": 14,
+              "y": 1381.56,
+              "w": 1572,
+              "h": 284.90000000000003,
+              "section": "evidence",
+              "sectionStart": false,
+              "sectionHeadingY": null,
+              "sectionHeadingOrder": null,
+              "sectionPattern": "causal-flow-feature",
+              "compositionLevel": "support",
+              "order": 9
+            },
+            {
+              "id": "c7",
+              "x": 14,
+              "y": 1700.46,
+              "w": 1572,
+              "h": 105.28000000000002,
+              "section": "decision",
+              "sectionStart": true,
+              "sectionHeadingY": 1674.46,
+              "sectionHeadingOrder": 10,
+              "sectionPattern": "compact-decision-band",
+              "compositionLevel": "feature",
+              "order": 10
+            },
+            {
+              "id": "c12",
+              "x": 14,
+              "y": 1839.74,
+              "w": 1572,
+              "h": 96,
+              "section": "delivery",
+              "sectionStart": true,
+              "sectionHeadingY": 1813.74,
+              "sectionHeadingOrder": 11,
+              "sectionPattern": "closing-next-step",
+              "compositionLevel": "feature",
+              "order": 11
+            }
+          ]
+        },
+        "element_rectangle_overlap_count": 0,
+        "element_rectangle_geometry_issues": [],
+        "off_slide_shapes": [],
+        "missing_or_misplaced_strings": [],
+        "status": "PASS"
+      },
+      "raster": {
+        "pdf": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/supply-chain-capacity-holdout.pdf",
+        "pdf_sha256": "61ba285101485fe0f25ef2f3e9f553e0833eedd11eb1b4cf3bd507caef5d19de",
+        "libreoffice_command": [
+          "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+          "--headless",
+          "-env:UserInstallation=file:///Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/profiles/supply-chain-capacity-holdout",
+          "--convert-to",
+          "pdf",
+          "--outdir",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/supply-chain-capacity-holdout.pptx"
+        ],
+        "libreoffice_environment": {
+          "PYTHONDONTWRITEBYTECODE": "1"
+        },
+        "libreoffice_returncode": 0,
+        "libreoffice_stdout": "convert /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/exports/supply-chain-capacity-holdout.pptx as a Impress document -> /Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/supply-chain-capacity-holdout.pdf using filter : impress_pdf_Export\n",
+        "libreoffice_stderr": "Fontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\nFontconfig warning: no <cachedir> elements found. Check configuration.\nFontconfig warning: adding <cachedir>/usr/local/var/cache/fontconfig</cachedir>\nFontconfig warning: adding <cachedir prefix=\"xdg\">fontconfig</cachedir>\n",
+        "pdftoppm_command": [
+          "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+          "-png",
+          "-r",
+          "144",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/pdf/supply-chain-capacity-holdout.pdf",
+          "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/supply-chain-capacity-holdout"
+        ],
+        "pdftoppm_returncode": 0,
+        "pdftoppm_stdout": "",
+        "pdftoppm_stderr": "",
+        "rasters": [
+          {
+            "path": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/supply-chain-capacity-holdout-1.png",
+            "sha256": "a97776f641a34409b7dac265c39d45c5244110a408dcd75f19c2fb79bd1ecb74",
+            "bytes": 325303
+          }
+        ]
+      },
+      "comparison": {
+        "r2_pptx_sha256": "8e90f8f2f573da6eb4041019c8e05bcf7cc3f27c07a95ec14e986018d7a13a73",
+        "r2_raster": "/Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-173-r2@7224c0815142557e2362e2ca4e6201e67006126c/CHG-173-r2-evidence/exports/pptx-review/rasters/05__supply-chain-holdout__supply-chain-capacity-holdout-1.png",
+        "r2_raster_sha256": "76b58f28bf7e41d5cc0bc3e8f6ecabf48470b93a06426d978d89fc4aa74a407a",
+        "candidate_raster": "/Users/haewonkim/.codex-fabric/jobs/CF-335e326a4b753e8a2e6d9e08.running/artifact-bridge/chg206-r1-final-candidate-7011308/powerpoint-acceptance/pptx-review/rasters/supply-chain-capacity-holdout-1.png",
+        "candidate_raster_sha256": "a97776f641a34409b7dac265c39d45c5244110a408dcd75f19c2fb79bd1ecb74"
+      }
+    }
+  },
+  "browser_errors": [],
+  "renderer": {
+    "name": "LibreOffice",
+    "binary_path": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice",
+    "binary_sha256": "820ce37c7f7f496f73516d932109b1254463b33a993ceae0cfbaabac62f164bf",
+    "app_bundle_path": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app",
+    "version": "LibreOffice 26.8.0.3 bce0998afefdbc355585ca324285661a2170ba77",
+    "codesign_verify_command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "codesign_verify_returncode": 0,
+    "codesign_verify_output": "",
+    "signature_command": [
+      "codesign",
+      "-dv",
+      "--verbose=4",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "signature_returncode": 0,
+    "signature_output": "Executable=/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app/Contents/MacOS/soffice\nIdentifier=org.libreoffice.script\nFormat=app bundle with Mach-O thin (arm64)\nCodeDirectory v=20500 size=450 flags=0x10000(runtime) hashes=3+7 location=embedded\nVersionPlatform=1\nVersionMin=720896\nVersionSDK=1705216\nHash type=sha256 size=32\nCandidateCDHash sha256=5db61e07d0ed6bb1e13e515b7326050e256ad1c9\nCandidateCDHashFull sha256=5db61e07d0ed6bb1e13e515b7326050e256ad1c9b0f4bb800ec8f454b5ddb95c\nHash choices=sha256\nCMSDigest=5db61e07d0ed6bb1e13e515b7326050e256ad1c9b0f4bb800ec8f454b5ddb95c\nCMSDigestType=2\nExecutable Segment base=0\nExecutable Segment limit=16384\nExecutable Segment flags=0x1\nPage size=16384\nCDHash=5db61e07d0ed6bb1e13e515b7326050e256ad1c9\nSignature size=8996\nAuthority=Developer ID Application: The Document Foundation (7P5S3ZLCN7)\nAuthority=Developer ID Certification Authority\nAuthority=Apple Root CA\nTimestamp=Aug 21, 2026 at 10:25:13\nInfo.plist entries=24\nTeamIdentifier=7P5S3ZLCN7\nRuntime Version=26.5.0\nSealed Resources version=2 rules=13 files=14004\nInternal requirements count=1 size=184\n",
+    "gatekeeper_assessment_command": [
+      "spctl",
+      "--assess",
+      "--type",
+      "execute",
+      "--verbose",
+      "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app"
+    ],
+    "gatekeeper_returncode": 0,
+    "gatekeeper_output": "/private/tmp/visembler-chg206-r1-CF-335e326a4b753e8a2e6d9e08/tool-cache/libreoffice/mounted-readonly/LibreOffice.app: accepted\nsource=Notarized Developer ID\n",
+    "rasterizer": "Poppler pdftoppm",
+    "rasterizer_path": "/opt/homebrew/Cellar/poppler/26.09.0/bin/pdftoppm",
+    "rasterizer_sha256": "9a44364d0fa42a43c3efdb2cbab47d275973c4a5856c1109f6bf4513def6bb54",
+    "rasterizer_version": "pdftoppm version 26.09.0\nCopyright 2005-2026 The Poppler Developers - http://poppler.freedesktop.org\nCopyright 1996-2011, 2022 Glyph & Cog, LLC",
+    "profile_scope": "job-owned per-report LibreOffice user profile",
+    "raster_dpi": 144
+  },
+  "visual_review": {
+    "status": "PENDING_MANUAL_REVIEW"
+  },
+  "fixture_sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb",
+  "runtime": {
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "python_pptx": "1.0.2",
+    "browser": "151.0.7922.34",
+    "host_url": "http://127.0.0.1:50046",
+    "ephemeral_port": 50046
+  },
+  "status": "PASS_STRUCTURAL_AND_RASTERIZED_PENDING_MANUAL_PIXEL_REVIEW"
+}

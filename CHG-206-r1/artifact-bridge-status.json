@@ -1,0 +1,32 @@
+{
+  "artifact_run_staged": false,
+  "canonical_artifact_bridge_adapter": {
+    "available": false,
+    "discovery": "No Artifact Bridge application/MCP tool or staging command is exposed in this session.",
+    "provider_limit": "A complete remote Artifact Run cannot be reconciled through the unavailable provider."
+  },
+  "fabric_job_id": "CF-335e326a4b753e8a2e6d9e08",
+  "fabric_runtime_publisher": {
+    "available": true,
+    "command": "/Users/haewonkim/.codex-fabric/bin/fabricctl publish-evidence CF-335e326a4b753e8a2e6d9e08",
+    "current_job_state": "RUNNING",
+    "limitation": "Publisher requires a terminal Fabric job; its source confirms it creates the runtime-owned .codex-fabric/audit.json evidence ref from terminal result metadata."
+  },
+  "preserved_fallback": {
+    "full_git_carrier_ref": "refs/heads/project-os-artifacts/visembler/CHG-206-r1",
+    "individual_decisive_evidence": [
+      "powerpoint-acceptance/acceptance-receipt.json",
+      "structural-inspection.json",
+      "visible-text-findings.json",
+      "renderer-provenance.json",
+      "checks-summary.json",
+      "checks/verify-release/report.json"
+    ],
+    "manifest": "MANIFEST.json",
+    "status": "COMPLETE"
+  },
+  "project": "visembler",
+  "reason": "No canonical Artifact Bridge staging/reconciliation provider is available. Full bundle and decisive receipts are retained in the Git carrier; runtime audit publication is terminal-gated.",
+  "request": "CHG-206-r1",
+  "schema": "visembler-chg206-artifact-bridge-status.v1"
+}

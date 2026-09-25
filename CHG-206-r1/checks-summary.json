@@ -1,0 +1,57 @@
+{
+  "candidate_sha": "7011308605d1d2158849efdbc8aa30a8840cb17e",
+  "candidate_tree": "d932f22966508ba6fdb630b6f66e1a01818b7b03",
+  "checks": [
+    {
+      "name": "focused PowerPoint/export regression tests",
+      "receipt": "checks/focused-export-tests.log",
+      "status": "PASS"
+    },
+    {
+      "name": "Company UI validator",
+      "receipt": "checks/company-ui-validate.log",
+      "status": "PASS",
+      "summary": "272 files, 0 errors, 136 warnings"
+    },
+    {
+      "name": "repository contracts",
+      "receipt": "checks/repository-contracts.json",
+      "status": "PASS"
+    },
+    {
+      "name": "CHG-179 semantic parity",
+      "receipt": "checks/chg179/chg179-semantic-parity.json",
+      "status": "PASS"
+    },
+    {
+      "name": "CHG-180 export/PPTX acceptance",
+      "receipt": "checks/chg180/acceptance-receipt.json",
+      "status": "PASS"
+    },
+    {
+      "holdout_cases": 12,
+      "name": "CHG-181 authoring/composition/reuse acceptance",
+      "receipt": "checks/chg181/chg181-native-acceptance.json",
+      "status": "PASS"
+    },
+    {
+      "full_test_result": "1202 passed, 1 existing zipfile warning",
+      "managed_target_status": "PENDING",
+      "name": "complete verify_release.py --host-mode native authority",
+      "receipt": "checks/verify-release/report.json",
+      "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+      "status": "PASS"
+    },
+    {
+      "manual_pixel_review": "PASS",
+      "name": "five-report browser/native editable PowerPoint and trusted raster acceptance",
+      "receipt": "powerpoint-acceptance/acceptance-receipt.json",
+      "status": "PASS_STRUCTURAL_AND_RASTER_PIXEL_REVIEW"
+    }
+  ],
+  "schema": "visembler-chg206-r1-maintained-checks-summary.v1",
+  "unclaimed_gates": [
+    "CHG-173 final outcome verification",
+    "CHG-21 company-managed target certification"
+  ]
+}
