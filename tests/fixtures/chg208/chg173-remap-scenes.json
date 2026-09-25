@@ -1,0 +1,432 @@
+{
+  "schema": "visembler-chg173-remap-scene.v1",
+  "evidence": {
+    "commit": "7224c0815142557e2362e2ca4e6201e67006126c",
+    "authoring_receipt": "CHG-173-r2-evidence/authoring/remap-compatibility-history-conflict.json",
+    "authoring_receipt_blob_sha": "d52795ac1b579f1540f11dcb1545762f8bf65464"
+  },
+  "incompatible": {
+    "source": {
+      "report_id": "report-42846dc3f4b64c80abfe7413875b4a75",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-42846dc3f4b64c80abfe7413875b4a75.json",
+      "blob_sha": "fc11b44675ca5a956183cac509311ce47d1ebcce",
+      "title": "Numeric mapping source",
+      "model": {
+        "schema_version": 1,
+        "authoring_schema": "authoring-p0-v1",
+        "canvas": {
+          "height": 900,
+          "width": 1600
+        },
+        "mode": "smart",
+        "layoutPreset": "editorial",
+        "groups": {},
+        "datasets": [
+          {
+            "fields": [
+              {
+                "id": "cycle_1",
+                "name": "Cycle",
+                "nullable": false,
+                "profile": {
+                  "distinct": 3,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "failure_count_2",
+                "name": "Failure count",
+                "nullable": false,
+                "profile": {
+                  "distinct": 3,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mufvgw6j-2lscue",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "C1",
+                14
+              ],
+              [
+                "C2",
+                11
+              ],
+              [
+                "C3",
+                8
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-24T18:35:29.131Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          }
+        ],
+        "items": [
+          {
+            "brush": [
+              0,
+              4
+            ],
+            "cross": null,
+            "data": [
+              [
+                "Pressure",
+                38
+              ],
+              [
+                "Temperature",
+                26
+              ],
+              [
+                "Recipe",
+                17
+              ],
+              [
+                "Alignment",
+                11
+              ],
+              [
+                "Other",
+                8
+              ]
+            ],
+            "dataset_id": "dataset-mufvgw6j-2lscue",
+            "drill": null,
+            "element": "Pareto",
+            "engine": "CoreChartEngine",
+            "groupId": null,
+            "id": "c1",
+            "locked": false,
+            "mapping": {
+              "category": "cycle_1",
+              "value": "failure_count_2",
+              "x": "failure_count_2"
+            },
+            "message_role": "Supporting Evidence",
+            "order": 0,
+            "revealed": true,
+            "rows": [
+              {
+                "label": "Pressure",
+                "value": 38
+              },
+              {
+                "label": "Temperature",
+                "value": 26
+              },
+              {
+                "label": "Recipe",
+                "value": 17
+              },
+              {
+                "label": "Alignment",
+                "value": 11
+              },
+              {
+                "label": "Other",
+                "value": 8
+              }
+            ],
+            "showTitle": false,
+            "textAlign": "left",
+            "title": "Pareto",
+            "type": "chart",
+            "variant": "line",
+            "view_type": "pareto",
+            "weight": 1.8,
+            "z": 1
+          }
+        ],
+        "nextId": 2
+      }
+    },
+    "destination": {
+      "report_id": "report-32ba6b0ad16c4884a976beb4a022f718",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-32ba6b0ad16c4884a976beb4a022f718.json",
+      "blob_sha": "6a6346295e5c349a67622349269db19a6e3618ad",
+      "title": "Text-valued count target",
+      "observed_dataset": {
+        "fields": [
+          {
+            "id": "column_1_1",
+            "name": "Column 1",
+            "nullable": false,
+            "profile": {
+              "distinct": 3,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "column_2_2",
+            "name": "Column 2",
+            "nullable": false,
+            "profile": {
+              "distinct": 3,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          }
+        ],
+        "rows": [
+          [
+            "Cycle",
+            "Failure count"
+          ],
+          [
+            "C4",
+            "none"
+          ],
+          [
+            "C5",
+            "high"
+          ]
+        ],
+        "header": {
+          "confidence": 0.5,
+          "present": false,
+          "source_row": null
+        }
+      }
+    },
+    "destination_paste_tsv": "Cycle\tFailure count\nC4\tnone\nC5\thigh"
+  },
+  "ambiguous": {
+    "source": {
+      "report_id": "report-6fc157d9a6044d07ba1f66519bf946db",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-6fc157d9a6044d07ba1f66519bf946db.json",
+      "blob_sha": "808f088c4872f3a685cfd59a03dbf6647891688f",
+      "title": "Remap ambiguity source",
+      "model": {
+        "schema_version": 1,
+        "authoring_schema": "authoring-p0-v1",
+        "canvas": {
+          "height": 900,
+          "width": 1600
+        },
+        "mode": "smart",
+        "layoutPreset": "editorial",
+        "groups": {},
+        "datasets": [
+          {
+            "fields": [
+              {
+                "id": "service_week_1",
+                "name": "Service week",
+                "nullable": false,
+                "profile": {
+                  "distinct": 3,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "sla_cases_2",
+                "name": "SLA cases",
+                "nullable": false,
+                "profile": {
+                  "distinct": 3,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mufvcp79-vblpl4",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "W36",
+                12
+              ],
+              [
+                "W37",
+                9
+              ],
+              [
+                "W38",
+                6
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-24T18:32:13.461Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          }
+        ],
+        "items": [
+          {
+            "brush": [
+              0,
+              4
+            ],
+            "cross": null,
+            "data": [
+              [
+                "Baseline",
+                72
+              ],
+              [
+                "Pilot",
+                78
+              ],
+              [
+                "Validation",
+                84
+              ],
+              [
+                "Release",
+                91
+              ],
+              [
+                "Sustain",
+                94
+              ]
+            ],
+            "dataset_id": "dataset-mufvcp79-vblpl4",
+            "drill": null,
+            "element": "Vertical Bar",
+            "engine": "CoreChartEngine",
+            "groupId": null,
+            "id": "c1",
+            "locked": false,
+            "mapping": {
+              "category": "service_week_1",
+              "value": "sla_cases_2",
+              "x": "sla_cases_2"
+            },
+            "message_role": "Supporting Evidence",
+            "order": 0,
+            "revealed": true,
+            "rows": [
+              {
+                "label": "Baseline",
+                "value": 72
+              },
+              {
+                "label": "Pilot",
+                "value": 78
+              },
+              {
+                "label": "Validation",
+                "value": 84
+              },
+              {
+                "label": "Release",
+                "value": 91
+              },
+              {
+                "label": "Sustain",
+                "value": 94
+              }
+            ],
+            "showTitle": false,
+            "textAlign": "left",
+            "title": "Vertical Bar",
+            "type": "chart",
+            "variant": "line",
+            "view_type": "bar",
+            "weight": 1.8,
+            "z": 1
+          }
+        ],
+        "nextId": 2
+      }
+    },
+    "destination": {
+      "report_id": "report-74bfc21ebf84458cb7ee3e340c90a088",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-74bfc21ebf84458cb7ee3e340c90a088.json",
+      "blob_sha": "d947111bd1139408fb90ddc264462360600145ee",
+      "title": "Duplicate service week target",
+      "observed_dataset": {
+        "fields": [
+          {
+            "id": "service_week_1",
+            "name": "Service week",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "service_week_2",
+            "name": "SERVICE WEEK",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "sla_cases_3",
+            "name": "SLA cases",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "rows": [
+          [
+            "W39",
+            "W39",
+            8
+          ],
+          [
+            "W40",
+            "W40",
+            7
+          ]
+        ],
+        "header": {
+          "confidence": 0.6666666666666666,
+          "present": true,
+          "source_row": 0
+        }
+      }
+    },
+    "destination_paste_tsv": "Service week\tSERVICE WEEK\tSLA cases\nW39\tW39\t8\nW40\tW40\t7"
+  }
+}

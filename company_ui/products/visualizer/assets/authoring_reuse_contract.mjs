@@ -20,15 +20,32 @@ function schemaFields(fields=[]) {
 function schemaSignature(fields) {
   return schemaFields(fields).map(field=>`${normalizedFieldName(field.name)}:${field.type}:${field.semantic_tags.join(',')}`).sort().join('|');
 }
-function compatibleField(role, source, target) {
-  const sourceType=text(source?.field_type||source?.type),targetType=text(target?.type),sourceTags=source?.semantic_tags||[],targetTags=target?.semantic_tags||[];
-  if(!target)return false;
-  if(sourceTags.length&&targetTags.length&&!sourceTags.some(tag=>targetTags.includes(tag)))return false;
-  if(['value','y','size','weight','die_x','die_y','reference_value','affected_value','specification_low','specification_high','lower_limit','upper_limit'].includes(role))return ['integer','number'].includes(targetType);
-  if(role==='time')return ['date','datetime'].includes(targetType);
-  if(sourceType==='identifier')return ['identifier','string','categorical'].includes(targetType);
-  if(['string','categorical','identifier'].includes(sourceType))return ['string','categorical','identifier'].includes(targetType);
-  return !sourceType||sourceType===targetType||(sourceType==='integer'&&targetType==='number')||(sourceType==='number'&&targetType==='integer');
+function fieldCompatibilityRequirement(role, source={}) {
+  const sourceType=text(source?.field_type||source?.type),semantic_tags=[...(source?.semantic_tags||[])].map(text).filter(Boolean).sort();
+  let compatible_types=null,type_description='a compatible field';
+  if(['value','y','size','weight','die_x','die_y','reference_value','affected_value','specification_low','specification_high','lower_limit','upper_limit'].includes(role)){compatible_types=['integer','number'];type_description='a numeric field';}
+  else if(role==='time'){compatible_types=['date','datetime'];type_description='a date or time field';}
+  else if(sourceType==='identifier'){compatible_types=['identifier','string','categorical'];type_description='an identifier or text field';}
+  else if(['string','categorical','identifier'].includes(sourceType)){compatible_types=['string','categorical','identifier'];type_description='a text or category field';}
+  else if(sourceType){compatible_types=[sourceType];if(sourceType==='integer')compatible_types.push('number');if(sourceType==='number')compatible_types.push('integer');type_description='the same field type or its numeric equivalent';}
+  return {compatible_types,type_description,semantic_tags};
+}
+
+function fieldCompatibility(role, source, target) {
+  const requirement=fieldCompatibilityRequirement(role,source),targetType=text(target?.type),targetTags=target?.semantic_tags||[];
+  if(!target)return {compatible:false,mismatch:{kind:'unavailable'}};
+  if(requirement.semantic_tags.length&&targetTags.length&&!requirement.semantic_tags.some(tag=>targetTags.includes(tag)))return {compatible:false,mismatch:{kind:'semantic',expected_tags:requirement.semantic_tags,observed_tags:[...targetTags].map(text).filter(Boolean).sort()}};
+  if(requirement.compatible_types&&!requirement.compatible_types.includes(targetType))return {compatible:false,mismatch:{kind:'type',expected_types:requirement.compatible_types,observed_type:targetType}};
+  return {compatible:true,mismatch:null};
+}
+
+function compatibleField(role, source, target) { return fieldCompatibility(role,source,target).compatible; }
+function fieldEvidence(field,dataset) {
+  return {id:text(field?.id),name:text(field?.name),type:text(field?.type||'string'),semantic_tags:[...(field?.semantic_tags||[])].map(text).filter(Boolean).sort(),dataset_name:text(dataset?.name||'Data source')};
+}
+function mismatchProblem(item,role,dataset,field,diagnostic_kind) {
+  const check=fieldCompatibility(role,role,field);
+  return {item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'incompatible type',diagnostic_kind,expected_field:{name:text(role.field_name),type:text(role.field_type),semantic_tags:[...(role.semantic_tags||[])].map(text).filter(Boolean).sort(),...fieldCompatibilityRequirement(role.role,role)},observed_field:fieldEvidence(field,dataset),mismatch:check.mismatch};
 }
 
 function itemBinding(item,dataset) {
@@ -168,16 +185,16 @@ export function suggestSlotMapping(binding,dataset,overrides={}) {
       const candidates=sameName.filter(field=>fieldMatches(role,field));
       const hasOverride=Object.hasOwn(overrides?.[item.item_id]||{},role.role),selected=String(overrides?.[item.item_id]?.[role.role]||'');
       const explicit=selected?fieldsOf(dataset).find(field=>String(field.id)===selected):null;
-      if(explicit){if(compatibleField(role.role,role,explicit))itemMap[role.role]=selected;else problems.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'incompatible type'});}
-      else if(selected)problems.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'selected field is unavailable'});
+      if(explicit){if(compatibleField(role.role,role,explicit))itemMap[role.role]=selected;else problems.push(mismatchProblem(item,role,dataset,explicit,'selected_field_wrong_type'));}
+      else if(selected)problems.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'selected field is unavailable',diagnostic_kind:'selected_field_unavailable',selected_field_id:selected,dataset_name:text(dataset?.name||'Data source')});
       else if(hasOverride)unresolved.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'Choose a compatible field',required:role.required});
       else if(candidates.length===1)itemMap[role.role]=String(candidates[0].id);
-      else if(candidates.length>1)unresolved.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'ambiguous',required:role.required});
-      else if(sameName.length)problems.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'incompatible type'});
-      else unresolved.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:role.required?'required field not found':'field not found',required:role.required});
+      else if(candidates.length>1)unresolved.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:'ambiguous',diagnostic_kind:'ambiguous_compatible_fields',candidate_fields:candidates.map(field=>fieldEvidence(field,dataset)),required:role.required});
+      else if(sameName.length)sameName.forEach(field=>problems.push(mismatchProblem(item,role,dataset,field,'same_name_wrong_type')));
+      else unresolved.push({item_id:item.item_id,element:item.element,role:role.role,source_field:role.field_name,reason:role.required?'required field not found':'field not found',diagnostic_kind:'missing_name',required:role.required});
     }
     const checked=contractFor(item.view).validate(itemMap,fieldsOf(dataset));
-    checked.missing.forEach(role=>{if(!unresolved.some(value=>value.item_id===item.item_id&&value.role===role))unresolved.push({item_id:item.item_id,element:item.element,role,source_field:'',reason:'required role is unmapped'});});
+    checked.missing.forEach(role=>{if(!problems.some(value=>value.item_id===item.item_id&&value.role===role)&&!unresolved.some(value=>value.item_id===item.item_id&&value.role===role))unresolved.push({item_id:item.item_id,element:item.element,role,source_field:'',reason:'required role is unmapped'});});
     checked.incompatible.forEach(role=>{if(!problems.some(value=>value.item_id===item.item_id&&value.role===role))problems.push({item_id:item.item_id,element:item.element,role,source_field:'',reason:'field type is incompatible'});});
     const recipe=item.analysis_recipe||{},recipeId=text(recipe.id),recipeContract=recipeRoleContract(recipeId);
     if(recipeId&&recipeContract.required_roles.length){

@@ -52,14 +52,26 @@ function issueLabel(issue, source) {
 function issueText(issue, label) {
   const sourceField = text(issue.source_field);
   if (issue.message) return text(issue.message).replace(/\s+/g, ' ');
-  if (issue.reason === 'ambiguous') return `${sourceField || label} matches more than one field. Choose the intended ${label.toLowerCase()} field.`;
+  if (issue.reason === 'ambiguous') {
+    const candidates=(issue.candidate_fields||[]).map(field=>`${text(field.name)} · ${humanFieldTypeLabel(field.type)}`).filter(Boolean);
+    const choices=candidates.length?` Compatible fields: ${candidates.join(', ')}.`:'';
+    return `${sourceField || label} matches more than one compatible field.${choices} Choose the intended ${label.toLowerCase()} field.`;
+  }
   if (issue.reason === 'incompatible type' || issue.reason === 'field type is incompatible') {
+    const observed=issue.observed_field;
+    if(observed?.name){
+      const expected=issue.expected_field||{},actualType=humanFieldTypeLabel(observed.type),dataset=text(observed.dataset_name||issue.dataset_name||'selected data source');
+      const expectedType=text(expected.type_description)|| (issue.role==='time'?'a date or time field':['value','y','size','weight','reference_value','affected_value'].includes(issue.role)?'a numeric field':'a compatible field');
+      const observedMeaning=(issue.mismatch?.kind==='semantic'&&(observed.semantic_tags||[]).length)?` with ${observed.semantic_tags.join(' or ')} meaning`:'';
+      const expectedMeaning=(issue.mismatch?.kind==='semantic'&&(expected.semantic_tags||[]).length)?` with ${expected.semantic_tags.join(' or ')} meaning`:'';
+      return `${observed.name} is ${actualType}${observedMeaning} in ${dataset}; ${label} requires ${expectedType}${expectedMeaning}.`;
+    }
     const requiredType = issue.role === 'time' ? 'a date or time field' : ['value','y','size','weight','reference_value','affected_value'].includes(issue.role) ? 'a numeric field' : 'a compatible field';
     return `${sourceField || label} needs ${requiredType} for ${label.toLowerCase()}.`;
   }
   if (issue.reason === 'required field not found') return `Required source field ${sourceField || label} is missing.`;
   if (issue.reason === 'required role is unmapped' || issue.reason === 'Choose a compatible field') return `Choose a compatible field for ${label.toLowerCase()}.`;
-  if (issue.reason === 'selected field is unavailable') return `The selected ${label.toLowerCase()} field is unavailable. Choose another field.`;
+  if (issue.reason === 'selected field is unavailable') return `The selected ${label.toLowerCase()} field is no longer available in ${text(issue.dataset_name||'this data source')}. Choose another field.`;
   return sourceField ? `${sourceField}: ${text(issue.reason) || 'Review this field mapping.'}` : `${label}: ${text(issue.reason) || 'Review this field mapping.'}`;
 }
 
