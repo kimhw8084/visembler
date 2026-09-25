@@ -141,7 +141,7 @@ const DIRECTION_RULES = Object.freeze({
     negativeIdentity: 'isolated metric tiles', primaryRoles: ['primary_analysis','detailed_evidence','decision_risk','action_status'],
     sectionOrder: ['opening','performance','analysis','evidence','decision','delivery'],
     prominence: { primary_analysis: 1.18, detailed_evidence: 1.16, decision_risk: 1.12, action_status: 1.12, hero_metric: .9 },
-    surfaces: ['balanced-analytical-pair','allocation-comparison','evidence-detail-grid','closing-next-step'], treatment: 'constraint-pair',
+    surfaces: ['allocation-comparison','allocation-evidence-grid','evidence-detail-grid','closing-next-step'], treatment: 'constraint-pair',
   }),
   'sparse-decision': Object.freeze({
     label: 'Sparse decision', recipe: 'narrative', traits: ['decision statement leads', 'evidence stays legible', 'open reading rhythm'],
@@ -300,6 +300,7 @@ function sectionPattern(section, preset, profiles, pageWidth, direction = null) 
   if (direction?.id === 'allocation-comparison' && entries.some(entry => entry.engine === 'ComparisonEngine')
       && (entries.some(entry => compositionRole(entry) === 'detailed_evidence' || ['decision_risk','action_status'].includes(compositionRole(entry)))
         || entries.filter(entry => compositionRole(entry) === 'hero_metric').length >= 2)) return 'allocation-comparison';
+  if (direction?.id === 'allocation-comparison' && section.id === 'analysis' && visuals.length >= 2) return 'allocation-evidence-grid';
   if (section.id === 'delivery' && entries.some(entry => ['conclusion','action_status'].includes(compositionRole(entry)))) return 'closing-next-step';
   if (section.id === 'decision' && entries.some(entry => ['decision_risk','conclusion','action_status'].includes(compositionRole(entry)))) return 'compact-decision-band';
   if (direction?.id === 'dense-operations' && visuals.length >= 2 && !roles.includes('causal_evidence')) return 'dense-evidence-grid';
@@ -381,6 +382,11 @@ function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
     return [...result,...ids.filter(id=>!used.has(id)).map(id=>row([id]))];
   }
   if (pattern === 'allocation-comparison') {
+    const metricIds=section.items.filter(entry=>compositionRole(entry)==='hero_metric'||entry.engine==='ComparisonEngine').map(entry=>String(entry.id));
+    if(metricIds.length===ids.length&&metricIds.length>=2&&fits(metricIds)){
+      const ratios=metricIds.length===3?[.42,.29,.29]:metricIds.length===2?[.56,.44]:null;
+      return [row(metricIds,ratios)];
+    }
     const comparison=section.items.find(entry=>entry.engine==='ComparisonEngine');
     const constraint=section.items.find(entry=>String(entry.id)!==String(comparison?.id)&&(['detailed_evidence','decision_risk','action_status','hero_metric'].includes(compositionRole(entry))||visualEntry(entry)));
     const result=[],used=new Set();
@@ -405,13 +411,14 @@ function rowsForSection(section, pattern, profiles, pageWidth, featureId) {
     const pair = section.items.filter(visualEntry).slice(0, 2).map(entry => String(entry.id));
     if (pair.length === 2 && fits(pair)) return [row(pair,[.5,.5]), ...ids.filter(id => !pair.includes(id)).map(id => row([id]))];
   }
-  if (pattern === 'evidence-detail-grid' || pattern === 'dense-evidence-grid') {
-    const evidence = section.items.filter(entry => pattern === 'dense-evidence-grid' ? visualEntry(entry) : compositionRole(entry) === 'detailed_evidence').map(entry => String(entry.id));
+  if (pattern === 'evidence-detail-grid' || pattern === 'dense-evidence-grid' || pattern === 'allocation-evidence-grid') {
+    const groupedVisuals=pattern==='dense-evidence-grid'||pattern==='allocation-evidence-grid';
+    const evidence = section.items.filter(entry => groupedVisuals ? visualEntry(entry) : compositionRole(entry) === 'detailed_evidence').map(entry => String(entry.id));
     const orderedEvidence = featureId && evidence.includes(featureId) ? [featureId, ...evidence.filter(id => id !== featureId)] : evidence;
     const result = [];
     for (let index = 0; index < orderedEvidence.length;) {
       const pair = orderedEvidence.slice(index,index+2);
-      if (pair.length === 2 && fits(pair)) { result.push(row(pair,pattern==='dense-evidence-grid'?[.56,.44]:null)); index += 2; }
+      if (pair.length === 2 && fits(pair)) { result.push(row(pair,pattern==='dense-evidence-grid'?[.56,.44]:pattern==='allocation-evidence-grid'?[.54,.46]:null)); index += 2; }
       else { result.push(row([pair[0]])); index += 1; }
     }
     return [...result, ...ids.filter(id => !orderedEvidence.includes(id)).map(id => row([id]))];

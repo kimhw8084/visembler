@@ -38,7 +38,7 @@ const executive=[item('a','report_headline','TextEngine','opening'),item('b','co
 const experiment=[item('a','report_headline','TextEngine','opening'),item('b','context','TextEngine','opening'),item('c','hero_metric','MetricEngine','performance'),item('d','hero_metric','ComparisonEngine','performance'),item('e','primary_analysis','CoreChartEngine','analysis'),item('f','supporting_analysis','CoreChartEngine','analysis'),item('g','narrative_interpretation','TextEngine','analysis'),item('h','detailed_evidence','TableEngine','evidence'),item('i','decision_risk','DecisionCompositeEngine','decision')];
 const causal=[item('a','report_headline','TextEngine','opening'),item('b','hero_metric','MetricEngine','performance'),item('c','detailed_evidence','WaferFabEngine','analysis'),item('d','primary_analysis','EngineeringChartEngine','analysis'),item('e','detailed_evidence','TableEngine','evidence'),item('f','causal_evidence','DiagramEngine','evidence'),item('g','action_status','ProjectCompositeEngine','delivery')];
 const dense=[item('a','report_headline','TextEngine','opening'),item('b','context','TextEngine','opening'),item('c','hero_metric','MetricEngine','performance'),item('d','hero_metric','MetricEngine','performance'),item('e','primary_analysis','CoreChartEngine','analysis'),item('f','primary_analysis','EngineeringChartEngine','analysis'),item('g','detailed_evidence','TableEngine','evidence',{rows:Array.from({length:22},(_,i)=>[i,i+1])}),item('h','detailed_evidence','EvidenceCompositeEngine','evidence'),item('i','causal_evidence','DiagramEngine','evidence'),item('j','decision_risk','DecisionCompositeEngine','decision'),item('k','action_status','ProjectCompositeEngine','delivery'),item('l','context','TextEngine','analysis',{text:'constraint and status '.repeat(30)})];
-const allocation=[item('a','report_headline','TextEngine','opening'),item('b','hero_metric','ComparisonEngine','performance'),item('b2','hero_metric','MetricEngine','performance'),item('c','primary_analysis','CoreChartEngine','analysis'),item('d','detailed_evidence','TableEngine','evidence'),item('e','decision_risk','DecisionCompositeEngine','decision'),item('f','action_status','ProjectCompositeEngine','delivery')];
+const allocation=[item('a','report_headline','TextEngine','opening'),item('b','hero_metric','ComparisonEngine','performance'),item('b2','hero_metric','MetricEngine','performance'),item('b3','hero_metric','MetricEngine','performance'),item('c','primary_analysis','CoreChartEngine','analysis'),item('c2','primary_analysis','EngineeringChartEngine','analysis'),item('d','detailed_evidence','TableEngine','evidence'),item('e','decision_risk','DecisionCompositeEngine','decision'),item('f','action_status','ProjectCompositeEngine','delivery')];
 const sparse=[item('a','report_headline','TextEngine','opening'),item('b','context','TextEngine','opening'),item('c','decision_risk','DecisionCompositeEngine','decision'),item('d','conclusion','TextEngine','delivery')];
 const inputs={executive,experiment,causal,dense,allocation,sparse};
 const profiles=Object.fromEntries(Object.entries(inputs).map(([key,items])=>[key,visualDirectorProfile(items,{layoutPreset:key==='executive'?'executive':'editorial'})]));
@@ -95,7 +95,10 @@ console.log(JSON.stringify({rules:visualDirectorRuleInventory(),profiles:Object.
     allocation_plan = next(section for section in result["plans"]["allocation"] if section["id"] == "performance")
     assert allocation_plan["pattern"] == "allocation-comparison"
     assert allocation_plan["featureEngine"] == "ComparisonEngine"
-    assert allocation_plan["rows"][0] == ["hero_metric", "hero_metric"]
+    assert allocation_plan["rows"][0] == ["hero_metric", "hero_metric", "hero_metric"]
+    allocation_evidence = next(section for section in result["plans"]["allocation"] if section["id"] == "analysis")
+    assert allocation_evidence["pattern"] == "allocation-evidence-grid"
+    assert allocation_evidence["rows"][0] == ["primary_analysis", "primary_analysis"]
 
 
 def test_direction_is_stable_when_report_and_item_names_change_and_profiles_are_not_title_classifiers() -> None:
@@ -221,3 +224,29 @@ def test_fresh_mixed_holdout_has_new_task_fields_and_consistent_decision_evidenc
     assert "carrier appointment" in " ".join(flow["nodes"]).lower()
     assert "p70" not in json.dumps(holdout).lower()
     assert "w38" not in json.dumps(holdout).lower()
+
+
+def test_export_plan_rounds_fractional_element_dimensions_to_nearest_emu() -> None:
+    from company_ui.products.visualizer.ppt_service import _plan
+
+    target_width = 12_192_000
+    target_height = 9_144_000
+    geometry = {
+        "canvas": {"width": 1600, "height": 1200},
+        "items": [
+            {"id": "fractional", "x": 1, "y": 2, "w": 1467.1823, "h": 241.5107}
+        ],
+    }
+    plan = _plan(
+        {"items": [{"id": "fractional", "engine": "TextEngine", "x": 1, "y": 2, "w": 1467.1823, "h": 241.5107}]},
+        geometry,
+        target_width=target_width,
+        target_height=target_height,
+    )
+    scale = min(target_width / 1600, target_height / 1200)
+    item = plan["items"][0]
+
+    # The adapter's Inches conversion truncates normalized EMU dimensions.
+    # Exported bounds should match the report canvas's nearest-EMU projection.
+    assert int(item["nw"] * target_width) == round(1467.1823 * scale)
+    assert int(item["nh"] * target_height) == round(241.5107 * scale)

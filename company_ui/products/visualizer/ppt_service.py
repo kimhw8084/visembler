@@ -168,11 +168,20 @@ def _plan(model: Mapping[str, Any], layout_geometry: Mapping[str, Any] | None = 
         scale=min(target_width/canvas_w,target_height/canvas_h) if target_width and target_height else 1.0
         offset_x=(target_width-canvas_w*scale)/2 if target_width and target_height else 0.0
         offset_y=(target_height-canvas_h*scale)/2 if target_width and target_height else 0.0
+        def normalized_size(value: float, target: int | None, canvas_scale: float, canvas_size: float) -> float:
+            if not target:
+                return max(.001, min(1.0, value / canvas_size))
+            # The frozen adapter converts normalized inches to EMU by truncating.
+            # Center the fraction in the intended EMU so fractional CSS pixels
+            # export to the same nearest-EMU geometry as the report canvas.
+            emu = min(target, max(1, round(value * canvas_scale)))
+            return max(.001, min(1.0, (emu + .5) / target))
+
         return {'items':[{'kind':_kind(entry),'title':str(entry.get('title') or entry.get('element') or _kind(entry))[:100],
                           'nx':max(0.0,min(1.0,(offset_x+float(entry['x'])*scale)/target_width)) if target_width else max(0.0,min(1.0,float(entry['x'])/canvas_w)),
                           'ny':max(0.0,min(1.0,(offset_y+float(entry['y'])*scale)/target_height)) if target_height else max(0.0,min(1.0,float(entry['y'])/canvas_h)),
-                          'nw':max(.001,min(1.0,float(entry['w'])*scale/target_width)) if target_width else max(.001,min(1.0,float(entry['w'])/canvas_w)),
-                          'nh':max(.001,min(1.0,float(entry['h'])*scale/target_height)) if target_height else max(.001,min(1.0,float(entry['h'])/canvas_h))} for entry in report_items]}
+                          'nw':normalized_size(float(entry['w']), target_width, scale, canvas_w),
+                          'nh':normalized_size(float(entry['h']), target_height, scale, canvas_h)} for entry in report_items]}
     cols=1 if len(report_items)==1 else 2 if len(report_items)<=8 else 3
     rows=max(1,(len(report_items)+cols-1)//cols)
     gap_x=.025 if cols>1 else 0.0; gap_y=.035 if rows>1 else 0.0
