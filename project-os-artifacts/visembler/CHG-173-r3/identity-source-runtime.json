@@ -1,0 +1,391 @@
+{
+  "repository": "kimhw8084/visembler",
+  "project": "visembler",
+  "change": "CHG-173",
+  "request": "CHG-173-r3",
+  "operation": "VERIFY",
+  "fabric_job": "CF-69df7ab4eafc11457f9b98a4",
+  "base_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+  "base_tree": "08719bb4afbe3c508cb296a4505001e36141cd4e",
+  "work_branch": "verify/visembler-chg173-world-class-outcome-r3",
+  "work_branch_head": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+  "remote_main_head_observed": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+  "remote_main_exact": true,
+  "worktree_clean": true,
+  "source_changed": false,
+  "runtime": {
+    "host": "native macOS",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "browser": "Chromium 151.0.7922.34",
+    "playwright": "1.62.0"
+  },
+  "native_release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "managed_target_status": "PENDING",
+  "release_gate_status": "PASS",
+  "full_pytest_junit": {
+    "tests": 1215,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "release_gates": [
+    {
+      "name": "repository-contracts",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "company-boundary-model",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "company-boundary-browser",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "company-readiness-local",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "company-capacity",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "element-coverage",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "delivery-tests",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "full-tests",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-integrated_editor.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-element_renderer.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-authoring_dataset_refresh.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-authoring_portability.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-authoring_intake_client.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-authoring_composition.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "syntax-authoring_reuse_contract.mjs",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "persistence-source-probe",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "git-diff-check",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "elements",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "data",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "performance",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "report-lifecycle-integrity",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "chg181-authoring-composition-reuse",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "chg208-remap-diagnostics",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "chart-studio",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "report-hub-browser-errors",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "native-recovery",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "worker-lifecycle",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "operations-drill",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "native-acceptance",
+      "status": "PASS",
+      "returncode": 0
+    },
+    {
+      "name": "source-stability",
+      "status": "PASS",
+      "returncode": null
+    },
+    {
+      "name": "frozen-connector",
+      "status": "PASS",
+      "returncode": null
+    }
+  ],
+  "maintained_verifier_command": "python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg173-r3-release-20260925",
+  "final_verdict_owner": "Project OS / independent audit",
+  "delivery_pytest_junit": {
+    "tests": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "release_gate_summary": {
+    "checks_status": "PASS",
+    "required_gates": [
+      "chart-studio",
+      "chg181-authoring-composition-reuse",
+      "chg208-remap-diagnostics",
+      "company-boundary-browser",
+      "company-boundary-model",
+      "company-capacity",
+      "company-readiness-local",
+      "data",
+      "delivery-tests",
+      "element-coverage",
+      "elements",
+      "frozen-connector",
+      "full-tests",
+      "git-diff-check",
+      "native-acceptance",
+      "native-recovery",
+      "operations-drill",
+      "performance",
+      "persistence-source-probe",
+      "report-hub-browser-errors",
+      "report-lifecycle-integrity",
+      "repository-contracts",
+      "source-stability",
+      "syntax-authoring_composition.mjs",
+      "syntax-authoring_dataset_refresh.mjs",
+      "syntax-authoring_intake_client.mjs",
+      "syntax-authoring_portability.mjs",
+      "syntax-authoring_reuse_contract.mjs",
+      "syntax-element_renderer.mjs",
+      "syntax-integrated_editor.mjs",
+      "worker-lifecycle"
+    ],
+    "all_recorded_checks": [
+      {
+        "name": "repository-contracts",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "company-boundary-model",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "company-boundary-browser",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "company-readiness-local",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "company-capacity",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "element-coverage",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "delivery-tests",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "full-tests",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-integrated_editor.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-element_renderer.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-authoring_dataset_refresh.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-authoring_portability.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-authoring_intake_client.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-authoring_composition.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "syntax-authoring_reuse_contract.mjs",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "persistence-source-probe",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "git-diff-check",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "elements",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "data",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "performance",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "report-lifecycle-integrity",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "chg181-authoring-composition-reuse",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "chg208-remap-diagnostics",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "chart-studio",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "report-hub-browser-errors",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "native-recovery",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "worker-lifecycle",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "operations-drill",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "native-acceptance",
+        "status": "PASS",
+        "returncode": 0
+      },
+      {
+        "name": "source-stability",
+        "status": "PASS",
+        "returncode": null
+      },
+      {
+        "name": "frozen-connector",
+        "status": "PASS",
+        "returncode": null
+      }
+    ]
+  }
+}

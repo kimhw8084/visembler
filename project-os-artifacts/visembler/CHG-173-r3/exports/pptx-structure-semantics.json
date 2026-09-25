@@ -1,0 +1,2917 @@
+{
+  "renderer": {
+    "tool": "macOS Quick Look qlmanage thumbnail renderer",
+    "command": "qlmanage -t -s 1800 -o /tmp/visembler-chg173-r3-pptx-raster <six PPTX files>",
+    "qualified_headless_office_renderer_available": false,
+    "installed_office": "Keynote 13.2 was present; automated open stalled, and was not treated as a qualified headless renderer. No PowerPoint or LibreOffice headless renderer was available.",
+    "limit": "Quick Look previews are actual rendered PPTX previews but not Office-engine compatibility proof. Package-native chart semantics are extracted independently."
+  },
+  "reports": {
+    "A": {
+      "report_key": "executive-business-review",
+      "editable_pptx": "compositions/A-executive-business-review/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Executive Statement\nRevenue grew across all three regions. Retention improved in the West, while the South remains below the 95 percent target.",
+        "Quarterly context\nQuarterly business review · Q1–Q4 · three regions · revenue and retention.",
+        "Retention\n94.6%",
+        "Regional revenue\n551",
+        "Quarterly retention\n91.8% → 94.6%",
+        "Risk Callout\nProceed with monitored revenue recovery\nClose the South retention gap before the next review.\nReview",
+        "Key Takeaway\nNext step: close the South retention gap before the next quarterly review."
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Clean Table",
+          "rows": [
+            [
+              "Region",
+              "Revenue",
+              "Retention",
+              "Status"
+            ],
+            [
+              "North",
+              "184",
+              "94.1%",
+              "Watch"
+            ],
+            [
+              "South",
+              "156",
+              "92.8%",
+              "Below target"
+            ],
+            [
+              "West",
+              "211",
+              "95.0%",
+              "On plan"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [
+        {
+          "title": "Chart 6",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Quarterly retention",
+              "values": [
+                91.8,
+                93.2,
+                94.1,
+                94.6
+              ]
+            }
+          ]
+        }
+      ],
+      "source_reading_chart_summaries": [
+        "Line Chart: 4 rows · X Quarter · Y Retention · 2 fields"
+      ],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Executive Statement",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106480,
+                304229,
+                8057824,
+                934982
+              ],
+              "text": "Executive Statement\nRevenue grew across all three regions. Retention improved in the West, while the South remains below the 95 percent target."
+            },
+            {
+              "name": "VIZ::Quarterly context",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                8270784,
+                497914,
+                3791917,
+                547613
+              ],
+              "text": "Quarterly context\nQuarterly business review · Q1–Q4 · three regions · revenue and retention."
+            },
+            {
+              "name": "VIZ::Retention KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                5145130,
+                10478860,
+                3405545,
+                1566782
+              ],
+              "text": "Retention\n94.6%"
+            },
+            {
+              "name": "VIZ::Regional revenue KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106480,
+                10444635,
+                4932169,
+                1521148
+              ],
+              "text": "Regional revenue\n551"
+            },
+            {
+              "name": "VIZ::Quarterly retention KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                8657155,
+                10444635,
+                3405545,
+                1635234
+              ],
+              "text": "Quarterly retention\n91.8% → 94.6%"
+            },
+            {
+              "name": "Chart 6",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                2699345,
+                4612737,
+                6770490,
+                3285679
+              ]
+            },
+            {
+              "name": "VIZ::Risk Callout",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106480,
+                8157011,
+                11956221,
+                1003775
+              ],
+              "text": "Risk Callout\nProceed with monitored revenue recovery\nClose the South retention gap before the next review.\nReview"
+            },
+            {
+              "name": "VIZ::Key Takeaway",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106480,
+                9419381,
+                11956221,
+                766658
+              ],
+              "text": "Key Takeaway\nNext step: close the South retention gap before the next quarterly review."
+            },
+            {
+              "name": "VIZ::Clean Table",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                106480,
+                1497807,
+                11956221,
+                2856335
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/A-executive-business-review/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": true
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "Revenue grew across all three regions",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "Quarterly retention 91.8% → 94.6%",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Quarterly business review",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Proceed with monitored revenue recovery",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Next step: close the South retention gap",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [
+        {
+          "part": "ppt/charts/chart1.xml",
+          "series_names": [
+            "Quarterly retention"
+          ],
+          "category_values": [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4"
+          ],
+          "value_values": [
+            "91.8",
+            "93.2",
+            "94.1",
+            "94.6"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        }
+      ],
+      "all_required_text_structurally_present": true
+    },
+    "B": {
+      "report_key": "semiconductor-rca",
+      "editable_pptx": "compositions/B-semiconductor-rca/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Executive Statement\nAffected lot L2407 shows a localized die-level yield loss after ETCH-08 chamber A processing. Contain the lot until the chamber check and paired reference run confirm recovery.",
+        "Affected scope\nLot L2407 · ETCH-08 chamber A · affected die compared with a paired reference · release held for verification.",
+        "Affected yield\n94.2%",
+        "Affected versus reference yield\n98.6% → 94.2%",
+        "Verified finding\nFinding · chamber A pressure drift aligns with the L2407 yield excursion.\nAffected yield is 94.2% versus 98.6% reference. Contain L2407 and verify the matched chamber run before release.\nVerified",
+        "Corrective action\nContain lot L2407 through chamber requalification\nRelease only after chamber A and the paired reference run confirm recovery.\nContain",
+        "Affected die yield",
+        "81 observations · 0 missing · Value 88.5 to 98.8",
+        "N · NOTCH",
+        "MEASURED VALUE",
+        "88.5",
+        "98.8",
+        "Process Flow",
+        "Excursion signal",
+        "Compare affected\nand reference",
+        "Verify chamber\nmechanism",
+        "Confirm corrective\naction"
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Clean Table",
+          "rows": [
+            [
+              "Evidence",
+              "Affected",
+              "Reference",
+              "Interpretation"
+            ],
+            [
+              "Yield distribution",
+              "94.2%",
+              "98.6%",
+              "Mean of observed cohorts"
+            ],
+            [
+              "Affected lot L2407",
+              "94.2%",
+              "—",
+              "Localized die loss"
+            ],
+            [
+              "ETCH-08 / A",
+              "Pressure +2.1%",
+              "Stable",
+              "Verify chamber"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [
+        {
+          "title": "Chart 6",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Process stability and specification",
+              "values": [
+                98.8,
+                98.4,
+                94.1,
+                94.6
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Chart 7",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Control versus affected distribution",
+              "values": [
+                98.8,
+                98.5,
+                98.6,
+                94.1,
+                94.6,
+                93.8
+              ]
+            }
+          ]
+        }
+      ],
+      "source_reading_chart_summaries": [
+        "Wafer Map: 81 rows · X Die X · Y Die Y · 3 fields",
+        "SPC Control Chart: 4 rows · X time · Y value · 8 fields",
+        "Box Plot: 6 rows · Measurement Yield · 2 fields"
+      ],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Executive Statement",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                94354,
+                269585,
+                7140239,
+                815226
+              ],
+              "text": "Executive Statement\nAffected lot L2407 shows a localized die-level yield loss after ETCH-08 chamber A processing. Contain the lot until the chamber check and paired reference run confirm recovery."
+            },
+            {
+              "name": "VIZ::Affected scope",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                7328947,
+                434571,
+                3360112,
+                485254
+              ],
+              "text": "Affected scope\nLot L2407 · ETCH-08 chamber A · affected die compared with a paired reference · release held for verification."
+            },
+            {
+              "name": "VIZ::Affected yield KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6068905,
+                10673990,
+                4620154,
+                1381625
+              ],
+              "text": "Affected yield\n94.2%"
+            },
+            {
+              "name": "VIZ::Affected versus reference yield KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                94354,
+                10636922,
+                5880197,
+                1455761
+              ],
+              "text": "Affected versus reference yield\n98.6% → 94.2%"
+            },
+            {
+              "name": "Chart 6",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                3262522,
+                6874632,
+                3433978,
+                1666489
+              ]
+            },
+            {
+              "name": "Chart 7",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                6790855,
+                6966517,
+                2913678,
+                1482719
+              ]
+            },
+            {
+              "name": "VIZ::Verified finding",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                94354,
+                8806437,
+                10594705,
+                1601337
+              ],
+              "text": "Verified finding\nFinding · chamber A pressure drift aligns with the L2407 yield excursion.\nAffected yield is 94.2% versus 98.6% reference. Contain L2407 and verify the matched chamber run before release.\nVerified"
+            },
+            {
+              "name": "VIZ::Process Flow",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2047568,
+                1313959,
+                6688279,
+                1145738
+              ]
+            },
+            {
+              "name": "VIZ::Corrective action",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                94354,
+                5214482,
+                10594705,
+                1219604
+              ],
+              "text": "Corrective action\nContain lot L2407 through chamber requalification\nRelease only after chamber A and the paired reference run confirm recovery.\nContain"
+            },
+            {
+              "name": "VIZ::Affected die yield::spatial-panel",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1078880,
+                6663233,
+                2089286,
+                2089286
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::title",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                1162451,
+                6745529,
+                1922143,
+                219456
+              ],
+              "text": "Affected die yield"
+            },
+            {
+              "name": "VIZ::Affected die yield::metadata",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                1162451,
+                7001561,
+                1922143,
+                334285
+              ],
+              "text": "81 observations · 0 missing · Value 88.5 to 98.8"
+            },
+            {
+              "name": "VIZ::Affected die yield::wafer-outline",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1691597,
+                7438521,
+                863850,
+                863850
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::orientation-notch",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2077803,
+                7434864,
+                91440,
+                32004
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::orientation",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                2011222,
+                7292217,
+                604695,
+                118872
+              ],
+              "text": "N · NOTCH"
+            },
+            {
+              "name": "VIZ::Affected die yield::die-1",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                8223329,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-2",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-3",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-4",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-5",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-6",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-7",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-8",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                8146274,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-9",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-10",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-11",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-12",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-13",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-14",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-15",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-16",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-17",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                8069218,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-18",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-19",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-20",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-21",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-22",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-23",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-24",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-25",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-26",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7992163,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-27",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-28",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-29",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-30",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-31",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-32",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-33",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-34",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-35",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7915107,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-36",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1705851,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-37",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-38",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-39",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-40",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-41",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-42",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-43",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-44",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-45",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-46",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2476405,
+                7838052,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-47",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-48",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-49",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-50",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-51",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-52",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-53",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-54",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-55",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7760997,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-56",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-57",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-58",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-59",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-60",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-61",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-62",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-63",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-64",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7683941,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-65",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1782906,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-66",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-67",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-68",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-69",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-70",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-71",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-72",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-73",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2399350,
+                7606886,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-74",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1859962,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-75",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1937017,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-76",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2014073,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-77",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-78",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2168184,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-79",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2245239,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-80",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2322294,
+                7529830,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::die-81",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2091128,
+                7452775,
+                64788,
+                64788
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-title",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                1188608,
+                8338948,
+                1869830,
+                173736
+              ],
+              "text": "MEASURED VALUE"
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-1",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1188608,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-2",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1398906,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-3",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1609205,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-4",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                1819504,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-5",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2029803,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-6",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2240102,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-7",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2450401,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-8",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2660700,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-9",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2870999,
+                8549260,
+                187438,
+                91440
+              ]
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-low",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                1188608,
+                8663560,
+                560949,
+                155448
+              ],
+              "text": "88.5"
+            },
+            {
+              "name": "VIZ::Affected die yield::legend-high",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                2497489,
+                8663560,
+                560949,
+                155448
+              ],
+              "text": "98.8"
+            },
+            {
+              "name": "VIZ::Clean Table",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                94354,
+                2513614,
+                10594705,
+                2471720
+              ]
+            },
+            {
+              "name": "VIZ::DiagramTitle::Process Flow::1",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                2102432,
+                1332247,
+                6578551,
+                228600
+              ],
+              "text": "Process Flow"
+            },
+            {
+              "name": "VIZ::Process Flow::Excursion signal::node-1",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2102432,
+                1758812,
+                1493761,
+                493776
+              ],
+              "text": "Excursion signal"
+            },
+            {
+              "name": "VIZ::Process Flow::Compare affected and reference::node-2",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                3797361,
+                1758812,
+                1493761,
+                493776
+              ],
+              "text": "Compare affected\nand reference"
+            },
+            {
+              "name": "VIZ::Process Flow::Verify chamber mechanism::node-3",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                5492290,
+                1758812,
+                1493761,
+                493776
+              ],
+              "text": "Verify chamber\nmechanism"
+            },
+            {
+              "name": "VIZ::Process Flow::Confirm corrective action::node-4",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                7187219,
+                1758812,
+                1493761,
+                493776
+              ],
+              "text": "Confirm corrective\naction"
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::1",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                3600765,
+                2005700,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::2",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                5295694,
+                2005700,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::3",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                6990623,
+                2005700,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/B-semiconductor-rca/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": true
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "Affected lot L2407 shows a localized die-level yield loss",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "98.6% → 94.2%",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Affected scope",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Contain lot L2407 through chamber requalification",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Release only after chamber A",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [
+        {
+          "part": "ppt/charts/chart1.xml",
+          "series_names": [
+            "Process stability and specification"
+          ],
+          "category_values": [
+            "W1",
+            "W2",
+            "W3",
+            "W4"
+          ],
+          "value_values": [
+            "98.8",
+            "98.4",
+            "94.1",
+            "94.6"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        },
+        {
+          "part": "ppt/charts/chart2.xml",
+          "series_names": [
+            "Control versus affected distribution"
+          ],
+          "category_values": [
+            "Reference",
+            "Reference",
+            "Reference",
+            "Affected",
+            "Affected",
+            "Affected"
+          ],
+          "value_values": [
+            "98.8",
+            "98.5",
+            "98.6",
+            "94.1",
+            "94.6",
+            "93.8"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        }
+      ],
+      "all_required_text_structurally_present": true
+    },
+    "C": {
+      "report_key": "experiment-decision",
+      "editable_pptx": "compositions/C-experiment-decision/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Executive Statement\nThe treatment cohort improved conversion across four weeks. The quality guardrail remained inside its agreed range; the sample does not establish long-term retention.",
+        "Hypothesis and context\nEligible new-account cohorts · W1–W4 · randomized control and treatment · conversion and quality guardrail.",
+        "Treatment conversion\n9.8%",
+        "Treatment conversion · Week 1 to 4\n8.2% → 9.8%",
+        "Interpretation\nTreatment conversion rose from 8.2% in week 1 to 9.8% in week 4; the control moved from 8.0% to 8.5%. The treatment distribution is higher across this sample, with all three cohort checks inside the quality guardrail. Continue only as a limited rollout because these four weeks do not establish long-term retention.",
+        "Recommendation\nStage a limited treatment rollout\nPause expansion if the quality guardrail moves outside its agreed range.\nReview"
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Cohort evidence",
+          "rows": [
+            [
+              "Cohort",
+              "Eligible",
+              "Conversion",
+              "Quality guardrail"
+            ],
+            [
+              "Control",
+              "1198",
+              "8.25%",
+              "Within quality guardrail"
+            ],
+            [
+              "Treatment",
+              "1204",
+              "9.03%",
+              "Within quality guardrail"
+            ],
+            [
+              "Holdout",
+              "412",
+              "8.45%",
+              "Monitor mix"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [
+        {
+          "title": "Chart 5",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Conversion by week",
+              "values": [
+                8.0,
+                8.2,
+                8.1,
+                8.7,
+                8.4,
+                9.4,
+                8.5,
+                9.8
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Chart 6",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Outcome distribution by cohort",
+              "values": [
+                8.0,
+                8.1,
+                8.4,
+                8.5,
+                8.2,
+                8.7,
+                9.4,
+                9.8
+              ]
+            }
+          ]
+        }
+      ],
+      "source_reading_chart_summaries": [
+        "Box Plot: 8 rows · Measurement Conversion · 2 fields",
+        "Line Chart: 8 rows · X Week · Y Conversion · 3 fields"
+      ],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Executive Statement",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                97815,
+                279472,
+                7402115,
+                845126
+              ],
+              "text": "Executive Statement\nThe treatment cohort improved conversion across four weeks. The quality guardrail remained inside its agreed range; the sample does not establish long-term retention."
+            },
+            {
+              "name": "VIZ::Hypothesis and context",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                7597746,
+                450510,
+                3483348,
+                503051
+              ],
+              "text": "Hypothesis and context\nEligible new-account cohorts · W1–W4 · randomized control and treatment · conversion and quality guardrail."
+            },
+            {
+              "name": "VIZ::Treatment conversion KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6291490,
+                10622200,
+                4789604,
+                1432298
+              ],
+              "text": "Treatment conversion\n9.8%"
+            },
+            {
+              "name": "VIZ::Treatment conversion · Week 1 to 4 KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                97815,
+                10587266,
+                6095859,
+                1502166
+              ],
+              "text": "Treatment conversion · Week 1 to 4\n8.2% → 9.8%"
+            },
+            {
+              "name": "Chart 5",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                427960,
+                1362150,
+                6088698,
+                2954809
+              ]
+            },
+            {
+              "name": "Chart 6",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                2543263,
+                4372854,
+                6092384,
+                2956598
+              ]
+            },
+            {
+              "name": "VIZ::Interpretation",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6614473,
+                2369481,
+                4136476,
+                940146
+              ],
+              "text": "Interpretation\nTreatment conversion rose from 8.2% in week 1 to 9.8% in week 4; the control moved from 8.0% to 8.5%. The treatment distribution is higher across this sample, with all three cohort checks inside the quality guardrail. Continue only as a limited rollout because these four weeks do not establish long-term retention."
+            },
+            {
+              "name": "VIZ::Recommendation",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                97815,
+                9614142,
+                10983278,
+                735572
+              ],
+              "text": "Recommendation\nStage a limited treatment rollout\nPause expansion if the quality guardrail moves outside its agreed range.\nReview"
+            },
+            {
+              "name": "VIZ::Cohort evidence",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                97815,
+                7567004,
+                10983278,
+                1809586
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/C-experiment-decision/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": false
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "The treatment cohort improved conversion across four weeks",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "8.2% → 9.8%",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Continue only as a limited rollout",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Stage a limited treatment rollout",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Pause expansion if the quality guardrail",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [
+        {
+          "part": "ppt/charts/chart1.xml",
+          "series_names": [
+            "Conversion by week"
+          ],
+          "category_values": [
+            "W1",
+            "W1",
+            "W2",
+            "W2",
+            "W3",
+            "W3",
+            "W4",
+            "W4"
+          ],
+          "value_values": [
+            "8",
+            "8.2",
+            "8.1",
+            "8.7",
+            "8.4",
+            "9.4",
+            "8.5",
+            "9.8"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        },
+        {
+          "part": "ppt/charts/chart2.xml",
+          "series_names": [
+            "Outcome distribution by cohort"
+          ],
+          "category_values": [
+            "Control",
+            "Control",
+            "Control",
+            "Control",
+            "Treatment",
+            "Treatment",
+            "Treatment",
+            "Treatment"
+          ],
+          "value_values": [
+            "8",
+            "8.1",
+            "8.4",
+            "8.5",
+            "8.2",
+            "8.7",
+            "9.4",
+            "9.8"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        }
+      ],
+      "all_required_text_structurally_present": true
+    },
+    "D": {
+      "report_key": "technical-status-review",
+      "editable_pptx": "compositions/D-technical-status-review/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Executive Statement · Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering.",
+        "Report context\nLine 4 · shifts A–C · chamber A controls · capacity release review.",
+        "First pass yield\n95%",
+        "Unplanned downtime\n8.3 h",
+        "Body Narrative\nYield recovered from 94.1% on shift A to 95.0% on shift C, while the control sample remains within specification. Keep the recipe locked until the next paired-lot check closes the two open items.",
+        "Evidence Card\nMeasurement system remains within the qualified reference range.\nSample: 30 parts · method: inline metrology · source: shift B inspection.\nVerified",
+        "Risk Callout · Hold added capacity until the paired-lot check closes\nKeep the recipe locked and attach the next-shift control evidence. · Review",
+        "Project Card\nComplete chamber verification and update the runbook.\nOwner: Equipment Engineering · due next shift · evidence: paired control lot.\nActive",
+        "Process Flow",
+        "Detect",
+        "Contain",
+        "Verify",
+        "Release"
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Clean Table",
+          "rows": [
+            [
+              "Tool",
+              "Chamber",
+              "Measure",
+              "Owner",
+              "Status"
+            ],
+            [
+              "ETCH-08",
+              "A",
+              "Pressure",
+              "Equipment Eng.",
+              "Open"
+            ],
+            [
+              "ETCH-07",
+              "C",
+              "Flow",
+              "Process Eng.",
+              "Stable"
+            ],
+            [
+              "MET-02",
+              "B",
+              "Yield",
+              "Quality",
+              "Verified"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [
+        {
+          "title": "Chart 5",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Yield by shift",
+              "values": [
+                94.1,
+                94.6,
+                95.0
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Chart 6",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Critical measurement trend",
+              "values": [
+                94.1,
+                94.6,
+                95.0,
+                94.8,
+                95.2
+              ]
+            }
+          ]
+        }
+      ],
+      "source_reading_chart_summaries": [
+        "Line Chart: 3 rows · X Shift · Y Yield · 2 fields",
+        "SPC Control Chart: 5 rows · X Time · Y Measurement · 4 fields"
+      ],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Executive Statement",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                221069,
+                5855254,
+                668515
+              ],
+              "text": "Executive Statement · Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering."
+            },
+            {
+              "name": "VIZ::Report context",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6010003,
+                356364,
+                2755414,
+                397926
+              ],
+              "text": "Report context\nLine 4 · shifts A–C · chamber A controls · capacity release review."
+            },
+            {
+              "name": "VIZ::First pass yield KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                10979827,
+                4821974,
+                1132983
+              ],
+              "text": "First pass yield\n95%"
+            },
+            {
+              "name": "VIZ::Unplanned downtime KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                4976723,
+                10979827,
+                3788694,
+                1132983
+              ],
+              "text": "Unplanned downtime\n8.3 h"
+            },
+            {
+              "name": "Chart 5",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                77374,
+                1077494,
+                4821974,
+                2340076
+              ]
+            },
+            {
+              "name": "Chart 6",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                4976723,
+                1328216,
+                3788694,
+                1838631
+              ]
+            },
+            {
+              "name": "VIZ::Body Narrative",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                3461783,
+                8688042,
+                641102
+              ],
+              "text": "Body Narrative\nYield recovered from 94.1% on shift A to 95.0% on shift C, while the control sample remains within specification. Keep the recipe locked until the next paired-lot check closes the two open items."
+            },
+            {
+              "name": "VIZ::Process Flow",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2151893,
+                4290795,
+                4539005,
+                939547
+              ]
+            },
+            {
+              "name": "VIZ::Evidence Card",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                7267005,
+                8688042,
+                1636093
+              ],
+              "text": "Evidence Card\nMeasurement system remains within the qualified reference range.\nSample: 30 parts · method: inline metrology · source: shift B inspection.\nVerified"
+            },
+            {
+              "name": "VIZ::Risk Callout",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                9091007,
+                8688042,
+                581856
+              ],
+              "text": "Risk Callout · Hold added capacity until the paired-lot check closes\nKeep the recipe locked and attach the next-shift control evidence. · Review"
+            },
+            {
+              "name": "VIZ::Project Card",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                77374,
+                9860772,
+                8688042,
+                931146
+              ],
+              "text": "Project Card\nComplete chamber verification and update the runbook.\nOwner: Equipment Engineering · due next shift · evidence: paired control lot.\nActive"
+            },
+            {
+              "name": "VIZ::DiagramTitle::Process Flow::1",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                2206757,
+                4309083,
+                4429277,
+                228600
+              ],
+              "text": "Process Flow"
+            },
+            {
+              "name": "VIZ::Process Flow::Detect::node-1",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2206757,
+                4632552,
+                956443,
+                493776
+              ],
+              "text": "Detect"
+            },
+            {
+              "name": "VIZ::Process Flow::Contain::node-2",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                3364368,
+                4632552,
+                956443,
+                493776
+              ],
+              "text": "Contain"
+            },
+            {
+              "name": "VIZ::Process Flow::Verify::node-3",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                4521979,
+                4632552,
+                956443,
+                493776
+              ],
+              "text": "Verify"
+            },
+            {
+              "name": "VIZ::Process Flow::Release::node-4",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                5679590,
+                4632552,
+                956443,
+                493776
+              ],
+              "text": "Release"
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::1",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                3167772,
+                4879440,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::2",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                4325383,
+                4879440,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Process Flow::3",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                5482994,
+                4879440,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::Clean Table",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                77374,
+                5274556,
+                8688042,
+                1926128
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/D-technical-status-review/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": true
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "Shift B recovered yield after chamber maintenance",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "95%",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Yield recovered from 94.1% on shift A",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Hold added capacity until the paired-lot check closes",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Complete chamber verification and update the runbook",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [
+        {
+          "part": "ppt/charts/chart1.xml",
+          "series_names": [
+            "Yield by shift"
+          ],
+          "category_values": [
+            "A",
+            "B",
+            "C"
+          ],
+          "value_values": [
+            "94.1",
+            "94.6",
+            "95"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        },
+        {
+          "part": "ppt/charts/chart2.xml",
+          "series_names": [
+            "Critical measurement trend"
+          ],
+          "category_values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+          ],
+          "value_values": [
+            "94.1",
+            "94.6",
+            "95",
+            "94.8",
+            "95.2"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        }
+      ],
+      "all_required_text_structurally_present": true
+    },
+    "E": {
+      "report_key": "holdout-order-returns",
+      "editable_pptx": "compositions/E-holdout-order-returns/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Hero Title\nOrder volume rose while returns fell across the spring launch.",
+        "Body Narrative\nMonthly operating review · Jan–Apr · Source: order and returns ledger.",
+        "April orders\n1611",
+        "Order growth since January\n331 orders",
+        "Monthly returns\n42 → 31",
+        "Body Narrative\nOrder volume increased through the spring launch. Returns declined each month; continue weekly review while the fulfillment mix changes.",
+        "Risk Callout\nReview rising orders alongside falling returns\nCheck the fulfillment mix before changing the spring capacity plan.\nReview",
+        "Key Takeaway\nNext step: review the return mix before changing fulfillment capacity.",
+        "Review path",
+        "Track\norder\ngrowth",
+        "Check\nreturn\ntrend",
+        "Review ful\nfillment\nmix",
+        "Adjust\ncapacity"
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Order and return evidence",
+          "rows": [
+            [
+              "Month",
+              "Orders",
+              "Returns"
+            ],
+            [
+              "Jan",
+              "1280",
+              "42"
+            ],
+            [
+              "Feb",
+              "1395",
+              "38"
+            ],
+            [
+              "Mar",
+              "1522",
+              "35"
+            ],
+            [
+              "Apr",
+              "1611",
+              "31"
+            ],
+            [
+              "Change",
+              "331",
+              "−11"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [
+        {
+          "title": "Chart 6",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Orders by month",
+              "values": [
+                1280.0,
+                1395.0,
+                1522.0,
+                1611.0
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Chart 7",
+          "type": "LINE_MARKERS (65)",
+          "series": [
+            {
+              "name": "Returns by month",
+              "values": [
+                42.0,
+                38.0,
+                35.0,
+                31.0
+              ]
+            }
+          ]
+        }
+      ],
+      "source_reading_chart_summaries": [
+        "Line Chart: 4 rows · X Month · Y Orders · 3 fields",
+        "Line Chart: 4 rows · X Month · Y Returns · 3 fields"
+      ],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Hero Title",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                87309,
+                249452,
+                6607003,
+                684498
+              ],
+              "text": "Hero Title\nOrder volume rose while returns fell across the spring launch."
+            },
+            {
+              "name": "VIZ::Body Narrative",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6781620,
+                367194,
+                3109178,
+                449015
+              ],
+              "text": "Body Narrative\nMonthly operating review · Jan–Apr · Source: order and returns ledger."
+            },
+            {
+              "name": "VIZ::April orders KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                87309,
+                1155339,
+                4044126,
+                1159955
+              ],
+              "text": "April orders\n1611"
+            },
+            {
+              "name": "VIZ::Order growth since January KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                4218743,
+                1155339,
+                2792373,
+                1159955
+              ],
+              "text": "Order growth since January\n331 orders"
+            },
+            {
+              "name": "VIZ::Monthly returns KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                7098425,
+                1145985,
+                2792373,
+                1178664
+              ],
+              "text": "Monthly returns\n42 → 31"
+            },
+            {
+              "name": "Chart 6",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                265936,
+                2536684,
+                5246737,
+                2546211
+              ]
+            },
+            {
+              "name": "Chart 7",
+              "shape_type": "CHART (3)",
+              "box_emu": [
+                5599982,
+                2811978,
+                4112189,
+                1995621
+              ]
+            },
+            {
+              "name": "VIZ::Body Narrative",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                87309,
+                5132785,
+                9803489,
+                723413
+              ],
+              "text": "Body Narrative\nOrder volume increased through the spring launch. Returns declined each month; continue weekly review while the fulfillment mix changes."
+            },
+            {
+              "name": "VIZ::Review path",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2854986,
+                6068233,
+                4268135,
+                1577788
+              ]
+            },
+            {
+              "name": "VIZ::Risk Callout",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                87309,
+                10557807,
+                9803489,
+                735346
+              ],
+              "text": "Risk Callout\nReview rising orders alongside falling returns\nCheck the fulfillment mix before changing the spring capacity plan.\nReview"
+            },
+            {
+              "name": "VIZ::Key Takeaway",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                87309,
+                11505188,
+                9803489,
+                598686
+              ],
+              "text": "Key Takeaway\nNext step: review the return mix before changing fulfillment capacity."
+            },
+            {
+              "name": "VIZ::Order and return evidence",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                87309,
+                7695911,
+                9803489,
+                2649861
+              ]
+            },
+            {
+              "name": "VIZ::DiagramTitle::Review path::1",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                2909850,
+                6086521,
+                4158407,
+                228600
+              ],
+              "text": "Review path"
+            },
+            {
+              "name": "VIZ::Review path::Track order growth::node-1",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                2909850,
+                6664342,
+                888725,
+                623313
+              ],
+              "text": "Track\norder\ngrowth"
+            },
+            {
+              "name": "VIZ::Review path::Check return trend::node-2",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                3999743,
+                6664342,
+                888725,
+                623313
+              ],
+              "text": "Check\nreturn\ntrend"
+            },
+            {
+              "name": "VIZ::Review path::Review fulfillment mix::node-3",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                5089636,
+                6664342,
+                888725,
+                623313
+              ],
+              "text": "Review ful\nfillment\nmix"
+            },
+            {
+              "name": "VIZ::Review path::Adjust capacity::node-4",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                6179529,
+                6664342,
+                888725,
+                623313
+              ],
+              "text": "Adjust\ncapacity"
+            },
+            {
+              "name": "VIZ::DiagramEdge::Review path::1",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                3803147,
+                6975998,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Review path::2",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                4893040,
+                6975998,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::DiagramEdge::Review path::3",
+              "shape_type": "LINE (9)",
+              "box_emu": [
+                5982933,
+                6975998,
+                192024,
+                0
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/E-holdout-order-returns/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": true
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "Order volume rose while returns fell across the spring launch",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "Order growth since January 331 orders",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Order volume increased through the spring launch",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Review rising orders alongside falling returns",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Next step: review the return mix",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [
+        {
+          "part": "ppt/charts/chart1.xml",
+          "series_names": [
+            "Orders by month"
+          ],
+          "category_values": [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr"
+          ],
+          "value_values": [
+            "1280",
+            "1395",
+            "1522",
+            "1611"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        },
+        {
+          "part": "ppt/charts/chart2.xml",
+          "series_names": [
+            "Returns by month"
+          ],
+          "category_values": [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr"
+          ],
+          "value_values": [
+            "42",
+            "38",
+            "35",
+            "31"
+          ],
+          "value_axes": [
+            {
+              "min": null,
+              "max": null,
+              "explicit_min": false,
+              "explicit_max": false
+            }
+          ],
+          "line_plot_count": 1,
+          "bar_plot_count": 0
+        }
+      ],
+      "all_required_text_structurally_present": true
+    },
+    "F": {
+      "report_key": "F-bridge-c08-sparse",
+      "editable_pptx": "compositions/F-F-bridge-c08-sparse/report.pptx",
+      "slide_count": 1,
+      "text_shapes": [
+        "Hero Title\nKeep Bridge C-08 closed until Span 4 crack gauge data is verified.",
+        "Body Narrative\nOvernight load testing cleared two required checks. The Span 4 crack gauge export has not synchronized; water level is still receding, so the reopening decision remains pending.",
+        "Verified load checks\n2 / 3 required",
+        "Reopening gate\nDo not reopen Bridge C-08 yet.\nThe required Span 4 crack-gauge result is unavailable. Passing load checks at the approach joint and Pier 2 do not establish Span 4 clearance.\nHOLD · one required result missing",
+        "Key Takeaway\nNext step: synchronize the Span 4 gauge file, verify the crack trend, and repeat disposition before the 06:00 maintenance handover."
+      ],
+      "tables_in_pptx": [
+        {
+          "shape": "VIZ::Overnight inspection record",
+          "rows": [
+            [
+              "Location",
+              "Observed load",
+              "Required",
+              "Disposition"
+            ],
+            [
+              "Approach slab joint",
+              "1.34×",
+              "≥ 1.25×",
+              "Pass"
+            ],
+            [
+              "Pier 2 bearing",
+              "1.29×",
+              "≥ 1.25×",
+              "Pass"
+            ],
+            [
+              "Span 4 crack gauge",
+              "Not synced",
+              "Verified reading",
+              "Open"
+            ]
+          ]
+        }
+      ],
+      "charts_in_pptx": [],
+      "source_reading_chart_summaries": [],
+      "slides": [
+        {
+          "number": 1,
+          "shapes": [
+            {
+              "name": "VIZ::Hero Title",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106680,
+                304799,
+                8072932,
+                936735
+              ],
+              "text": "Hero Title\nKeep Bridge C-08 closed until Span 4 crack gauge data is verified."
+            },
+            {
+              "name": "VIZ::Body Narrative",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                8286291,
+                380737,
+                3799026,
+                784860
+              ],
+              "text": "Body Narrative\nOvernight load testing cleared two required checks. The Span 4 crack gauge export has not synchronized; water level is still receding, so the reopening decision remains pending."
+            },
+            {
+              "name": "VIZ::Verified load checks KPI",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106680,
+                6000377,
+                11978638,
+                1417320
+              ],
+              "text": "Verified load checks\n2 / 3 required"
+            },
+            {
+              "name": "VIZ::Reopening gate",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106680,
+                1500615,
+                11978638,
+                1325880
+              ],
+              "text": "Reopening gate\nDo not reopen Bridge C-08 yet.\nThe required Span 4 crack-gauge result is unavailable. Passing load checks at the approach joint and Pier 2 do not establish Span 4 clearance.\nHOLD · one required result missing"
+            },
+            {
+              "name": "VIZ::Key Takeaway",
+              "shape_type": "AUTO_SHAPE (1)",
+              "box_emu": [
+                106680,
+                2887455,
+                11978638,
+                819302
+              ],
+              "text": "Key Takeaway\nNext step: synchronize the Span 4 gauge file, verify the crack trend, and repeat disposition before the 06:00 maintenance handover."
+            },
+            {
+              "name": "VIZ::Overnight inspection record",
+              "shape_type": "TABLE (19)",
+              "box_emu": [
+                106680,
+                3965837,
+                11978638,
+                1973579
+              ]
+            },
+            {
+              "name": "VIZ::SemanticReport",
+              "shape_type": "TEXT_BOX (17)",
+              "box_emu": [
+                0,
+                0,
+                1,
+                1
+              ]
+            }
+          ]
+        }
+      ],
+      "raster_preview": "compositions/F-F-bridge-c08-sparse/pptx-quicklook-raster.png",
+      "required_text_presence": {
+        "headline": true,
+        "decision_or_risk": true,
+        "next_step_or_action": true
+      },
+      "required_text_checks": {
+        "headline": {
+          "phrase": "Keep Bridge C-08 closed until Span 4 crack gauge data is verified",
+          "present_structurally": true
+        },
+        "kpi_comparison": {
+          "phrase": "2 / 3 required",
+          "present_structurally": true
+        },
+        "narrative": {
+          "phrase": "Overnight load testing cleared two required checks",
+          "present_structurally": true
+        },
+        "decision_risk": {
+          "phrase": "Do not reopen Bridge C-08 yet",
+          "present_structurally": true
+        },
+        "next_step": {
+          "phrase": "Next step: synchronize the Span 4 gauge file",
+          "present_structurally": true
+        }
+      },
+      "chart_xml_parts": [],
+      "all_required_text_structurally_present": true
+    }
+  }
+}

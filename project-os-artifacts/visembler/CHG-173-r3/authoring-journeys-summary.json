@@ -1,0 +1,131 @@
+{
+  "benchmark_report_count": 6,
+  "fresh_holdout_count": 2,
+  "reports": [
+    {
+      "letter": "A",
+      "key": "executive-business-review",
+      "start": "intended reusable blueprint",
+      "user_actions": 45,
+      "context_switches": 9
+    },
+    {
+      "letter": "B",
+      "key": "semiconductor-rca",
+      "start": "intended reusable blueprint",
+      "user_actions": 46,
+      "context_switches": 9
+    },
+    {
+      "letter": "C",
+      "key": "experiment-decision",
+      "start": "intended reusable blueprint",
+      "user_actions": 48,
+      "context_switches": 11
+    },
+    {
+      "letter": "D",
+      "key": "technical-status-review",
+      "start": "intended reusable blueprint",
+      "user_actions": 41,
+      "context_switches": 7
+    },
+    {
+      "letter": "E",
+      "key": "holdout-order-returns",
+      "start": "blank",
+      "user_actions": 87,
+      "context_switches": 22
+    },
+    {
+      "letter": "F",
+      "key": "F-bridge-c08-sparse",
+      "start": "blank",
+      "user_actions": 65,
+      "context_switches": 17
+    }
+  ],
+  "reuse_challenge": {
+    "followup_assembly_actions": 43,
+    "context_switches": 5,
+    "manual_inserts": 0
+  },
+  "blank_rebuild": {
+    "actions": 79,
+    "context_switches": 17,
+    "manual_inserts": 9,
+    "repeated_structure_setup_actions_avoided_by_reuse": 15
+  },
+  "directly_exercised": [
+    "text/metric/table edits",
+    "data binding and remap to changed dataset",
+    "semantic sections/roles/grouping",
+    "save/reload/history/undo/redo/conflict recovery",
+    "reading/preview, SVG and editable PPTX"
+  ],
+  "not_logged_or_exercised": [
+    "manual pointer drag/resize as deterministic action",
+    "bitmap or image annotation"
+  ],
+  "note": "Observed action counts are run-specific, not time SLAs.",
+  "friction_points": [
+    "A–D blueprints start with composition already present; editing the evidence values/narrative still moves between Editor and Inspector contexts, recorded in context-switch counts.",
+    "Blank holdout E retained default Report Hub title “Untitled report”, so registry identity/purpose needs deliberate completion even though the visible report content is complete.",
+    "F narrow evidence surfaces clip internally despite no horizontal document overflow; a heading boundary check alone would not catch it.",
+    "Remap flow makes “Pasted data” and expected/observed field roles visible; users must resolve fields explicitly for ambiguity."
+  ],
+  "vocabulary_observations": {
+    "visible_product_terms": [
+      "Report Hub",
+      "Data First",
+      "Inspector",
+      "Reusable report structure",
+      "Pasted data"
+    ],
+    "diagnostic_only_terms": [
+      "DecisionRiskEngine",
+      "MetricEngine",
+      "LINE_MARKERS"
+    ],
+    "leakage_finding": "No product-facing engine-name leak established by these receipts; internal component names are used only in DOM diagnostics."
+  },
+  "actions_context_switches": {
+    "A": {
+      "actions": 45,
+      "context_switches": 9
+    },
+    "B": {
+      "actions": 46,
+      "context_switches": 9
+    },
+    "C": {
+      "actions": 48,
+      "context_switches": 11
+    },
+    "D": {
+      "actions": 41,
+      "context_switches": 7
+    },
+    "E": {
+      "actions": 87,
+      "context_switches": 22
+    },
+    "F": {
+      "actions": 65,
+      "context_switches": 17
+    }
+  },
+  "supplemental_320_capture_ids": {
+    "B": "report-0061a270e0c74e8fbabbdc5d2a52e925",
+    "D": "report-caa32d456d4e497abc388e06c4e354e7"
+  },
+  "supplemental_320_note": "320 px B/D images were captured from separate fresh run-owned sessions with the same stories and values; their report IDs differ from the matching 1440/390 benchmark objects.",
+  "reuse_vocabulary": [
+    "report preset",
+    "section preset",
+    "style/composition reuse",
+    "mapped analytical bindings",
+    "source data copy",
+    "shared source slot"
+  ]
+}

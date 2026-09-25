@@ -1,0 +1,44 @@
+{
+  "findings": [
+    {
+      "id": "R3-RESP-01",
+      "severity": "P1",
+      "status": "confirmed",
+      "report": "F fresh Bridge C-08 sparse holdout",
+      "smallest_governable_scope": "Narrow-width height/overflow sizing of the decision/risk and metric component bodies, plus vertical visibility/discoverability of evidence table rows.",
+      "evidence": [
+        "compositions/F-F-bridge-c08-sparse/reading-390.png",
+        "responsive/dom-geometry-accessibility-diagnostics.json",
+        "benchmark-scenes/F-F-bridge-c08-sparse.json"
+      ],
+      "observed": "At 390 px, DecisionRiskEngine body scrollHeight is 171 and clientHeight 106 (65 px clipped). MetricEngine body scrollHeight 75 and clientHeight 46 (29 px clipped). The rationale is cut after a few lines; metric delta and target are below the visible body. Full scene shows one of three table rows, with horizontal scroll prompt and keyboard/swipe hints but no vertical affordance. The Span 4 “Not synced / Open” row is not visible. Document/body width is 390 and no horizontal spill occurs.",
+      "task_consequence": "The reader can see 2/3 but not the missing check explanation, target/delta or open Span 4 row that controls reopening; safety decision context is materially weakened.",
+      "other_scenes": "A–E at 390 and B/D at 320 inspected. B/C/D horizontal tables expose arrow/end/swipe cues; 98.6% and 94.2% comparison remains intact at 390/320; B/D process flow is readable and recomposes. No heading/content collision observed in six narrow scenes."
+    },
+    {
+      "id": "R3-EXPORT-01",
+      "severity": "P1",
+      "status": "confirmed in editable PPTX package; preview raster also observed via Quick Look",
+      "reports": "A–D (strongest semantic change in B/C)",
+      "smallest_governable_scope": "PPTX export mapping for source chart type, series/category identity and value-axis scale.",
+      "evidence": [
+        "exports/pptx-structure-semantics.json",
+        "exports/pptx-raster-provenance-review.json",
+        "compositions/A-executive-business-review/pptx-quicklook-raster.png",
+        "compositions/B-semiconductor-rca/pptx-quicklook-raster.png",
+        "compositions/C-experiment-decision/pptx-quicklook-raster.png",
+        "compositions/D-technical-status-review/pptx-quicklook-raster.png"
+      ],
+      "observed": "Editable PPTX packages contain the benchmark headlines, KPI/comparison, narrative, decision/risk and next-step text as extractable text shapes; table cells are present. But source Box Plots in B/C export as LINE_MARKERS; C weekly control/treatment values export as one series over repeated W1–W4 categories, and the outcome distribution also becomes a line. A–D numeric trend charts rasterize against broad 0–200/0–20 axes in Quick Look, flattening visible variation; no explicit value-axis min/max is encoded in chart XML. Chart type/series findings are package facts independent of Quick Look.",
+      "task_consequence": "A reader opening the deck can read the narrative but misread distribution shape, treatment/control trend, or magnitude; text presence does not preserve decision evidence.",
+      "renderer_limit": "No qualified headless PowerPoint/LibreOffice renderer was available. Keynote 13.2 was installed but automated open stalled. Actual qlmanage Quick Look renders are retained, labeled, and treated as preview evidence rather than Office-engine certification."
+    }
+  ],
+  "counts": {
+    "P0": 0,
+    "P1": 2,
+    "P2": 0
+  },
+  "producer_self_verdict": "NO_GO",
+  "source_changes": 0
+}
