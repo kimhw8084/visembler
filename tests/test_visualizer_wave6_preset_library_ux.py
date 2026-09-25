@@ -21,7 +21,7 @@ def test_wave6_personal_preset_list_filters_by_kind_and_search() -> None:
     editor = (ASSETS / "integrated_editor.mjs").read_text(encoding="utf-8")
     assert "const kind=String($('#presetKindFilter')?.value||'all');" in editor
     assert "(kind==='all'||p.kind===kind)" in editor
-    assert "built.innerHTML=kind==='section'" in editor
+    assert "built.innerHTML=visualDirectionPanelMarkup()+(kind==='section'" in editor
     assert "Built-in presets are full-report layouts" in editor
 
 

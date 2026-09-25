@@ -179,9 +179,9 @@ def test_layout_selection_and_tablet_contracts_are_explicit() -> None:
     assert "const fitToHull=" in editor and "function semanticSmartLayout(items=viewItems())" in editor
     assert "function allocateRowWidths(row, innerW, gap, ratios = null)" in editor
     assert "sectionCompositionPlan(ordered,preset,CANVAS.w,profiles)" in editor
-    assert "const spacing=compositionSpacing({density:model().density||'comfortable',itemCount:ordered.length})" in editor
+    assert "const spacing=compositionSpacing({density:model().density||direction.density.spacing,itemCount:ordered.length,direction:direction.id})" in editor
     assert "let y=g;" in editor and "sectionHeadingOrder" in editor
-    assert "compositionOrder(items,model().layoutPreset||'editorial')" in editor
+    assert "compositionOrder(items,model().layoutPreset||'editorial',direction)" in editor
     assert "COMPOSITION_ROLES" in composition and "ROLE_SECTIONS" in composition
     assert "innerW=Math.max(1,CANVAS.w-2*g)" in editor
     assert "editor-chrome-layer" in editor and "renderEditorChrome(rm)" in editor

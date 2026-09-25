@@ -61,6 +61,7 @@ export function canonicalModel(input = {}) {
     canvas: canonicalCanvas(input.canvas),
     nextId: Number.isInteger(input.nextId) ? input.nextId : inferNextId(items),
   };
+  if (Object.prototype.hasOwnProperty.call(input, 'visualDirectionChoice')) model.visualDirectionChoice = clone(input.visualDirectionChoice);
   // Compound filters are an additive projection of the v1 model.  Keep the
   // field optional so historical single-filter reports serialize identically,
   // while compound filter state survives a server bootstrap/refresh.
@@ -104,6 +105,9 @@ export function validateModel(model) {
   if (!ALLOWED_MODES.has(model.mode)) throw new CommandValidationError(`Unsupported mode: ${model.mode}`);
   canonicalCanvas(model.canvas);
   if (!Number.isInteger(model.nextId) || model.nextId < 1) throw new CommandValidationError('nextId must be a positive integer.');
+  if (model.visualDirectionChoice != null && (typeof model.visualDirectionChoice !== 'string' || !model.visualDirectionChoice || model.visualDirectionChoice.length > 64)) {
+    throw new CommandValidationError('visualDirectionChoice must be a short string when present.');
+  }
 
   const ids = new Set();
   for (const entry of model.items) {
@@ -227,7 +231,7 @@ function applyOp(model, op) {
 
   if (op.op === 'model.patch') {
     if (!isPlainObject(op.patch)) throw new CommandValidationError('model.patch requires patch object.');
-    const allowed = new Set(['mode', 'layoutPreset', 'crossFilter', 'crossFilters', 'canvas', 'nextId', 'datasets', 'authoring_schema']);
+    const allowed = new Set(['mode', 'layoutPreset', 'visualDirectionChoice', 'crossFilter', 'crossFilters', 'canvas', 'nextId', 'datasets', 'authoring_schema']);
     const before = {};
     for (const [key, value] of Object.entries(op.patch)) {
       if (!allowed.has(key)) throw new CommandValidationError(`model.patch cannot modify ${key}`);
@@ -241,6 +245,8 @@ function applyOp(model, op) {
     const before = canonicalModel(model);
     const next = canonicalModel(op.value);
     for (const key of MODEL_KEYS) model[key] = clone(next[key]);
+    if (typeof next.visualDirectionChoice === 'string') model.visualDirectionChoice = next.visualDirectionChoice;
+    else delete model.visualDirectionChoice;
     if (Array.isArray(next.crossFilters)) model.crossFilters = clone(next.crossFilters);
     else delete model.crossFilters;
     return [{ op: 'model.replace', value: before }];

@@ -208,6 +208,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 }
 .preset b { font-size: var(--viz-type-data); }
 .keyboard-help { font-size: var(--viz-type-chrome); color: var(--viz-muted); line-height: 1.65; }
+.preset-direction { display:grid; gap:var(--viz-s-2); padding:var(--viz-s-3); border-bottom:1px solid var(--viz-line-soft); background:var(--viz-surface); }
+.preset-direction label { margin:0; color:var(--viz-muted); font-size:var(--viz-type-chrome); font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+.preset-direction select { width:100%; min-height:var(--viz-control-height); padding:var(--viz-s-2) var(--viz-s-3); border:1px solid var(--viz-line); border-radius:var(--viz-r-control); background:var(--viz-surface); }
+.preset-direction small { color:var(--viz-muted); font-size:var(--viz-type-chrome); line-height:1.45; }
 .full-width { width: 100%; margin-top: var(--viz-s-2); }
 
 .work { min-width: 0; min-height: 0; display: grid; grid-template-rows: 40px 1fr 30px; background: var(--viz-bg); }
@@ -1891,9 +1895,26 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
 
 .cui-visualizer-root .composition-section-heading { position:absolute; display:grid; grid-template-columns:auto minmax(0,1fr); align-items:center; gap:10px; min-height:26px; box-sizing:border-box; padding:4px 10px; border-bottom:1px solid var(--viz-line); color:var(--viz-ink); background:color-mix(in srgb,var(--viz-surface) 92%,transparent); font-size:16px; line-height:1.15; letter-spacing:-.02em; pointer-events:none; }
 .cui-visualizer-root .composition-section-surface { position:absolute; box-sizing:border-box; border:1px solid var(--viz-line-soft); border-left:3px solid color-mix(in srgb,var(--viz-accent) 58%,var(--viz-line)); border-radius:var(--viz-r-surface); background:var(--viz-surface-2); pointer-events:none; }
+.cui-visualizer-root .composition-section-surface[data-containment="open"] { border-color:transparent; border-left-color:var(--viz-line); border-radius:0; background:transparent; }
+.cui-visualizer-root[data-visual-direction="decision-led"] .composition-section-surface[data-pattern="evidence-detail-grid"],
+.cui-visualizer-root[data-visual-direction="decision-led"] .composition-section-surface[data-pattern="feature-support-analysis"] { border-left-color:var(--viz-accent); background:color-mix(in srgb,var(--viz-accent-soft) 52%,var(--viz-surface)); }
+.cui-visualizer-root[data-visual-direction="conditional-evidence"] .composition-section-surface[data-pattern="conditional-evidence-pair"] { border-left-color:var(--viz-accent); background:color-mix(in srgb,var(--viz-accent-soft) 48%,var(--viz-surface)); }
+.cui-visualizer-root[data-visual-direction="causal-investigation"] .composition-section-surface[data-pattern="causal-flow-feature"] { border-left-color:var(--viz-accent); background:color-mix(in srgb,var(--viz-accent-soft) 55%,var(--viz-surface)); }
+.cui-visualizer-root[data-visual-direction="dense-operations"] .composition-section-surface { border-left-width:2px; }
+.cui-visualizer-root[data-visual-direction="allocation-comparison"] .composition-section-surface[data-pattern="allocation-comparison"],
+.cui-visualizer-root[data-visual-direction="allocation-comparison"] .composition-section-surface[data-pattern="allocation-evidence-grid"],
+.cui-visualizer-root[data-visual-direction="allocation-comparison"] .composition-section-surface[data-pattern="balanced-analytical-pair"] { border-left-color:var(--viz-accent); }
+.cui-visualizer-root[data-visual-direction="decision-led"] .composition-section-heading { font-size:var(--viz-type-title); }
+.cui-visualizer-root[data-visual-direction="dense-operations"] .composition-section-heading { font-size:var(--viz-type-body); gap:var(--viz-s-3); }
+.cui-visualizer-root[data-visual-direction="causal-investigation"] .composition-section-heading { border-bottom-color:var(--viz-accent); }
 .cui-visualizer-root .composition-section-index { color:var(--viz-accent); font-size:10px; line-height:1; font-weight:850; letter-spacing:.08em; font-variant-numeric:tabular-nums; }
 .cui-visualizer-root .composition-section-heading b { min-width:0; font-weight:780; }
 .cui-visualizer-root .component[data-composition-level="feature"] { border-color:color-mix(in srgb,var(--viz-accent) 28%,var(--viz-line)); box-shadow:var(--viz-shadow-1); }
+.cui-visualizer-root[data-visual-direction="decision-led"] .component[data-composition-level="feature"][data-composition-focus="primary"],
+.cui-visualizer-root[data-visual-direction="conditional-evidence"] .component[data-composition-level="feature"][data-composition-focus="primary"],
+.cui-visualizer-root[data-visual-direction="allocation-comparison"] .component[data-composition-level="feature"][data-composition-focus="primary"] { box-shadow:inset 0 3px 0 var(--viz-accent),var(--viz-shadow-1); }
+.cui-visualizer-root[data-visual-direction="causal-investigation"] .component[data-composition-level="feature"][data-composition-focus="primary"] { border-color:color-mix(in srgb,var(--viz-accent) 44%,var(--viz-line)); box-shadow:inset 0 3px 0 var(--viz-accent),var(--viz-shadow-1); }
+.cui-visualizer-root[data-visual-direction="dense-operations"] .component[data-section-pattern="dense-evidence-grid"] { box-shadow:none; }
 .cui-visualizer-root .component[data-composition-emphasis="prominent"] .metric-value { font-size:var(--viz-type-metric-compact); }
 
 /* Responsive reading keeps formatted values atomic and exposes real table overflow. */
@@ -1946,6 +1967,14 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
   .cui-visualizer-root.preview-mode .comparison>div { min-width:0; }
   .cui-visualizer-root.preview-mode .comparison>.compare-arrow { justify-self:center;transform:rotate(90deg); }
   .cui-visualizer-root.preview-mode .asis-tobe>i { justify-self:center;transform:rotate(90deg); }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) { height:auto!important;min-height:var(--viz-mobile-reader-height)!important;overflow:visible!important; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .c-content,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .integrated-element-content,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .integrated-element-content>.gallery-card,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .card-body { height:auto!important;min-height:0!important;overflow:visible!important; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live { grid-template-columns:32px minmax(0,1fr);align-items:start; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live>div { min-width:0; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live>span { grid-column:2;justify-self:start;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.35; }
 }
 @media(max-width:800px) {
   .cui-visualizer-root.preview-mode .component-layer { gap:var(--viz-composition-row-gap,var(--viz-s-4)); }
