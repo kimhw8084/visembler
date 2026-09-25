@@ -1,0 +1,243 @@
+{
+  "schema_version": 1,
+  "revision": 8,
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "code_1",
+            "name": "CODE",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "identifier"
+          },
+          {
+            "id": "value_2",
+            "name": "VALUE",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "text_zero_3",
+            "name": "TEXT_ZERO",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "empty_4",
+            "name": "EMPTY",
+            "nullable": true,
+            "profile": {
+              "distinct": 0,
+              "missing": 2
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "absent_5",
+            "name": "ABSENT",
+            "nullable": true,
+            "profile": {
+              "distinct": 0,
+              "missing": 2
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "enabled_6",
+            "name": "ENABLED",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "boolean"
+          },
+          {
+            "id": "date_7",
+            "name": "DATE",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "time"
+            ],
+            "type": "date"
+          }
+        ],
+        "id": "dataset-mugj5nxq-sxvg5a",
+        "metadata": {
+          "header": {
+            "confidence": 0.8571428571428571,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "00123",
+            0,
+            "0",
+            "",
+            null,
+            true,
+            "2026-09-05"
+          ],
+          [
+            "00456",
+            2,
+            "0",
+            "",
+            null,
+            false,
+            "2026-09-06"
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-25T05:38:36.014Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "customTable": {
+          "headers": [
+            "Measure",
+            "Current",
+            "Status"
+          ],
+          "rows": [
+            [
+              "Yield",
+              "98.7%",
+              "On track"
+            ],
+            [
+              "Cycle time",
+              "42.8 min",
+              "Improving"
+            ],
+            [
+              "Risk",
+              "Low",
+              "Monitored"
+            ]
+          ]
+        },
+        "dataset_id": "dataset-mugj5nxq-sxvg5a",
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c20",
+        "locked": false,
+        "mapping": {
+          "category": "code_1",
+          "series": "empty_4",
+          "time": "date_7",
+          "value": "value_2",
+          "x": "date_7",
+          "y": "text_zero_3"
+        },
+        "message_role": "Primary Evidence",
+        "order": 0,
+        "rows": [
+          [
+            "Yield",
+            "98.7%",
+            "On track"
+          ],
+          [
+            "Cycle time",
+            "42.8 min",
+            "Improving"
+          ],
+          [
+            "Risk",
+            "Low",
+            "Monitored"
+          ]
+        ],
+        "showTitle": false,
+        "textAlign": "left",
+        "title": "Clean Table",
+        "transform_recipe": {
+          "id": "recipe-c20",
+          "source_dataset_id": "dataset-mugj5nxq-sxvg5a",
+          "steps": [
+            {
+              "direction": "asc",
+              "field": "code_1",
+              "id": "transform-step-2-mugj5o2b-4dt3rr7",
+              "type": "sort"
+            }
+          ]
+        },
+        "type": "table",
+        "view_type": "table",
+        "weight": 1.55,
+        "z": 1
+      },
+      {
+        "alt": "Synthetic metrology image",
+        "caption": "Portable metrology Δ",
+        "element": "Image + Caption",
+        "engine": "ImageMediaEngine",
+        "fit": "fill",
+        "focal": "50% 50%",
+        "groupId": null,
+        "id": "c21",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 1,
+        "showTitle": false,
+        "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAACMCAIAAADN17N/AAABr0lEQVR4nO3UwQnCQBRF0SjTQqpJC3bkJs3ZVRb2IB+Em3MKeAzM5T/e+2uDiue/HwCTBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpKzBretzDq4xZR03+hcXmhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBkyJoUgRNiqBJETQpgiZF0KQImhRBk7Imt45zcA1+4EKTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGTImhSBE2KoEkRNCmCJkXQpAiaFEGzlXwBLWMFt3OD9asAAAAASUVORK5CYII=",
+        "textAlign": "left",
+        "title": "Image + Caption",
+        "type": "image",
+        "weight": 1.25,
+        "z": 2
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "editorial",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 22,
+    "crossFilters": []
+  }
+}

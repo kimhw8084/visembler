@@ -1,0 +1,6795 @@
+{
+  "schema": "visembler-chg207-narrow-reading-acceptance.v1",
+  "project": "visembler",
+  "request": "CHG-207-r1",
+  "operation": "FIX",
+  "fabric_job_id": "CF-044dc968600667a197348544",
+  "candidate_sha": "07011f61938510a525f8f9a1e747a3e1817520da",
+  "candidate_tree": "c33f29fcd911056c06b6be315170fbdac72beebd",
+  "source_sha": "5dfdd5eba77a45b63aa2e5290cb7609a573e9efc",
+  "source_tree": "d932f22966508ba6fdb630b6f66e1a01818b7b03",
+  "r2_carrier_sha": "7224c0815142557e2362e2ca4e6201e67006126c",
+  "r2_failure_screenshot": {
+    "path": "tests/fixtures/chg207/chg173-r2-supply-chain-reading-320-before.png",
+    "sha256": "b6586d81a79b8aed5d6610d3bad362e3a0f4b1f388cb828eade1d28ee9ceda22",
+    "pixels": {
+      "width": 300,
+      "height": 2491,
+      "rgb_stddev": [
+        45.909,
+        44.835,
+        44.297
+      ],
+      "rgb_extrema": [
+        [
+          0,
+          255
+        ],
+        [
+          28,
+          255
+        ],
+        [
+          0,
+          255
+        ]
+      ],
+      "nonuniform_pixels": 305921
+    }
+  },
+  "populated_report_fixture": {
+    "path": "tests/fixtures/chg206/whole_report_models.json",
+    "sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb",
+    "source": "CHG-173 R2 actual persisted Product report models",
+    "source_candidate": "47a988064deac544dfdca360e046a9cb20f5c282",
+    "source_tree": "d36220e2cf7bd93116765b4f0f1bba19ed682747"
+  },
+  "runtime": {
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "browser": "151.0.7922.34",
+    "host_url": "http://127.0.0.1:62838",
+    "ephemeral_port": 62838,
+    "native_host": true
+  },
+  "cases": {
+    "supply-320": {
+      "screenshots": {
+        "viewport": {
+          "path": "supply-320-viewport.png",
+          "sha256": "807c40a08b32865931024fad3cdc1379a364b962d443861471565778eb27108c",
+          "pixels": {
+            "width": 320,
+            "height": 800,
+            "rgb_stddev": [
+              57.004,
+              51.176,
+              48.577
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                30,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 153275
+          }
+        },
+        "full_page": {
+          "path": "supply-320-full-page.png",
+          "sha256": "d4e900b18b1b4727673029372ba4f27c0473fdd5ec4980a4b915198e5ecd656e",
+          "pixels": {
+            "width": 320,
+            "height": 3357,
+            "rgb_stddev": [
+              43.924,
+              41.1,
+              39.772
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                29,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 502100
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 320,
+          "height": 800,
+          "devicePixelRatio": 1,
+          "documentWidth": 320,
+          "bodyWidth": 320,
+          "documentHeight": 3357,
+          "bodyHeight": 3357,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "2.7%",
+            "x": 38,
+            "y": 1114.046875,
+            "width": 101,
+            "height": 41.796875,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1108.046875,
+                "bottom": 1160.046875,
+                "left": 38,
+                "right": 139
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1108.046875,
+                "width": 101,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "8%",
+            "x": 296.75,
+            "y": 1162.84375,
+            "width": 17.25,
+            "height": 19,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1165.84375,
+                "bottom": 1178.84375,
+                "left": 296.75,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 296.75,
+                "y": 1165.84375,
+                "width": 17.25,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 2,
+            "text": "116 days",
+            "x": 38,
+            "y": 1292.84375,
+            "width": 177.703125,
+            "height": 41.796875,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1286.84375,
+                "bottom": 1338.84375,
+                "left": 38,
+                "right": 215.703125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1286.84375,
+                "width": 177.703125,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "90 days",
+            "x": 272.40625,
+            "y": 1341.640625,
+            "width": 41.59375,
+            "height": 19,
+            "scrollWidth": 42,
+            "clientWidth": 42,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1344.640625,
+                "bottom": 1357.640625,
+                "left": 272.40625,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 272.40625,
+                "y": 1344.640625,
+                "width": 41.59375,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 4,
+            "text": "120000 units",
+            "x": 53,
+            "y": 871.046875,
+            "width": 142.671875,
+            "height": 26,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 864.046875,
+                "bottom": 897.046875,
+                "left": 53,
+                "right": 195.671875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 864.046875,
+                "width": 116.921875,
+                "height": 33
+              },
+              {
+                "x": 169.921875,
+                "y": 881.046875,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 169.921875,
+                "y": 881.046875,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "142000 units",
+            "x": 53,
+            "y": 962.046875,
+            "width": 142.671875,
+            "height": 26,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 955.046875,
+                "bottom": 988.046875,
+                "left": 53,
+                "right": 195.671875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 955.046875,
+                "width": 116.921875,
+                "height": 33
+              },
+              {
+                "x": 169.921875,
+                "y": 972.046875,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 169.921875,
+                "y": 972.046875,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 26,
+            "y": 1624.640625,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c2",
+            "x": 26,
+            "y": 1892.640625,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c3",
+            "x": 26,
+            "y": 1033.046875,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c4",
+            "x": 26,
+            "y": 1211.84375,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c5",
+            "x": 26,
+            "y": 749.046875,
+            "width": 300,
+            "height": 266,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 266,
+            "clientHeight": 266
+          },
+          {
+            "id": "c6",
+            "x": 26,
+            "y": 2693.40625,
+            "width": 300,
+            "height": 190,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          },
+          {
+            "id": "c7",
+            "x": 26,
+            "y": 2945.40625,
+            "width": 300,
+            "height": 192,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "c8",
+            "x": 26,
+            "y": 2204.640625,
+            "width": 300,
+            "height": 470.765625,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 471,
+            "clientHeight": 471
+          },
+          {
+            "id": "c9",
+            "x": 26,
+            "y": 410.046875,
+            "width": 300,
+            "height": 147,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 148,
+            "clientHeight": 147
+          },
+          {
+            "id": "c10",
+            "x": 26,
+            "y": 575.046875,
+            "width": 300,
+            "height": 112,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 112,
+            "clientHeight": 112
+          },
+          {
+            "id": "c11",
+            "x": 26,
+            "y": 1434.640625,
+            "width": 300,
+            "height": 172,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 172,
+            "clientHeight": 172
+          },
+          {
+            "id": "c12",
+            "x": 26,
+            "y": 3199.40625,
+            "width": 300,
+            "height": 128,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 158,
+            "clientHeight": 128
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": true,
+          "wideDisplay": "none",
+          "fontSize": "18px",
+          "devicePixelRatio": 1,
+          "svgRect": {
+            "x": 38,
+            "y": 2285.640625,
+            "width": 276,
+            "height": 377.765625,
+            "top": 2285.640625,
+            "right": 314,
+            "bottom": 2663.40625,
+            "left": 38
+          },
+          "effectiveLabelPixels": 15.525,
+          "ariaLabel": "Allocation decision path diagram; Step 1: Reconcile P70 demand; Step 2: Reserve qualified actuators; Step 3: Confirm date-coded allocation; Step 4: Release remaining build",
+          "canonicalDirection": "right",
+          "readingDirection": "down",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Reconcile P70 demand",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 2301.165283203125,
+                "width": 234.59417724609375,
+                "height": 53.4736328125
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Reserve qualified actuators",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 2394.31298828125,
+                "width": 234.59417724609375,
+                "height": 60.37353515625
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Confirm date-coded allocation",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 2494.3603515625,
+                "width": 234.59417724609375,
+                "height": 60.37353515625
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release remaining build",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 2594.407958984375,
+                "width": 234.59417724609375,
+                "height": 53.4736328125
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M160 80 L160 126"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M160 196 L160 242"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M160 312 L160 358"
+            }
+          ],
+          "rect": {
+            "x": 26,
+            "y": 2204.640625,
+            "width": 300,
+            "height": 470.765625
+          },
+          "bounds": {
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 471,
+            "clientHeight": 471
+          }
+        },
+        "comparisonRect": {
+          "x": 26,
+          "y": 749.046875,
+          "width": 300,
+          "height": 266
+        },
+        "table": {
+          "clientWidth": 274,
+          "scrollWidth": 652,
+          "scrollLeft": 0,
+          "overflow": true,
+          "overflowX": "auto",
+          "touchAction": "pan-x pan-y",
+          "tabIndex": 0,
+          "ariaLabel": "Scrollable table: Clean Table",
+          "describedBy": "c6-scroll-instructions",
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+          "rect": {
+            "x": 38,
+            "y": 2705.40625,
+            "width": 276,
+            "height": 127.625,
+            "top": 2705.40625,
+            "right": 314,
+            "bottom": 2833.03125,
+            "left": 38
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 2705.40625,
+              "height": 127.625,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 135,
+              "clientHeight": 126
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell has-overflow can-scroll-right",
+              "y": 2705.40625,
+              "height": 166,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 2705.40625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 2705.40625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 2705.40625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 2693.40625,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 2693.40625,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 366.046875,
+              "height": 2961.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2991,
+              "clientHeight": 2961
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 366.046875,
+              "height": 2961.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2991,
+              "clientHeight": 2961
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 366.046875,
+              "height": 2961.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2991,
+              "clientHeight": 2961
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 366.046875,
+              "height": 2961.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2991,
+              "clientHeight": 2961
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 308.046875,
+              "height": 3043.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 3043
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 308.046875,
+              "height": 3043.359375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 3043
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 308.046875,
+              "height": 3043.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 3043
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 308.046875,
+              "height": 3043.359375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 3043
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 308.046875,
+              "height": 3043.359375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 3043
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3049,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 1064.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3297,
+              "clientHeight": 1064
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3357,
+              "clientHeight": 800
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 3357,
+          "bodyScrollHeight": 3357,
+          "pointerEvents": "auto",
+          "shellRect": {
+            "x": 38,
+            "y": 2705.40625,
+            "width": 276,
+            "height": 166,
+            "top": 2705.40625,
+            "right": 314,
+            "bottom": 2871.40625,
+            "left": 38
+          }
+        },
+        "smallTable": null,
+        "visual": {
+          "flowPixelRect": {
+            "x": 38,
+            "y": 2285.640625,
+            "width": 276,
+            "height": 377.765625,
+            "top": 2285.640625,
+            "right": 314,
+            "bottom": 2663.40625,
+            "left": 38
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 58.702911376953125,
+              "y": 2301.165283203125,
+              "width": 234.59417724609375,
+              "height": 53.4736328125
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 2394.31298828125,
+              "width": 234.59417724609375,
+              "height": 60.37353515625
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 2494.3603515625,
+              "width": 234.59417724609375,
+              "height": 60.37353515625
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 2594.407958984375,
+              "width": 234.59417724609375,
+              "height": 53.4736328125
+            }
+          ],
+          "componentCount": 12
+        },
+        "modelUnchanged": true
+      },
+      "visual_pixel_facts": {
+        "comparison": {
+          "width": 300,
+          "height": 266,
+          "rgb_stddev": [
+            51.441,
+            51.324,
+            51.084
+          ],
+          "rgb_extrema": [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ]
+          ],
+          "nonuniform_pixels": 4944
+        },
+        "flow": {
+          "width": 300,
+          "height": 470,
+          "rgb_stddev": [
+            45.459,
+            45.054,
+            44.48
+          ],
+          "rgb_extrema": [
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ],
+            [
+              0,
+              255
+            ]
+          ],
+          "nonuniform_pixels": 55824
+        },
+        "table": {
+          "width": 276,
+          "height": 166,
+          "rgb_stddev": [
+            36.109,
+            35.81,
+            35.034
+          ],
+          "rgb_extrema": [
+            [
+              0,
+              255
+            ],
+            [
+              29,
+              255
+            ],
+            [
+              31,
+              255
+            ]
+          ],
+          "nonuniform_pixels": 5703
+        }
+      }
+    },
+    "supply-390": {
+      "screenshots": {
+        "viewport": {
+          "path": "supply-390-viewport.png",
+          "sha256": "93da4ac0a176fd4ff0bee5a3be8253c2b4002653f604ecf69aeeac3e25051e9e",
+          "pixels": {
+            "width": 390,
+            "height": 844,
+            "rgb_stddev": [
+              54.496,
+              48.894,
+              46.294
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                30,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 171550
+          }
+        },
+        "full_page": {
+          "path": "supply-390-full-page.png",
+          "sha256": "7e01bd8f82cb82084d8ebd5d80666d582f73bd5015f653b98a27ad6d42657ff5",
+          "pixels": {
+            "width": 390,
+            "height": 2854,
+            "rgb_stddev": [
+              43.643,
+              40.563,
+              39.111
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                29,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 502356
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 390,
+          "height": 844,
+          "devicePixelRatio": 1,
+          "documentWidth": 390,
+          "bodyWidth": 390,
+          "documentHeight": 2854,
+          "bodyHeight": 2854,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "2.7%",
+            "x": 38,
+            "y": 965.59375,
+            "width": 101,
+            "height": 41.796875,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 959.59375,
+                "bottom": 1011.59375,
+                "left": 38,
+                "right": 139
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 959.59375,
+                "width": 101,
+                "height": 52
+              }
+            ],
+            "clippedBy": [
+              {
+                "className": "card-body",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "gallery-card integrated-variant has-title align-left engine-metricengine variant-hero-kpi",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "integrated-element-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              }
+            ],
+            "insideCard": false,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "8%",
+            "x": 366.75,
+            "y": 1014.390625,
+            "width": 17.25,
+            "height": 19,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1017.390625,
+                "bottom": 1030.390625,
+                "left": 366.75,
+                "right": 384
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 366.75,
+                "y": 1017.390625,
+                "width": 17.25,
+                "height": 13
+              }
+            ],
+            "clippedBy": [
+              {
+                "className": "card-body",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "gallery-card integrated-variant has-title align-left engine-metricengine variant-hero-kpi",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "integrated-element-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "c-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "component",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              }
+            ],
+            "insideCard": false,
+            "insideComponent": false
+          },
+          {
+            "index": 2,
+            "text": "116 days",
+            "x": 38,
+            "y": 1115.59375,
+            "width": 177.703125,
+            "height": 41.796875,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1109.59375,
+                "bottom": 1161.59375,
+                "left": 38,
+                "right": 215.703125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1109.59375,
+                "width": 177.703125,
+                "height": 52
+              }
+            ],
+            "clippedBy": [
+              {
+                "className": "card-body",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "gallery-card integrated-variant has-title align-left engine-metricengine variant-hero-kpi",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "integrated-element-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              }
+            ],
+            "insideCard": false,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "90 days",
+            "x": 342.40625,
+            "y": 1164.390625,
+            "width": 41.59375,
+            "height": 19,
+            "scrollWidth": 42,
+            "clientWidth": 42,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1167.390625,
+                "bottom": 1180.390625,
+                "left": 342.40625,
+                "right": 384
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 342.40625,
+                "y": 1167.390625,
+                "width": 41.59375,
+                "height": 13
+              }
+            ],
+            "clippedBy": [
+              {
+                "className": "card-body",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "gallery-card integrated-variant has-title align-left engine-metricengine variant-hero-kpi",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "integrated-element-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "c-content",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              },
+              {
+                "className": "component",
+                "overflowX": "hidden",
+                "overflowY": "hidden"
+              }
+            ],
+            "insideCard": false,
+            "insideComponent": false
+          },
+          {
+            "index": 4,
+            "text": "120000 units",
+            "x": 53,
+            "y": 809.59375,
+            "width": 138.5,
+            "height": 25,
+            "scrollWidth": 139,
+            "clientWidth": 139,
+            "scrollHeight": 25,
+            "clientHeight": 25,
+            "fontSize": "27.2168px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 802.59375,
+                "bottom": 834.59375,
+                "left": 53,
+                "right": 191.546875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 802.59375,
+                "width": 113.421875,
+                "height": 32
+              },
+              {
+                "x": 166.421875,
+                "y": 819.59375,
+                "width": 25.125,
+                "height": 11
+              },
+              {
+                "x": 166.421875,
+                "y": 819.59375,
+                "width": 25.125,
+                "height": 11
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "142000 units",
+            "x": 230.5,
+            "y": 809.59375,
+            "width": 138.5,
+            "height": 25,
+            "scrollWidth": 139,
+            "clientWidth": 139,
+            "scrollHeight": 25,
+            "clientHeight": 25,
+            "fontSize": "27.2168px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 802.59375,
+                "bottom": 834.59375,
+                "left": 230.5,
+                "right": 369.046875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 230.5,
+                "y": 802.59375,
+                "width": 113.421875,
+                "height": 32
+              },
+              {
+                "x": 343.921875,
+                "y": 819.59375,
+                "width": 25.125,
+                "height": 11
+              },
+              {
+                "x": 343.921875,
+                "y": 819.59375,
+                "width": 25.125,
+                "height": 11
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 26,
+            "y": 1398.59375,
+            "width": 370,
+            "height": 250,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c2",
+            "x": 26,
+            "y": 1666.59375,
+            "width": 370,
+            "height": 250,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c3",
+            "x": 26,
+            "y": 884.59375,
+            "width": 370,
+            "height": 132,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 132,
+            "clientHeight": 132
+          },
+          {
+            "id": "c4",
+            "x": 26,
+            "y": 1034.59375,
+            "width": 370,
+            "height": 132,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 132,
+            "clientHeight": 132
+          },
+          {
+            "id": "c5",
+            "x": 26,
+            "y": 686.59375,
+            "width": 370,
+            "height": 180,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 180,
+            "clientHeight": 180
+          },
+          {
+            "id": "c6",
+            "x": 26,
+            "y": 2195.546875,
+            "width": 370,
+            "height": 190,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          },
+          {
+            "id": "c7",
+            "x": 26,
+            "y": 2447.546875,
+            "width": 370,
+            "height": 192,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "c8",
+            "x": 26,
+            "y": 1978.59375,
+            "width": 370,
+            "height": 198.953125,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 199,
+            "clientHeight": 199
+          },
+          {
+            "id": "c9",
+            "x": 26,
+            "y": 390.59375,
+            "width": 370,
+            "height": 124,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 124,
+            "clientHeight": 124
+          },
+          {
+            "id": "c10",
+            "x": 26,
+            "y": 532.59375,
+            "width": 370,
+            "height": 92,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 92,
+            "clientHeight": 92
+          },
+          {
+            "id": "c11",
+            "x": 26,
+            "y": 1228.59375,
+            "width": 370,
+            "height": 152,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 152,
+            "clientHeight": 152
+          },
+          {
+            "id": "c12",
+            "x": 26,
+            "y": 2701.546875,
+            "width": 370,
+            "height": 128,
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 137,
+            "clientHeight": 128
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": true,
+          "wideDisplay": "none",
+          "fontSize": "14px",
+          "devicePixelRatio": 1,
+          "svgRect": {
+            "x": 38,
+            "y": 2059.59375,
+            "width": 346,
+            "height": 105.953125,
+            "top": 2059.59375,
+            "right": 384,
+            "bottom": 2165.546875,
+            "left": 38
+          },
+          "effectiveLabelPixels": 15.1375,
+          "ariaLabel": "Allocation decision path diagram; Step 1: Reconcile P70 demand; Step 2: Reserve qualified actuators; Step 3: Confirm date-coded allocation; Step 4: Release remaining build",
+          "canonicalDirection": "right",
+          "readingDirection": "serpentine",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Reconcile P70 demand",
+              "rect": {
+                "x": 40.788909912109375,
+                "y": 2064.99951171875,
+                "width": 167.4375,
+                "height": 38.921630859375
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Reserve qualified actuators",
+              "rect": {
+                "x": 219.64923095703125,
+                "y": 2064.99951171875,
+                "width": 155.68621826171875,
+                "height": 43.24609375
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Confirm date-coded allocation",
+              "rect": {
+                "x": 219.64923095703125,
+                "y": 2116.89501953125,
+                "width": 155.68621826171875,
+                "height": 43.24609375
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release remaining build",
+              "rect": {
+                "x": 46.66454315185547,
+                "y": 2116.89501953125,
+                "width": 155.68621826171875,
+                "height": 43.24609375
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M152 23 L168 23"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M240 45 L240 53"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M168 73 L152 73"
+            }
+          ],
+          "rect": {
+            "x": 26,
+            "y": 1978.59375,
+            "width": 370,
+            "height": 198.953125
+          },
+          "bounds": {
+            "scrollWidth": 370,
+            "clientWidth": 370,
+            "scrollHeight": 199,
+            "clientHeight": 199
+          }
+        },
+        "comparisonRect": {
+          "x": 26,
+          "y": 686.59375,
+          "width": 370,
+          "height": 180
+        },
+        "table": {
+          "clientWidth": 344,
+          "scrollWidth": 652,
+          "scrollLeft": 0,
+          "overflow": true,
+          "overflowX": "auto",
+          "touchAction": "pan-x pan-y",
+          "tabIndex": 0,
+          "ariaLabel": "Scrollable table: Clean Table",
+          "describedBy": "c6-scroll-instructions",
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+          "rect": {
+            "x": 38,
+            "y": 2207.546875,
+            "width": 346,
+            "height": 127.625,
+            "top": 2207.546875,
+            "right": 384,
+            "bottom": 2335.171875,
+            "left": 38
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 2207.546875,
+              "height": 127.625,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 135,
+              "clientHeight": 126
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell has-overflow can-scroll-right",
+              "y": 2207.546875,
+              "height": 166,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 2207.546875,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 2207.546875,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 2207.546875,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 2195.546875,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 2195.546875,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 346.59375,
+              "height": 2482.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2492,
+              "clientHeight": 2483
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 346.59375,
+              "height": 2482.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2492,
+              "clientHeight": 2483
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 346.59375,
+              "height": 2482.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2492,
+              "clientHeight": 2483
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 346.59375,
+              "height": 2482.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2492,
+              "clientHeight": 2483
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 288.59375,
+              "height": 2564.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 2565
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 288.59375,
+              "height": 2564.953125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 2565
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 288.59375,
+              "height": 2564.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 2565
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 288.59375,
+              "height": 2564.953125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 2565
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 288.59375,
+              "height": 2564.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 2565
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 288.59375,
+              "height": 844,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 844
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 288.59375,
+              "height": 844,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2565,
+              "clientHeight": 844
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 1088.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2794,
+              "clientHeight": 1089
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 1149
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1148.59375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 2854,
+              "clientHeight": 844
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 2854,
+          "bodyScrollHeight": 2854,
+          "pointerEvents": "auto",
+          "shellRect": {
+            "x": 38,
+            "y": 2207.546875,
+            "width": 346,
+            "height": 166,
+            "top": 2207.546875,
+            "right": 384,
+            "bottom": 2373.546875,
+            "left": 38
+          }
+        },
+        "smallTable": null,
+        "visual": {
+          "flowPixelRect": {
+            "x": 38,
+            "y": 2059.59375,
+            "width": 346,
+            "height": 105.953125,
+            "top": 2059.59375,
+            "right": 384,
+            "bottom": 2165.546875,
+            "left": 38
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 40.788909912109375,
+              "y": 2064.99951171875,
+              "width": 167.4375,
+              "height": 38.921630859375
+            },
+            {
+              "x": 219.64923095703125,
+              "y": 2064.99951171875,
+              "width": 155.68621826171875,
+              "height": 43.24609375
+            },
+            {
+              "x": 219.64923095703125,
+              "y": 2116.89501953125,
+              "width": 155.68621826171875,
+              "height": 43.24609375
+            },
+            {
+              "x": 46.66454315185547,
+              "y": 2116.89501953125,
+              "width": 155.68621826171875,
+              "height": 43.24609375
+            }
+          ],
+          "componentCount": 12
+        },
+        "modelUnchanged": true
+      }
+    },
+    "supply-desktop": {
+      "screenshots": {
+        "viewport": {
+          "path": "supply-desktop-viewport.png",
+          "sha256": "4ed0030b2352921a7a0c39b61ccd638e7ee16be35475357ad0c49bf0b835e3fc",
+          "pixels": {
+            "width": 1440,
+            "height": 1000,
+            "rgb_stddev": [
+              17.541,
+              16.832,
+              16.133
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                29,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 973596
+          }
+        },
+        "full_page": {
+          "path": "supply-desktop-full-page.png",
+          "sha256": "4ed0030b2352921a7a0c39b61ccd638e7ee16be35475357ad0c49bf0b835e3fc",
+          "pixels": {
+            "width": 1440,
+            "height": 1000,
+            "rgb_stddev": [
+              17.541,
+              16.832,
+              16.133
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                29,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 973596
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 1440,
+          "height": 1000,
+          "devicePixelRatio": 1,
+          "documentWidth": 1440,
+          "bodyWidth": 1440,
+          "documentHeight": 1000,
+          "bodyHeight": 1000,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "2.7%",
+            "x": 669.37939453125,
+            "y": 186.6383056640625,
+            "width": 52.74871826171875,
+            "height": 21.866851806640625,
+            "scrollWidth": 110,
+            "clientWidth": 110,
+            "scrollHeight": 50,
+            "clientHeight": 46,
+            "fontSize": "48px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 183.7606964111328,
+                "bottom": 210.618408203125,
+                "left": 669.37939453125,
+                "right": 722.1281127929688
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 669.37939453125,
+                "y": 183.7606964111328,
+                "width": 52.74871826171875,
+                "height": 26.857711791992188
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "8%",
+            "x": 859.5415649414062,
+            "y": 211.86236572265625,
+            "width": 8.27313232421875,
+            "height": 9.112442016601562,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 213.30117797851562,
+                "bottom": 219.5360107421875,
+                "left": 859.5415649414062,
+                "right": 867.814697265625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 859.5415649414062,
+                "y": 213.30117797851562,
+                "width": 8.27313232421875,
+                "height": 6.234832763671875
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 2,
+            "text": "116 days",
+            "x": 890.8430786132812,
+            "y": 186.6383056640625,
+            "width": 92.79547119140625,
+            "height": 21.866851806640625,
+            "scrollWidth": 193,
+            "clientWidth": 193,
+            "scrollHeight": 50,
+            "clientHeight": 46,
+            "fontSize": "48px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 183.7606964111328,
+                "bottom": 210.618408203125,
+                "left": 890.8430786132812,
+                "right": 983.6385498046875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 890.8430786132812,
+                "y": 183.7606964111328,
+                "width": 92.79547119140625,
+                "height": 26.857711791992188
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "90 days",
+            "x": 1069.3299560546875,
+            "y": 211.86236572265625,
+            "width": 19.9483642578125,
+            "height": 9.112442016601562,
+            "scrollWidth": 42,
+            "clientWidth": 42,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 213.30117797851562,
+                "bottom": 219.5360107421875,
+                "left": 1069.3299560546875,
+                "right": 1089.2783203125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 1069.3299560546875,
+                "y": 213.30117797851562,
+                "width": 19.9483642578125,
+                "height": 6.234832763671875
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 4,
+            "text": "120000 units",
+            "x": 358.8520812988281,
+            "y": 203.9039764404297,
+            "width": 68.42572021484375,
+            "height": 12.469650268554688,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 200.54676818847656,
+                "bottom": 216.37362670898438,
+                "left": 358.8520812988281,
+                "right": 427.2778015136719
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 358.8520812988281,
+                "y": 200.54676818847656,
+                "width": 56.075958251953125,
+                "height": 15.826858520507812
+              },
+              {
+                "x": 414.92803955078125,
+                "y": 208.6999969482422,
+                "width": 12.349761962890625,
+                "height": 5.755218505859375
+              },
+              {
+                "x": 414.92803955078125,
+                "y": 208.6999969482422,
+                "width": 12.349761962890625,
+                "height": 5.755218505859375
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "142000 units",
+            "x": 508.3605041503906,
+            "y": 203.9039764404297,
+            "width": 68.42575073242188,
+            "height": 12.469650268554688,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 200.54676818847656,
+                "bottom": 216.37362670898438,
+                "left": 508.3605041503906,
+                "right": 576.7862548828125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 508.3605041503906,
+                "y": 200.54676818847656,
+                "width": 56.075958251953125,
+                "height": 15.826858520507812
+              },
+              {
+                "x": 564.4364624023438,
+                "y": 208.6999969482422,
+                "width": 12.3497314453125,
+                "height": 5.755218505859375
+              },
+              {
+                "x": 564.4364624023438,
+                "y": 208.6999969482422,
+                "width": 12.34979248046875,
+                "height": 5.755218505859375
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 722.8999633789062,
+            "y": 253.302978515625,
+            "width": 360.51824951171875,
+            "height": 174.95730590820312,
+            "scrollWidth": 750,
+            "clientWidth": 750,
+            "scrollHeight": 363,
+            "clientHeight": 363
+          },
+          {
+            "id": "c2",
+            "x": 562.345703125,
+            "y": 432.09710693359375,
+            "width": 316.24505615234375,
+            "height": 153.47265625,
+            "scrollWidth": 657,
+            "clientWidth": 657,
+            "scrollHeight": 318,
+            "clientHeight": 318
+          },
+          {
+            "id": "c3",
+            "x": 661.2261352539062,
+            "y": 145.3925323486328,
+            "width": 214.7418212890625,
+            "height": 89.20596313476562,
+            "scrollWidth": 446,
+            "clientWidth": 446,
+            "scrollHeight": 184,
+            "clientHeight": 184
+          },
+          {
+            "id": "c4",
+            "x": 882.6898803710938,
+            "y": 145.3925323486328,
+            "width": 214.74176025390625,
+            "height": 89.20596313476562,
+            "scrollWidth": 446,
+            "clientWidth": 446,
+            "scrollHeight": 184,
+            "clientHeight": 184
+          },
+          {
+            "id": "c5",
+            "x": 343.50482177734375,
+            "y": 142.99452209472656,
+            "width": 311.00689697265625,
+            "height": 94.00198364257812,
+            "scrollWidth": 646,
+            "clientWidth": 646,
+            "scrollHeight": 194,
+            "clientHeight": 194
+          },
+          {
+            "id": "c6",
+            "x": 343.50482177734375,
+            "y": 717.4602661132812,
+            "width": 753.9343872070312,
+            "height": 136.63409423828125,
+            "scrollWidth": 1570,
+            "clientWidth": 1570,
+            "scrollHeight": 283,
+            "clientHeight": 283
+          },
+          {
+            "id": "c7",
+            "x": 343.50482177734375,
+            "y": 870.4083251953125,
+            "width": 753.9343872070312,
+            "height": 50.485595703125,
+            "scrollWidth": 1570,
+            "clientWidth": 1570,
+            "scrollHeight": 103,
+            "clientHeight": 103
+          },
+          {
+            "id": "c8",
+            "x": 556.3507080078125,
+            "y": 601.876220703125,
+            "width": 328.23504638671875,
+            "height": 111.74725341796875,
+            "scrollWidth": 682,
+            "clientWidth": 682,
+            "scrollHeight": 231,
+            "clientHeight": 231
+          },
+          {
+            "id": "c9",
+            "x": 343.50482177734375,
+            "y": 74.05174255371094,
+            "width": 508.10833740234375,
+            "height": 52.636314392089844,
+            "scrollWidth": 1057,
+            "clientWidth": 1057,
+            "scrollHeight": 108,
+            "clientHeight": 108
+          },
+          {
+            "id": "c10",
+            "x": 858.3275756835938,
+            "y": 75.67039489746094,
+            "width": 239.10406494140625,
+            "height": 49.399009704589844,
+            "scrollWidth": 497,
+            "clientWidth": 497,
+            "scrollHeight": 101,
+            "clientHeight": 101
+          },
+          {
+            "id": "c11",
+            "x": 357.5181884765625,
+            "y": 312.9684753417969,
+            "width": 358.65985107421875,
+            "height": 55.633819580078125,
+            "scrollWidth": 746,
+            "clientWidth": 746,
+            "scrollHeight": 114,
+            "clientHeight": 114
+          },
+          {
+            "id": "c12",
+            "x": 343.50482177734375,
+            "y": 937.2078857421875,
+            "width": 753.9343872070312,
+            "height": 46.04180908203125,
+            "scrollWidth": 1570,
+            "clientWidth": 1570,
+            "scrollHeight": 94,
+            "clientHeight": 94
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": false,
+          "wideDisplay": "block",
+          "fontSize": null,
+          "devicePixelRatio": 1,
+          "svgRect": null,
+          "effectiveLabelPixels": null,
+          "ariaLabel": "Allocation decision path diagram; Step 1: Reconcile P70 demand; Step 2: Reserve qualified actuators; Step 3: Confirm date-coded allocation; Step 4: Release remaining build",
+          "canonicalDirection": "right",
+          "readingDirection": "serpentine",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Reconcile P70 demand",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Reserve qualified actuators",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Confirm date-coded allocation",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release remaining build",
+              "rect": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M152 23 L168 23"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M240 45 L240 53"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M168 73 L152 73"
+            }
+          ],
+          "rect": {
+            "x": 556.3507080078125,
+            "y": 601.876220703125,
+            "width": 328.23504638671875,
+            "height": 111.74725341796875
+          },
+          "bounds": {
+            "scrollWidth": 682,
+            "clientWidth": 682,
+            "scrollHeight": 231,
+            "clientHeight": 231
+          }
+        },
+        "comparisonRect": {
+          "x": 343.50482177734375,
+          "y": 142.99452209472656,
+          "width": 311.00689697265625,
+          "height": 94.00198364257812
+        },
+        "table": {
+          "clientWidth": 1536,
+          "scrollWidth": 1536,
+          "scrollLeft": 0,
+          "overflow": false,
+          "overflowX": "auto",
+          "touchAction": "auto",
+          "tabIndex": 0,
+          "ariaLabel": "Table: Clean Table",
+          "describedBy": null,
+          "hint": "",
+          "rect": {
+            "x": 351.6580505371094,
+            "y": 725.613525390625,
+            "width": 737.6278076171875,
+            "height": 120.32763671875,
+            "top": 725.613525390625,
+            "right": 1089.2858581542969,
+            "bottom": 845.941162109375,
+            "left": 351.6580505371094
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 725.613525390625,
+              "height": 120.32763671875,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 249,
+              "clientHeight": 249
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell",
+              "y": 725.613525390625,
+              "height": 120.32763671875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 251,
+              "clientHeight": 251
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 725.613525390625,
+              "height": 120.32763671875,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 251,
+              "clientHeight": 251
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 725.613525390625,
+              "height": 120.32763671875,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 251,
+              "clientHeight": 251
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 725.613525390625,
+              "height": 120.32763671875,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 251,
+              "clientHeight": 251
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 717.9398803710938,
+              "height": 135.6749267578125,
+              "overflowY": "auto",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 283,
+              "clientHeight": 283
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 717.4602661132812,
+              "height": 136.63409423828125,
+              "overflowY": "visible",
+              "position": "absolute",
+              "scrollTop": 0,
+              "scrollHeight": 283,
+              "clientHeight": 283
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 54.86766052246094,
+              "height": 934.2646484375,
+              "overflowY": "visible",
+              "position": "absolute",
+              "scrollTop": 0,
+              "scrollHeight": 1948,
+              "clientHeight": 1948
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 54.3880615234375,
+              "height": 935.223876953125,
+              "overflowY": "hidden",
+              "position": "absolute",
+              "scrollTop": 0,
+              "scrollHeight": 1948,
+              "clientHeight": 1948
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 40,
+              "height": 964,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 2010,
+              "clientHeight": 2010
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 40,
+              "height": 964,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 964,
+              "clientHeight": 964
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "auto",
+              "position": "relative",
+              "scrollTop": 53,
+              "scrollHeight": 1105,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "hidden",
+              "position": "fixed",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 150.890625,
+              "height": 805.109375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 805,
+              "clientHeight": 805
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 150.890625,
+              "height": 805.109375,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 805,
+              "clientHeight": 805
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 916,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 916,
+              "clientHeight": 916
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1000,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 1000,
+              "clientHeight": 1000
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 1000,
+          "bodyScrollHeight": 1000,
+          "pointerEvents": "none",
+          "shellRect": {
+            "x": 351.6580505371094,
+            "y": 725.613525390625,
+            "width": 737.6278076171875,
+            "height": 120.32763671875,
+            "top": 725.613525390625,
+            "right": 1089.2858581542969,
+            "bottom": 845.941162109375,
+            "left": 351.6580505371094
+          }
+        },
+        "smallTable": null,
+        "visual": {
+          "flowPixelRect": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            },
+            {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          ],
+          "componentCount": 12
+        },
+        "modelUnchanged": true
+      }
+    },
+    "technical-320": {
+      "screenshots": {
+        "viewport": {
+          "path": "technical-320-viewport.png",
+          "sha256": "47dac35976f83370fdf66f1674c1beda9b5ca8918c706aff8d62bfc19d5ff3c7",
+          "pixels": {
+            "width": 320,
+            "height": 800,
+            "rgb_stddev": [
+              54.959,
+              48.839,
+              46.065
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                27,
+                255
+              ],
+              [
+                29,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 153337
+          }
+        },
+        "full_page": {
+          "path": "technical-320-full-page.png",
+          "sha256": "f4cea8a51e546dd1db680a0da3576364bd903a5b14fb66d2e9d323295834f37c",
+          "pixels": {
+            "width": 320,
+            "height": 3829,
+            "rgb_stddev": [
+              41.918,
+              39.951,
+              38.977
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 544073
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 320,
+          "height": 800,
+          "devicePixelRatio": 1,
+          "documentWidth": 320,
+          "bodyWidth": 320,
+          "documentHeight": 3829,
+          "bodyHeight": 3829,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "96.2%",
+            "x": 38,
+            "y": 830.046875,
+            "width": 127.9375,
+            "height": 41.796875,
+            "scrollWidth": 128,
+            "clientWidth": 128,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 824.046875,
+                "bottom": 876.046875,
+                "left": 38,
+                "right": 165.9375
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 824.046875,
+                "width": 127.9375,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "96%",
+            "x": 289.765625,
+            "y": 878.84375,
+            "width": 24.234375,
+            "height": 19,
+            "scrollWidth": 24,
+            "clientWidth": 24,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 881.84375,
+                "bottom": 894.84375,
+                "left": 289.765625,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 289.765625,
+                "y": 881.84375,
+                "width": 24.234375,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 2,
+            "text": "7.4 h",
+            "x": 38,
+            "y": 1008.84375,
+            "width": 93.203125,
+            "height": 41.796875,
+            "scrollWidth": 93,
+            "clientWidth": 93,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1002.84375,
+                "bottom": 1054.84375,
+                "left": 38,
+                "right": 131.203125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1002.84375,
+                "width": 93.203125,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "6 h",
+            "x": 297.296875,
+            "y": 1057.640625,
+            "width": 16.703125,
+            "height": 19,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1060.640625,
+                "bottom": 1073.640625,
+                "left": 297.296875,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 297.296875,
+                "y": 1060.640625,
+                "width": 16.703125,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 4,
+            "text": "-1,234,567,890.125 seconds",
+            "x": 38,
+            "y": 1534.640625,
+            "width": 242.125,
+            "height": 20.265625,
+            "scrollWidth": 242,
+            "clientWidth": 242,
+            "scrollHeight": 23,
+            "clientHeight": 20,
+            "fontSize": "21.3427px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1531.640625,
+                "bottom": 1557.640625,
+                "left": 38,
+                "right": 280.125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1531.640625,
+                "width": 242.125,
+                "height": 26
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "9876543210 units",
+            "x": 53,
+            "y": 1272.640625,
+            "width": 216.65625,
+            "height": 26,
+            "scrollWidth": 217,
+            "clientWidth": 217,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1265.640625,
+                "bottom": 1298.640625,
+                "left": 53,
+                "right": 269.65625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 1265.640625,
+                "width": 190.90625,
+                "height": 33
+              },
+              {
+                "x": 243.90625,
+                "y": 1282.640625,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 243.90625,
+                "y": 1282.640625,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 6,
+            "text": "12345678901 units",
+            "x": 53,
+            "y": 1363.640625,
+            "width": 235.15625,
+            "height": 26,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1356.640625,
+                "bottom": 1389.640625,
+                "left": 53,
+                "right": 288.15625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 1356.640625,
+                "width": 209.40625,
+                "height": 33
+              },
+              {
+                "x": 262.40625,
+                "y": 1373.640625,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 262.40625,
+                "y": 1373.640625,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12",
+          "chg207-tech-negative",
+          "chg207-tech-comparison"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 26,
+            "y": 410.046875,
+            "width": 300,
+            "height": 147,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 150,
+            "clientHeight": 147
+          },
+          {
+            "id": "c2",
+            "x": 26,
+            "y": 575.046875,
+            "width": 300,
+            "height": 112,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 112,
+            "clientHeight": 112
+          },
+          {
+            "id": "c3",
+            "x": 26,
+            "y": 749.046875,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c4",
+            "x": 26,
+            "y": 927.84375,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c5",
+            "x": 26,
+            "y": 2135.4375,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c6",
+            "x": 26,
+            "y": 1867.4375,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c7",
+            "x": 26,
+            "y": 2956.90625,
+            "width": 300,
+            "height": 190,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          },
+          {
+            "id": "c8",
+            "x": 26,
+            "y": 2447.4375,
+            "width": 300,
+            "height": 491.46875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 491,
+            "clientHeight": 491
+          },
+          {
+            "id": "c9",
+            "x": 26,
+            "y": 3164.90625,
+            "width": 300,
+            "height": 172,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 172,
+            "clientHeight": 172
+          },
+          {
+            "id": "c10",
+            "x": 26,
+            "y": 3398.90625,
+            "width": 300,
+            "height": 192,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "c11",
+            "x": 26,
+            "y": 3652.90625,
+            "width": 300,
+            "height": 152,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 152,
+            "clientHeight": 152
+          },
+          {
+            "id": "c12",
+            "x": 26,
+            "y": 1657.4375,
+            "width": 300,
+            "height": 192,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "chg207-tech-negative",
+            "x": 26,
+            "y": 1434.640625,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "chg207-tech-comparison",
+            "x": 26,
+            "y": 1150.640625,
+            "width": 300,
+            "height": 266,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 266,
+            "clientHeight": 266
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": true,
+          "wideDisplay": "none",
+          "fontSize": "18px",
+          "devicePixelRatio": 1,
+          "svgRect": {
+            "x": 38,
+            "y": 2459.4375,
+            "width": 276,
+            "height": 467.46875,
+            "top": 2459.4375,
+            "right": 314,
+            "bottom": 2926.90625,
+            "left": 38
+          },
+          "effectiveLabelPixels": 15.525,
+          "ariaLabel": "Process Flow diagram; Step 1: Detect chamber drift against the paired reference lot; Step 2: Contain the affected recipe and date-coded material; Step 3: Verify maintenance with the next production control run; Step 4: Release the process only after Quality confirms recovery",
+          "canonicalDirection": "right",
+          "readingDirection": "down",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Detect chamber drift against the paired reference lot",
+              "rect": {
+                "x": 58.701568603515625,
+                "y": 2474.96240234375,
+                "width": 234.59686279296875,
+                "height": 79.348876953125
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Contain the affected recipe and date-coded material",
+              "rect": {
+                "x": 58.701568603515625,
+                "y": 2593.985595703125,
+                "width": 234.59686279296875,
+                "height": 79.34912109375
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Verify maintenance with the next production control run",
+              "rect": {
+                "x": 58.701568603515625,
+                "y": 2713.009033203125,
+                "width": 234.59686279296875,
+                "height": 79.34912109375
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release the process only after Quality confirms recovery",
+              "rect": {
+                "x": 58.701568603515625,
+                "y": 2832.032470703125,
+                "width": 234.59686279296875,
+                "height": 79.348876953125
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M160 110 L160 156"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M160 248 L160 294"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M160 386 L160 432"
+            }
+          ],
+          "rect": {
+            "x": 26,
+            "y": 2447.4375,
+            "width": 300,
+            "height": 491.46875
+          },
+          "bounds": {
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 491,
+            "clientHeight": 491
+          }
+        },
+        "comparisonRect": null,
+        "table": {
+          "clientWidth": 274,
+          "scrollWidth": 595,
+          "scrollLeft": 0,
+          "overflow": true,
+          "overflowX": "auto",
+          "touchAction": "pan-x pan-y",
+          "tabIndex": 0,
+          "ariaLabel": "Scrollable table: Clean Table",
+          "describedBy": "c7-scroll-instructions",
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+          "rect": {
+            "x": 38,
+            "y": 2968.90625,
+            "width": 276,
+            "height": 127.625,
+            "top": 2968.90625,
+            "right": 314,
+            "bottom": 3096.53125,
+            "left": 38
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 2968.90625,
+              "height": 127.625,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 135,
+              "clientHeight": 126
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell has-overflow can-scroll-right",
+              "y": 2968.90625,
+              "height": 166,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 2968.90625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 2968.90625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 2968.90625,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 2956.90625,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 2956.90625,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 366.046875,
+              "height": 3438.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3439,
+              "clientHeight": 3439
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 366.046875,
+              "height": 3438.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3439,
+              "clientHeight": 3439
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 366.046875,
+              "height": 3438.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3439,
+              "clientHeight": 3439
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 366.046875,
+              "height": 3438.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3439,
+              "clientHeight": 3439
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 308.046875,
+              "height": 3520.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 3521
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 308.046875,
+              "height": 3520.859375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 3521
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 308.046875,
+              "height": 3520.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 3521
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 308.046875,
+              "height": 3520.859375,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 3521
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 308.046875,
+              "height": 3520.859375,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 3521
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3521,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 1064.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3769,
+              "clientHeight": 1064
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3829,
+              "clientHeight": 800
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 3829,
+          "bodyScrollHeight": 3829,
+          "pointerEvents": "auto",
+          "shellRect": {
+            "x": 38,
+            "y": 2968.90625,
+            "width": 276,
+            "height": 166,
+            "top": 2968.90625,
+            "right": 314,
+            "bottom": 3134.90625,
+            "left": 38
+          }
+        },
+        "smallTable": null,
+        "visual": {
+          "flowPixelRect": {
+            "x": 38,
+            "y": 2459.4375,
+            "width": 276,
+            "height": 467.46875,
+            "top": 2459.4375,
+            "right": 314,
+            "bottom": 2926.90625,
+            "left": 38
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 58.701568603515625,
+              "y": 2474.96240234375,
+              "width": 234.59686279296875,
+              "height": 79.348876953125
+            },
+            {
+              "x": 58.701568603515625,
+              "y": 2593.985595703125,
+              "width": 234.59686279296875,
+              "height": 79.34912109375
+            },
+            {
+              "x": 58.701568603515625,
+              "y": 2713.009033203125,
+              "width": 234.59686279296875,
+              "height": 79.34912109375
+            },
+            {
+              "x": 58.701568603515625,
+              "y": 2832.032470703125,
+              "width": 234.59686279296875,
+              "height": 79.348876953125
+            }
+          ],
+          "componentCount": 14
+        },
+        "modelUnchanged": true
+      }
+    },
+    "weak-scenes-320": {
+      "screenshots": {
+        "viewport": {
+          "path": "weak-scenes-320-viewport.png",
+          "sha256": "1665a573ff9896fe5cef29e51a8fc247541125d5020d5906aa2a0c5895769721",
+          "pixels": {
+            "width": 320,
+            "height": 800,
+            "rgb_stddev": [
+              56.967,
+              51.133,
+              48.529
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                30,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 153333
+          }
+        },
+        "full_page": {
+          "path": "weak-scenes-320-full-page.png",
+          "sha256": "f029c86c98c71322880647a9774036b30514a433477f9d299a7a7f1940bdd912",
+          "pixels": {
+            "width": 320,
+            "height": 4251,
+            "rgb_stddev": [
+              43.589,
+              41.322,
+              40.17
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 569272
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 320,
+          "height": 800,
+          "devicePixelRatio": 1,
+          "documentWidth": 320,
+          "bodyWidth": 320,
+          "documentHeight": 4251,
+          "bodyHeight": 4251,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "2.7%",
+            "x": 38,
+            "y": 1114.046875,
+            "width": 101,
+            "height": 41.796875,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1108.046875,
+                "bottom": 1160.046875,
+                "left": 38,
+                "right": 139
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1108.046875,
+                "width": 101,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "8%",
+            "x": 296.75,
+            "y": 1162.84375,
+            "width": 17.25,
+            "height": 19,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1165.84375,
+                "bottom": 1178.84375,
+                "left": 296.75,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 296.75,
+                "y": 1165.84375,
+                "width": 17.25,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 2,
+            "text": "116 days",
+            "x": 38,
+            "y": 1292.84375,
+            "width": 177.703125,
+            "height": 41.796875,
+            "scrollWidth": 178,
+            "clientWidth": 178,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1286.84375,
+                "bottom": 1338.84375,
+                "left": 38,
+                "right": 215.703125
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1286.84375,
+                "width": 177.703125,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "90 days",
+            "x": 272.40625,
+            "y": 1341.640625,
+            "width": 41.59375,
+            "height": 19,
+            "scrollWidth": 42,
+            "clientWidth": 42,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1344.640625,
+                "bottom": 1357.640625,
+                "left": 272.40625,
+                "right": 314
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 272.40625,
+                "y": 1344.640625,
+                "width": 41.59375,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 4,
+            "text": "120000 units",
+            "x": 53,
+            "y": 871.046875,
+            "width": 142.671875,
+            "height": 26,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 864.046875,
+                "bottom": 897.046875,
+                "left": 53,
+                "right": 195.671875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 864.046875,
+                "width": 116.921875,
+                "height": 33
+              },
+              {
+                "x": 169.921875,
+                "y": 881.046875,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 169.921875,
+                "y": 881.046875,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "142000 units",
+            "x": 53,
+            "y": 962.046875,
+            "width": 142.671875,
+            "height": 26,
+            "scrollWidth": 143,
+            "clientWidth": 143,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 955.046875,
+                "bottom": 988.046875,
+                "left": 53,
+                "right": 195.671875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 955.046875,
+                "width": 116.921875,
+                "height": 33
+              },
+              {
+                "x": 169.921875,
+                "y": 972.046875,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 169.921875,
+                "y": 972.046875,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 6,
+            "text": "-1,234,567.8 units",
+            "x": 38,
+            "y": 1731.640625,
+            "width": 266.9375,
+            "height": 32.21875,
+            "scrollWidth": 267,
+            "clientWidth": 267,
+            "scrollHeight": 36,
+            "clientHeight": 32,
+            "fontSize": "33.9218px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1727.640625,
+                "bottom": 1767.640625,
+                "left": 38,
+                "right": 304.9375
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1727.640625,
+                "width": 266.9375,
+                "height": 40
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 7,
+            "text": "0.000",
+            "x": 38,
+            "y": 1902.4375,
+            "width": 116.546875,
+            "height": 41.796875,
+            "scrollWidth": 117,
+            "clientWidth": 117,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1896.4375,
+                "bottom": 1948.4375,
+                "left": 38,
+                "right": 154.546875
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1896.4375,
+                "width": 116.546875,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 8,
+            "text": "9876543210 units",
+            "x": 53,
+            "y": 2122.234375,
+            "width": 216.65625,
+            "height": 26,
+            "scrollWidth": 217,
+            "clientWidth": 217,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 2115.234375,
+                "bottom": 2148.234375,
+                "left": 53,
+                "right": 269.65625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 2115.234375,
+                "width": 190.90625,
+                "height": 33
+              },
+              {
+                "x": 243.90625,
+                "y": 2132.234375,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 243.90625,
+                "y": 2132.234375,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 9,
+            "text": "12345678901 units",
+            "x": 53,
+            "y": 2213.234375,
+            "width": 235.15625,
+            "height": 26,
+            "scrollWidth": 235,
+            "clientWidth": 235,
+            "scrollHeight": 26,
+            "clientHeight": 26,
+            "fontSize": "28px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 2206.234375,
+                "bottom": 2239.234375,
+                "left": 53,
+                "right": 288.15625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 2206.234375,
+                "width": 209.40625,
+                "height": 33
+              },
+              {
+                "x": 262.40625,
+                "y": 2223.234375,
+                "width": 25.75,
+                "height": 12
+              },
+              {
+                "x": 262.40625,
+                "y": 2223.234375,
+                "width": 25.75,
+                "height": 12
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12",
+          "chg207-negative",
+          "chg207-zero",
+          "chg207-long-comparison",
+          "chg207-nonoverflow-table"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 26,
+            "y": 2518.234375,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c2",
+            "x": 26,
+            "y": 2786.234375,
+            "width": 300,
+            "height": 250,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c3",
+            "x": 26,
+            "y": 1033.046875,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c4",
+            "x": 26,
+            "y": 1211.84375,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "c5",
+            "x": 26,
+            "y": 749.046875,
+            "width": 300,
+            "height": 266,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 266,
+            "clientHeight": 266
+          },
+          {
+            "id": "c6",
+            "x": 26,
+            "y": 3587,
+            "width": 300,
+            "height": 190,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          },
+          {
+            "id": "c7",
+            "x": 26,
+            "y": 3839,
+            "width": 300,
+            "height": 192,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "c8",
+            "x": 26,
+            "y": 3098.234375,
+            "width": 300,
+            "height": 470.765625,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 471,
+            "clientHeight": 471
+          },
+          {
+            "id": "c9",
+            "x": 26,
+            "y": 410.046875,
+            "width": 300,
+            "height": 147,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 148,
+            "clientHeight": 147
+          },
+          {
+            "id": "c10",
+            "x": 26,
+            "y": 575.046875,
+            "width": 300,
+            "height": 112,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 112,
+            "clientHeight": 112
+          },
+          {
+            "id": "c11",
+            "x": 26,
+            "y": 2328.234375,
+            "width": 300,
+            "height": 172,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 172,
+            "clientHeight": 172
+          },
+          {
+            "id": "c12",
+            "x": 26,
+            "y": 4093,
+            "width": 300,
+            "height": 128,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 158,
+            "clientHeight": 128
+          },
+          {
+            "id": "chg207-negative",
+            "x": 26,
+            "y": 1642.640625,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "chg207-zero",
+            "x": 26,
+            "y": 1821.4375,
+            "width": 300,
+            "height": 160.796875,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 161,
+            "clientHeight": 161
+          },
+          {
+            "id": "chg207-long-comparison",
+            "x": 26,
+            "y": 2000.234375,
+            "width": 300,
+            "height": 266,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 266,
+            "clientHeight": 266
+          },
+          {
+            "id": "chg207-nonoverflow-table",
+            "x": 26,
+            "y": 1434.640625,
+            "width": 300,
+            "height": 190,
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": true,
+          "wideDisplay": "none",
+          "fontSize": "18px",
+          "devicePixelRatio": 1,
+          "svgRect": {
+            "x": 38,
+            "y": 3179.234375,
+            "width": 276,
+            "height": 377.765625,
+            "top": 3179.234375,
+            "right": 314,
+            "bottom": 3557,
+            "left": 38
+          },
+          "effectiveLabelPixels": 15.525,
+          "ariaLabel": "Allocation decision path diagram; Step 1: Reconcile P70 demand; Step 2: Reserve qualified actuators; Step 3: Confirm date-coded allocation; Step 4: Release remaining build",
+          "canonicalDirection": "right",
+          "readingDirection": "down",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Reconcile P70 demand",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 3194.759033203125,
+                "width": 234.59417724609375,
+                "height": 53.4736328125
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Reserve qualified actuators",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 3287.90673828125,
+                "width": 234.59417724609375,
+                "height": 60.37353515625
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Confirm date-coded allocation",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 3387.9541015625,
+                "width": 234.59417724609375,
+                "height": 60.37353515625
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release remaining build",
+              "rect": {
+                "x": 58.702911376953125,
+                "y": 3488.001708984375,
+                "width": 234.59417724609375,
+                "height": 53.4736328125
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M160 80 L160 126"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M160 196 L160 242"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M160 312 L160 358"
+            }
+          ],
+          "rect": {
+            "x": 26,
+            "y": 3098.234375,
+            "width": 300,
+            "height": 470.765625
+          },
+          "bounds": {
+            "scrollWidth": 300,
+            "clientWidth": 300,
+            "scrollHeight": 471,
+            "clientHeight": 471
+          }
+        },
+        "comparisonRect": null,
+        "table": {
+          "clientWidth": 274,
+          "scrollWidth": 652,
+          "scrollLeft": 0,
+          "overflow": true,
+          "overflowX": "auto",
+          "touchAction": "pan-x pan-y",
+          "tabIndex": 0,
+          "ariaLabel": "Scrollable table: Clean Table",
+          "describedBy": "c6-scroll-instructions",
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+          "rect": {
+            "x": 38,
+            "y": 3599,
+            "width": 276,
+            "height": 127.625,
+            "top": 3599,
+            "right": 314,
+            "bottom": 3726.625,
+            "left": 38
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 3599,
+              "height": 127.625,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 135,
+              "clientHeight": 126
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell has-overflow can-scroll-right",
+              "y": 3599,
+              "height": 166,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 3599,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 3599,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 3599,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 3587,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 3587,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 366.046875,
+              "height": 3854.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3884,
+              "clientHeight": 3855
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 366.046875,
+              "height": 3854.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3884,
+              "clientHeight": 3855
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 366.046875,
+              "height": 3854.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3884,
+              "clientHeight": 3855
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 366.046875,
+              "height": 3854.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3884,
+              "clientHeight": 3855
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 308.046875,
+              "height": 3936.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 3937
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 308.046875,
+              "height": 3936.953125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 3937
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 308.046875,
+              "height": 3936.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 3937
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 308.046875,
+              "height": 3936.953125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 3937
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 308.046875,
+              "height": 3936.953125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 3937
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 308.046875,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3942,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 1064.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4191,
+              "clientHeight": 1064
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 1124
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1124.046875,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4251,
+              "clientHeight": 800
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 4251,
+          "bodyScrollHeight": 4251,
+          "pointerEvents": "auto",
+          "shellRect": {
+            "x": 38,
+            "y": 3599,
+            "width": 276,
+            "height": 166,
+            "top": 3599,
+            "right": 314,
+            "bottom": 3765,
+            "left": 38
+          }
+        },
+        "smallTable": {
+          "clientWidth": 274,
+          "scrollWidth": 274,
+          "overflow": false,
+          "ariaLabel": "Table: Compact evidence",
+          "describedBy": null,
+          "hintHidden": true,
+          "tabIndex": 0
+        },
+        "visual": {
+          "flowPixelRect": {
+            "x": 38,
+            "y": 3179.234375,
+            "width": 276,
+            "height": 377.765625,
+            "top": 3179.234375,
+            "right": 314,
+            "bottom": 3557,
+            "left": 38
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 58.702911376953125,
+              "y": 3194.759033203125,
+              "width": 234.59417724609375,
+              "height": 53.4736328125
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 3287.90673828125,
+              "width": 234.59417724609375,
+              "height": 60.37353515625
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 3387.9541015625,
+              "width": 234.59417724609375,
+              "height": 60.37353515625
+            },
+            {
+              "x": 58.702911376953125,
+              "y": 3488.001708984375,
+              "width": 234.59417724609375,
+              "height": 53.4736328125
+            }
+          ],
+          "componentCount": 16
+        },
+        "modelUnchanged": true
+      }
+    },
+    "supply-zoom-equivalent-200": {
+      "screenshots": {
+        "viewport": {
+          "path": "supply-zoom-equivalent-200-viewport.png",
+          "sha256": "a282a82f20310d26b274fd6823d5100885cbdafb8552eb4deda10441202c1647",
+          "pixels": {
+            "width": 320,
+            "height": 1600,
+            "rgb_stddev": [
+              67.651,
+              51.709,
+              43.83
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                27,
+                255
+              ],
+              [
+                29,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 292881
+          }
+        },
+        "full_page": {
+          "path": "supply-zoom-equivalent-200-full-page.png",
+          "sha256": "36adc0db59f0396782f8089cace94ca52ff9e00590cddfe1b6b5544b157ad54b",
+          "pixels": {
+            "width": 320,
+            "height": 8592,
+            "rgb_stddev": [
+              52.815,
+              47.077,
+              44.723
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                28,
+                255
+              ],
+              [
+                0,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 1562253
+          }
+        }
+      },
+      "browser": {
+        "viewport": {
+          "width": 160,
+          "height": 800,
+          "devicePixelRatio": 2,
+          "documentWidth": 160,
+          "bodyWidth": 160,
+          "documentHeight": 4296,
+          "bodyHeight": 4296,
+          "windowScrollY": 0
+        },
+        "tokenFacts": [
+          {
+            "index": 0,
+            "text": "2.7%",
+            "x": 38,
+            "y": 1601.84375,
+            "width": 101,
+            "height": 41.796875,
+            "scrollWidth": 101,
+            "clientWidth": 101,
+            "scrollHeight": 46,
+            "clientHeight": 42,
+            "fontSize": "44px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1595.84375,
+                "bottom": 1647.84375,
+                "left": 38,
+                "right": 139
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1595.84375,
+                "width": 101,
+                "height": 52
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 1,
+            "text": "8%",
+            "x": 136.75,
+            "y": 1650.640625,
+            "width": 17.25,
+            "height": 19,
+            "scrollWidth": 17,
+            "clientWidth": 17,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1653.640625,
+                "bottom": 1666.640625,
+                "left": 136.75,
+                "right": 154
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 136.75,
+                "y": 1653.640625,
+                "width": 17.25,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 2,
+            "text": "116 days",
+            "x": 38,
+            "y": 1793.640625,
+            "width": 109.625,
+            "height": 27.234375,
+            "scrollWidth": 110,
+            "clientWidth": 110,
+            "scrollHeight": 30,
+            "clientHeight": 27,
+            "fontSize": "28.6742px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1789.640625,
+                "bottom": 1823.640625,
+                "left": 38,
+                "right": 147.625
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 38,
+                "y": 1789.640625,
+                "width": 109.625,
+                "height": 34
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 3,
+            "text": "90 days",
+            "x": 85.140625,
+            "y": 1848.4375,
+            "width": 41.59375,
+            "height": 19,
+            "scrollWidth": 42,
+            "clientWidth": 42,
+            "scrollHeight": 19,
+            "clientHeight": 19,
+            "fontSize": "11px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1851.4375,
+                "bottom": 1864.4375,
+                "left": 85.140625,
+                "right": 126.734375
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 85.140625,
+                "y": 1851.4375,
+                "width": 41.59375,
+                "height": 13
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 4,
+            "text": "120000 units",
+            "x": 53,
+            "y": 1311.84375,
+            "width": 85.859375,
+            "height": 22,
+            "scrollWidth": 86,
+            "clientWidth": 86,
+            "scrollHeight": 22,
+            "clientHeight": 22,
+            "fontSize": "15.5443px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1311.84375,
+                "bottom": 1329.84375,
+                "left": 53,
+                "right": 138.859375
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 1311.84375,
+                "width": 64.6875,
+                "height": 18
+              },
+              {
+                "x": 117.6875,
+                "y": 1318.84375,
+                "width": 21.171875,
+                "height": 10
+              },
+              {
+                "x": 117.6875,
+                "y": 1318.84375,
+                "width": 21.171875,
+                "height": 10
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          },
+          {
+            "index": 5,
+            "text": "142000 units",
+            "x": 53,
+            "y": 1403.84375,
+            "width": 85.859375,
+            "height": 22,
+            "scrollWidth": 86,
+            "clientWidth": 86,
+            "scrollHeight": 22,
+            "clientHeight": 22,
+            "fontSize": "15.5443px",
+            "whiteSpace": "nowrap",
+            "display": "inline-block",
+            "rangeLines": [
+              {
+                "top": 1403.84375,
+                "bottom": 1421.84375,
+                "left": 53,
+                "right": 138.859375
+              }
+            ],
+            "rangeRects": [
+              {
+                "x": 53,
+                "y": 1403.84375,
+                "width": 64.6875,
+                "height": 18
+              },
+              {
+                "x": 117.6875,
+                "y": 1410.84375,
+                "width": 21.171875,
+                "height": 10
+              },
+              {
+                "x": 117.6875,
+                "y": 1410.84375,
+                "width": 21.171875,
+                "height": 10
+              }
+            ],
+            "clippedBy": [],
+            "insideCard": true,
+            "insideComponent": true
+          }
+        ],
+        "componentOrder": [
+          "c1",
+          "c2",
+          "c3",
+          "c4",
+          "c5",
+          "c6",
+          "c7",
+          "c8",
+          "c9",
+          "c10",
+          "c11",
+          "c12"
+        ],
+        "componentRects": [
+          {
+            "id": "c1",
+            "x": 26,
+            "y": 2271.4375,
+            "width": 140,
+            "height": 250,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c2",
+            "x": 26,
+            "y": 2539.4375,
+            "width": 140,
+            "height": 250,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 250,
+            "clientHeight": 250
+          },
+          {
+            "id": "c3",
+            "x": 26,
+            "y": 1470.84375,
+            "width": 140,
+            "height": 210.796875,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 211,
+            "clientHeight": 211
+          },
+          {
+            "id": "c4",
+            "x": 26,
+            "y": 1699.640625,
+            "width": 140,
+            "height": 179.796875,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 180,
+            "clientHeight": 180
+          },
+          {
+            "id": "c5",
+            "x": 26,
+            "y": 1084.84375,
+            "width": 140,
+            "height": 368,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 368,
+            "clientHeight": 368
+          },
+          {
+            "id": "c6",
+            "x": 26,
+            "y": 3171.203125,
+            "width": 140,
+            "height": 190,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 190,
+            "clientHeight": 190
+          },
+          {
+            "id": "c7",
+            "x": 26,
+            "y": 3423.203125,
+            "width": 140,
+            "height": 192,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 192,
+            "clientHeight": 192
+          },
+          {
+            "id": "c8",
+            "x": 26,
+            "y": 2851.4375,
+            "width": 140,
+            "height": 301.765625,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 302,
+            "clientHeight": 302
+          },
+          {
+            "id": "c9",
+            "x": 26,
+            "y": 627.0625,
+            "width": 140,
+            "height": 170,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 379,
+            "clientHeight": 170
+          },
+          {
+            "id": "c10",
+            "x": 26,
+            "y": 815.0625,
+            "width": 140,
+            "height": 192,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 207,
+            "clientHeight": 192
+          },
+          {
+            "id": "c11",
+            "x": 26,
+            "y": 1941.4375,
+            "width": 140,
+            "height": 312,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 383,
+            "clientHeight": 312
+          },
+          {
+            "id": "c12",
+            "x": 26,
+            "y": 3692.984375,
+            "width": 140,
+            "height": 216,
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 603,
+            "clientHeight": 216
+          }
+        ],
+        "decisionIndex": 6,
+        "nextIndex": 11,
+        "flow": {
+          "visibleNarrow": true,
+          "wideDisplay": "none",
+          "fontSize": "18px",
+          "devicePixelRatio": 2,
+          "svgRect": {
+            "x": 38,
+            "y": 2982.4375,
+            "width": 116,
+            "height": 158.765625,
+            "top": 2982.4375,
+            "right": 154,
+            "bottom": 3141.203125,
+            "left": 38
+          },
+          "effectiveLabelPixels": 13.05,
+          "ariaLabel": "Allocation decision path diagram; Step 1: Reconcile P70 demand; Step 2: Reserve qualified actuators; Step 3: Confirm date-coded allocation; Step 4: Release remaining build",
+          "canonicalDirection": "right",
+          "readingDirection": "down",
+          "nodes": [
+            {
+              "id": "node-1",
+              "order": 0,
+              "label": "Reconcile P70 demand",
+              "rect": {
+                "x": 46.702911376953125,
+                "y": 2988.962158203125,
+                "width": 98.59417724609375,
+                "height": 22.4736328125
+              }
+            },
+            {
+              "id": "node-2",
+              "order": 1,
+              "label": "Reserve qualified actuators",
+              "rect": {
+                "x": 46.702911376953125,
+                "y": 3028.10986328125,
+                "width": 98.59417724609375,
+                "height": 25.37353515625
+              }
+            },
+            {
+              "id": "node-3",
+              "order": 2,
+              "label": "Confirm date-coded allocation",
+              "rect": {
+                "x": 46.702911376953125,
+                "y": 3070.1572265625,
+                "width": 98.59417724609375,
+                "height": 25.37353515625
+              }
+            },
+            {
+              "id": "node-4",
+              "order": 3,
+              "label": "Release remaining build",
+              "rect": {
+                "x": 46.702911376953125,
+                "y": 3112.204833984375,
+                "width": 98.59417724609375,
+                "height": 22.4736328125
+              }
+            }
+          ],
+          "edges": [
+            {
+              "id": "edge-1",
+              "order": 0,
+              "source": "node-1",
+              "target": "node-2",
+              "path": "M160 80 L160 126"
+            },
+            {
+              "id": "edge-2",
+              "order": 1,
+              "source": "node-2",
+              "target": "node-3",
+              "path": "M160 196 L160 242"
+            },
+            {
+              "id": "edge-3",
+              "order": 2,
+              "source": "node-3",
+              "target": "node-4",
+              "path": "M160 312 L160 358"
+            }
+          ],
+          "rect": {
+            "x": 26,
+            "y": 2851.4375,
+            "width": 140,
+            "height": 301.765625
+          },
+          "bounds": {
+            "scrollWidth": 140,
+            "clientWidth": 140,
+            "scrollHeight": 302,
+            "clientHeight": 302
+          }
+        },
+        "comparisonRect": {
+          "x": 26,
+          "y": 1084.84375,
+          "width": 140,
+          "height": 368
+        },
+        "table": {
+          "clientWidth": 114,
+          "scrollWidth": 652,
+          "scrollLeft": 0,
+          "overflow": true,
+          "overflowX": "auto",
+          "touchAction": "pan-x pan-y",
+          "tabIndex": 0,
+          "ariaLabel": "Scrollable table: Clean Table",
+          "describedBy": "c6-scroll-instructions",
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+          "rect": {
+            "x": 38,
+            "y": 3183.203125,
+            "width": 116,
+            "height": 95.25,
+            "top": 3183.203125,
+            "right": 154,
+            "bottom": 3278.453125,
+            "left": 38
+          },
+          "ancestors": [
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-frame table-scroll",
+              "y": 3183.203125,
+              "height": 95.25,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 135,
+              "clientHeight": 93
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "table-scroll-shell has-overflow can-scroll-right",
+              "y": 3183.203125,
+              "height": 166,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "card-body",
+              "y": 3183.203125,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "ARTICLE",
+              "id": "",
+              "className": "gallery-card integrated-variant title-hidden align-left engine-tableengine variant-clean-t",
+              "y": 3183.203125,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "integrated-element-content",
+              "y": 3183.203125,
+              "height": 166,
+              "overflowY": "hidden",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 166,
+              "clientHeight": 166
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "c-content",
+              "y": 3171.203125,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "component",
+              "y": 3171.203125,
+              "height": 190,
+              "overflowY": "hidden",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 190,
+              "clientHeight": 190
+            },
+            {
+              "tag": "DIV",
+              "id": "componentLayer",
+              "className": "component-layer",
+              "y": 567.28125,
+              "height": 3341.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3729,
+              "clientHeight": 3342
+            },
+            {
+              "tag": "DIV",
+              "id": "hull",
+              "className": "canvas-hull smart",
+              "y": 567.28125,
+              "height": 3341.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3729,
+              "clientHeight": 3342
+            },
+            {
+              "tag": "DIV",
+              "id": "scene",
+              "className": "scene",
+              "y": 567.28125,
+              "height": 3341.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3729,
+              "clientHeight": 3342
+            },
+            {
+              "tag": "DIV",
+              "id": "sceneFrame",
+              "className": "scene-frame",
+              "y": 567.28125,
+              "height": 3341.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3729,
+              "clientHeight": 3342
+            },
+            {
+              "tag": "DIV",
+              "id": "viewport",
+              "className": "viewport",
+              "y": 509.28125,
+              "height": 3423.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 3424
+            },
+            {
+              "tag": "MAIN",
+              "id": "",
+              "className": "work",
+              "y": 509.28125,
+              "height": 3423.703125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 3424
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "shell",
+              "y": 509.28125,
+              "height": 3423.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 3424
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "app",
+              "y": 509.28125,
+              "height": 3423.703125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 3424
+            },
+            {
+              "tag": "DIV",
+              "id": "",
+              "className": "cui-visualizer-root preview-mode",
+              "y": 509.28125,
+              "height": 3423.703125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 3424
+            },
+            {
+              "tag": "DIV",
+              "id": "c206",
+              "className": "",
+              "y": 509.28125,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c205",
+              "className": "cui-visualizer-host w-full",
+              "y": 509.28125,
+              "height": 800,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 3787,
+              "clientHeight": 800
+            },
+            {
+              "tag": "DIV",
+              "id": "c195",
+              "className": "nicegui-column cui-page cui-page--full cui-visualizer-workspace w-full",
+              "y": 60,
+              "height": 1265.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4236,
+              "clientHeight": 1265
+            },
+            {
+              "tag": "DIV",
+              "id": "cui-main-content",
+              "className": "nicegui-column cui-app-main cui-app-main--with-sidebar",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "DIV",
+              "id": "c3",
+              "className": "nicegui-content cui-nicegui-content",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "MAIN",
+              "id": "c2",
+              "className": "q-page",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "DIV",
+              "id": "c1",
+              "className": "q-page-container",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "DIV",
+              "id": "c0",
+              "className": "q-layout q-layout--standard nicegui-layout",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "relative",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "DIV",
+              "id": "app",
+              "className": "",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "BODY",
+              "id": "",
+              "className": "desktop touch body--light",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "auto",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 1325
+            },
+            {
+              "tag": "HTML",
+              "id": "",
+              "className": "",
+              "y": 0,
+              "height": 1325.28125,
+              "overflowY": "visible",
+              "position": "static",
+              "scrollTop": 0,
+              "scrollHeight": 4296,
+              "clientHeight": 800
+            }
+          ],
+          "windowScrollY": 0,
+          "documentScrollHeight": 4296,
+          "bodyScrollHeight": 4296,
+          "pointerEvents": "auto",
+          "shellRect": {
+            "x": 38,
+            "y": 3183.203125,
+            "width": 116,
+            "height": 166,
+            "top": 3183.203125,
+            "right": 154,
+            "bottom": 3349.203125,
+            "left": 38
+          }
+        },
+        "smallTable": null,
+        "visual": {
+          "flowPixelRect": {
+            "x": 38,
+            "y": 2982.4375,
+            "width": 116,
+            "height": 158.765625,
+            "top": 2982.4375,
+            "right": 154,
+            "bottom": 3141.203125,
+            "left": 38
+          },
+          "flowNodeSvgRects": [
+            {
+              "x": 46.702911376953125,
+              "y": 2988.962158203125,
+              "width": 98.59417724609375,
+              "height": 22.4736328125
+            },
+            {
+              "x": 46.702911376953125,
+              "y": 3028.10986328125,
+              "width": 98.59417724609375,
+              "height": 25.37353515625
+            },
+            {
+              "x": 46.702911376953125,
+              "y": 3070.1572265625,
+              "width": 98.59417724609375,
+              "height": 25.37353515625
+            },
+            {
+              "x": 46.702911376953125,
+              "y": 3112.204833984375,
+              "width": 98.59417724609375,
+              "height": 22.4736328125
+            }
+          ],
+          "componentCount": 12
+        },
+        "modelUnchanged": true
+      }
+    }
+  },
+  "focused_interactions": {
+    "table_keyboard_and_overflow": {
+      "initial": {
+        "left": 0,
+        "max": 378,
+        "label": "Scrollable table: Clean Table",
+        "describedBy": "c6-scroll-instructions",
+        "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe.",
+        "boxShadow": "rgba(10, 132, 255, 0.28) 0px 0px 0px 3px",
+        "outline": "rgb(29, 29, 31) none 3px",
+        "outlineStyle": "none"
+      },
+      "tab_focus_trace": [
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Line Chart: Demand by week",
+          "className": "component"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W38 · 270",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W39 · 233.75",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W40 · 204.75",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W41 · 175.75",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W42 · 139.5",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W43 · 110.5",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W44 · 74.25",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Demand units · W45 · 38",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "g",
+          "id": "",
+          "role": "button",
+          "label": "Toggle Demand units series",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Line Chart: Confirmed capacity by week",
+          "className": "component"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W38 · 270",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W39 · 227.8182",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W40 · 206.7273",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W41 · 164.5455",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W42 · 143.4545",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W43 · 101.2727",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W44 · 59.0909",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "circle",
+          "id": "",
+          "role": "button",
+          "label": "Value · W45 · 38",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "g",
+          "id": "",
+          "role": "button",
+          "label": "Toggle Value series",
+          "className": "[object SVGAnimatedString]"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Hero KPI: P70 capacity headroom",
+          "className": "component"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Hero KPI: Actuator lead time",
+          "className": "component"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Before/After KPI: Confirmed capacity · W38 to W45",
+          "className": "component"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "group",
+          "label": "Clean Table: Clean Table",
+          "className": "component"
+        },
+        {
+          "tag": "DIV",
+          "id": "",
+          "role": "region",
+          "label": "Scrollable table: Clean Table",
+          "className": "table-frame table-scroll"
+        }
+      ],
+      "keyboard": [
+        {
+          "key": "focus",
+          "left": 0,
+          "focused": true
+        },
+        {
+          "key": "ArrowRight",
+          "before": 0,
+          "after": 219,
+          "focused": true,
+          "hint": "Scroll either way for more columns. Use Left/Right Arrow, Home/End, or swipe."
+        },
+        {
+          "key": "End",
+          "before": 219,
+          "after": 378,
+          "focused": true,
+          "hint": "End of table. Scroll left for earlier columns. Use Left Arrow or swipe."
+        },
+        {
+          "key": "ArrowLeft",
+          "before": 378,
+          "after": 159,
+          "focused": true,
+          "hint": "Scroll either way for more columns. Use Left/Right Arrow, Home/End, or swipe."
+        },
+        {
+          "key": "Home",
+          "before": 159,
+          "after": 0,
+          "focused": true,
+          "hint": "Scroll right for more columns. Use Right Arrow, End, or swipe."
+        }
+      ],
+      "wheel": {
+        "before": 0,
+        "after": 140
+      },
+      "touch": {
+        "attempted": true,
+        "before": 140,
+        "after": 378,
+        "status": "scrolled"
+      },
+      "end": {
+        "scrollLeft": 378,
+        "max": 378,
+        "hint": "End of table. Scroll left for earlier columns. Use Left Arrow or swipe."
+      },
+      "focusRetained": true,
+      "screenshots": {
+        "table": {
+          "path": "supply-320-wide-evidence-table.png",
+          "sha256": "446592691059b3c40a9aa0c9986092f2858edefc907085e2aa1d88b12160c957",
+          "pixels": {
+            "width": 276,
+            "height": 166,
+            "rgb_stddev": [
+              36.109,
+              35.81,
+              35.034
+            ],
+            "rgb_extrema": [
+              [
+                0,
+                255
+              ],
+              [
+                29,
+                255
+              ],
+              [
+                31,
+                255
+              ]
+            ],
+            "nonuniform_pixels": 5703
+          }
+        }
+      }
+    },
+    "decision_next_reachability": {
+      "c7": {
+        "rect": {
+          "x": 26,
+          "y": 576.40625,
+          "width": 300,
+          "height": 192
+        },
+        "window_scroll_y": 2369,
+        "document_y": 2945.40625,
+        "visible_text": "! Reserve critical actuator supply before releasing the balance Aggregate headroom hides a concentrated 16-week lead-time constraint. Do not treat unconfirmed supplier allocation as available capacity. At risk"
+      },
+      "c12": {
+        "rect": {
+          "x": 26,
+          "y": 642.40625,
+          "width": 300,
+          "height": 128
+        },
+        "window_scroll_y": 2557,
+        "document_y": 3199.40625,
+        "visible_text": "✓ Next step: reserve 18,000 qualified actuators now, then release the remaining build only after supplier NC-8841 confirms its dated allocation."
+      }
+    },
+    "nonoverflow_table": {
+      "clientWidth": 274,
+      "scrollWidth": 274,
+      "overflow": false,
+      "ariaLabel": "Table: Compact evidence",
+      "describedBy": null,
+      "hintHidden": true,
+      "tabIndex": 0
+    },
+    "weak_scene_comparison_labels": {
+      "before_label": [
+        "Before",
+        "After"
+      ],
+      "direction_marker": "▲",
+      "token_text": [
+        "9876543210 units",
+        "12345678901 units"
+      ]
+    },
+    "zoom_equivalent_200": {
+      "method": "160 CSS-pixel viewport with deviceScaleFactor=2 (200% zoom-equivalent visible pixel width)",
+      "viewport": {
+        "width": 160,
+        "height": 800,
+        "devicePixelRatio": 2,
+        "documentWidth": 160,
+        "bodyWidth": 160,
+        "documentHeight": 4296,
+        "bodyHeight": 4296,
+        "windowScrollY": 0
+      },
+      "flow_effective_label_pixels": 13.05,
+      "critical_tokens": [
+        {
+          "index": 0,
+          "text": "2.7%",
+          "x": 38,
+          "y": 1601.84375,
+          "width": 101,
+          "height": 41.796875,
+          "scrollWidth": 101,
+          "clientWidth": 101,
+          "scrollHeight": 46,
+          "clientHeight": 42,
+          "fontSize": "44px",
+          "whiteSpace": "nowrap",
+          "display": "inline-block",
+          "rangeLines": [
+            {
+              "top": 1595.84375,
+              "bottom": 1647.84375,
+              "left": 38,
+              "right": 139
+            }
+          ],
+          "rangeRects": [
+            {
+              "x": 38,
+              "y": 1595.84375,
+              "width": 101,
+              "height": 52
+            }
+          ],
+          "clippedBy": [],
+          "insideCard": true,
+          "insideComponent": true
+        },
+        {
+          "index": 2,
+          "text": "116 days",
+          "x": 38,
+          "y": 1793.640625,
+          "width": 109.625,
+          "height": 27.234375,
+          "scrollWidth": 110,
+          "clientWidth": 110,
+          "scrollHeight": 30,
+          "clientHeight": 27,
+          "fontSize": "28.6742px",
+          "whiteSpace": "nowrap",
+          "display": "inline-block",
+          "rangeLines": [
+            {
+              "top": 1789.640625,
+              "bottom": 1823.640625,
+              "left": 38,
+              "right": 147.625
+            }
+          ],
+          "rangeRects": [
+            {
+              "x": 38,
+              "y": 1789.640625,
+              "width": 109.625,
+              "height": 34
+            }
+          ],
+          "clippedBy": [],
+          "insideCard": true,
+          "insideComponent": true
+        },
+        {
+          "index": 4,
+          "text": "120000 units",
+          "x": 53,
+          "y": 1311.84375,
+          "width": 85.859375,
+          "height": 22,
+          "scrollWidth": 86,
+          "clientWidth": 86,
+          "scrollHeight": 22,
+          "clientHeight": 22,
+          "fontSize": "15.5443px",
+          "whiteSpace": "nowrap",
+          "display": "inline-block",
+          "rangeLines": [
+            {
+              "top": 1311.84375,
+              "bottom": 1329.84375,
+              "left": 53,
+              "right": 138.859375
+            }
+          ],
+          "rangeRects": [
+            {
+              "x": 53,
+              "y": 1311.84375,
+              "width": 64.6875,
+              "height": 18
+            },
+            {
+              "x": 117.6875,
+              "y": 1318.84375,
+              "width": 21.171875,
+              "height": 10
+            },
+            {
+              "x": 117.6875,
+              "y": 1318.84375,
+              "width": 21.171875,
+              "height": 10
+            }
+          ],
+          "clippedBy": [],
+          "insideCard": true,
+          "insideComponent": true
+        },
+        {
+          "index": 5,
+          "text": "142000 units",
+          "x": 53,
+          "y": 1403.84375,
+          "width": 85.859375,
+          "height": 22,
+          "scrollWidth": 86,
+          "clientWidth": 86,
+          "scrollHeight": 22,
+          "clientHeight": 22,
+          "fontSize": "15.5443px",
+          "whiteSpace": "nowrap",
+          "display": "inline-block",
+          "rangeLines": [
+            {
+              "top": 1403.84375,
+              "bottom": 1421.84375,
+              "left": 53,
+              "right": 138.859375
+            }
+          ],
+          "rangeRects": [
+            {
+              "x": 53,
+              "y": 1403.84375,
+              "width": 64.6875,
+              "height": 18
+            },
+            {
+              "x": 117.6875,
+              "y": 1410.84375,
+              "width": 21.171875,
+              "height": 10
+            },
+            {
+              "x": 117.6875,
+              "y": 1410.84375,
+              "width": 21.171875,
+              "height": 10
+            }
+          ],
+          "clippedBy": [],
+          "insideCard": true,
+          "insideComponent": true
+        }
+      ]
+    }
+  },
+  "browser_errors": [],
+  "status": "PASS_PENDING_MANUAL_PIXEL_REVIEW",
+  "screenshots": {
+    "before": {
+      "path": "tests/fixtures/chg207/chg173-r2-supply-chain-reading-320-before.png",
+      "sha256": "b6586d81a79b8aed5d6610d3bad362e3a0f4b1f388cb828eade1d28ee9ceda22",
+      "pixels": {
+        "width": 300,
+        "height": 2491,
+        "rgb_stddev": [
+          45.909,
+          44.835,
+          44.297
+        ],
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            28,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "nonuniform_pixels": 305921
+      }
+    },
+    "after_contact_sheet": {
+      "path": "AR-73-before-after-320-contact-sheet.png",
+      "sha256": "b3b9a98829a0740e1dbeb502c5b5cd5f883624fe0bddd3e7352a8092880ddb7a",
+      "pixels": {
+        "width": 940,
+        "height": 4868,
+        "rgb_stddev": [
+          40.676,
+          38.832,
+          37.987
+        ],
+        "rgb_extrema": [
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ],
+          [
+            0,
+            255
+          ]
+        ],
+        "nonuniform_pixels": 2362917
+      }
+    }
+  }
+}

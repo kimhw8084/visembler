@@ -1,0 +1,269 @@
+{
+  "scope": "CHG-179 native browser semantic parity acceptance",
+  "host": "native NiceGUI 3.15.0 with isolated synthetic report repository",
+  "base_sha": "5dfdd5eba77a45b63aa2e5290cb7609a573e9efc",
+  "base_tree": "d932f22966508ba6fdb630b6f66e1a01818b7b03",
+  "candidate_sha": "07011f61938510a525f8f9a1e747a3e1817520da",
+  "candidate_tree": "c33f29fcd911056c06b6be315170fbdac72beebd",
+  "commits": [
+    "07011f61938510a525f8f9a1e747a3e1817520da"
+  ],
+  "changed_files": [
+    "company_ui/certification/certification_manifest.json",
+    "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+    "company_ui/products/visualizer/assets/authoring_preview.mjs",
+    "company_ui/products/visualizer/assets/element_renderer.mjs",
+    "company_ui/products/visualizer/assets/integrated_editor.css",
+    "company_ui/products/visualizer/assets/integrated_editor.mjs",
+    "scripts/release_checks/run_chg181_authoring_acceptance.py",
+    "scripts/release_checks/run_chg207_narrow_reading_acceptance.py",
+    "tests/fixtures/chg207/chg173-r2-supply-chain-reading-320-before.png",
+    "tests/test_visualizer_chg207_narrow_reading.py"
+  ],
+  "worktree_status": [],
+  "checks": [
+    {
+      "name": "metric-editor-preview-powerpoint-parity",
+      "status": "PASS",
+      "cases": [
+        {
+          "name": "compact-multiplier",
+          "expected": "48.2 M",
+          "editor": "48.2 M",
+          "preview": "48.2 M",
+          "powerpoint": "48.2 M",
+          "parity": true,
+          "pptx_sha256": "5013fbd450cc72d7e885b70d9651a06c73b3708ab58d2ec1c789ffec4439c8e4",
+          "report_id": "chg179-metric-compact-multiplier",
+          "status": "PASS"
+        },
+        {
+          "name": "millions-unit",
+          "expected": "48.2 M",
+          "editor": "48.2 M",
+          "preview": "48.2 M",
+          "powerpoint": "48.2 M",
+          "parity": true,
+          "pptx_sha256": "1e69bf47668fc170385c2cd0686f5bdac479541f924a5ea7d66e66ebe1612a04",
+          "report_id": "chg179-metric-millions-unit",
+          "status": "PASS"
+        },
+        {
+          "name": "percentage-points",
+          "expected": "27.6%",
+          "editor": "27.6%",
+          "preview": "27.6%",
+          "powerpoint": "27.6%",
+          "parity": true,
+          "pptx_sha256": "a0ee852adc690e0a4db1cfed9e206e763fddbd9dfdcaaed3fa14e022a630e955",
+          "report_id": "chg179-metric-percentage-points",
+          "status": "PASS"
+        },
+        {
+          "name": "textual-count-unit",
+          "expected": "34 contacts",
+          "editor": "34 contacts",
+          "preview": "34 contacts",
+          "powerpoint": "34 contacts",
+          "parity": true,
+          "pptx_sha256": "f35203030815ca0b92c98ca4f71b0702bf5a224f7a706003a9ab46381a8af89c",
+          "report_id": "chg179-metric-textual-count-unit",
+          "status": "PASS"
+        },
+        {
+          "name": "zero-unitless",
+          "expected": "0",
+          "editor": "0",
+          "preview": "0",
+          "powerpoint": "0",
+          "parity": true,
+          "pptx_sha256": "72f632072c15902fe64e6c78c41bce1ef5f66fcc46293f43fc1f48767541a1cd",
+          "report_id": "chg179-metric-zero-unitless",
+          "status": "PASS"
+        },
+        {
+          "name": "negative-large-currency",
+          "expected": "-$1,234,567.80",
+          "editor": "-$1,234,567.80",
+          "preview": "-$1,234,567.80",
+          "powerpoint": "-$1,234,567.80",
+          "parity": true,
+          "pptx_sha256": "0a3f11237a4e8df7bfce8f619ad21d1aecb5aa5e85d7c2fec1d615047c8ce72a",
+          "report_id": "chg179-metric-negative-large-currency",
+          "status": "PASS"
+        },
+        {
+          "name": "explicit-precision",
+          "expected": "3.457",
+          "editor": "3.457",
+          "preview": "3.457",
+          "powerpoint": "3.457",
+          "parity": true,
+          "pptx_sha256": "2d60dc0e6b5fa77215c47b6664c13a87670a1bc29a79e9355dcf8340b1c6c0cd",
+          "report_id": "chg179-metric-explicit-precision",
+          "status": "PASS"
+        },
+        {
+          "name": "missing-value",
+          "expected": "—",
+          "editor": "—",
+          "preview": "—",
+          "powerpoint": "—",
+          "parity": true,
+          "pptx_sha256": "84392c751ac2ff7eed98044aed74e29ac75c5e1e3b45d299b14b8673de79e24c",
+          "report_id": "chg179-metric-missing-value",
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "name": "data-first-chart-studio-save-refresh-duplicate-category-export",
+      "status": "PASS",
+      "report_id": "chg179-data-first-categories",
+      "element_id": "c20",
+      "duplicate_id": "c21",
+      "dataset_revision": 2,
+      "initial_category_field": "week_1",
+      "rebound_category_field": "week_2",
+      "labels": [
+        "W0",
+        "W1",
+        "W2",
+        "W3"
+      ],
+      "editor_axis_labels": [
+        "W0",
+        "W1",
+        "W2",
+        "W3"
+      ],
+      "preview_axis_labels": [
+        "W0",
+        "W1",
+        "W2",
+        "W3"
+      ],
+      "powerpoint_categories": [
+        "W0",
+        "W1",
+        "W2",
+        "W3"
+      ],
+      "editor_preview_export_parity": true,
+      "duplicate_mapping_preserved": true,
+      "save_reload_before_refresh": true,
+      "refresh_rebind_and_save_reload": true,
+      "pptx_sha256": "a2645aa731d1399ba001bb7c75d133160095ec0c50f948b5a541205b67ddf278"
+    },
+    {
+      "name": "legacy-bound-percent-preflight-and-parity",
+      "status": "PASS",
+      "report_id": "chg179-legacy-percent",
+      "legacy_value_format": "currency",
+      "rendered_before_repair": "27.6%",
+      "preflight_issue": "Percent data is paired with currency formatting",
+      "preflight_data_issues": [
+        "Percent data is paired with currency formatting. Set a matching metric format before export."
+      ],
+      "preflight_data_issues_after_repair": [],
+      "editor": "27.6%",
+      "preview": "27.6%",
+      "powerpoint": "27.6%",
+      "parity": true,
+      "pptx_sha256": "aec454bc528d91b2114ac8ebfb7d5b6880f9042b30d0ff07468075d1b55e72a4"
+    }
+  ],
+  "unexpected_browser_events": [],
+  "browser": "151.0.7922.34",
+  "metric_cases": [
+    {
+      "name": "compact-multiplier",
+      "expected": "48.2 M",
+      "editor": "48.2 M",
+      "preview": "48.2 M",
+      "powerpoint": "48.2 M",
+      "parity": true,
+      "pptx_sha256": "5013fbd450cc72d7e885b70d9651a06c73b3708ab58d2ec1c789ffec4439c8e4",
+      "report_id": "chg179-metric-compact-multiplier",
+      "status": "PASS"
+    },
+    {
+      "name": "millions-unit",
+      "expected": "48.2 M",
+      "editor": "48.2 M",
+      "preview": "48.2 M",
+      "powerpoint": "48.2 M",
+      "parity": true,
+      "pptx_sha256": "1e69bf47668fc170385c2cd0686f5bdac479541f924a5ea7d66e66ebe1612a04",
+      "report_id": "chg179-metric-millions-unit",
+      "status": "PASS"
+    },
+    {
+      "name": "percentage-points",
+      "expected": "27.6%",
+      "editor": "27.6%",
+      "preview": "27.6%",
+      "powerpoint": "27.6%",
+      "parity": true,
+      "pptx_sha256": "a0ee852adc690e0a4db1cfed9e206e763fddbd9dfdcaaed3fa14e022a630e955",
+      "report_id": "chg179-metric-percentage-points",
+      "status": "PASS"
+    },
+    {
+      "name": "textual-count-unit",
+      "expected": "34 contacts",
+      "editor": "34 contacts",
+      "preview": "34 contacts",
+      "powerpoint": "34 contacts",
+      "parity": true,
+      "pptx_sha256": "f35203030815ca0b92c98ca4f71b0702bf5a224f7a706003a9ab46381a8af89c",
+      "report_id": "chg179-metric-textual-count-unit",
+      "status": "PASS"
+    },
+    {
+      "name": "zero-unitless",
+      "expected": "0",
+      "editor": "0",
+      "preview": "0",
+      "powerpoint": "0",
+      "parity": true,
+      "pptx_sha256": "72f632072c15902fe64e6c78c41bce1ef5f66fcc46293f43fc1f48767541a1cd",
+      "report_id": "chg179-metric-zero-unitless",
+      "status": "PASS"
+    },
+    {
+      "name": "negative-large-currency",
+      "expected": "-$1,234,567.80",
+      "editor": "-$1,234,567.80",
+      "preview": "-$1,234,567.80",
+      "powerpoint": "-$1,234,567.80",
+      "parity": true,
+      "pptx_sha256": "0a3f11237a4e8df7bfce8f619ad21d1aecb5aa5e85d7c2fec1d615047c8ce72a",
+      "report_id": "chg179-metric-negative-large-currency",
+      "status": "PASS"
+    },
+    {
+      "name": "explicit-precision",
+      "expected": "3.457",
+      "editor": "3.457",
+      "preview": "3.457",
+      "powerpoint": "3.457",
+      "parity": true,
+      "pptx_sha256": "2d60dc0e6b5fa77215c47b6664c13a87670a1bc29a79e9355dcf8340b1c6c0cd",
+      "report_id": "chg179-metric-explicit-precision",
+      "status": "PASS"
+    },
+    {
+      "name": "missing-value",
+      "expected": "—",
+      "editor": "—",
+      "preview": "—",
+      "powerpoint": "—",
+      "parity": true,
+      "pptx_sha256": "84392c751ac2ff7eed98044aed74e29ac75c5e1e3b45d299b14b8673de79e24c",
+      "report_id": "chg179-metric-missing-value",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

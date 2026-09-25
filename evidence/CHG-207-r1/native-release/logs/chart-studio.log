@@ -1,0 +1,1592 @@
+PASS C001 open Line Chart Studio
+PASS C002 Data panel
+PASS C003 Fields panel
+PASS C004 Visual panel
+PASS C005 Interaction panel
+PASS C006 open/close without mutation
+PASS C007 paste TSV
+PASS C008 type inference
+PASS C009 numeric 0 preserved
+PASS C010 string "0" preserved
+PASS C011 blank string preserved
+PASS C012 null preserved
+PASS C013 row insert/delete
+PASS C014 column insert/delete/rename
+PASS C015 range copy/paste
+PASS C016 filter
+PASS C017 sort
+PASS C018 top-N
+PASS C019 derive
+PASS C020 aggregate
+PASS C021 X mapping
+PASS C022 Y mapping
+PASS C023 Series mapping
+PASS C024 secondary Y
+PASS C025 reorder series
+PASS C026 type switch preserves compatible mappings
+PASS C027 X title
+PASS C028 Y title
+PASS C029 secondary Y title/format
+PASS C030 numeric format
+PASS C031 date/time format
+PASS C032 label rotation
+PASS C033 gridlines
+PASS C034 bounds
+PASS C035 show/hide legend
+PASS C036 legend position
+PASS C037 legend ordering
+PASS C038 interactive legend toggle
+PASS C039 static SVG legend
+PASS C040 per-series color
+PASS C041 marker
+PASS C042 line width/style
+PASS C043 bar grouped/stacked
+PASS C044 area opacity
+PASS C045 data labels
+PASS C046 reference line
+PASS C047 reference band
+PASS C048 annotation
+PASS C049 tooltip
+PASS C050 crosshair
+PASS C051 zoom
+PASS C052 pan/reset
+PASS C053 brush selection
+PASS C054 legend filter
+PASS C055 cross-filter
+PASS C056 recommendations after paste
+PASS C057 alternative preview/apply
+PASS C058 Best readable axes
+PASS C059 Clean labels
+PASS C060 target/spec violation highlight
+PASS C061 unit/format suggestion
+PASS C062 semantic color suggestion
+PASS C063 save Chart Recipe
+PASS C064 apply recipe reordered schema
+PASS C065 copy chart setup
+PASS C066 SPC specification/control distinction
+PASS C067 SPC tooltip/select/zoom
+PASS C068 I-MR labeling
+PASS C069 CUSUM parameters visible
+PASS C070 EWMA parameters visible
+PASS C071 actual coordinate geometry
+PASS C072 wafer outline/notch
+PASS C073 continuous legend
+PASS C074 discrete/bin legend
+PASS C075 missing die
+PASS C076 tooltip x/y/value
+PASS C077 die selection
+PASS C078 brush selection
+PASS C079 identity filter
+PASS C080 spec/outlier highlight
+PASS C081 undo/redo
+PASS C082 save/reload
+PASS C083 JSON export/import
+PASS C084 standalone SVG
+PASS C085 preview
+PASS C086 light/dark
+PASS C087 resize/content fit
+PASS C088 responsive acceptance
+PASS C098 desktop command reachability
+PASS C099 1180px breakpoint command reachability
+PASS C100 narrow 1024px command reachability
+PASS C101 mobile 390px command reachability
+PASS C102 200-percent-equivalent reflow command reachability
+PASS C103 exact R1 overlapping-media negative control
+{
+  "scope": "native Stage A workspace and report-hub acceptance",
+  "cases": [
+    {
+      "name": "desktop 1440 three-column reflow and gutters",
+      "status": "PASS"
+    },
+    {
+      "name": "desktop 1024 three-column reflow and gutters",
+      "status": "PASS"
+    },
+    {
+      "name": "panel close restores canvas width without overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "solo Timeline governed content fit",
+      "status": "PASS"
+    },
+    {
+      "name": "solo chart governed content fit",
+      "status": "PASS"
+    },
+    {
+      "name": "solo Wafer Map governed content fit",
+      "status": "PASS"
+    },
+    {
+      "name": "selected content has no occluding selection chrome",
+      "status": "PASS"
+    },
+    {
+      "name": "multi-element Smart composition is bounded and deterministic",
+      "status": "PASS"
+    },
+    {
+      "name": "external selection and resize chrome stays outside content",
+      "status": "PASS"
+    },
+    {
+      "name": "drag ghost matches final proposed bounds",
+      "status": "PASS"
+    },
+    {
+      "name": "solo line-chart safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "ordinary hover preserves chart content pixels",
+      "status": "PASS"
+    },
+    {
+      "name": "solo clean-table safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "solo process-flow safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "solo wafer-map safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "solo body-narrative safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "solo hero-metric safe-hull occupancy",
+      "status": "PASS"
+    },
+    {
+      "name": "editor command reachability at 1440px",
+      "status": "PASS"
+    },
+    {
+      "name": "editor command reachability at 1024px",
+      "status": "PASS"
+    },
+    {
+      "name": "editor command reachability at 390px",
+      "status": "PASS"
+    },
+    {
+      "name": "preview full-stage symmetric at 1440",
+      "status": "PASS"
+    },
+    {
+      "name": "preview full-stage symmetric at 1024",
+      "status": "PASS"
+    },
+    {
+      "name": "preview full-stage symmetric at 768",
+      "status": "PASS"
+    },
+    {
+      "name": "preview full-stage symmetric at 390",
+      "status": "PASS"
+    },
+    {
+      "name": "200-percent-equivalent coarse-pointer command reflow",
+      "status": "PASS"
+    },
+    {
+      "name": "200-percent-equivalent coarse-pointer has no document overflow",
+      "status": "PASS"
+    },
+    {
+      "name": "three built-in presets change layout and undo/redo",
+      "status": "PASS"
+    },
+    {
+      "name": "Map command opens the minimap when available",
+      "status": "PASS"
+    },
+    {
+      "name": "dedicated report hub renders independent cards and lifecycle",
+      "status": "PASS"
+    },
+    {
+      "name": "no browser console/page/network errors",
+      "status": "PASS",
+      "error": []
+    }
+  ],
+  "unexpected_errors": [],
+  "production_library_count": 52,
+  "frozen_connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+  "passed": 30,
+  "total": 30,
+  "status": "PASS",
+  "source_editor_sha256": "42af82a16b38c070a7dcaed053dbbea15b74c090bfd6367d1d28c3be6b4d158a"
+}
+PASS C089 Stage A acceptance
+CHECK open Diagram Studio from Process Flow
+PASS open Diagram Studio from Process Flow
+CHECK mobile drawer accessibility, focus isolation, and desktop semantics
+PASS mobile drawer accessibility, focus isolation, and desktop semantics
+CHECK create five nodes from the shape palette
+PASS create five nodes from the shape palette
+CHECK quick-connect branch and insert node on edge
+PASS quick-connect branch and insert node on edge
+CHECK fixed and floating connector ports
+PASS fixed and floating connector ports
+CHECK orthogonal route, waypoint, center label, reverse
+PASS orthogonal route, waypoint, center label, reverse
+CHECK multi-select, lasso-compatible actions, align, group, copy, duplicate
+PASS multi-select, lasso-compatible actions, align, group, copy, duplicate
+CHECK lasso selects multiple nodes
+PASS lasso selects multiple nodes
+CHECK inline node label edit commits accessibly
+PASS inline node label edit commits accessibly
+CHECK layer visibility/lock/duplicate and swimlane reorder/move
+PASS layer visibility/lock/duplicate and swimlane reorder/move
+CHECK horizontal/vertical layout and Clean Diagram preserve pinned node
+PASS horizontal/vertical layout and Clean Diagram preserve pinned node
+CHECK paste process steps, source-target graph, save/reinsert subflow
+PASS paste process steps, source-target graph, save/reinsert subflow
+CHECK one-transaction undo/redo and JSON/SVG export
+PASS one-transaction undo/redo and JSON/SVG export
+CHECK save/close/reopen report integration and reading preview
+PASS save/close/reopen report integration and reading preview
+CHECK responsive studio and keyboard nudge
+PASS responsive studio and keyboard nudge
+CHECK 100-node/150-edge deterministic layout fixture
+PASS 100-node/150-edge deterministic layout fixture
+{
+  "scope": "native Diagram Studio acceptance",
+  "cases": [
+    {
+      "name": "open Diagram Studio from Process Flow",
+      "status": "PASS"
+    },
+    {
+      "name": "mobile drawer accessibility, focus isolation, and desktop semantics",
+      "status": "PASS"
+    },
+    {
+      "name": "create five nodes from the shape palette",
+      "status": "PASS"
+    },
+    {
+      "name": "quick-connect branch and insert node on edge",
+      "status": "PASS"
+    },
+    {
+      "name": "fixed and floating connector ports",
+      "status": "PASS"
+    },
+    {
+      "name": "orthogonal route, waypoint, center label, reverse",
+      "status": "PASS"
+    },
+    {
+      "name": "multi-select, lasso-compatible actions, align, group, copy, duplicate",
+      "status": "PASS"
+    },
+    {
+      "name": "lasso selects multiple nodes",
+      "status": "PASS"
+    },
+    {
+      "name": "inline node label edit commits accessibly",
+      "status": "PASS"
+    },
+    {
+      "name": "layer visibility/lock/duplicate and swimlane reorder/move",
+      "status": "PASS"
+    },
+    {
+      "name": "horizontal/vertical layout and Clean Diagram preserve pinned node",
+      "status": "PASS"
+    },
+    {
+      "name": "paste process steps, source-target graph, save/reinsert subflow",
+      "status": "PASS"
+    },
+    {
+      "name": "one-transaction undo/redo and JSON/SVG export",
+      "status": "PASS"
+    },
+    {
+      "name": "save/close/reopen report integration and reading preview",
+      "status": "PASS"
+    },
+    {
+      "name": "responsive studio and keyboard nudge",
+      "status": "PASS"
+    },
+    {
+      "name": "100-node/150-edge deterministic layout fixture",
+      "status": "PASS"
+    },
+    {
+      "name": "no unexpected browser console/page/network errors",
+      "status": "PASS",
+      "error": []
+    }
+  ],
+  "unexpected_errors": [],
+  "drawer_accessibility": {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "closed": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "shape": null,
+        "panel": null,
+        "label": "import * as Vue from \"vue\";\n      globalThis.Vue = Vue;\n      document.getElemen"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "closed_tab_forward": [
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "preview",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "save",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "svg",
+        "id": "ds-canvas",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "a",
+        "id": "c5",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": "c12",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "back",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "undo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "redo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "clean",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "layout-horizontal",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "panel": null
+      }
+    ],
+    "closed_shift_tab_backward": [
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "layout-horizontal",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "clean",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "redo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "undo",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "back",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": "c12",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "a",
+        "id": "c5",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "g",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "svg",
+        "id": "ds-canvas",
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "summary",
+        "id": null,
+        "action": null,
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "save",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "preview",
+        "panel": null
+      },
+      {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "panel": null
+      }
+    ],
+    "shapes_open": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 0,
+            "right": 340,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 29
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "true",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": null,
+        "shape": "start",
+        "panel": "palette",
+        "label": "Add Start"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "shapes_backdrop_close": {
+      "point": {
+        "x": 350,
+        "y": 450,
+        "hit": "ds-panel-backdrop"
+      },
+      "focus_during_press": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette is-open",
+            "inert_property": false,
+            "inert_attribute": false,
+            "aria_hidden": "false",
+            "bounds": {
+              "left": 0,
+              "right": 340,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 29
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "true",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": null,
+          "shape": "start",
+          "panel": "palette",
+          "label": "Add Start"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      },
+      "closed": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "toggle-palette",
+          "shape": null,
+          "panel": null,
+          "label": "Shapes"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      }
+    },
+    "inspector_open": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 50,
+            "right": 390,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "true",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "clear-selection",
+        "shape": null,
+        "panel": "inspector",
+        "label": "Clear selection"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "inspector_backdrop_close": {
+      "point": {
+        "x": 40,
+        "y": 450,
+        "hit": "ds-panel-backdrop"
+      },
+      "focus_during_press": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector is-open",
+            "inert_property": false,
+            "inert_attribute": false,
+            "aria_hidden": "false",
+            "bounds": {
+              "left": 50,
+              "right": 390,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 27
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "true",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "clear-selection",
+          "shape": null,
+          "panel": "inspector",
+          "label": "Clear selection"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      },
+      "closed": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "panels": {
+          "palette": {
+            "id": "#ds-shape-panel",
+            "classes": "ds-palette",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": -357,
+              "right": -17,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 29,
+            "reachable_focusable": 0
+          },
+          "inspector": {
+            "id": "#ds-inspector-panel",
+            "classes": "ds-inspector",
+            "inert_property": true,
+            "inert_attribute": true,
+            "aria_hidden": "true",
+            "bounds": {
+              "left": 407,
+              "right": 747,
+              "top": 56,
+              "bottom": 844,
+              "width": 340,
+              "height": 788
+            },
+            "focusable_descendants": 27,
+            "reachable_focusable": 0
+          }
+        },
+        "triggers": {
+          "palette": {
+            "action": "toggle-palette",
+            "aria_expanded": "false",
+            "aria_controls": "ds-shape-panel"
+          },
+          "inspector": {
+            "action": "toggle-inspector",
+            "aria_expanded": "false",
+            "aria_controls": "ds-inspector-panel"
+          }
+        },
+        "activeElement": {
+          "tag": "button",
+          "id": null,
+          "action": "toggle-inspector",
+          "shape": null,
+          "panel": null,
+          "label": "Inspector"
+        },
+        "scroll": {
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "innerWidth": 390,
+          "horizontalOverflow": false
+        }
+      }
+    },
+    "shapes_close_button": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "shape": null,
+        "panel": null,
+        "label": "Shapes"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "shapes_escape_close": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-palette",
+        "shape": null,
+        "panel": null,
+        "label": "Shapes"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "inspector_close_button": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "shape": null,
+        "panel": null,
+        "label": "Inspector"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "switched_to_inspector": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector is-open",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": "false",
+          "bounds": {
+            "left": 50,
+            "right": 390,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "true",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "clear-selection",
+        "shape": null,
+        "panel": "inspector",
+        "label": "Clear selection"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "switch_escape_close": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": -357,
+            "right": -17,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 0
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": true,
+          "inert_attribute": true,
+          "aria_hidden": "true",
+          "bounds": {
+            "left": 407,
+            "right": 747,
+            "top": 56,
+            "bottom": 844,
+            "width": 340,
+            "height": 788
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 0
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "button",
+        "id": null,
+        "action": "toggle-inspector",
+        "shape": null,
+        "panel": null,
+        "label": "Inspector"
+      },
+      "scroll": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "innerWidth": 390,
+        "horizontalOverflow": false
+      }
+    },
+    "desktop": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "panels": {
+        "palette": {
+          "id": "#ds-shape-panel",
+          "classes": "ds-palette",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": null,
+          "bounds": {
+            "left": 84,
+            "right": 328,
+            "top": 148,
+            "bottom": 920,
+            "width": 244,
+            "height": 772
+          },
+          "focusable_descendants": 29,
+          "reachable_focusable": 29
+        },
+        "inspector": {
+          "id": "#ds-inspector-panel",
+          "classes": "ds-inspector",
+          "inert_property": false,
+          "inert_attribute": false,
+          "aria_hidden": null,
+          "bounds": {
+            "left": 1110,
+            "right": 1420,
+            "top": 148,
+            "bottom": 920,
+            "width": 310,
+            "height": 772
+          },
+          "focusable_descendants": 27,
+          "reachable_focusable": 27
+        }
+      },
+      "triggers": {
+        "palette": {
+          "action": "toggle-palette",
+          "aria_expanded": "false",
+          "aria_controls": "ds-shape-panel"
+        },
+        "inspector": {
+          "action": "toggle-inspector",
+          "aria_expanded": "false",
+          "aria_controls": "ds-inspector-panel"
+        }
+      },
+      "activeElement": {
+        "tag": "body",
+        "id": null,
+        "action": null,
+        "shape": null,
+        "panel": null,
+        "label": "import * as Vue from \"vue\";\n      globalThis.Vue = Vue;\n      document.getElemen"
+      },
+      "scroll": {
+        "scrollWidth": 1440,
+        "clientWidth": 1440,
+        "innerWidth": 1440,
+        "horizontalOverflow": false
+      }
+    }
+  },
+  "responsive_evidence": {
+    "desktop-1440": {
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1440,
+        "height": 940
+      },
+      "canvas": {
+        "left": 358,
+        "top": 172,
+        "right": 1080,
+        "bottom": 397.65625,
+        "width": 722,
+        "height": 225.65625
+      },
+      "wrap": {
+        "left": 328,
+        "top": 142,
+        "right": 1110,
+        "bottom": 880,
+        "width": 782,
+        "height": 738
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "narrow-1024": {
+      "viewport": {
+        "width": 1024,
+        "height": 900
+      },
+      "scroll": {
+        "width": 1024,
+        "height": 940
+      },
+      "canvas": {
+        "left": 334,
+        "top": 172,
+        "right": 694,
+        "bottom": 285.203125,
+        "width": 360,
+        "height": 113.203125
+      },
+      "wrap": {
+        "left": 304,
+        "top": 142,
+        "right": 724,
+        "bottom": 880,
+        "width": 420,
+        "height": 738
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "reflow-200-equivalent": {
+      "viewport": {
+        "width": 720,
+        "height": 844
+      },
+      "scroll": {
+        "width": 720,
+        "height": 880
+      },
+      "canvas": {
+        "left": 28.390625,
+        "top": 180,
+        "right": 691.984375,
+        "bottom": 387.515625,
+        "width": 663.59375,
+        "height": 207.515625
+      },
+      "wrap": {
+        "left": 16.390625,
+        "top": 168,
+        "right": 703.984375,
+        "bottom": 828,
+        "width": 687.59375,
+        "height": 660
+      },
+      "overflow": false,
+      "openOverflow": false
+    },
+    "mobile-390": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "scroll": {
+        "width": 390,
+        "height": 880
+      },
+      "canvas": {
+        "left": 28,
+        "top": 215,
+        "right": 362,
+        "bottom": 320.125,
+        "width": 334,
+        "height": 105.125
+      },
+      "wrap": {
+        "left": 16,
+        "top": 203,
+        "right": 374,
+        "bottom": 828,
+        "width": 358,
+        "height": 625
+      },
+      "overflow": false,
+      "openOverflow": false
+    }
+  },
+  "performance_fixture": {
+    "nodes": 100,
+    "edges": 150,
+    "elapsed_ms": 3.65
+  },
+  "production_library_count": 52,
+  "frozen_connector_sha256": "d8ebd4378f01b7c52a7a4be57c578c22adf29b899cc08a370cf084881195343e",
+  "passed": 17,
+  "total": 17,
+  "status": "PASS"
+}
+PASS C090 Stage B acceptance
+PASS C091 production library 52
+PASS C092 product-contract audit
+PASS C094 frozen connector unchanged
+PASS C095 Multi-Line browser render
+PASS C096 Scatter Plot browser render
+PASS C097 Regression Scatter browser render
+PASS C093 no unexpected console/page/network errors
+{"pass": 103, "applicable": 103, "not_applicable": 0, "path": "/private/tmp/visembler-chg207-r1-native-release-final/chart-studio/chart-studio-acceptance.json"}
