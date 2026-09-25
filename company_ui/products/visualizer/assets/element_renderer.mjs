@@ -4,7 +4,7 @@ import { prepareTimeline } from '../vendor/production_core/core/timeline_semanti
 import { validateGraph } from '../vendor/production_core/core/graph_semantics_engine.mjs?v=v0.4.26';
 import { formatMetricValue, formatMetricDisplay, metricDisplayUnit, prepareChartRows } from './authoring_format.mjs';
 import { CHART_TYPES, renderChartStudioElement } from './authoring_chart_studio.mjs';
-import { renderDiagramSvg } from './authoring_diagram_studio.mjs';
+import { diagramFromEntry, renderDiagramReadingSvg, renderDiagramSvg } from './authoring_diagram_studio.mjs';
 import { statisticalAnalysisError } from './statistical_presentation.mjs';
 
 const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -13,7 +13,12 @@ const num=(v,fallback='—')=>v===null||v===undefined||v===''?fallback:esc(v);
 const finiteNumber=value=>typeof value==='number'&&Number.isFinite(value);
 const boundedPercent=(value,max)=>finiteNumber(value)&&finiteNumber(max)&&max!==0?Math.max(0,Math.min(100,value/max*100)):null;
 const alignment=value=>['left','center','right'].includes(value)?value:'left';
-const tableRegion=(entry,body)=>`<div class="table-frame table-scroll" role="region" tabindex="0" aria-keyshortcuts="ArrowLeft ArrowRight Home End" aria-label="Scrollable table: ${esc(entry.title||entry.element||'Data table')}">${body}</div>`;
+const numericToken=markup=>`<span class="numeric-token">${markup}</span>`;
+const comparisonToken=(value,fallback='—',unit='')=>numericToken(`${num(value,fallback)}${unit?` <small class="comparison-unit">${esc(unit)}</small>`:''}`);
+const tableRegion=(entry,body)=>{
+  const label=esc(entry.title||entry.element||'Data table'),hintId=`${slug(entry.id||entry.element||'data-table')}-scroll-instructions`;
+  return `<div class="table-scroll-shell"><div class="table-frame table-scroll" role="region" tabindex="0" aria-keyshortcuts="ArrowLeft ArrowRight Home End" aria-label="Scrollable table: ${label}" data-table-label="${label}">${body}</div><p class="table-scroll-hint" id="${hintId}" role="status" aria-live="polite" hidden></p></div>`;
+};
 const shell=(entry,body,eyebrow=null)=>{
   const showTitle=entry.showTitle===true||entry.show_title===true;
   const heading=showTitle?`<header><div><span class="engine-label">${esc(eyebrow||entry.engine.replace(/Engine|Composite|Layer|Infrastructure/g,''))}</span><h3 data-direct="title" title="Double-click to edit title">${esc(entry.title||entry.element)}</h3></div></header>`:'';
@@ -21,7 +26,7 @@ const shell=(entry,body,eyebrow=null)=>{
 };
 
 function metric(entry){
-  const n=entry.element.toLowerCase(),dataset=entry._resolved_dataset,fieldId=entry.mapping?.value||entry.mapping?.y,field=dataset?.fields?.find(candidate=>candidate.id===fieldId)||null,formatted=formatMetricValue(entry.value,entry,field),value=esc(formatted),renderValue=(raw,formatEntry=entry,boundField=field)=>esc(formatMetricValue(raw,formatEntry,boundField));
+  const n=entry.element.toLowerCase(),dataset=entry._resolved_dataset,fieldId=entry.mapping?.value||entry.mapping?.y,field=dataset?.fields?.find(candidate=>candidate.id===fieldId)||null,formatted=formatMetricValue(entry.value,entry,field),value=numericToken(esc(formatted)),renderValue=(raw,formatEntry=entry,boundField=field)=>numericToken(esc(formatMetricValue(raw,formatEntry,boundField)));
   if(n.includes('pair')) return shell(entry,`<div class="metric-pair"><div><span>Primary</span><b>${value}</b></div><div><span>Secondary</span><b>${renderValue(entry.target??'38.4')}</b></div></div>`,'Metric');
   if(n.includes('strip')) { const metrics=Array.isArray(entry.metrics)&&entry.metrics.length?entry.metrics:[['Yield','98.7%'],['Cycle','42.8m'],['Risk','Low']]; return shell(entry,`<div class="metric-strip">${metrics.slice(0,6).map(metric=>{const label=Array.isArray(metric)?metric[0]:metric.label,value=Array.isArray(metric)?metric[1]:metric.value,formatEntry=!Array.isArray(metric)&&metric&&typeof metric==='object'?{...entry,...metric}:entry,metricField=dataset?.fields?.find(candidate=>candidate.id===(metric?.mapping?.value||metric?.field))||field;return `<div><span>${esc(label)}</span><b>${renderValue(value,formatEntry,metricField)}</b></div>`;}).join('')}</div>`,'Metric'); }
   if(n==='hero kpi') {
@@ -56,18 +61,18 @@ function metric(entry){
 }
 
 function comparison(entry){
-  const n=entry.element.toLowerCase(),unit=esc(entry.unit||'');
-  const labeled=(value,fallback,label)=>`<b>${num(value,fallback)}${unit?` <small class="comparison-unit">${unit}</small>`:''}</b><span>${label}</span>`;
+  const n=entry.element.toLowerCase(),rawUnit=entry.unit||'',unit=esc(rawUnit);
+  const labeled=(value,fallback,label)=>`<b>${comparisonToken(value,fallback,rawUnit)}</b><span>${label}</span>`;
   if(n.includes('time compression')) return shell(entry,`<div class="time-compression-live"><div><i></i><i></i><i></i><i></i>${labeled(entry.before,'—','Before')}</div><span>→</span><div class="short"><i></i>${labeled(entry.after,'—','After')}</div></div>`,'Comparison');
   if(n.includes('reduction')) return shell(entry,`<div class="reduction-visual"><div>${labeled(entry.before,'—','Before')}</div><i>→</i><div>${labeled(entry.after,'—','After')}</div></div>${unit?`<small class="comparison-unit-label">Unit · ${unit}</small>`:''}`,'Comparison');
   if(n.includes('process simplification')) return shell(entry,`<div class="simplification-live"><div>${Array.from({length:6},()=>'<i></i>').join('')}</div><b>→</b><div>${Array.from({length:3},()=>'<i></i>').join('')}</div></div><p class="body-copy">Fewer handoffs, same outcome.</p>`,'Comparison');
   if(n.includes('transformation flow')) return shell(entry,`<div class="transform-flow"><span class="complex">7 steps</span><i>→</i><span class="simple">3 steps</span></div><p class="body-copy">Lower handoff count and clearer ownership.</p>`,'Comparison');
-  if(n.includes('quality')) { const before=Number(entry.before),after=Number(entry.after),beforeWidth=Number.isFinite(before)?Math.max(0,Math.min(100,before)):0,afterWidth=Number.isFinite(after)?Math.max(0,Math.min(100,after)):0;return shell(entry,`<div class="quality-shift"><span style="--v:${beforeWidth}%">${num(entry.before)}</span><span style="--v:${afterWidth}%">${num(entry.after)}</span></div><div class="metric-meta"><span>Before</span><span>After</span></div>`,'Comparison'); }
-  if(n.includes('as-is')) return shell(entry,`<div class="asis-tobe"><div><b>As-is</b><span>${num(entry.before)}${unit?` <small class="comparison-unit">${unit}</small>`:''}</span></div><i>→</i><div><b>To-be</b><span>${num(entry.after)}${unit?` <small class="comparison-unit">${unit}</small>`:''}</span></div></div>`,'Comparison');
-  if(n.includes('before/after')) return shell(entry,`<div class="before-after-kpi"><div><small>Before</small><b>${num(entry.before)}${unit?` <small class="comparison-unit">${unit}</small>`:''}</b></div><div><small>After</small><b>${num(entry.after)}${unit?` <small class="comparison-unit">${unit}</small>`:''}</b><em>▲</em></div></div>`,'Comparison');
+  if(n.includes('quality')) { const before=Number(entry.before),after=Number(entry.after),beforeWidth=Number.isFinite(before)?Math.max(0,Math.min(100,before)):0,afterWidth=Number.isFinite(after)?Math.max(0,Math.min(100,after)):0;return shell(entry,`<div class="quality-shift"><span style="--v:${beforeWidth}%">${comparisonToken(entry.before)}</span><span style="--v:${afterWidth}%">${comparisonToken(entry.after)}</span></div><div class="metric-meta"><span>Before</span><span>After</span></div>`,'Comparison'); }
+  if(n.includes('as-is')) return shell(entry,`<div class="asis-tobe"><div><b>As-is</b><span>${comparisonToken(entry.before,'—',rawUnit)}</span></div><i>→</i><div><b>To-be</b><span>${comparisonToken(entry.after,'—',rawUnit)}</span></div></div>`,'Comparison');
+  if(n.includes('before/after')) return shell(entry,`<div class="before-after-kpi"><div><small>Before</small><b>${comparisonToken(entry.before,'—',rawUnit)}</b></div><div><small>After</small><b>${comparisonToken(entry.after,'—',rawUnit)}</b><em>▲</em></div></div>`,'Comparison');
   if(n.includes('capability')) return shell(entry,`<div class="capability-shift"><span><i style="width:42%"></i></span><b>→</b><span><i style="width:78%"></i></span></div><div class="metric-meta"><span>Current capability</span><span>Target</span></div>`,'Comparison');
   if(n.includes('cost/capacity')) return shell(entry,`<div class="cost-capacity"><div><b>Cost</b><i style="height:68%"></i></div><div><b>Capacity</b><i style="height:88%"></i></div><span>Tradeoff</span></div>`,'Comparison');
-  return shell(entry,`<div class="comparison"><div><span class="eyebrow">Before</span><b>${num(entry.before)}</b><small>Current state</small></div><span class="compare-arrow">→</span><div><span class="eyebrow">After</span><b>${num(entry.after)}</b><small>Target state</small></div></div>`,'Comparison');
+  return shell(entry,`<div class="comparison"><div><span class="eyebrow">Before</span><b>${comparisonToken(entry.before)}</b><small>Current state</small></div><span class="compare-arrow">→</span><div><span class="eyebrow">After</span><b>${comparisonToken(entry.after)}</b><small>Target state</small></div></div>`,'Comparison');
 }
 
 function table(entry){
@@ -169,7 +174,14 @@ function legacyDiagram(entry){
 
 function diagram(entry){
   const n=entry.element.toLowerCase();
-  if(entry.diagram||(Array.isArray(entry.nodes)&&entry.nodes.length&&(entry.dataset_id||n==='data flow'||n==='process flow')))return shell(entry,renderDiagramSvg(entry,{label:`${entry.title||entry.element} diagram`}),'Diagram');
+  if(entry.diagram||(Array.isArray(entry.nodes)&&entry.nodes.length&&(entry.dataset_id||n==='data flow'||n==='process flow'))){
+    const label=`${entry.title||entry.element} diagram`,canonical=diagramFromEntry(entry),horizontalReadingFlow=['process flow','data flow'].includes(n)&&canonical.layout.direction==='right';
+    if(horizontalReadingFlow){
+      const wide=renderDiagramSvg(entry,{label,className:'diagram-wide-reading'}),medium=renderDiagramReadingSvg(entry,{label,layout:'compact'}),narrow=renderDiagramReadingSvg(entry,{label});
+      return shell(entry,`<div class="diagram-responsive-reading" data-reading-flow="true">${medium}${narrow}${wide}</div>`,'Diagram');
+    }
+    return shell(entry,renderDiagramSvg(entry,{label}),'Diagram');
+  }
   return legacyDiagram(entry);
 }
 
