@@ -1967,6 +1967,14 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
   .cui-visualizer-root.preview-mode .comparison>div { min-width:0; }
   .cui-visualizer-root.preview-mode .comparison>.compare-arrow { justify-self:center;transform:rotate(90deg); }
   .cui-visualizer-root.preview-mode .asis-tobe>i { justify-self:center;transform:rotate(90deg); }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) { height:auto!important;min-height:var(--viz-mobile-reader-height)!important;overflow:visible!important; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .c-content,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .integrated-element-content,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .integrated-element-content>.gallery-card,
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .card-body { height:auto!important;min-height:0!important;overflow:visible!important; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live { grid-template-columns:32px minmax(0,1fr);align-items:start; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live>div { min-width:0; }
+  .cui-visualizer-root.preview-mode .component:has(.risk-callout-live) .risk-callout-live>span { grid-column:2;justify-self:start;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.35; }
 }
 @media(max-width:800px) {
   .cui-visualizer-root.preview-mode .component-layer { gap:var(--viz-composition-row-gap,var(--viz-s-4)); }
