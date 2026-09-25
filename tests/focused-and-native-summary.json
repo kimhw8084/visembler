@@ -1,0 +1,29 @@
+{
+  "schema": "visembler-chg208-test-summary.v1",
+  "candidate_sha": "09ee0bea69a1c957e07b1bb88e846db471827e9b",
+  "focused_tests": {
+    "command": "pytest tests/test_visualizer_chg208_remap_diagnostics.py tests/test_visualizer_chg181_semantic_reuse.py tests/test_visualizer_chg181_section_composition.py tests/test_visualizer_chg207_narrow_reading.py -vv",
+    "result": "PASS",
+    "passed": 28
+  },
+  "maintained_native_release": {
+    "command": "python scripts/verify_release.py --host-mode native --output <new-empty-directory>",
+    "result": "PASS_LOCAL_INTERNAL_PILOT",
+    "checks_status": "PASS",
+    "full_tests": {
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "chg181_browser": "PASS",
+    "chg208_browser": "PASS",
+    "all_required_gates_pass": true
+  },
+  "company_ui_validate": {
+    "command": "python -m company_ui.validate .",
+    "result": "PASS",
+    "errors": 0,
+    "warnings": 139
+  }
+}

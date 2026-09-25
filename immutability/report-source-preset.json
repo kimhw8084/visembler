@@ -1,0 +1,26 @@
+{
+  "schema": "visembler-chg208-remap-immutability.v1",
+  "candidate_sha": "09ee0bea69a1c957e07b1bb88e846db471827e9b",
+  "incomplete_wrong_type_remap": {
+    "apply_semantically_disabled": true,
+    "dialog_cancelled_with_escape": true,
+    "report_model_unchanged": true,
+    "source_report_unchanged": true,
+    "saved_preset_cache_unchanged": true,
+    "selection_state_was_not_committed": true
+  },
+  "ambiguous_remap_before_apply": {
+    "apply_disabled_before_choice": true,
+    "report_model_unchanged_before_apply": true,
+    "assertion": "The native browser gate compares the live report model to its pre-dialog snapshot immediately before Apply; the gate passed."
+  },
+  "after_explicit_compatible_apply": {
+    "source_report_unchanged": true,
+    "saved_preset_cache_unchanged": true,
+    "destination_field_schema_preserved": true,
+    "selected_destination_id": [
+      "chg208-ambiguous-data"
+    ]
+  },
+  "evidence": "browser/remap-acceptance.json"
+}
