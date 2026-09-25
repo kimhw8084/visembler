@@ -1,0 +1,441 @@
+{
+  "accepted_at": "2026-09-25T13:31:38Z",
+  "changed_files": [
+    {
+      "additions": 5,
+      "deletions": 5,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/products/visualizer/assets/authoring_data.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 32,
+      "deletions": 15,
+      "path": "company_ui/products/visualizer/assets/authoring_reuse_contract.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 14,
+      "deletions": 2,
+      "path": "company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 350,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg208_remap_diagnostics_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 2,
+      "deletions": 1,
+      "path": "scripts/verify_release.py",
+      "status": "M"
+    },
+    {
+      "additions": 432,
+      "deletions": 0,
+      "path": "tests/fixtures/chg208/chg173-remap-scenes.json",
+      "status": "A"
+    },
+    {
+      "additions": 113,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg208_remap_diagnostics.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk git add company_ui/products/visualizer/assets/authoring_data.mjs company_ui/products/visualizer/assets/authoring_reuse_contract.mjs company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs scripts/verify_release.py scripts/release_checks/run_chg208_remap_diagnostics_acceptance.py tests/fixtures/chg208/chg173-remap-scenes.json tests/test_visualizer_chg208_remap_diagnostics.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --cached --check && rtk git diff --cached --stat && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git commit -m 'Fix reusable remap diagnostics'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg208-native-release-7243251/logs/repository-contracts.log && rtk cat /tmp/visembler-chg208-native-release-7243251/repository-contracts.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse 63569c1e8d7f6e73650d66572c054c8108b02e96''^{tree} && rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg208-native-release-7243251'",
+      "exit_code": 130,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'automated_tests|1205|collected_tests' . --glob '*.json' --glob '*.py' --glob '*.md'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,100p' scripts/release_checks/run_repository_contracts.py && rtk sed -n '1,90p' company_ui/certification/certification_manifest.json && rtk sed -n '3040,3130p' company_ui/certification/certification_manifest.json && rtk rg -n \\\"certification_manifest|1205\\\" tests\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files | rtk rg 'certification_manifest|CERTIFICATION_MANIFEST|source_completion' && rtk sed -n '50,100p' tests/test_phase35_v200_single_token_authority.py && rtk sed -n '1,100p' company_ui/governance/source_evidence.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -120 company_ui/governance/source_evidence.py && rtk tail -60 company_ui/certification/certification_manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n -C 1 '1205' company_ui/certification/certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/release_checks/run_repository_contracts.py --output /tmp/visembler-chg208-repository-contract.json && rtk git diff --check && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add company_ui/certification/certification_manifest.json && rtk git commit -m 'Refresh certification test count'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-f3402452f9d4adf9c6fe0bfd'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git for-each-ref --format='%(refname) %(objectname)' refs/heads/codex-fabric/evidence/visembler refs/heads/project-os-artifacts/visembler && rtk git branch -a --list '*CHG-207*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-206-r1 && rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-181-r1 && rtk git show refs/heads/project-os-artifacts/visembler/CHG-206-r1:reader/INDEX.md'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-181-r1 | rtk rg 'INDEX|README|MANIFEST|native-release/key-gates/receipt' && rtk git show refs/heads/project-os-artifacts/visembler/CHG-181-r1:INDEX.md && rtk git show refs/heads/project-os-artifacts/visembler/CHG-181-r1:MANIFEST.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg208-native-release-09ee0be/progress.json && rtk tail -30 /tmp/visembler-chg208-native-release-09ee0be/logs/full-tests.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk tail -15 /tmp/visembler-chg208-native-release-09ee0be/logs/full-tests.log && rtk cat /tmp/visembler-chg208-native-release-09ee0be/progress.json | rtk tail -24'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; p=\\\"/tmp/visembler-chg208-native-release-09ee0be/progress.json\\\";print(\\\"\\\\n\\\".join(f\\\"{x[\\\\\\\"name\\\\\\\"]}: {x[\\\\\\\"status\\\\\\\"]}\\\" for x in json.load(open(p))))' && rtk ls /tmp/visembler-chg208-native-release-09ee0be\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in json.load(open(\\\"/tmp/visembler-chg208-native-release-09ee0be/progress.json\\\"))])' && rtk ls /tmp/visembler-chg208-native-release-09ee0be\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in json.load(open(\\\"/tmp/visembler-chg208-native-release-09ee0be/progress.json\\\"))])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in json.load(open(\\\"/tmp/visembler-chg208-native-release-09ee0be/progress.json\\\"))][-8:])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; d=json.load(open(\\\"/tmp/visembler-chg208-native-release-09ee0be/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in d[-5:]])' && rtk ls -lh /tmp/visembler-chg208-native-release-09ee0be/chg181-authoring-composition-reuse\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg208-native-release-09ee0be'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python -c 'import json; d=json.load(open(\\\"/tmp/visembler-chg208-native-release-09ee0be/report.json\\\")); print(json.dumps({\\\"release_status\\\":d[\\\"release_status\\\"],\\\"checks_status\\\":d[\\\"checks_status\\\"],\\\"candidate\\\":d[\\\"source_editor_sha256\\\"],\\\"base\\\":d[\\\"git_status_at_start\\\"],\\\"checks\\\":[(x[\\\"name\\\"],x[\\\"status\\\"]) for x in d[\\\"checks\\\"]]},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-f3402452f9d4adf9c6fe0bfd'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n \\\"publish-evidence|audit.json|job_state\\\" /Users/haewonkim/.codex-fabric --glob '*.py' --glob '*.md'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'def publish_evidence_for_job|def evidence_ref_for|def build.*audit|evidence_publication' /Users/haewonkim/.codex-fabric/bin/fabric.py && rtk proxy sed -n '2400,2635p' /Users/haewonkim/.codex-fabric/bin/fabric.py\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ls -l /Users/haewonkim/.codex-fabric/bin/fabricctl && rtk proxy sed -n '1,30p' /Users/haewonkim/.codex-fabric/bin/fabricctl\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'def publish_evidence_for_job|def evidence_ref_for|evidence_publication' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '2430,2610p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2725,2825p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '3040,3098p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '3300,3380p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2825,2960p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2960,3048p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '330,380p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport json, os, subprocess\nfrom pathlib import Path\nroot=Path.cwd()\nscene=json.loads((root/'tests/fixtures/chg208/chg173-remap-scenes.json').read_text())\nscript=r'''\nimport {intakeText,datasetFromIntake} from './company_ui/products/visualizer/assets/authoring_data.mjs';\nimport {buildReusableBindingContract,suggestSlotMapping,planReusableRemap} from './company_ui/products/visualizer/assets/authoring_reuse_contract.mjs';\nimport {summarizedRemapIssues} from './company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs';\nconst scenes=JSON.parse(process.env.CH G208_SCENES.replace(' ',''));\nconst bad=scenes.incompatible, source=buildReusableBindingContract(bad.source.model), destination=datasetFromIntake(intakeText(bad.destination_paste_tsv),'chg208-bad','Pasted data'), badSlot=suggestSlotMapping(source.slots[0],destination), badPlan=planReusableRemap(source,[destination],{[source.slots[0].identity]:{dataset_id:destination.id}}), wrong=badSlot.problems.find(issue=>issue.role==='value'&&issue.diagnostic_kind==='same_name_wrong_type');\nconst amb=scenes.ambiguous, contract=buildReusableBindingContract(amb.source.model), ambDataset=datasetFromIntake(intakeText(amb.destination_paste_tsv),'chg208-amb','Pasted data'), ambSlot=suggestSlotMapping(contract.slots[0],ambDataset), ambiguous=ambSlot.unresolved.find(issue=>issue.reason==='ambiguous'&&issue.role==='category'), selectedUnavailable=planReusableRemap(contract,[ambDataset],{[contract.slots[0].identity]:{dataset_id:ambDataset.id,mappings:{c1:{category:'deleted-service-week'}}}}), unavailable=selectedUnavailable.slots[0].problems[0];\nconst missingData={id:'missing-data',name:'Pasted data',fields:[{id:'shift',name:'Shift',type:'categorical'},{id:'note',name:'Note',type:'string'}],rows:[['C4','none'],['C5','high']]}, missing=suggestSlotMapping(contract.slots[0],missingData), missingIssue=missing.unresolved.find(issue=>issue.source_field==='Service week'), missingMessage=summarizedRemapIssues(contract.slots[0],missing).find(issue=>issue.message.includes('Service week'))?.message;\nconst duplicate=structuredClone(bad.source.model);duplicate.items=[duplicate.items[0],{...structuredClone(duplicate.items[0]),id:'c2',element:'Pareto comparison'}];const sharedContract=buildReusableBindingContract(duplicate),sharedSlot=suggestSlotMapping(sharedContract.slots[0],destination),shared=summarizedRemapIssues(sharedContract.slots[0],sharedSlot).find(issue=>issue.message.includes('Measurement requires a numeric field'));\nconsole.log(JSON.stringify({wrong_type:{diagnostic_kind:wrong.diagnostic_kind,role:wrong.role,source_field:wrong.source_field,expected_field:wrong.expected_field,observed_field:wrong.observed_field,mismatch:wrong.mismatch,message:summarizedRemapIssues(source.slots[0],badSlot).find(issue=>issue.message.includes('Measurement requires a numeric field'))?.message,apply_enabled:badPlan.ok},missing:{diagnostic_kind:missingIssue.diagnostic_kind,source_field:missingIssue.source_field,reason:missingIssue.reason,message:missingMessage},ambiguous:{diagnostic_kind:ambiguous.diagnostic_kind,source_field:ambiguous.source_field,candidate_fields:ambiguous.candidate_fields,message:summarizedRemapIssues(contract.slots[0],ambSlot).find(issue=>issue.message.includes('more than one compatible'))?.message,apply_enabled:planReusableRemap(contract,[ambDataset]).ok},selected_unavailable:{diagnostic_kind:unavailable.diagnostic_kind,selected_field_id:unavailable.selected_field_id,dataset_name:unavailable.dataset_name,message:summarizedRemapIssues(contract,selectedUnavailable.slots[0])[0].message,apply_enabled:selectedUnavailable.ok},shared_slot:{slot_count:sharedContract.slots.length,consumer_count:shared?.itemIds.length||0,item_ids:shared?.itemIds||[],elements:shared?.elements||[],deduplicated_message:shared?.message||null}},null,2));\n'''.replace('CH G208','CHG208')\nenv=os.environ.copy();env['CHG208_SCENES']=json.dumps(scene)\nresult=subprocess.run(['node','--input-type=module','--eval',script],cwd=root,env=env,text=True,capture_output=True,check=True)\nreceipt={\\\"schema\\\":\\\"visembler-chg208-focused-diagnostics.v1\\\",\\\"candidate_sha\\\":subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip(),\\\"candidate_tree\\\":subprocess.check_output(['git','rev-parse','HEAD\"'^{tree}'\"'],cwd=root,text=True).strip(),\\\"base_sha\\\":\\\"63569c1e8d7f6e73650d66572c054c8108b02e96\\\",\\\"base_tree\\\":\\\"c33f29fcd911056c06b6be315170fbdac72beebd\\\",\\\"immutable_source\\\":{\\\"commit\\\":scene['evidence']['commit'],\\\"authoring_receipt\\\":scene['evidence']['authoring_receipt'],\\\"authoring_receipt_blob_sha\\\":scene['evidence']['authoring_receipt_blob_sha'],\\\"fixture_sha256\\\":__import__('hashlib').sha256((root/'tests/fixtures/chg208/chg173-remap-scenes.json').read_bytes()).hexdigest()},\\\"cases\\\":json.loads(result.stdout)}\nout=Path('/tmp/visembler-chg208-native-release-09ee0be/focused-diagnostics.json');out.write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+'\\\\n');print(out)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /tmp/visembler-chg208-native-release-09ee0be/focused-diagnostics.json && rtk cat /tmp/visembler-chg208-native-release-09ee0be/chg208-remap-diagnostics/acceptance.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git remote -v && rtk git ls-remote --heads origin refs/heads/fix/visembler-chg208-remap-diagnostics-r1 refs/heads/project-os-artifacts/visembler/CHG-208-r1 refs/heads/codex-fabric/evidence/visembler/CHG-208-r1 && rtk git status --short && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push --set-upstream origin fix/visembler-chg208-remap-diagnostics-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -lh /tmp/visembler-chg208-native-release-09ee0be.zip /tmp/visembler-chg208-native-release-09ee0be/report.json /tmp/visembler-chg208-native-release-09ee0be/source-manifest.json /tmp/visembler-chg208-native-release-09ee0be/full-tests.xml /tmp/visembler-chg208-native-release-09ee0be/artifact-sha256.json /tmp/visembler-chg208-native-release-09ee0be/chg208-remap-diagnostics/screenshots'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport hashlib, json, shutil, subprocess\nfrom pathlib import Path\nroot=Path.cwd()\nrun=Path('/tmp/visembler-chg208-native-release-09ee0be')\ndest=Path('/tmp/visembler-chg208-carrier-files')\nif dest.exists(): shutil.rmtree(dest)\ndest.mkdir(parents=True)\nsha=lambda p: hashlib.sha256(p.read_bytes()).hexdigest()\nhead=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()\ntree=subprocess.check_output(['git','rev-parse','HEAD\"'^{tree}'\"'],cwd=root,text=True).strip()\nreport=json.loads((run/'report.json').read_text())\nbrowser=json.loads((run/'chg208-remap-diagnostics/acceptance.json').read_text())\nfocused=json.loads((run/'focused-diagnostics.json').read_text())\ncopy_map={\n  'diagnostics/focused-remap-diagnostics.json':run/'focused-diagnostics.json',\n  'browser/remap-acceptance.json':run/'chg208-remap-diagnostics/acceptance.json',\n  'browser/screenshots/incompatible-pareto.png':run/'chg208-remap-diagnostics/screenshots/chg173-pareto-wrong-type-dialog.png',\n  'browser/screenshots/ambiguous-compatible.png':run/'chg208-remap-diagnostics/screenshots/chg173-ambiguous-remap-dialog.png',\n  'native-release/report.json':run/'report.json',\n  'native-release/release-manifest.json':run/'release-manifest.json',\n  'native-release/repository-contracts.json':run/'repository-contracts.json',\n  'native-release/source-manifest.json':run/'source-manifest.json',\n  'native-release/full-tests.xml':run/'full-tests.xml',\n  'native-release/artifact-sha256.json':run/'artifact-sha256.json',\n}\nfor rel,src in copy_map.items():\n  target=dest/rel; target.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(src,target)\nwrong=browser['cases']['incompatible_pareto']; amb=browser['cases']['ambiguous_compatible']\nimmutability={\n  'schema':'visembler-chg208-remap-immutability.v1',\n  'candidate_sha':head,\n  'incomplete_wrong_type_remap':{\n    'apply_semantically_disabled':wrong['apply_disabled'],\n    'dialog_cancelled_with_escape':wrong['focus_restored_after_escape'],\n    'report_model_unchanged':wrong['report_unchanged'],\n    'source_report_unchanged':wrong['source_report_unchanged'],\n    'saved_preset_cache_unchanged':wrong['preset_cache_unchanged'],\n    'selection_state_was_not_committed':True,\n  },\n  'ambiguous_remap_before_apply':{\n    'apply_disabled_before_choice':amb['apply_disabled_before_choice'],\n    'report_model_unchanged_before_apply':True,\n    'assertion':'The native browser gate compares the live report model to its pre-dialog snapshot immediately before Apply; the gate passed.',\n  },\n  'after_explicit_compatible_apply':{\n    'source_report_unchanged':amb['source_report_unchanged'],\n    'saved_preset_cache_unchanged':amb['preset_cache_unchanged'],\n    'destination_field_schema_preserved':amb['destination_fields_preserved'],\n    'selected_destination_id':amb['selected_destination_ids'],\n  },\n  'evidence':'browser/remap-acceptance.json',\n}\n(dest/'immutability').mkdir()\n(dest/'immutability/report-source-preset.json').write_text(json.dumps(immutability,indent=2,ensure_ascii=False)+'\\\\n')\nfull_xml=run/'full-tests.xml'\nimport xml.etree.ElementTree as ET\nsuite=ET.parse(full_xml).getroot()\nfull_counts={key:int(suite.attrib.get(key,'0')) for key in ('tests','failures','errors','skipped')}\nsummary={\n  'schema':'visembler-chg208-test-summary.v1',\n  'candidate_sha':head,\n  'focused_tests':{\n    'command':'pytest tests/test_visualizer_chg208_remap_diagnostics.py tests/test_visualizer_chg181_semantic_reuse.py tests/test_visualizer_chg181_section_composition.py tests/test_visualizer_chg207_narrow_reading.py -vv',\n    'result':'PASS',\n    'passed':28,\n  },\n  'maintained_native_release':{\n    'command':'python scripts/verify_release.py --host-mode native --output <new-empty-directory>',\n    'result':report['release_status'],\n    'checks_status':report['checks_status'],\n    'full_tests':full_counts,\n    'chg181_browser':'PASS',\n    'chg208_browser':browser['status'],\n    'all_required_gates_pass':all(x.get('status')=='PASS' for x in report['checks']),\n  },\n  'company_ui_validate':{'command':'python -m company_ui.validate .','result':'PASS','errors':0,'warnings':139},\n}\n(dest/'tests').mkdir()\n(dest/'tests/focused-and-native-summary.json').write_text(json.dumps(summary,indent=2,ensure_ascii=False)+'\\\\n')\nzip_path=Path('/tmp/visembler-chg208-native-release-09ee0be.zip')\nnative_binding={\n  'schema':'visembler-chg208-native-release-binding.v1',\n  'candidate_sha':head,\n  'candidate_tree':tree,\n  'base_sha':'63569c1e8d7f6e73650d66572c054c8108b02e96',\n  'base_tree':'c33f29fcd911056c06b6be315170fbdac72beebd',\n  'native_release_status':report['release_status'],\n  'checks_status':report['checks_status'],\n  'report_path':'native-release/report.json',\n  'report_sha256':sha(run/'report.json'),\n  'source_manifest_sha256':sha(run/'source-manifest.json'),\n  'full_tests_junit_sha256':sha(full_xml),\n  'release_archive':{'path':'/tmp/visembler-chg208-native-release-09ee0be.zip','sha256':sha(zip_path),'included':False},\n  'native_audit_ref':'refs/heads/codex-fabric/evidence/visembler/CHG-208-r1',\n  'native_audit_parent_expected':head,\n  'required_native_gates_passed':[x['name'] for x in report['checks'] if x.get('status')=='PASS'],\n}\n(dest/'native-release').mkdir(exist_ok=True)\n(dest/'native-release/binding.json').write_text(json.dumps(native_binding,indent=2,ensure_ascii=False)+'\\\\n')\nidentity={\n 'schema':'project-os-change-identity.v1','repository':'kimhw8084/visembler','project':'visembler','change':'CHG-208','request':'CHG-208-r1','operation':'FIX','work_branch':'fix/visembler-chg208-remap-diagnostics-r1','base_sha':'63569c1e8d7f6e73650d66572c054c8108b02e96','base_tree':'c33f29fcd911056c06b6be315170fbdac72beebd','candidate_sha':head,'candidate_tree':tree,'candidate_commits':['7243251271eef3b5933237d4187c92974430d5dc','09ee0bea69a1c957e07b1bb88e846db471827e9b'],'artifact_ref':'refs/heads/project-os-artifacts/visembler/CHG-208-r1','fabric_evidence_ref':'refs/heads/codex-fabric/evidence/visembler/CHG-208-r1','immutable_root_evidence_commit':'7224c0815142557e2362e2ca4e6201e67006126c','source_authoring_receipt_blob_sha':'d52795ac1b579f1540f11dcb1545762f8bf65464','native_release_status':report['release_status'],'integration_performed':False}\n(dest/'identity.json').write_text(json.dumps(identity,indent=2,ensure_ascii=False)+'\\\\n')\nindex=f'''# Visembler CHG-208-r1 — reader index\\\\n\\\\nThis compact carrier records the remap field-identity and truthful wrong-type diagnostic fix for candidate \"'`{head}` (tree `{tree}`), based on exact main `{identity['\"'base_sha']}\"'`. It addresses only the CHG-173 R2 Pareto remap failure class and preserves the existing fail-closed binding rules.'\"\\\\n\\\\n## Start here\\\\n\\\\n- [Exact source and candidate identity](../identity.json)\\\\n- [Structured wrong-type, missing, ambiguous, unavailable, and shared-slot receipt](../diagnostics/focused-remap-diagnostics.json)\\\\n- [Native browser acceptance receipt](../browser/remap-acceptance.json)\\\\n- [Report, source, and preset immutability receipt](../immutability/report-source-preset.json)\\\\n- [Focused and full native test summary](../tests/focused-and-native-summary.json)\\\\n- [Native release binding and archive digest](../native-release/binding.json)\\\\n- [Maintained native release report](../native-release/report.json)\\\\n\\\\n## Browser evidence\\\\n\\\\n- [CHG-173 Pareto wrong-type dialog](../browser/screenshots/incompatible-pareto.png): Cycle and Failure count headers are visible; Failure count remains categorical; Apply is disabled; the explanation names the observed Category type and numeric Measurement requirement.\\\\n- [Ambiguous compatible remap dialog](../browser/screenshots/ambiguous-compatible.png): Service week and SERVICE WEEK are listed as separate compatible choices; Apply remains disabled before a choice.\\\\n\\\\nThe acceptance also verifies explicit-choice focus retention, Escape focus restoration, semantically disabled Apply, cancellation immutability, and source/preset preservation.\\\\n\\\\n## Exact evidence provenance\\\\n\\\\nThe immutable reproduction comes from CHG-173 R2 / AR-73 at commit \"'`7224c0815142557e2362e2ca4e6201e67006126c`, receipt `CHG-173-r2-evidence/authoring/remap-compatibility-history-conflict.json`, blob `{identity['\"'source_authoring_receipt_blob_sha']}\"'`. Fixture digest: `{focused['\"'immutable_source']['fixture_sha256']}\"'`.'\"\\\\n\\\\nThe maintained native release verifier passed all required local gates as \"'`PASS_LOCAL_INTERNAL_PILOT`, including the full test suite, CHG-181 browser reuse acceptance, and this CHG-208 browser acceptance. This does not claim managed company-target certification or Gold promotion. The standard Fabric audit ref is `{identity['\"'fabric_evidence_ref']}\"'` and is parented to the exact candidate above.'\"\\\\n\\\\nNo PR or main/integration mutation was performed.\\\\n'''\n(dest/'reader').mkdir()\n(dest/'reader/INDEX.md').write_text(index)\nmanifest={}\nfor path in sorted(p for p in dest.rglob('*') if p.is_file()):\n rel=path.relative_to(dest).as_posix();manifest[rel]={'bytes':path.stat().st_size,'sha256':sha(path)}\n(dest/'MANIFEST.json').write_text(json.dumps({'schema':'visembler-chg208-artifact-manifest.v1','files':manifest},indent=2,sort_keys=True)+'\\\\n')\n(dest/'MANIFEST.json.sha256').write_text(f\\\"{sha(dest/'MANIFEST.json')}  MANIFEST.json\\\\n\\\")\nprint(json.dumps({'carrier_dir':str(dest),'files':len(manifest),'bytes':sum(v['bytes'] for v in manifest.values())},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 93,
+        "output_sha256": "88293dab315b8b3c6ecbe51f400279c5ad1f6241374443fc40eca15985f4ef62",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls identity.json MANIFEST.json MANIFEST.json.sha256 reader diagnostics browser immutability native-release 2>/dev/null; rtk git worktree list'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree add --detach /tmp/visembler-chg208-carrier-wt 09ee0bea69a1c957e07b1bb88e846db471827e9b && rtk cp -R /tmp/visembler-chg208-carrier-files/. /tmp/visembler-chg208-carrier-wt/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg208-carrier-wt add MANIFEST.json MANIFEST.json.sha256 identity.json reader/INDEX.md diagnostics browser immutability tests/focused-and-native-summary.json native-release/binding.json native-release/report.json native-release/release-manifest.json native-release/repository-contracts.json native-release/source-manifest.json native-release/full-tests.xml native-release/artifact-sha256.json && rtk git -C /tmp/visembler-chg208-carrier-wt diff --cached --check && rtk git -C /tmp/visembler-chg208-carrier-wt diff --cached --stat && rtk git -C /tmp/visembler-chg208-carrier-wt rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show -s --format='%an <%ae>' refs/heads/project-os-artifacts/visembler/CHG-206-r1 && rtk git show -s --format='%an <%ae>' refs/heads/project-os-artifacts/visembler/CHG-181-r1 && rtk git show -s --format='%an <%ae>' refs/heads/codex-fabric/evidence/visembler/CHG-137-r3\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg208-carrier-wt commit -m 'Publish CHG-208-r1 artifact carrier' && rtk git -C /tmp/visembler-chg208-carrier-wt rev-list --parents -n 1 HEAD && rtk git -C /tmp/visembler-chg208-carrier-wt status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg208-carrier-wt push --force-with-lease=refs/heads/project-os-artifacts/visembler/CHG-208-r1: origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-208-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nbase=Path('/tmp/visembler-chg208-carrier-wt')\nmanifest=json.loads((base/'MANIFEST.json').read_text())['files']\nerrors=[]\nfor rel,expected in manifest.items():\n data=(base/rel).read_bytes(); digest=hashlib.sha256(data).hexdigest()\n if len(data)\"'!=expected['\"'bytes'] or digest\"'!=expected['\"'sha256']:errors.append(rel)\nsidecar=(base/'MANIFEST.json.sha256').read_text().split()[0]\nactual=hashlib.sha256((base/'MANIFEST.json').read_bytes()).hexdigest()\nprint(json.dumps({'file_count':len(manifest),'file_hash_errors':errors,'manifest_sidecar_matches':sidecar==actual},indent=2))\nPY\nrtk git -C /tmp/visembler-chg208-carrier-wt show -s --format='%H%n%P' HEAD\nrtk git ls-remote --heads origin refs/heads/main refs/heads/fix/visembler-chg208-remap-diagnostics-r1 refs/heads/project-os-artifacts/visembler/CHG-208-r1 refs/heads/codex-fabric/evidence/visembler/CHG-208-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '3935,4010p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk rg -n 'def headerConfidence|function fieldCompatibilityRequirement|function mismatchProblem|export function suggestSlotMapping|function issueText|test_chg173_failure|chg208-remap-diagnostics' company_ui/products/visualizer/assets/authoring_data.mjs company_ui/products/visualizer/assets/authoring_reuse_contract.mjs company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs tests/test_visualizer_chg208_remap_diagnostics.py scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git update-ref refs/heads/project-os-artifacts/visembler/CHG-208-r1 a1b105a748e50e5a071183fa2855d0a9ae420271 && rtk git worktree remove --force /tmp/visembler-chg208-carrier-wt && rtk git for-each-ref --format='%(refname) %(objectname)' refs/heads/project-os-artifacts/visembler/CHG-208-r1 refs/heads/fix/visembler-chg208-remap-diagnostics-r1 && rtk git status --short && rtk git rev-parse refs/heads/main\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'headerConfidence|fieldCompatibilityRequirement|mismatchProblem|suggestSlotMapping|function issueText|test_chg173_failure|test_chg208_missing|test_chg208_shared|def _remap_focus_state' company_ui/products/visualizer/assets/authoring_data.mjs company_ui/products/visualizer/assets/authoring_reuse_contract.mjs company_ui/products/visualizer/assets/authoring_reuse_presentation.mjs tests/test_visualizer_chg208_remap_diagnostics.py scripts/release_checks/run_chg208_remap_diagnostics_acceptance.py && rtk git status --short && rtk git log -2 --format='%H %s' refs/heads/fix/visembler-chg208-remap-diagnostics-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.156.1",
+    "configured_model": "gpt-6-luna",
+    "event_count": 253,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.49,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 19011712,
+      "fresh_input_tokens": 490209,
+      "input_tokens": 19501921,
+      "non_reasoning_output_tokens": 40667,
+      "output_tokens": 112795,
+      "reasoning_output_tokens": 72128,
+      "total_processed_tokens": 19614716
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "09ee0bea69a1c957e07b1bb88e846db471827e9b",
+      "subject": "Refresh certification test count"
+    },
+    {
+      "sha": "7243251271eef3b5933237d4187c92974430d5dc",
+      "subject": "Fix reusable remap diagnostics"
+    }
+  ],
+  "diff": {
+    "additions": 949,
+    "changed_files": 8,
+    "commit_count": 2,
+    "deletions": 24
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 2,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "090a4a896bba27525d0d719fca127b89871b45276a6371954617e75369f9d412"
+      },
+      {
+        "bytes": 11243,
+        "path": "tests/fixtures/chg208/chg173-remap-scenes.json",
+        "sha256": "a26e761f247cf1c3c242d85acb51e37fe2bd7b3daada6ed393c4922709044525"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-25T14:26:03Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "63569c1e8d7f6e73650d66572c054c8108b02e96",
+    "branch": "fix/visembler-chg208-remap-diagnostics-r1",
+    "detached_verify": false,
+    "head_sha": "09ee0bea69a1c957e07b1bb88e846db471827e9b",
+    "remote_exact_head": true,
+    "remote_head_sha": "09ee0bea69a1c957e07b1bb88e846db471827e9b",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "63569c1e8d7f6e73650d66572c054c8108b02e96",
+    "work_branch": "fix/visembler-chg208-remap-diagnostics-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-f3402452f9d4adf9c6fe0bfd",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-208-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-208-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-208-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-25T13:31:39Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 3264,
+    "queue_seconds": 1,
+    "total_seconds": 3265
+  },
+  "transport": {
+    "bytes": 8720,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 8420,
+    "prompt_sha256": "28fe2468f791d2a3bcc58ed09623339d52c49cf8fb4718e4d41ce50f54324f69",
+    "sha256": "f3402452f9d4adf9c6fe0bfdaa14ff60f3079e712893b146acded56814bc3476"
+  }
+}
