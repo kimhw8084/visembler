@@ -1,0 +1,167 @@
+{
+  "changed_files": [
+    "scripts/release_checks/run_chg253_sparse_reading_acceptance.py"
+  ],
+  "checks": [
+    {
+      "name": "r1-clean-depth1-reproduction",
+      "outcome": "reported invalid historical object failure reproduced before mutation",
+      "status": "PASS"
+    },
+    {
+      "name": "r2-focused-clean-depth1-pytest",
+      "outcome": "1 passed; zero Git subprocess calls",
+      "status": "PASS"
+    },
+    {
+      "name": "r2-full-clean-depth1-pytest",
+      "outcome": "1216 passed; 0 failures; 1 warning",
+      "status": "PASS"
+    },
+    {
+      "name": "native-preview-acceptance",
+      "outcome": "320/359/360/361/389/390/391/1440; table keyboard/wheel/touch/focus; CHG-207 dense regressions; source data immutable",
+      "status": "PASS"
+    },
+    {
+      "name": "maintained-native-release-verifier",
+      "outcome": "PASS_LOCAL_INTERNAL_PILOT; all 31 required gates PASS",
+      "status": "PASS"
+    },
+    {
+      "name": "target-main-unchanged",
+      "outcome": "main remains at exact base SHA and tree",
+      "status": "PASS"
+    },
+    {
+      "name": "r1-product-preservation",
+      "outcome": "required CSS/MJS and checked certification/CHG-207/209 blobs are unchanged",
+      "status": "PASS"
+    }
+  ],
+  "ci_failure": {
+    "job_id": 108318138155,
+    "pr_number": 27,
+    "run_id": 36211269907,
+    "run_number": 283,
+    "url": "https://github.com/kimhw8084/visembler/actions/runs/36211269907/job/108318138155"
+  },
+  "commits": [
+    {
+      "parent": "3777fa759c96355888ea3a39715693ab4f306667",
+      "sha": "8a2539a50ed7d4d638baa52e1574dafbf5527478",
+      "subject": "fix: make chg253 acceptance hermetic",
+      "tree": "bcff2aeab48bfc4d6ca2f0105365030d7a9ff992"
+    }
+  ],
+  "created_at": "2026-09-26T04:09:54Z",
+  "error_code": null,
+  "evidence_manifest": {
+    "artifact_carrier_branch": "project-os-artifacts/visembler/CHG-253-r2",
+    "artifact_carrier_commit": "93e4aebed928679e653e10fcc70ab86705b00200",
+    "artifact_commit_parent": "8a2539a50ed7d4d638baa52e1574dafbf5527478",
+    "count": 7,
+    "items": [
+      {
+        "bytes": 8892,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/carrier-manifest.json",
+        "sha256": "20e1bc9d12b734b431629e4289044bf413ccfaf8e761a8c7c819aa3cb9aedd56"
+      },
+      {
+        "bytes": 1098,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/ci/github-actions-run-283.json",
+        "sha256": "6eba3946db95e6e0d140c891d334a0434998bb92fd43d09aa9c59aa9bbeb8a8c"
+      },
+      {
+        "bytes": 853,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/reproduction/r1-depth1-reproduction.json",
+        "sha256": "6d02fd8331fafc8b67c8a9bfaae0c45822bc9d8134ee02f205d71862c0ffb13f"
+      },
+      {
+        "bytes": 1174,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/tests/r2-clean-shallow-clone-results.json",
+        "sha256": "537351f048ca735698d29b7d8656500fba2af87be11cbd4def5fb1275ff3e8e0"
+      },
+      {
+        "bytes": 282308,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/native-acceptance/acceptance-receipt.json",
+        "sha256": "8eb439576c80257b98811781c855fe3f6f4a6c17a8fbf09d6238b84e753c8ff2"
+      },
+      {
+        "bytes": 13439,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/release/report.json",
+        "sha256": "b0561bdf7dc4ed9d8f8835b71c46365863733e7565d67d7075dcf6b4c08bbad6"
+      },
+      {
+        "bytes": 1804,
+        "path": "project-os-artifacts/visembler/CHG-253-r2/release/binding.json",
+        "sha256": "254a0e150dc4b8773af339241e4db0da6b92d316bcb3344fddc39fdc40c55bd1"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publication": {
+    "artifact_carrier_commit": "93e4aebed928679e653e10fcc70ab86705b00200",
+    "branch": "codex-fabric/evidence/visembler/CHG-253-r2",
+    "expected_commit_parent_sha": "8a2539a50ed7d4d638baa52e1574dafbf5527478"
+  },
+  "failure_class": null,
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "base_tree": "08719bb4afbe3c508cb296a4505001e36141cd4e",
+    "branch": "fix/visembler-chg253-ci-hermetic-r2",
+    "head_sha": "8a2539a50ed7d4d638baa52e1574dafbf5527478",
+    "head_tree": "bcff2aeab48bfc4d6ca2f0105365030d7a9ff992",
+    "r1_accepted_head": "3777fa759c96355888ea3a39715693ab4f306667",
+    "r1_is_exact_parent": true,
+    "remote_exact_head": true,
+    "remote_head_sha": "8a2539a50ed7d4d638baa52e1574dafbf5527478",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "target_head_observed_before_execution": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "target_unchanged": true,
+    "work_branch": "fix/visembler-chg253-ci-hermetic-r2",
+    "worktree_clean": true
+  },
+  "identity": {
+    "change": "CHG-253",
+    "fabric_job_id": "CF-195d82774b769cfaf5b18cf7",
+    "operation": "FIX",
+    "project": "visembler",
+    "repository": "kimhw8084/visembler",
+    "request": "CHG-253-r2"
+  },
+  "job_id": "CF-195d82774b769cfaf5b18cf7",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-253-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-253-r2"
+  },
+  "managed_target_status": "PENDING",
+  "operation": "FIX",
+  "preserved_product_blobs": {
+    "all_checked_blobs_identical": true,
+    "integrated_editor.css": "6c665a66e1fdf791dfeefcee630243ea86919b09",
+    "integrated_editor.mjs": "23361ef24010898703e634e4c78ddfe1726362af"
+  },
+  "project_id": "visembler",
+  "request": "CHG-253-r2",
+  "schema_version": 1,
+  "status": "EXECUTED_CHANGE",
+  "target": {
+    "branch": "main",
+    "observed_after": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "observed_before": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "tree": "08719bb4afbe3c508cb296a4505001e36141cd4e",
+    "unchanged": true
+  },
+  "visual_baseline": {
+    "commit": "33e1dc430b8d82b5f0c5327f255bdc2ce64656c7",
+    "immutable_url": "https://github.com/kimhw8084/visembler/blob/33e1dc430b8d82b5f0c5327f255bdc2ce64656c7/project-os-artifacts/visembler/CHG-253-r1/screenshots/before/r3-reading-390.png",
+    "path": "project-os-artifacts/visembler/CHG-253-r1/screenshots/before/r3-reading-390.png"
+  }
+}
