@@ -1,0 +1,293 @@
+{
+  "repository": "kimhw8084/visembler",
+  "project": "visembler",
+  "change": "CHG-254",
+  "request": "CHG-254-r1",
+  "base": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+  "base_tree": "bcff2aeab48bfc4d6ca2f0105365030d7a9ff992",
+  "r3_carrier": "dfe6455d2222d8eff3d1a67dc19bb0902f0871e6",
+  "head": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+  "reproduced_on_exact_base": true,
+  "scenes": {
+    "B-semiconductor-rca": {
+      "source_items": [
+        {
+          "id": "c5",
+          "element": "SPC Control Chart",
+          "title": "Process stability and specification",
+          "mapping": null
+        },
+        {
+          "id": "c6",
+          "element": "Box Plot",
+          "title": "Control versus affected distribution",
+          "mapping": {
+            "category": "population_1",
+            "cohort": "population_1",
+            "value": "yield_2",
+            "x": "yield_2",
+            "y": "yield_2"
+          }
+        }
+      ],
+      "accepted_r3_package": [
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Process stability and specification",
+              "categories": [
+                "W1",
+                "W2",
+                "W3",
+                "W4"
+              ],
+              "values": [
+                "98.8",
+                "98.4",
+                "94.1",
+                "94.6"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        },
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Control versus affected distribution",
+              "categories": [
+                "Reference",
+                "Reference",
+                "Reference",
+                "Affected",
+                "Affected",
+                "Affected"
+              ],
+              "values": [
+                "98.8",
+                "98.5",
+                "98.6",
+                "94.1",
+                "94.6",
+                "93.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        }
+      ],
+      "exact_base_reproduction": [
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Process stability and specification",
+              "categories": [
+                "W1",
+                "W2",
+                "W3",
+                "W4"
+              ],
+              "values": [
+                "98.8",
+                "98.4",
+                "94.1",
+                "94.6"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        },
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Control versus affected distribution",
+              "categories": [
+                "Reference",
+                "Reference",
+                "Reference",
+                "Affected",
+                "Affected",
+                "Affected"
+              ],
+              "values": [
+                "98.8",
+                "98.5",
+                "98.6",
+                "94.1",
+                "94.6",
+                "93.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        }
+      ],
+      "reproduced_bytes": 52020,
+      "artifact": "pre-fix-B-semiconductor-rca.pptx"
+    },
+    "C-experiment-decision": {
+      "source_items": [
+        {
+          "id": "c5",
+          "element": "Box Plot",
+          "title": "Outcome distribution by cohort",
+          "mapping": {
+            "category": "cohort_1",
+            "cohort": "cohort_1",
+            "status": "cohort_1",
+            "value": "conversion_2",
+            "x": "conversion_2"
+          }
+        },
+        {
+          "id": "c6",
+          "element": "Line Chart",
+          "title": "Conversion by week",
+          "mapping": {
+            "category": "week_1",
+            "cohort": "cohort_2",
+            "series": "cohort_2",
+            "status": "cohort_2",
+            "value": "conversion_3",
+            "x": "week_1",
+            "y": "conversion_3"
+          }
+        }
+      ],
+      "accepted_r3_package": [
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Conversion by week",
+              "categories": [
+                "W1",
+                "W1",
+                "W2",
+                "W2",
+                "W3",
+                "W3",
+                "W4",
+                "W4"
+              ],
+              "values": [
+                "8",
+                "8.2",
+                "8.1",
+                "8.7",
+                "8.4",
+                "9.4",
+                "8.5",
+                "9.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        },
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Outcome distribution by cohort",
+              "categories": [
+                "Control",
+                "Control",
+                "Control",
+                "Control",
+                "Treatment",
+                "Treatment",
+                "Treatment",
+                "Treatment"
+              ],
+              "values": [
+                "8",
+                "8.1",
+                "8.4",
+                "8.5",
+                "8.2",
+                "8.7",
+                "9.4",
+                "9.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        }
+      ],
+      "exact_base_reproduction": [
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Conversion by week",
+              "categories": [
+                "W1",
+                "W1",
+                "W2",
+                "W2",
+                "W3",
+                "W3",
+                "W4",
+                "W4"
+              ],
+              "values": [
+                "8",
+                "8.2",
+                "8.1",
+                "8.7",
+                "8.4",
+                "9.4",
+                "8.5",
+                "9.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        },
+        {
+          "type": "lineChart",
+          "series": [
+            {
+              "name": "Outcome distribution by cohort",
+              "categories": [
+                "Control",
+                "Control",
+                "Control",
+                "Control",
+                "Treatment",
+                "Treatment",
+                "Treatment",
+                "Treatment"
+              ],
+              "values": [
+                "8",
+                "8.1",
+                "8.4",
+                "8.5",
+                "8.2",
+                "8.7",
+                "9.4",
+                "9.8"
+              ]
+            }
+          ],
+          "axis_min": null,
+          "axis_max": null
+        }
+      ],
+      "reproduced_bytes": 44460,
+      "artifact": "pre-fix-C-experiment-decision.pptx"
+    }
+  }
+}

@@ -1,0 +1,1008 @@
+{
+  "candidate_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+  "candidate_specs": {
+    "B-semiconductor-rca": [
+      {
+        "element": "SPC Control Chart",
+        "id": "c5",
+        "spec": {
+          "axis": {
+            "auto": true,
+            "format": null,
+            "grid": null,
+            "max": null,
+            "min": null,
+            "precision": null,
+            "prefix": null,
+            "role": "y",
+            "scale": "linear",
+            "suffix": null,
+            "title": null,
+            "unit": null,
+            "zeroBaseline": false
+          },
+          "axis_source": {},
+          "categories": [
+            "W1",
+            "W2",
+            "W3",
+            "W4"
+          ],
+          "legend": {
+            "position": "bottom",
+            "show": false
+          },
+          "series": [
+            {
+              "axis": "primary",
+              "field": null,
+              "key": "Value",
+              "legend": true,
+              "name": "Process stability and specification",
+              "points": [
+                {
+                  "x": "W1",
+                  "y": 98.8
+                },
+                {
+                  "x": "W2",
+                  "y": 98.4
+                },
+                {
+                  "x": "W3",
+                  "y": 94.1
+                },
+                {
+                  "x": "W4",
+                  "y": 94.6
+                }
+              ],
+              "values": [
+                98.8,
+                98.4,
+                94.1,
+                94.6
+              ],
+              "visible": true
+            }
+          ],
+          "source": "legacy_rows",
+          "type": "SPC Control Chart",
+          "visual": {},
+          "x_field": null,
+          "x_role": null,
+          "y_field": null
+        },
+        "title": "Process stability and specification"
+      },
+      {
+        "element": "Box Plot",
+        "id": "c6",
+        "spec": {
+          "axis": {
+            "auto": true,
+            "format": null,
+            "grid": null,
+            "max": null,
+            "min": null,
+            "precision": null,
+            "prefix": null,
+            "role": "y",
+            "scale": "linear",
+            "suffix": null,
+            "title": null,
+            "unit": null,
+            "zeroBaseline": false
+          },
+          "axis_source": {},
+          "categories": [
+            "Reference",
+            "Affected"
+          ],
+          "groups": [
+            {
+              "axis": "primary",
+              "key": "Reference",
+              "name": "Reference",
+              "values": [
+                98.8,
+                98.5,
+                98.6
+              ],
+              "visible": true
+            },
+            {
+              "axis": "primary",
+              "key": "Affected",
+              "name": "Affected",
+              "values": [
+                94.1,
+                94.6,
+                93.8
+              ],
+              "visible": true
+            }
+          ],
+          "legend": {
+            "position": "bottom",
+            "show": false
+          },
+          "source": "bound_dataset",
+          "type": "Box Plot",
+          "visual": {},
+          "x_field": null,
+          "x_role": "category",
+          "y_field": {
+            "id": "yield_2",
+            "name": "Yield",
+            "nullable": false,
+            "profile": {
+              "distinct": 6,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number",
+            "unit": ""
+          }
+        },
+        "title": "Control versus affected distribution"
+      }
+    ],
+    "C-experiment-decision": [
+      {
+        "element": "Box Plot",
+        "id": "c5",
+        "spec": {
+          "axis": {
+            "auto": true,
+            "format": null,
+            "grid": null,
+            "max": null,
+            "min": null,
+            "precision": null,
+            "prefix": null,
+            "role": "y",
+            "scale": "linear",
+            "suffix": null,
+            "title": null,
+            "unit": null,
+            "zeroBaseline": false
+          },
+          "axis_source": {},
+          "categories": [
+            "Control",
+            "Treatment"
+          ],
+          "groups": [
+            {
+              "axis": "primary",
+              "key": "Control",
+              "name": "Control",
+              "values": [
+                8.0,
+                8.1,
+                8.4,
+                8.5
+              ],
+              "visible": true
+            },
+            {
+              "axis": "primary",
+              "key": "Treatment",
+              "name": "Treatment",
+              "values": [
+                8.2,
+                8.7,
+                9.4,
+                9.8
+              ],
+              "visible": true
+            }
+          ],
+          "legend": {
+            "position": "bottom",
+            "show": false
+          },
+          "source": "bound_dataset",
+          "type": "Box Plot",
+          "visual": {},
+          "x_field": null,
+          "x_role": "category",
+          "y_field": {
+            "id": "conversion_2",
+            "name": "Conversion",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        },
+        "title": "Outcome distribution by cohort"
+      },
+      {
+        "element": "Line Chart",
+        "id": "c6",
+        "spec": {
+          "axis": {
+            "auto": true,
+            "format": null,
+            "grid": null,
+            "max": null,
+            "min": null,
+            "precision": null,
+            "prefix": null,
+            "role": "y",
+            "scale": "linear",
+            "suffix": null,
+            "title": null,
+            "unit": null,
+            "zeroBaseline": false
+          },
+          "axis_source": {},
+          "categories": [
+            "W1",
+            "W2",
+            "W3",
+            "W4"
+          ],
+          "legend": {
+            "position": "bottom",
+            "show": true
+          },
+          "series": [
+            {
+              "_group_index": 1,
+              "axis": "primary",
+              "color": "1769D1",
+              "field": "conversion_3",
+              "key": "Control",
+              "legend": true,
+              "name": "Control",
+              "points": [],
+              "values": [
+                8.0,
+                8.1,
+                8.4,
+                8.5
+              ],
+              "visible": true
+            },
+            {
+              "_group_index": 1,
+              "axis": "primary",
+              "color": "2E8B72",
+              "field": "conversion_3",
+              "key": "Treatment",
+              "legend": true,
+              "name": "Treatment",
+              "points": [],
+              "values": [
+                8.2,
+                8.7,
+                9.4,
+                9.8
+              ],
+              "visible": true
+            }
+          ],
+          "source": "bound_dataset",
+          "type": "Line Chart",
+          "visual": {},
+          "x_field": {
+            "id": "week_1",
+            "name": "Week",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          "x_role": "x",
+          "y_field": {
+            "id": "conversion_3",
+            "name": "Conversion",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        },
+        "title": "Conversion by week"
+      }
+    ],
+    "H-unrelated-multi-series-holdout": [
+      {
+        "element": "Multi-Line",
+        "id": "c1",
+        "spec": {
+          "axis": {
+            "auto": true,
+            "format": null,
+            "grid": null,
+            "max": null,
+            "min": null,
+            "precision": null,
+            "prefix": null,
+            "role": "y",
+            "scale": "linear",
+            "suffix": null,
+            "title": "Units per hour",
+            "unit": "units/hour",
+            "zeroBaseline": false
+          },
+          "axis_source": {
+            "auto": true,
+            "title": "Units per hour",
+            "unit": "units/hour",
+            "zeroBaseline": false
+          },
+          "categories": [
+            "Mon",
+            "Tue",
+            "Wed",
+            "Thu"
+          ],
+          "legend": {
+            "position": "bottom",
+            "show": true
+          },
+          "series": [
+            {
+              "_group_index": 1,
+              "axis": "primary",
+              "color": "1769D1",
+              "field": "units",
+              "key": "North",
+              "legend": true,
+              "name": "North",
+              "points": [],
+              "values": [
+                42.0,
+                45.0,
+                43.0,
+                47.0
+              ],
+              "visible": true
+            },
+            {
+              "_group_index": 1,
+              "axis": "primary",
+              "color": "2E8B72",
+              "field": "units",
+              "key": "South",
+              "legend": true,
+              "name": "South",
+              "points": [],
+              "values": [
+                39.0,
+                41.0,
+                44.0,
+                43.0
+              ],
+              "visible": true
+            }
+          ],
+          "source": "bound_dataset",
+          "type": "Multi-Line",
+          "visual": {},
+          "x_field": {
+            "id": "shift",
+            "name": "Shift",
+            "type": "categorical"
+          },
+          "x_role": "x",
+          "y_field": {
+            "id": "units",
+            "name": "Units per hour",
+            "type": "number"
+          }
+        },
+        "title": "Line throughput by shift"
+      }
+    ]
+  },
+  "candidate_tree": "ab98bfbd27bcf7da147e15f70c6c50ef27d8bae4",
+  "r3_carrier": "dfe6455d2222d8eff3d1a67dc19bb0902f0871e6",
+  "source_to_ppt": {
+    "B-semiconductor-rca": {
+      "projected_package": [
+        {
+          "blank_cells": "gap",
+          "legend": false,
+          "part": "ppt/charts/chart3.xml",
+          "plot_types": [
+            "lineChart"
+          ],
+          "series": [
+            {
+              "categories": [
+                {
+                  "index": 0,
+                  "value": "W1"
+                },
+                {
+                  "index": 1,
+                  "value": "W2"
+                },
+                {
+                  "index": 2,
+                  "value": "W3"
+                },
+                {
+                  "index": 3,
+                  "value": "W4"
+                }
+              ],
+              "name": "Process stability and specification",
+              "values": [
+                {
+                  "index": 0,
+                  "value": "98.8"
+                },
+                {
+                  "index": 1,
+                  "value": "98.4"
+                },
+                {
+                  "index": 2,
+                  "value": "94.1"
+                },
+                {
+                  "index": 3,
+                  "value": "94.6"
+                }
+              ]
+            }
+          ],
+          "series_count": 1,
+          "title": "Process stability and specification",
+          "value_axes": [
+            {
+              "format": null,
+              "max": "99.035",
+              "min": "93.865",
+              "title": null
+            }
+          ]
+        }
+      ],
+      "source_items": [
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Executive Statement",
+          "engine": "TextEngine",
+          "id": "c1",
+          "mapping": null,
+          "observations": null,
+          "title": "Executive Statement"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Body Narrative",
+          "engine": "TextEngine",
+          "id": "c2",
+          "mapping": null,
+          "observations": null,
+          "title": "Affected scope"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Hero KPI",
+          "engine": "MetricEngine",
+          "id": "c3",
+          "mapping": null,
+          "observations": null,
+          "title": "Affected yield"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Before/After KPI",
+          "engine": "ComparisonEngine",
+          "id": "c11",
+          "mapping": null,
+          "observations": null,
+          "title": "Affected versus reference yield"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": "dataset-muheqld9-g1jnw2",
+          "element": "Wafer Map",
+          "engine": "WaferFabEngine",
+          "id": "c4",
+          "mapping": {
+            "die_x": "die_x_1",
+            "die_y": "die_y_2",
+            "value": "yield_3",
+            "x": "die_x_1",
+            "y": "die_y_2"
+          },
+          "observations": [],
+          "title": "Affected die yield"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "SPC Control Chart",
+          "engine": "EngineeringChartEngine",
+          "id": "c5",
+          "mapping": null,
+          "observations": [
+            {
+              "label": "W1",
+              "value": 98.8
+            },
+            {
+              "label": "W2",
+              "value": 98.4
+            },
+            {
+              "label": "W3",
+              "value": 94.1
+            },
+            {
+              "label": "W4",
+              "value": 94.6
+            }
+          ],
+          "title": "Process stability and specification"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": "dataset-muheqnmo-8bts7b",
+          "element": "Box Plot",
+          "engine": "CoreChartEngine",
+          "id": "c6",
+          "mapping": {
+            "category": "population_1",
+            "cohort": "population_1",
+            "value": "yield_2",
+            "x": "yield_2",
+            "y": "yield_2"
+          },
+          "observations": null,
+          "title": "Control versus affected distribution"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Clean Table",
+          "engine": "TableEngine",
+          "id": "c7",
+          "mapping": null,
+          "observations": null,
+          "title": "Clean Table"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Process Flow",
+          "engine": "DiagramEngine",
+          "id": "c8",
+          "mapping": null,
+          "observations": null,
+          "title": "Process Flow"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Evidence Card",
+          "engine": "EvidenceCompositeEngine",
+          "id": "c9",
+          "mapping": null,
+          "observations": null,
+          "title": "Verified finding"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Project Card",
+          "engine": "ProjectCompositeEngine",
+          "id": "c10",
+          "mapping": null,
+          "observations": null,
+          "title": "Corrective action"
+        }
+      ]
+    },
+    "C-experiment-decision": {
+      "projected_package": [
+        {
+          "blank_cells": "gap",
+          "legend": true,
+          "part": "ppt/charts/chart3.xml",
+          "plot_types": [
+            "lineChart"
+          ],
+          "series": [
+            {
+              "categories": [
+                {
+                  "index": 0,
+                  "value": "W1"
+                },
+                {
+                  "index": 1,
+                  "value": "W2"
+                },
+                {
+                  "index": 2,
+                  "value": "W3"
+                },
+                {
+                  "index": 3,
+                  "value": "W4"
+                }
+              ],
+              "name": "Control",
+              "values": [
+                {
+                  "index": 0,
+                  "value": "8.0"
+                },
+                {
+                  "index": 1,
+                  "value": "8.1"
+                },
+                {
+                  "index": 2,
+                  "value": "8.4"
+                },
+                {
+                  "index": 3,
+                  "value": "8.5"
+                }
+              ]
+            },
+            {
+              "categories": [
+                {
+                  "index": 0,
+                  "value": "W1"
+                },
+                {
+                  "index": 1,
+                  "value": "W2"
+                },
+                {
+                  "index": 2,
+                  "value": "W3"
+                },
+                {
+                  "index": 3,
+                  "value": "W4"
+                }
+              ],
+              "name": "Treatment",
+              "values": [
+                {
+                  "index": 0,
+                  "value": "8.2"
+                },
+                {
+                  "index": 1,
+                  "value": "8.7"
+                },
+                {
+                  "index": 2,
+                  "value": "9.4"
+                },
+                {
+                  "index": 3,
+                  "value": "9.8"
+                }
+              ]
+            }
+          ],
+          "series_count": 2,
+          "title": "Conversion by week",
+          "value_axes": [
+            {
+              "format": null,
+              "max": "9.89",
+              "min": "7.91",
+              "title": null
+            }
+          ]
+        }
+      ],
+      "source_items": [
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Executive Statement",
+          "engine": "TextEngine",
+          "id": "c1",
+          "mapping": null,
+          "observations": null,
+          "title": "Executive Statement"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Body Narrative",
+          "engine": "TextEngine",
+          "id": "c2",
+          "mapping": null,
+          "observations": null,
+          "title": "Hypothesis and context"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Hero KPI",
+          "engine": "MetricEngine",
+          "id": "c3",
+          "mapping": null,
+          "observations": null,
+          "title": "Treatment conversion"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Before/After KPI",
+          "engine": "ComparisonEngine",
+          "id": "c4",
+          "mapping": null,
+          "observations": null,
+          "title": "Treatment conversion · Week 1 to 4"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": "dataset-muheqy1r-lrd3ft",
+          "element": "Box Plot",
+          "engine": "CoreChartEngine",
+          "id": "c5",
+          "mapping": {
+            "category": "cohort_1",
+            "cohort": "cohort_1",
+            "status": "cohort_1",
+            "value": "conversion_2",
+            "x": "conversion_2"
+          },
+          "observations": null,
+          "title": "Outcome distribution by cohort"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": "dataset-muheqvtd-5x6uv1",
+          "element": "Line Chart",
+          "engine": "CoreChartEngine",
+          "id": "c6",
+          "mapping": {
+            "category": "week_1",
+            "cohort": "cohort_2",
+            "series": "cohort_2",
+            "status": "cohort_2",
+            "value": "conversion_3",
+            "x": "week_1",
+            "y": "conversion_3"
+          },
+          "observations": null,
+          "title": "Conversion by week"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Clean Table",
+          "engine": "TableEngine",
+          "id": "c7",
+          "mapping": null,
+          "observations": null,
+          "title": "Cohort evidence"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Body Narrative",
+          "engine": "TextEngine",
+          "id": "c8",
+          "mapping": null,
+          "observations": null,
+          "title": "Interpretation"
+        },
+        {
+          "chart_studio": null,
+          "dataset_id": null,
+          "element": "Risk Callout",
+          "engine": "DecisionCompositeEngine",
+          "id": "c9",
+          "mapping": null,
+          "observations": null,
+          "title": "Recommendation"
+        }
+      ]
+    },
+    "H-unrelated-multi-series-holdout": {
+      "projected_package": [
+        {
+          "blank_cells": "gap",
+          "legend": true,
+          "part": "ppt/charts/chart2.xml",
+          "plot_types": [
+            "lineChart"
+          ],
+          "series": [
+            {
+              "categories": [
+                {
+                  "index": 0,
+                  "value": "Mon"
+                },
+                {
+                  "index": 1,
+                  "value": "Tue"
+                },
+                {
+                  "index": 2,
+                  "value": "Wed"
+                },
+                {
+                  "index": 3,
+                  "value": "Thu"
+                }
+              ],
+              "name": "North",
+              "values": [
+                {
+                  "index": 0,
+                  "value": "42.0"
+                },
+                {
+                  "index": 1,
+                  "value": "45.0"
+                },
+                {
+                  "index": 2,
+                  "value": "43.0"
+                },
+                {
+                  "index": 3,
+                  "value": "47.0"
+                }
+              ]
+            },
+            {
+              "categories": [
+                {
+                  "index": 0,
+                  "value": "Mon"
+                },
+                {
+                  "index": 1,
+                  "value": "Tue"
+                },
+                {
+                  "index": 2,
+                  "value": "Wed"
+                },
+                {
+                  "index": 3,
+                  "value": "Thu"
+                }
+              ],
+              "name": "South",
+              "values": [
+                {
+                  "index": 0,
+                  "value": "39.0"
+                },
+                {
+                  "index": 1,
+                  "value": "41.0"
+                },
+                {
+                  "index": 2,
+                  "value": "44.0"
+                },
+                {
+                  "index": 3,
+                  "value": "43.0"
+                }
+              ]
+            }
+          ],
+          "series_count": 2,
+          "title": "Line throughput by shift",
+          "value_axes": [
+            {
+              "format": null,
+              "max": "47.4",
+              "min": "38.6",
+              "title": "Units per hour"
+            }
+          ]
+        }
+      ],
+      "source_items": [
+        {
+          "dataset_id": "lane-throughput-readings",
+          "element": "Multi-Line",
+          "fields": [
+            {
+              "id": "shift",
+              "name": "Shift",
+              "type": "categorical"
+            },
+            {
+              "id": "line",
+              "name": "Production line",
+              "type": "categorical"
+            },
+            {
+              "id": "units",
+              "name": "Units per hour",
+              "type": "number"
+            }
+          ],
+          "id": "c1",
+          "mapping": {
+            "category": "shift",
+            "series": "line",
+            "value": "units",
+            "x": "shift",
+            "y": "units"
+          },
+          "rows": [
+            [
+              "Mon",
+              "North",
+              42
+            ],
+            [
+              "Mon",
+              "South",
+              39
+            ],
+            [
+              "Tue",
+              "North",
+              45
+            ],
+            [
+              "Tue",
+              "South",
+              41
+            ],
+            [
+              "Wed",
+              "North",
+              43
+            ],
+            [
+              "Wed",
+              "South",
+              44
+            ],
+            [
+              "Thu",
+              "North",
+              47
+            ],
+            [
+              "Thu",
+              "South",
+              43
+            ]
+          ],
+          "title": "Line throughput by shift"
+        }
+      ]
+    }
+  }
+}

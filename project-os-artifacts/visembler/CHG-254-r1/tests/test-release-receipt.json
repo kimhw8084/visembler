@@ -1,0 +1,95 @@
+{
+  "candidate_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+  "candidate_tree": "ab98bfbd27bcf7da147e15f70c6c50ef27d8bae4",
+  "clean_full_pytest": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 1223,
+    "time_seconds": 187.388,
+    "timestamp": "2026-09-26T10:33:20.081213-05:00"
+  },
+  "company_ui_validation": {
+    "command": "python -m company_ui.validate .",
+    "errors": 0,
+    "files": 281,
+    "raw_output": "validation/company-ui-validate.txt",
+    "status": "PASS",
+    "warnings": 143
+  },
+  "focused_regressions": {
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "tests": 86,
+    "time_seconds": 48.941,
+    "timestamp": "2026-09-26T10:49:18.154327-05:00"
+  },
+  "native_release": {
+    "all_required_gates_pass": true,
+    "checks_status": "PASS",
+    "company_boundary_status": "READY_FOR_COMPANY_TARGET_CERTIFICATION",
+    "managed_target_status": "PENDING",
+    "release_manifest_sha256": "36dbc7880259300b18239b633e7d24c7c63ba8fa109b86cd8439cc1c9e1a4211",
+    "remaining": [],
+    "report_sha256": "d3578ee89e474c0c95205b3495ab346ee92361bc093281dd9aac7bc88a23b52d",
+    "required_gate_count": 31,
+    "status": "PASS_LOCAL_INTERNAL_PILOT"
+  },
+  "regressions": {
+    "CHG-180": {
+      "failed": 0,
+      "passed": 11,
+      "skipped": 0,
+      "status": "PASS",
+      "test_cases": 11,
+      "test_module": "tests/test_visualizer_chg180_r1.py"
+    },
+    "CHG-206": {
+      "failed": 0,
+      "passed": 5,
+      "skipped": 0,
+      "status": "PASS",
+      "test_cases": 5,
+      "test_module": "tests/test_visualizer_chg206_pptx_visible_text.py"
+    },
+    "CHG-209": {
+      "failed": 0,
+      "passed": 6,
+      "skipped": 0,
+      "status": "PASS",
+      "test_cases": 6,
+      "test_module": "tests/test_visualizer_chg209_visual_director.py"
+    },
+    "CHG-253": {
+      "failed": 0,
+      "passed": 1,
+      "skipped": 0,
+      "status": "PASS",
+      "test_cases": 1,
+      "test_module": "tests/test_visualizer_chg253_sparse_reading.py"
+    },
+    "CHG-254": {
+      "failed": 0,
+      "passed": 7,
+      "skipped": 0,
+      "status": "PASS",
+      "test_cases": 7,
+      "test_module": "tests/test_visualizer_chg254_pptx_chart_semantics.py"
+    }
+  },
+  "repository_native_quality": {
+    "local_quality_evidence": "native-release/report.json + full JUnit + repository contracts",
+    "note": "Local repository-native Quality evidence; no hosted GitHub Actions run is claimed.",
+    "status": "PASS",
+    "validator": {
+      "command": "python -m company_ui.validate .",
+      "errors": 0,
+      "files": 281,
+      "raw_output": "validation/company-ui-validate.txt",
+      "status": "PASS",
+      "warnings": 143
+    },
+    "workflow": ".github/workflows/quality.yml"
+  }
+}
