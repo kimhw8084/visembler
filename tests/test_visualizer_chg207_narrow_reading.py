@@ -123,7 +123,7 @@ console.log(JSON.stringify({
  flowIntrinsicGrowth:css.includes('.component:has(.diagram-responsive-reading[data-reading-flow="true"]) .c-content { container-type:normal!important;'),
  mobileDocumentFlow:css.includes('@media(max-width:800px)')&&css.includes('.cui-visualizer-root.preview-mode { position:relative!important;inset:auto!important;height:auto!important;')&&css.includes('.cui-visualizer-workspace:has(.cui-visualizer-root.preview-mode)'),
  narrowComparison:css.includes('@media (max-width: 360px)')&&css.includes('.before-after-kpi { grid-template-columns:minmax(0,1fr);'),
- comparisonIntrinsicGrowth:css.includes('.component:has(.numeric-token) { height:auto!important;min-height:var(--viz-mobile-reader-height)!important;overflow:visible!important;')&&css.includes('.comparison>.compare-arrow { justify-self:center;transform:rotate(90deg);'),
+ comparisonIntrinsicGrowth:css.includes('data-mobile-reader-fit="content"')&&css.includes('.component[data-mobile-reader-fit="content"] { height:auto!important;min-height:var(--viz-mobile-reader-height)!important;overflow:visible!important;')&&css.includes('.comparison>.compare-arrow { justify-self:center;transform:rotate(90deg);'),
 }));
 '''
     )
