@@ -11,11 +11,13 @@ import textwrap
 from typing import Any, Mapping, Sequence
 
 from pptx import Presentation
-from pptx.chart.data import ChartData
+from pptx.chart.data import ChartData, XyChartData
 from pptx.dml.color import RGBColor
+from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION, XL_MARKER_STYLE
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.xmlchemy import OxmlElement
+from pptx.oxml.ns import qn
 from pptx.util import Inches, Pt
 from PIL import Image
 
@@ -25,6 +27,7 @@ from .metric_format import format_metric_value, metric_format_issues
 
 _VENDOR_ADAPTER = Path(__file__).with_name('vendor') / 'production_core' / 'tools' / 'ppt_template_adapter.py'
 _MAX_ITEMS_PER_SLIDE = 12
+_CHART_PALETTE = ('1769D1', '2E8B72', 'B7791F', '9B4DCA', 'C94F5F', '3B82A0', '6F7C38', 'D36C2E')
 
 
 def _adapter():
@@ -85,7 +88,214 @@ def _statistical_export_projection(entry: dict[str, Any], result: Mapping[str, A
         entry['detail']='Observed descriptive means; no significance claim.'
 
 
-def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
+def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | None = None) -> dict[str, Any]:
+    """Project canonical chart data and Chart Studio intent before export flattening."""
+    studio = entry.get('chart_studio') if isinstance(entry.get('chart_studio'), Mapping) else {}
+    source = dataset if isinstance(dataset, Mapping) and isinstance(dataset.get('fields'), list) else None
+    if source is None and isinstance(studio.get('dataset'), Mapping): source = studio['dataset']
+    fields = [field for field in (source.get('fields') or []) if isinstance(field, Mapping)] if source else []
+    rows = [list(row) for row in (source.get('rows') or []) if isinstance(row, Sequence) and not isinstance(row, (str, bytes))] if source else []
+    mapping = {**(studio.get('mapping') if isinstance(studio.get('mapping'), Mapping) else {}),
+               **(entry.get('mapping') if isinstance(entry.get('mapping'), Mapping) else {})}
+    chart_type = str(studio.get('chart_type') or entry.get('chart_type') or entry.get('element') or '')
+    if chart_type == 'Bar Chart': chart_type = 'Vertical Bar'
+    axis_set = studio.get('axes') if isinstance(studio.get('axes'), Mapping) else {}
+    axis_set = {**(entry.get('axes') if isinstance(entry.get('axes'), Mapping) else {}), **axis_set}
+    y_axis = axis_set.get('y') if isinstance(axis_set.get('y'), Mapping) else {}
+    default_zero = 'Bar' in chart_type or chart_type == 'Pareto'
+    axis = {
+        'role': 'y', 'min': y_axis.get('min'), 'max': y_axis.get('max'),
+        'auto': y_axis.get('auto', True) is not False,
+        'zeroBaseline': y_axis.get('zeroBaseline', default_zero) is True,
+        'scale': str(y_axis.get('scale') or 'linear'), 'format': y_axis.get('format'),
+        'unit': y_axis.get('unit'), 'prefix': y_axis.get('prefix'), 'suffix': y_axis.get('suffix'),
+        'precision': y_axis.get('precision'), 'title': y_axis.get('title'), 'grid': y_axis.get('grid'),
+    }
+    legend_src = studio.get('legend') if isinstance(studio.get('legend'), Mapping) else {}
+    legend_src = {**(entry.get('legend') if isinstance(entry.get('legend'), Mapping) else {}), **legend_src}
+    visual_src = studio.get('visual') if isinstance(studio.get('visual'), Mapping) else {}
+    visual_src = {**(entry.get('visual') if isinstance(entry.get('visual'), Mapping) else {}), **visual_src}
+    declared_series = entry.get('series') if isinstance(entry.get('series'), list) else studio.get('series')
+    declared_series = declared_series if isinstance(declared_series, list) else []
+    statistical = entry.get('statistical_chart') if isinstance(entry.get('statistical_chart'), Mapping) else None
+
+    def field_index(role: str) -> int:
+        field_id = mapping.get(role)
+        return next((i for i, field in enumerate(fields) if field.get('id') == field_id), -1)
+
+    def finite(value: Any) -> bool:
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(float(value))
+
+    def typed(value: Any) -> str:
+        return str(value if value is not None else '')
+
+    if statistical:
+        categories = [str(value) for value in statistical.get('categories') or []]
+        series = []
+        for item in statistical.get('series') or []:
+            if not isinstance(item, Mapping): continue
+            values = list(item.get('values') or [])
+            series.append({'key': str(item.get('name') or entry.get('title') or 'Series'),
+                           'name': str(item.get('name') or entry.get('title') or 'Series'),
+                           'field': None, 'axis': 'primary', 'visible': True, 'legend': True,
+                           'values': (values + [None] * len(categories))[:len(categories)]})
+        return {'type': chart_type, 'categories': categories, 'series': series, 'axis': axis,
+                'legend': {'show': legend_src.get('show', len(series) > 1), 'position': legend_src.get('position', 'bottom')},
+                'x_field': None, 'x_role': None, 'y_field': None, 'axis_source': y_axis,
+                'visual': visual_src,
+                'source': 'statistical_chart'}
+
+    if source and rows:
+        if chart_type == 'Box Plot':
+            category = next((field_index(role) for role in ('category', 'cohort', 'status', 'series') if field_index(role) >= 0), -1)
+            value = next((field_index(role) for role in ('value', 'y') if field_index(role) >= 0), -1)
+            groups: dict[str, list[float]] = {}
+            for row in rows:
+                observed = row[value] if 0 <= value < len(row) else None
+                if not finite(observed): continue
+                key = typed(row[category] if 0 <= category < len(row) else 'All')
+                groups.setdefault(key, []).append(float(observed))
+            categories = list(groups)
+            value_field=fields[value] if 0 <= value < len(fields) else None
+            return {'type': chart_type, 'categories': categories,
+                    'groups': [{'key': key, 'name': key, 'values': groups[key], 'axis': 'primary', 'visible': True}
+                               for key in categories], 'axis': axis,
+                    'legend': {'show': False, 'position': 'bottom'}, 'x_field': None,
+                    'x_role': 'category', 'y_field': value_field, 'axis_source': y_axis,
+                    'visual': visual_src,
+                    'source': 'bound_dataset'}
+
+        if chart_type == 'Histogram':
+            value_index=field_index('value') if field_index('value') >= 0 else field_index('y')
+            observed=[float(row[value_index]) for row in rows if 0 <= value_index < len(row) and finite(row[value_index])]
+            if not observed:
+                low,high,bins=0.0,1.0,1
+            else:
+                configured=visual_src.get('bins')
+                bins=max(3,min(40,int(configured))) if isinstance(configured,int) and not isinstance(configured,bool) else min(16,max(6,math.ceil(math.sqrt(len(observed)))))
+                low,high=min(observed),max(observed)
+                if low==high:
+                    padding=max(1.0,abs(low)*.05);low-=padding;high+=padding
+            step=(high-low)/bins;counts=[0]*bins
+            for value in observed:
+                bucket=min(bins-1,max(0,math.floor((value-low)/max(1e-12,step))))
+                counts[bucket]+=1
+            edges=[low+step*index for index in range(bins+1)]
+            labels=[f'{edges[index]:.12g}–{edges[index+1]:.12g}' for index in range(bins)]
+            value_field=fields[value_index] if 0 <= value_index < len(fields) else None
+            return {'type': chart_type, 'categories': labels,
+                    'series': [{'key': 'Count', 'name': 'Count', 'field': None, 'axis': 'primary',
+                                'visible': True, 'legend': False, 'values': counts, 'points': []}],
+                    'axis': axis, 'legend': {'show': False, 'position': 'bottom'}, 'x_field': value_field,
+                    'x_role': 'value', 'y_field': None, 'axis_source': y_axis, 'visual': visual_src,
+                    'source': 'bound_dataset_histogram'}
+
+        if chart_type in {'Scatter Plot', 'Regression Scatter'}:
+            x_role = 'x'; x_index = field_index('x')
+        elif chart_type in {'Vertical Bar', 'Horizontal Bar', 'Pareto', 'DOE Main Effects'}:
+            x_role = 'category' if field_index('category') >= 0 else 'x'; x_index = field_index(x_role)
+        else:
+            x_role = next((role for role in ('x', 'category', 'time', 'label') if field_index(role) >= 0), 'x')
+            x_index = field_index(x_role)
+        value_roles = [role for role in ('y', 'value', 'secondaryY') if field_index(role) >= 0]
+        group_index = field_index('series') if field_index('series') >= 0 else field_index('color')
+        x_values = [row[x_index] if 0 <= x_index < len(row) else None for row in rows]
+        categories = list(dict.fromkeys(typed(value) for value in x_values))
+        x_field = next((field for field in fields if x_index >= 0 and field.get('id') == fields[x_index].get('id')), None)
+        if x_field and (x_field.get('type') in {'number', 'integer'} or 'time' in (x_field.get('semantic_tags') or [])):
+            categories.sort(key=lambda value: (0, float(value)) if value not in ('', 'None') and _is_finite_number(value) else (1, value))
+
+        series_meta: list[dict[str, Any]] = []
+        point_y_index = field_index('y') if field_index('y') >= 0 else field_index('value')
+        if group_index >= 0:
+            keys = list(dict.fromkeys(typed(row[group_index] if group_index < len(row) else None) for row in rows))
+            by_key = {str(spec.get('key', spec.get('name', spec.get('label', '')))): spec
+                      for spec in declared_series if isinstance(spec, Mapping)}
+            ordered = [key for spec in declared_series if isinstance(spec, Mapping)
+                       for key in [str(spec.get('key', spec.get('name', spec.get('label', ''))))] if key in keys]
+            ordered.extend(key for key in keys if key not in ordered)
+            for key in ordered:
+                spec = by_key.get(key, {})
+                series_meta.append({'key': key, 'name': str(spec.get('label') or spec.get('name') or key),
+                                    'field': mapping.get('y') or mapping.get('value'),
+                                    'axis': 'secondary' if spec.get('axis') == 'secondary' else 'primary',
+                                    'visible': spec.get('visible') is not False, 'legend': spec.get('legend') is not False,
+                                    'color': spec.get('color') or _CHART_PALETTE[len(series_meta)%len(_CHART_PALETTE)],
+                                    '_group_index': group_index})
+            order = str(legend_src.get('order') or 'input')
+            if order == 'label-asc': series_meta.sort(key=lambda item: item['name'].casefold())
+            elif order == 'label-desc': series_meta.sort(key=lambda item: item['name'].casefold(), reverse=True)
+            elif order == 'value-desc':
+                value_index = field_index('y') if field_index('y') >= 0 else field_index('value')
+                totals = {}
+                for item in series_meta:
+                    totals[item['key']] = sum(float(row[value_index]) for row in rows
+                                               if value_index >= 0 and value_index < len(row)
+                                               and item['_group_index'] < len(row)
+                                               and typed(row[item['_group_index']]) == item['key']
+                                               and finite(row[value_index]))
+                series_meta.sort(key=lambda item: totals.get(item['key'], 0), reverse=True)
+        else:
+            field_roles = []
+            for spec in declared_series:
+                if not isinstance(spec, Mapping): continue
+                field_id = spec.get('field')
+                if field_id and any(field.get('id') == field_id for field in fields): field_roles.append((str(field_id), spec))
+            if not field_roles:
+                for role in value_roles:
+                    field_id = mapping.get(role)
+                    if field_id and not any(existing[0] == str(field_id) for existing in field_roles): field_roles.append((str(field_id), {}))
+            for field_id, spec in field_roles:
+                field_at = next((i for i, field in enumerate(fields) if field.get('id') == field_id), -1)
+                field_name = str(next((field.get('name') for field in fields if field.get('id') == field_id), field_id))
+                series_meta.append({'key': str(spec.get('key') or field_id), 'name': str(spec.get('label') or spec.get('name') or field_name),
+                                    'field': field_id, 'axis': 'secondary' if spec.get('axis') == 'secondary' or field_id == mapping.get('secondaryY') else 'primary',
+                                    'visible': spec.get('visible') is not False, 'legend': spec.get('legend') is not False,
+                                    'color': spec.get('color') or _CHART_PALETTE[len(series_meta)%len(_CHART_PALETTE)],
+                                    '_value_index': field_at})
+        for series in series_meta:
+            values = [None] * len(categories)
+            category_at = {category: i for i, category in enumerate(categories)}
+            scatter_points=[]
+            for row_index, row in enumerate(rows):
+                category_key = typed(row[x_index] if 0 <= x_index < len(row) else None)
+                if series.get('_group_index') is not None:
+                    if series['key'] != typed(row[series['_group_index']] if series['_group_index'] < len(row) else None): continue
+                    value_index = point_y_index
+                else: value_index = int(series.get('_value_index', -1))
+                value = row[value_index] if 0 <= value_index < len(row) else None
+                x_value=row[x_index] if 0 <= x_index < len(row) else None
+                if chart_type in {'Scatter Plot','Regression Scatter'} and finite(x_value) and finite(value):
+                    scatter_points.append({'x':float(x_value),'y':float(value)})
+                if category_key in category_at: values[category_at[category_key]] = float(value) if finite(value) else None
+            series['values'] = values
+            series['points'] = scatter_points if chart_type in {'Scatter Plot','Regression Scatter'} else []
+        y_field=fields[point_y_index] if 0 <= point_y_index < len(fields) else None
+        return {'type': chart_type, 'categories': categories, 'series': series_meta, 'axis': axis,
+                'legend': {'show': legend_src.get('show', len(series_meta) > 1), 'position': legend_src.get('position', 'bottom')},
+                'x_field': x_field, 'x_role': x_role, 'y_field': y_field, 'axis_source': y_axis,
+                'visual': visual_src,
+                'source': 'bound_dataset'}
+
+    chart_rows = _chart_rows(entry)
+    categories = list(dict.fromkeys(label for label, _ in chart_rows))
+    value_by_category = {label: value for label, value in chart_rows}
+    series = [{'key': 'Value', 'name': str(entry.get('title') or 'Value'), 'field': None, 'axis': 'primary',
+               'visible': True, 'legend': True, 'values': [value_by_category.get(label) for label in categories],
+               'points': [{'x': label, 'y': value_by_category.get(label)} for label in categories]}]
+    return {'type': chart_type, 'categories': categories, 'series': series, 'axis': axis,
+            'legend': {'show': legend_src.get('show', False), 'position': legend_src.get('position', 'bottom')},
+            'x_field': None, 'x_role': None, 'y_field': None, 'axis_source': y_axis,
+            'visual': visual_src,
+            'source': 'legacy_rows'}
+
+
+def _is_finite_number(value: Any) -> bool:
+    try: return not isinstance(value, bool) and math.isfinite(float(value))
+    except (TypeError, ValueError): return False
+
+
+def bound_export_items(model: Mapping[str, Any], *, _include_chart_specs: bool = False) -> list[dict[str, Any]]:
     """Resolve canonical dataset bindings into the same export-facing fields as the editor.
 
     The report model remains untouched; this is an export projection so linked visuals
@@ -101,6 +311,8 @@ def bound_export_items(model: Mapping[str, Any]) -> list[dict[str, Any]]:
             authoritative=entry.get('authoritative_analysis')
             if not isinstance(authoritative,Mapping): raise VisualizerContractError('Authoritative statistical result is required for PowerPoint export.')
             _statistical_export_projection(entry,authoritative)
+        if _include_chart_specs and _kind(entry) == 'chart':
+            entry['_pptx_chart_spec'] = _chart_export_spec(entry, dataset)
         if not dataset:
             resolved.append(entry); continue
         fields=list(dataset.get('fields') or []); rows=[list(row) for row in dataset.get('rows') or [] if isinstance(row,Sequence) and not isinstance(row,(str,bytes))]
@@ -869,17 +1081,223 @@ def _fill_kpi(shape: Any, entry: Mapping[str, Any], title: str) -> None:
     _apply_report_text_authority(shape,segments)
 
 
-def _fill_chart(shape: Any, entry: Mapping[str, Any], title: str) -> None:
-    if not getattr(shape,'has_chart',False): return
-    statistical=entry.get('statistical_chart') if isinstance(entry.get('statistical_chart'),Mapping) else None
-    if statistical:
-        data=ChartData();data.categories=[str(value) for value in statistical.get('categories') or []]
-        for series in statistical.get('series') or []:
-            if isinstance(series,Mapping): data.add_series(str(series.get('name') or title),list(series.get('values') or []))
-        shape.chart.replace_data(data)
+def _chart_domain(axis: Mapping[str, Any], values: Sequence[Any]) -> tuple[float, float] | None:
+    numbers=[float(value) for value in values if _is_finite_number(value)]
+    if not numbers: return None
+    data_min,data_max=min(numbers),max(numbers)
+    span=data_max-data_min
+    padding=span*.05 if span else max(abs(data_min)*.05,1.0)
+    auto_min,auto_max=data_min-padding,data_max+padding
+    if axis.get('zeroBaseline') is True:
+        if data_min>=0: auto_min=0.0
+        if data_max<=0: auto_max=0.0
+        auto_min=min(0.0,auto_min); auto_max=max(0.0,auto_max)
+    if axis.get('auto') is False:
+        source_min,source_max=axis.get('min'),axis.get('max')
+        lower=float(source_min) if _is_finite_number(source_min) else auto_min
+        upper=float(source_max) if _is_finite_number(source_max) else auto_max
+        valid=lower<upper and lower<=data_min and upper>=data_max
+        if valid: return lower,upper
+    return auto_min,auto_max
+
+
+def _chart_number_format(spec: Mapping[str, Any]) -> str | None:
+    axis=spec.get('axis') if isinstance(spec.get('axis'),Mapping) else {}
+    source_format=axis.get('format')
+    if isinstance(source_format,str) and source_format not in {'', 'auto', 'number', 'currency', 'percent'}:
+        return source_format
+    field=spec.get('y_field') if isinstance(spec.get('y_field'),Mapping) else {}
+    field_format=field.get('format') if isinstance(field.get('format'),Mapping) else {}
+    unit=str(axis.get('unit') or field.get('unit') or '')
+    precision=axis.get('precision')
+    decimals=max(0,min(8,int(precision))) if isinstance(precision,int) and not isinstance(precision,bool) else 1
+    pattern='#,##0'+('.'+'0'*decimals if decimals else '')
+    if source_format=='percent' or field_format.get('kind')=='percent':
+        return pattern+'%' if field_format.get('percent_scale')=='ratio' or source_format=='percent' else pattern+'"%"'
+    if source_format=='currency': pattern='$'+pattern
+    elif axis.get('prefix'): pattern=f'"{str(axis["prefix"]).replace(chr(34), chr(34)*2)}"'+pattern
+    suffix=str(axis.get('suffix') or '')
+    if unit: suffix=f' {unit}'+suffix
+    if suffix: pattern+=f'"{suffix.replace(chr(34), chr(34)*2)}"'
+    return pattern if (precision is not None or source_format=='currency' or unit or axis.get('prefix') or axis.get('suffix')) else None
+
+
+def _native_chart_type(spec: Mapping[str, Any]) -> Any:
+    chart_type=str(spec.get('type') or '')
+    if chart_type in {'Line Chart','Multi-Line','SPC Control Chart'}:
+        visual=spec.get('visual') if isinstance(spec.get('visual'),Mapping) else {}
+        markers=visual.get('markers',True)
+        return XL_CHART_TYPE.LINE_MARKERS if markers is not False else XL_CHART_TYPE.LINE
+    if chart_type=='Xbar-R Chart' and spec.get('source')=='statistical_chart':
+        return XL_CHART_TYPE.LINE_MARKERS
+    if chart_type=='DOE Interaction Plot' and spec.get('source')=='statistical_chart':
+        return XL_CHART_TYPE.LINE_MARKERS
+    if chart_type=='DOE Main Effects' and spec.get('source')=='statistical_chart':
+        return XL_CHART_TYPE.COLUMN_CLUSTERED
+    if chart_type in {'Vertical Bar','Histogram'}: return XL_CHART_TYPE.COLUMN_CLUSTERED
+    if chart_type=='Horizontal Bar': return XL_CHART_TYPE.BAR_CLUSTERED
+    if chart_type=='Area Chart': return XL_CHART_TYPE.AREA
+    if chart_type in {'Scatter Plot','Regression Scatter'}: return XL_CHART_TYPE.XY_SCATTER
+    return None
+
+
+def _reorder_replacement_shapes(slide: Any, placeholder: Any, replacements: Sequence[Any]) -> Any:
+    parent=placeholder._element.getparent();position=parent.index(placeholder._element)
+    nodes=[replacement._element for replacement in replacements]
+    for chart_node in placeholder._element.xpath('.//c:chart'):
+        relationship_id=chart_node.get(qn('r:id'))
+        if relationship_id and relationship_id in slide.part.rels:
+            slide.part.drop_rel(relationship_id)
+    parent.remove(placeholder._element)
+    for node in nodes: parent.remove(node)
+    for offset,node in enumerate(nodes): parent.insert(position+offset,node)
+    return replacements[0]
+
+
+def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any], title: str) -> Any:
+    visible=[series for series in spec.get('series') or [] if isinstance(series,Mapping) and series.get('visible') is not False]
+    if not visible: raise VisualizerContractError('PowerPoint chart export requires at least one visible series.')
+    if any(series.get('axis')=='secondary' for series in visible):
+        raise VisualizerContractError(f"PowerPoint export does not support a secondary value axis for {spec.get('type') or 'chart'}.")
+    chart_type=_native_chart_type(spec)
+    if chart_type is None:
+        raise VisualizerContractError(f"PowerPoint export does not support chart family {spec.get('type') or '(unspecified)'}.")
+    left,top,width,height=placeholder.left,placeholder.top,placeholder.width,placeholder.height
+    categories=[str(value) for value in spec.get('categories') or []]
+    if chart_type==XL_CHART_TYPE.XY_SCATTER:
+        data=XyChartData()
+        for series in visible:
+            exported=data.add_series(str(series.get('name') or series.get('key') or title))
+            for point in series.get('points') or []:
+                if isinstance(point,Mapping) and _is_finite_number(point.get('x')) and _is_finite_number(point.get('y')):
+                    exported.add_data_point(float(point['x']),float(point['y']))
     else:
-        rows=_chart_rows(entry);data=ChartData();data.categories=[r[0] for r in rows];data.add_series(title,[r[1] for r in rows]);shape.chart.replace_data(data)
-    shape.chart.has_title=True;shape.chart.chart_title.text_frame.text=title;shape.chart.has_legend=False
+        data=ChartData();data.categories=categories or ['Value']
+        for series in visible:
+            values=list(series.get('values') or [])
+            values=(values+[None]*len(data.categories))[:len(data.categories)]
+            data.add_series(str(series.get('name') or series.get('key') or title),
+                            [float(value) if _is_finite_number(value) else None for value in values])
+    chart_shape=slide.shapes.add_chart(chart_type,left,top,width,height,data)
+    chart_shape.name=f'VIZ::{title}'
+    chart=chart_shape.chart;chart.has_title=True;chart.chart_title.text_frame.text=title
+    if chart_type==XL_CHART_TYPE.XY_SCATTER:
+        scatter_style=chart.plots[0]._element.xpath('./c:scatterStyle')
+        if scatter_style: scatter_style[0].set('val','marker')
+    legend=spec.get('legend') if isinstance(spec.get('legend'),Mapping) else {}
+    chart.has_legend=legend.get('show') is not False and any(series.get('legend') is not False for series in visible)
+    if chart.has_legend:
+        positions={'top':XL_LEGEND_POSITION.TOP,'bottom':XL_LEGEND_POSITION.BOTTOM,
+                   'left':XL_LEGEND_POSITION.LEFT,'right':XL_LEGEND_POSITION.RIGHT}
+        chart.legend.position=positions.get(str(legend.get('position') or 'bottom'),XL_LEGEND_POSITION.BOTTOM)
+        legend_element=chart.legend._element
+        insertion=1 if legend_element.find(qn('c:legendPos')) is not None else 0
+        for index,series_spec in enumerate(visible):
+            if series_spec.get('legend') is False:
+                legend_entry=OxmlElement('c:legendEntry');series_index=OxmlElement('c:idx');series_index.set('val',str(index))
+                delete=OxmlElement('c:delete');delete.set('val','1');legend_entry.append(series_index);legend_entry.append(delete)
+                legend_element.insert(insertion,legend_entry);insertion+=1
+    for index,(series,series_spec) in enumerate(zip(chart.series,visible)):
+        color=str(series_spec.get('color') or _CHART_PALETTE[index%len(_CHART_PALETTE)]).lstrip('#')
+        if len(color)!=6 or any(char not in '0123456789abcdefABCDEF' for char in color): continue
+        rgb=RGBColor.from_string(color)
+        if chart_type==XL_CHART_TYPE.XY_SCATTER:
+            series.marker.style=XL_MARKER_STYLE.CIRCLE;series.marker.size=5
+            series.marker.format.fill.solid();series.marker.format.fill.fore_color.rgb=rgb
+        elif chart_type in {XL_CHART_TYPE.BAR_CLUSTERED,XL_CHART_TYPE.COLUMN_CLUSTERED}:
+            series.format.fill.solid();series.format.fill.fore_color.rgb=rgb
+        else:
+            series.format.line.color.rgb=rgb
+    axis=spec.get('axis') if isinstance(spec.get('axis'),Mapping) else {}
+    values=[value for series in visible
+            for value in (series.get('values') or [])]
+    if chart_type==XL_CHART_TYPE.XY_SCATTER:
+        values=[point.get('y') for series in visible for point in series.get('points') or [] if isinstance(point,Mapping)]
+    domain=_chart_domain(axis,values)
+    if domain is not None:
+        chart.value_axis.minimum_scale,chart.value_axis.maximum_scale=domain
+    number_format=_chart_number_format(spec)
+    if number_format: chart.value_axis.tick_labels.number_format=number_format
+    if axis.get('title'):
+        chart.value_axis.has_title=True;chart.value_axis.axis_title.text_frame.text=str(axis['title'])
+    y_axis=spec.get('axis_source') if isinstance(spec.get('axis_source'),Mapping) else {}
+    if y_axis.get('grid') is False: chart.value_axis.has_major_gridlines=False
+    return _reorder_replacement_shapes(slide,placeholder,[chart_shape])
+
+
+def _box_plot_stats(values: Sequence[float]) -> dict[str, float | int]:
+    ordered=sorted(float(value) for value in values)
+    def quantile(fraction: float) -> float:
+        position=(len(ordered)-1)*fraction;low=math.floor(position);high=math.ceil(position)
+        return ordered[low]+(ordered[high]-ordered[low])*(position-low)
+    return {'n':len(ordered),'min':ordered[0],'q1':quantile(.25),'median':quantile(.5),
+            'q3':quantile(.75),'max':ordered[-1]}
+
+
+def _box_plot_label(value: float, spec: Mapping[str, Any]) -> str:
+    axis=spec.get('axis') if isinstance(spec.get('axis'),Mapping) else {}
+    precision=axis.get('precision')
+    if isinstance(precision,int) and not isinstance(precision,bool): result=f'{value:.{max(0,min(8,precision))}f}'
+    else: result=str(int(value)) if value.is_integer() else f'{value:.4f}'.rstrip('0').rstrip('.')
+    unit=str(axis.get('unit') or '')
+    suffix=str(axis.get('suffix') or '')
+    return f"{axis.get('prefix') or ''}{result}{(' '+unit) if unit else ''}{suffix}"
+
+
+def _draw_box_plot(slide: Any, placeholder: Any, entry: Mapping[str, Any], spec: Mapping[str, Any], title: str) -> Any:
+    groups=[group for group in spec.get('groups') or [] if isinstance(group,Mapping) and group.get('values')]
+    if not groups: raise VisualizerContractError('PowerPoint Box Plot export requires numeric values in at least one cohort.')
+    all_values=[value for group in groups for value in group['values'] if _is_finite_number(value)]
+    domain=_chart_domain(spec.get('axis') or {},all_values)
+    if domain is None: raise VisualizerContractError('PowerPoint Box Plot export requires a finite value-axis domain.')
+    left,top,width,height=placeholder.left,placeholder.top,placeholder.width,placeholder.height
+    plot_left=left+int(width*.19);plot_right=left+int(width*.97)
+    plot_top=top+int(height*.20);plot_bottom=top+int(height*.75)
+    low,high=domain
+    y_at=lambda value: plot_bottom-round((float(value)-low)/(high-low)*(plot_bottom-plot_top))
+    created=[]
+    title_shape=slide.shapes.add_textbox(left+int(width*.04),top+int(height*.015),int(width*.92),int(height*.15))
+    title_shape.name=f"VIZ::{entry.get('id','chart')}::box-plot-title";title_shape.text_frame.text=title
+    title_shape.text_frame.word_wrap=False
+    for paragraph in title_shape.text_frame.paragraphs:
+        paragraph.font.size=Pt(12);paragraph.font.bold=True
+    created.append(title_shape)
+    for tick in range(5):
+        value=low+(high-low)*tick/4;y=y_at(value)
+        line=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,plot_left,y,plot_right,y)
+        line.name=f"VIZ::{entry.get('id','chart')}::box-plot-grid-{tick}";line.line.color.rgb=RGBColor(220,226,234);line.line.width=Pt(.6);created.append(line)
+        label=slide.shapes.add_textbox(left, y-int(Pt(5)), plot_left-left-int(width*.025), Pt(12))
+        label.name=f"VIZ::{entry.get('id','chart')}::box-plot-axis-{tick}";label.text_frame.text=_box_plot_label(value,spec)
+        label.text_frame.word_wrap=False;label.text_frame.paragraphs[0].alignment=PP_ALIGN.RIGHT;label.text_frame.paragraphs[0].font.size=Pt(7)
+        created.append(label)
+    for index,group in enumerate(groups):
+        color=RGBColor.from_string(_CHART_PALETTE[index%len(_CHART_PALETTE)])
+        stats=_box_plot_stats(group['values']);center=plot_left+(index+.5)*(plot_right-plot_left)/len(groups)
+        half=min(int((plot_right-plot_left)/max(1,len(groups))*.20),int(Inches(.28)))
+        whisker=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,center,y_at(stats['max']),center,y_at(stats['min']))
+        whisker.name=f"VIZ::{entry.get('id','chart')}::box-plot-{index}-whisker";whisker.line.color.rgb=color;whisker.line.width=Pt(1.4);created.append(whisker)
+        for cap,value_key in enumerate(('min','max')):
+            y=y_at(stats[value_key]);line=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,center-half,y,center+half,y)
+            line.name=f"VIZ::{entry.get('id','chart')}::box-plot-{index}-whisker-cap-{cap}";line.line.color.rgb=color;line.line.width=Pt(1.4);created.append(line)
+        box_top,box_bottom=y_at(stats['q3']),y_at(stats['q1'])
+        box=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,center-half,box_top,half*2,max(Pt(1),box_bottom-box_top))
+        box.name=f"VIZ::{entry.get('id','chart')}::box-plot-{index}-quartiles";box.fill.solid();box.fill.fore_color.rgb=color;box.fill.transparency=68;box.line.color.rgb=color;box.line.width=Pt(1.2);created.append(box)
+        median_y=y_at(stats['median']);median=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,center-half,median_y,center+half,median_y)
+        median.name=f"VIZ::{entry.get('id','chart')}::box-plot-{index}-median";median.line.color.rgb=RGBColor(35,45,60);median.line.width=Pt(2);created.append(median)
+        category=slide.shapes.add_textbox(center-int(Inches(.6)),plot_bottom+int(height*.045),int(Inches(1.2)),int(height*.13))
+        category.name=f"VIZ::{entry.get('id','chart')}::box-plot-{index}-category";category.text_frame.text=str(group.get('name') or group.get('key') or 'All')
+        category.text_frame.word_wrap=True;category.text_frame.paragraphs[0].alignment=PP_ALIGN.CENTER;category.text_frame.paragraphs[0].font.size=Pt(8)
+        nodes=category._element.xpath('.//p:cNvPr')
+        if nodes: nodes[0].set('title',json.dumps({'category':group.get('key'),'quartiles':stats},ensure_ascii=False,separators=(',',':')))
+        created.append(category)
+    anchor=_reorder_replacement_shapes(slide,placeholder,created)
+    return anchor
+
+
+def _fill_chart(slide: Any, shape: Any, entry: Mapping[str, Any], title: str) -> Any:
+    spec=entry.get('_pptx_chart_spec') if isinstance(entry.get('_pptx_chart_spec'),Mapping) else _chart_export_spec(entry)
+    if spec.get('type')=='Box Plot': return _draw_box_plot(slide,shape,entry,spec,title)
+    return _replace_native_chart(slide,shape,spec,title)
 
 
 def _replace_table(slide: Any, shape: Any, entry: Mapping[str, Any], title: str) -> Any:
@@ -909,11 +1327,11 @@ def _apply_semantics(slide: Any, before_count: int, entries: list[Mapping[str, A
         elif kind=='wafer_difference': shape=_replace_wafer_map(slide,shape,entry,title,difference=True)
         elif kind=='timeline': _fill_text_shape(shape,entry,title)
         elif kind=='kpi': _fill_kpi(shape,entry,title)
-        elif kind=='chart': _fill_chart(shape,entry,title)
+        elif kind=='chart': shape=_fill_chart(slide,shape,entry,title)
         elif kind=='table': shape=_replace_table(slide,shape,entry,title)
         elif kind=='fallback': _fill_text_shape(shape,{**entry,'detail':f'Controlled fallback · {entry.get("element") or "specialized visual"} remains semantic metadata; recreate this visual natively in Visembler.'},title)
         else: _fill_text_shape(shape,entry,title)
-        _set_semantic_metadata(shape,entry)
+        _set_semantic_metadata(shape,{key:value for key,value in entry.items() if key!='_pptx_chart_spec'})
 
 
 def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide_index: int = 0, placeholder: str = 'VISUALIZER_CONTENT', asset_data_url: Any=None, layout_geometry: Mapping[str, Any] | None=None) -> bytes:
@@ -932,7 +1350,7 @@ def export_pptx(template_bytes: bytes | None, model: Mapping[str, Any], *, slide
         for entry in semantic_model['items']:
             if entry.get('engine')=='ImageMediaEngine' and entry.get('asset_id'):
                 entry['src']=asset_data_url(entry['asset_id']); entry.pop('asset_id',None)
-    entries=bound_export_items(semantic_model or model)
+    entries=bound_export_items(semantic_model or model,_include_chart_specs=True)
     layout_geometry=_validated_layout_geometry(layout_geometry,entries)
     if layout_geometry is not None:
         geometry={rect['id']:rect for rect in layout_geometry['items']}
