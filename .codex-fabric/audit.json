@@ -1,0 +1,126 @@
+{
+  "accepted_at": "2026-09-26T15:58:45Z",
+  "artifact": {
+    "carrier_manifest_sha256": "69db10f4272e596cd9fe113afd28ad89536868ef668c2c1b2203281b715944b6",
+    "commit": "75e1e04084421a9d66bfaf04b45f97b90a4d7162",
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-254-r1",
+    "sole_parent": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb"
+  },
+  "change": "CHG-254",
+  "checks": [
+    {
+      "sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+      "status": "PASS",
+      "tree": "ab98bfbd27bcf7da147e15f70c6c50ef27d8bae4",
+      "type": "source_identity"
+    },
+    {
+      "observed_sha": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+      "status": "PASS",
+      "type": "remote_main_unchanged"
+    },
+    {
+      "ref": "refs/heads/fix/visembler-chg254-pptx-chart-semantics-r1",
+      "sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+      "status": "PASS",
+      "type": "work_branch_remote_exact"
+    },
+    {
+      "base_sha": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+      "head_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+      "status": "PASS",
+      "type": "base_is_ancestor"
+    },
+    {
+      "status": "PASS",
+      "type": "candidate_worktree_clean",
+      "worktree_clean": true
+    },
+    {
+      "commit": "75e1e04084421a9d66bfaf04b45f97b90a4d7162",
+      "parent": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+      "ref": "refs/heads/project-os-artifacts/visembler/CHG-254-r1",
+      "status": "PASS",
+      "type": "artifact_commit_sole_parent"
+    },
+    {
+      "file_count": 34,
+      "sha256": "69db10f4272e596cd9fe113afd28ad89536868ef668c2c1b2203281b715944b6",
+      "status": "PASS",
+      "type": "carrier_manifest_local_hash_validation"
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "status": "PASS",
+      "tests": 1223,
+      "type": "full_pytest"
+    },
+    {
+      "errors": 0,
+      "failures": 0,
+      "status": "PASS",
+      "tests": 86,
+      "type": "focused_regressions"
+    },
+    {
+      "native_release": "PASS_LOCAL_INTERNAL_PILOT",
+      "remaining": [],
+      "status": "PASS",
+      "type": "repository_quality"
+    },
+    {
+      "status": "PENDING_SEPARATE_CHG-21",
+      "type": "managed_target_certification"
+    }
+  ],
+  "error_code": null,
+  "evidence_commit_sole_parent": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 1613,
+        "path": ".codex-fabric/CHG-254-r1-binding.json",
+        "sha256": "adff8092651b41dde7c677279c0284b398901159706929f2825f202466b11379"
+      }
+    ],
+    "version": 1
+  },
+  "finished_at": "2026-09-26T15:58:45Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+    "base_tree": "bcff2aeab48bfc4d6ca2f0105365030d7a9ff992",
+    "branch": "fix/visembler-chg254-pptx-chart-semantics-r1",
+    "evidence_commit_parent_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+    "head_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+    "remote_exact_head": true,
+    "remote_head_sha": "26abd6e30a348f34bdb4d72caf3c4822e76e7dcb",
+    "source_changed": true,
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "b2cd23b7fddc4f9eb116e54a2e5d19fe02bef06e",
+    "target_unchanged": true,
+    "work_branch": "fix/visembler-chg254-pptx-chart-semantics-r1",
+    "worktree_clean": true
+  },
+  "job_id": "CF-99f39fd144204db4bf5bbe07a8951ee7",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-254-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-254-r1"
+  },
+  "managed_target_certification": "PENDING_SEPARATE_CHG-21",
+  "operation": "FIX",
+  "producer_self_verdict": "FIX_COMPLETE_AWAITING_INDEPENDENT_AUDIT",
+  "project": "visembler",
+  "project_id": "visembler",
+  "request": "CHG-254-r1",
+  "schema_version": 1,
+  "source_changed": true,
+  "started_at": "2026-09-26T14:23:26Z",
+  "status": "FIX_COMPLETE_AWAITING_INDEPENDENT_AUDIT",
+  "target_unchanged": true
+}
