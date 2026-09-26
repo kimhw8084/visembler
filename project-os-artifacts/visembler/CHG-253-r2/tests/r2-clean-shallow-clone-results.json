@@ -1,0 +1,36 @@
+{
+  "clone": {
+    "clean_before_install": true,
+    "head": "8a2539a50ed7d4d638baa52e1574dafbf5527478",
+    "shallow": true,
+    "single_branch": true,
+    "tree": "bcff2aeab48bfc4d6ca2f0105365030d7a9ff992",
+    "work_branch": "fix/visembler-chg253-ci-hermetic-r2"
+  },
+  "environment": {
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "python": "3.12.9"
+  },
+  "focused": {
+    "command": "python -m pytest tests/test_visualizer_chg253_sparse_reading.py -q",
+    "git_subprocess_probe": {
+      "historical_show_fetch_cat_file_rev_parse_lookups": 0,
+      "invocations": 0,
+      "method": "PATH-interposed git wrapper recorded Git subprocesses launched by focused pytest",
+      "result": "PASS"
+    },
+    "result": "PASS",
+    "tests_passed": 1
+  },
+  "full": {
+    "command": "python -m pytest",
+    "duration_seconds": 131.35,
+    "failures": 0,
+    "result": "PASS",
+    "tests_passed": 1216,
+    "warning": "Existing zipfile.UserWarning for duplicate ppt/presentation.xml in tests/test_visualizer_application_hardening.py::test_pptx_duplicate_path_and_compression_bomb_rejected",
+    "warnings": 1
+  },
+  "install": "python -m pip install -e '.[test]'"
+}

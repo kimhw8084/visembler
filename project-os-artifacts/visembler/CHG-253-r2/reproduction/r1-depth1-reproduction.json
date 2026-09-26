@@ -1,0 +1,19 @@
+{
+  "candidate": "3777fa759c96355888ea3a39715693ab4f306667",
+  "failure_command": "git show refs/remotes/origin/project-os/CHG-173-r3:project-os-artifacts/visembler/CHG-173-r3/compositions/F-F-bridge-c08-sparse/reading-390.png",
+  "failure_type": "subprocess.CalledProcessError",
+  "historical_ref": "refs/remotes/origin/project-os/CHG-173-r3",
+  "historical_remote_ref_present": false,
+  "install_command": "python -m pip install -e '.[test]'",
+  "pytest_command": "python -m pytest tests/test_visualizer_chg253_sparse_reading.py -q",
+  "python": "3.12.9",
+  "reproduced_before_mutation": true,
+  "result": {
+    "failed": 1,
+    "passed": 0
+  },
+  "shallow_clone": true,
+  "single_branch": true,
+  "stderr": "fatal: invalid object name 'refs/remotes/origin/project-os/CHG-173-r3'.",
+  "work_branch": "fix/visembler-chg253-sparse-narrow-overflow-r1"
+}

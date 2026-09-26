@@ -1,0 +1,8 @@
+R1 clean depth-1 reproduction
+Checkout: 3777fa759c96355888ea3a39715693ab4f306667
+Clone: --depth 1 --single-branch, only the R1 work branch
+Python: 3.12.9
+Install: python -m pip install -e '.[test]'
+Command: python -m pytest tests/test_visualizer_chg253_sparse_reading.py -q
+Result: 1 failed. Browser assertions and CHG-207 checks completed; run_acceptance failed only while packaging output with the unavailable historical git show.
+fatal: invalid object name 'refs/remotes/origin/project-os/CHG-173-r3'.

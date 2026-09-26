@@ -1,0 +1,7 @@
+tests/test_visualizer_chg253_sparse_reading.py:7:
+scripts/release_checks/run_chg253_sparse_reading_acceptance.py:350: in run_acceptance
+    raw_before = subprocess.check_output(["git", "show", R3_SCREENSHOT], cwd=ROOT)
+subprocess.CalledProcessError: git show refs/remotes/origin/project-os/CHG-173-r3:project-os-artifacts/visembler/CHG-173-r3/compositions/F-F-bridge-c08-sparse/reading-390.png returned exit status 128.
+fatal: invalid object name 'refs/remotes/origin/project-os/CHG-173-r3'.
+FAILED tests/test_visualizer_chg253_sparse_reading.py::test_native_preview_fits_sparse_content_and_preserves_chg207_reading
+1 failed, 1215 passed, 1 warning in 239.37s (0:03:59)
