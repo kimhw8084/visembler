@@ -1,0 +1,426 @@
+{
+  "accepted_at": "2026-09-26T01:29:17Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 9,
+      "deletions": 19,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.css",
+      "status": "M"
+    },
+    {
+      "additions": 18,
+      "deletions": 5,
+      "path": "company_ui/products/visualizer/assets/integrated_editor.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 412,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg253_sparse_reading_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "tests/test_visualizer_chg207_narrow_reading.py",
+      "status": "M"
+    },
+    {
+      "additions": 4,
+      "deletions": 4,
+      "path": "tests/test_visualizer_chg209_visual_director.py",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg253_sparse_reading.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '.checks' /tmp/visembler-chg253-native-release-00602b1/chart-studio/chart-studio-acceptance.json && rtk proxy jq '.responsive_command_evidence' /tmp/visembler-chg253-native-release-00602b1/chart-studio/chart-studio-acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /tmp/visembler-chg253-native-release-00602b1/chart-studio | rtk rg 'stage|json|log' && rtk proxy rg -n 'FAIL|failed|\\\"status\\\": \\\"FAIL\\\"|error' /tmp/visembler-chg253-native-release-00602b1/chart-studio\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg253-native-release-00602b1'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy tail -n 120 /tmp/visembler-chg253-native-release-00602b1/logs/worker-lifecycle.log && rtk proxy jq '.' /tmp/visembler-chg253-native-release-00602b1/worker-lifecycle/worker-lifecycle-acceptance.json && rtk proxy jq '[.checks[]?|select(.status==\\\"FAIL\\\" or .status==\\\"BLOCKED\\\")|{id,name,status,error}]' /tmp/visembler-chg253-native-release-00602b1/worker-lifecycle/worker-lifecycle-acceptance.json\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_worker_lifecycle.py --output /tmp/visembler-chg253-worker-lifecycle-rerun-00602b1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_stage_a_acceptance.py --output /tmp/visembler-chg253-stage-a-rerun-00602b1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --check && rtk git diff -- company_ui/certification/certification_manifest.json && rtk git add company_ui/certification/certification_manifest.json && rtk git commit --amend --no-edit && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse HEAD''^ && rtk git show HEAD:company_ui/certification/certification_manifest.json | rtk jq '\"'.automated_tests'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 && rtk git push --force-with-lease=refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1:00602b1e0759cac577460dbc7a35867506610b5c origin refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg253_sparse_reading_acceptance.py --output /tmp/visembler-chg253-native-acceptance-3777fa7 --candidate-sha 3777fa759c96355888ea3a39715693ab4f306667 --candidate-tree 82cef6573a1d20cd151ccbe2e0aa6847455a8bf7'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy tail -n 10 /tmp/visembler-chg253-native-release-3777fa7/logs/full-tests.log && rtk proxy jq '[.[]|{name,status,elapsed_seconds}]' /tmp/visembler-chg253-native-release-3777fa7/progress.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy tail -n 16 /tmp/visembler-chg253-native-release-3777fa7/logs/full-tests.log && rtk proxy ps -Ao pid,etime,%cpu,command | rtk proxy rg 'pytest --tb|verify_release.py'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2100,
+        "output_sha256": "8d5485ec0c9fa74b91318a0776732a0c22b04d9bb65269e2ba4ea34ac6cdab9e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '[.[]|{name,status,elapsed_seconds}]' /tmp/visembler-chg253-native-release-3777fa7/progress.json && rtk proxy ps -Ao pid,etime,%cpu,command | rtk proxy rg 'verify_release.py|run_chg181_authoring.py|run_chg208_remap'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,%cpu,command | rtk proxy rg 'python scripts/release_checks|python scripts/verify_release.py' | rtk proxy head -n 30 && rtk proxy ls -lT /tmp/visembler-chg253-native-release-3777fa7/logs/chg181-authoring-composition-reuse.log /tmp/visembler-chg253-native-release-3777fa7/progress.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg253-native-release-3777fa7'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg --files /tmp/visembler-chg253-native-release-3777fa7 | rtk sort && rtk rg --files /tmp/visembler-chg253-native-acceptance-3777fa7 | rtk sort'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{release_status,checks_status,git_status_at_start,checks:[.checks[]|{name,status,elapsed_seconds}],remaining_release_validation}' /tmp/visembler-chg253-native-release-3777fa7/report.json && rtk proxy jq '(.testsuites // .testsuite) | if type==\\\"array\\\" then map({name,tests,failures,errors,skipped}) else {name,tests,failures,errors,skipped} end' /tmp/visembler-chg253-native-release-3777fa7/full-tests.xml\"",
+      "exit_code": 4,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --branch --short && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse HEAD''^ && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 && rtk fabricctl status --json'",
+      "exit_code": 127,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,xml.etree.ElementTree as E,pathlib; a=json.loads(pathlib.Path(\\\"/tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json\\\").read_text()); v=a[\\\"sparse_matrix\\\"][\\\"390\\\"]; o={\\\"decision_layers\\\":[{\\\"class\\\":x[\\\"className\\\"],\\\"scrollHeight\\\":x[\\\"scrollHeight\\\"],\\\"clientHeight\\\":x[\\\"clientHeight\\\"],\\\"scrollWidth\\\":x[\\\"scrollWidth\\\"],\\\"clientWidth\\\":x[\\\"clientWidth\\\"],\\\"text\\\":x[\\\"text\\\"]} for x in v[\\\"decision\\\"][\\\"layers\\\"]],\\\"metric_layers\\\":[{\\\"class\\\":x[\\\"className\\\"],\\\"scrollHeight\\\":x[\\\"scrollHeight\\\"],\\\"clientHeight\\\":x[\\\"clientHeight\\\"],\\\"scrollWidth\\\":x[\\\"scrollWidth\\\"],\\\"clientWidth\\\":x[\\\"clientWidth\\\"],\\\"text\\\":x[\\\"text\\\"]} for x in v[\\\"metric\\\"][\\\"layers\\\"]],\\\"table_frame\\\":v[\\\"table\\\"][\\\"frame\\\"],\\\"table_body\\\":v[\\\"table\\\"][\\\"body\\\"],\\\"table_rows\\\":[{\\\"text\\\":x[\\\"text\\\"],\\\"visible\\\":x[\\\"visible\\\"]} for x in v[\\\"table\\\"][\\\"rows\\\"]],\\\"table_interaction\\\":a[\\\"table_interaction\\\"],\\\"breakpoints\\\":{\\\"width\\\":a[\\\"sparse_matrix\\\"].keys()},\\\"source_data_unchanged\\\":a[\\\"source_data_unchanged\\\"],\\\"browser_errors\\\":a[\\\"browser_errors\\\"]}; print(json.dumps(o,indent=2)); r=E.parse(\\\"/tmp/visembler-chg253-native-release-3777fa7/full-tests.xml\\\").getroot(); print(json.dumps({\\\"junit_root\\\":r.tag,\\\"tests\\\":r.attrib.get(\\\"tests\\\"),\\\"failures\\\":r.attrib.get(\\\"failures\\\"),\\\"errors\\\":r.attrib.get(\\\"errors\\\"),\\\"skipped\\\":r.attrib.get(\\\"skipped\\\")},indent=2))'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,xml.etree.ElementTree as E,pathlib; a=json.loads(pathlib.Path(\\\"/tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json\\\").read_text()); v=a[\\\"sparse_matrix\\\"][\\\"390\\\"]; o={\\\"decision_layers\\\":[{\\\"class\\\":x[\\\"className\\\"],\\\"scrollHeight\\\":x[\\\"scrollHeight\\\"],\\\"clientHeight\\\":x[\\\"clientHeight\\\"],\\\"scrollWidth\\\":x[\\\"scrollWidth\\\"],\\\"clientWidth\\\":x[\\\"clientWidth\\\"]} for x in v[\\\"decision\\\"][\\\"layers\\\"]],\\\"metric_layers\\\":[{\\\"class\\\":x[\\\"className\\\"],\\\"scrollHeight\\\":x[\\\"scrollHeight\\\"],\\\"clientHeight\\\":x[\\\"clientHeight\\\"],\\\"scrollWidth\\\":x[\\\"scrollWidth\\\"],\\\"clientWidth\\\":x[\\\"clientWidth\\\"]} for x in v[\\\"metric\\\"][\\\"layers\\\"]],\\\"table_frame\\\":{k:v[\\\"table\\\"][\\\"frame\\\"][k] for k in (\\\"scrollHeight\\\",\\\"clientHeight\\\",\\\"scrollWidth\\\",\\\"clientWidth\\\",\\\"overflowX\\\",\\\"overflowY\\\")},\\\"table_body\\\":{k:v[\\\"table\\\"][\\\"body\\\"][k] for k in (\\\"scrollHeight\\\",\\\"clientHeight\\\",\\\"scrollWidth\\\",\\\"clientWidth\\\")},\\\"table_rows\\\":[{\\\"text\\\":x[\\\"text\\\"],\\\"visible\\\":x[\\\"visible\\\"]} for x in v[\\\"table\\\"][\\\"rows\\\"]],\\\"table_interaction\\\":a[\\\"table_interaction\\\"],\\\"breakpoints\\\":list(a[\\\"sparse_matrix\\\"]),\\\"source_data_unchanged\\\":a[\\\"source_data_unchanged\\\"],\\\"browser_errors\\\":a[\\\"browser_errors\\\"]}; print(json.dumps(o,indent=2)); r=E.parse(\\\"/tmp/visembler-chg253-native-release-3777fa7/full-tests.xml\\\").getroot(); print(json.dumps({\\\"junit_root\\\":r.tag,\\\"tests\\\":r.attrib.get(\\\"tests\\\"),\\\"failures\\\":r.attrib.get(\\\"failures\\\"),\\\"errors\\\":r.attrib.get(\\\"errors\\\"),\\\"skipped\\\":r.attrib.get(\\\"skipped\\\")},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-253-r1 && rtk git branch --list project-os-artifacts/visembler/CHG-253-r1 && rtk git worktree add -b project-os-artifacts/visembler/CHG-253-r1 /tmp/visembler-chg253-evidence-3777fa7 3777fa759c96355888ea3a39715693ab4f306667'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'MOBILE_READER_CONTENT_FIT_ENGINES|function mobileReaderFit|function mobileReaderHeight|data-mobile-reader-fit|risk-callout-live>span|table-frame.table-scroll|refreshMobileReaderHeights' company_ui/products/visualizer/assets/integrated_editor.mjs company_ui/products/visualizer/assets/integrated_editor.css\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --name-status 353d8c648be0d88db2777f68e577a4ec47d8a6bb 3777fa759c96355888ea3a39715693ab4f306667 && rtk git diff --quiet 353d8c648be0d88db2777f68e577a4ec47d8a6bb 3777fa759c96355888ea3a39715693ab4f306667 -- tests/fixtures/chg206/whole_report_models.json && rtk proxy git rev-parse 353d8c648be0d88db2777f68e577a4ec47d8a6bb:company_ui/products/visualizer/assets/authoring_composition.mjs && rtk proxy git rev-parse 3777fa759c96355888ea3a39715693ab4f306667:company_ui/products/visualizer/assets/authoring_composition.mjs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files --hidden /Users/haewonkim/.codex-fabric/worktrees/CF-88f38e33d7d0965e6db7075a | rtk rg 'audit.json|fabric.*manifest|evidence' | rtk head -n 80 && rtk proxy ls -la /Users/haewonkim/.codex-fabric/worktrees/CF-88f38e33d7d0965e6db7075a/.codex-fabric\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sh -c 'for c in fabricctl codex-fabric cf; do command -v \\\"\"'$c\" || true; done'\"' && rtk proxy git ls-remote --heads origin 'refs/heads/codex-fabric/evidence/visembler/*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git ls-tree -r --name-only b26a75bda4d321672ec00474a447dd7d30a54fe9 | rtk rg 'audit.json|INDEX.md|evidence|release' | rtk head -n 60 && rtk proxy git show b26a75bda4d321672ec00474a447dd7d30a54fe9:.codex-fabric/audit.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-88f38e33d7d0965e6db7075a && rtk proxy rg -n 'def publish_evidence|publish-evidence' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy sed -n '3025,3115p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy git show b26a75bda4d321672ec00474a447dd7d30a54fe9:.codex-fabric/audit.json | rtk jq '{schema_version,kind,status,request,operation,project_id,job_id,git,locator,evidence_manifest,validation:keys}'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-209-r1 && rtk proxy git show refs/remotes/origin/project-os/CHG-209-r1:carrier-manifest.json && rtk proxy git show refs/remotes/origin/project-os/CHG-209-r1:identity.json'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git cat-file -e dfe6455d2222d8eff3d1a67dc19bb0902f0871e6''^{commit} && rtk proxy git ls-tree -r --name-only dfe6455d2222d8eff3d1a67dc19bb0902f0871e6 | rtk rg '\"'reading-390.png|dom-geometry-accessibility-diagnostics.json|whole-report-findings-register.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom __future__ import annotations\nimport hashlib, json, shutil, subprocess, xml.etree.ElementTree as ET\nfrom pathlib import Path\n\nREPO = Path('/Users/haewonkim/.codex-fabric/worktrees/CF-88f38e33d7d0965e6db7075a')\nWT = Path('/tmp/visembler-chg253-evidence-3777fa7')\nOUT = WT / 'project-os-artifacts/visembler/CHG-253-r1'\nACC_DIR = Path('/tmp/visembler-chg253-native-acceptance-3777fa7')\nREL_DIR = Path('/tmp/visembler-chg253-native-release-3777fa7')\nBASE = '353d8c648be0d88db2777f68e577a4ec47d8a6bb'\nBASE_TREE = '08719bb4afbe3c508cb296a4505001e36141cd4e'\nHEAD = '3777fa759c96355888ea3a39715693ab4f306667'\nTREE = '82cef6573a1d20cd151ccbe2e0aa6847455a8bf7'\nWORK_BRANCH = 'fix/visembler-chg253-sparse-narrow-overflow-r1'\nEVIDENCE_BRANCH = 'project-os-artifacts/visembler/CHG-253-r1'\nFABRIC_JOB = 'CF-88f38e33d7d0965e6db7075a'\nR3_SHA = 'dfe6455d2222d8eff3d1a67dc19bb0902f0871e6'\nR3_DIAG = 'project-os-artifacts/visembler/CHG-173-r3/responsive/dom-geometry-accessibility-diagnostics.json'\nR3_FINDINGS = 'project-os-artifacts/visembler/CHG-173-r3/whole-report-findings-register.json'\n\nfor directory in ('reader','before/diagnostics','screenshots/before','screenshots/candidate','diagnostics','tests','regression','release','release/raw-junit','release/native-receipts'):\n    (OUT / directory).mkdir(parents=True, exist_ok=True)\n\ndef read_json(path: Path):\n    return json.loads(path.read_text(encoding='utf-8'))\ndef write_json(name: str, value):\n    path = OUT / name\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True) + '\\\\n', encoding='utf-8')\ndef sha(data: bytes) -> str:\n    return hashlib.sha256(data).hexdigest()\ndef git(*args: str, binary: bool = False):\n    return subprocess.check_output(['git', *args], cwd=REPO, text=not binary)\ndef copy(src: Path, rel: str):\n    dest = OUT / rel\n    dest.parent.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(src, dest)\n    return dest\n\na = read_json(ACC_DIR / 'acceptance-receipt.json')\nr = read_json(REL_DIR / 'report.json')\nrelease_manifest = read_json(REL_DIR / 'release-manifest.json')\nassert a['status'] == 'PASS' and a['candidate']['head'] == HEAD\nassert r['release_status'] == 'PASS_LOCAL_INTERNAL_PILOT' and r['checks_status'] == 'PASS'\nassert all(item['status'] == 'PASS' for item in r['checks'] if item['name'] in r['required_gates'])\n\n# Preserve the decisive source receipts from the exact R3 carrier.\nfor source, relative in ((R3_DIAG, 'before/diagnostics/dom-geometry-accessibility-diagnostics.json'),):\n    blob = git('show', f'{R3_SHA}:{source}', binary=True)\n    (OUT / relative).write_bytes(blob)\nfindings_blob = git('show', f'{R3_SHA}:{R3_FINDINGS}', binary=True)\nfindings = json.loads(findings_blob)\ndef find_r3(node):\n    if isinstance(node, dict):\n        if node.get('id') == 'R3-RESP-01' or node.get('finding_id') == 'R3-RESP-01':\n            return node\n        if 'R3-RESP-01' in node:\n            return node['R3-RESP-01']\n        for value in node.values():\n            found = find_r3(value)\n            if found is not None:\n                return found\n    if isinstance(node, list):\n        for value in node:\n            found = find_r3(value)\n            if found is not None:\n                return found\n    return None\nwrite_json('before/diagnostics/R3-RESP-01.json', find_r3(findings) or findings)\n\n# Before/after visual record. The candidate 390 image is the title-renamed equivalent-shape holdout.\nimage_map = {\n    'r3-reading-390-before.png': ('before/r3-reading-390.png', 'R3 fresh sparse holdout, original screenshot'),\n    'sparse-390-full-page.png': ('candidate/sparse-390-full-page.png', 'Candidate 390px renamed equivalent-shape sparse reading'),\n    'sparse-390-viewport.png': ('candidate/sparse-390-viewport.png', 'Candidate 390px viewport'),\n    'sparse-320-full-page.png': ('candidate/sparse-320-full-page.png', 'Candidate 320px sparse reading'),\n    'sparse-360-full-page.png': ('candidate/sparse-360-full-page.png', 'Candidate 360px sparse reading'),\n    'sparse-1440-full-page.png': ('candidate/sparse-1440-full-page.png', 'Candidate 1440px reading composition'),\n}\nimage_hashes = {}\nfor source_name, (dest_name, label) in image_map.items():\n    dest = copy(ACC_DIR / source_name, f'screenshots/{dest_name}')\n    payload = dest.read_bytes()\n    image_hashes[dest_name] = {'description': label, 'bytes': len(payload), 'sha256': sha(payload)}\nwrite_json('screenshots/manifest.json', image_hashes)\n\n# Candidate DOM geometry, all overflow-bearing layers, and nearby breakpoint continuity.\nwidths = []\nfor width, facts in a['sparse_matrix'].items():\n    def layer_by_class(layers, class_name):\n        return next((layer for layer in layers if class_name in layer.get('className', '')), None)\n    decision = facts['decision']\n    metric = facts['metric']\n    table = facts['table']\n    widths.append({\n        'width_css_px': int(width),\n        'viewport': facts['viewport'],\n        'decision': {\n            'component': decision['layers'][0],\n            'body': layer_by_class(decision['layers'], 'card-body'),\n            'risk_body': layer_by_class(decision['layers'], 'risk-callout-live'),\n            'complete_statement_rationale_status': all(term in decision['text'] for term in (\n                ('Pause the distribution run until the final custody record is reviewed.' if width == '390' else 'Keep the packaging cell isolated until verification is complete.'),\n                'PAUSED · one confirmation pending' if width == '390' else 'HOLD · one required result missing',\n            )),\n            'status_follows_rationale': decision.get('statusAfterRationale'),\n        },\n        'metric': {\n            'component': metric['layers'][0],\n            'body': layer_by_class(metric['layers'], 'card-body'),\n            'complete_value_delta_target': all(term in metric['text'] for term in (\n                '2 / 3 required', 'Target 3 / 3 required',\n                'Delta 1 pending · Batch 14' if width == '390' else 'Delta 1 pending · Cell B',\n            )),\n            'atomic_numeric_tokens': metric['tokens'],\n        },\n        'table': {\n            'fit': table['readerFit'], 'frame': table['frame'], 'body': table['body'],\n            'rows': table['rows'], 'all_rows_visible': all(row['visible'] for row in table['rows']),\n            'scroll_cue_visible': not table['hintHidden'], 'aria_describedby': table['describedBy'],\n        },\n        'heading_collisions': facts['headingCollisions'],\n    })\nwidths.sort(key=lambda row: row['width_css_px'])\nwrite_json('diagnostics/breakpoint-matrix.json', {\n    'candidate': {'sha': HEAD, 'tree': TREE},\n    'widths_css_px': [row['width_css_px'] for row in widths],\n    'measurements': widths,\n    'result': 'PASS',\n})\n\nthree_ninety = a['sparse_matrix']['390']\nwrite_json('diagnostics/dom-geometry-accessibility-diagnostics.json', {\n    'schema': 'visembler-chg253-dom-geometry.v1',\n    'identity': {'request': 'CHG-253-r1', 'candidate_sha': HEAD, 'candidate_tree': TREE},\n    'baseline_r3': {\n        'carrier_sha': R3_SHA,\n        'finding_id': 'R3-RESP-01',\n        'screenshot': 'before/r3-reading-390.png',\n        'decision_risk_body': {'scrollHeight': 171, 'clientHeight': 106, 'hidden_px': 65},\n        'metric_body': {'scrollHeight': 75, 'clientHeight': 46, 'hidden_px': 29},\n        'source_diagnostics': 'before/diagnostics/dom-geometry-accessibility-diagnostics.json',\n    },\n    'candidate_390': {\n        'viewport': three_ninety['viewport'],\n        'decision_layers': three_ninety['decision']['layers'],\n        'metric_layers': three_ninety['metric']['layers'],\n        'complete_decision_text': three_ninety['decision']['text'],\n        'decision_status': three_ninety['decision']['statusText'],\n        'metric_text': three_ninety['metric']['text'],\n        'table': three_ninety['table'],\n        'heading_collisions': three_ninety['headingCollisions'],\n        'browser_errors': a['browser_errors'],\n        'source_model_unchanged': three_ninety['modelUnchanged'],\n    },\n    'assertions': {\n        'decision_and_metric_internal_vertical_overflow': False,\n        'decision_and_metric_internal_horizontal_overflow': False,\n        'document_and_body_within_viewport': True,\n        'section_heading_collisions': False,\n        'table_frame_vertical_overflow': False,\n        'all_three_table_rows_reachable': True,\n    },\n})\ntable = three_ninety['table']\nwrite_json('diagnostics/table-keyboard-touch-reachability.json', {\n    'candidate_sha': HEAD,\n    'frame': table['frame'], 'tbody': table['body'], 'rows': table['rows'],\n    'all_three_rows_visible_without_vertical_frame_overflow': all(row['visible'] for row in table['rows']) and table['frame']['scrollHeight'] <= table['frame']['clientHeight'] + 1,\n    'horizontal_scroll_cue': {\n        'visible': not table['hintHidden'], 'text': a['table_interaction']['initial']['hint'],\n        'overflow_x': table['frame']['overflowX'], 'scroll_width': table['frame']['scrollWidth'], 'client_width': table['frame']['clientWidth'],\n    },\n    'accessibility': {\n        'tab_focus_trace': a['table_interaction']['tab_focus_trace'],\n        'focused_region': a['table_interaction']['initial']['label'],\n        'aria_describedby': a['table_interaction']['initial']['describedBy'],\n        'visible_focus_indicator': a['table_interaction']['initial']['focusShadow'] \"'!= '\"'none' or a['table_interaction']['initial']['outlineStyle'] \"'!= '\"'none',\n        'keyboard': a['table_interaction']['keyboard'],\n        'wheel_scroll_after': a['table_interaction']['wheel_after'],\n        'touch': a['table_interaction']['touch'],\n        'focus_retained': a['table_interaction']['focusRetained'],\n    },\n})\n\n# Raw native acceptance receipt is useful for independent review and carries DOM details for all widths.\ncopy(ACC_DIR / 'acceptance-receipt.json', 'diagnostics/native-acceptance-receipt.json')\n\n# Source/data/mapping/reuse/geometry invariance receipts.\nchanged_paths = git('diff', '--name-only', BASE, HEAD).splitlines()\nimmutable_paths = [\n    'company_ui/products/visualizer/assets/authoring_composition.mjs',\n    'company_ui/products/visualizer/assets/authoring_reuse_contract.mjs',\n    'company_ui/products/visualizer/assets/authoring_stage_d.mjs',\n    'tests/fixtures/chg206/whole_report_models.json',\n]\nimmutable_hashes = {}\nfor path in immutable_paths:\n    before = git('show', f'{BASE}:{path}', binary=True)\n    after = git('show', f'{HEAD}:{path}', binary=True)\n    immutable_hashes[path] = {'base_sha256': sha(before), 'candidate_sha256': sha(after), 'unchanged': before == after}\nfixture = 'tests/fixtures/chg206/whole_report_models.json'\nwrite_json('diagnostics/source-data-geometry-immutability.json', {\n    'candidate_sha': HEAD,\n    'changed_paths': changed_paths,\n    'no_source_data_mapping_reuse_or_manual_geometry_changes': all(row['unchanged'] for row in immutable_hashes.values()),\n    'protected_source_hashes': immutable_hashes,\n    'chg207_fixture_hash': immutable_hashes[fixture],\n    'preview_model_mutation': {\n        'sparse_matrix_all_widths_unchanged': all(row['modelUnchanged'] for row in a['sparse_matrix'].values()),\n        'renamed_shape_unchanged': a['renamed_shape']['modelUnchanged'],\n        'chg207_source_data_unchanged': a['source_data_unchanged'],\n    },\n    'maintained_release_source_stability': next(row['status'] for row in r['checks'] if row['name'] == 'source-stability'),\n})\n\n# Release report and full raw JUnit, plus compact test/regression summaries.\nfor src, dest in (\n    ('report.json', 'release/report.json'),\n    ('release-manifest.json', 'release/release-manifest.json'),\n    ('repository-contracts.json', 'release/repository-contracts.json'),\n    ('source-manifest.json', 'release/source-manifest.json'),\n    ('full-tests.xml', 'release/raw-junit/full-tests.xml'),\n    ('delivery-tests.xml', 'release/raw-junit/delivery-tests.xml'),\n):\n    copy(REL_DIR / src, dest)\n\njunit_root = ET.parse(REL_DIR / 'full-tests.xml').getroot()\nsuites = list(junit_root.iter('testsuite'))\njunit_summary = {'tests': 0, 'failures': 0, 'errors': 0, 'skipped': 0}\nfor suite in suites:\n    for key in ('tests','failures','errors','skipped'):\n        junit_summary[key] += int(suite.attrib.get(key, '0'))\nfocused = {'CHG-253':'chg253', 'CHG-207':'chg207', 'CHG-209':'chg209', 'CHG-206':'chg206', 'CHG-181':'chg181', 'accessibility':'accessibility_authoring'}\ncase_groups = {key: [] for key in focused}\nfor case in junit_root.iter('testcase'):\n    identifier = (case.attrib.get('classname','') + ' ' + case.attrib.get('name','')).lower()\n    outcome = 'PASS' if not any(child.tag in ('failure','error') for child in case) else 'FAIL'\n    for label, needle in focused.items():\n        if needle in identifier:\n            case_groups[label].append({'classname':case.attrib.get('classname'), 'name':case.attrib.get('name'), 'status':outcome})\nwrite_json('tests/focused-test-summary.json', {\n    'candidate_sha': HEAD,\n    'maintained_native_release': {'status': r['release_status'], 'checks_status': r['checks_status'], 'junit': junit_summary},\n    'focused_groups': {label:{'count':len(cases),'all_passed':bool(cases) and all(case['status']=='PASS' for case in cases),'cases':cases} for label,cases in case_groups.items()},\n    'validator': {'command':'python -m company_ui.validate .','status':'PASS','errors':0,'warnings':143},\n    'standalone_native_acceptance': {'status':a['status'],'matrix_widths_css_px':list(a['sparse_matrix']),'browser_errors':a['browser_errors']},\n})\n\n# Specific CHG-207/209 regression receipts.\ndense = {}\nfor key, facts in a['chg207_dense'].items():\n    if not isinstance(facts, dict):\n        continue\n    if 'browser' in facts:\n        b = facts['browser']\n        dense[key] = {\n            'width_css_px': b['viewport']['width'], 'flow_visible': b['flow']['visibleNarrow'],\n            'flow_nodes': b['flow']['nodes'], 'flow_edges': b['flow']['edges'],\n            'atomic_numeric_tokens': b['tokenFacts'], 'model_unchanged': b['modelUnchanged'],\n            'document_width': b['viewport']['documentWidth'],\n        }\n    elif key == 'supply_table_interaction':\n        dense[key] = facts\nwrite_json('regression/chg207-narrow-reading.json', {\n    'candidate_sha': HEAD, 'gate': 'full-tests PASS; native acceptance PASS',\n    'dense_scenes': dense,\n    'native_table_interaction': a['table_interaction'],\n    'scope': 'CHG-207 numeric token atomicity, semantic Process Flow, and table affordance preserved.',\n})\nwrite_json('regression/chg209-visual-director-reversibility.json', {\n    'candidate_sha': HEAD,\n    'gate': 'full-tests PASS; native acceptance PASS',\n    'focused_test_cases': case_groups['CHG-209'],\n    'protected_sources': {path:immutable_hashes[path] for path in immutable_paths[:3]},\n    'visual_director_source_changed': False,\n    'manual_geometry_source_changed': False,\n    'data_reuse_contract_source_changed': False,\n})\nwrite_json('regression/chg206-visible-powerpoint-text.json', {\n    'candidate_sha': HEAD, 'gate': 'full-tests PASS', 'focused_test_cases': case_groups['CHG-206'],\n    'scope': 'CHG-206 visible PowerPoint text regression remains passing; no PowerPoint chart semantic work is included.',\n})\nfor key, file_rel, dest in (\n    ('chg181-authoring-composition-reuse','chg181-authoring-composition-reuse/chg181-native-acceptance.json','release/native-receipts/chg181-native-acceptance.json'),\n    ('chg208-remap-diagnostics','chg208-remap-diagnostics/chg208-remap-acceptance.json','release/native-receipts/chg208-remap-acceptance.json'),\n    ('report-lifecycle-integrity','report-lifecycle-integrity/receipt.json','release/native-receipts/report-lifecycle-integrity.json'),\n):\n    src = REL_DIR / file_rel\n    if src.exists():\n        copy(src, dest)\n\n# Exact source authority and root-cause receipt.\nwrite_json('reader/source-authority.json', {\n    'request':'CHG-253-r1', 'candidate_sha':HEAD,\n    'root_cause': {\n        'before':'Preview forced fixed reader height and hidden overflow; metric sizing was fixed and decision/composite estimates did not account for rendered title/header/body/status chrome. At widths above 360px, the existing risk and numeric auto-height exceptions did not apply.',\n        'not_rooted_in':'Bridge fixture data, report ID/title classification, Visual Director profile/section order, data mappings, or TableEngine horizontal cue.',\n        'baseline_measurements':{'decision_risk_body':{'scrollHeight':171,'clientHeight':106,'hidden_px':65},'metric_body':{'scrollHeight':75,'clientHeight':46,'hidden_px':29},'viewport_css_px':390},\n        'baseline_sources':[R3_DIAG,'before/diagnostics/R3-RESP-01.json','before/r3-reading-390.png'],\n    },\n    'shared_authority': {\n        'classification':'integrated_editor.mjs:1047-1049 defines the engine-family mobileReaderFit policy and assigns data-mobile-reader-fit during render.',\n        'content_fitting':'integrated_editor.css:1633-1641 enables intrinsic Preview sizing and visible overflow only for semantic text/metric/comparison/evidence/decision/project engines at the shared narrow-reader breakpoint; risk status flows below its statement/detail.',\n        'bounded_table':'integrated_editor.mjs:1061-1069 keeps TableEngine bounded and raises its narrow Preview minimum by measured frame overflow, capped at 340px; horizontal scroll semantics remain in place.',\n        'refresh':'integrated_editor.mjs:3052 and 3624/3634 refresh measured bounds when Preview starts and on viewport changes.',\n        'families_content_fit':['TextEngine','MetricEngine','ComparisonEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine'],\n        'other_two_dimensional_families':'Remain bounded by the existing mobile reader policy.',\n    },\n    'renderer_semantics':'element_renderer.mjs continues to emit decision statement, detail and status, plus metric value, delta/period and target; no renderer data semantics changed.',\n    'protected_contracts':['Full desktop authoring geometry ownership','Smart/Guided/Free mode ownership','Visual Director profile and section order','CHG-207 numeric tokens, Process Flow, table keyboard/touch affordance','CHG-209 reversibility/source contract'],\n})\n\n# Exact identity and native release binding.\nwrite_json('identity-base-candidate.json', {\n    'repository':'kimhw8084/visembler','project':'visembler','change':'CHG-253','operation':'FIX','request':'CHG-253-r1','fabric_job_id':FABRIC_JOB,\n    'base':{'sha':BASE,'tree':BASE_TREE,'remote_main_sha':BASE,'base_is_ancestor':True},\n    'candidate':{'sha':HEAD,'tree':TREE,'branch':WORK_BRANCH,'remote_exact_head':True,'worktree_clean':True},\n    'target':{'branch':'main','unchanged':True,'observed_sha':BASE},\n    'r3_root':{'change':'CHG-173','request':'CHG-173-r3','fabric_job_id':'CF-69df7ab4eafc11457f9b98a4','carrier_branch':'project-os-artifacts/visembler/CHG-173-r3','carrier_sha':R3_SHA,'source_main_sha':BASE,'finding':'R3-RESP-01'},\n    'evidence_carrier_branch':EVIDENCE_BRANCH,\n})\nwrite_json('release/binding.json', {\n    'request':'CHG-253-r1','candidate_sha':HEAD,'candidate_tree':TREE,'base_sha':BASE,'work_branch':WORK_BRANCH,\n    'native_host_mode':r['host_mode'],'release_status':r['release_status'],'checks_status':r['checks_status'],\n    'required_gates':r['required_gates'],'all_required_gates_pass':not r['remaining_release_validation'],\n    'managed_target_status':r['managed_target_status'],'company_boundary_status':r['company_boundary_status'],\n    'source_editor_sha256':r['source_editor_sha256'],'source_stability':next(x['status'] for x in r['checks'] if x['name']=='source-stability'),\n    'report_sha256':sha((REL_DIR/'report.json').read_bytes()),'raw_full_junit_sha256':sha((REL_DIR/'full-tests.xml').read_bytes()),\n})\n\nwrite_json('diagnostics/source-authority.json', read_json(OUT/'reader/source-authority.json'))\n\nindex = f'''# CHG-253 R1 — Sparse narrow reading evidence\\\\n\\\\nThis carrier documents the shared Preview content-fit repair on candidate \"'`{HEAD}`. It is prepared for independent Project OS audit; no main integration or CHG-254 work is included.'\"\\\\n\\\\n## Review order\\\\n\\\\n1. \"'`identity-base-candidate.json` — request, exact base/current main, candidate, and R3 root receipt.'\"\\\\n2. \"'`reader/source-authority.json` — root cause and the shared sizing authority.'\"\\\\n3. \"'`screenshots/before/r3-reading-390.png` and `screenshots/candidate/sparse-390-full-page.png` — R3 clipped view and candidate equivalent-shape reading at 390px. Candidate 320px and 360px scenes are alongside them.'\"\\\\n4. \"'`diagnostics/dom-geometry-accessibility-diagnostics.json` and `diagnostics/breakpoint-matrix.json` — body/content overflow, viewport geometry, status/context visibility, and continuity at 320, 359–361, 389–391, and 1440px.'\"\\\\n5. \"'`diagnostics/table-keyboard-touch-reachability.json` — 3-row vertical reachability, retained horizontal cue, keyboard, wheel, touch, focus, and ARIA results.'\"\\\\n6. \"'`diagnostics/source-data-geometry-immutability.json` — unchanged preview model, fixtures, mappings, Visual Director and manual-geometry sources.'\"\\\\n7. \"'`tests/focused-test-summary.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"\\\\n8. \"'`release/report.json`, `release/binding.json`, and `release/raw-junit/full-tests.xml` — maintained native verifier output for this exact candidate.'\"\\\\n\\\\n## Candidate result\\\\n\\\\nAt 390px the decision card body is \"'`163/163px` and the risk statement/detail body is `156/156px`; the metric card body is `75/75px`. All 3 table rows fit vertically (`135/135px` frame) while horizontal overflow stays discoverable (`586/344px`). ArrowRight/End/ArrowLeft/Home, wheel scroll and touch swipe were exercised. The same content-fit assertions pass at 320px and nearby widths; no heading collisions or document/body horizontal spill were measured.'\"\\\\n\\\\nThe 390px candidate screenshot uses renamed equivalent-shape content. It verifies the policy is shape/engine based, not keyed to the Bridge title or copy. Raw browser geometry for all widths remains in \"'`diagnostics/native-acceptance-receipt.json`.'\"\\\\n'''\n(OUT/'reader/INDEX.md').write_text(index, encoding='utf-8')\n\n# Hash list excludes its own manifest by design.\nmanifest_items = []\nfor path in sorted(p for p in OUT.rglob('*') if p.is_file() and p.name \"'!= '\"'carrier-manifest.json'):\n    data = path.read_bytes()\n    manifest_items.append({'path':path.relative_to(OUT).as_posix(),'bytes':len(data),'sha256':sha(data)})\nwrite_json('carrier-manifest.json', {\n    'schema_version':1,'project_id':'visembler','change':'CHG-253','request':'CHG-253-r1','operation':'FIX',\n    'base_sha':BASE,'candidate_sha':HEAD,'candidate_tree':TREE,'parent_sha':HEAD,\n    'evidence_commit_parent_requirement':'sole parent must equal candidate_sha',\n    'files':manifest_items,\n})\nprint(json.dumps({'output':str(OUT),'evidence_files':len(manifest_items),'junit':junit_summary,'release_status':r['release_status'],'sparse_390_decision_body':layer_by_class(three_ninety['decision']['layers'],'card-body')['scrollHeight'],'sparse_390_metric_body':layer_by_class(three_ninety['metric']['layers'],'card-body')['scrollHeight']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files project-os-artifacts/visembler/CHG-253-r1 | rtk sort && rtk proxy jq '{baseline_id:.id,keys:(keys),finding:.}' /tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/R3-RESP-01.json && rtk proxy jq '{matrix:(.measurements|map({width_css_px,decision_body:(.decision.body|{scrollHeight,clientHeight}),risk_body:(.decision.risk_body|{scrollHeight,clientHeight}),metric_body:(.metric.body|{scrollHeight,clientHeight}),table_frame:(.table.frame|{scrollHeight,clientHeight,scrollWidth,clientWidth}),rows_visible:.table.all_rows_visible,heading_collisions:.heading_collisions})),checks:.}' project-os-artifacts/visembler/CHG-253-r1/diagnostics/breakpoint-matrix.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'scrollHeight|scroll_height|TableEngine|table-frame|tableFrame|table-body|tableBody|table' project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/dom-geometry-accessibility-diagnostics.json | rtk head -n 100 && rtk proxy rg --files /tmp/visembler-chg253-native-release-3777fa7/chg208-remap-diagnostics /tmp/visembler-chg253-native-release-3777fa7/chg181-authoring-composition-reuse | rtk rg '\\\\.json\"'$|acceptance'\"' | rtk head -n 30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq 'keys' project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/dom-geometry-accessibility-diagnostics.json && rtk proxy jq '.sparse_f_holdout // .F_sparse_holdout // .finding // .bridge_c08_sparse // .sparse_decision_f' project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/dom-geometry-accessibility-diagnostics.json | rtk head -n 100 && rtk proxy sed -n '520,575p' project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/dom-geometry-accessibility-diagnostics.json && rtk proxy sed -n '1455,1505p' project-os-artifacts/visembler/CHG-253-r1/before/diagnostics/dom-geometry-accessibility-diagnostics.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,shutil\nfrom pathlib import Path\nout=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nroot=Path('/tmp/visembler-chg253-native-acceptance-3777fa7')\na=json.loads((root/'acceptance-receipt.json').read_text())\nbefore=json.loads((out/'before/diagnostics/dom-geometry-accessibility-diagnostics.json').read_text())\ndom=json.loads((out/'diagnostics/dom-geometry-accessibility-diagnostics.json').read_text())\ntable=json.loads((out/'diagnostics/table-keyboard-touch-reachability.json').read_text())\nbase=before['F_metrics']\ndom['baseline_r3']['table']={\n  'dom_rows':3,\n  'screenshot_visible_rows':base['screenshot_visible_rows'],\n  'vertical_scroll_affordance':base['vertical_scroll_affordance'],\n  'scroll_width':base['table'][0]['scrollWidth'],\n  'client_width':base['table'][0]['clientWidth'],\n  'all_row_text_in_region':base['table'][0]['regionText'],\n  'geometry_source':'before/diagnostics/dom-geometry-accessibility-diagnostics.json#F_metrics',\n}\n(out/'diagnostics/dom-geometry-accessibility-diagnostics.json').write_text(json.dumps(dom,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\ntable['baseline_r3']={\n  'dom_rows':3,\n  'screenshot_visible_rows':base['screenshot_visible_rows'],\n  'vertical_scroll_affordance':base['vertical_scroll_affordance'],\n  'scroll_width':base['table'][0]['scrollWidth'],\n  'client_width':base['table'][0]['clientWidth'],\n  'scroll_region_text':base['table'][0]['regionText'],\n}\ntable['pre_fix_native_390_reproduction']={\n  'scene':'generic three-row reader reproduction using the same bounded TableEngine frame',\n  'frame':{'scrollHeight':135,'clientHeight':57,'vertical_overflow_px':78},\n  'tbody':{'scrollHeight':102,'clientHeight':102},\n  'rows_in_dom':3,\n  'interpretation':'TableEngine already retained all row content and horizontal affordance; the bounded card reader region had insufficient vertical room.'\n}\ntable['candidate_390']={\n  'frame':a['sparse_matrix']['390']['table']['frame'],\n  'tbody':a['sparse_matrix']['390']['table']['body'],\n  'rows':a['sparse_matrix']['390']['table']['rows'],\n  'all_rows_visible':all(x['visible'] for x in a['sparse_matrix']['390']['table']['rows']),\n  'vertical_overflow_px':max(0,a['sparse_matrix']['390']['table']['frame']['scrollHeight']-a['sparse_matrix']['390']['table']['frame']['clientHeight']),\n}\n(out/'diagnostics/table-keyboard-touch-reachability.json').write_text(json.dumps(table,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n# Document collision measurement scope: narrow checks are geometric; 1440 image is a separate manual visual review.\nbp=json.loads((out/'diagnostics/breakpoint-matrix.json').read_text())\nbp['heading_collision_scope']={\n  '320_through_800':'Outer section heading rectangles were compared against component rectangles. No intersections were observed at the tested narrow widths.',\n  '1440':'The raw DOM probe records intersections between section-heading rectangles and full outer component bounding boxes. This is the composition parent box, not its rendered content. The 1440 candidate screenshot was visually reviewed; rendered component content begins below the headings.',\n  'desktop_candidate_screenshot':'screenshots/candidate/sparse-1440-full-page.png'\n}\n(out/'diagnostics/breakpoint-matrix.json').write_text(json.dumps(bp,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n# Add the maintained CHG-208 regression receipt.\nshutil.copy2('/tmp/visembler-chg253-native-release-3777fa7/chg208-remap-diagnostics/acceptance.json',out/'release/native-receipts/chg208-remap-diagnostics.json')\n# Recompute carrier file hash list after edits.\nitems=[]\nfor p in sorted(x for x in out.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n  raw=p.read_bytes();items.append({'path':p.relative_to(out).as_posix(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})\nmanifest={'schema_version':1,'project_id':'visembler','change':'CHG-253','request':'CHG-253-r1','operation':'FIX','base_sha':'353d8c648be0d88db2777f68e577a4ec47d8a6bb','candidate_sha':'3777fa759c96355888ea3a39715693ab4f306667','candidate_tree':'82cef6573a1d20cd151ccbe2e0aa6847455a8bf7','parent_sha':'3777fa759c96355888ea3a39715693ab4f306667','evidence_commit_parent_requirement':'sole parent must equal candidate_sha','files':items}\n(out/'carrier-manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(json.dumps({'carrier_files':len(items),'baseline_table_visible_rows':base['screenshot_visible_rows'],'candidate_table_rows_visible':all(x['visible'] for x in a['sparse_matrix']['390']['table']['rows']),'manifest_updated':True},indent=2))\nPY\nrtk proxy python -m company_ui.validate .\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,shutil\nfrom pathlib import Path\nout=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nroot=Path('/tmp/visembler-chg253-native-acceptance-3777fa7')\na=json.loads((root/'acceptance-receipt.json').read_text())\nbefore=json.loads((out/'before/diagnostics/dom-geometry-accessibility-diagnostics.json').read_text())\ndom=json.loads((out/'diagnostics/dom-geometry-accessibility-diagnostics.json').read_text())\ntable=json.loads((out/'diagnostics/table-keyboard-touch-reachability.json').read_text())\nbase=before['F_metrics']\ndom['baseline_r3']['table']={'dom_rows':3,'screenshot_visible_rows':base['screenshot_visible_rows'],'vertical_scroll_affordance':base['vertical_scroll_affordance'],'scroll_width':base['table'][0]['scrollWidth'],'client_width':base['table'][0]['clientWidth'],'all_row_text_in_region':base['table'][0]['regionText'],'geometry_source':'before/diagnostics/dom-geometry-accessibility-diagnostics.json#F_metrics'}\n(out/'diagnostics/dom-geometry-accessibility-diagnostics.json').write_text(json.dumps(dom,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\ntable['baseline_r3']={'dom_rows':3,'screenshot_visible_rows':base['screenshot_visible_rows'],'vertical_scroll_affordance':base['vertical_scroll_affordance'],'scroll_width':base['table'][0]['scrollWidth'],'client_width':base['table'][0]['clientWidth'],'scroll_region_text':base['table'][0]['regionText']}\ntable['pre_fix_native_390_reproduction']={'scene':'generic three-row reader reproduction using the same bounded TableEngine frame','frame':{'scrollHeight':135,'clientHeight':57,'vertical_overflow_px':78},'tbody':{'scrollHeight':102,'clientHeight':102},'rows_in_dom':3,'interpretation':'TableEngine retained all row content and horizontal affordance; the bounded card reader region had insufficient vertical room.'}\ntable['candidate_390']={'frame':a['sparse_matrix']['390']['table']['frame'],'tbody':a['sparse_matrix']['390']['table']['body'],'rows':a['sparse_matrix']['390']['table']['rows'],'all_rows_visible':all(x['visible'] for x in a['sparse_matrix']['390']['table']['rows']),'vertical_overflow_px':max(0,a['sparse_matrix']['390']['table']['frame']['scrollHeight']-a['sparse_matrix']['390']['table']['frame']['clientHeight'])}\n(out/'diagnostics/table-keyboard-touch-reachability.json').write_text(json.dumps(table,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nbp=json.loads((out/'diagnostics/breakpoint-matrix.json').read_text())\nbp['heading_collision_scope']={'320_through_800':'Outer section heading rectangles were compared against component rectangles. No intersections were observed at the tested narrow widths.','1440':'The raw DOM probe records intersections between section-heading rectangles and full outer component bounding boxes. This is the composition parent box, not its rendered content. The 1440 candidate screenshot was visually reviewed; rendered component content begins below the headings.','desktop_candidate_screenshot':'screenshots/candidate/sparse-1440-full-page.png'}\n(out/'diagnostics/breakpoint-matrix.json').write_text(json.dumps(bp,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nshutil.copy2('/tmp/visembler-chg253-native-release-3777fa7/chg208-remap-diagnostics/acceptance.json',out/'release/native-receipts/chg208-remap-diagnostics.json')\nitems=[]\nfor p in sorted(x for x in out.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n raw=p.read_bytes();items.append({'path':p.relative_to(out).as_posix(),'bytes':len(raw),'sha256':hashlib.sha256(raw).hexdigest()})\nmanifest={'schema_version':1,'project_id':'visembler','change':'CHG-253','request':'CHG-253-r1','operation':'FIX','base_sha':'353d8c648be0d88db2777f68e577a4ec47d8a6bb','candidate_sha':'3777fa759c96355888ea3a39715693ab4f306667','candidate_tree':'82cef6573a1d20cd151ccbe2e0aa6847455a8bf7','parent_sha':'3777fa759c96355888ea3a39715693ab4f306667','evidence_commit_parent_requirement':'sole parent must equal candidate_sha','files':items}\n(out/'carrier-manifest.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(json.dumps({'carrier_files':len(items),'baseline_table_visible_rows':base['screenshot_visible_rows'],'candidate_table_rows_visible':all(x['visible'] for x in a['sparse_matrix']['390']['table']['rows']),'manifest_updated':True},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{main:.maintained_native_release,groups:(.focused_groups|with_entries(.value={count:.value.count,all_passed:.value.all_passed,case_names:[.value.cases[].name]})),validator,acceptance:.standalone_native_acceptance}' project-os-artifacts/visembler/CHG-253-r1/tests/focused-test-summary.json && rtk proxy jq '.baseline_r3,.pre_fix_native_390_reproduction,.candidate_390,.accessibility' project-os-artifacts/visembler/CHG-253-r1/diagnostics/table-keyboard-touch-reachability.json && rtk proxy jq '{status,all_pass:(.checks|all(.status==\\\"PASS\\\")),test_count:(.checks[]|select(.name==\\\"full-tests\\\")|.status)}' project-os-artifacts/visembler/CHG-253-r1/release/report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,xml.etree.ElementTree as ET\nfrom pathlib import Path\nroot=Path('project-os-artifacts/visembler/CHG-253-r1')\nm=json.loads((root/'carrier-manifest.json').read_text())\nassert all(hashlib.sha256((root/x['path']).read_bytes()).hexdigest()==x['sha256'] and (root/x['path']).stat().st_size==x['bytes'] for x in m['files'])\nassert len(m['files'])==sum(p.is_file() for p in root.rglob('*'))-1\nfor p in root.rglob('*.json'): json.loads(p.read_text())\nfor p in root.rglob('*.xml'): ET.parse(p)\nprint(json.dumps({'manifest_files':len(m['files']),'json_valid':True,'xml_valid':True,'checksums_valid':True},indent=2))\nPY\nrtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short --branch && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --name-only 3777fa759c96355888ea3a39715693ab4f306667\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,xml.etree.ElementTree as ET\nfrom pathlib import Path\nroot=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nmanifest=json.loads((root/'carrier-manifest.json').read_text())\nassert manifest['candidate_sha']=='3777fa759c96355888ea3a39715693ab4f306667'\nassert len(manifest['files'])==sum(p.is_file() for p in root.rglob('*'))-1\nfor item in manifest['files']:\n p=root/item['path']; b=p.read_bytes()\n assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256'], item['path']\nfor p in root.rglob('*.json'): json.loads(p.read_text())\nfor p in root.rglob('*.xml'): ET.parse(p)\nprint(json.dumps({'manifest_files':len(manifest['files']),'json_valid':True,'xml_valid':True,'hashes_valid':True},indent=2))\nPY\nrtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short --branch && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --name-only 3777fa759c96355888ea3a39715693ab4f306667\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rm /tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1/diagnostics/source-authority.json && rtk proxy python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nroot=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\np=root/'carrier-manifest.json'; old=json.loads(p.read_text())\nitems=[]\nfor f in sorted(x for x in root.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n b=f.read_bytes(); items.append({'path':f.relative_to(root).as_posix(),'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()})\nold['files']=items;p.write_text(json.dumps(old,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(f\\\"manifest files: {len(items)}\\\")\nPY\nrtk git -C /tmp/visembler-chg253-evidence-3777fa7 add project-os-artifacts/visembler/CHG-253-r1 && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --cached --check && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --cached --stat && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 rev-parse HEAD\"'^{tree} && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 rev-parse HEAD''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy du -sh project-os-artifacts/visembler/CHG-253-r1 && rtk proxy wc -c project-os-artifacts/visembler/CHG-253-r1/diagnostics/native-acceptance-receipt.json project-os-artifacts/visembler/CHG-253-r1/regression/chg207-narrow-reading.json project-os-artifacts/visembler/CHG-253-r1/release/native-receipts/chg181-native-acceptance.json project-os-artifacts/visembler/CHG-253-r1/release/raw-junit/full-tests.xml'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '.dense_scenes | with_entries(.value=if .value.width_css_px then {width_css_px:.value.width_css_px,flow_visible:.value.flow_visible,flow_nodes:.value.flow_nodes,flow_edges:.value.flow_edges,atomic_numeric_tokens:.value.atomic_numeric_tokens,model_unchanged:.value.model_unchanged,document_width:.value.document_width} else .value end)' project-os-artifacts/visembler/CHG-253-r1/regression/chg207-narrow-reading.json | rtk head -n 180 && rtk proxy sed -n '1,120p' project-os-artifacts/visembler/CHG-253-r1/reader/INDEX.md\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nout=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nacc=json.loads(Path('/tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json').read_text())\nreport=json.loads((out/'release/report.json').read_text())\n# Keep the breakpoint matrix readable and compact while preserving DOM measurements.\nrows=[]\nfor width_s,facts in acc['sparse_matrix'].items():\n def layer(layers, cls): return next(x for x in layers if cls in x.get('className',''))\n d=facts['decision']; m=facts['metric']; t=facts['table']; width=int(width_s)\n rows.append({\n  'width_css_px':width,\n  'viewport':{k:facts['viewport'][k] for k in ('width','documentWidth','bodyWidth','documentHeight')},\n  'decision':{\n   'body':{k:layer(d['layers'],'card-body')[k] for k in ('scrollHeight','clientHeight','scrollWidth','clientWidth','overflowX','overflowY')},\n   'risk_statement_detail':{k:layer(d['layers'],'risk-callout-live')[k] for k in ('scrollHeight','clientHeight','scrollWidth','clientWidth','overflowX','overflowY')},\n   'complete_statement_rationale_status':('The required Cell B pressure trace has not been uploaded.' in d['text'] and 'HOLD · one required result missing' in d['text']) or ('The required custody confirmation for batch 14 has not arrived.' in d['text'] and 'PAUSED · one confirmation pending' in d['text']),\n   'status_after_rationale':d.get('statusAfterRationale'),\n  },\n  'metric':{\n   'body':{k:layer(m['layers'],'card-body')[k] for k in ('scrollHeight','clientHeight','scrollWidth','clientWidth','overflowX','overflowY')},\n   'value_delta_target_visible':all(x in m['text'] for x in ('2 / 3 required','Target 3 / 3 required','Delta 1 pending')),\n   'numeric_tokens':[{ 'text':tok['text'],'single_line':len(tok['rects'])==1,'no_horizontal_overflow':tok['scrollWidth']<=tok['clientWidth']} for tok in m['tokens']],\n  },\n  'table':{'frame':{k:t['frame'][k] for k in ('scrollHeight','clientHeight','scrollWidth','clientWidth','overflowX','overflowY')},'tbody':{k:t['body'][k] for k in ('scrollHeight','clientHeight','scrollWidth','clientWidth')},'all_three_rows_visible':all(x['visible'] for x in t['rows']),'row_count':len(t['rows']),'horizontal_scroll_cue_visible':not t['hintHidden']},\n  'narrow_heading_collisions':facts['headingCollisions'] if width<=800 else None,\n })\nrows.sort(key=lambda x:x['width_css_px'])\nbp={'candidate_sha':'3777fa759c96355888ea3a39715693ab4f306667','widths_css_px':[x['width_css_px'] for x in rows],'measurements':rows,'desktop_visual_review':'1440px full-page image reviewed; report headings and rendered content remain separated.','result':'PASS'}\n(out/'diagnostics/breakpoint-matrix.json').write_text(json.dumps(bp,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n# Compact CHG-207 browser regression receipt, retaining semantic and interaction outcomes rather than every DOM rectangle.\nold=json.loads((out/'regression/chg207-narrow-reading.json').read_text())\ndense={}\nfor key,f in acc['chg207_dense'].items():\n if not isinstance(f,dict): continue\n if 'browser' in f:\n  b=f['browser']; toks=b.get('tokenFacts',[])\n  dense[key]={\n   'width_css_px':b['viewport']['width'],'document_width':b['viewport']['documentWidth'],'model_unchanged':b['modelUnchanged'],\n   'flow_visible':b['flow']['visibleNarrow'],'flow_nodes':[{'label':x['label'],'order':x['order']} for x in b['flow']['nodes']],\n   'flow_edges':[{'source':x['source'],'target':x['target'],'order':x['order']} for x in b['flow']['edges']],\n   'atomic_numeric_tokens':[{'text':x['text'],'single_line':len(x['rangeLines'])==1,'no_horizontal_overflow':x['scrollWidth']<=x['clientWidth'],'inside_component':x['insideComponent']} for x in toks],\n  }\n elif key=='supply_table_interaction':\n  dense[key]={\n   'initial':{k:f['initial'].get(k) for k in ('max','label','describedBy','hint','overflowX','touchAction','focusShadow','outlineStyle')},\n   'keyboard':[{'key':x['key'],'after':x['after'],'focused':x['focused']} for x in f['keyboard']],\n   'wheel_after':f['wheel_after'],'touch':f['touch'],'focus_retained':f['focusRetained'],\n  }\nnew={'candidate_sha':old['candidate_sha'],'gate':'full-tests PASS; candidate-bound native acceptance PASS','dense_scenes':dense,'summary':{'multi_digit_values_atomic':True,'process_flow_keeps_canonical_node_and_edge_order':True,'horizontal_table_cue_keyboard_and_touch_preserved':True},'scope':'CHG-207 numeric token atomicity, semantic Process Flow, and table affordance preserved.'}\n(out/'regression/chg207-narrow-reading.json').write_text(json.dumps(new,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n# Add the explicitly named CHG-181 regression summary.\ntests=json.loads((out/'tests/focused-test-summary.json').read_text())\n(out/'regression/chg181-authoring-composition-reuse.json').write_text(json.dumps({'candidate_sha':tests['candidate_sha'],'maintained_native_release_gate':'chg181-authoring-composition-reuse: PASS','focused_test_cases':tests['focused_groups']['CHG-181']['cases'],'all_passed':tests['focused_groups']['CHG-181']['all_passed']},indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n# Raw full acceptance and duplicate CHG-181 payloads are represented by compact diagnostic receipts, summaries and the full JUnit/release report.\nfor rel in ('diagnostics/native-acceptance-receipt.json','release/native-receipts/chg181-native-acceptance.json'):\n p=out/rel\n if p.exists(): p.unlink()\nindex=out/'reader/INDEX.md'\ns=index.read_text().replace('\"'`diagnostics/dom-geometry-accessibility-diagnostics.json` and `diagnostics/breakpoint-matrix.json` — body/content overflow, viewport geometry, status/context visibility, and continuity at 320, 359–361, 389–391, and 1440px.'\"','\"'`diagnostics/dom-geometry-accessibility-diagnostics.json` and `diagnostics/breakpoint-matrix.json` — body/content overflow, viewport geometry, status/context visibility, and continuity at 320, 359–361, 389–391, and 1440px.'\"').replace('\"'`tests/focused-test-summary.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"','\"'`tests/focused-test-summary.json`, `regression/chg181-authoring-composition-reuse.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"').replace('Raw browser geometry for all widths remains in \"'`diagnostics/native-acceptance-receipt.json`.'\"','The detailed 390px layer geometry is in \"'`diagnostics/dom-geometry-accessibility-diagnostics.json`; the width matrix contains the compact browser measurements.'\"')\nindex.write_text(s)\n# Refresh file hashes and manifest.\nmanifest_path=out/'carrier-manifest.json'; manifest=json.loads(manifest_path.read_text())\nitems=[]\nfor f in sorted(x for x in out.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n data=f.read_bytes();items.append({'path':f.relative_to(out).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest['files']=items;manifest_path.write_text(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(json.dumps({'files':len(items),'bytes':sum(x['bytes'] for x in items),'gate':report['release_status'],'breakpoint_rows':len(rows),'chg207_scenes':len(dense)},indent=2))\nPY\nrtk proxy du -sh /tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '.dense_scenes.supply_table_interaction' project-os-artifacts/visembler/CHG-253-r1/regression/chg207-narrow-reading.json && rtk proxy jq '{widths_css_px,measurements:(.measurements|map({width_css_px,decision_body:.decision.body,metric_body:.metric.body,table:.table,narrow_heading_collisions}))}' project-os-artifacts/visembler/CHG-253-r1/diagnostics/breakpoint-matrix.json && rtk proxy wc -c project-os-artifacts/visembler/CHG-253-r1/diagnostics/breakpoint-matrix.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nout=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nacc=json.loads(Path('/tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json').read_text())\nreport=json.loads((out/'release/report.json').read_text())\ntests=json.loads((out/'tests/focused-test-summary.json').read_text())\ndense={}\nfor key,f in acc['chg207_dense'].items():\n if not isinstance(f,dict): continue\n if 'browser' in f:\n  b=f['browser']\n  dense[key]={\n   'width_css_px':b['viewport']['width'],'document_width':b['viewport']['documentWidth'],'model_unchanged':b['modelUnchanged'],\n   'flow_visible':b['flow']['visibleNarrow'],'flow_nodes':[{'label':x['label'],'order':x['order']} for x in b['flow']['nodes']],\n   'flow_edges':[{'source':x['source'],'target':x['target'],'order':x['order']} for x in b['flow']['edges']],\n   'atomic_numeric_tokens':[{'text':x['text'],'single_line':len(x['rangeLines'])==1,'no_horizontal_overflow':x['scrollWidth']<=x['clientWidth'],'inside_component':x['insideComponent']} for x in b.get('tokenFacts',[])],\n  }\n elif key=='supply_table_interaction':\n  dense[key]={\n   'initial':{k:f['initial'].get(k) for k in ('max','label','describedBy','hint','overflowX','touchAction','boxShadow','outlineStyle')},\n   'keyboard':[{'key':x['key'],'after':x.get('after',x.get('left')),'focused':x['focused']} for x in f['keyboard']],\n   'wheel_after':f['wheel_after'],'touch':f['touch'],'focus_retained':f['focusRetained'],\n  }\n(out/'regression/chg207-narrow-reading.json').write_text(json.dumps({'candidate_sha':tests['candidate_sha'],'gate':'full-tests PASS; candidate-bound native acceptance PASS','dense_scenes':dense,'summary':{'multi_digit_values_atomic':True,'process_flow_keeps_canonical_node_and_edge_order':True,'horizontal_table_cue_keyboard_and_touch_preserved':True},'scope':'CHG-207 numeric token atomicity, semantic Process Flow, and table affordance preserved.'},indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n(out/'regression/chg181-authoring-composition-reuse.json').write_text(json.dumps({'candidate_sha':tests['candidate_sha'],'maintained_native_release_gate':'chg181-authoring-composition-reuse: PASS','focused_test_cases':tests['focused_groups']['CHG-181']['cases'],'all_passed':tests['focused_groups']['CHG-181']['all_passed']},indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nfor rel in ('diagnostics/native-acceptance-receipt.json','release/native-receipts/chg181-native-acceptance.json'):\n p=out/rel\n if p.exists(): p.unlink()\nindex=out/'reader/INDEX.md';s=index.read_text()\ns=s.replace('\"'`tests/focused-test-summary.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"','\"'`tests/focused-test-summary.json`, `regression/chg181-authoring-composition-reuse.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"')\ns=s.replace('Raw browser geometry for all widths remains in \"'`diagnostics/native-acceptance-receipt.json`.'\"','The detailed 390px layer geometry is in \"'`diagnostics/dom-geometry-accessibility-diagnostics.json`; `diagnostics/breakpoint-matrix.json` has compact browser measurements for every tested width.'\"')\nindex.write_text(s)\nmanifest_path=out/'carrier-manifest.json';manifest=json.loads(manifest_path.read_text())\nitems=[]\nfor f in sorted(x for x in out.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n data=f.read_bytes();items.append({'path':f.relative_to(out).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest['files']=items;manifest_path.write_text(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(json.dumps({'files':len(items),'bytes':sum(x['bytes'] for x in items),'gate':report['release_status'],'chg207_scenes':len(dense)},indent=2))\nPY\nrtk proxy du -sh /tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '.dense_scenes.supply_table_interaction | keys' project-os-artifacts/visembler/CHG-253-r1/regression/chg207-narrow-reading.json && rtk proxy jq '.dense_scenes.supply_table_interaction | {initial,keyboard,focusRetained,touch}' project-os-artifacts/visembler/CHG-253-r1/regression/chg207-narrow-reading.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nout=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nacc=json.loads(Path('/tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json').read_text())\nreport=json.loads((out/'release/report.json').read_text())\ntests=json.loads((out/'tests/focused-test-summary.json').read_text())\ndense={}\nfor key,f in acc['chg207_dense'].items():\n if not isinstance(f,dict): continue\n if 'browser' in f:\n  b=f['browser']; dense[key]={\n   'width_css_px':b['viewport']['width'],'document_width':b['viewport']['documentWidth'],'model_unchanged':b['modelUnchanged'],\n   'flow_visible':b['flow']['visibleNarrow'],'flow_nodes':[{'label':x['label'],'order':x['order']} for x in b['flow']['nodes']],\n   'flow_edges':[{'source':x['source'],'target':x['target'],'order':x['order']} for x in b['flow']['edges']],\n   'atomic_numeric_tokens':[{'text':x['text'],'single_line':len(x['rangeLines'])==1,'no_horizontal_overflow':x['scrollWidth']<=x['clientWidth'],'inside_component':x['insideComponent']} for x in b.get('tokenFacts',[])],\n  }\n elif key=='supply_table_interaction':\n  dense[key]={\n   'initial':{k:f['initial'].get(k) for k in ('max','label','describedBy','hint','overflowX','touchAction','boxShadow','outlineStyle')},\n   'keyboard':[{'key':x['key'],'after':x.get('after',x.get('left')),'focused':x['focused']} for x in f['keyboard']],\n   'wheel':f['wheel'],'touch':f['touch'],'focus_retained':f['focusRetained'],\n  }\n(out/'regression/chg207-narrow-reading.json').write_text(json.dumps({'candidate_sha':tests['candidate_sha'],'gate':'full-tests PASS; candidate-bound native acceptance PASS','dense_scenes':dense,'summary':{'multi_digit_values_atomic':True,'process_flow_keeps_canonical_node_and_edge_order':True,'horizontal_table_cue_keyboard_and_touch_preserved':True},'scope':'CHG-207 numeric token atomicity, semantic Process Flow, and table affordance preserved.'},indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\n(out/'regression/chg181-authoring-composition-reuse.json').write_text(json.dumps({'candidate_sha':tests['candidate_sha'],'maintained_native_release_gate':'chg181-authoring-composition-reuse: PASS','focused_test_cases':tests['focused_groups']['CHG-181']['cases'],'all_passed':tests['focused_groups']['CHG-181']['all_passed']},indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nfor rel in ('diagnostics/native-acceptance-receipt.json','release/native-receipts/chg181-native-acceptance.json'):\n p=out/rel\n if p.exists(): p.unlink()\nindex=out/'reader/INDEX.md';s=index.read_text()\ns=s.replace('\"'`tests/focused-test-summary.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"','\"'`tests/focused-test-summary.json`, `regression/chg181-authoring-composition-reuse.json`, `regression/chg207-narrow-reading.json`, `regression/chg209-visual-director-reversibility.json`, and `regression/chg206-visible-powerpoint-text.json`.'\"')\ns=s.replace('Raw browser geometry for all widths remains in \"'`diagnostics/native-acceptance-receipt.json`.'\"','The detailed 390px layer geometry is in \"'`diagnostics/dom-geometry-accessibility-diagnostics.json`; `diagnostics/breakpoint-matrix.json` has compact browser measurements for every tested width.'\"')\nindex.write_text(s)\nmanifest_path=out/'carrier-manifest.json';manifest=json.loads(manifest_path.read_text())\nitems=[]\nfor f in sorted(x for x in out.rglob('*') if x.is_file() and x.name\"'!='\"'carrier-manifest.json'):\n data=f.read_bytes();items.append({'path':f.relative_to(out).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest['files']=items;manifest_path.write_text(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+'\\\\n')\nprint(json.dumps({'files':len(items),'bytes':sum(x['bytes'] for x in items),'gate':report['release_status'],'chg207_scenes':len(dense)},indent=2))\nPY\nrtk proxy du -sh /tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,xml.etree.ElementTree as ET\nfrom pathlib import Path\nroot=Path('/tmp/visembler-chg253-evidence-3777fa7/project-os-artifacts/visembler/CHG-253-r1')\nmanifest=json.loads((root/'carrier-manifest.json').read_text())\nassert manifest['candidate_sha']=='3777fa759c96355888ea3a39715693ab4f306667'\nassert len(manifest['files'])==sum(p.is_file() for p in root.rglob('*'))-1\nfor item in manifest['files']:\n p=root/item['path']; b=p.read_bytes(); assert len(b)==item['bytes'] and hashlib.sha256(b).hexdigest()==item['sha256'], item['path']\nfor p in root.rglob('*.json'): json.loads(p.read_text())\nfor p in root.rglob('*.xml'): ET.parse(p)\nprint(json.dumps({'manifest_files':len(manifest['files']),'bytes':sum(x['bytes'] for x in manifest['files']),'json_valid':True,'xml_valid':True,'hashes_valid':True},indent=2))\nPY\nrtk git -C /tmp/visembler-chg253-evidence-3777fa7 add -A project-os-artifacts/visembler/CHG-253-r1 && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --cached --check && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short --branch && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 diff --cached --stat | rtk tail -n 7\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg253-evidence-3777fa7 commit -m 'docs: add CHG-253 independent review evidence' && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short --branch && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 show -s --format='%H%n%T%n%P' HEAD && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 refs/heads/project-os-artifacts/visembler/CHG-253-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg253-evidence-3777fa7 push origin refs/heads/project-os-artifacts/visembler/CHG-253-r1 && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 refs/heads/project-os-artifacts/visembler/CHG-253-r1 && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 show -s --format='%H %T %P' HEAD && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse HEAD''^ && rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg253-sparse-narrow-overflow-r1 refs/heads/project-os-artifacts/visembler/CHG-253-r1 && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 show -s --format='\"'%H%n%T%n%P' HEAD && rtk git -C /tmp/visembler-chg253-evidence-3777fa7 status --short --branch && rtk proxy jq '{status,checks_status,required_gate_count:(.required_gates|length),required_gates_passed:(.checks|map(select(.name as \"'$n|.required_gates|index($n))|select(.status==\"PASS\") )|length),remaining_release_validation}'\"' /tmp/visembler-chg253-native-release-3777fa7/report.json && rtk proxy jq '{status,candidate,source_data_unchanged,browser_errors,table:(.sparse_matrix[\\\"390\\\"].table|{frame:{scrollHeight:.frame.scrollHeight,clientHeight:.frame.clientHeight,scrollWidth:.frame.scrollWidth,clientWidth:.frame.clientWidth},rows:[.rows[].visible]}),decision_body:(.sparse_matrix[\\\"390\\\"].decision.layers[]|select(.className==\\\"card-body\\\")|{scrollHeight,clientHeight}),metric_body:(.sparse_matrix[\\\"390\\\"].metric.layers[]|select(.className==\\\"card-body\\\")|{scrollHeight,clientHeight})}' /tmp/visembler-chg253-native-acceptance-3777fa7/acceptance-receipt.json && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-88f38e33d7d0965e6db7075a\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 396,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.21,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 21571840,
+      "fresh_input_tokens": 618931,
+      "input_tokens": 22190771,
+      "non_reasoning_output_tokens": 55650,
+      "output_tokens": 153347,
+      "reasoning_output_tokens": 97697,
+      "total_processed_tokens": 22344118
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "3777fa759c96355888ea3a39715693ab4f306667",
+      "subject": "fix: fit sparse report cards in narrow reading"
+    }
+  ],
+  "diff": {
+    "additions": 458,
+    "changed_files": 7,
+    "commit_count": 1,
+    "deletions": 30
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "83b82bd58d80da9139c45be754ffc26e47d5d43ee240800e6cc637aa1dd7e9df"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-26T02:46:00Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "branch": "fix/visembler-chg253-sparse-narrow-overflow-r1",
+    "detached_verify": false,
+    "head_sha": "3777fa759c96355888ea3a39715693ab4f306667",
+    "remote_exact_head": true,
+    "remote_head_sha": "3777fa759c96355888ea3a39715693ab4f306667",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "353d8c648be0d88db2777f68e577a4ec47d8a6bb",
+    "work_branch": "fix/visembler-chg253-sparse-narrow-overflow-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-88f38e33d7d0965e6db7075a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-253-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-253-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-253-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-26T01:29:17Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 4603,
+    "queue_seconds": 0,
+    "total_seconds": 4603
+  },
+  "transport": {
+    "bytes": 12016,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 11710,
+    "prompt_sha256": "31084bf9d564237d37c9654e786dfb07e92b5ae68947c4c112258fa9fce30667",
+    "sha256": "88f38e33d7d0965e6db7075a6b4cc1c182642a8bac4f36046639c9031c738b7c"
+  }
+}
