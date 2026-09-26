@@ -1,0 +1,15 @@
+{
+  "evidence": [
+    "compositions/F-F-bridge-c08-sparse/reading-390.png",
+    "responsive/dom-geometry-accessibility-diagnostics.json",
+    "benchmark-scenes/F-F-bridge-c08-sparse.json"
+  ],
+  "id": "R3-RESP-01",
+  "observed": "At 390 px, DecisionRiskEngine body scrollHeight is 171 and clientHeight 106 (65 px clipped). MetricEngine body scrollHeight 75 and clientHeight 46 (29 px clipped). The rationale is cut after a few lines; metric delta and target are below the visible body. Full scene shows one of three table rows, with horizontal scroll prompt and keyboard/swipe hints but no vertical affordance. The Span 4 “Not synced / Open” row is not visible. Document/body width is 390 and no horizontal spill occurs.",
+  "other_scenes": "A–E at 390 and B/D at 320 inspected. B/C/D horizontal tables expose arrow/end/swipe cues; 98.6% and 94.2% comparison remains intact at 390/320; B/D process flow is readable and recomposes. No heading/content collision observed in six narrow scenes.",
+  "report": "F fresh Bridge C-08 sparse holdout",
+  "severity": "P1",
+  "smallest_governable_scope": "Narrow-width height/overflow sizing of the decision/risk and metric component bodies, plus vertical visibility/discoverability of evidence table rows.",
+  "status": "confirmed",
+  "task_consequence": "The reader can see 2/3 but not the missing check explanation, target/delta or open Span 4 row that controls reopening; safety decision context is materially weakened."
+}

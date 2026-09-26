@@ -1,0 +1,140 @@
+{
+  "schema": "visembler-chg208-remap-diagnostics.v1",
+  "candidate_sha": "3777fa759c96355888ea3a39715693ab4f306667",
+  "candidate_tree": "82cef6573a1d20cd151ccbe2e0aa6847455a8bf7",
+  "fixture": {
+    "path": "tests/fixtures/chg208/chg173-remap-scenes.json",
+    "sha256": "a26e761f247cf1c3c242d85acb51e37fe2bd7b3daada6ed393c4922709044525",
+    "evidence_commit": "7224c0815142557e2362e2ca4e6201e67006126c",
+    "authoring_receipt": "CHG-173-r2-evidence/authoring/remap-compatibility-history-conflict.json",
+    "authoring_receipt_blob_sha": "d52795ac1b579f1540f11dcb1545762f8bf65464",
+    "source_report": {
+      "report_id": "report-42846dc3f4b64c80abfe7413875b4a75",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-42846dc3f4b64c80abfe7413875b4a75.json",
+      "blob_sha": "fc11b44675ca5a956183cac509311ce47d1ebcce"
+    },
+    "incompatible_report": {
+      "report_id": "report-32ba6b0ad16c4884a976beb4a022f718",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-32ba6b0ad16c4884a976beb4a022f718.json",
+      "blob_sha": "6a6346295e5c349a67622349269db19a6e3618ad"
+    },
+    "ambiguous_source_report": {
+      "report_id": "report-6fc157d9a6044d07ba1f66519bf946db",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-6fc157d9a6044d07ba1f66519bf946db.json",
+      "blob_sha": "808f088c4872f3a685cfd59a03dbf6647891688f"
+    },
+    "ambiguous_report": {
+      "report_id": "report-74bfc21ebf84458cb7ee3e340c90a088",
+      "path": "CHG-173-r2-evidence/run-owned-data/reports/report-74bfc21ebf84458cb7ee3e340c90a088.json",
+      "blob_sha": "d947111bd1139408fb90ddc264462360600145ee"
+    }
+  },
+  "runtime": {
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "browser": "Chromium",
+    "browser_version": "151.0.7922.34",
+    "native_host": true,
+    "evidence_only_test_data": true
+  },
+  "cases": {
+    "incompatible_pareto": {
+      "source_fields": [
+        "Cycle",
+        "Failure count"
+      ],
+      "destination_fields": [
+        {
+          "name": "Cycle",
+          "type": "categorical"
+        },
+        {
+          "name": "Failure count",
+          "type": "categorical"
+        }
+      ],
+      "apply_disabled": true,
+      "visible_text": "Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.\n\nPasted data\n\nUsed by 1 visual\nPareto\n\nData source is incompatible\nData source\nChoose a data source\nPasted data · 2 fields\n\nSource fields: Cycle, Failure count\n\nCategory *\nSource field: Cycle · Category · Used by Pareto\nChoose a field\nCycle · Category\nFailure count · Category\nMeasurement *\nSource field: Failure count · Whole number · Used by Pareto\nChoose a field\nCycle · Category\nFailure count · Category\nCategory\nSource field: Failure count · Whole number · Used by Pareto\nChoose a field\nCycle · Category\nFailure count · Category\nFailure count is Category in Pasted data; Measurement requires a numeric field.\nFailure count is Category in Pasted data; Category requires the same field type or its numeric equivalent.\nWhat will be applied\nStructure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.\nNeed another source? Add it through Data First, then reopen this workflow to map it.\nAdd a data source\nResolve the highlighted data source and field requirements before applying.\nCancel\nApply reusable structure",
+      "field_options": {
+        "Category for Pareto: Pareto": [
+          "Choose a field",
+          "Cycle · Category",
+          "Failure count · Category"
+        ],
+        "Measurement for Pareto: Pareto": [
+          "Choose a field",
+          "Cycle · Category",
+          "Failure count · Category"
+        ]
+      },
+      "focus_after_open": {
+        "contained": true,
+        "visible": true,
+        "tag": "SELECT",
+        "role": "",
+        "item": "",
+        "label": "Data source for Pasted data"
+      },
+      "focus_after_dataset_change": {
+        "contained": true,
+        "visible": true,
+        "tag": "SELECT",
+        "role": "",
+        "item": "",
+        "label": "Data source for Pasted data"
+      },
+      "focus_after_field_change": {
+        "contained": true,
+        "visible": true,
+        "tag": "SELECT",
+        "role": "value",
+        "item": "c1",
+        "label": "Measurement for Pareto: Pareto"
+      },
+      "focus_restored_after_escape": true,
+      "report_unchanged": true,
+      "source_report_unchanged": true,
+      "preset_cache_unchanged": true,
+      "screenshot": {
+        "path": "screenshots/chg173-pareto-wrong-type-dialog.png",
+        "sha256": "40866f2de6abd9ecc4696779c9456fb9a5d13cacb85d39905a039073fe7f03bf",
+        "width": 1440,
+        "height": 1000
+      }
+    },
+    "ambiguous_compatible": {
+      "options": [
+        "Choose a field",
+        "Service week · Category",
+        "SERVICE WEEK · Category",
+        "SLA cases · Whole number"
+      ],
+      "visible_text": "Choose compatible fields before applying. Required analysis roles and saved analytical recipes must remain valid.\n\nPasted data\n\nUsed by 1 visual\nVertical Bar\n\nNeeds field mapping\nData source\nChoose a data source\nPasted data · 3 fields\n\nSource fields: Service week, SLA cases\n\nCategory *\nSource field: Service week · Category · Used by Vertical Bar\nChoose a field\nService week · Category\nSERVICE WEEK · Category\nSLA cases · Whole number\nMeasurement *\nSource field: SLA cases · Whole number · Used by Vertical Bar\nChoose a field\nService week · Category\nSERVICE WEEK · Category\nSLA cases · Whole number\nCategory\nSource field: SLA cases · Whole number · Used by Vertical Bar\nChoose a field\nService week · Category\nSERVICE WEEK · Category\nSLA cases · Whole number\nService week matches more than one compatible field. Compatible fields: Service week · Category, SERVICE WEEK · Category. Choose the intended category field.\nWhat will be applied\nStructure, visual style, section intent, field roles and supported transforms will be reused. Each visual in a shared source slot will stay bound to the same selected data source.\nNeed another source? Add it through Data First, then reopen this workflow to map it.\nAdd a data source\nResolve the highlighted data source and field requirements before applying.\nCancel\nApply reusable structure",
+      "apply_disabled_before_choice": true,
+      "focus_after_choice": {
+        "contained": true,
+        "visible": true,
+        "tag": "SELECT",
+        "role": "category",
+        "item": "c1",
+        "label": "Category for Vertical Bar: Vertical Bar"
+      },
+      "apply_enabled_after_choice": true,
+      "selected_destination_ids": [
+        "chg208-ambiguous-data"
+      ],
+      "destination_fields_preserved": true,
+      "source_report_unchanged": true,
+      "preset_cache_unchanged": true,
+      "screenshot": {
+        "path": "screenshots/chg173-ambiguous-remap-dialog.png",
+        "sha256": "0805d5c6a05ec3a3e46a0deadd42485cf166d8d8be5ec579a21295d67a088283",
+        "width": 1440,
+        "height": 1000
+      }
+    }
+  },
+  "browser_errors": [],
+  "status": "PASS"
+}

@@ -1,0 +1,49 @@
+{
+  "candidate_sha": "3777fa759c96355888ea3a39715693ab4f306667",
+  "protected_contracts": [
+    "Full desktop authoring geometry ownership",
+    "Smart/Guided/Free mode ownership",
+    "Visual Director profile and section order",
+    "CHG-207 numeric tokens, Process Flow, table keyboard/touch affordance",
+    "CHG-209 reversibility/source contract"
+  ],
+  "renderer_semantics": "element_renderer.mjs continues to emit decision statement, detail and status, plus metric value, delta/period and target; no renderer data semantics changed.",
+  "request": "CHG-253-r1",
+  "root_cause": {
+    "baseline_measurements": {
+      "decision_risk_body": {
+        "clientHeight": 106,
+        "hidden_px": 65,
+        "scrollHeight": 171
+      },
+      "metric_body": {
+        "clientHeight": 46,
+        "hidden_px": 29,
+        "scrollHeight": 75
+      },
+      "viewport_css_px": 390
+    },
+    "baseline_sources": [
+      "project-os-artifacts/visembler/CHG-173-r3/responsive/dom-geometry-accessibility-diagnostics.json",
+      "before/diagnostics/R3-RESP-01.json",
+      "before/r3-reading-390.png"
+    ],
+    "before": "Preview forced fixed reader height and hidden overflow; metric sizing was fixed and decision/composite estimates did not account for rendered title/header/body/status chrome. At widths above 360px, the existing risk and numeric auto-height exceptions did not apply.",
+    "not_rooted_in": "Bridge fixture data, report ID/title classification, Visual Director profile/section order, data mappings, or TableEngine horizontal cue."
+  },
+  "shared_authority": {
+    "bounded_table": "integrated_editor.mjs:1061-1069 keeps TableEngine bounded and raises its narrow Preview minimum by measured frame overflow, capped at 340px; horizontal scroll semantics remain in place.",
+    "classification": "integrated_editor.mjs:1047-1049 defines the engine-family mobileReaderFit policy and assigns data-mobile-reader-fit during render.",
+    "content_fitting": "integrated_editor.css:1633-1641 enables intrinsic Preview sizing and visible overflow only for semantic text/metric/comparison/evidence/decision/project engines at the shared narrow-reader breakpoint; risk status flows below its statement/detail.",
+    "families_content_fit": [
+      "TextEngine",
+      "MetricEngine",
+      "ComparisonEngine",
+      "EvidenceCompositeEngine",
+      "DecisionCompositeEngine",
+      "ProjectCompositeEngine"
+    ],
+    "other_two_dimensional_families": "Remain bounded by the existing mobile reader policy.",
+    "refresh": "integrated_editor.mjs:3052 and 3624/3634 refresh measured bounds when Preview starts and on viewport changes."
+  }
+}
