@@ -177,10 +177,10 @@ console.log(JSON.stringify({manualUnchanged:JSON.stringify(manualRects(free))===
     assert "composeReportModel" not in setter
     assert "visualDirection:()=>currentVisualDirection()" in editor
     css = (ROOT / "company_ui/products/visualizer/assets/integrated_editor.css").read_text(encoding="utf-8")
-    narrow_callout = css[css.index("@media (max-width: 360px)"):]
-    assert ".component:has(.risk-callout-live)" in narrow_callout
-    assert "grid-template-columns:32px minmax(0,1fr)" in narrow_callout
-    assert "overflow-wrap:anywhere" in narrow_callout
+    reader_fit = css[css.index('@media (max-width: 800px)'):css.index('@media (max-width: 520px)')]
+    assert '.component[data-mobile-reader-fit="content"] .risk-callout-live' in reader_fit
+    assert "grid-template-columns:32px minmax(0,1fr)" in reader_fit
+    assert "overflow-wrap:anywhere" in reader_fit
 
 
 def test_visual_direction_choice_round_trips_through_shared_model_and_history() -> None:

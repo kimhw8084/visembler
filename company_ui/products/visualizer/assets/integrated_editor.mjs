@@ -1044,7 +1044,11 @@ function nodeOverflow(node) {
   }
   return {x,y};
 }
-function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
+const MOBILE_READER_CONTENT_FIT_ENGINES=new Set(['TextEngine','MetricEngine','ComparisonEngine','EvidenceCompositeEngine','DecisionCompositeEngine','ProjectCompositeEngine']);
+function mobileReaderFit(entry) {
+  return MOBILE_READER_CONTENT_FIT_ENGINES.has(entry.engine)?'content':'bounded';
+}
+function mobileReaderHeight(entry,viewportWidth=window.innerWidth,node=null) {
   if(entry.engine==='TextEngine'){
     const role=compositionRole(entry),headline=role==='report_headline',text=String(entry.text||entry.body||entry.content||'').trim();
     const callout=['conclusion','decision_risk','action_status'].includes(role),lineChars=Math.max(20,Math.floor((viewportWidth-54)/(headline?10.4:callout?7.2:6.6)));
@@ -1055,7 +1059,15 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
   if(entry.engine==='MetricEngine')return 132;
   if(entry.engine==='ComparisonEngine')return 180;
   if(entry.engine==='CoreChartEngine'||entry.engine==='EngineeringChartEngine')return 250;
-  if(entry.engine==='TableEngine')return Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
+  if(entry.engine==='TableEngine'){
+    const base=Math.min(340,Math.max(190,72+Math.max(1,entry.customTable?.rows?.length||entry.rows?.length||1)*34));
+    const frame=node?.querySelector('.table-frame.table-scroll');
+    if(ui.preview&&viewportWidth<=800&&frame){
+      node.style.setProperty('--viz-mobile-reader-height',`${base}px`);
+      return Math.min(340,base+Math.max(0,Math.ceil(frame.scrollHeight-frame.clientHeight)));
+    }
+    return base;
+  }
   if(entry.engine==='DiagramEngine'){
     const name=String(entry.element||entry.title||'').toLowerCase();
     if(name.includes('process flow')||name.includes('data flow')){
@@ -1076,7 +1088,7 @@ function mobileReaderHeight(entry,viewportWidth=window.innerWidth) {
 function refreshMobileReaderHeights(viewportWidth=window.innerWidth) {
   for(const entry of model().items){
     const node=ui.componentNodes.get(entry.id);
-    if(node)node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry,viewportWidth)}px`);
+    if(node)node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry,viewportWidth,node)}px`);
   }
 }
 function measureSmartContentRequirements(rm) {
@@ -1135,9 +1147,10 @@ function reconcileCanvas({ content = true } = {}) {
     node.dataset.contentDensity=entry.contentDensity==='fill'?'fill':'fit';
     node.dataset.layoutGrowth=r.policy?.growth||'balanced';
     node.dataset.contentFit=r.policy?.contentFit===false?'fixed':'responsive';
+    node.dataset.mobileReaderFit=mobileReaderFit(entry);
     node.dataset.compositionRole=compositionRole(entry);
     node.dataset.compositionEmphasis=r.policy?.emphasis||'standard';
-    node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry)}px`);
+    node.style.setProperty('--viz-mobile-reader-height',`${mobileReaderHeight(entry,window.innerWidth,node)}px`);
     node.style.setProperty('--viz-preferred-width',`${Math.round(r.policy?.prefW||r.w)}px`);
     node.style.setProperty('--viz-preferred-height',`${Math.round(r.policy?.prefH||r.h)}px`);
     node.style.left = `${r.x}px`; node.style.top = `${r.y}px`; node.style.width = `${r.w}px`; node.style.height = `${r.h}px`; node.style.zIndex = String(10 + (entry.z || 0));
@@ -3036,7 +3049,7 @@ function togglePreview() {
   activeRoot?.classList.toggle('preview-mode',ui.preview);
   activeRoot?.setAttribute('data-preview-fit',ui.preview?'page':'');
   const layer=$('#componentLayer'),hull=$('#hull');if(layer)layer.inert=false;if(hull)hull.setAttribute('aria-readonly',ui.preview?'true':'false');
-  requestAnimationFrame(()=>{fitZoom('page');requestAnimationFrame(()=>syncPreviewReadingAffordances());});
+  requestAnimationFrame(()=>{refreshMobileReaderHeights(window.innerWidth);fitZoom('page');requestAnimationFrame(()=>syncPreviewReadingAffordances());});
 }
 const builtInPresets=Object.freeze([
   {id:'editorial',name:'Editorial Bento',description:'Balanced narrative and analytical hierarchy.'},
