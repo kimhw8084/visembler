@@ -31,13 +31,9 @@ from run_chg207_narrow_reading_acceptance import (
 )
 
 BASE = "353d8c648be0d88db2777f68e577a4ec47d8a6bb"
-WORK_BRANCH = "fix/visembler-chg253-sparse-narrow-overflow-r1"
-FABRIC_JOB_ID = "CF-88f38e33d7d0965e6db7075a"
-R3_SCREENSHOT = (
-    "refs/remotes/origin/project-os/CHG-173-r3:"
-    "project-os-artifacts/visembler/CHG-173-r3/"
-    "compositions/F-F-bridge-c08-sparse/reading-390.png"
-)
+R1_ACCEPTED_HEAD = "3777fa759c96355888ea3a39715693ab4f306667"
+WORK_BRANCH = "fix/visembler-chg253-ci-hermetic-r2"
+FABRIC_JOB_ID = "CF-195d82774b769cfaf5b18cf7"
 
 RATIONALE = (
     "The required Cell B pressure trace has not been uploaded. Passing the other "
@@ -262,7 +258,7 @@ def run_acceptance(output: Path | None = None) -> dict:
     technical_model = _supplemented_technical_model(copy.deepcopy(reports["technical-status-review"]))
     receipt = {
         "schema": "visembler-chg253-sparse-reading-acceptance.v1",
-        "request": "CHG-253-r1", "fabric_job_id": FABRIC_JOB_ID,
+        "request": "CHG-253-r2", "fabric_job_id": FABRIC_JOB_ID,
         "runtime": {}, "sparse_matrix": {}, "renamed_shape": {}, "chg207_dense": {},
         "table_interaction": {}, "browser_errors": [], "source_data_unchanged": False,
         "status": "RUNNING",
@@ -347,10 +343,6 @@ def run_acceptance(output: Path | None = None) -> dict:
         receipt["source_data_unchanged"] = digest(fixture_path) == fixture_before
         assert receipt["source_data_unchanged"], "CHG-207 source fixture changed during read-only regression"
         if output:
-            raw_before = subprocess.check_output(["git", "show", R3_SCREENSHOT], cwd=ROOT)
-            before_path = output / "r3-reading-390-before.png"
-            before_path.write_bytes(raw_before)
-            receipt["before_390"] = {"path": before_path.name, "sha256": digest(before_path), "bytes": len(raw_before)}
             receipt["candidate_screenshots"] = {
                 path.name: {"sha256": digest(path), "bytes": path.stat().st_size}
                 for path in sorted(output.glob("sparse-*-*.png"))
@@ -374,8 +366,8 @@ def _require_candidate(candidate_sha: str, candidate_tree: str) -> None:
         raise SystemExit("Acceptance must start on the exact candidate SHA and tree.")
     if _git("branch", "--show-current") != WORK_BRANCH:
         raise SystemExit(f"Acceptance must run on {WORK_BRANCH}.")
-    if _git("rev-parse", "HEAD^") != BASE:
-        raise SystemExit("Candidate must be a direct child of the exact requested base.")
+    if _git("rev-parse", "HEAD^") != R1_ACCEPTED_HEAD:
+        raise SystemExit("R2 candidate must be a direct child of the exact R1 accepted head.")
     if _git("status", "--porcelain"):
         raise SystemExit("Candidate acceptance requires a clean worktree.")
     remote_main = _git("ls-remote", "origin", "refs/heads/main").split()[0]
@@ -400,7 +392,7 @@ def main() -> int:
     result = run_acceptance(output)
     result["identity"] = {
         "repository": "kimhw8084/visembler", "project": "visembler", "change": "CHG-253",
-        "request": "CHG-253-r1", "operation": "FIX", "fabric_job_id": args.fabric_job_id,
+        "request": "CHG-253-r2", "operation": "FIX", "fabric_job_id": args.fabric_job_id,
     }
     result["candidate"] = {"base": BASE, "head": args.candidate_sha, "tree": args.candidate_tree, "branch": WORK_BRANCH}
     write_json(output / "acceptance-receipt.json", result)
