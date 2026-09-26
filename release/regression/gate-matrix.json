@@ -1,0 +1,122 @@
+{
+  "CHG-181 composition and reuse": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "release/final/native-release/report.json",
+      "benchmark/reuse/reuse-vs-blank.json",
+      "benchmark/action-logs/blank-rebuild.json",
+      "benchmark/action-logs/reuse-remap.json"
+    ]
+  },
+  "CHG-206 PPTX text and visible containment": {
+    "status": "PASS_WITH_SEPARATE_CHART_LABEL_FINDING",
+    "evidence": [
+      "benchmark/exports/roundtrip/visible-text-containment.json",
+      "benchmark/exports/quicklook/",
+      "benchmark/exports/roundtrip/semantic-roundtrip.json"
+    ],
+    "note": "Report text is editable and within exported page geometry; Quick Look review finds no headline/KPI/decision/next-step clipping. The separate chart-axis/legend crowding is FIND-02."
+  },
+  "CHG-207 narrow reading": {
+    "status": "PASS",
+    "evidence": [
+      "benchmark/responsive/diagnostics.json",
+      "benchmark/screenshots/narrow-320/",
+      "benchmark/screenshots/narrow-360/",
+      "benchmark/screenshots/narrow-390/"
+    ]
+  },
+  "CHG-208 remap": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "benchmark/remap/remap-receipts.json",
+      "release/final/native-release/chg208-remap-diagnostics/acceptance.json"
+    ]
+  },
+  "CHG-209 Visual Director": {
+    "status": "PASS_REVIEW_RECORDED",
+    "evidence": [
+      "benchmark/visual-director/review.json",
+      "benchmark/findings/findings-register.json"
+    ],
+    "note": "Qualitative task and hierarchy review; no aesthetic score or controlled preference claim."
+  },
+  "CHG-253 sparse/narrow content fit": {
+    "status": "PASS",
+    "evidence": [
+      "benchmark/raw-runs/F-fresh-sparse/fresh-sparse-receipt.json",
+      "benchmark/screenshots/narrow-320/F.png",
+      "benchmark/screenshots/narrow-360/F.png",
+      "benchmark/screenshots/narrow-390/F.png"
+    ]
+  },
+  "CHG-254 editable chart semantics": {
+    "status": "PASS_PACKAGE_SEMANTICS",
+    "evidence": [
+      "benchmark/exports/inspection/package-inspection.json",
+      "benchmark/exports/inspection/boxplot-statistics-primitives.json",
+      "benchmark/exports/roundtrip/semantic-roundtrip.json",
+      "benchmark/exports/package-xml/"
+    ],
+    "note": "Fresh E and F generalize series/category meaning; Box Plot remains editable quartile/median/whisker/category shapes. FIND-02 records a separate visible label-spacing defect."
+  },
+  "CHG-180 process/spatial semantics": {
+    "status": "PASS_PACKAGE_AND_RESPONSIVE_REVIEW",
+    "evidence": [
+      "benchmark/exports/inspection/package-inspection.json",
+      "benchmark/screenshots/narrow-320/B.png",
+      "benchmark/screenshots/narrow-320/D.png"
+    ]
+  },
+  "Lifecycle/history/conflict recovery": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "benchmark/lifecycle/",
+      "release/final/native-release/report-lifecycle-integrity/receipt.json",
+      "release/final/native-release/native-recovery/native-recovery.json"
+    ]
+  },
+  "Accessibility and authoring": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "release/final/native-release/report.json",
+      "release/final/native-release/native-acceptance/native-acceptance.json",
+      "benchmark/responsive/diagnostics.json"
+    ]
+  },
+  "Performance": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "release/final/native-release/performance/performance.json"
+    ]
+  },
+  "Source stability and frozen connector": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "evidence": [
+      "release/final/native-release/source-manifest.json",
+      "release/final/native-release/persistence-source.json",
+      "release/final/native-release/report.json"
+    ]
+  },
+  "Pointer drag/reorder/resize/alignment/group gestures": {
+    "status": "NOT_SEPARATELY_EXERCISED",
+    "evidence": [
+      "benchmark/brief.md"
+    ],
+    "note": "Semantic composition/reuse recipes and insertion were exercised. The gesture-level contracts were not independently claimed."
+  },
+  "Corporate PPTX master/header/footer variants": {
+    "status": "NOT_SEPARATELY_EXERCISED",
+    "evidence": [
+      "benchmark/exports/inspection/package-inspection.json"
+    ],
+    "note": "Single-report editable exports were reviewed; no separate corporate master/header/footer variant matrix was created."
+  },
+  "Managed company target certification (CHG-21)": {
+    "status": "PENDING_SEPARATE_RELEASE_GATE",
+    "evidence": [
+      "identity/source-runtime.json"
+    ],
+    "note": "Not part of the R4 verdict."
+  }
+}

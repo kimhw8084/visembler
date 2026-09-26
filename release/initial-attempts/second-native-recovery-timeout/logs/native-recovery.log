@@ -1,0 +1,41 @@
+{
+  "scope": "native NiceGUI synthetic recovery",
+  "cases": [
+    {
+      "name": "socket-disconnect-local-draft-recovery",
+      "status": "PASS",
+      "steps": [
+        "offline edit journaled",
+        "pending commit retained",
+        "reconnected",
+        "draft persisted/recovered"
+      ]
+    },
+    {
+      "name": "server-restart-local-draft-recovery",
+      "status": "FAIL",
+      "steps": [],
+      "error": "repository text did not become 'Stable before restart'; last='Offline draft'",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-c5985db500183ce3f3a9e6ef/scripts/release_checks/run_native_recovery.py\", line 97, in main\n    stable=wait_repository_text(host.repository,rid,'Stable before restart')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/haewonkim/.codex-fabric/worktrees/CF-c5985db500183ce3f3a9e6ef/scripts/release_checks/native_common.py\", line 98, in wait_repository_text\n    raise AssertionError(f'repository text did not become {value!r}; last={last!r}')\nAssertionError: repository text did not become 'Stable before restart'; last='Offline draft'\n"
+    }
+  ],
+  "unexpected_errors": [],
+  "expected_fault_events": [
+    {
+      "kind": "console",
+      "detail": "WebSocket connection to 'ws://127.0.0.1:64599/_nicegui_ws/socket.io/?client_id=c02a6bf0-1f12-44d8-b955-6e7993c0441d&next_message_id=7&implicit_handshake=true&document_id=f0abd239-36f2-40a2-b88e-bf1d8aadc0b5&tab_id=65c3663f-0160-44bc-bb4d-86f764d2ec04&old_tab_id=null&EIO=4&transport=websocket' failed: Error in connection establishment: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "kind": "requestfailed",
+      "detail": "http://127.0.0.1:64599/_nicegui_ws/socket.io/?client_id=c02a6bf0-1f12-44d8-b955-6e7993c0441d&next_message_id=7&implicit_handshake=true&document_id=f0abd239-36f2-40a2-b88e-bf1d8aadc0b5&tab_id=65c3663f-0160-44bc-bb4d-86f764d2ec04&old_tab_id=null&EIO=4&transport=polling&t=slt6ghhp :: net::ERR_INTERNET_DISCONNECTED"
+    },
+    {
+      "kind": "console",
+      "detail": "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+    }
+  ],
+  "passed": 1,
+  "total": 2,
+  "status": "FAIL",
+  "source_editor_sha256": "5d57edc8041a018764213297b0ed0993d4a7df02db2be330a634c6f0f45b98a2"
+}
