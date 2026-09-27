@@ -13,7 +13,7 @@ from typing import Any, Mapping, Sequence
 from pptx import Presentation
 from pptx.chart.data import ChartData, XyChartData
 from pptx.dml.color import RGBColor
-from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION, XL_MARKER_STYLE
+from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION, XL_MARKER_STYLE, XL_TICK_LABEL_POSITION
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
 from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE, PP_ALIGN
 from pptx.oxml.xmlchemy import OxmlElement
@@ -102,6 +102,11 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
     axis_set = studio.get('axes') if isinstance(studio.get('axes'), Mapping) else {}
     axis_set = {**(entry.get('axes') if isinstance(entry.get('axes'), Mapping) else {}), **axis_set}
     y_axis = axis_set.get('y') if isinstance(axis_set.get('y'), Mapping) else {}
+    x_axis_src = axis_set.get('x') if isinstance(axis_set.get('x'), Mapping) else {}
+    x_axis = {key: x_axis_src.get(key) for key in (
+        'auto', 'labelInterval', 'rotation', 'tickCount', 'title', 'format', 'show', 'position',
+        'min', 'max', 'scale', 'precision', 'grid',
+    )}
     default_zero = 'Bar' in chart_type or chart_type == 'Pareto'
     axis = {
         'role': 'y', 'min': y_axis.get('min'), 'max': y_axis.get('max'),
@@ -141,6 +146,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
                            'values': (values + [None] * len(categories))[:len(categories)]})
         return {'type': chart_type, 'categories': categories, 'series': series, 'axis': axis,
                 'legend': {'show': legend_src.get('show', len(series) > 1), 'position': legend_src.get('position', 'bottom')},
+                'x_axis': x_axis,
                 'x_field': None, 'x_role': None, 'y_field': None, 'axis_source': y_axis,
                 'visual': visual_src,
                 'source': 'statistical_chart'}
@@ -160,7 +166,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
             return {'type': chart_type, 'categories': categories,
                     'groups': [{'key': key, 'name': key, 'values': groups[key], 'axis': 'primary', 'visible': True}
                                for key in categories], 'axis': axis,
-                    'legend': {'show': False, 'position': 'bottom'}, 'x_field': None,
+                    'legend': {'show': False, 'position': 'bottom'}, 'x_axis': x_axis, 'x_field': None,
                     'x_role': 'category', 'y_field': value_field, 'axis_source': y_axis,
                     'visual': visual_src,
                     'source': 'bound_dataset'}
@@ -186,7 +192,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
             return {'type': chart_type, 'categories': labels,
                     'series': [{'key': 'Count', 'name': 'Count', 'field': None, 'axis': 'primary',
                                 'visible': True, 'legend': False, 'values': counts, 'points': []}],
-                    'axis': axis, 'legend': {'show': False, 'position': 'bottom'}, 'x_field': value_field,
+                    'axis': axis, 'legend': {'show': False, 'position': 'bottom'}, 'x_axis': x_axis, 'x_field': value_field,
                     'x_role': 'value', 'y_field': None, 'axis_source': y_axis, 'visual': visual_src,
                     'source': 'bound_dataset_histogram'}
 
@@ -273,6 +279,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
         y_field=fields[point_y_index] if 0 <= point_y_index < len(fields) else None
         return {'type': chart_type, 'categories': categories, 'series': series_meta, 'axis': axis,
                 'legend': {'show': legend_src.get('show', len(series_meta) > 1), 'position': legend_src.get('position', 'bottom')},
+                'x_axis': x_axis,
                 'x_field': x_field, 'x_role': x_role, 'y_field': y_field, 'axis_source': y_axis,
                 'visual': visual_src,
                 'source': 'bound_dataset'}
@@ -285,6 +292,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
                'points': [{'x': label, 'y': value_by_category.get(label)} for label in categories]}]
     return {'type': chart_type, 'categories': categories, 'series': series, 'axis': axis,
             'legend': {'show': legend_src.get('show', False), 'position': legend_src.get('position', 'bottom')},
+            'x_axis': x_axis,
             'x_field': None, 'x_role': None, 'y_field': None, 'axis_source': y_axis,
             'visual': visual_src,
             'source': 'legacy_rows'}
@@ -1154,6 +1162,246 @@ def _reorder_replacement_shapes(slide: Any, placeholder: Any, replacements: Sequ
     return replacements[0]
 
 
+def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height: int) -> dict[str, Any]:
+    """Choose export-only chart typography and category tick spacing from the rendered box."""
+    x_axis=spec.get('x_axis') if isinstance(spec.get('x_axis'),Mapping) else {}
+    legend=spec.get('legend') if isinstance(spec.get('legend'),Mapping) else {}
+    visible=[series for series in spec.get('series') or [] if isinstance(series,Mapping) and series.get('visible') is not False]
+    legend_names=[str(series.get('name') or series.get('key') or title) for series in visible if series.get('legend') is not False]
+    legend_position=str(legend.get('position') or 'bottom').lower()
+    legend_visible=legend.get('show') is not False and bool(legend_names)
+    width_pt=max(1.0,width/12700);height_pt=max(1.0,height/12700)
+    title_chars=max(1,len(title))
+    title_font=min(12.0,max(9.0,min(width_pt*.86/(title_chars*.54),height_pt*.10)))
+    legend_font=None
+    if legend_visible:
+        if legend_position in {'left','right'}:
+            longest=max((len(name) for name in legend_names),default=1)
+            legend_font=min(10.0,max(7.5,(width_pt*.28-12)/(max(1,longest)*.52)))
+        else:
+            chars=sum(len(name) for name in legend_names)
+            available=max(1.0,width_pt*.90-len(legend_names)*12)
+            legend_font=min(10.0,max(7.5,available/(max(1,chars)*.52)))
+
+    category_labels=[str(value) for value in spec.get('categories') or []]
+    category_axis=spec.get('type') not in {'Scatter Plot','Regression Scatter','Horizontal Bar'}
+    interval=1
+    rotation=0.0
+    category_font=10.0
+    automatic=False
+    if category_axis and category_labels:
+        auto=x_axis.get('auto') is not False
+        raw_interval=x_axis.get('labelInterval')
+        raw_rotation=x_axis.get('rotation')
+        raw_tick_count=x_axis.get('tickCount')
+        interval_value=(max(1,int(round(float(raw_interval))))
+                        if isinstance(raw_interval,(int,float)) and not isinstance(raw_interval,bool) and math.isfinite(float(raw_interval)) else 1)
+        rotation_value=(max(-90.0,min(90.0,float(raw_rotation)))
+                        if isinstance(raw_rotation,(int,float)) and not isinstance(raw_rotation,bool) and math.isfinite(float(raw_rotation)) else 0.0)
+        tick_count=(max(1,int(round(float(raw_tick_count))))
+                    if isinstance(raw_tick_count,(int,float)) and not isinstance(raw_tick_count,bool) and math.isfinite(float(raw_tick_count)) else None)
+        interval_explicit=not auto or (raw_interval is not None and interval_value!=1)
+        rotation_explicit=not auto or (raw_rotation is not None and rotation_value!=0)
+        tick_count_explicit=not auto or (tick_count is not None and tick_count!=6)
+        count=len(category_labels)
+        longest=max((len(value) for value in category_labels),default=1)
+        family=str(spec.get('type') or '')
+        plot_fraction=.76 if family=='Vertical Bar' else .80 if family=='Histogram' else .78
+        plot_width=width_pt*plot_fraction
+        if legend_visible and legend_position in {'left','right'}:
+            legend_chars=max((len(name) for name in legend_names),default=1)
+            plot_width=max(width_pt*.40,plot_width-min(width_pt*.28,legend_chars*(legend_font or 8.5)*.52+18))
+        elif legend_visible and legend_position in {'top','bottom'}:
+            legend_chars=sum(len(name) for name in legend_names)
+            occupancy=min(.12,max(0.0,(legend_chars*(legend_font or 8.5)*.52+len(legend_names)*12)/max(width_pt,1)-.62)*.20)
+            plot_width*=1-occupancy
+        if family=='Horizontal Bar':
+            plot_width=max(width_pt*.52,height_pt*.70)
+        pitch=max(1.0,plot_width/count)
+        category_font=min(10.0,max(8.0,pitch/max(1.0,longest*.50)))
+        if legend_font is not None:
+            category_font=min(category_font,max(8.0,legend_font))
+        # Quick Look's Arial metrics run wider than the Office chart defaults; reserve
+        # explicit side room so the export-only editable labels remain on one line.
+        label_width=longest*category_font*.62+8.0
+        automatic=auto and not interval_explicit and not tick_count_explicit
+        if interval_explicit:
+            interval=interval_value
+        elif tick_count_explicit and tick_count is not None:
+            interval=max(1,math.ceil(count/tick_count))
+        if rotation_explicit:
+            rotation=rotation_value
+        elif automatic:
+            rotation=0.0
+        if automatic:
+            # Keep a small horizontal safety gap even in renderers that ignore the OOXML rotation hint.
+            interval=max(interval,math.ceil(label_width*1.08/pitch))
+        elif not interval_explicit and not tick_count_explicit:
+            interval=interval_value
+
+    overlay_categories=(category_axis and bool(category_labels) and rotation==0 and
+                        (interval>1 or len(category_labels)>=8) and x_axis.get('show') is not False)
+    overlay_legend=(legend_visible and legend_position=='bottom' and
+                    (overlay_categories or len(legend_names)>=3 or (legend_font is not None and legend_font<9.0)))
+    legend_columns=1
+    legend_rows=len(legend_names)
+    legend_region_fraction=.10
+    if overlay_legend and legend_names:
+        region_width_pt=width_pt*.82
+        if len(legend_names)>1:
+            candidate_columns=2
+            candidate_font=max(7.5,legend_font or 8.5)
+            longest_legend=max(map(len,legend_names),default=1)
+            estimated_name_width=longest_legend*candidate_font*.62+17.0
+            if estimated_name_width<=region_width_pt/candidate_columns:
+                legend_columns=candidate_columns
+        legend_rows=math.ceil(len(legend_names)/legend_columns)
+        if legend_columns==1 and legend_rows>=3:
+            legend_region_fraction=.14
+    return {
+        'category_axis':category_axis,
+        'automatic':automatic,
+        'interval':max(1,interval),
+        'rotation':rotation,
+        'overlay_categories':overlay_categories,
+        'overlay_legend':overlay_legend,
+        'category_font_pt':category_font,
+        'legend_font_pt':legend_font,
+        'title_font_pt':title_font,
+        'chart_default_font_pt':max(8.0,min(category_font,legend_font if legend_font is not None else category_font)),
+        'source_label_interval':x_axis.get('labelInterval'),
+        'source_rotation':x_axis.get('rotation'),
+        'source_tick_count':x_axis.get('tickCount'),
+        'source_title':x_axis.get('title'),
+        'source_format':x_axis.get('format'),
+        'legend_position':legend_position,
+        'legend_names':legend_names,
+        'legend_columns':legend_columns,
+        'legend_rows':legend_rows,
+        'legend_region_fraction':legend_region_fraction,
+    }
+
+
+def _set_chart_default_font(chart: Any, size: float) -> None:
+    """Set the chart-space fallback so renderers that ignore local text properties stay legible."""
+    text_properties=chart.part._element.find(qn('c:txPr'))
+    if text_properties is None:
+        text_properties=OxmlElement('c:txPr')
+        chart.part._element.append(text_properties)
+    paragraph=text_properties.find(qn('a:p'))
+    if paragraph is None:
+        paragraph=OxmlElement('a:p');text_properties.append(paragraph)
+    paragraph_properties=paragraph.find(qn('a:pPr'))
+    if paragraph_properties is None:
+        paragraph_properties=OxmlElement('a:pPr');paragraph.insert(0,paragraph_properties)
+    default_run=paragraph_properties.find(qn('a:defRPr'))
+    if default_run is None:
+        default_run=OxmlElement('a:defRPr');paragraph_properties.insert(0,default_run)
+    default_run.set('sz',str(round(size*100)))
+
+
+def _set_axis_tick_rotation(axis: Any, degrees: float) -> None:
+    if not degrees:
+        return
+    text_properties=axis._element.get_or_add_txPr()
+    body_properties=text_properties.find(qn('a:bodyPr'))
+    if body_properties is None:
+        body_properties=OxmlElement('a:bodyPr')
+        text_properties.insert(0,body_properties)
+    body_properties.set('rot',str(round(-degrees*60000)))
+
+
+def _add_native_chart_label_overlays(slide: Any, chart_shape: Any, spec: Mapping[str, Any],
+                                     title: str, layout: Mapping[str, Any]) -> None:
+    """Draw editable label surfaces where preview renderers ignore chart text layout properties."""
+    overlay_categories=layout.get('overlay_categories') is True
+    overlay_legend=layout.get('overlay_legend') is True
+    if not overlay_categories and not overlay_legend:
+        return
+    left,top,width,height=chart_shape.left,chart_shape.top,chart_shape.width,chart_shape.height
+    cover_top=.775 if overlay_categories else .885
+    cover=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,left+int(width*.125),top+int(height*cover_top),
+                                 int(width*.875),max(1,int(height*(1-cover_top))))
+    cover.name=f'VIZ::{title}::chart-label-band'
+    cover.fill.solid();cover.fill.fore_color.rgb=RGBColor(255,255,255);cover.line.fill.background()
+
+    categories=[str(value) for value in spec.get('categories') or []]
+    interval=max(1,int(layout.get('interval') or 1))
+    if overlay_categories:
+        axis=spec.get('x_axis') if isinstance(spec.get('x_axis'),Mapping) else {}
+        plot_left=left+int(width*.13);plot_right=left+int(width*.96)
+        baseline=top+int(height*.78)
+        line=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,plot_left,baseline,plot_right,baseline)
+        line.name=f'VIZ::{title}::category-label-axis';line.line.color.rgb=RGBColor(52,62,74);line.line.width=Pt(.7)
+        pitch=(plot_right-plot_left)/max(1,len(categories))
+        for index,category in enumerate(categories):
+            if index%interval:
+                continue
+            center=plot_left+(index+.5)*pitch
+            required_width=len(category)*layout['category_font_pt']*.62+8.0
+            label_width=min(pitch*interval*.90,max(pitch*.90,Pt(required_width)))
+            label_height=Pt(12)
+            if index==0:
+                label_left=plot_left
+                alignment=PP_ALIGN.LEFT
+            elif index==len(categories)-1:
+                label_left=plot_right-label_width
+                alignment=PP_ALIGN.RIGHT
+            else:
+                label_left=center-label_width/2
+                alignment=PP_ALIGN.CENTER
+            label=slide.shapes.add_textbox(int(label_left),top+int(height*.79),int(label_width),int(label_height))
+            label.name=f'VIZ::{title}::category-label-{index}'
+            label.text_frame.text=category;label.text_frame.word_wrap=False;label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+            label.text_frame.margin_left=Pt(0);label.text_frame.margin_right=Pt(0)
+            label.text_frame.margin_top=Pt(0);label.text_frame.margin_bottom=Pt(0)
+            paragraph=label.text_frame.paragraphs[0];paragraph.alignment=alignment
+            paragraph.font.name='Arial';paragraph.font.size=Pt(layout['category_font_pt'])
+        axis_title=str(axis.get('title') or '').strip()
+        if axis_title:
+            label=slide.shapes.add_textbox(plot_left,top+int(height*.855),plot_right-plot_left,int(Pt(10)))
+            label.name=f'VIZ::{title}::category-axis-title'
+            label.text_frame.text=axis_title;label.text_frame.word_wrap=False;label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+            label.text_frame.margin_left=Pt(0);label.text_frame.margin_right=Pt(0)
+            label.text_frame.margin_top=Pt(0);label.text_frame.margin_bottom=Pt(0)
+            paragraph=label.text_frame.paragraphs[0];paragraph.alignment=PP_ALIGN.CENTER
+            paragraph.font.name='Arial';paragraph.font.size=Pt(min(8.0,layout['category_font_pt']))
+
+    if overlay_legend:
+        visible=[series for series in spec.get('series') or []
+                 if isinstance(series,Mapping) and series.get('visible') is not False and series.get('legend') is not False]
+        if visible:
+            columns=max(1,int(layout.get('legend_columns') or 1))
+            rows=max(1,int(layout.get('legend_rows') or math.ceil(len(visible)/columns)))
+            region_left=left+int(width*.14);region_width=int(width*.82)
+            region_fraction=float(layout.get('legend_region_fraction') or .10)
+            row_top=top+int(height*(1-region_fraction));region_height=int(height*region_fraction)
+            cell_width=region_width/columns;row_height=region_height/rows
+            for index,series in enumerate(visible):
+                row,column=divmod(index,columns)
+                name=str(series.get('name') or series.get('key') or title)
+                requested=layout.get('legend_font_pt') or 8.0
+                font_size=max(7.5,min(requested,row_height/12700*.82))
+                cell_left=region_left+column*cell_width
+                text_width_emu=max(1.0,cell_width-Pt(17))
+                text_width_pt=text_width_emu/12700
+                if len(name)*font_size*.62+8>text_width_pt:
+                    font_size=max(7.5,min(font_size,max(1.0,text_width_pt-8)/(len(name)*.62)))
+                raw_color=str(series.get('color') or _CHART_PALETTE[index%len(_CHART_PALETTE)]).lstrip('#')
+                color=raw_color if len(raw_color)==6 and all(char in '0123456789abcdefABCDEF' for char in raw_color) else _CHART_PALETTE[index%len(_CHART_PALETTE)]
+                center_y=row_top+(row+.5)*row_height
+                marker=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,int(cell_left+Pt(2)),int(center_y-Pt(2.5)),int(Pt(5)),int(Pt(5)))
+                marker.name=f'VIZ::{title}::legend-marker-{index}'
+                marker.fill.solid();marker.fill.fore_color.rgb=RGBColor.from_string(color);marker.line.fill.background()
+                label=slide.shapes.add_textbox(int(cell_left+Pt(10)),int(center_y-row_height/2),int(text_width_emu),int(row_height))
+                label.name=f'VIZ::{title}::legend-label-{index}'
+                label.text_frame.text=name;label.text_frame.word_wrap=False;label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+                label.text_frame.margin_left=Pt(0);label.text_frame.margin_right=Pt(0)
+                label.text_frame.margin_top=Pt(0);label.text_frame.margin_bottom=Pt(0)
+                paragraph=label.text_frame.paragraphs[0];paragraph.alignment=PP_ALIGN.LEFT
+                paragraph.font.name='Arial';paragraph.font.size=Pt(font_size)
+
+
 def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any], title: str) -> Any:
     visible=[series for series in spec.get('series') or [] if isinstance(series,Mapping) and series.get('visible') is not False]
     if not visible: raise VisualizerContractError('PowerPoint chart export requires at least one visible series.')
@@ -1181,6 +1429,10 @@ def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any],
     chart_shape=slide.shapes.add_chart(chart_type,left,top,width,height,data)
     chart_shape.name=f'VIZ::{title}'
     chart=chart_shape.chart;chart.has_title=True;chart.chart_title.text_frame.text=title
+    label_layout=_chart_label_layout(spec,title,width,height)
+    _set_chart_default_font(chart,label_layout['chart_default_font_pt'])
+    for paragraph in chart.chart_title.text_frame.paragraphs:
+        paragraph.font.name='Arial';paragraph.font.size=Pt(label_layout['title_font_pt'])
     if chart_type==XL_CHART_TYPE.XY_SCATTER:
         scatter_style=chart.plots[0]._element.xpath('./c:scatterStyle')
         if scatter_style: scatter_style[0].set('val','marker')
@@ -1190,6 +1442,7 @@ def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any],
         positions={'top':XL_LEGEND_POSITION.TOP,'bottom':XL_LEGEND_POSITION.BOTTOM,
                    'left':XL_LEGEND_POSITION.LEFT,'right':XL_LEGEND_POSITION.RIGHT}
         chart.legend.position=positions.get(str(legend.get('position') or 'bottom'),XL_LEGEND_POSITION.BOTTOM)
+        chart.legend.font.name='Arial';chart.legend.font.size=Pt(label_layout['legend_font_pt'] or 9.0)
         legend_element=chart.legend._element
         insertion=1 if legend_element.find(qn('c:legendPos')) is not None else 0
         for index,series_spec in enumerate(visible):
@@ -1220,8 +1473,32 @@ def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any],
     if number_format: chart.value_axis.tick_labels.number_format=number_format
     if axis.get('title'):
         chart.value_axis.has_title=True;chart.value_axis.axis_title.text_frame.text=str(axis['title'])
+    if label_layout['category_axis']:
+        category_axis=chart.category_axis
+        category_axis.tick_labels.font.name='Arial'
+        category_axis.tick_labels.font.size=Pt(label_layout['category_font_pt'])
+        if label_layout['interval']>1:
+            axis_element=category_axis._element
+            skip=axis_element.find(qn('c:tickLblSkip'))
+            if skip is None:
+                skip=OxmlElement('c:tickLblSkip')
+                no_multi=axis_element.find(qn('c:noMultiLvlLbl'))
+                axis_element.insert(axis_element.index(no_multi) if no_multi is not None else len(axis_element),skip)
+            skip.set('val',str(label_layout['interval']))
+        _set_axis_tick_rotation(category_axis,label_layout['rotation'])
+        x_axis=spec.get('x_axis') if isinstance(spec.get('x_axis'),Mapping) else {}
+        if x_axis.get('show') is False:
+            category_axis.tick_label_position=XL_TICK_LABEL_POSITION.NONE
+        if x_axis.get('title'):
+            category_axis.has_title=True;category_axis.axis_title.text_frame.text=str(x_axis['title'])
+            for paragraph in category_axis.axis_title.text_frame.paragraphs:
+                paragraph.font.name='Arial';paragraph.font.size=Pt(min(9.0,label_layout['category_font_pt']))
+        format_code={'date':'yyyy-mm-dd hh:mm','number':'0.###'}.get(str(x_axis.get('format') or '').lower())
+        if format_code:
+            category_axis.tick_labels.number_format=format_code
     y_axis=spec.get('axis_source') if isinstance(spec.get('axis_source'),Mapping) else {}
     if y_axis.get('grid') is False: chart.value_axis.has_major_gridlines=False
+    _add_native_chart_label_overlays(slide,chart_shape,spec,title,label_layout)
     return _reorder_replacement_shapes(slide,placeholder,[chart_shape])
 
 
@@ -1244,6 +1521,32 @@ def _box_plot_label(value: float, spec: Mapping[str, Any]) -> str:
     return f"{axis.get('prefix') or ''}{result}{(' '+unit) if unit else ''}{suffix}"
 
 
+def _box_plot_label_layout(spec: Mapping[str, Any], title: str, width: int, height: int) -> dict[str, float]:
+    """Reserve title and tick-label bands from their text and the assigned chart rectangle."""
+    axis=spec.get('axis') if isinstance(spec.get('axis'),Mapping) else {}
+    values=[float(value) for group in spec.get('groups') or [] if isinstance(group,Mapping)
+            for value in group.get('values') or [] if _is_finite_number(value)]
+    low,high=_chart_domain(axis,values) or (0.0,1.0)
+    tick_labels=[_box_plot_label(low+(high-low)*tick/4,spec) for tick in range(5)]
+    width_pt=max(1.0,width/12700);height_pt=max(1.0,height/12700)
+    title_font=min(12.0,max(9.0,width_pt*.92/(max(1,len(title))*.54)))
+    axis_font=7.0
+    longest_tick=max((len(label) for label in tick_labels),default=1)
+    axis_band_pt=min(width_pt*.30,max(26.0,longest_tick*axis_font*.52+8.0))
+    plot_left_fraction=min(.32,max(.16,axis_band_pt/width_pt+.025))
+    title_height_pt=title_font*1.45+2.0
+    title_top_pt=max(1.0,height_pt*.015)
+    title_bottom_pt=title_top_pt+title_height_pt
+    # Tick boxes start 5 pt above the top gridline and must remain below the title band.
+    plot_top_pt=max(height_pt*.20,title_bottom_pt+8.0)
+    plot_bottom_pt=height_pt*.75
+    plot_top_pt=min(plot_top_pt,plot_bottom_pt-24.0)
+    return {'title_font_pt':title_font,'title_height_pt':title_height_pt,'title_top_pt':title_top_pt,
+            'title_bottom_pt':title_bottom_pt,'plot_left_fraction':plot_left_fraction,
+            'plot_top_fraction':plot_top_pt/height_pt,'plot_bottom_fraction':.75,
+            'axis_font_pt':axis_font,'axis_band_pt':axis_band_pt}
+
+
 def _draw_box_plot(slide: Any, placeholder: Any, entry: Mapping[str, Any], spec: Mapping[str, Any], title: str) -> Any:
     groups=[group for group in spec.get('groups') or [] if isinstance(group,Mapping) and group.get('values')]
     if not groups: raise VisualizerContractError('PowerPoint Box Plot export requires numeric values in at least one cohort.')
@@ -1251,16 +1554,20 @@ def _draw_box_plot(slide: Any, placeholder: Any, entry: Mapping[str, Any], spec:
     domain=_chart_domain(spec.get('axis') or {},all_values)
     if domain is None: raise VisualizerContractError('PowerPoint Box Plot export requires a finite value-axis domain.')
     left,top,width,height=placeholder.left,placeholder.top,placeholder.width,placeholder.height
-    plot_left=left+int(width*.19);plot_right=left+int(width*.97)
-    plot_top=top+int(height*.20);plot_bottom=top+int(height*.75)
+    layout=_box_plot_label_layout(spec,title,width,height)
+    plot_left=left+int(width*layout['plot_left_fraction']);plot_right=left+int(width*.97)
+    plot_top=top+int(height*layout['plot_top_fraction']);plot_bottom=top+int(height*layout['plot_bottom_fraction'])
     low,high=domain
     y_at=lambda value: plot_bottom-round((float(value)-low)/(high-low)*(plot_bottom-plot_top))
     created=[]
-    title_shape=slide.shapes.add_textbox(left+int(width*.04),top+int(height*.015),int(width*.92),int(height*.15))
+    title_height=Pt(layout['title_height_pt'])
+    title_shape=slide.shapes.add_textbox(left+int(width*.04),top+int(Pt(layout['title_top_pt'])),int(width*.92),int(title_height))
     title_shape.name=f"VIZ::{entry.get('id','chart')}::box-plot-title";title_shape.text_frame.text=title
-    title_shape.text_frame.word_wrap=False
+    title_shape.text_frame.word_wrap=False;title_shape.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+    title_shape.text_frame.margin_left=Pt(2);title_shape.text_frame.margin_right=Pt(2)
+    title_shape.text_frame.margin_top=Pt(0);title_shape.text_frame.margin_bottom=Pt(0)
     for paragraph in title_shape.text_frame.paragraphs:
-        paragraph.font.size=Pt(12);paragraph.font.bold=True
+        paragraph.alignment=PP_ALIGN.CENTER;paragraph.font.name='Arial';paragraph.font.size=Pt(layout['title_font_pt']);paragraph.font.bold=True
     created.append(title_shape)
     for tick in range(5):
         value=low+(high-low)*tick/4;y=y_at(value)
@@ -1268,7 +1575,9 @@ def _draw_box_plot(slide: Any, placeholder: Any, entry: Mapping[str, Any], spec:
         line.name=f"VIZ::{entry.get('id','chart')}::box-plot-grid-{tick}";line.line.color.rgb=RGBColor(220,226,234);line.line.width=Pt(.6);created.append(line)
         label=slide.shapes.add_textbox(left, y-int(Pt(5)), plot_left-left-int(width*.025), Pt(12))
         label.name=f"VIZ::{entry.get('id','chart')}::box-plot-axis-{tick}";label.text_frame.text=_box_plot_label(value,spec)
-        label.text_frame.word_wrap=False;label.text_frame.paragraphs[0].alignment=PP_ALIGN.RIGHT;label.text_frame.paragraphs[0].font.size=Pt(7)
+        label.text_frame.word_wrap=False;label.text_frame.margin_top=Pt(0);label.text_frame.margin_bottom=Pt(0)
+        label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+        label.text_frame.paragraphs[0].alignment=PP_ALIGN.RIGHT;label.text_frame.paragraphs[0].font.name='Arial';label.text_frame.paragraphs[0].font.size=Pt(layout['axis_font_pt'])
         created.append(label)
     for index,group in enumerate(groups):
         color=RGBColor.from_string(_CHART_PALETTE[index%len(_CHART_PALETTE)])
