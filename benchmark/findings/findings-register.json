@@ -1,0 +1,76 @@
+{
+  "source_sha": "564fe414a149924128c3d0b531205636fb7cf6d5",
+  "findings": [
+    {
+      "id": "R5-FIND-01",
+      "priority": "P1",
+      "status": "CONFIRMED_FAIL",
+      "area": "Editable PowerPoint category-axis layout",
+      "root": "PPTX chart serialization does not honor the authored Chart Studio x-axis labelInterval for low-density charts.",
+      "contract": "Explicit source x-axis interval wins; low-density charts are not unnecessarily thinned.",
+      "evidence": [
+        {
+          "report": "A",
+          "report_id": "report-280974a5d6e04482bbc998130de9a51f",
+          "item_id": "c6",
+          "title": "Quarterly Northline renewal rate",
+          "categories": 8,
+          "source_label_interval": 1,
+          "source_rotation_degrees": 45,
+          "pptx_c:tickLblSkip": 5,
+          "pptx_rotation_degrees": -45,
+          "quicklook_visible_category_labels": [
+            "FY24 Q3 | Enterprise renewal cohort",
+            "FY25 Q3 | Enterprise renewal cohort"
+          ],
+          "impact": "Six intermediate quarter names are not visibly labeled in the rendered editable deck; a reader cannot reliably associate every plotted point with its quarter."
+        },
+        {
+          "report": "F",
+          "report_id": "report-0693be2c087140cd99fc41b7dd9d35ef",
+          "item_id": "c4",
+          "title": "Dwell hours by destination lane",
+          "categories": 4,
+          "source_label_interval": 1,
+          "source_rotation_degrees": 0,
+          "pptx_c:tickLblSkip": 2,
+          "quicklook_visible_category_labels": [
+            "Harbor East / SL-26-41",
+            "Port Meridian / SL-26-43"
+          ],
+          "impact": "Two of four low-density destination categories are omitted by the exported tick interval."
+        }
+      ],
+      "generalization_control": {
+        "report": "E",
+        "report_id": "report-46d89fd6d62d40a09d5093ac4e967708",
+        "item_id": "c4",
+        "fresh_holdout": true,
+        "categories_per_series": 16,
+        "series_count": 3,
+        "source_label_interval": 6,
+        "pptx_c:tickLblSkip": 6,
+        "all_categories_in_ooxml": true,
+        "interpretation": "The unrelated dense holdout retains its authored interval; this does not negate the A/F low-density failure."
+      },
+      "reproduction": "Compare each report source model chart_studio.axes.x.labelInterval with ppt/charts/chart*.xml c:catAx/c:tickLblSkip. The packages and parsed values are retained under benchmark/exports.",
+      "task_consequence": "Executive quarter and destination identity are part of the decisions. Missing intermediate labels make the export less readable as a complete decision document.",
+      "source_change_made": false,
+      "report_repair_made": false
+    }
+  ],
+  "enhancement_debt": [
+    {
+      "id": "R4-IMAGE-ENHANCEMENT",
+      "status": "NON_BLOCKING_DEBT",
+      "note": "Generic ImageMediaEngine zoom/pan/fit was independently classified non-blocking in R4. No new R5 task failure was established; it is not promoted to a finding."
+    }
+  ],
+  "resolved_authoring_friction": [
+    {
+      "id": "R5-D-EXPORT-FIT",
+      "status": "RESOLVED_BY_SUPPORTED_AUTHORING",
+      "note": "The first D PPTX export rejected the narrative rectangle. Guided layout height edit and a visible title preserved all text; final export and canonical reload passed. This was a report composition edit, not a Product source change."
+    }
+  ]
+}

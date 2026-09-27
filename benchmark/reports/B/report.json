@@ -1,0 +1,1741 @@
+{
+  "key": "B",
+  "title": "QF-8419 Microbump Yield RCA",
+  "report_id": "report-b6fea54f6a6f4e2d86575b02723119fe",
+  "template_start": "semiconductor-rca",
+  "description": "Engineering investigation for the QF-8419 3D-stack microbump open excursion at RFX-12; separate spatial evidence, subgroup behavior and the competing carrier-clean hypothesis before lot release.",
+  "item_count": 13,
+  "section_titles": [
+    "Analysis",
+    "Causal analysis",
+    "Corrective action",
+    "Engineering evidence",
+    "Evidence",
+    "Findings",
+    "Investigation summary",
+    "Overview",
+    "Performance"
+  ],
+  "roles": [
+    "action_status",
+    "causal_evidence",
+    "context",
+    "detailed_evidence",
+    "hero_metric",
+    "narrative_interpretation",
+    "primary_analysis",
+    "report_headline",
+    "supporting_analysis"
+  ],
+  "dataset_ids": [
+    "dataset-mujcbomn-gvshx6",
+    "dataset-mujcbrrb-098jlk"
+  ],
+  "dataset_revisions": {
+    "dataset-mujcbomn-gvshx6": 1,
+    "dataset-mujcbrrb-098jlk": 1
+  },
+  "source_binding_ids": [
+    "dataset-mujcbomn-gvshx6",
+    "dataset-mujcbrrb-098jlk"
+  ],
+  "preflight": {
+    "issues": [],
+    "layout_issue_count": 0,
+    "data_issue_count": 0,
+    "item_count": 13,
+    "canvas": {
+      "width": 1600,
+      "height": 2773
+    },
+    "chart_semantics_preserved": true
+  },
+  "responsive": {
+    "viewports": {
+      "1440": {
+        "viewportWidth": 1440,
+        "documentWidth": 1440,
+        "bodyWidth": 1440,
+        "bodyHorizontalSpill": 0,
+        "hull": {
+          "x": 29.268293380737305,
+          "y": 100.90243530273438,
+          "w": 1381.46337890625,
+          "h": 2394.2490234375,
+          "right": 1410.7316722869873,
+          "bottom": 2495.1514587402344
+        },
+        "layer": {
+          "rect": {
+            "x": 30.1317081451416,
+            "y": 101.76585388183594,
+            "w": 1379.736572265625,
+            "h": 2392.52197265625,
+            "right": 1409.8682804107666,
+            "bottom": 2494.287826538086
+          },
+          "display": "block",
+          "direction": "row"
+        },
+        "componentCount": 13,
+        "components": [
+          {
+            "id": "c1",
+            "order": 1,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 136.3024444580078,
+              "w": 914.73388671875,
+              "h": 94.75975036621094,
+              "right": 956.9533996582031,
+              "bottom": 231.06219482421875
+            }
+          },
+          {
+            "id": "c2",
+            "order": 3,
+            "rect": {
+              "x": 969.0411987304688,
+              "y": 152.59939575195312,
+              "w": 430.45269775390625,
+              "h": 62.16584777832031,
+              "right": 1399.493896484375,
+              "bottom": 214.76524353027344
+            }
+          },
+          {
+            "id": "c3",
+            "order": 23,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 2314.4951171875,
+              "w": 753.30224609375,
+              "h": 160.59521484375,
+              "right": 795.5217590332031,
+              "bottom": 2475.09033203125
+            }
+          },
+          {
+            "id": "c11",
+            "order": 25,
+            "rect": {
+              "x": 807.609619140625,
+              "y": 2314.4951171875,
+              "w": 591.88427734375,
+              "h": 169.2294921875,
+              "right": 1399.493896484375,
+              "bottom": 2483.724609375
+            }
+          },
+          {
+            "id": "c4",
+            "order": 17,
+            "rect": {
+              "x": 587.0341796875,
+              "y": 1500.6324462890625,
+              "w": 267.65850830078125,
+              "h": 267.6585693359375,
+              "right": 854.6926879882812,
+              "bottom": 1768.291015625
+            }
+          },
+          {
+            "id": "c5",
+            "order": 19,
+            "rect": {
+              "x": 418.3984680175781,
+              "y": 1775.1983642578125,
+              "w": 604.9029541015625,
+              "h": 293.5609130859375,
+              "right": 1023.3014221191406,
+              "bottom": 2068.75927734375
+            }
+          },
+          {
+            "id": "c6",
+            "order": 9,
+            "rect": {
+              "x": 888.3253784179688,
+              "y": 382.1597595214844,
+              "w": 511.16851806640625,
+              "h": 248.06979370117188,
+              "right": 1399.493896484375,
+              "bottom": 630.2295532226562
+            }
+          },
+          {
+            "id": "c7",
+            "order": 11,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 637.1369018554688,
+              "w": 1357.287841796875,
+              "h": 361.878662109375,
+              "right": 1399.5073547363281,
+              "bottom": 999.0155639648438
+            }
+          },
+          {
+            "id": "c8",
+            "order": 7,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 432.8044128417969,
+              "w": 834.01806640625,
+              "h": 146.78048706054688,
+              "right": 876.2375793457031,
+              "bottom": 579.5848999023438
+            }
+          },
+          {
+            "id": "c9",
+            "order": 21,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 2079.98388671875,
+              "w": 1357.287841796875,
+              "h": 205.141845703125,
+              "right": 1399.5073547363281,
+              "bottom": 2285.125732421875
+            }
+          },
+          {
+            "id": "c10",
+            "order": 15,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 1315.038818359375,
+              "w": 1357.287841796875,
+              "h": 156.237548828125,
+              "right": 1399.5073547363281,
+              "bottom": 1471.2763671875
+            }
+          },
+          {
+            "id": "c12",
+            "order": 5,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 237.96951293945312,
+              "w": 1357.287841796875,
+              "h": 114.83413696289062,
+              "right": 1399.5073547363281,
+              "bottom": 352.80364990234375
+            }
+          },
+          {
+            "id": "c13",
+            "order": 13,
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 1010.25341796875,
+              "w": 1357.287841796875,
+              "h": 275.4293212890625,
+              "right": 1399.5073547363281,
+              "bottom": 1285.6827392578125
+            }
+          }
+        ],
+        "sections": [
+          {
+            "title": "01\nInvestigation summary",
+            "y": 113.8536605834961,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "02\nEvidence",
+            "y": 359.7109680175781,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "03\nCorrective action",
+            "y": 1292.590087890625,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "04\nAnalysis",
+            "y": 1478.1837158203125,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "05\nPerformance",
+            "y": 2292.04638671875,
+            "role": "heading",
+            "level": "2"
+          }
+        ],
+        "texts": [
+          {
+            "id": "c1",
+            "text": "A localized RFX-12 excursion explains the QF-8419 open-bump cluster.",
+            "cardScroll": 76,
+            "cardClient": 76,
+            "copyScroll": 76,
+            "copyClient": 76,
+            "clipped": false
+          },
+          {
+            "id": "c2",
+            "text": "QF-8419 · 3D-stack microbump line · RFX-12 reflow station",
+            "cardScroll": 38,
+            "cardClient": 38,
+            "copyScroll": 38,
+            "copyClient": 38,
+            "clipped": false
+          },
+          {
+            "id": "c12",
+            "text": "post-reflow electrical screen · paired lot QF-8421.",
+            "cardScroll": 99,
+            "cardClient": 99,
+            "copyScroll": 27,
+            "copyClient": 27,
+            "clipped": false
+          }
+        ],
+        "metrics": [
+          {
+            "id": "c3",
+            "text": "Affected microbump yield\n94.26%\nDelta -3.14\nTarget 97.5%",
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 2314.4951171875,
+              "w": 753.30224609375,
+              "h": 160.59521484375,
+              "right": 795.5217590332031,
+              "bottom": 2475.09033203125
+            },
+            "scroll": 870,
+            "client": 870
+          },
+          {
+            "id": "c11",
+            "text": "Affected vs paired-lot yield\nBefore\n98.71 %\nAfter\n94.26 %\n▲",
+            "rect": {
+              "x": 807.609619140625,
+              "y": 2314.4951171875,
+              "w": 591.88427734375,
+              "h": 169.2294921875,
+              "right": 1399.493896484375,
+              "bottom": 2483.724609375
+            },
+            "scroll": 684,
+            "client": 684
+          }
+        ],
+        "tables": [],
+        "flows": [
+          {
+            "id": "c8",
+            "title": "",
+            "rect": {
+              "x": 42.219512939453125,
+              "y": 432.8044128417969,
+              "w": 834.01806640625,
+              "h": 146.78048706054688,
+              "right": 876.2375793457031,
+              "bottom": 579.5848999023438
+            },
+            "svg": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0,
+              "right": 0,
+              "bottom": 0
+            },
+            "reading": {
+              "classes": "diagram-responsive-reading",
+              "children": [
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "block",
+                  "rect": {
+                    "x": 56.897560119628906,
+                    "y": 447.48248291015625,
+                    "w": 804.6619262695312,
+                    "h": 105.78179931640625,
+                    "right": 861.5594863891602,
+                    "bottom": 553.2642822265625
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "readingOrderByY": [
+          "c1",
+          "c2",
+          "c12",
+          "c6",
+          "c8",
+          "c7",
+          "c13",
+          "c10",
+          "c4",
+          "c5",
+          "c9",
+          "c3",
+          "c11"
+        ],
+        "canvasHeight": 2773,
+        "preview": true,
+        "screenshot": "screenshots/desktop-1440/B.png"
+      },
+      "390": {
+        "viewportWidth": 390,
+        "documentWidth": 390,
+        "bodyWidth": 390,
+        "bodyHorizontalSpill": 0,
+        "hull": {
+          "x": 26,
+          "y": 38.59375,
+          "w": 370,
+          "h": 2902.84375,
+          "right": 396,
+          "bottom": 2941.4375
+        },
+        "layer": {
+          "rect": {
+            "x": 26,
+            "y": 38.59375,
+            "w": 370,
+            "h": 2902.84375,
+            "right": 396,
+            "bottom": 2941.4375
+          },
+          "display": "flex",
+          "direction": "column"
+        },
+        "componentCount": 13,
+        "components": [
+          {
+            "id": "c1",
+            "order": 1,
+            "rect": {
+              "x": 26,
+              "y": 77.59375,
+              "w": 370,
+              "h": 124,
+              "right": 396,
+              "bottom": 201.59375
+            }
+          },
+          {
+            "id": "c2",
+            "order": 3,
+            "rect": {
+              "x": 26,
+              "y": 214.59375,
+              "w": 370,
+              "h": 76,
+              "right": 396,
+              "bottom": 290.59375
+            }
+          },
+          {
+            "id": "c3",
+            "order": 23,
+            "rect": {
+              "x": 26,
+              "y": 2587.640625,
+              "w": 370,
+              "h": 160.796875,
+              "right": 396,
+              "bottom": 2748.4375
+            }
+          },
+          {
+            "id": "c11",
+            "order": 25,
+            "rect": {
+              "x": 26,
+              "y": 2761.4375,
+              "w": 370,
+              "h": 180,
+              "right": 396,
+              "bottom": 2941.4375
+            }
+          },
+          {
+            "id": "c4",
+            "order": 17,
+            "rect": {
+              "x": 26,
+              "y": 1724.859375,
+              "w": 370,
+              "h": 318,
+              "right": 396,
+              "bottom": 2042.859375
+            }
+          },
+          {
+            "id": "c5",
+            "order": 19,
+            "rect": {
+              "x": 26,
+              "y": 2055.859375,
+              "w": 370,
+              "h": 250,
+              "right": 396,
+              "bottom": 2305.859375
+            }
+          },
+          {
+            "id": "c6",
+            "order": 9,
+            "rect": {
+              "x": 26,
+              "y": 625.09375,
+              "w": 370,
+              "h": 250,
+              "right": 396,
+              "bottom": 875.09375
+            }
+          },
+          {
+            "id": "c7",
+            "order": 11,
+            "rect": {
+              "x": 26,
+              "y": 888.09375,
+              "w": 370,
+              "h": 302,
+              "right": 396,
+              "bottom": 1190.09375
+            }
+          },
+          {
+            "id": "c8",
+            "order": 7,
+            "rect": {
+              "x": 26,
+              "y": 468.09375,
+              "w": 370,
+              "h": 144,
+              "right": 396,
+              "bottom": 612.09375
+            }
+          },
+          {
+            "id": "c9",
+            "order": 21,
+            "rect": {
+              "x": 26,
+              "y": 2318.859375,
+              "w": 370,
+              "h": 216.78125,
+              "right": 396,
+              "bottom": 2535.640625
+            }
+          },
+          {
+            "id": "c10",
+            "order": 15,
+            "rect": {
+              "x": 26,
+              "y": 1506.265625,
+              "w": 370,
+              "h": 166.59375,
+              "right": 396,
+              "bottom": 1672.859375
+            }
+          },
+          {
+            "id": "c12",
+            "order": 5,
+            "rect": {
+              "x": 26,
+              "y": 303.59375,
+              "w": 370,
+              "h": 112.5,
+              "right": 396,
+              "bottom": 416.09375
+            }
+          },
+          {
+            "id": "c13",
+            "order": 13,
+            "rect": {
+              "x": 26,
+              "y": 1203.09375,
+              "w": 370,
+              "h": 251.171875,
+              "right": 396,
+              "bottom": 1454.265625
+            }
+          }
+        ],
+        "sections": [
+          {
+            "title": "01\nInvestigation summary",
+            "y": 38.59375,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "02\nEvidence",
+            "y": 429.09375,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "03\nCorrective action",
+            "y": 1467.265625,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "04\nAnalysis",
+            "y": 1685.859375,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "05\nPerformance",
+            "y": 2548.640625,
+            "role": "heading",
+            "level": "2"
+          }
+        ],
+        "texts": [
+          {
+            "id": "c1",
+            "text": "A localized RFX-12 excursion explains the QF-8419 open-bump cluster.",
+            "cardScroll": 86,
+            "cardClient": 86,
+            "copyScroll": 86,
+            "copyClient": 86,
+            "clipped": false
+          },
+          {
+            "id": "c2",
+            "text": "QF-8419 · 3D-stack microbump line · RFX-12 reflow station",
+            "cardScroll": 39,
+            "cardClient": 39,
+            "copyScroll": 39,
+            "copyClient": 39,
+            "clipped": false
+          },
+          {
+            "id": "c12",
+            "text": "post-reflow electrical screen · paired lot QF-8421.",
+            "cardScroll": 89,
+            "cardClient": 89,
+            "copyScroll": 27,
+            "copyClient": 27,
+            "clipped": false
+          }
+        ],
+        "metrics": [
+          {
+            "id": "c3",
+            "text": "Affected microbump yield\n94.26%\nDelta -3.14\nTarget 97.5%",
+            "rect": {
+              "x": 26,
+              "y": 2587.640625,
+              "w": 370,
+              "h": 160.796875,
+              "right": 396,
+              "bottom": 2748.4375
+            },
+            "scroll": 370,
+            "client": 370
+          },
+          {
+            "id": "c11",
+            "text": "Affected vs paired-lot yield\nBefore\n98.71 %\nAfter\n94.26 %\n▲",
+            "rect": {
+              "x": 26,
+              "y": 2761.4375,
+              "w": 370,
+              "h": 180,
+              "right": 396,
+              "bottom": 2941.4375
+            },
+            "scroll": 370,
+            "client": 370
+          }
+        ],
+        "tables": [
+          {
+            "label": "Scrollable table: Operating evidence · B",
+            "tabIndex": 0,
+            "clientWidth": 344,
+            "scrollWidth": 558,
+            "scrollLeft": 0,
+            "touchAction": "pan-x pan-y",
+            "overflowX": "auto",
+            "rect": {
+              "x": 38,
+              "y": 969.09375,
+              "w": 346,
+              "h": 170.625,
+              "right": 384,
+              "bottom": 1139.71875
+            },
+            "interaction_error": "Locator.focus: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator(\"[role=\\\"region\\\"][aria-label=\\\"Scrollable table: Operating evidence \\\\u00b7 B\\\"]\").first\n"
+          }
+        ],
+        "flows": [
+          {
+            "id": "c8",
+            "title": "",
+            "rect": {
+              "x": 26,
+              "y": 468.09375,
+              "w": 370,
+              "h": 144,
+              "right": 396,
+              "bottom": 612.09375
+            },
+            "svg": {
+              "x": 38,
+              "y": 480.09375,
+              "w": 346,
+              "h": 103.796875,
+              "right": 384,
+              "bottom": 583.890625
+            },
+            "reading": {
+              "classes": "diagram-responsive-reading",
+              "children": [
+                {
+                  "className": {},
+                  "display": "block",
+                  "rect": {
+                    "x": 38,
+                    "y": 480.09375,
+                    "w": 346,
+                    "h": 103.796875,
+                    "right": 384,
+                    "bottom": 583.890625
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "readingOrderByY": [
+          "c1",
+          "c2",
+          "c12",
+          "c8",
+          "c6",
+          "c7",
+          "c13",
+          "c10",
+          "c4",
+          "c5",
+          "c9",
+          "c3",
+          "c11"
+        ],
+        "canvasHeight": 2773,
+        "preview": true,
+        "screenshot": "screenshots/narrow-390/B.png"
+      },
+      "320": {
+        "viewportWidth": 320,
+        "documentWidth": 320,
+        "bodyWidth": 320,
+        "bodyHorizontalSpill": 0,
+        "hull": {
+          "x": 26,
+          "y": 58.046875,
+          "w": 300,
+          "h": 3314.125,
+          "right": 326,
+          "bottom": 3372.171875
+        },
+        "layer": {
+          "rect": {
+            "x": 26,
+            "y": 58.046875,
+            "w": 300,
+            "h": 3314.125,
+            "right": 326,
+            "bottom": 3372.171875
+          },
+          "display": "flex",
+          "direction": "column"
+        },
+        "componentCount": 13,
+        "components": [
+          {
+            "id": "c1",
+            "order": 1,
+            "rect": {
+              "x": 26,
+              "y": 97.046875,
+              "w": 300,
+              "h": 135.625,
+              "right": 326,
+              "bottom": 232.671875
+            }
+          },
+          {
+            "id": "c2",
+            "order": 3,
+            "rect": {
+              "x": 26,
+              "y": 245.671875,
+              "w": 300,
+              "h": 76,
+              "right": 326,
+              "bottom": 321.671875
+            }
+          },
+          {
+            "id": "c3",
+            "order": 23,
+            "rect": {
+              "x": 26,
+              "y": 2932.375,
+              "w": 300,
+              "h": 160.796875,
+              "right": 326,
+              "bottom": 3093.171875
+            }
+          },
+          {
+            "id": "c11",
+            "order": 25,
+            "rect": {
+              "x": 26,
+              "y": 3106.171875,
+              "w": 300,
+              "h": 266,
+              "right": 326,
+              "bottom": 3372.171875
+            }
+          },
+          {
+            "id": "c4",
+            "order": 17,
+            "rect": {
+              "x": 26,
+              "y": 2105.203125,
+              "w": 300,
+              "h": 248,
+              "right": 326,
+              "bottom": 2353.203125
+            }
+          },
+          {
+            "id": "c5",
+            "order": 19,
+            "rect": {
+              "x": 26,
+              "y": 2366.203125,
+              "w": 300,
+              "h": 250,
+              "right": 326,
+              "bottom": 2616.203125
+            }
+          },
+          {
+            "id": "c6",
+            "order": 9,
+            "rect": {
+              "x": 26,
+              "y": 919.640625,
+              "w": 300,
+              "h": 250,
+              "right": 326,
+              "bottom": 1169.640625
+            }
+          },
+          {
+            "id": "c7",
+            "order": 11,
+            "rect": {
+              "x": 26,
+              "y": 1182.640625,
+              "w": 300,
+              "h": 302,
+              "right": 326,
+              "bottom": 1484.640625
+            }
+          },
+          {
+            "id": "c8",
+            "order": 7,
+            "rect": {
+              "x": 26,
+              "y": 518.671875,
+              "w": 300,
+              "h": 387.96875,
+              "right": 326,
+              "bottom": 906.640625
+            }
+          },
+          {
+            "id": "c9",
+            "order": 21,
+            "rect": {
+              "x": 26,
+              "y": 2629.203125,
+              "w": 300,
+              "h": 251.171875,
+              "right": 326,
+              "bottom": 2880.375
+            }
+          },
+          {
+            "id": "c10",
+            "order": 15,
+            "rect": {
+              "x": 26,
+              "y": 1850.8125,
+              "w": 300,
+              "h": 202.390625,
+              "right": 326,
+              "bottom": 2053.203125
+            }
+          },
+          {
+            "id": "c12",
+            "order": 5,
+            "rect": {
+              "x": 26,
+              "y": 334.671875,
+              "w": 300,
+              "h": 132,
+              "right": 326,
+              "bottom": 466.671875
+            }
+          },
+          {
+            "id": "c13",
+            "order": 13,
+            "rect": {
+              "x": 26,
+              "y": 1497.640625,
+              "w": 300,
+              "h": 301.171875,
+              "right": 326,
+              "bottom": 1798.8125
+            }
+          }
+        ],
+        "sections": [
+          {
+            "title": "01\nInvestigation summary",
+            "y": 58.046875,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "02\nEvidence",
+            "y": 479.671875,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "03\nCorrective action",
+            "y": 1811.8125,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "04\nAnalysis",
+            "y": 2066.203125,
+            "role": "heading",
+            "level": "2"
+          },
+          {
+            "title": "05\nPerformance",
+            "y": 2893.375,
+            "role": "heading",
+            "level": "2"
+          }
+        ],
+        "texts": [
+          {
+            "id": "c1",
+            "text": "A localized RFX-12 excursion explains the QF-8419 open-bump cluster.",
+            "cardScroll": 112,
+            "cardClient": 112,
+            "copyScroll": 112,
+            "copyClient": 112,
+            "clipped": false
+          },
+          {
+            "id": "c2",
+            "text": "QF-8419 · 3D-stack microbump line · RFX-12 reflow station",
+            "cardScroll": 39,
+            "cardClient": 39,
+            "copyScroll": 39,
+            "copyClient": 39,
+            "clipped": false
+          },
+          {
+            "id": "c12",
+            "text": "post-reflow electrical screen · paired lot QF-8421.",
+            "cardScroll": 108,
+            "cardClient": 108,
+            "copyScroll": 46,
+            "copyClient": 46,
+            "clipped": false
+          }
+        ],
+        "metrics": [
+          {
+            "id": "c3",
+            "text": "Affected microbump yield\n94.26%\nDelta -3.14\nTarget 97.5%",
+            "rect": {
+              "x": 26,
+              "y": 2932.375,
+              "w": 300,
+              "h": 160.796875,
+              "right": 326,
+              "bottom": 3093.171875
+            },
+            "scroll": 300,
+            "client": 300
+          },
+          {
+            "id": "c11",
+            "text": "Affected vs paired-lot yield\nBefore\n98.71 %\nAfter\n94.26 %\n▲",
+            "rect": {
+              "x": 26,
+              "y": 3106.171875,
+              "w": 300,
+              "h": 266,
+              "right": 326,
+              "bottom": 3372.171875
+            },
+            "scroll": 300,
+            "client": 300
+          }
+        ],
+        "tables": [
+          {
+            "label": "Scrollable table: Operating evidence · B",
+            "tabIndex": 0,
+            "clientWidth": 274,
+            "scrollWidth": 558,
+            "scrollLeft": 0,
+            "touchAction": "pan-x pan-y",
+            "overflowX": "auto",
+            "rect": {
+              "x": 38,
+              "y": 1263.640625,
+              "w": 276,
+              "h": 170.625,
+              "right": 314,
+              "bottom": 1434.265625
+            },
+            "interaction_error": "Locator.focus: Timeout 10000ms exceeded.\nCall log:\n  - waiting for locator(\"[role=\\\"region\\\"][aria-label=\\\"Scrollable table: Operating evidence \\\\u00b7 B\\\"]\").first\n"
+          }
+        ],
+        "flows": [
+          {
+            "id": "c8",
+            "title": "",
+            "rect": {
+              "x": 26,
+              "y": 518.671875,
+              "w": 300,
+              "h": 387.96875,
+              "right": 326,
+              "bottom": 906.640625
+            },
+            "svg": {
+              "x": 0,
+              "y": 0,
+              "w": 0,
+              "h": 0,
+              "right": 0,
+              "bottom": 0
+            },
+            "reading": {
+              "classes": "diagram-responsive-reading",
+              "children": [
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "block",
+                  "rect": {
+                    "x": 38,
+                    "y": 530.671875,
+                    "w": 276,
+                    "h": 363.96875,
+                    "right": 314,
+                    "bottom": 894.640625
+                  }
+                },
+                {
+                  "className": {},
+                  "display": "none",
+                  "rect": {
+                    "x": 0,
+                    "y": 0,
+                    "w": 0,
+                    "h": 0,
+                    "right": 0,
+                    "bottom": 0
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "readingOrderByY": [
+          "c1",
+          "c2",
+          "c12",
+          "c8",
+          "c6",
+          "c7",
+          "c13",
+          "c10",
+          "c4",
+          "c5",
+          "c9",
+          "c3",
+          "c11"
+        ],
+        "canvasHeight": 2773,
+        "preview": true,
+        "screenshot": "screenshots/narrow-320/B.png"
+      }
+    },
+    "report_id": "report-b6fea54f6a6f4e2d86575b02723119fe"
+  },
+  "chart_studio_explicit_axes": [
+    {
+      "chart_id": "c6",
+      "view": "box",
+      "state": {
+        "x": {
+          "title": "",
+          "show": true,
+          "scale": "auto",
+          "min": null,
+          "max": null,
+          "auto": true,
+          "tickCount": 6,
+          "labelInterval": 2,
+          "rotation": 35,
+          "format": "auto",
+          "grid": true,
+          "position": "bottom",
+          "precision": null,
+          "zeroBaseline": false
+        },
+        "y": {
+          "title": "",
+          "show": true,
+          "scale": "linear",
+          "min": null,
+          "max": null,
+          "auto": true,
+          "zeroBaseline": false,
+          "tickCount": 5,
+          "format": "auto",
+          "unit": "",
+          "prefix": "",
+          "suffix": "",
+          "precision": null,
+          "grid": true,
+          "position": "left",
+          "labelInterval": null,
+          "rotation": 0
+        },
+        "legend": {
+          "show": false,
+          "position": "bottom",
+          "orientation": "horizontal",
+          "order": "input",
+          "scroll": true,
+          "interactive": true
+        }
+      }
+    }
+  ],
+  "reload_metadata_drift": [],
+  "pptx_path": "reports/B-QF8419-microbump-RCA.pptx",
+  "svg_path": "reports/B-QF8419-microbump-RCA.svg",
+  "pptx_bytes": 53349,
+  "svg_bytes": 1521379,
+  "pptx_text_samples": [
+    "Executive Statement · A localized RFX-12 excursion explains the QF-8419 open-bump cluster.",
+    "Affected scope · QF-8419 · 3D-stack microbump line · RFX-12 reflow station",
+    "Screen and reference population\npost-reflow electrical screen · paired lot QF-8421.",
+    "Affected microbump yield\n94.26%",
+    "Affected vs paired-lot yield\n98.71% → 94.26%",
+    "Evidence Card\nObserved spatial cluster at die X 2–3 / Y 0–1\nResistance and thermal trace align after 04:20; the carrier-clean maintenance overlap remains unresolved.\nCorrelated",
+    "Affected and paired-lot resistance distribution",
+    "7.858",
+    "8.199",
+    "8.54",
+    "8.881",
+    "9.222",
+    "",
+    "QF-8421 paired reference",
+    "",
+    "QF-8419 affected lot",
+    "Diagram continues on slides 3–3",
+    "Competing mechanism · carrier-clean batch CC-392\nCarrier-clean age remains a live alternative to the reflow excursion.\nThe 04:02 maintenance overlap could explain the elevated opens; compare the split-lot resistance profile before assigning root cause.\nUnresolved · evidence conflict retained"
+  ],
+  "action_log": {
+    "report": "B",
+    "user_actions": 114,
+    "context_switches": 31,
+    "modal_openings": 4,
+    "events": [
+      {
+        "action": "open Report Hub blueprint chooser",
+        "context": "hub"
+      },
+      {
+        "action": "context switch",
+        "from": "hub",
+        "to": "editor"
+      },
+      {
+        "action": "create report from semiconductor-rca",
+        "context": "editor"
+      },
+      {
+        "action": "set report report title",
+        "context": "editor"
+      },
+      {
+        "action": "set report description",
+        "context": "editor"
+      },
+      {
+        "action": "edit Executive Statement",
+        "context": "editor"
+      },
+      {
+        "action": "edit Affected scope",
+        "context": "editor"
+      },
+      {
+        "action": "edit Affected scope",
+        "context": "editor"
+      },
+      {
+        "action": "insert Body Narrative from component library",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · context",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit Body Narrative",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "composition"
+      },
+      {
+        "action": "split scope from reference-population context while preserving every source term",
+        "context": "composition"
+      },
+      {
+        "action": "context switch",
+        "from": "composition",
+        "to": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit value",
+        "context": "editor"
+      },
+      {
+        "action": "edit target",
+        "context": "editor"
+      },
+      {
+        "action": "edit delta",
+        "context": "editor"
+      },
+      {
+        "action": "edit unit",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "set focal KPI emphasis",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit before",
+        "context": "editor"
+      },
+      {
+        "action": "edit after",
+        "context": "editor"
+      },
+      {
+        "action": "edit unit",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit statement",
+        "context": "editor"
+      },
+      {
+        "action": "edit detail",
+        "context": "editor"
+      },
+      {
+        "action": "edit status",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit statement",
+        "context": "editor"
+      },
+      {
+        "action": "edit detail",
+        "context": "editor"
+      },
+      {
+        "action": "edit status",
+        "context": "editor"
+      },
+      {
+        "action": "edit nodes",
+        "context": "editor"
+      },
+      {
+        "action": "edit edges",
+        "context": "editor"
+      },
+      {
+        "action": "edit RFX-12 subgroup observations",
+        "context": "editor"
+      },
+      {
+        "action": "edit supported specification limit",
+        "context": "editor"
+      },
+      {
+        "action": "edit supported specification limit",
+        "context": "editor"
+      },
+      {
+        "action": "open Data First",
+        "context": "editor"
+      },
+      {
+        "action": "choose scatter result",
+        "context": "editor"
+      },
+      {
+        "action": "commit governed dataset and mapping",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "open Data First",
+        "context": "inspector"
+      },
+      {
+        "action": "choose bar result",
+        "context": "inspector"
+      },
+      {
+        "action": "commit governed dataset and mapping",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "insert Evidence Card from component library",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit statement",
+        "context": "editor"
+      },
+      {
+        "action": "edit detail",
+        "context": "editor"
+      },
+      {
+        "action": "edit status",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "name evidence column · Lot / station identifier",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Window",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Open bumps / 1k",
+        "context": "inspector"
+      },
+      {
+        "action": "name evidence column · Evidence state",
+        "context": "inspector"
+      },
+      {
+        "action": "add first evidence row in table editor",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "enter 4 evidence rows in table editor",
+        "context": "editor"
+      },
+      {
+        "action": "edit component title",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "inspector"
+      },
+      {
+        "action": "show component title",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "editor"
+      },
+      {
+        "action": "edit Executive Statement",
+        "context": "editor"
+      },
+      {
+        "action": "undo direct content edit",
+        "context": "editor"
+      },
+      {
+        "action": "redo direct content edit",
+        "context": "editor"
+      },
+      {
+        "action": "edit Executive Statement",
+        "context": "editor"
+      },
+      {
+        "action": "context switch",
+        "from": "editor",
+        "to": "chart studio"
+      },
+      {
+        "action": "Chart Studio applied Best readable axes and set x-axis rotation to 35°",
+        "context": "chart studio"
+      },
+      {
+        "action": "hide redundant single-measure legend",
+        "context": "chart studio"
+      },
+      {
+        "action": "context switch",
+        "from": "chart studio",
+        "to": "inspector"
+      },
+      {
+        "action": "set report intent · primary_analysis",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · supporting_analysis",
+        "context": "inspector"
+      },
+      {
+        "action": "set report intent · detailed_evidence",
+        "context": "inspector"
+      },
+      {
+        "action": "context switch",
+        "from": "inspector",
+        "to": "command palette"
+      },
+      {
+        "action": "run product command · Reflow report",
+        "context": "command palette"
+      },
+      {
+        "action": "run product command · Run preflight",
+        "context": "command palette"
+      },
+      {
+        "action": "context switch",
+        "from": "command palette",
+        "to": "modal"
+      },
+      {
+        "action": "close informational preflight by Escape",
+        "context": "modal"
+      },
+      {
+        "action": "context switch",
+        "from": "modal",
+        "to": "preview"
+      },
+      {
+        "action": "capture complete reading at 390px",
+        "context": "preview"
+      },
+      {
+        "action": "capture complete reading at 320px",
+        "context": "preview"
+      },
+      {
+        "action": "open export menu",
+        "context": "preview"
+      },
+      {
+        "action": "export editable PowerPoint",
+        "context": "preview"
+      },
+      {
+        "action": "export report SVG",
+        "context": "preview"
+      },
+      {
+        "action": "context switch",
+        "from": "preview",
+        "to": "lifecycle"
+      },
+      {
+        "action": "reload saved report and compare canonical model",
+        "context": "lifecycle"
+      }
+    ]
+  }
+}

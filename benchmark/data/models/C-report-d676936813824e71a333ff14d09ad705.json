@@ -1,0 +1,1638 @@
+{
+  "report_id": "report-d676936813824e71a333ff14d09ad705",
+  "revision": 66,
+  "title": "North Basin Membrane Pilot Decision",
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "week_block_1",
+            "name": "Week block",
+            "nullable": false,
+            "profile": {
+              "distinct": 10,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "treatment_arm_2",
+            "name": "Treatment arm",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "residual_turbidity_ntu_3",
+            "name": "Residual turbidity NTU",
+            "nullable": false,
+            "profile": {
+              "distinct": 20,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujce3ib-zwhw2c",
+        "metadata": {
+          "header": {
+            "confidence": 0.6666666666666666,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "W01 | 2026-06-01 intake block",
+            "Standard train",
+            2.14
+          ],
+          [
+            "W01 | 2026-06-01 intake block",
+            "Staged flux",
+            2.11
+          ],
+          [
+            "W02 | 2026-06-08 intake block",
+            "Standard train",
+            2.05
+          ],
+          [
+            "W02 | 2026-06-08 intake block",
+            "Staged flux",
+            1.98
+          ],
+          [
+            "W03 | 2026-06-15 intake block",
+            "Standard train",
+            2.1
+          ],
+          [
+            "W03 | 2026-06-15 intake block",
+            "Staged flux",
+            1.93
+          ],
+          [
+            "W04 | 2026-06-22 intake block",
+            "Standard train",
+            2.02
+          ],
+          [
+            "W04 | 2026-06-22 intake block",
+            "Staged flux",
+            1.79
+          ],
+          [
+            "W05 | 2026-06-29 cold-water intake block",
+            "Standard train",
+            1.96
+          ],
+          [
+            "W05 | 2026-06-29 cold-water intake block",
+            "Staged flux",
+            1.71
+          ],
+          [
+            "W06 | 2026-07-06 cold-water intake block",
+            "Standard train",
+            1.92
+          ],
+          [
+            "W06 | 2026-07-06 cold-water intake block",
+            "Staged flux",
+            1.64
+          ],
+          [
+            "W07 | 2026-07-13 high-load intake block",
+            "Standard train",
+            2.08
+          ],
+          [
+            "W07 | 2026-07-13 high-load intake block",
+            "Staged flux",
+            1.68
+          ],
+          [
+            "W08 | 2026-07-20 high-load intake block",
+            "Standard train",
+            2
+          ],
+          [
+            "W08 | 2026-07-20 high-load intake block",
+            "Staged flux",
+            1.55
+          ],
+          [
+            "W09 | 2026-07-27 mixed-load intake block",
+            "Standard train",
+            1.91
+          ],
+          [
+            "W09 | 2026-07-27 mixed-load intake block",
+            "Staged flux",
+            1.47
+          ],
+          [
+            "W10 | 2026-08-03 mixed-load intake block",
+            "Standard train",
+            1.83
+          ],
+          [
+            "W10 | 2026-08-03 mixed-load intake block",
+            "Staged flux",
+            1.42
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T04:52:30.659Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "treatment_arm_1",
+            "name": "Treatment arm",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "flux_retention_l_m2h_2",
+            "name": "Flux retention L/m2h",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujce5xw-yba1bk",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Standard train",
+            79
+          ],
+          [
+            "Standard train",
+            82
+          ],
+          [
+            "Standard train",
+            84
+          ],
+          [
+            "Standard train",
+            77
+          ],
+          [
+            "Standard train",
+            86
+          ],
+          [
+            "Standard train",
+            81
+          ],
+          [
+            "Staged flux",
+            88
+          ],
+          [
+            "Staged flux",
+            91
+          ],
+          [
+            "Staged flux",
+            89
+          ],
+          [
+            "Staged flux",
+            94
+          ],
+          [
+            "Staged flux",
+            87
+          ],
+          [
+            "Staged flux",
+            92
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T04:52:33.812Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "body": "Staged-flux treatment lowers residual turbidity without a settled seasonal claim.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Experiment summary",
+        "text": "Staged-flux treatment lowers residual turbidity without a settled seasonal claim.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "North Basin treatment works · 10 weekly blocks · Standard vs staged-flux arm · endpoint: residual turbidity (NTU) at discharge.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Experiment design",
+        "text": "North Basin treatment works · 10 weekly blocks · Standard vs staged-flux arm · endpoint: residual turbidity (NTU) at discharge.",
+        "title": "Hypothesis and context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 1.8
+        },
+        "composition_role": "hero_metric",
+        "delta": -0.41,
+        "element": "Hero KPI",
+        "emphasis": "hero",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "NTU"
+        },
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 1.8,
+        "title": "Staged-flux endpoint",
+        "type": "metric",
+        "unit": "NTU",
+        "value": 1.42,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "after": 1.42,
+        "before": 2.14,
+        "composition_role": "hero_metric",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "NTU"
+        },
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "title": "Week 1 to week 10 residual",
+        "type": "comparison",
+        "unit": "NTU",
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 2,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 35,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Box Plot",
+          "dataset": {
+            "fields": [
+              {
+                "id": "treatment_arm_1",
+                "name": "Treatment arm",
+                "nullable": false,
+                "profile": {
+                  "distinct": 2,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "flux_retention_l_m2h_2",
+                "name": "Flux retention L/m2h",
+                "nullable": false,
+                "profile": {
+                  "distinct": 12,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujce5xw-yba1bk",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Standard train",
+                79
+              ],
+              [
+                "Standard train",
+                82
+              ],
+              [
+                "Standard train",
+                84
+              ],
+              [
+                "Standard train",
+                77
+              ],
+              [
+                "Standard train",
+                86
+              ],
+              [
+                "Standard train",
+                81
+              ],
+              [
+                "Staged flux",
+                88
+              ],
+              [
+                "Staged flux",
+                91
+              ],
+              [
+                "Staged flux",
+                89
+              ],
+              [
+                "Staged flux",
+                94
+              ],
+              [
+                "Staged flux",
+                87
+              ],
+              [
+                "Staged flux",
+                92
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T04:52:33.812Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujce5xw-yba1bk",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": false
+          },
+          "mapping": {
+            "category": "treatment_arm_1",
+            "value": "flux_retention_l_m2h_2",
+            "x": "flux_retention_l_m2h_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "treatment_arm_1",
+                "value": "flux_retention_l_m2h_2",
+                "x": "flux_retention_l_m2h_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "treatment_arm_1",
+                "value": "flux_retention_l_m2h_2",
+                "x": "flux_retention_l_m2h_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "treatment_arm_1",
+                "value": "flux_retention_l_m2h_2",
+                "x": "flux_retention_l_m2h_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "flux_retention_l_m2h_2",
+              "id": "series-1",
+              "label": "Flux retention L/m2h",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A category and measured value are available."
+        },
+        "composition_role": "supporting_analysis",
+        "data": [
+          [
+            79,
+            79
+          ],
+          [
+            82,
+            82
+          ],
+          [
+            84,
+            84
+          ],
+          [
+            77,
+            77
+          ],
+          [
+            86,
+            86
+          ],
+          [
+            81,
+            81
+          ],
+          [
+            88,
+            88
+          ],
+          [
+            91,
+            91
+          ],
+          [
+            89,
+            89
+          ],
+          [
+            94,
+            94
+          ],
+          [
+            87,
+            87
+          ],
+          [
+            92,
+            92
+          ]
+        ],
+        "dataset_id": "dataset-mujce5xw-yba1bk",
+        "element": "Box Plot",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "treatment_arm_1",
+          "value": "flux_retention_l_m2h_2",
+          "x": "flux_retention_l_m2h_2"
+        },
+        "message_role": "Supporting Evidence",
+        "order": 5,
+        "rows": [
+          {
+            "label": 79,
+            "value": 79
+          },
+          {
+            "label": 82,
+            "value": 82
+          },
+          {
+            "label": 84,
+            "value": 84
+          },
+          {
+            "label": 77,
+            "value": 77
+          },
+          {
+            "label": 86,
+            "value": 86
+          },
+          {
+            "label": 81,
+            "value": 81
+          },
+          {
+            "label": 88,
+            "value": 88
+          },
+          {
+            "label": 91,
+            "value": 91
+          },
+          {
+            "label": 89,
+            "value": 89
+          },
+          {
+            "label": 94,
+            "value": 94
+          },
+          {
+            "label": 87,
+            "value": 87
+          },
+          {
+            "label": 92,
+            "value": 92
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Flux retention distribution by arm",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 3,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 35,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "week_block_1",
+                "name": "Week block",
+                "nullable": false,
+                "profile": {
+                  "distinct": 10,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "treatment_arm_2",
+                "name": "Treatment arm",
+                "nullable": false,
+                "profile": {
+                  "distinct": 2,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "residual_turbidity_ntu_3",
+                "name": "Residual turbidity NTU",
+                "nullable": false,
+                "profile": {
+                  "distinct": 20,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujce3ib-zwhw2c",
+            "metadata": {
+              "header": {
+                "confidence": 0.6666666666666666,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "W01 | 2026-06-01 intake block",
+                "Standard train",
+                2.14
+              ],
+              [
+                "W01 | 2026-06-01 intake block",
+                "Staged flux",
+                2.11
+              ],
+              [
+                "W02 | 2026-06-08 intake block",
+                "Standard train",
+                2.05
+              ],
+              [
+                "W02 | 2026-06-08 intake block",
+                "Staged flux",
+                1.98
+              ],
+              [
+                "W03 | 2026-06-15 intake block",
+                "Standard train",
+                2.1
+              ],
+              [
+                "W03 | 2026-06-15 intake block",
+                "Staged flux",
+                1.93
+              ],
+              [
+                "W04 | 2026-06-22 intake block",
+                "Standard train",
+                2.02
+              ],
+              [
+                "W04 | 2026-06-22 intake block",
+                "Staged flux",
+                1.79
+              ],
+              [
+                "W05 | 2026-06-29 cold-water intake block",
+                "Standard train",
+                1.96
+              ],
+              [
+                "W05 | 2026-06-29 cold-water intake block",
+                "Staged flux",
+                1.71
+              ],
+              [
+                "W06 | 2026-07-06 cold-water intake block",
+                "Standard train",
+                1.92
+              ],
+              [
+                "W06 | 2026-07-06 cold-water intake block",
+                "Staged flux",
+                1.64
+              ],
+              [
+                "W07 | 2026-07-13 high-load intake block",
+                "Standard train",
+                2.08
+              ],
+              [
+                "W07 | 2026-07-13 high-load intake block",
+                "Staged flux",
+                1.68
+              ],
+              [
+                "W08 | 2026-07-20 high-load intake block",
+                "Standard train",
+                2
+              ],
+              [
+                "W08 | 2026-07-20 high-load intake block",
+                "Staged flux",
+                1.55
+              ],
+              [
+                "W09 | 2026-07-27 mixed-load intake block",
+                "Standard train",
+                1.91
+              ],
+              [
+                "W09 | 2026-07-27 mixed-load intake block",
+                "Staged flux",
+                1.47
+              ],
+              [
+                "W10 | 2026-08-03 mixed-load intake block",
+                "Standard train",
+                1.83
+              ],
+              [
+                "W10 | 2026-08-03 mixed-load intake block",
+                "Staged flux",
+                1.42
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T04:52:30.659Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujce3ib-zwhw2c",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "week_block_1",
+            "series": "treatment_arm_2",
+            "value": "residual_turbidity_ntu_3",
+            "x": "week_block_1",
+            "y": "residual_turbidity_ntu_3"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "week_block_1",
+                "series": "treatment_arm_2",
+                "value": "residual_turbidity_ntu_3",
+                "x": "week_block_1",
+                "y": "residual_turbidity_ntu_3"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "treatment_arm_2",
+              "id": "series-1",
+              "key": "Standard train",
+              "label": "Standard train",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            },
+            {
+              "axis": "primary",
+              "color": "#2e8b72",
+              "field": "treatment_arm_2",
+              "id": "series-2",
+              "key": "Staged flux",
+              "label": "Staged flux",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            "W01 | 2026-06-01 intake block",
+            2.14
+          ],
+          [
+            "W01 | 2026-06-01 intake block",
+            2.11
+          ],
+          [
+            "W02 | 2026-06-08 intake block",
+            2.05
+          ],
+          [
+            "W02 | 2026-06-08 intake block",
+            1.98
+          ],
+          [
+            "W03 | 2026-06-15 intake block",
+            2.1
+          ],
+          [
+            "W03 | 2026-06-15 intake block",
+            1.93
+          ],
+          [
+            "W04 | 2026-06-22 intake block",
+            2.02
+          ],
+          [
+            "W04 | 2026-06-22 intake block",
+            1.79
+          ],
+          [
+            "W05 | 2026-06-29 cold-water intake block",
+            1.96
+          ],
+          [
+            "W05 | 2026-06-29 cold-water intake block",
+            1.71
+          ],
+          [
+            "W06 | 2026-07-06 cold-water intake block",
+            1.92
+          ],
+          [
+            "W06 | 2026-07-06 cold-water intake block",
+            1.64
+          ],
+          [
+            "W07 | 2026-07-13 high-load intake block",
+            2.08
+          ],
+          [
+            "W07 | 2026-07-13 high-load intake block",
+            1.68
+          ],
+          [
+            "W08 | 2026-07-20 high-load intake block",
+            2
+          ],
+          [
+            "W08 | 2026-07-20 high-load intake block",
+            1.55
+          ],
+          [
+            "W09 | 2026-07-27 mixed-load intake block",
+            1.91
+          ],
+          [
+            "W09 | 2026-07-27 mixed-load intake block",
+            1.47
+          ],
+          [
+            "W10 | 2026-08-03 mixed-load intake block",
+            1.83
+          ],
+          [
+            "W10 | 2026-08-03 mixed-load intake block",
+            1.42
+          ]
+        ],
+        "dataset_id": "dataset-mujce3ib-zwhw2c",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "mapping": {
+          "category": "week_block_1",
+          "series": "treatment_arm_2",
+          "value": "residual_turbidity_ntu_3",
+          "x": "week_block_1",
+          "y": "residual_turbidity_ntu_3"
+        },
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "rows": [
+          {
+            "label": "W01 | 2026-06-01 intake block",
+            "value": 2.14
+          },
+          {
+            "label": "W01 | 2026-06-01 intake block",
+            "value": 2.11
+          },
+          {
+            "label": "W02 | 2026-06-08 intake block",
+            "value": 2.05
+          },
+          {
+            "label": "W02 | 2026-06-08 intake block",
+            "value": 1.98
+          },
+          {
+            "label": "W03 | 2026-06-15 intake block",
+            "value": 2.1
+          },
+          {
+            "label": "W03 | 2026-06-15 intake block",
+            "value": 1.93
+          },
+          {
+            "label": "W04 | 2026-06-22 intake block",
+            "value": 2.02
+          },
+          {
+            "label": "W04 | 2026-06-22 intake block",
+            "value": 1.79
+          },
+          {
+            "label": "W05 | 2026-06-29 cold-water intake block",
+            "value": 1.96
+          },
+          {
+            "label": "W05 | 2026-06-29 cold-water intake block",
+            "value": 1.71
+          },
+          {
+            "label": "W06 | 2026-07-06 cold-water intake block",
+            "value": 1.92
+          },
+          {
+            "label": "W06 | 2026-07-06 cold-water intake block",
+            "value": 1.64
+          },
+          {
+            "label": "W07 | 2026-07-13 high-load intake block",
+            "value": 2.08
+          },
+          {
+            "label": "W07 | 2026-07-13 high-load intake block",
+            "value": 1.68
+          },
+          {
+            "label": "W08 | 2026-07-20 high-load intake block",
+            "value": 2
+          },
+          {
+            "label": "W08 | 2026-07-20 high-load intake block",
+            "value": 1.55
+          },
+          {
+            "label": "W09 | 2026-07-27 mixed-load intake block",
+            "value": 1.91
+          },
+          {
+            "label": "W09 | 2026-07-27 mixed-load intake block",
+            "value": 1.47
+          },
+          {
+            "label": "W10 | 2026-08-03 mixed-load intake block",
+            "value": 1.83
+          },
+          {
+            "label": "W10 | 2026-08-03 mixed-load intake block",
+            "value": 1.42
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Residual turbidity by weekly arm",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Treatment arm / condition",
+            "Paired blocks",
+            "Residual NTU median",
+            "Flux retention median",
+            "Evidence note"
+          ],
+          "rows": [
+            [
+              "Standard train / ambient blocks",
+              6,
+              1.96,
+              81,
+              "Control pathway retained"
+            ],
+            [
+              "Staged flux / ambient blocks",
+              6,
+              1.64,
+              90,
+              "Lower residual in paired windows"
+            ],
+            [
+              "Standard train / cold-water blocks",
+              2,
+              2.02,
+              78,
+              "Seasonal condition"
+            ],
+            [
+              "Staged flux / cold-water blocks",
+              2,
+              1.71,
+              88,
+              "Two prior-shift imputations"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 7,
+        "rows": [
+          [
+            "Standard train / ambient blocks",
+            6,
+            1.96,
+            81,
+            "Control pathway retained"
+          ],
+          [
+            "Staged flux / ambient blocks",
+            6,
+            1.64,
+            90,
+            "Lower residual in paired windows"
+          ],
+          [
+            "Standard train / cold-water blocks",
+            2,
+            2.02,
+            78,
+            "Seasonal condition"
+          ],
+          [
+            "Staged flux / cold-water blocks",
+            2,
+            1.71,
+            88,
+            "Two prior-shift imputations"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Experiment evidence",
+        "showTitle": true,
+        "title": "Operating evidence · C",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "body": "Across ten paired blocks, staged-flux residual turbidity fell faster after week 4. Median flux retention is also higher, while the cold-water weeks widen both arms. The trial was not powered for a seasonal reliability claim and the two missed inflow samples were imputed from the prior shift.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Context",
+        "order": 6,
+        "section_id": "analysis",
+        "section_title": "Interpretation",
+        "text": "Across ten paired blocks, staged-flux residual turbidity fell faster after week 4. Median flux retention is also higher, while the cold-water weeks widen both arms. The trial was not powered for a seasonal reliability claim and the two missed inflow samples were imputed from the prior shift.",
+        "title": "Interpretation",
+        "type": "text",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "The paired result is promising but seasonal inflow and two imputed samples limit generalization; retain the standard train as the control.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 8,
+        "section_id": "decision",
+        "section_title": "Recommendation",
+        "showTitle": true,
+        "statement": "Extend the staged-flux trial to one basin",
+        "status": "Pilot",
+        "title": "Recommendation",
+        "type": "decision",
+        "weight": 1,
+        "z": 9
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "comparison",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 10,
+    "crossFilters": []
+  },
+  "metadata": {
+    "description": "A 10-week water-treatment membrane pilot review comparing the standard train with the staged-flux configuration; decide whether to expand the field trial while preserving uncertainty about seasonal influent load.",
+    "template_id": "experiment-decision"
+  },
+  "commit_ids": [
+    "cmd-4-7pmttqfj",
+    "cmd-5-tck9th6m",
+    "cmd-6-76bds5sq",
+    "cmd-7-3dy9hu5a",
+    "cmd-8-rie15t8p",
+    "cmd-9-xbcgg8d0",
+    "cmd-10-94hjp4aa",
+    "cmd-11-mtyxap3z",
+    "cmd-12-3um3skva",
+    "cmd-13-uxmu59uh",
+    "cmd-14-7wd13scf",
+    "cmd-15-eyq0i8ms",
+    "cmd-16-yrng9at6",
+    "cmd-17-h5c5fhs7",
+    "cmd-18-vq9gei5a",
+    "cmd-19-maaul535",
+    "cmd-20-02zl6lsm",
+    "cmd-21-2hb9jnj5",
+    "cmd-22-pws35vha",
+    "cmd-23-b8dmbci0",
+    "cmd-24-rwkogjbr",
+    "cmd-25-1pqvplmo",
+    "cmd-26-tfuvbid2",
+    "cmd-27-i15rdo0i",
+    "cmd-28-nyto3naa",
+    "cmd-29-z4h0dn73",
+    "cmd-30-0bomohz8",
+    "cmd-31-zwx9dw5g",
+    "cmd-32-f2jpgy7m",
+    "cmd-33-gxva4d0w",
+    "cmd-34-uiywqrjd",
+    "cmd-35-addzcyyu",
+    "cmd-36-wygwie72",
+    "cmd-37-uejhemqh",
+    "cmd-38-a5lkfpq3",
+    "cmd-39-7aitrrwe",
+    "cmd-40-dgacf3cl",
+    "cmd-41-bqulmdea",
+    "cmd-42-j6g09bt0",
+    "cmd-43-wnjd9uum",
+    "cmd-44-objegrwh",
+    "cmd-45-rb4svxnz",
+    "cmd-46-hc6hpajk",
+    "cmd-47-116z0rve",
+    "cmd-48-jx00ip2t",
+    "cmd-49-ug29zkyq",
+    "cmd-50-ex9p5suk",
+    "cmd-51-7l073hxj",
+    "cmd-52-5aw2axxa",
+    "cmd-53-880cc932",
+    "cmd-54-nv2tvcw0",
+    "cmd-55-iiffr9eu",
+    "cmd-56-iocdwahl",
+    "cmd-57-e8qm6bp4",
+    "cmd-58-wbb2k9td",
+    "cmd-59-u3n7zdbj",
+    "cmd-60-oi3wql20",
+    "undo-60-mujce7do-7sth6hd",
+    "redo-61-mujce7ev-7r0q7rv",
+    "cmd-63-fndbkeel",
+    "chart-commit-mujce812-lh1mk",
+    "chart-commit-mujce8wy-semmi",
+    "cmd-66-li2yhwij"
+  ],
+  "created_at": "2026-09-27T04:52:25.394882+00:00",
+  "updated_at": "2026-09-27T04:52:38.185485+00:00",
+  "fingerprint": "e427fd208b64edf4e732a94863e478b94a90cf720e3bc92336929b84a84ff0f6"
+}

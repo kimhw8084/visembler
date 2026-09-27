@@ -1,0 +1,52 @@
+{
+  "interpretation": "Run observations only; report tasks differ in density and data shape, so action counts are not a universal SLA or a controlled causal comparison.",
+  "template_starts": {
+    "A": {
+      "template": "executive-business-review",
+      "user_actions_recorded": 101,
+      "context_switches": 26,
+      "modal_openings": 4,
+      "component_count": 10
+    },
+    "B": {
+      "template": "semiconductor-rca",
+      "user_actions_recorded": 114,
+      "context_switches": 31,
+      "modal_openings": 4,
+      "component_count": 13
+    },
+    "C": {
+      "template": "experiment-decision",
+      "user_actions_recorded": 75,
+      "context_switches": 18,
+      "modal_openings": 4,
+      "component_count": 9
+    },
+    "D": {
+      "template": "technical-status-review",
+      "user_actions_recorded": 14,
+      "context_switches": 4,
+      "modal_openings": 1,
+      "component_count": 11
+    }
+  },
+  "blank_starts": {
+    "E": {
+      "template": "blank",
+      "user_actions_recorded": 118,
+      "context_switches": 34,
+      "modal_openings": 4,
+      "component_count": 10
+    },
+    "F": {
+      "template": "blank",
+      "user_actions_recorded": 109,
+      "context_switches": 32,
+      "modal_openings": 4,
+      "component_count": 9
+    }
+  },
+  "observed_reuse_effect": "Template starts A–D arrive with registered task composition and seeded mixed-element structure. Blank E/F required direct insertion and configuration of each report surface. The full CHG-181 native authoring/reuse acceptance passes, but the additional benchmark-set full reuse/remix challenge was not executed after the stop rule.",
+  "repeated_setup_avoided": "Template seed composition was reused; exact per-control action savings were not isolated because the reports have different scopes. D creation-stage action counter was interrupted by the initial export exception and is explicitly incomplete in D-action-capture-limitation.json.",
+  "full_benchmark_reuse_remix_challenge": "BLOCKED_AFTER_R5-FIND-01_STOP"
+}

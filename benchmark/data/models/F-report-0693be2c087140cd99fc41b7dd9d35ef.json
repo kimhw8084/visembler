@@ -1,0 +1,1365 @@
+{
+  "report_id": "report-0693be2c087140cd99fc41b7dd9d35ef",
+  "revision": 80,
+  "title": "Saffron Link Cold-Chain Hub Decision",
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "destination_lane_sailing_window_1",
+            "name": "Destination lane / sailing window",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "median_dwell_hours_2",
+            "name": "Median dwell hours",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujd0ijm-w85p8s",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Harbor East / SL-26-41",
+            14.2
+          ],
+          [
+            "North Quay / SL-26-42",
+            15.6
+          ],
+          [
+            "Port Meridian / SL-26-43",
+            16.1
+          ],
+          [
+            "South Anchorage / SL-26-44",
+            14.9
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T05:09:56.578Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "destination_lane_1",
+            "name": "Destination lane",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "temperature_excursion_minutes_2",
+            "name": "Temperature excursion minutes",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujd0lfp-1q9e7e",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Harbor East",
+            0
+          ],
+          [
+            "Harbor East",
+            5
+          ],
+          [
+            "Harbor East",
+            0
+          ],
+          [
+            "North Quay",
+            8
+          ],
+          [
+            "North Quay",
+            0
+          ],
+          [
+            "North Quay",
+            4
+          ],
+          [
+            "Port Meridian",
+            13
+          ],
+          [
+            "Port Meridian",
+            7
+          ],
+          [
+            "Port Meridian",
+            0
+          ],
+          [
+            "South Anchorage",
+            3
+          ],
+          [
+            "South Anchorage",
+            0
+          ],
+          [
+            "South Anchorage",
+            2
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T05:10:00.325Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "body": "Activate one Saffron Link micro-hub for the late sailing window.",
+        "composition_role": "report_headline",
+        "element": "Hero Title",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 109.76,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Overview",
+        "showTitle": false,
+        "text": "Activate one Saffron Link micro-hub for the late sailing window.",
+        "textAlign": "left",
+        "title": "Hero Title",
+        "type": "text",
+        "w": 520,
+        "weight": 1.1,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "capability_overrides": {
+          "target": 18
+        },
+        "composition_role": "hero_metric",
+        "delta": -3.8,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 152.32000000000002,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "h"
+        },
+        "order": 1,
+        "period": "vs prior period",
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 18,
+        "textAlign": "left",
+        "title": "Median port dwell",
+        "type": "metric",
+        "unit": "h",
+        "value": 14.2,
+        "w": 520,
+        "weight": 1.15,
+        "x": 548,
+        "y": 14,
+        "z": 2
+      },
+      {
+        "after": 14.2,
+        "before": 18,
+        "composition_role": "hero_metric",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "h"
+        },
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Baseline vs pilot dwell",
+        "type": "comparison",
+        "unit": "h",
+        "w": 430,
+        "weight": 1.15,
+        "x": 1082,
+        "y": 14,
+        "z": 3
+      },
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 1,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 0,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "destination_lane_sailing_window_1",
+                "name": "Destination lane / sailing window",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "string"
+              },
+              {
+                "id": "median_dwell_hours_2",
+                "name": "Median dwell hours",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujd0ijm-w85p8s",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Harbor East / SL-26-41",
+                14.2
+              ],
+              [
+                "North Quay / SL-26-42",
+                15.6
+              ],
+              [
+                "Port Meridian / SL-26-43",
+                16.1
+              ],
+              [
+                "South Anchorage / SL-26-44",
+                14.9
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T05:09:56.578Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujd0ijm-w85p8s",
+          "engineering": {
+            "L": 3,
+            "h": 320,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "destination_lane_sailing_window_1",
+            "value": "median_dwell_hours_2",
+            "x": "destination_lane_sailing_window_1",
+            "y": "median_dwell_hours_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "destination_lane_sailing_window_1",
+                "value": "median_dwell_hours_2",
+                "x": "destination_lane_sailing_window_1",
+                "y": "median_dwell_hours_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "median_dwell_hours_2",
+              "id": "series-1",
+              "label": "Median dwell hours",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "cross": null,
+        "data": [
+          [
+            "Harbor East / SL-26-41",
+            14.2
+          ],
+          [
+            "North Quay / SL-26-42",
+            15.6
+          ],
+          [
+            "Port Meridian / SL-26-43",
+            16.1
+          ],
+          [
+            "South Anchorage / SL-26-44",
+            14.9
+          ]
+        ],
+        "dataset_id": "dataset-mujd0ijm-w85p8s",
+        "drill": null,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c4",
+        "locked": false,
+        "mapping": {
+          "category": "destination_lane_sailing_window_1",
+          "value": "median_dwell_hours_2",
+          "x": "destination_lane_sailing_window_1",
+          "y": "median_dwell_hours_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 3,
+        "revealed": true,
+        "rows": [
+          {
+            "label": "Harbor East / SL-26-41",
+            "value": 14.2
+          },
+          {
+            "label": "North Quay / SL-26-42",
+            "value": 15.6
+          },
+          {
+            "label": "Port Meridian / SL-26-43",
+            "value": 16.1
+          },
+          {
+            "label": "South Anchorage / SL-26-44",
+            "value": 14.9
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "textAlign": "left",
+        "title": "Dwell hours by destination lane",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 14,
+        "y": 137.76,
+        "z": 4
+      },
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 2,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 35,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Box Plot",
+          "dataset": {
+            "fields": [
+              {
+                "id": "destination_lane_1",
+                "name": "Destination lane",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "temperature_excursion_minutes_2",
+                "name": "Temperature excursion minutes",
+                "nullable": false,
+                "profile": {
+                  "distinct": 8,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujd0lfp-1q9e7e",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Harbor East",
+                0
+              ],
+              [
+                "Harbor East",
+                5
+              ],
+              [
+                "Harbor East",
+                0
+              ],
+              [
+                "North Quay",
+                8
+              ],
+              [
+                "North Quay",
+                0
+              ],
+              [
+                "North Quay",
+                4
+              ],
+              [
+                "Port Meridian",
+                13
+              ],
+              [
+                "Port Meridian",
+                7
+              ],
+              [
+                "Port Meridian",
+                0
+              ],
+              [
+                "South Anchorage",
+                3
+              ],
+              [
+                "South Anchorage",
+                0
+              ],
+              [
+                "South Anchorage",
+                2
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T05:10:00.325Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujd0lfp-1q9e7e",
+          "engineering": {
+            "L": 3,
+            "h": 320,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": false
+          },
+          "mapping": {
+            "category": "destination_lane_1",
+            "value": "temperature_excursion_minutes_2",
+            "x": "temperature_excursion_minutes_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "destination_lane_1",
+                "value": "temperature_excursion_minutes_2",
+                "x": "temperature_excursion_minutes_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "destination_lane_1",
+                "value": "temperature_excursion_minutes_2",
+                "x": "temperature_excursion_minutes_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "destination_lane_1",
+                "value": "temperature_excursion_minutes_2",
+                "x": "temperature_excursion_minutes_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "temperature_excursion_minutes_2",
+              "id": "series-1",
+              "label": "Temperature excursion minutes",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A category and measured value are available."
+        },
+        "composition_role": "supporting_analysis",
+        "cross": null,
+        "data": [
+          [
+            0,
+            0
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            8,
+            8
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            4,
+            4
+          ],
+          [
+            13,
+            13
+          ],
+          [
+            7,
+            7
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            3,
+            3
+          ],
+          [
+            0,
+            0
+          ],
+          [
+            2,
+            2
+          ]
+        ],
+        "dataset_id": "dataset-mujd0lfp-1q9e7e",
+        "drill": null,
+        "element": "Box Plot",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "destination_lane_1",
+          "value": "temperature_excursion_minutes_2",
+          "x": "temperature_excursion_minutes_2"
+        },
+        "message_role": "Supporting Evidence",
+        "order": 4,
+        "revealed": true,
+        "rows": [
+          {
+            "label": 0,
+            "value": 0
+          },
+          {
+            "label": 5,
+            "value": 5
+          },
+          {
+            "label": 0,
+            "value": 0
+          },
+          {
+            "label": 8,
+            "value": 8
+          },
+          {
+            "label": 0,
+            "value": 0
+          },
+          {
+            "label": 4,
+            "value": 4
+          },
+          {
+            "label": 13,
+            "value": 13
+          },
+          {
+            "label": 7,
+            "value": 7
+          },
+          {
+            "label": 0,
+            "value": 0
+          },
+          {
+            "label": 3,
+            "value": 3
+          },
+          {
+            "label": 0,
+            "value": 0
+          },
+          {
+            "label": 2,
+            "value": 2
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "textAlign": "left",
+        "title": "Temperature excursion distribution",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 548,
+        "y": 180.32000000000002,
+        "z": 5
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Destination / route",
+            "Pilot dwell h",
+            "Excursion min",
+            "Sensor note"
+          ],
+          "rows": [
+            [
+              "Harbor East / SL-26-41",
+              14.2,
+              0,
+              "Humidity +3.1 points"
+            ],
+            [
+              "North Quay / SL-26-42",
+              15.6,
+              8,
+              "Calibration pending"
+            ],
+            [
+              "Port Meridian / SL-26-43",
+              16.1,
+              13,
+              "Two readings disputed"
+            ],
+            [
+              "South Anchorage / SL-26-44",
+              14.9,
+              3,
+              "Within check window"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "h": 259,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 6,
+        "rows": [
+          [
+            "Harbor East / SL-26-41",
+            14.2,
+            0,
+            "Humidity +3.1 points"
+          ],
+          [
+            "North Quay / SL-26-42",
+            15.6,
+            8,
+            "Calibration pending"
+          ],
+          [
+            "Port Meridian / SL-26-43",
+            16.1,
+            13,
+            "Two readings disputed"
+          ],
+          [
+            "South Anchorage / SL-26-44",
+            14.9,
+            3,
+            "Within check window"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Evidence",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Sailing lane decision evidence",
+        "type": "table",
+        "w": 480,
+        "weight": 1.55,
+        "x": 1082,
+        "y": 178,
+        "z": 6
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Temperature stayed inside contract limits; humidity calibration bias keeps spoilage exposure uncertain. Keep the fallback routing available.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 94,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 7,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "showTitle": true,
+        "statement": "Approve one-week Harbor East activation",
+        "status": "Reversible",
+        "textAlign": "left",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 400,
+        "weight": 1.15,
+        "x": 1082,
+        "y": 451,
+        "z": 7
+      },
+      {
+        "body": "Saffron Link citrus export · four destination lanes · 7-day pilot sample · cold-chain telemetry as of 2026-09-24. The pilot reduced median dwell while temperature excursions stayed below the contract limit. The humidity sensor reads 3–5 points high after calibration, so spoilage risk is not fully cleared. Four lanes are too few to claim network-wide savings; treat the activation as a reversible one-week decision.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Context",
+        "order": 5,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": false,
+        "text": "Saffron Link citrus export · four destination lanes · 7-day pilot sample · cold-chain telemetry as of 2026-09-24. The pilot reduced median dwell while temperature excursions stayed below the contract limit. The humidity sensor reads 3–5 points high after calibration, so spoilage risk is not fully cleared. Four lanes are too few to claim network-wide savings; treat the activation as a reversible one-week decision.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 14,
+        "y": 471.76,
+        "z": 8
+      },
+      {
+        "body": "Next step: activate Harbor East for one week, verify humidity calibration on day two, and stop if any lane exceeds 6.0°C for 20 minutes.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 96,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Action",
+        "order": 8,
+        "section_id": "delivery",
+        "section_title": "Next steps",
+        "showTitle": false,
+        "text": "Next step: activate Harbor East for one week, verify humidity calibration on day two, and stop if any lane exceeds 6.0°C for 20 minutes.",
+        "textAlign": "left",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 460.2,
+        "weight": 1.1,
+        "x": 528,
+        "y": 514.32,
+        "z": 9
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "editorial",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 900
+    },
+    "nextId": 10,
+    "crossFilters": []
+  },
+  "metadata": {
+    "description": "Fresh sparse R5 decision-led holdout for the Saffron Link citrus export cold chain; decide whether to activate one micro-hub before the late-season sailing window, with four destination lanes and unresolved humidity sensor bias.",
+    "template_id": "blank"
+  },
+  "commit_ids": [
+    "cmd-4-trxmtxq2",
+    "cmd-5-sr6kd2el",
+    "cmd-6-opddxgw1",
+    "cmd-7-8l1wmud0",
+    "cmd-8-1i3u2f8v",
+    "cmd-9-icbdrn92",
+    "cmd-10-ejhu9v1i",
+    "cmd-11-sz7uy829",
+    "cmd-12-nkz6lq72",
+    "cmd-13-l62raj17",
+    "cmd-14-hj7h5awf",
+    "cmd-15-ywufig08",
+    "cmd-16-xqvmdp9y",
+    "cmd-17-d7rbcbq9",
+    "cmd-18-ukzjwk6c",
+    "cmd-19-w5p2kygm",
+    "cmd-20-ei31zdmu",
+    "cmd-21-3m8jnoi9",
+    "cmd-22-mibvdoy2",
+    "cmd-23-d6qhwm9b",
+    "cmd-24-gnjjjh4l",
+    "cmd-25-v1sjssgz",
+    "cmd-26-on77id0d",
+    "cmd-27-drgnqly0",
+    "cmd-28-m78w8oqc",
+    "cmd-29-lboln9cw",
+    "cmd-30-itfe6ozp",
+    "cmd-31-0anfejlu",
+    "cmd-32-7qpnr1dj",
+    "cmd-33-xzgxbo1p",
+    "cmd-34-gxhuxb9e",
+    "cmd-35-f9ha9n76",
+    "cmd-36-rmu4pvn7",
+    "cmd-37-imnlh69y",
+    "cmd-38-su950d48",
+    "cmd-39-m417y4ml",
+    "cmd-40-lsnvj9rd",
+    "cmd-41-97fgs20w",
+    "cmd-42-zx4s4ial",
+    "cmd-43-kj0mz8x6",
+    "cmd-44-a39h04oe",
+    "cmd-45-u1qtk5sj",
+    "cmd-46-wknqcv8p",
+    "cmd-47-optb7cdc",
+    "cmd-48-y167g3bz",
+    "cmd-49-nnofsbco",
+    "cmd-50-givjhzg6",
+    "cmd-51-wa5v3a6c",
+    "cmd-52-y0ru2bat",
+    "cmd-53-b9vqgbko",
+    "cmd-54-q6iphuuk",
+    "cmd-55-dwp9djlf",
+    "cmd-56-aaoem9po",
+    "cmd-57-jg59fira",
+    "cmd-58-vnfzsrgd",
+    "cmd-59-f01zm9hj",
+    "cmd-60-9vs6ugr2",
+    "cmd-61-wcnij1hy",
+    "cmd-62-a4yowpv0",
+    "cmd-63-i6yqidyc",
+    "cmd-64-q7lcw239",
+    "cmd-65-dp04555f",
+    "cmd-66-h7rhphxb",
+    "cmd-67-fn2ouwn4",
+    "cmd-68-wxptrkvy",
+    "cmd-69-v48cf65h",
+    "cmd-70-nxbym0k0",
+    "cmd-71-e6i2ppxv",
+    "cmd-72-xyernr36",
+    "cmd-73-i66uz0fy",
+    "cmd-74-yk5c0pnp",
+    "cmd-75-uws4rib3",
+    "cmd-76-lqfoy4az",
+    "cmd-77-07yw3j4p",
+    "chart-commit-mujd0nd1-c5k4y",
+    "chart-commit-mujd0o9w-lez2w",
+    "cmd-80-y2chxj2f"
+  ],
+  "created_at": "2026-09-27T05:09:52.171527+00:00",
+  "updated_at": "2026-09-27T05:10:04.478428+00:00",
+  "fingerprint": "20ddb167d51fd80708d97d11dd96e60c474b40606b925656e414a4e3151d9b4b"
+}

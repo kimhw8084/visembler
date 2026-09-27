@@ -1,0 +1,2287 @@
+{
+  "method": "R7 linear-interpolation summaries are an independent calculation from the saved report datasets; the exported editable geometry is recorded separately in EMU.",
+  "reports": [
+    {
+      "report": "B",
+      "report_id": "report-b6fea54f6a6f4e2d86575b02723119fe",
+      "item_id": "c6",
+      "title": "Affected and paired-lot resistance distribution",
+      "chart_xml_parts_matching_item": [],
+      "category_count": 2,
+      "statistics": [
+        {
+          "category": "QF-8421 paired reference",
+          "n": 6,
+          "source_values": [
+            7.92,
+            8.01,
+            8.08,
+            8.12,
+            8.19,
+            8.23
+          ],
+          "min": 7.92,
+          "q1": 8.0275,
+          "median": 8.1,
+          "q3": 8.1725,
+          "max": 8.23
+        },
+        {
+          "category": "QF-8419 affected lot",
+          "n": 6,
+          "source_values": [
+            8.42,
+            8.58,
+            8.71,
+            8.83,
+            9.02,
+            9.16
+          ],
+          "min": 8.42,
+          "q1": 8.6125,
+          "median": 8.77,
+          "q3": 8.9725,
+          "max": 9.16
+        }
+      ],
+      "editable_shape_count": 23,
+      "editable_shapes": [
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-title",
+          "descr": "VisualizerSemantic:{\"chart_studio\":{\"adapter\":{\"authority\":\"Visembler canonical chart renderer\",\"name\":\"Visembler SVG Chart Adapter\",\"offline\":true,\"renderer\":\"svg\",\"version\":2},\"analysis_error\":null,\"analysis_kind\":null,\"analysis_semantics\":null,\"annotations\":[],\"authoritative_analysis\":null,\"axes\":{\"secondaryY\":{\"auto\":true,\"enabled\":false,\"format\":\"auto\",\"max\":null,\"min\":null,\"precision\":null,\"prefix\":\"\",\"series\":[],\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\"},\"x\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":2,\"max\":null,\"min\":null,\"position\":\"bottom\",\"precision\":null,\"rotation\":35,\"scale\":\"auto\",\"show\":true,\"tickCount\":6,\"title\":\"\",\"zeroBaseline\":false},\"y\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":null,\"max\":null,\"min\":null,\"position\":\"left\",\"precision\":null,\"prefix\":\"\",\"rotation\":0,\"scale\":\"linear\",\"show\":true,\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\",\"zeroBaseline\":false}},\"chart_type\":\"Box Plot\",\"dataset\":{\"fields\":[{\"id\":\"population_1\",\"name\":\"Population\",\"nullable\":false,\"profile\":{\"distinct\":2,\"missing\":0},\"semantic_tags\":[\"cohort\"],\"type\":\"categorical\"},{\"id\":\"bump_resistance_mohm_2\",\"name\":\"Bump resistance mOhm\",\"nullable\":false,\"profile\":{\"distinct\":12,\"missing\":0},\"semantic_tags\":[],\"type\":\"number\",\"unit\":\"\"}],\"id\":\"dataset-mujcbrrb-098jlk\",\"metadata\":{\"header\":{\"confidence\":1,\"present\":true,\"source_row\":0}},\"name\":\"Pasted data\",\"revision\":1,\"rows\":[[\"QF-8421 paired reference\",7.92],[\"QF-8421 paired reference\",8.01],[\"QF-8421 paired reference\",8.08],[\"QF-8421 paired reference\",8.12],[\"QF-8421 paired reference\",8.19],[\"QF-8421 paired reference\",8.23],[\"QF-8419 affected lot\",8.42],[\"QF-8419 affected lot\",8.58],[\"QF-8419 affected lot\",8.71],[\"QF-8419 affected lot\",8.83],[\"QF-8419 affected lot\",9.02],[\"QF-8419 affected lot\",9.16]],\"source\":{\"imported_at\":\"2026-09-27T04:50:42.119Z\",\"kind\":\"clipboard\",\"label\":\"TSV\"},\"warnings\":[]},\"dataset_id\":\"dataset-mujcbrrb-098jlk\",\"engineering\":{\"L\":3,\"h\":5,\"k\":0.5,\"lambda\":0.2,\"lsl\":null,\"sigma\":null,\"target\":null,\"usl\":null},\"fab\":{\"aggregation\":\"mean\"},\"interaction\":{\"brush\":false,\"crossFilter\":false,\"crosshair\":false,\"legendFilter\":true,\"pan\":true,\"rangeSelector\":false,\"resetZoom\":true,\"tooltip\":true,\"transientSelection\":[],\"zoom\":true},\"legend\":{\"interactive\":true,\"order\":\"input\",\"orientation\":\"horizontal\",\"position\":\"bottom\",\"scroll\":true,\"show\":false},\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"recipe\":null,\"recommendations\":[{\"confidence\":0.99,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"reason\":\"An ordered process axis supports a shared Golden/Reference versus Affected profile.\",\"type\":\"Golden vs Affected Profile\"},{\"confidence\":0.96,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"reason\":\"Cohort and measurement fields support an observed shared-scale distribution comparison.\",\"type\":\"Control vs Affected Distribution\"},{\"confidence\":0.9,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"reason\":\"A category and measured value are available.\",\"type\":\"Vertical Bar\"},{\"confidence\":0.82,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"reason\":\"A horizontal ranking keeps category labels readable.\",\"type\":\"Horizontal Bar\"},{\"confidence\":0.8,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"reason\":\"Categorical contribution can be ranked with cumulative share.\",\"type\":\"Pareto\"}],\"reference_bands\":[],\"reference_lines\":[],\"schema\":\"visembler.chart.studio\",\"series\":[{\"axis\":\"primary\",\"color\":\"#1769d1\",\"field\":\"bump_resistance_mohm_2\",\"id\":\"series-1\",\"label\":\"Bump resistance mOhm\",\"legend\":true,\"lineDash\":null,\"lineWidth\":null,\"markers\":true,\"smoothing\":false,\"type\":\"line\",\"visible\":true}],\"statistical_result\":null,\"transforms\":{\"steps\":[]},\"version\":1,\"visual\":{\"areaOpacity\":0.25,\"barMode\":\"grouped\",\"barWidth\":0.62,\"bins\":null,\"dataLabels\":false,\"gap\":0.2,\"labelPosition\":\"top\",\"lineDash\":\"solid\",\"lineWidth\":2.5,\"markers\":true,\"missingPolicy\":\"gap\",\"palette\":\"report\",\"smoothing\":false,\"theme\":\"system\"},\"wafer\":{\"clamp\":true,\"colorMode\":\"continuous\",\"differenceScaleMaximum\":null,\"differenceScaleMode\":\"automatic\",\"filters\":{\"bin\":\"\",\"chamber\":\"\",\"lot\":\"\",\"route\":\"\",\"tool\":\"\",\"wafer\":\"\"},\"identityRoles\":[\"lot_id\",\"wafer_id\",\"tool\",\"chamber\",\"recipe\",\"process\",\"route\",\"product\"],\"max\":null,\"min\":null,\"missingColor\":\"#c7d0dc\",\"notch\":\"top\",\"selected\":[],\"specHigh\":null,\"specLow\":null,\"tooltipRoles\":[\"die_x\",\"die_y\",\"value\",\"lot_id\",\"wafer_id\",\"tool\",\"chamber\"]},\"why\":\"An ordered process axis supports a shared Golden/Reference versus Affected profile.\"},\"composition_role\":\"detailed_evidence\",\"data\":[[\"QF-8421 paired reference\",7.92],[\"QF-8421 paired reference\",8.01],[\"QF-8421 paired reference\",8.08],[\"QF-8421 paired reference\",8.12],[\"QF-8421 paired reference\",8.19],[\"QF-8421 paired reference\",8.23],[\"QF-8419 affected lot\",8.42],[\"QF-8419 affected lot\",8.58],[\"QF-8419 affected lot\",8.71],[\"QF-8419 affected lot\",8.83],[\"QF-8419 affected lot\",9.02],[\"QF-8419 affected lot\",9.16]],\"dataset_id\":\"dataset-mujcbrrb-098jlk\",\"element\":\"Box Plot\",\"engine\":\"CoreChartEngine\",\"groupId\":null,\"id\":\"c6\",\"locked\":false,\"mapping\":{\"category\":\"population_1\",\"cohort\":\"population_1\",\"value\":\"bump_resistance_mohm_2\",\"x\":\"bump_resistance_mohm_2\"},\"message_role\":\"Primary Evidence\",\"order\":8,\"rows\":[{\"label\":\"QF-8421 paired reference\",\"value\":7.92},{\"label\":\"QF-8421 paired reference\",\"value\":8.01},{\"label\":\"QF-8421 paired reference\",\"value\":8.08},{\"label\":\"QF-8421 paired reference\",\"value\":8.12},{\"label\":\"QF-8421 paired reference\",\"value\":8.19},{\"label\":\"QF-8421 paired reference\",\"value\":8.23},{\"label\":\"QF-8419 affected lot\",\"value\":8.42},{\"label\":\"QF-8419 affected lot\",\"value\":8.58},{\"label\":\"QF-8419 affected lot\",\"value\":8.71},{\"label\":\"QF-8419 affected lot\",\"value\":8.83},{\"label\":\"QF-8419 affected lot\",\"value\":9.02},{\"label\":\"QF-8419 affected lot\",\"value\":9.16}],\"section_id\":\"evidence\",\"section_title\":\"Evidence\",\"showTitle\":true,\"statistical_result\":null,\"title\":\"Affected and paired-lot resistance distribution\",\"transform_recipe\":{\"steps\":[]},\"type\":\"chart\",\"weight\":1,\"z\":6,\"observations\":[{\"label\":\"QF-8421 paired reference\",\"value\":7.92},{\"label\":\"QF-8421 paired reference\",\"value\":8.01},{\"label\":\"QF-8421 paired reference\",\"value\":8.08},{\"label\":\"QF-8421 paired reference\",\"value\":8.12},{\"label\":\"QF-8421 paired reference\",\"value\":8.19},{\"label\":\"QF-8421 paired reference\",\"value\":8.23},{\"label\":\"QF-8419 affected lot\",\"value\":8.42},{\"label\":\"QF-8419 affected lot\",\"value\":8.58},{\"label\":\"QF-8419 affected lot\",\"value\":8.71},{\"label\":\"QF-8419 affected lot\",\"value\":8.83},{\"label\":\"QF-8419 affected lot\",\"value\":9.02},{\"label\":\"QF-8419 affected lot\",\"value\":9.16}],\"x\":993.96,\"y\":324.76,\"w\":592.04,\"h\":287.3135294117647}",
+          "text": "Affected and paired-lot resistance distribution",
+          "font_points": [
+            9.0
+          ],
+          "geometry_emu": {
+            "x": 4474246.0,
+            "y": 1446814.0,
+            "cx": 2394770.0,
+            "cy": 191135.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-axis-0",
+          "descr": null,
+          "text": "7.858",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 4370126.0,
+            "y": 2311785.0,
+            "cx": 351406.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-axis-1",
+          "descr": null,
+          "text": "8.199",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 4370126.0,
+            "y": 2152851.0,
+            "cx": 351406.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-axis-2",
+          "descr": null,
+          "text": "8.54",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 4370126.0,
+            "y": 1993917.0,
+            "cx": 351406.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-axis-3",
+          "descr": null,
+          "text": "8.881",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 4370126.0,
+            "y": 1834983.0,
+            "cx": 351406.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-axis-4",
+          "descr": null,
+          "text": "9.222",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 4370126.0,
+            "y": 1676049.0,
+            "cx": 351406.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-0-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5102873.0,
+            "y": 2228702.0,
+            "cx": 421686.0,
+            "cy": 67582.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-0-category",
+          "descr": null,
+          "text": "QF-8421 paired reference",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 4765076.0,
+            "y": 2432130.0,
+            "cx": 1097280.0,
+            "cy": 164219.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-1-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6157093.0,
+            "y": 1855836.0,
+            "cx": 421686.0,
+            "cy": 167790.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c6::box-plot-1-category",
+          "descr": null,
+          "text": "QF-8419 affected lot",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 5819296.0,
+            "y": 2432130.0,
+            "cx": 1097280.0,
+            "cy": 164219.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-grid-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4786607.0,
+            "y": 2375285.0,
+            "cx": 2108439.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-grid-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4786607.0,
+            "y": 2216351.0,
+            "cx": 2108439.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-grid-2",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4786607.0,
+            "y": 2057417.0,
+            "cx": 2108439.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-grid-3",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4786607.0,
+            "y": 1898483.0,
+            "cx": 2108439.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-grid-4",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4786607.0,
+            "y": 1739549.0,
+            "cx": 2108439.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-0-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5313716.75,
+            "y": 2201902.0,
+            "cx": 0.0,
+            "cy": 144486.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-0-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5102873.75,
+            "y": 2346388.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-0-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5102873.75,
+            "y": 2201902.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-0-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5102873.75,
+            "y": 2262493.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-1-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6367936.25,
+            "y": 1768446.0,
+            "cx": 0.0,
+            "cy": 344901.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-1-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6157093.25,
+            "y": 2113347.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-1-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6157093.25,
+            "y": 1768446.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c6::box-plot-1-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6157093.25,
+            "y": 1950218.0,
+            "cx": 421686.0,
+            "cy": 0.0
+          }
+        }
+      ],
+      "geometry_unit": "English Metric Units (EMU)",
+      "false_chart_xml_for_box_plot": false
+    },
+    {
+      "report": "A",
+      "report_id": "report-280974a5d6e04482bbc998130de9a51f",
+      "item_id": "c10",
+      "title": "Supporting distribution",
+      "chart_xml_parts_matching_item": [],
+      "category_count": 4,
+      "statistics": [
+        {
+          "category": "Metro East",
+          "n": 4,
+          "source_values": [
+            18.4,
+            19.1,
+            17.8,
+            20.2
+          ],
+          "min": 17.8,
+          "q1": 18.25,
+          "median": 18.75,
+          "q3": 19.375,
+          "max": 20.2
+        },
+        {
+          "category": "Central Corridor",
+          "n": 4,
+          "source_values": [
+            24.2,
+            25.0,
+            23.8,
+            26.1
+          ],
+          "min": 23.8,
+          "q1": 24.1,
+          "median": 24.6,
+          "q3": 25.275,
+          "max": 26.1
+        },
+        {
+          "category": "Mountain West",
+          "n": 4,
+          "source_values": [
+            27.1,
+            28.2,
+            26.9,
+            29.0
+          ],
+          "min": 26.9,
+          "q1": 27.05,
+          "median": 27.65,
+          "q3": 28.4,
+          "max": 29.0
+        },
+        {
+          "category": "Coastal North",
+          "n": 4,
+          "source_values": [
+            22.2,
+            23.4,
+            21.8,
+            24.1
+          ],
+          "min": 21.8,
+          "q1": 22.1,
+          "median": 22.799999999999997,
+          "q3": 23.575,
+          "max": 24.1
+        }
+      ],
+      "editable_shape_count": 35,
+      "editable_shapes": [
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-title",
+          "descr": "VisualizerSemantic:{\"brush\":[0,4],\"chart_studio\":{\"adapter\":{\"authority\":\"Visembler canonical chart renderer\",\"name\":\"Visembler SVG Chart Adapter\",\"offline\":true,\"renderer\":\"svg\",\"version\":2},\"analysis_error\":null,\"analysis_kind\":null,\"analysis_semantics\":null,\"annotations\":[],\"authoritative_analysis\":null,\"axes\":{\"secondaryY\":{\"auto\":true,\"enabled\":false,\"format\":\"auto\",\"max\":null,\"min\":null,\"precision\":null,\"prefix\":\"\",\"series\":[],\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\"},\"x\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":2,\"max\":null,\"min\":null,\"position\":\"bottom\",\"precision\":null,\"rotation\":35,\"scale\":\"auto\",\"show\":true,\"tickCount\":6,\"title\":\"\",\"zeroBaseline\":false},\"y\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":null,\"max\":null,\"min\":null,\"position\":\"left\",\"precision\":null,\"prefix\":\"\",\"rotation\":0,\"scale\":\"linear\",\"show\":true,\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\",\"zeroBaseline\":false}},\"chart_type\":\"Box Plot\",\"dataset\":{\"fields\":[{\"id\":\"market_segment_1\",\"name\":\"Market segment\",\"nullable\":false,\"profile\":{\"distinct\":4,\"missing\":0},\"semantic_tags\":[],\"type\":\"categorical\"},{\"id\":\"contribution_margin_percent_2\",\"name\":\"Contribution margin percent\",\"nullable\":false,\"profile\":{\"distinct\":16,\"missing\":0},\"semantic_tags\":[],\"type\":\"number\",\"unit\":\"\"}],\"id\":\"dataset-mujcda71-iqsxbm\",\"metadata\":{\"header\":{\"confidence\":0.75,\"present\":true,\"source_row\":0}},\"name\":\"Pasted data\",\"revision\":1,\"rows\":[[\"Metro East\",18.4],[\"Metro East\",19.1],[\"Metro East\",17.8],[\"Metro East\",20.2],[\"Central Corridor\",24.2],[\"Central Corridor\",25],[\"Central Corridor\",23.8],[\"Central Corridor\",26.1],[\"Mountain West\",27.1],[\"Mountain West\",28.2],[\"Mountain West\",26.9],[\"Mountain West\",29],[\"Coastal North\",22.2],[\"Coastal North\",23.4],[\"Coastal North\",21.8],[\"Coastal North\",24.1]],\"source\":{\"imported_at\":\"2026-09-27T04:51:52.669Z\",\"kind\":\"clipboard\",\"label\":\"TSV\"},\"warnings\":[]},\"dataset_id\":\"dataset-mujcda71-iqsxbm\",\"engineering\":{\"L\":3,\"h\":464,\"k\":0.5,\"lambda\":0.2,\"lsl\":null,\"sigma\":null,\"target\":null,\"usl\":null},\"fab\":{\"aggregation\":\"mean\"},\"interaction\":{\"brush\":false,\"crossFilter\":false,\"crosshair\":false,\"legendFilter\":true,\"pan\":true,\"rangeSelector\":false,\"resetZoom\":true,\"tooltip\":true,\"transientSelection\":[],\"zoom\":true},\"legend\":{\"interactive\":true,\"order\":\"input\",\"orientation\":\"horizontal\",\"position\":\"bottom\",\"scroll\":true,\"show\":false},\"mapping\":{\"category\":\"market_segment_1\",\"value\":\"contribution_margin_percent_2\",\"x\":\"contribution_margin_percent_2\"},\"recipe\":null,\"recommendations\":[{\"confidence\":0.9,\"mapping\":{\"category\":\"market_segment_1\",\"value\":\"contribution_margin_percent_2\",\"x\":\"contribution_margin_percent_2\"},\"reason\":\"A category and measured value are available.\",\"type\":\"Vertical Bar\"},{\"confidence\":0.82,\"mapping\":{\"category\":\"market_segment_1\",\"value\":\"contribution_margin_percent_2\",\"x\":\"contribution_margin_percent_2\"},\"reason\":\"A horizontal ranking keeps category labels readable.\",\"type\":\"Horizontal Bar\"},{\"confidence\":0.8,\"mapping\":{\"category\":\"market_segment_1\",\"value\":\"contribution_margin_percent_2\",\"x\":\"contribution_margin_percent_2\"},\"reason\":\"Categorical contribution can be ranked with cumulative share.\",\"type\":\"Pareto\"}],\"reference_bands\":[],\"reference_lines\":[],\"schema\":\"visembler.chart.studio\",\"series\":[{\"axis\":\"primary\",\"color\":\"#1769d1\",\"field\":\"contribution_margin_percent_2\",\"id\":\"series-1\",\"label\":\"Contribution margin percent\",\"legend\":true,\"lineDash\":null,\"lineWidth\":null,\"markers\":true,\"smoothing\":false,\"type\":\"line\",\"visible\":true}],\"statistical_result\":null,\"transforms\":{\"steps\":[]},\"version\":1,\"visual\":{\"areaOpacity\":0.25,\"barMode\":\"grouped\",\"barWidth\":0.62,\"bins\":null,\"dataLabels\":false,\"gap\":0.2,\"labelPosition\":\"top\",\"lineDash\":\"solid\",\"lineWidth\":2.5,\"markers\":true,\"missingPolicy\":\"gap\",\"palette\":\"report\",\"smoothing\":false,\"theme\":\"system\"},\"wafer\":{\"clamp\":true,\"colorMode\":\"continuous\",\"differenceScaleMaximum\":null,\"differenceScaleMode\":\"automatic\",\"filters\":{\"bin\":\"\",\"chamber\":\"\",\"lot\":\"\",\"route\":\"\",\"tool\":\"\",\"wafer\":\"\"},\"identityRoles\":[\"lot_id\",\"wafer_id\",\"tool\",\"chamber\",\"recipe\",\"process\",\"route\",\"product\"],\"max\":null,\"min\":null,\"missingColor\":\"#c7d0dc\",\"notch\":\"top\",\"selected\":[],\"specHigh\":null,\"specLow\":null,\"tooltipRoles\":[\"die_x\",\"die_y\",\"value\",\"lot_id\",\"wafer_id\",\"tool\",\"chamber\"]},\"why\":\"A category and measured value are available.\"},\"composition_role\":\"detailed_evidence\",\"cross\":null,\"data\":[[\"Metro East\",18.4],[\"Metro East\",19.1],[\"Metro East\",17.8],[\"Metro East\",20.2],[\"Central Corridor\",24.2],[\"Central Corridor\",25],[\"Central Corridor\",23.8],[\"Central Corridor\",26.1],[\"Mountain West\",27.1],[\"Mountain West\",28.2],[\"Mountain West\",26.9],[\"Mountain West\",29],[\"Coastal North\",22.2],[\"Coastal North\",23.4],[\"Coastal North\",21.8],[\"Coastal North\",24.1]],\"dataset_id\":\"dataset-mujcda71-iqsxbm\",\"drill\":null,\"element\":\"Box Plot\",\"engine\":\"CoreChartEngine\",\"groupId\":null,\"h\":464.0,\"id\":\"c10\",\"locked\":false,\"mapping\":{\"category\":\"market_segment_1\",\"value\":\"contribution_margin_percent_2\",\"x\":\"contribution_margin_percent_2\"},\"message_role\":\"Supporting Evidence\",\"order\":7,\"revealed\":true,\"rows\":[{\"label\":\"Metro East\",\"value\":18.4},{\"label\":\"Metro East\",\"value\":19.1},{\"label\":\"Metro East\",\"value\":17.8},{\"label\":\"Metro East\",\"value\":20.2},{\"label\":\"Central Corridor\",\"value\":24.2},{\"label\":\"Central Corridor\",\"value\":25},{\"label\":\"Central Corridor\",\"value\":23.8},{\"label\":\"Central Corridor\",\"value\":26.1},{\"label\":\"Mountain West\",\"value\":27.1},{\"label\":\"Mountain West\",\"value\":28.2},{\"label\":\"Mountain West\",\"value\":26.9},{\"label\":\"Mountain West\",\"value\":29},{\"label\":\"Coastal North\",\"value\":22.2},{\"label\":\"Coastal North\",\"value\":23.4},{\"label\":\"Coastal North\",\"value\":21.8},{\"label\":\"Coastal North\",\"value\":24.1}],\"section_id\":\"evidence\",\"section_title\":\"Evidence\",\"showTitle\":true,\"statistical_result\":null,\"textAlign\":\"left\",\"title\":\"Supporting distribution\",\"transform_recipe\":{\"steps\":[]},\"type\":\"chart\",\"variant\":\"line\",\"w\":956.1212121212121,\"weight\":1.8,\"x\":25.798818859521816,\"y\":196.93120000000002,\"z\":10,\"observations\":[{\"label\":\"Metro East\",\"value\":18.4},{\"label\":\"Metro East\",\"value\":19.1},{\"label\":\"Metro East\",\"value\":17.8},{\"label\":\"Metro East\",\"value\":20.2},{\"label\":\"Central Corridor\",\"value\":24.2},{\"label\":\"Central Corridor\",\"value\":25},{\"label\":\"Central Corridor\",\"value\":23.8},{\"label\":\"Central Corridor\",\"value\":26.1},{\"label\":\"Mountain West\",\"value\":27.1},{\"label\":\"Mountain West\",\"value\":28.2},{\"label\":\"Mountain West\",\"value\":26.9},{\"label\":\"Mountain West\",\"value\":29},{\"label\":\"Coastal North\",\"value\":22.2},{\"label\":\"Coastal North\",\"value\":23.4},{\"label\":\"Coastal North\",\"value\":21.8},{\"label\":\"Coastal North\",\"value\":24.1}]}",
+          "text": "Supporting distribution",
+          "font_points": [
+            12.0
+          ],
+          "geometry_emu": {
+            "x": 455820.0,
+            "y": 1451161.0,
+            "cx": 6260634.0,
+            "cy": 246379.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-axis-0",
+          "descr": null,
+          "text": "17.24",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 183619.0,
+            "y": 3814958.0,
+            "cx": 918680.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-axis-1",
+          "descr": null,
+          "text": "20.32",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 183619.0,
+            "y": 3360872.0,
+            "cx": 918680.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-axis-2",
+          "descr": null,
+          "text": "23.4",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 183619.0,
+            "y": 2906786.0,
+            "cx": 918680.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-axis-3",
+          "descr": null,
+          "text": "26.48",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 183619.0,
+            "y": 2452699.0,
+            "cx": 918680.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-axis-4",
+          "descr": null,
+          "text": "29.56",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 183619.0,
+            "y": 1998613.0,
+            "cx": 918680.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-0-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1705402.0,
+            "y": 3563694.0,
+            "cx": 512064.0,
+            "cy": 165859.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-0-category",
+          "descr": null,
+          "text": "Metro East",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 1412794.0,
+            "y": 4027067.0,
+            "cx": 1097280.0,
+            "cy": 429317.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-1-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3083422.0,
+            "y": 2693853.0,
+            "cx": 512064.0,
+            "cy": 173231.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-1-category",
+          "descr": null,
+          "text": "Central Corridor",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 2790814.0,
+            "y": 4027067.0,
+            "cx": 1097280.0,
+            "cy": 429317.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-2-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4461442.0,
+            "y": 2233132.0,
+            "cx": 512064.0,
+            "cy": 199032.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-2-category",
+          "descr": null,
+          "text": "Mountain West",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 4168834.0,
+            "y": 4027067.0,
+            "cx": 1097280.0,
+            "cy": 429317.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-3-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5839462.0,
+            "y": 2944485.0,
+            "cx": 512064.0,
+            "cy": 217460.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c10::box-plot-3-category",
+          "descr": null,
+          "text": "Coastal North",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 5546854.0,
+            "y": 4027067.0,
+            "cx": 1097280.0,
+            "cy": 429317.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-grid-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1272424.0,
+            "y": 3878458.0,
+            "cx": 5512080.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-grid-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1272424.0,
+            "y": 3424372.0,
+            "cx": 5512080.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-grid-2",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1272424.0,
+            "y": 2970286.0,
+            "cx": 5512080.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-grid-3",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1272424.0,
+            "y": 2516199.0,
+            "cx": 5512080.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-grid-4",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1272424.0,
+            "y": 2062113.0,
+            "cx": 5512080.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-0-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1961434.0,
+            "y": 3442063.0,
+            "cx": 0.0,
+            "cy": 353834.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-0-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1705402.0,
+            "y": 3795897.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-0-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1705402.0,
+            "y": 3442063.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-0-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 1705402.0,
+            "y": 3655838.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-1-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3339454.0,
+            "y": 2572223.0,
+            "cx": 0.0,
+            "cy": 339090.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-1-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3083422.0,
+            "y": 2911313.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-1-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3083422.0,
+            "y": 2572223.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-1-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3083422.0,
+            "y": 2793369.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-2-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4717474.0,
+            "y": 2144674.0,
+            "cx": 0.0,
+            "cy": 309604.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-2-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4461442.0,
+            "y": 2454278.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-2-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4461442.0,
+            "y": 2144674.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-2-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4461442.0,
+            "y": 2343705.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-3-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6095494.0,
+            "y": 2867084.0,
+            "cx": 0.0,
+            "cy": 339090.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-3-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5839462.0,
+            "y": 3206174.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-3-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5839462.0,
+            "y": 2867084.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c10::box-plot-3-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5839462.0,
+            "y": 3058744.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        }
+      ],
+      "geometry_unit": "English Metric Units (EMU)",
+      "false_chart_xml_for_box_plot": false
+    },
+    {
+      "report": "C",
+      "report_id": "report-d676936813824e71a333ff14d09ad705",
+      "item_id": "c5",
+      "title": "Flux retention distribution by arm",
+      "chart_xml_parts_matching_item": [],
+      "category_count": 2,
+      "statistics": [
+        {
+          "category": "Standard train",
+          "n": 6,
+          "source_values": [
+            79.0,
+            82.0,
+            84.0,
+            77.0,
+            86.0,
+            81.0
+          ],
+          "min": 77.0,
+          "q1": 79.5,
+          "median": 81.5,
+          "q3": 83.5,
+          "max": 86.0
+        },
+        {
+          "category": "Staged flux",
+          "n": 6,
+          "source_values": [
+            88.0,
+            91.0,
+            89.0,
+            94.0,
+            87.0,
+            92.0
+          ],
+          "min": 87.0,
+          "q1": 88.25,
+          "median": 90.0,
+          "q3": 91.75,
+          "max": 94.0
+        }
+      ],
+      "editable_shape_count": 23,
+      "editable_shapes": [
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-title",
+          "descr": "VisualizerSemantic:{\"chart_studio\":{\"adapter\":{\"authority\":\"Visembler canonical chart renderer\",\"name\":\"Visembler SVG Chart Adapter\",\"offline\":true,\"renderer\":\"svg\",\"version\":2},\"analysis_error\":null,\"analysis_kind\":null,\"analysis_semantics\":null,\"annotations\":[],\"authoritative_analysis\":null,\"axes\":{\"secondaryY\":{\"auto\":true,\"enabled\":false,\"format\":\"auto\",\"max\":null,\"min\":null,\"precision\":null,\"prefix\":\"\",\"series\":[],\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\"},\"x\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":2,\"max\":null,\"min\":null,\"position\":\"bottom\",\"precision\":null,\"rotation\":35,\"scale\":\"auto\",\"show\":true,\"tickCount\":6,\"title\":\"\",\"zeroBaseline\":false},\"y\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":null,\"max\":null,\"min\":null,\"position\":\"left\",\"precision\":null,\"prefix\":\"\",\"rotation\":0,\"scale\":\"linear\",\"show\":true,\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\",\"zeroBaseline\":false}},\"chart_type\":\"Box Plot\",\"dataset\":{\"fields\":[{\"id\":\"treatment_arm_1\",\"name\":\"Treatment arm\",\"nullable\":false,\"profile\":{\"distinct\":2,\"missing\":0},\"semantic_tags\":[],\"type\":\"categorical\"},{\"id\":\"flux_retention_l_m2h_2\",\"name\":\"Flux retention L/m2h\",\"nullable\":false,\"profile\":{\"distinct\":12,\"missing\":0},\"semantic_tags\":[],\"type\":\"integer\",\"unit\":\"\"}],\"id\":\"dataset-mujce5xw-yba1bk\",\"metadata\":{\"header\":{\"confidence\":0.75,\"present\":true,\"source_row\":0}},\"name\":\"Pasted data\",\"revision\":1,\"rows\":[[\"Standard train\",79],[\"Standard train\",82],[\"Standard train\",84],[\"Standard train\",77],[\"Standard train\",86],[\"Standard train\",81],[\"Staged flux\",88],[\"Staged flux\",91],[\"Staged flux\",89],[\"Staged flux\",94],[\"Staged flux\",87],[\"Staged flux\",92]],\"source\":{\"imported_at\":\"2026-09-27T04:52:33.812Z\",\"kind\":\"clipboard\",\"label\":\"TSV\"},\"warnings\":[]},\"dataset_id\":\"dataset-mujce5xw-yba1bk\",\"engineering\":{\"L\":3,\"h\":5,\"k\":0.5,\"lambda\":0.2,\"lsl\":null,\"sigma\":null,\"target\":null,\"usl\":null},\"fab\":{\"aggregation\":\"mean\"},\"interaction\":{\"brush\":false,\"crossFilter\":false,\"crosshair\":false,\"legendFilter\":true,\"pan\":true,\"rangeSelector\":false,\"resetZoom\":true,\"tooltip\":true,\"transientSelection\":[],\"zoom\":true},\"legend\":{\"interactive\":true,\"order\":\"input\",\"orientation\":\"horizontal\",\"position\":\"bottom\",\"scroll\":true,\"show\":false},\"mapping\":{\"category\":\"treatment_arm_1\",\"value\":\"flux_retention_l_m2h_2\",\"x\":\"flux_retention_l_m2h_2\"},\"recipe\":null,\"recommendations\":[{\"confidence\":0.9,\"mapping\":{\"category\":\"treatment_arm_1\",\"value\":\"flux_retention_l_m2h_2\",\"x\":\"flux_retention_l_m2h_2\"},\"reason\":\"A category and measured value are available.\",\"type\":\"Vertical Bar\"},{\"confidence\":0.82,\"mapping\":{\"category\":\"treatment_arm_1\",\"value\":\"flux_retention_l_m2h_2\",\"x\":\"flux_retention_l_m2h_2\"},\"reason\":\"A horizontal ranking keeps category labels readable.\",\"type\":\"Horizontal Bar\"},{\"confidence\":0.8,\"mapping\":{\"category\":\"treatment_arm_1\",\"value\":\"flux_retention_l_m2h_2\",\"x\":\"flux_retention_l_m2h_2\"},\"reason\":\"Categorical contribution can be ranked with cumulative share.\",\"type\":\"Pareto\"}],\"reference_bands\":[],\"reference_lines\":[],\"schema\":\"visembler.chart.studio\",\"series\":[{\"axis\":\"primary\",\"color\":\"#1769d1\",\"field\":\"flux_retention_l_m2h_2\",\"id\":\"series-1\",\"label\":\"Flux retention L/m2h\",\"legend\":true,\"lineDash\":null,\"lineWidth\":null,\"markers\":true,\"smoothing\":false,\"type\":\"line\",\"visible\":true}],\"statistical_result\":null,\"transforms\":{\"steps\":[]},\"version\":1,\"visual\":{\"areaOpacity\":0.25,\"barMode\":\"grouped\",\"barWidth\":0.62,\"bins\":null,\"dataLabels\":false,\"gap\":0.2,\"labelPosition\":\"top\",\"lineDash\":\"solid\",\"lineWidth\":2.5,\"markers\":true,\"missingPolicy\":\"gap\",\"palette\":\"report\",\"smoothing\":false,\"theme\":\"system\"},\"wafer\":{\"clamp\":true,\"colorMode\":\"continuous\",\"differenceScaleMaximum\":null,\"differenceScaleMode\":\"automatic\",\"filters\":{\"bin\":\"\",\"chamber\":\"\",\"lot\":\"\",\"route\":\"\",\"tool\":\"\",\"wafer\":\"\"},\"identityRoles\":[\"lot_id\",\"wafer_id\",\"tool\",\"chamber\",\"recipe\",\"process\",\"route\",\"product\"],\"max\":null,\"min\":null,\"missingColor\":\"#c7d0dc\",\"notch\":\"top\",\"selected\":[],\"specHigh\":null,\"specLow\":null,\"tooltipRoles\":[\"die_x\",\"die_y\",\"value\",\"lot_id\",\"wafer_id\",\"tool\",\"chamber\"]},\"why\":\"A category and measured value are available.\"},\"composition_role\":\"supporting_analysis\",\"data\":[[\"Standard train\",79],[\"Standard train\",82],[\"Standard train\",84],[\"Standard train\",77],[\"Standard train\",86],[\"Standard train\",81],[\"Staged flux\",88],[\"Staged flux\",91],[\"Staged flux\",89],[\"Staged flux\",94],[\"Staged flux\",87],[\"Staged flux\",92]],\"dataset_id\":\"dataset-mujce5xw-yba1bk\",\"element\":\"Box Plot\",\"engine\":\"CoreChartEngine\",\"groupId\":null,\"id\":\"c5\",\"locked\":false,\"mapping\":{\"category\":\"treatment_arm_1\",\"value\":\"flux_retention_l_m2h_2\",\"x\":\"flux_retention_l_m2h_2\"},\"message_role\":\"Supporting Evidence\",\"order\":5,\"rows\":[{\"label\":\"Standard train\",\"value\":79},{\"label\":\"Standard train\",\"value\":82},{\"label\":\"Standard train\",\"value\":84},{\"label\":\"Standard train\",\"value\":77},{\"label\":\"Standard train\",\"value\":86},{\"label\":\"Standard train\",\"value\":81},{\"label\":\"Staged flux\",\"value\":88},{\"label\":\"Staged flux\",\"value\":91},{\"label\":\"Staged flux\",\"value\":89},{\"label\":\"Staged flux\",\"value\":94},{\"label\":\"Staged flux\",\"value\":87},{\"label\":\"Staged flux\",\"value\":92}],\"section_id\":\"analysis\",\"section_title\":\"Analysis\",\"showTitle\":true,\"statistical_result\":null,\"title\":\"Flux retention distribution by arm\",\"transform_recipe\":{\"steps\":[]},\"type\":\"chart\",\"weight\":1,\"z\":5,\"observations\":[{\"label\":\"Standard train\",\"value\":79},{\"label\":\"Standard train\",\"value\":82},{\"label\":\"Standard train\",\"value\":84},{\"label\":\"Standard train\",\"value\":77},{\"label\":\"Standard train\",\"value\":86},{\"label\":\"Standard train\",\"value\":81},{\"label\":\"Staged flux\",\"value\":88},{\"label\":\"Staged flux\",\"value\":91},{\"label\":\"Staged flux\",\"value\":89},{\"label\":\"Staged flux\",\"value\":94},{\"label\":\"Staged flux\",\"value\":87},{\"label\":\"Staged flux\",\"value\":92}],\"x\":869.32,\"y\":444.0035294117647,\"w\":716.6800000000001,\"h\":347.8005882352942}",
+          "text": "Flux retention distribution by arm",
+          "font_points": [
+            12.0
+          ],
+          "geometry_emu": {
+            "x": 6842661.0,
+            "y": 3423059.0,
+            "cx": 5024212.0,
+            "cy": 246379.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-0",
+          "descr": null,
+          "text": "76.15",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 6624217.0,
+            "y": 5307486.0,
+            "cx": 737249.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-1",
+          "descr": null,
+          "text": "80.825",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 6624217.0,
+            "y": 4943078.0,
+            "cx": 737249.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-2",
+          "descr": null,
+          "text": "85.5",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 6624217.0,
+            "y": 4578670.0,
+            "cx": 737249.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-3",
+          "descr": null,
+          "text": "90.175",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 6624217.0,
+            "y": 4214262.0,
+            "cx": 737249.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-4",
+          "descr": null,
+          "text": "94.85",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 6624217.0,
+            "y": 3849854.0,
+            "cx": 737249.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8347833.0,
+            "y": 4798066.0,
+            "cx": 512064.0,
+            "cy": 311793.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-category",
+          "descr": null,
+          "text": "Standard train",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 8055225.0,
+            "y": 5490246.0,
+            "cx": 1097280.0,
+            "cy": 344531.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 10559579.0,
+            "y": 4154994.0,
+            "cx": 512064.0,
+            "cy": 272818.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-category",
+          "descr": null,
+          "text": "Staged flux",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 10266971.0,
+            "y": 5490246.0,
+            "cx": 1097280.0,
+            "cy": 344531.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7497993.0,
+            "y": 5370986.0,
+            "cx": 4423491.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7497993.0,
+            "y": 5006578.0,
+            "cx": 4423491.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-2",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7497993.0,
+            "y": 4642170.0,
+            "cx": 4423491.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-3",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7497993.0,
+            "y": 4277762.0,
+            "cx": 4423491.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-4",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7497993.0,
+            "y": 3913354.0,
+            "cx": 4423491.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8603865.75,
+            "y": 4603196.0,
+            "cx": 0.0,
+            "cy": 701534.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8347833.75,
+            "y": 5304730.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8347833.75,
+            "y": 4603196.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8347833.75,
+            "y": 4953963.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 10815611.25,
+            "y": 3979610.0,
+            "cx": 0.0,
+            "cy": 545638.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 10559579.25,
+            "y": 4525248.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 10559579.25,
+            "y": 3979610.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 10559579.25,
+            "y": 4291403.0,
+            "cx": 512064.0,
+            "cy": 0.0
+          }
+        }
+      ],
+      "geometry_unit": "English Metric Units (EMU)",
+      "false_chart_xml_for_box_plot": false
+    },
+    {
+      "report": "E",
+      "report_id": "report-46d89fd6d62d40a09d5093ac4e967708",
+      "item_id": "c5",
+      "title": "Temperature excursion distribution",
+      "chart_xml_parts_matching_item": [],
+      "category_count": 3,
+      "statistics": [
+        {
+          "category": "East Sluice PS-04",
+          "n": 5,
+          "source_values": [
+            2.2,
+            2.5,
+            2.1,
+            2.8,
+            2.4
+          ],
+          "min": 2.1,
+          "q1": 2.2,
+          "median": 2.4,
+          "q3": 2.5,
+          "max": 2.8
+        },
+        {
+          "category": "Delta Yard PS-17",
+          "n": 5,
+          "source_values": [
+            2.8,
+            3.2,
+            3.0,
+            3.4,
+            3.1
+          ],
+          "min": 2.8,
+          "q1": 3.0,
+          "median": 3.1,
+          "q3": 3.2,
+          "max": 3.4
+        },
+        {
+          "category": "Marsh Gate PS-31",
+          "n": 5,
+          "source_values": [
+            3.4,
+            3.9,
+            4.2,
+            3.7,
+            4.6
+          ],
+          "min": 3.4,
+          "q1": 3.7,
+          "median": 3.9,
+          "q3": 4.2,
+          "max": 4.6
+        }
+      ],
+      "editable_shape_count": 29,
+      "editable_shapes": [
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-title",
+          "descr": "VisualizerSemantic:{\"brush\":[0,4],\"chart_studio\":{\"adapter\":{\"authority\":\"Visembler canonical chart renderer\",\"name\":\"Visembler SVG Chart Adapter\",\"offline\":true,\"renderer\":\"svg\",\"version\":2},\"analysis_error\":null,\"analysis_kind\":null,\"analysis_semantics\":null,\"annotations\":[],\"authoritative_analysis\":null,\"axes\":{\"secondaryY\":{\"auto\":true,\"enabled\":false,\"format\":\"auto\",\"max\":null,\"min\":null,\"precision\":null,\"prefix\":\"\",\"series\":[],\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\"},\"x\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":2,\"max\":null,\"min\":null,\"position\":\"bottom\",\"precision\":null,\"rotation\":35,\"scale\":\"auto\",\"show\":true,\"tickCount\":6,\"title\":\"\",\"zeroBaseline\":false},\"y\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":null,\"max\":null,\"min\":null,\"position\":\"left\",\"precision\":null,\"prefix\":\"\",\"rotation\":0,\"scale\":\"linear\",\"show\":true,\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\",\"zeroBaseline\":false}},\"chart_type\":\"Box Plot\",\"dataset\":{\"fields\":[{\"id\":\"pump_station_1\",\"name\":\"Pump station\",\"nullable\":false,\"profile\":{\"distinct\":3,\"missing\":0},\"semantic_tags\":[],\"type\":\"categorical\"},{\"id\":\"vibration_velocity_mm_s_2\",\"name\":\"Vibration velocity mm/s\",\"nullable\":false,\"profile\":{\"distinct\":13,\"missing\":0},\"semantic_tags\":[],\"type\":\"number\",\"unit\":\"\"}],\"id\":\"dataset-mujczbgu-qu4dac\",\"metadata\":{\"header\":{\"confidence\":0.75,\"present\":true,\"source_row\":0}},\"name\":\"Pasted data\",\"revision\":1,\"rows\":[[\"East Sluice PS-04\",2.2],[\"East Sluice PS-04\",2.5],[\"East Sluice PS-04\",2.1],[\"East Sluice PS-04\",2.8],[\"East Sluice PS-04\",2.4],[\"Delta Yard PS-17\",2.8],[\"Delta Yard PS-17\",3.2],[\"Delta Yard PS-17\",3],[\"Delta Yard PS-17\",3.4],[\"Delta Yard PS-17\",3.1],[\"Marsh Gate PS-31\",3.4],[\"Marsh Gate PS-31\",3.9],[\"Marsh Gate PS-31\",4.2],[\"Marsh Gate PS-31\",3.7],[\"Marsh Gate PS-31\",4.6]],\"source\":{\"imported_at\":\"2026-09-27T05:09:00.750Z\",\"kind\":\"clipboard\",\"label\":\"TSV\"},\"warnings\":[]},\"dataset_id\":\"dataset-mujczbgu-qu4dac\",\"engineering\":{\"L\":3,\"h\":320,\"k\":0.5,\"lambda\":0.2,\"lsl\":null,\"sigma\":null,\"target\":null,\"usl\":null},\"fab\":{\"aggregation\":\"mean\"},\"interaction\":{\"brush\":false,\"crossFilter\":false,\"crosshair\":false,\"legendFilter\":true,\"pan\":true,\"rangeSelector\":false,\"resetZoom\":true,\"tooltip\":true,\"transientSelection\":[],\"zoom\":true},\"legend\":{\"interactive\":true,\"order\":\"input\",\"orientation\":\"horizontal\",\"position\":\"bottom\",\"scroll\":true,\"show\":false},\"mapping\":{\"category\":\"pump_station_1\",\"value\":\"vibration_velocity_mm_s_2\",\"x\":\"vibration_velocity_mm_s_2\"},\"recipe\":null,\"recommendations\":[{\"confidence\":0.9,\"mapping\":{\"category\":\"pump_station_1\",\"value\":\"vibration_velocity_mm_s_2\",\"x\":\"vibration_velocity_mm_s_2\"},\"reason\":\"A category and measured value are available.\",\"type\":\"Vertical Bar\"},{\"confidence\":0.82,\"mapping\":{\"category\":\"pump_station_1\",\"value\":\"vibration_velocity_mm_s_2\",\"x\":\"vibration_velocity_mm_s_2\"},\"reason\":\"A horizontal ranking keeps category labels readable.\",\"type\":\"Horizontal Bar\"},{\"confidence\":0.8,\"mapping\":{\"category\":\"pump_station_1\",\"value\":\"vibration_velocity_mm_s_2\",\"x\":\"vibration_velocity_mm_s_2\"},\"reason\":\"Categorical contribution can be ranked with cumulative share.\",\"type\":\"Pareto\"}],\"reference_bands\":[],\"reference_lines\":[],\"schema\":\"visembler.chart.studio\",\"series\":[{\"axis\":\"primary\",\"color\":\"#1769d1\",\"field\":\"vibration_velocity_mm_s_2\",\"id\":\"series-1\",\"label\":\"Vibration velocity mm/s\",\"legend\":true,\"lineDash\":null,\"lineWidth\":null,\"markers\":true,\"smoothing\":false,\"type\":\"line\",\"visible\":true}],\"statistical_result\":null,\"transforms\":{\"steps\":[]},\"version\":1,\"visual\":{\"areaOpacity\":0.25,\"barMode\":\"grouped\",\"barWidth\":0.62,\"bins\":null,\"dataLabels\":false,\"gap\":0.2,\"labelPosition\":\"top\",\"lineDash\":\"solid\",\"lineWidth\":2.5,\"markers\":true,\"missingPolicy\":\"gap\",\"palette\":\"report\",\"smoothing\":false,\"theme\":\"system\"},\"wafer\":{\"clamp\":true,\"colorMode\":\"continuous\",\"differenceScaleMaximum\":null,\"differenceScaleMode\":\"automatic\",\"filters\":{\"bin\":\"\",\"chamber\":\"\",\"lot\":\"\",\"route\":\"\",\"tool\":\"\",\"wafer\":\"\"},\"identityRoles\":[\"lot_id\",\"wafer_id\",\"tool\",\"chamber\",\"recipe\",\"process\",\"route\",\"product\"],\"max\":null,\"min\":null,\"missingColor\":\"#c7d0dc\",\"notch\":\"top\",\"selected\":[],\"specHigh\":null,\"specLow\":null,\"tooltipRoles\":[\"die_x\",\"die_y\",\"value\",\"lot_id\",\"wafer_id\",\"tool\",\"chamber\"]},\"why\":\"A category and measured value are available.\"},\"composition_role\":\"supporting_analysis\",\"cross\":null,\"data\":[[\"East Sluice PS-04\",2.2],[\"East Sluice PS-04\",2.5],[\"East Sluice PS-04\",2.1],[\"East Sluice PS-04\",2.8],[\"East Sluice PS-04\",2.4],[\"Delta Yard PS-17\",2.8],[\"Delta Yard PS-17\",3.2],[\"Delta Yard PS-17\",3],[\"Delta Yard PS-17\",3.4],[\"Delta Yard PS-17\",3.1],[\"Marsh Gate PS-31\",3.4],[\"Marsh Gate PS-31\",3.9],[\"Marsh Gate PS-31\",4.2],[\"Marsh Gate PS-31\",3.7],[\"Marsh Gate PS-31\",4.6]],\"dataset_id\":\"dataset-mujczbgu-qu4dac\",\"drill\":null,\"element\":\"Box Plot\",\"engine\":\"CoreChartEngine\",\"groupId\":null,\"h\":320.0,\"id\":\"c5\",\"locked\":false,\"mapping\":{\"category\":\"pump_station_1\",\"value\":\"vibration_velocity_mm_s_2\",\"x\":\"vibration_velocity_mm_s_2\"},\"message_role\":\"Supporting Evidence\",\"order\":4,\"revealed\":true,\"rows\":[{\"label\":\"East Sluice PS-04\",\"value\":2.2},{\"label\":\"East Sluice PS-04\",\"value\":2.5},{\"label\":\"East Sluice PS-04\",\"value\":2.1},{\"label\":\"East Sluice PS-04\",\"value\":2.8},{\"label\":\"East Sluice PS-04\",\"value\":2.4},{\"label\":\"Delta Yard PS-17\",\"value\":2.8},{\"label\":\"Delta Yard PS-17\",\"value\":3.2},{\"label\":\"Delta Yard PS-17\",\"value\":3},{\"label\":\"Delta Yard PS-17\",\"value\":3.4},{\"label\":\"Delta Yard PS-17\",\"value\":3.1},{\"label\":\"Marsh Gate PS-31\",\"value\":3.4},{\"label\":\"Marsh Gate PS-31\",\"value\":3.9},{\"label\":\"Marsh Gate PS-31\",\"value\":4.2},{\"label\":\"Marsh Gate PS-31\",\"value\":3.7},{\"label\":\"Marsh Gate PS-31\",\"value\":4.6}],\"section_id\":\"analysis\",\"section_title\":\"Analysis\",\"showTitle\":true,\"statistical_result\":null,\"textAlign\":\"left\",\"title\":\"Temperature excursion distribution\",\"transform_recipe\":{\"steps\":[]},\"type\":\"chart\",\"variant\":\"line\",\"w\":659.3939393939394,\"weight\":1.8,\"x\":866.3454545454545,\"y\":442.55999999999995,\"z\":5,\"observations\":[{\"label\":\"East Sluice PS-04\",\"value\":2.2},{\"label\":\"East Sluice PS-04\",\"value\":2.5},{\"label\":\"East Sluice PS-04\",\"value\":2.1},{\"label\":\"East Sluice PS-04\",\"value\":2.8},{\"label\":\"East Sluice PS-04\",\"value\":2.4},{\"label\":\"Delta Yard PS-17\",\"value\":2.8},{\"label\":\"Delta Yard PS-17\",\"value\":3.2},{\"label\":\"Delta Yard PS-17\",\"value\":3},{\"label\":\"Delta Yard PS-17\",\"value\":3.4},{\"label\":\"Delta Yard PS-17\",\"value\":3.1},{\"label\":\"Marsh Gate PS-31\",\"value\":3.4},{\"label\":\"Marsh Gate PS-31\",\"value\":3.9},{\"label\":\"Marsh Gate PS-31\",\"value\":4.2},{\"label\":\"Marsh Gate PS-31\",\"value\":3.7},{\"label\":\"Marsh Gate PS-31\",\"value\":4.6}]}",
+          "text": "Temperature excursion distribution",
+          "font_points": [
+            12.0
+          ],
+          "geometry_emu": {
+            "x": 5928134.0,
+            "y": 2970703.0,
+            "cx": 4028422.0,
+            "cy": 246379.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-0",
+          "descr": null,
+          "text": "1.975",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 5752986.0,
+            "y": 4469054.0,
+            "cx": 591127.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-1",
+          "descr": null,
+          "text": "2.6625",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 5752986.0,
+            "y": 4176871.0,
+            "cx": 591127.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-2",
+          "descr": null,
+          "text": "3.35",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 5752986.0,
+            "y": 3884688.0,
+            "cx": 591127.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-3",
+          "descr": null,
+          "text": "4.0375",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 5752986.0,
+            "y": 3592505.0,
+            "cx": 591127.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-4",
+          "descr": null,
+          "text": "4.725",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 5752986.0,
+            "y": 3300322.0,
+            "cx": 591127.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6808258.0,
+            "y": 4309432.0,
+            "cx": 472900.0,
+            "cy": 127498.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-category",
+          "descr": null,
+          "text": "East Sluice PS-04",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 6496068.0,
+            "y": 4628177.0,
+            "cx": 1097280.0,
+            "cy": 276245.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7990512.0,
+            "y": 4011937.0,
+            "cx": 472900.0,
+            "cy": 84999.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-category",
+          "descr": null,
+          "text": "Delta Yard PS-17",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 7678322.0,
+            "y": 4628177.0,
+            "cx": 1097280.0,
+            "cy": 276245.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-2-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 9172766.0,
+            "y": 3586944.0,
+            "cx": 472900.0,
+            "cy": 212496.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-2-category",
+          "descr": null,
+          "text": "Marsh Gate PS-31",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 8860576.0,
+            "y": 4628177.0,
+            "cx": 1097280.0,
+            "cy": 276245.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6453581.0,
+            "y": 4532554.0,
+            "cx": 3546763.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6453581.0,
+            "y": 4240371.0,
+            "cx": 3546763.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-2",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6453581.0,
+            "y": 3948188.0,
+            "cx": 3546763.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-3",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6453581.0,
+            "y": 3656005.0,
+            "cx": 3546763.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-4",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6453581.0,
+            "y": 3363822.0,
+            "cx": 3546763.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7044708.166666667,
+            "y": 4181934.0,
+            "cx": 0.0,
+            "cy": 297496.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6808258.166666667,
+            "y": 4479430.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6808258.166666667,
+            "y": 4181934.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6808258.166666667,
+            "y": 4351932.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 8226962.5,
+            "y": 3926938.0,
+            "cx": 0.0,
+            "cy": 254996.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7990512.5,
+            "y": 4181934.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7990512.5,
+            "y": 3926938.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7990512.5,
+            "y": 4054436.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 9409216.833333334,
+            "y": 3416946.0,
+            "cx": 0.0,
+            "cy": 509992.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 9172766.833333334,
+            "y": 3926938.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 9172766.833333334,
+            "y": 3416946.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 9172766.833333334,
+            "y": 3714442.0,
+            "cx": 472900.0,
+            "cy": 0.0
+          }
+        }
+      ],
+      "geometry_unit": "English Metric Units (EMU)",
+      "false_chart_xml_for_box_plot": false
+    },
+    {
+      "report": "F",
+      "report_id": "report-0693be2c087140cd99fc41b7dd9d35ef",
+      "item_id": "c5",
+      "title": "Temperature excursion distribution",
+      "chart_xml_parts_matching_item": [],
+      "category_count": 4,
+      "statistics": [
+        {
+          "category": "Harbor East",
+          "n": 3,
+          "source_values": [
+            0.0,
+            5.0,
+            0.0
+          ],
+          "min": 0.0,
+          "q1": 0.0,
+          "median": 0.0,
+          "q3": 2.5,
+          "max": 5.0
+        },
+        {
+          "category": "North Quay",
+          "n": 3,
+          "source_values": [
+            8.0,
+            0.0,
+            4.0
+          ],
+          "min": 0.0,
+          "q1": 2.0,
+          "median": 4.0,
+          "q3": 6.0,
+          "max": 8.0
+        },
+        {
+          "category": "Port Meridian",
+          "n": 3,
+          "source_values": [
+            13.0,
+            7.0,
+            0.0
+          ],
+          "min": 0.0,
+          "q1": 3.5,
+          "median": 7.0,
+          "q3": 10.0,
+          "max": 13.0
+        },
+        {
+          "category": "South Anchorage",
+          "n": 3,
+          "source_values": [
+            3.0,
+            0.0,
+            2.0
+          ],
+          "min": 0.0,
+          "q1": 1.0,
+          "median": 2.0,
+          "q3": 2.5,
+          "max": 3.0
+        }
+      ],
+      "editable_shape_count": 35,
+      "editable_shapes": [
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-title",
+          "descr": "VisualizerSemantic:{\"brush\":[0,4],\"chart_studio\":{\"adapter\":{\"authority\":\"Visembler canonical chart renderer\",\"name\":\"Visembler SVG Chart Adapter\",\"offline\":true,\"renderer\":\"svg\",\"version\":2},\"analysis_error\":null,\"analysis_kind\":null,\"analysis_semantics\":null,\"annotations\":[],\"authoritative_analysis\":null,\"axes\":{\"secondaryY\":{\"auto\":true,\"enabled\":false,\"format\":\"auto\",\"max\":null,\"min\":null,\"precision\":null,\"prefix\":\"\",\"series\":[],\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\"},\"x\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":2,\"max\":null,\"min\":null,\"position\":\"bottom\",\"precision\":null,\"rotation\":35,\"scale\":\"auto\",\"show\":true,\"tickCount\":6,\"title\":\"\",\"zeroBaseline\":false},\"y\":{\"auto\":true,\"format\":\"auto\",\"grid\":true,\"labelInterval\":null,\"max\":null,\"min\":null,\"position\":\"left\",\"precision\":null,\"prefix\":\"\",\"rotation\":0,\"scale\":\"linear\",\"show\":true,\"suffix\":\"\",\"tickCount\":5,\"title\":\"\",\"unit\":\"\",\"zeroBaseline\":false}},\"chart_type\":\"Box Plot\",\"dataset\":{\"fields\":[{\"id\":\"destination_lane_1\",\"name\":\"Destination lane\",\"nullable\":false,\"profile\":{\"distinct\":4,\"missing\":0},\"semantic_tags\":[],\"type\":\"categorical\"},{\"id\":\"temperature_excursion_minutes_2\",\"name\":\"Temperature excursion minutes\",\"nullable\":false,\"profile\":{\"distinct\":8,\"missing\":0},\"semantic_tags\":[],\"type\":\"integer\",\"unit\":\"\"}],\"id\":\"dataset-mujd0lfp-1q9e7e\",\"metadata\":{\"header\":{\"confidence\":0.75,\"present\":true,\"source_row\":0}},\"name\":\"Pasted data\",\"revision\":1,\"rows\":[[\"Harbor East\",0],[\"Harbor East\",5],[\"Harbor East\",0],[\"North Quay\",8],[\"North Quay\",0],[\"North Quay\",4],[\"Port Meridian\",13],[\"Port Meridian\",7],[\"Port Meridian\",0],[\"South Anchorage\",3],[\"South Anchorage\",0],[\"South Anchorage\",2]],\"source\":{\"imported_at\":\"2026-09-27T05:10:00.325Z\",\"kind\":\"clipboard\",\"label\":\"TSV\"},\"warnings\":[]},\"dataset_id\":\"dataset-mujd0lfp-1q9e7e\",\"engineering\":{\"L\":3,\"h\":320,\"k\":0.5,\"lambda\":0.2,\"lsl\":null,\"sigma\":null,\"target\":null,\"usl\":null},\"fab\":{\"aggregation\":\"mean\"},\"interaction\":{\"brush\":false,\"crossFilter\":false,\"crosshair\":false,\"legendFilter\":true,\"pan\":true,\"rangeSelector\":false,\"resetZoom\":true,\"tooltip\":true,\"transientSelection\":[],\"zoom\":true},\"legend\":{\"interactive\":true,\"order\":\"input\",\"orientation\":\"horizontal\",\"position\":\"bottom\",\"scroll\":true,\"show\":false},\"mapping\":{\"category\":\"destination_lane_1\",\"value\":\"temperature_excursion_minutes_2\",\"x\":\"temperature_excursion_minutes_2\"},\"recipe\":null,\"recommendations\":[{\"confidence\":0.9,\"mapping\":{\"category\":\"destination_lane_1\",\"value\":\"temperature_excursion_minutes_2\",\"x\":\"temperature_excursion_minutes_2\"},\"reason\":\"A category and measured value are available.\",\"type\":\"Vertical Bar\"},{\"confidence\":0.82,\"mapping\":{\"category\":\"destination_lane_1\",\"value\":\"temperature_excursion_minutes_2\",\"x\":\"temperature_excursion_minutes_2\"},\"reason\":\"A horizontal ranking keeps category labels readable.\",\"type\":\"Horizontal Bar\"},{\"confidence\":0.8,\"mapping\":{\"category\":\"destination_lane_1\",\"value\":\"temperature_excursion_minutes_2\",\"x\":\"temperature_excursion_minutes_2\"},\"reason\":\"Categorical contribution can be ranked with cumulative share.\",\"type\":\"Pareto\"}],\"reference_bands\":[],\"reference_lines\":[],\"schema\":\"visembler.chart.studio\",\"series\":[{\"axis\":\"primary\",\"color\":\"#1769d1\",\"field\":\"temperature_excursion_minutes_2\",\"id\":\"series-1\",\"label\":\"Temperature excursion minutes\",\"legend\":true,\"lineDash\":null,\"lineWidth\":null,\"markers\":true,\"smoothing\":false,\"type\":\"line\",\"visible\":true}],\"statistical_result\":null,\"transforms\":{\"steps\":[]},\"version\":1,\"visual\":{\"areaOpacity\":0.25,\"barMode\":\"grouped\",\"barWidth\":0.62,\"bins\":null,\"dataLabels\":false,\"gap\":0.2,\"labelPosition\":\"top\",\"lineDash\":\"solid\",\"lineWidth\":2.5,\"markers\":true,\"missingPolicy\":\"gap\",\"palette\":\"report\",\"smoothing\":false,\"theme\":\"system\"},\"wafer\":{\"clamp\":true,\"colorMode\":\"continuous\",\"differenceScaleMaximum\":null,\"differenceScaleMode\":\"automatic\",\"filters\":{\"bin\":\"\",\"chamber\":\"\",\"lot\":\"\",\"route\":\"\",\"tool\":\"\",\"wafer\":\"\"},\"identityRoles\":[\"lot_id\",\"wafer_id\",\"tool\",\"chamber\",\"recipe\",\"process\",\"route\",\"product\"],\"max\":null,\"min\":null,\"missingColor\":\"#c7d0dc\",\"notch\":\"top\",\"selected\":[],\"specHigh\":null,\"specLow\":null,\"tooltipRoles\":[\"die_x\",\"die_y\",\"value\",\"lot_id\",\"wafer_id\",\"tool\",\"chamber\"]},\"why\":\"A category and measured value are available.\"},\"composition_role\":\"supporting_analysis\",\"cross\":null,\"data\":[[\"Harbor East\",0],[\"Harbor East\",5],[\"Harbor East\",0],[\"North Quay\",8],[\"North Quay\",0],[\"North Quay\",4],[\"Port Meridian\",13],[\"Port Meridian\",7],[\"Port Meridian\",0],[\"South Anchorage\",3],[\"South Anchorage\",0],[\"South Anchorage\",2]],\"dataset_id\":\"dataset-mujd0lfp-1q9e7e\",\"drill\":null,\"element\":\"Box Plot\",\"engine\":\"CoreChartEngine\",\"groupId\":null,\"h\":371.2,\"id\":\"c5\",\"locked\":false,\"mapping\":{\"category\":\"destination_lane_1\",\"value\":\"temperature_excursion_minutes_2\",\"x\":\"temperature_excursion_minutes_2\"},\"message_role\":\"Supporting Evidence\",\"order\":4,\"revealed\":true,\"rows\":[{\"label\":\"Harbor East\",\"value\":0},{\"label\":\"Harbor East\",\"value\":5},{\"label\":\"Harbor East\",\"value\":0},{\"label\":\"North Quay\",\"value\":8},{\"label\":\"North Quay\",\"value\":0},{\"label\":\"North Quay\",\"value\":4},{\"label\":\"Port Meridian\",\"value\":13},{\"label\":\"Port Meridian\",\"value\":7},{\"label\":\"Port Meridian\",\"value\":0},{\"label\":\"South Anchorage\",\"value\":3},{\"label\":\"South Anchorage\",\"value\":0},{\"label\":\"South Anchorage\",\"value\":2}],\"section_id\":\"analysis\",\"section_title\":\"Analysis\",\"showTitle\":true,\"statistical_result\":null,\"textAlign\":\"left\",\"title\":\"Temperature excursion distribution\",\"transform_recipe\":{\"steps\":[]},\"type\":\"chart\",\"variant\":\"line\",\"w\":764.8969696969697,\"weight\":1.8,\"x\":417.55151515151516,\"y\":569.3599999999999,\"z\":5,\"observations\":[{\"label\":\"Harbor East\",\"value\":0},{\"label\":\"Harbor East\",\"value\":5},{\"label\":\"Harbor East\",\"value\":0},{\"label\":\"North Quay\",\"value\":8},{\"label\":\"North Quay\",\"value\":0},{\"label\":\"North Quay\",\"value\":4},{\"label\":\"Port Meridian\",\"value\":13},{\"label\":\"Port Meridian\",\"value\":7},{\"label\":\"Port Meridian\",\"value\":0},{\"label\":\"South Anchorage\",\"value\":3},{\"label\":\"South Anchorage\",\"value\":0},{\"label\":\"South Anchorage\",\"value\":2}]}",
+          "text": "Temperature excursion distribution",
+          "font_points": [
+            12.0
+          ],
+          "geometry_emu": {
+            "x": 2948630.0,
+            "y": 3782796.0,
+            "cx": 4630098.0,
+            "cy": 246379.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-0",
+          "descr": null,
+          "text": "-0.65",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 2747322.0,
+            "y": 5514421.0,
+            "cx": 679417.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-1",
+          "descr": null,
+          "text": "2.925",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 2747322.0,
+            "y": 5178598.0,
+            "cx": 679417.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-2",
+          "descr": null,
+          "text": "6.5",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 2747322.0,
+            "y": 4842775.0,
+            "cx": 679417.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-3",
+          "descr": null,
+          "text": "10.075",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 2747322.0,
+            "y": 4506953.0,
+            "cx": 679417.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-axis-4",
+          "descr": null,
+          "text": "13.65",
+          "font_points": [
+            7.0
+          ],
+          "geometry_emu": {
+            "x": 2747322.0,
+            "y": 4171130.0,
+            "cx": 679417.0,
+            "cy": 152400.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3858293.0,
+            "y": 5282021.0,
+            "cx": 407650.0,
+            "cy": 234841.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-0-category",
+          "descr": null,
+          "text": "Harbor East",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 3513478.0,
+            "y": 5687826.0,
+            "cx": 1097280.0,
+            "cy": 317505.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4877418.0,
+            "y": 4953244.0,
+            "cx": 407650.0,
+            "cy": 375745.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-1-category",
+          "descr": null,
+          "text": "North Quay",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 4532603.0,
+            "y": 5687826.0,
+            "cx": 1097280.0,
+            "cy": 317505.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-2-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5896543.0,
+            "y": 4577498.0,
+            "cx": 407650.0,
+            "cy": 610587.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-2-category",
+          "descr": null,
+          "text": "Port Meridian",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 5551728.0,
+            "y": 5687826.0,
+            "cx": 1097280.0,
+            "cy": 317505.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-3-quartiles",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6915668.0,
+            "y": 5282021.0,
+            "cx": 407650.0,
+            "cy": 140905.0
+          }
+        },
+        {
+          "kind": "sp",
+          "name": "VIZ::c5::box-plot-3-category",
+          "descr": null,
+          "text": "South Anchorage",
+          "font_points": [
+            8.0
+          ],
+          "geometry_emu": {
+            "x": 6570853.0,
+            "y": 5687826.0,
+            "cx": 1097280.0,
+            "cy": 317505.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3552556.0,
+            "y": 5577921.0,
+            "cx": 4076500.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3552556.0,
+            "y": 5242098.0,
+            "cx": 4076500.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-2",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3552556.0,
+            "y": 4906275.0,
+            "cx": 4076500.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-3",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3552556.0,
+            "y": 4570453.0,
+            "cx": 4076500.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-grid-4",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3552556.0,
+            "y": 4234630.0,
+            "cx": 4076500.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4062118.5,
+            "y": 5047180.0,
+            "cx": 0.0,
+            "cy": 469682.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3858293.5,
+            "y": 5516862.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3858293.5,
+            "y": 5047180.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-0-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 3858293.5,
+            "y": 5516862.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5081243.5,
+            "y": 4765371.0,
+            "cx": 0.0,
+            "cy": 751491.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4877418.5,
+            "y": 5516862.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4877418.5,
+            "y": 4765371.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-1-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 4877418.5,
+            "y": 5141117.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6100368.5,
+            "y": 4295689.0,
+            "cx": 0.0,
+            "cy": 1221173.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5896543.5,
+            "y": 5516862.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5896543.5,
+            "y": 4295689.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-2-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 5896543.5,
+            "y": 4859307.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-3-whisker",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 7119493.5,
+            "y": 5235053.0,
+            "cx": 0.0,
+            "cy": 281809.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-3-whisker-cap-0",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6915668.5,
+            "y": 5516862.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-3-whisker-cap-1",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6915668.5,
+            "y": 5235053.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        },
+        {
+          "kind": "cxnSp",
+          "name": "VIZ::c5::box-plot-3-median",
+          "descr": null,
+          "text": "",
+          "font_points": [],
+          "geometry_emu": {
+            "x": 6915668.5,
+            "y": 5328989.0,
+            "cx": 407650.0,
+            "cy": 0.0
+          }
+        }
+      ],
+      "geometry_unit": "English Metric Units (EMU)",
+      "false_chart_xml_for_box_plot": false
+    }
+  ]
+}

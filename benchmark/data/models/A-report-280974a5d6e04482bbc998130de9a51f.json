@@ -1,0 +1,1488 @@
+{
+  "report_id": "report-280974a5d6e04482bbc998130de9a51f",
+  "revision": 76,
+  "title": "FY26 Northline Network Retention Decision",
+  "model": {
+    "schema_version": 1,
+    "authoring_schema": "authoring-p0-v1",
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "cohort_window_1",
+            "name": "Cohort window",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "renewal_rate_2",
+            "name": "Renewal rate",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujcd7wy-x79epk",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "FY24 Q3 | Enterprise renewal cohort",
+            86.2
+          ],
+          [
+            "FY24 Q4 | Enterprise renewal cohort",
+            87.1
+          ],
+          [
+            "FY25 Q1 | Enterprise renewal cohort",
+            88
+          ],
+          [
+            "FY25 Q2 | Enterprise renewal cohort",
+            87.9
+          ],
+          [
+            "FY25 Q3 | Enterprise renewal cohort",
+            89.2
+          ],
+          [
+            "FY25 Q4 | Enterprise renewal cohort",
+            90.1
+          ],
+          [
+            "FY26 Q1 | Enterprise renewal cohort",
+            90.7
+          ],
+          [
+            "FY26 Q2 | Enterprise renewal cohort",
+            91.4
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T04:51:49.714Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "market_segment_1",
+            "name": "Market segment",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "contribution_margin_percent_2",
+            "name": "Contribution margin percent",
+            "nullable": false,
+            "profile": {
+              "distinct": 16,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mujcda71-iqsxbm",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Metro East",
+            18.4
+          ],
+          [
+            "Metro East",
+            19.1
+          ],
+          [
+            "Metro East",
+            17.8
+          ],
+          [
+            "Metro East",
+            20.2
+          ],
+          [
+            "Central Corridor",
+            24.2
+          ],
+          [
+            "Central Corridor",
+            25
+          ],
+          [
+            "Central Corridor",
+            23.8
+          ],
+          [
+            "Central Corridor",
+            26.1
+          ],
+          [
+            "Mountain West",
+            27.1
+          ],
+          [
+            "Mountain West",
+            28.2
+          ],
+          [
+            "Mountain West",
+            26.9
+          ],
+          [
+            "Mountain West",
+            29
+          ],
+          [
+            "Coastal North",
+            22.2
+          ],
+          [
+            "Coastal North",
+            23.4
+          ],
+          [
+            "Coastal North",
+            21.8
+          ],
+          [
+            "Coastal North",
+            24.1
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T04:51:52.669Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "items": [
+      {
+        "body": "Protect renewals before accelerating Northline acquisition spend.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 122.93120000000002,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Executive summary",
+        "text": "Protect renewals before accelerating Northline acquisition spend.",
+        "title": "Executive Statement",
+        "type": "text",
+        "w": 1059.44,
+        "weight": 1,
+        "x": 14,
+        "y": 40,
+        "z": 1
+      },
+      {
+        "body": "FY26 Q2 close · Northline Field Service · 8 renewal cohorts and 5 market groups · CRM close extract frozen 2026-09-18.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 72,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Executive summary",
+        "text": "FY26 Q2 close · Northline Field Service · 8 renewal cohorts and 5 market groups · CRM close extract frozen 2026-09-18.",
+        "title": "Quarterly context",
+        "type": "text",
+        "w": 498.56,
+        "weight": 1,
+        "x": 1087.44,
+        "y": 65.46560000000001,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 93
+        },
+        "composition_role": "hero_metric",
+        "delta": 2.2,
+        "element": "Hero KPI",
+        "emphasis": "hero",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 206,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 93,
+        "title": "FY26 Q2 renewal",
+        "type": "metric",
+        "unit": "%",
+        "value": 91.4,
+        "w": 648,
+        "weight": 1,
+        "x": 14,
+        "y": 1523.7312,
+        "z": 3
+      },
+      {
+        "capability_overrides": {
+          "target": 19
+        },
+        "composition_role": "hero_metric",
+        "delta": 1.35,
+        "element": "Hero KPI",
+        "emphasis": "prominent",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 200,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "$M"
+        },
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 19,
+        "title": "Recurring contribution",
+        "type": "metric",
+        "unit": "$M",
+        "value": 18.42,
+        "w": 447.76,
+        "weight": 1,
+        "x": 676.48,
+        "y": 1523.7312,
+        "z": 4
+      },
+      {
+        "after": 91.4,
+        "before": 87.9,
+        "composition_role": "hero_metric",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 215,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 4,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "title": "Renewal recovery since FY25 Q2",
+        "type": "comparison",
+        "unit": "%",
+        "w": 447.76,
+        "weight": 1,
+        "x": 1138.24,
+        "y": 1523.7312,
+        "z": 5
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 1,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 45,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "cohort_window_1",
+                "name": "Cohort window",
+                "nullable": false,
+                "profile": {
+                  "distinct": 8,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "string"
+              },
+              {
+                "id": "renewal_rate_2",
+                "name": "Renewal rate",
+                "nullable": false,
+                "profile": {
+                  "distinct": 8,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujcd7wy-x79epk",
+            "metadata": {
+              "header": {
+                "confidence": 1,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "FY24 Q3 | Enterprise renewal cohort",
+                86.2
+              ],
+              [
+                "FY24 Q4 | Enterprise renewal cohort",
+                87.1
+              ],
+              [
+                "FY25 Q1 | Enterprise renewal cohort",
+                88
+              ],
+              [
+                "FY25 Q2 | Enterprise renewal cohort",
+                87.9
+              ],
+              [
+                "FY25 Q3 | Enterprise renewal cohort",
+                89.2
+              ],
+              [
+                "FY25 Q4 | Enterprise renewal cohort",
+                90.1
+              ],
+              [
+                "FY26 Q1 | Enterprise renewal cohort",
+                90.7
+              ],
+              [
+                "FY26 Q2 | Enterprise renewal cohort",
+                91.4
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T04:51:49.714Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujcd7wy-x79epk",
+          "engineering": {
+            "L": 3,
+            "h": 432,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "cohort_window_1",
+            "value": "renewal_rate_2",
+            "x": "cohort_window_1",
+            "y": "renewal_rate_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "cohort_window_1",
+                "value": "renewal_rate_2",
+                "x": "cohort_window_1",
+                "y": "renewal_rate_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "renewal_rate_2",
+              "id": "series-1",
+              "label": "Renewal rate",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            "FY24 Q3 | Enterprise renewal cohort",
+            86.2
+          ],
+          [
+            "FY24 Q4 | Enterprise renewal cohort",
+            87.1
+          ],
+          [
+            "FY25 Q1 | Enterprise renewal cohort",
+            88
+          ],
+          [
+            "FY25 Q2 | Enterprise renewal cohort",
+            87.9
+          ],
+          [
+            "FY25 Q3 | Enterprise renewal cohort",
+            89.2
+          ],
+          [
+            "FY25 Q4 | Enterprise renewal cohort",
+            90.1
+          ],
+          [
+            "FY26 Q1 | Enterprise renewal cohort",
+            90.7
+          ],
+          [
+            "FY26 Q2 | Enterprise renewal cohort",
+            91.4
+          ]
+        ],
+        "dataset_id": "dataset-mujcd7wy-x79epk",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 432,
+        "id": "c6",
+        "locked": false,
+        "mapping": {
+          "category": "cohort_window_1",
+          "value": "renewal_rate_2",
+          "x": "cohort_window_1",
+          "y": "renewal_rate_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 5,
+        "rows": [
+          {
+            "label": "FY24 Q3 | Enterprise renewal cohort",
+            "value": 86.2
+          },
+          {
+            "label": "FY24 Q4 | Enterprise renewal cohort",
+            "value": 87.1
+          },
+          {
+            "label": "FY25 Q1 | Enterprise renewal cohort",
+            "value": 88
+          },
+          {
+            "label": "FY25 Q2 | Enterprise renewal cohort",
+            "value": 87.9
+          },
+          {
+            "label": "FY25 Q3 | Enterprise renewal cohort",
+            "value": 89.2
+          },
+          {
+            "label": "FY25 Q4 | Enterprise renewal cohort",
+            "value": 90.1
+          },
+          {
+            "label": "FY26 Q1 | Enterprise renewal cohort",
+            "value": 90.7
+          },
+          {
+            "label": "FY26 Q2 | Enterprise renewal cohort",
+            "value": 91.4
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Quarterly Northline renewal rate",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "w": 890.1818181818181,
+        "weight": 1,
+        "x": 354.90909090909093,
+        "y": 694.9312,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Market / account group",
+            "Renewal %",
+            "Recurring ARR $M",
+            "Decision signal"
+          ],
+          "rows": [
+            [
+              "Metro East strategic accounts",
+              88.7,
+              4.82,
+              "Below release gate"
+            ],
+            [
+              "Central Corridor public works",
+              93.8,
+              3.66,
+              "Within guardrail"
+            ],
+            [
+              "Mountain West service depots",
+              94.1,
+              5.3,
+              "Renewal confirmed"
+            ],
+            [
+              "Coastal North utilities",
+              91.6,
+              4.64,
+              "Two terms open"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "h": 429.2,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 6,
+        "rows": [
+          [
+            "Metro East strategic accounts",
+            88.7,
+            4.82,
+            "Below release gate"
+          ],
+          [
+            "Central Corridor public works",
+            93.8,
+            3.66,
+            "Within guardrail"
+          ],
+          [
+            "Mountain West service depots",
+            94.1,
+            5.3,
+            "Renewal confirmed"
+          ],
+          [
+            "Coastal North utilities",
+            91.6,
+            4.64,
+            "Two terms open"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Regional evidence",
+        "showTitle": true,
+        "title": "Operating evidence · A",
+        "type": "table",
+        "w": 578.2811501597444,
+        "weight": 1,
+        "x": 25.798818859521816,
+        "y": 196.93120000000002,
+        "z": 7
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Two enterprise renewals remain unresolved; the cohort sample is directional, not a full-year retention estimate.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 194,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 8,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "showTitle": true,
+        "statement": "Gate acquisition tranche on Metro East renewals",
+        "status": "Review",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 1572,
+        "weight": 1,
+        "x": 14,
+        "y": 1160.9312,
+        "z": 8
+      },
+      {
+        "body": "Next step: hold incremental acquisition spend for two weeks; release the next tranche only after Metro East confirms the 93.0% renewal gate.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 100.80000000000001,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Action",
+        "order": 9,
+        "section_id": "delivery",
+        "section_title": "Decision and next step",
+        "text": "Next step: hold incremental acquisition spend for two weeks; release the next tranche only after Metro East confirms the 93.0% renewal gate.",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 1572,
+        "weight": 1,
+        "x": 14,
+        "y": 1388.9312,
+        "z": 9
+      },
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 2,
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 35,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Box Plot",
+          "dataset": {
+            "fields": [
+              {
+                "id": "market_segment_1",
+                "name": "Market segment",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "contribution_margin_percent_2",
+                "name": "Contribution margin percent",
+                "nullable": false,
+                "profile": {
+                  "distinct": 16,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mujcda71-iqsxbm",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Metro East",
+                18.4
+              ],
+              [
+                "Metro East",
+                19.1
+              ],
+              [
+                "Metro East",
+                17.8
+              ],
+              [
+                "Metro East",
+                20.2
+              ],
+              [
+                "Central Corridor",
+                24.2
+              ],
+              [
+                "Central Corridor",
+                25
+              ],
+              [
+                "Central Corridor",
+                23.8
+              ],
+              [
+                "Central Corridor",
+                26.1
+              ],
+              [
+                "Mountain West",
+                27.1
+              ],
+              [
+                "Mountain West",
+                28.2
+              ],
+              [
+                "Mountain West",
+                26.9
+              ],
+              [
+                "Mountain West",
+                29
+              ],
+              [
+                "Coastal North",
+                22.2
+              ],
+              [
+                "Coastal North",
+                23.4
+              ],
+              [
+                "Coastal North",
+                21.8
+              ],
+              [
+                "Coastal North",
+                24.1
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T04:51:52.669Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mujcda71-iqsxbm",
+          "engineering": {
+            "L": 3,
+            "h": 464,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": false
+          },
+          "mapping": {
+            "category": "market_segment_1",
+            "value": "contribution_margin_percent_2",
+            "x": "contribution_margin_percent_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "market_segment_1",
+                "value": "contribution_margin_percent_2",
+                "x": "contribution_margin_percent_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "market_segment_1",
+                "value": "contribution_margin_percent_2",
+                "x": "contribution_margin_percent_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "market_segment_1",
+                "value": "contribution_margin_percent_2",
+                "x": "contribution_margin_percent_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "contribution_margin_percent_2",
+              "id": "series-1",
+              "label": "Contribution margin percent",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A category and measured value are available."
+        },
+        "composition_role": "detailed_evidence",
+        "cross": null,
+        "data": [
+          [
+            18.4,
+            18.4
+          ],
+          [
+            19.1,
+            19.1
+          ],
+          [
+            17.8,
+            17.8
+          ],
+          [
+            20.2,
+            20.2
+          ],
+          [
+            24.2,
+            24.2
+          ],
+          [
+            25,
+            25
+          ],
+          [
+            23.8,
+            23.8
+          ],
+          [
+            26.1,
+            26.1
+          ],
+          [
+            27.1,
+            27.1
+          ],
+          [
+            28.2,
+            28.2
+          ],
+          [
+            26.9,
+            26.9
+          ],
+          [
+            29,
+            29
+          ],
+          [
+            22.2,
+            22.2
+          ],
+          [
+            23.4,
+            23.4
+          ],
+          [
+            21.8,
+            21.8
+          ],
+          [
+            24.1,
+            24.1
+          ]
+        ],
+        "dataset_id": "dataset-mujcda71-iqsxbm",
+        "drill": null,
+        "element": "Box Plot",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 464,
+        "id": "c10",
+        "locked": false,
+        "mapping": {
+          "category": "market_segment_1",
+          "value": "contribution_margin_percent_2",
+          "x": "contribution_margin_percent_2"
+        },
+        "message_role": "Supporting Evidence",
+        "order": 7,
+        "revealed": true,
+        "rows": [
+          {
+            "label": 18.4,
+            "value": 18.4
+          },
+          {
+            "label": 19.1,
+            "value": 19.1
+          },
+          {
+            "label": 17.8,
+            "value": 17.8
+          },
+          {
+            "label": 20.2,
+            "value": 20.2
+          },
+          {
+            "label": 24.2,
+            "value": 24.2
+          },
+          {
+            "label": 25,
+            "value": 25
+          },
+          {
+            "label": 23.8,
+            "value": 23.8
+          },
+          {
+            "label": 26.1,
+            "value": 26.1
+          },
+          {
+            "label": 27.1,
+            "value": 27.1
+          },
+          {
+            "label": 28.2,
+            "value": 28.2
+          },
+          {
+            "label": 26.9,
+            "value": 26.9
+          },
+          {
+            "label": 29,
+            "value": 29
+          },
+          {
+            "label": 22.2,
+            "value": 22.2
+          },
+          {
+            "label": 23.4,
+            "value": 23.4
+          },
+          {
+            "label": 21.8,
+            "value": 21.8
+          },
+          {
+            "label": 24.1,
+            "value": 24.1
+          }
+        ],
+        "section_id": "evidence",
+        "section_title": "Evidence",
+        "showTitle": true,
+        "statistical_result": null,
+        "textAlign": "left",
+        "title": "Supporting distribution",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "variant": "line",
+        "w": 956.1212121212121,
+        "weight": 1.8,
+        "x": 618.0799690192662,
+        "y": 196.93120000000002,
+        "z": 10
+      }
+    ],
+    "groups": {},
+    "mode": "smart",
+    "layoutPreset": "executive",
+    "crossFilter": null,
+    "canvas": {
+      "width": 1600,
+      "height": 1753
+    },
+    "nextId": 11,
+    "crossFilters": []
+  },
+  "metadata": {
+    "description": "Quarter-end decision for the Northline field-service subscription portfolio; reconcile renewal, market contribution and acquisition pacing before FY26 Q3 budget release.",
+    "template_id": "executive-business-review"
+  },
+  "commit_ids": [
+    "cmd-4-5y1dv2ys",
+    "cmd-5-syo080px",
+    "cmd-6-qijeig25",
+    "cmd-7-e5rr0jpk",
+    "cmd-8-ya7400rw",
+    "cmd-9-jmn1olp0",
+    "cmd-10-v1r8o558",
+    "cmd-11-kjgh0qch",
+    "cmd-12-jnojr1wj",
+    "cmd-13-n32cz5fj",
+    "cmd-14-3tscy9jr",
+    "cmd-15-svbhky8l",
+    "cmd-16-eud4u5dz",
+    "cmd-17-qqzqz36x",
+    "cmd-18-q32ld1wb",
+    "cmd-19-08bd0joe",
+    "cmd-20-qclb4ws6",
+    "cmd-21-f53ber3l",
+    "cmd-22-tchpdgk3",
+    "cmd-23-ias193rl",
+    "cmd-24-aqba0pc2",
+    "cmd-25-q2v53lm3",
+    "cmd-26-nu4yxxdv",
+    "cmd-27-atfpbs1v",
+    "cmd-28-yl08di1x",
+    "cmd-29-fm98g286",
+    "cmd-30-3lq95koy",
+    "cmd-31-2kdor2m5",
+    "cmd-32-yxzfc50c",
+    "cmd-33-yi871z1k",
+    "cmd-34-9ukx3dqx",
+    "cmd-35-3dutvhwo",
+    "cmd-36-etyt3hlj",
+    "cmd-37-mjfg4ugw",
+    "cmd-38-kltslf6e",
+    "cmd-39-d5erqa5y",
+    "cmd-40-hh2mjazs",
+    "cmd-41-bztz9l57",
+    "cmd-42-wyapudzz",
+    "cmd-43-yossxvqg",
+    "cmd-44-dijwg572",
+    "cmd-45-uyfgyvbj",
+    "cmd-46-4q7i6vda",
+    "cmd-47-papp6c4i",
+    "cmd-48-jtw3dwq4",
+    "cmd-49-i1z3uowm",
+    "cmd-50-yik34gaa",
+    "cmd-51-eoczeez6",
+    "cmd-52-1udmld3h",
+    "cmd-53-j9jyelzj",
+    "cmd-54-mjj2uzo9",
+    "cmd-55-alq7ehpo",
+    "cmd-56-q4qblie4",
+    "cmd-57-ifolrpyp",
+    "cmd-58-aedklm3s",
+    "cmd-59-9rrsn42j",
+    "cmd-60-t47vhqtc",
+    "cmd-61-zk8dvvg0",
+    "cmd-62-0d6nqskz",
+    "cmd-63-w08mr8e1",
+    "cmd-64-ka1mcqoz",
+    "cmd-65-3ptstjih",
+    "cmd-66-7lso95co",
+    "cmd-67-dub861jr",
+    "cmd-68-e48n98p5",
+    "cmd-69-giijnuqy",
+    "cmd-70-8c7db91q",
+    "cmd-71-0ov0hgns",
+    "undo-71-mujcdckn-om75rza",
+    "redo-72-mujcdclt-bnnu4d2",
+    "cmd-74-q62h32xb",
+    "chart-commit-mujcdd6l-5ni3e",
+    "chart-commit-mujcde38-5dkz5"
+  ],
+  "created_at": "2026-09-27T04:51:44.911860+00:00",
+  "updated_at": "2026-09-27T04:51:57.722000+00:00",
+  "fingerprint": "bc74b26728bbab2f964b6a5988b765f9c4093108bb3601e6e6d05363b1e37d82"
+}

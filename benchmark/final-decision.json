@@ -1,0 +1,84 @@
+{
+  "project": "visembler",
+  "change": "CHG-173",
+  "request": "CHG-173-r5",
+  "operation": "VERIFY",
+  "source_sha": "564fe414a149924128c3d0b531205636fb7cf6d5",
+  "source_tree": "59f0a884910c7b26a27ad45b2ac49a5a648e7f88",
+  "benchmark_report_count": 6,
+  "fresh_holdout_count": 2,
+  "native_release_status": "PASS_LOCAL_INTERNAL_PILOT",
+  "responsive_final_proof": "PASS",
+  "pptx_semantic_final_proof": "BLOCKED",
+  "pptx_label_layout_final_proof": "FAIL",
+  "final_outcome_self_verdict": "NO_GO",
+  "status": "VERIFY_COMPLETE_AWAITING_INDEPENDENT_AUDIT",
+  "criteria": [
+    {
+      "id": 1,
+      "criterion": "Six complete reports materially meet the task and principal-quality bar.",
+      "status": "PASS",
+      "evidence": "Six populated UI-authored reports, per-report narrative reviews, desktop/narrow screenshots, supported PPTX/SVG outputs."
+    },
+    {
+      "id": 2,
+      "criterion": "Reports show task-grounded art direction rather than one repeated template family.",
+      "status": "PASS",
+      "evidence": "A–D use distinct registered task blueprints; fresh E/F blank holdouts have visibly different dense field and sparse decision compositions."
+    },
+    {
+      "id": 3,
+      "criterion": "Sophisticated reports are produced through supported authoring, without hidden source manipulation.",
+      "status": "PASS",
+      "evidence": "Saved report models, action logs, editor screenshots, Chart Studio/Data First actions, and a clean source tree."
+    },
+    {
+      "id": 4,
+      "criterion": "Reuse/remix provides obvious leverage without semantic/source leakage.",
+      "status": "BLOCKED",
+      "evidence": "Template-vs-blank actions and maintained CHG-181 pass are present; the additional full benchmark-set reuse/remix challenge was not executed after the P1 stop."
+    },
+    {
+      "id": 5,
+      "criterion": "Lifecycle/history/conflict recovery remains governed and usable.",
+      "status": "PASS_LOCAL_INTERNAL",
+      "evidence": "Canonical save/reload equality for six, report-lifecycle-integrity, native recovery, worker lifecycle, CHG-208, and company-boundary gates pass locally."
+    },
+    {
+      "id": 6,
+      "criterion": "390/320 reading has no material clipping, hidden rationale, destructive token wrapping, unreadable diagram, or undiscoverable table overflow.",
+      "status": "PASS",
+      "evidence": "All six at 1440/390; B/D/E at 320; F at 320/360/390. Responsive diagnostics report zero body spill, unclipped narratives, ordered narrow Process Flow, and keyboard/touch table overflow."
+    },
+    {
+      "id": 7,
+      "criterion": "Editable PPTX preserves visible report meaning, chart family/series/category/y-axis semantics, and dense label/legend/title readability.",
+      "status": "FAIL",
+      "evidence": "All category/value caches and chart families are retained, grouped C/E series and y-domains are inspectable, and Box Plots export as editable primitives. However A labelInterval 1 exports tickLblSkip 5 and F 1 exports 2; Quick Look shows only two categories in each. Exact PPTX import round-trip was not run."
+    },
+    {
+      "id": 8,
+      "criterion": "Wrong-type/missing/ambiguous remap states remain truthful, actionable, and fail closed.",
+      "status": "PASS_LOCAL_INTERNAL",
+      "evidence": "Maintained CHG-208 remap diagnostics pass; raw JSON, logs, and screenshots are retained."
+    },
+    {
+      "id": 9,
+      "criterion": "No new material P0/P1 or world-class composition/reuse failure class is found.",
+      "status": "FAIL",
+      "evidence": "R5-FIND-01 is a confirmed P1 low-density editable-PPTX category interval failure after CHG-277."
+    },
+    {
+      "id": 10,
+      "criterion": "Evidence is complete and independently inspectable.",
+      "status": "PASS_WITH_LIMITATIONS",
+      "evidence": "Six reports, raw exports, package XML, hashes, local release/JUnit, responsive captures, finding register, and provenance are included. The full remix challenge and PPTX import round-trip are explicitly blocked after the stop; Quick Look lacks E."
+    }
+  ],
+  "finding_id": "R5-FIND-01",
+  "finding_priority": "P1",
+  "company_target_certification": "PENDING_SEPARATE_CHG-21",
+  "error_code": null,
+  "producer_self_verdict_is_evidence_only": true,
+  "independent_final_verdict_owner": "Project OS / ChatGPT"
+}
