@@ -1,0 +1,23 @@
+{
+  "before_exports": [
+    "01-reproduction/before-chart-export/E-before-editable-export.pptx",
+    "01-reproduction/before-chart-export/B-before-editable-export.pptx"
+  ],
+  "decisive_R4_files": [
+    "01-reproduction/r4-source/E-R4-chart2.xml",
+    "01-reproduction/r4-source/findings-register.json"
+  ],
+  "full_report_export_limit": "The full E report re-export stops at the pre-existing CHG-206 Supply interpretation text-fit guard before chart export; isolated reproduction preserves the exact R4 chart values, ordered series/categories, geometry, and y-domain.",
+  "method": "Imported E and B charts from the CHG-173 R4 source PPTXs, isolated canonical chart models, then ran export_pptx at exact chart rectangles on the requested base.",
+  "original_r4_assets": [
+    "01-reproduction/r4-source/E-original-R4.pptx",
+    "01-reproduction/r4-source/E-original-R4-QuickLook.png",
+    "01-reproduction/r4-source/B-original-R4.pptx",
+    "01-reproduction/r4-source/B-original-R4-QuickLook.png"
+  ],
+  "pre_fix_data_equals_candidate": {
+    "B-like": true,
+    "E-like": true
+  },
+  "preview_renderer": "Quick Look only; no PowerPoint or LibreOffice rendering claim."
+}

@@ -1,0 +1,74 @@
+{
+  "base_sha": "f1a3cd5c5fa4e6eb5f2d51c38555a34f85f5fee3",
+  "candidate_sha": "602552a4b121f0f722542ea5cefe419b1cb292c4",
+  "candidate_tree": "59f0a884910c7b26a27ad45b2ac49a5a648e7f88",
+  "checks": [
+    {
+      "detail": "Candidate has exact requested base as parent.",
+      "name": "candidate-parent",
+      "result": "PASS"
+    },
+    {
+      "detail": "Candidate retains pre-fix series/category/value facts and y-domain.",
+      "name": "E-package-preservation",
+      "result": "PASS"
+    },
+    {
+      "detail": "All nine categories stay in the package; preview labels use interval 2 with zero rotation.",
+      "name": "E-category-interval",
+      "result": "PASS"
+    },
+    {
+      "detail": "Independent dense holdout retains 11 categories and three ordered series with category thinning only at presentation.",
+      "name": "dense-holdout",
+      "result": "PASS"
+    },
+    {
+      "detail": "Low-density chart keeps every category horizontal.",
+      "name": "low-density-holdout",
+      "result": "PASS"
+    },
+    {
+      "detail": "Box Plot uses editable primitives only, with 3 pt title/tick gap.",
+      "name": "box-plot",
+      "result": "PASS"
+    },
+    {
+      "detail": "All four candidate models match their imported semantic model exactly.",
+      "name": "semantic-round-trip",
+      "result": "PASS"
+    },
+    {
+      "detail": "Focused CHG-277/254/206/180 suite passed 27 tests.",
+      "name": "focused-tests",
+      "result": "PASS"
+    },
+    {
+      "detail": "Maintained release full pytest passed 1227 tests.",
+      "name": "full-tests",
+      "result": "PASS"
+    },
+    {
+      "detail": "Hosted GitHub Quality passed on the exact candidate SHA.",
+      "name": "github-quality",
+      "result": "PASS"
+    },
+    {
+      "detail": "Maintained native release passed; target certification remains pending.",
+      "name": "native-release",
+      "result": "PASS"
+    }
+  ],
+  "disposition": "PASS_LAYOUT_ONLY_FIX_FOR_REVIEW",
+  "findings": [],
+  "renderer_limit": "Quick Look previews only; no Office rendering or company-managed production certification is claimed.",
+  "review_carrier": "project-os-artifacts/visembler/CHG-277-r1",
+  "review_method": "Second-pass artifact, package, geometry, manifest, and gate validation with direct visual inspection of the four Quick Look previews. This receipt is not a separate human attestation.",
+  "reviewed_at_utc": "2026-09-27T00:32:22.962772+00:00",
+  "schema_version": 1,
+  "scope_confirmed": [
+    "No Chart Studio/report semantics changed.",
+    "No category, series, value, y-domain, Box Plot statistic, browser, responsive behavior, or frozen adapter change.",
+    "No CHG-173 outcome or CHG-21 managed-target certification claim."
+  ]
+}
