@@ -1,0 +1,171 @@
+{
+  "focused_pytest": {
+    "command": "pytest -q tests/test_visualizer_chg277_pptx_chart_label_layout.py tests/test_visualizer_chg254_pptx_chart_semantics.py tests/test_visualizer_chart_studio.py",
+    "result": "PASS",
+    "passed": 20
+  },
+  "full_pytest": {
+    "command": "pytest -q",
+    "result": "PASS",
+    "collected": 1233,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "quality": {
+    "run_id": "36330158205",
+    "url": "https://github.com/kimhw8084/visembler/actions/runs/36330158205",
+    "head": "530fcad423c0b64afb77ee73f7c67a64754ba41b",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": 9,
+    "all_jobs_success": true
+  },
+  "native_release": {
+    "status": "PASS_LOCAL_INTERNAL_PILOT",
+    "checks_status": "PASS",
+    "managed_target_status": "PENDING",
+    "checks": [
+      {
+        "name": "repository-contracts",
+        "status": "PASS"
+      },
+      {
+        "name": "company-boundary-model",
+        "status": "PASS"
+      },
+      {
+        "name": "company-boundary-browser",
+        "status": "PASS"
+      },
+      {
+        "name": "company-readiness-local",
+        "status": "PASS"
+      },
+      {
+        "name": "company-capacity",
+        "status": "PASS"
+      },
+      {
+        "name": "element-coverage",
+        "status": "PASS"
+      },
+      {
+        "name": "delivery-tests",
+        "status": "PASS"
+      },
+      {
+        "name": "full-tests",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-integrated_editor.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-element_renderer.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-authoring_dataset_refresh.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-authoring_portability.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-authoring_intake_client.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-authoring_composition.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "syntax-authoring_reuse_contract.mjs",
+        "status": "PASS"
+      },
+      {
+        "name": "persistence-source-probe",
+        "status": "PASS"
+      },
+      {
+        "name": "git-diff-check",
+        "status": "PASS"
+      },
+      {
+        "name": "elements",
+        "status": "PASS"
+      },
+      {
+        "name": "data",
+        "status": "PASS"
+      },
+      {
+        "name": "performance",
+        "status": "PASS"
+      },
+      {
+        "name": "report-lifecycle-integrity",
+        "status": "PASS"
+      },
+      {
+        "name": "chg181-authoring-composition-reuse",
+        "status": "PASS"
+      },
+      {
+        "name": "chg208-remap-diagnostics",
+        "status": "PASS"
+      },
+      {
+        "name": "chart-studio",
+        "status": "PASS"
+      },
+      {
+        "name": "report-hub-browser-errors",
+        "status": "PASS"
+      },
+      {
+        "name": "native-recovery",
+        "status": "PASS"
+      },
+      {
+        "name": "worker-lifecycle",
+        "status": "PASS"
+      },
+      {
+        "name": "operations-drill",
+        "status": "PASS"
+      },
+      {
+        "name": "native-acceptance",
+        "status": "PASS"
+      },
+      {
+        "name": "source-stability",
+        "status": "PASS"
+      },
+      {
+        "name": "frozen-connector",
+        "status": "PASS"
+      }
+    ],
+    "remaining_release_validation": []
+  },
+  "CHG180_native_acceptance": "PASS (2 cases; LibreOffice headless rasterizer unavailable, so PowerPoint pixels remain Quick Look preview-only)",
+  "CHG209_visual_director_matrix": {
+    "base": "PASS (6 scenes)",
+    "candidate": "PASS (6 scenes; user controls exercised)"
+  },
+  "company_ui_validator_comparison": {
+    "command": "python -m company_ui.validate company_ui/products/visualizer --format json",
+    "base_errors": 57,
+    "candidate_errors": 57,
+    "base_warnings": 1204,
+    "candidate_warnings": 1204,
+    "added_errors": 0,
+    "added_warnings": 0,
+    "existing_errors": "AI004=6, AI005=51, all in page.py; identical to exact base"
+  }
+}
