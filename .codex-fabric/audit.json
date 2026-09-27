@@ -1,0 +1,444 @@
+{
+  "accepted_at": "2026-09-27T14:37:00Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 7,
+      "path": "company_ui/products/visualizer/assets/chart_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 73,
+      "deletions": 38,
+      "path": "company_ui/products/visualizer/ppt_service.py",
+      "status": "M"
+    },
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "scripts/release_checks/run_chart_studio_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 36,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chart_studio.py",
+      "status": "M"
+    },
+    {
+      "additions": 136,
+      "deletions": 1,
+      "path": "tests/test_visualizer_chg277_pptx_chart_label_layout.py",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\np='/tmp/CHG-285-r1-native-release/progress.json';d=json.load(open(p));print([(x['name'],x['status']) for x in d])\nPY\nrtk ls -lh /tmp/CHG-285-r1-native-release/logs | tail -n 12\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -lh /tmp/CHG-285-r1-native-release/logs/chg181-authoring-composition-reuse.log /tmp/CHG-285-r1-native-release/chg181-authoring-composition-reuse'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy gh run view 36330158205 --repo kimhw8084/visembler --json status,conclusion,jobs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json,subprocess\nr=subprocess.run(['gh','run','view','36330158205','--repo','kimhw8084/visembler','--json','status,conclusion,jobs'],capture_output=True,text=True)\nd=json.loads(r.stdout);print(d['status'],d['conclusion']);print([(j['name'],j['status'],j['conclusion']) for j in d['jobs']])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\np='/tmp/CHG-285-r1-native-release/progress.json';d=json.load(open(p));print([(x['name'],x['status']) for x in d[-5:]])\nPY\nrtk ls -lh /tmp/CHG-285-r1-native-release/logs/chg181-authoring-composition-reuse.log /tmp/CHG-285-r1-native-release/chg181-authoring-composition-reuse\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json,subprocess\nr=subprocess.run(['gh','run','view','36330158205','--repo','kimhw8084/visembler','--json','status,conclusion,jobs'],capture_output=True,text=True);d=json.loads(r.stdout)\nprint(d['status'],d['conclusion']);print([(j['name'],j['status'],j['conclusion']) for j in d['jobs']])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\np='/tmp/CHG-285-r1-native-release/progress.json';d=json.load(open(p));print([(x['name'],x['status']) for x in d])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,stat,command | rtk rg 'verify_release|run_chg181|playwright|chart-studio'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,stat,comm | rtk rg 'Python|python|pytest|chrome-headless'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1760,
+        "output_sha256": "4c4e8ec30a06498860959b71b5bd7bf2a9b98c49adcf573e937a02e76ff235b7",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /tmp/CHG-285-r1-native-release'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg207_narrow_reading_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg209_visual_director_matrix.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg253_sparse_reading_acceptance.py --help'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,140p' scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py && rtk sed -n '1,130p' scripts/release_checks/run_chg207_narrow_reading_acceptance.py && rtk sed -n '1,120p' scripts/release_checks/run_chg253_sparse_reading_acceptance.py && rtk sed -n '1,110p' scripts/release_checks/run_chg209_visual_director_matrix.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"renderer|pdftoppm|r2_evidence|render\" scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py | tail -n 60 && rtk rg -n \"r2-evidence|renderer|candidate_sha|release_status\" scripts/release_checks/run_chg207_narrow_reading_acceptance.py scripts/release_checks/run_chg253_sparse_reading_acceptance.py | tail -n 40'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"CHG-206|chg206|CHG-207|chg207|CHG-253|chg253|CHG-209|chg209\" tests | head -n 80 && rtk command -v soffice && rtk command -v libreoffice && rtk command -v pdftoppm'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg207_narrow_reading_acceptance.py --output /tmp/CHG-285-r1-chg207 --candidate-sha 530fcad423c0b64afb77ee73f7c67a64754ba41b --candidate-tree 6b535f84478f0e8394a06614961e8faa0df54a75 --fabric-job-id CF-773a781bc138a51ed1cbc791'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '305,375p' scripts/release_checks/run_chg207_narrow_reading_acceptance.py && rtk sed -n '350,405p' scripts/release_checks/run_chg253_sparse_reading_acceptance.py && rtk sed -n '330,415p' scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"parser.add_argument|candidate_sha|branch|parents|R1_ACCEPTED|require_candidate\" scripts/release_checks/run_chg180_r1_acceptance.py scripts/release_checks/run_chg209_visual_director_matrix.py | tail -n 80'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '410,535p' scripts/release_checks/run_chg209_visual_director_matrix.py && rtk sed -n '296,345p' scripts/release_checks/run_chg180_r1_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg180_r1_acceptance.py --output /tmp/CHG-285-r1-chg180 --candidate-sha 530fcad423c0b64afb77ee73f7c67a64754ba41b --candidate-tree 6b535f84478f0e8394a06614961e8faa0df54a75'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg209_visual_director_matrix.py --app-root /tmp/CHG-285-exact-base --output /tmp/CHG-285-r1-chg209/base --side base'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/release_checks/run_chg209_visual_director_matrix.py --app-root /Users/haewonkim/.codex-fabric/worktrees/CF-773a781bc138a51ed1cbc791 --output /tmp/CHG-285-r1-chg209/candidate --side candidate --exercise-user-control'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\nfrom pathlib import Path\nfor n in ('A','F','E'):\n a=json.load(open(f'/tmp/CHG-285-r1-candidate-exact/{n}/source_model.json'))\n b=json.load(open(f'/tmp/CHG-285-r1-candidate-exact/{n}/saved_model.json'))\n ia=next(x for x in a['items'] if x['id']=={'A':'c6','F':'c4','E':'c4'}[n]);ib=next(x for x in b['items'] if x['id']==ia['id'])\n xa=ia['chart_studio']['axes']['x'];xb=ib['chart_studio']['axes']['x']\n ignore={'labelPresentationIntent'}\n print('\\\\n',n,'report items',len(a['items']),len(b['items']),'datasets',len(a['datasets']),len(b['datasets']))\n print('axis non-layout fields same', {k:v for k,v in xa.items() if k not in {'labelInterval','rotation','tickCount','auto','labelPresentationIntent'}}=={k:v for k,v in xb.items() if k not in {'labelInterval','rotation','tickCount','auto','labelPresentationIntent'}})\n print('mapping',ia['mapping']==ib['mapping'],'series',ia['chart_studio']['series']==ib['chart_studio']['series'],'dataset',ia['chart_studio']['dataset']==ib['chart_studio']['dataset'],'y',ia['chart_studio']['axes']['y']==ib['chart_studio']['axes']['y'],'chart type',ia['element']==ib['element'])\n other_a=dict(ia);other_b=dict(ib)\n for x in (other_a,other_b):\n  x['chart_studio']=dict(x['chart_studio']);x['chart_studio']['axes']=dict(x['chart_studio']['axes']);x['chart_studio']['axes']['x']=dict(x['chart_studio']['axes']['x'])\n  for k in ('labelInterval','rotation','tickCount','labelPresentationIntent'):x['chart_studio']['axes']['x'].pop(k,None)\n print('item semantically same after x-layout removal',other_a==other_b)\n old=json.load(open(f'/tmp/CHG-285-r1-before-exact/{n}/package_facts.json'));new=json.load(open(f'/tmp/CHG-285-r1-candidate-exact/{n}/package_facts.json'))\n print('package cats/series/values/y',old['series']==new['series'],old['valAx_min'],new['valAx_min'],old['valAx_max'],new['valAx_max'],'legend',old['legend_position'],new['legend_position'])\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg -n \"run_chg207|narrow.*acceptance|CHG-207\" tests/test_visualizer_* | head -n 60 && rtk rg -n \"def main|BASE_SHA|SOURCE_SHA|R2_SHA|ROOT\" scripts/release_checks/run_chg206_pptx_visible_text_acceptance.py | tail -n 30'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch && rtk proxy git rev-parse HEAD HEAD''^{tree} && rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg285-pptx-category-label-intent-r1 refs/heads/codex-fabric/evidence/visembler/CHG-285-r1 refs/heads/project-os-artifacts/visembler/CHG-285-r1 && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-773a781bc138a51ed1cbc791'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/CHG-285-r1-before-exact /tmp/CHG-285-r1-candidate-exact /tmp/CHG-285-r1-native-release /tmp/CHG-285-r1-chg180 /tmp/CHG-285-r1-chg209 -maxdepth 2 -type f -print && rtk proxy git show --stat --oneline --decorate --no-renames HEAD && rtk proxy gh run view 36330158205 --json status,conclusion,url,headSha'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /tmp/CHG-285-r1-before-exact/manifest.json && rtk proxy cat /tmp/CHG-285-r1-candidate-exact/manifest.json && rtk proxy cat /tmp/CHG-285-r1-native-release/report.json && rtk proxy cat /tmp/CHG-285-r1-chg180/acceptance-receipt.json && rtk proxy cat /tmp/CHG-285-r1-chg209/base/matrix-receipt.json && rtk proxy cat /tmp/CHG-285-r1-chg209/candidate/matrix-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{mode,cases:[.cases[]|{label,axis,package:{family:.package.chart_family,series:[.package.series[]|{name,categories:(.categories|length),values:(.values|length)}],source_axis:.package.source_axis,tickLblSkip:.package.tickLblSkip,rotation:.package.text_rotation_ooxml,valAx_min:.package.valAx_min,valAx_max:.package.valAx_max,legend:.package.legend_position,overlay_labels:([.package.editable_slide_text_shapes[]|select(.text|startswith(\\\"CHG285_XLABEL\\\"))]|length)},roundtrip}]}' /tmp/CHG-285-r1-before-exact/manifest.json /tmp/CHG-285-r1-candidate-exact/manifest.json\"",
+      "exit_code": 3,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json, pathlib\nfor kind, path in [('base','/tmp/CHG-285-r1-before-exact/manifest.json'),('candidate','/tmp/CHG-285-r1-candidate-exact/manifest.json')]:\n d=json.load(open(path)); print(kind)\n for c in d['cases']:\n  p=c['package']; print(c['label'], 'axis=', c.get('axis'), 'intent=', p.get('source_axis',{}).get('labelPresentationIntent'), 'tickSkip=',p.get('tickLblSkip'),'rotation=',p.get('text_rotation_ooxml'),'families=',p.get('chart_family'),'series=',[(x['name'],len(x['categories']),len(x['values'])) for x in p['series']],'y=',p.get('valAx_min'),p.get('valAx_max'),'overlay=',sum(s.get('text','').startswith('CHG285_XLABEL') for s in p.get('editable_slide_text_shapes',[])))\nrr=json.load(open('/tmp/CHG-285-r1-native-release/report.json'))\nprint('release keys',rr.keys()); print('release status',rr.get('status'),rr.get('checks_status'),rr.get('remaining_gates')); print('release summary',rr.get('summary'))\nfor f in ['/tmp/CHG-285-r1-chg180/acceptance-receipt.json','/tmp/CHG-285-r1-chg209/base/matrix-receipt.json','/tmp/CHG-285-r1-chg209/candidate/matrix-receipt.json']:\n d=json.load(open(f)); print(pathlib.Path(f).name, {k:d.get(k) for k in ['status','result','commit','head','tree','candidate_head','checks_status','renderer','reason']})\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy du -sh /tmp/CHG-285-r1-before-exact /tmp/CHG-285-r1-candidate-exact /tmp/CHG-285-r1-native-release /tmp/CHG-285-r1-chg180 /tmp/CHG-285-r1-chg209 && rtk proxy python - <<'PY'\nimport json\np=json.load(open('/tmp/CHG-285-r1-native-release/report.json'))\nprint('release status:',p['release_status'],'checks:',p['checks_status'],'managed:',p.get('managed_target_status'),'remaining:',p.get('remaining_release_validation'))\nfor c in p.get('checks',[]): print(c.get('id') or c.get('name'),c.get('status'),c.get('summary') or c.get('reason') or '')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git worktree add -b project-os-artifacts/visembler/CHG-285-r1 /tmp/CHG-285-r1-artifact-worktree HEAD && rtk proxy mkdir -p /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/before-exact /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/candidate-exact /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/native-release /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg180 /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg209'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy find /tmp/CHG-285-r1-native-release/chg181-authoring-composition-reuse /tmp/CHG-285-r1-native-release/chg208-remap-diagnostics /tmp/CHG-285-r1-native-release/chart-studio -maxdepth 2 -type f -name '*.json' -print && rtk proxy ls -lh /tmp/CHG-285-r1-native-release/full-tests.xml /tmp/CHG-285-r1-native-release/delivery-tests.xml /tmp/CHG-285-r1-native-release/release-manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cp -R /tmp/CHG-285-r1-before-exact/. /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/before-exact/ && rtk proxy cp -R /tmp/CHG-285-r1-candidate-exact/. /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/candidate-exact/ && rtk proxy cp /tmp/CHG-285-r1-native-release/report.json /tmp/CHG-285-r1-native-release/release-manifest.json /tmp/CHG-285-r1-native-release/progress.json /tmp/CHG-285-r1-native-release/full-tests.xml /tmp/CHG-285-r1-native-release/delivery-tests.xml /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/native-release/ && rtk proxy cp /tmp/CHG-285-r1-native-release/chart-studio/chart-studio-acceptance.json /tmp/CHG-285-r1-native-release/chg181-authoring-composition-reuse/chg181-native-acceptance.json /tmp/CHG-285-r1-native-release/chg208-remap-diagnostics/acceptance.json /tmp/CHG-285-r1-native-release/report-lifecycle-integrity/receipt.json /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/native-release/ && rtk proxy cp -R /tmp/CHG-285-r1-chg180/. /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg180/ && rtk proxy cp /tmp/CHG-285-r1-chg209/base/matrix-receipt.json /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg209/base-matrix-receipt.json && rtk proxy cp /tmp/CHG-285-r1-chg209/candidate/matrix-receipt.json /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg209/candidate-matrix-receipt.json && rtk proxy cp /tmp/CHG-285-r1-chg209/candidate/matrix-receipt.json /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg209/'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy rg -n \"labelPresentationIntent|_rotated_label_footprint|interval_explicit|automatic_rotation|density|CHG-285\" company_ui/products/visualizer/ppt_service.py company_ui/products/visualizer/assets/chart_studio.mjs tests/test_visualizer_chg277_pptx_chart_label_layout.py tests/test_visualizer_chart_studio.py scripts/release_checks/run_chart_studio_acceptance.py company_ui/certification/certification_manifest.json && rtk proxy cat /tmp/CHG-285-r1-chg180/acceptance-receipt.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport json\nfor tag in ['before-exact','candidate-exact']:\n d=json.load(open(f'/tmp/CHG-285-r1-{tag}/manifest.json'))\n for c in d['cases']:\n  p=c['package']; cats={x for s in p['series'] for x in s.get('categories',[])}\n  overlays=[s.get('text','') for s in p.get('editable_slide_text_shapes',[]) if s.get('text','') in cats]\n  print(tag,c['label'],'category text shapes=',overlays)\nPY\nrtk proxy gh run view 36330158205 --json status,conclusion,url,headSha,jobs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json, math, hashlib, xml.etree.ElementTree as ET\nroot=Path('/tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1')\nbase=json.load(open('/tmp/CHG-285-r1-before-exact/manifest.json'))\ncand=json.load(open('/tmp/CHG-285-r1-candidate-exact/manifest.json'))\nbase_by={x['label']:x for x in base['cases']}; cand_by={x['label']:x for x in cand['cases']}\ncomparison=[]\nfor label in ['A','F','E','auto-dense','auto-low']:\n b,c=base_by[label],cand_by[label]\n def facts(case):\n  p=case['package']; categories={v for s in p['series'] for v in s.get('categories',[])}\n  matching=[s for s in p.get('editable_slide_text_shapes',[]) if s.get('text') in categories]\n  return {'source_axis':case.get('axis',p.get('source_axis')),'intent':p.get('source_axis',{}).get('labelPresentationIntent'),'chart_family':p.get('chart_family'),'series':p.get('series'),'category_caches':p.get('category_caches'),'value_caches':p.get('value_caches'),'tickLblSkip':p.get('tickLblSkip'),'text_rotation_ooxml':p.get('text_rotation_ooxml'),'valAx_min':p.get('valAx_min'),'valAx_max':p.get('valAx_max'),'legend_position':p.get('legend_position'),'editable_category_label_shapes':matching}\n bf,cf=facts(b),facts(c)\n semantics=['chart_family','series','category_caches','value_caches','valAx_min','valAx_max','legend_position']\n comparison.append({'case':label,'before':bf,'candidate':cf,'chart_semantics_identical':all(bf[k]==cf[k] for k in semantics)})\n(root/'evidence/package-comparison.json').write_text(json.dumps({'schema':'visembler-chg285-package-comparison.v1','base_commit':'564fe414a149924128c3d0b531205636fb7cf6d5','candidate_commit':'530fcad423c0b64afb77ee73f7c67a64754ba41b','cases':comparison},indent=2,ensure_ascii=False)+'\\\\n')\n# test suite receipt\nxml=ET.parse('/tmp/CHG-285-r1-native-release/full-tests.xml').getroot()\ntests=int(xml.attrib.get('tests','0')); failures=int(xml.attrib.get('failures','0')); errors=int(xml.attrib.get('errors','0')); skipped=int(xml.attrib.get('skipped','0'))\n# release receipt summary retains exact source output\nrelease=json.load(open('/tmp/CHG-285-r1-native-release/report.json'))\nchecks=[{'name':x.get('name'),'status':x.get('status')} for x in release['checks']]\n(root/'evidence/test-and-release-summary.json').write_text(json.dumps({'focused_pytest':{'command':'pytest -q tests/test_visualizer_chg277_pptx_chart_label_layout.py tests/test_visualizer_chg254_pptx_chart_semantics.py tests/test_visualizer_chart_studio.py','result':'PASS','passed':20},'full_pytest':{'command':'pytest -q','result':'PASS','collected':tests,'failures':failures,'errors':errors,'skipped':skipped},'quality':{'run_id':'36330158205','url':'https://github.com/kimhw8084/visembler/actions/runs/36330158205','head':'530fcad423c0b64afb77ee73f7c67a64754ba41b','status':'completed','conclusion':'success','jobs':9,'all_jobs_success':True},'native_release':{'status':release['release_status'],'checks_status':release['checks_status'],'managed_target_status':release['managed_target_status'],'checks':checks,'remaining_release_validation':release['remaining_release_validation']},'CHG180_native_acceptance':'PASS (2 cases; LibreOffice headless rasterizer unavailable, so PowerPoint pixels remain Quick Look preview-only)','CHG209_visual_director_matrix':{'base':'PASS (6 scenes)','candidate':'PASS (6 scenes; user controls exercised)'},'company_ui_validator_comparison':{'command':'python -m company_ui.validate company_ui/products/visualizer --format json','base_errors':57,'candidate_errors':57,'base_warnings':1204,'candidate_warnings':1204,'added_errors':0,'added_warnings':0,'existing_errors':'AI004=6, AI005=51, all in page.py; identical to exact base'}},indent=2)+'\\\\n')\n(root/'IDENTITY.md').write_text('''# CHG-285 R1 identity\\\\n\\\\n- Repository / project: \"'`kimhw8084/visembler` / `visembler`'\"\\\\n- Change: CHG-285 — Preserve authored category-label intent in editable PowerPoint exports\\\\n- Request: \"'`CHG-285-r1`; operation: FIX'\"\\\\n- Exact base/main: \"'`564fe414a149924128c3d0b531205636fb7cf6d5`'\"\\\\n- Exact base tree: \"'`59f0a884910c7b26a27ad45b2ac49a5a648e7f88`'\"\\\\n- Candidate/work branch: \"'`fix/visembler-chg285-pptx-category-label-intent-r1`'\"\\\\n- Candidate head/tree: \"'`530fcad423c0b64afb77ee73f7c67a64754ba41b` / `6b535f84478f0e8394a06614961e8faa0df54a75`'\"\\\\n- Candidate is one commit directly on the exact base. Remote branch head matched candidate; remote \"'`main` remained exact base.'\"\\\\n- Worktree was clean after committing and pushing the candidate.\\\\n- Root outcome evidence: CHG-173 R5 / CHG-173-r5 / Fabric job CF-1b812779809c496f05d67a45; immutable carrier \"'`7933936a69f0bdff2c0d177314bc10c7c947098f`.'\"\\\\n- CHG-277 integrated through PR #30.\\\\n- CHG-21 managed/company target certification is separate and remains PENDING.\\\\n- This artifact carrier is for independent review only; it does not integrate to main or claim CHG-173 resolution.\\\\n''')\n(root/'REPRODUCTION.md').write_text('''# Exact-base reproduction and candidate verification\\\\n\\\\nThe exact base was checked out detached in a clean worktree. Each chart was opened in the real integrated Visembler report and edited through visible Chart Studio controls, then saved/reloaded and exported using the report's supported editable-PowerPoint action. The before evidence includes the saved model, visible action/provenance record, geometry, source report screenshot, Chart Studio screenshot, PPTX, chart XML, package inspection and semantic import round-trip. Candidate evidence repeats these captures against the committed candidate.\\\\n\\\\n| Case | Authoring / control | Exact-base export | Candidate export |\\\\n|---|---|---|---|\\\\n| A, executive renewal | 8 ordered quarters; Best readable axes; authored rotation 45°; scale auto remains true | \"'`tickLblSkip=5`; OOXML rotation `-2700000`; Quick Look shows only two labels | interval 1; no `tickLblSkip`; rotation retained; all 8 identities in editable text and visibly present |'\"\\\\n| F, cold-chain destinations | 4 destinations; Best readable axes; explicit interval 1 / rotation 0°; scale auto true | \"'`tickLblSkip=2`; Quick Look shows two labels | no `tickLblSkip`; all four identities visibly present as editable text |'\"\\\\n| E, dense control | 16 categories × 3 series; authored interval 6 / rotation 35° | \"'`tickLblSkip=6` | `tickLblSkip=6`; interval remains exactly 6 |'\"\\\\n| Untouched dense holdout | 16 × 3; no label-intent marker | automatic \"'`tickLblSkip=7` | automatic `tickLblSkip=7` remains |'\"\\\\n| Untouched low-density holdout | 4 categories; no marker | automatic \"'`tickLblSkip=2` | no skip; all four identities visible |'\"\\\\n\\\\nAll chart source models, saved models and action records, geometry, PPTX, XML, package facts, semantic round-trip facts and source/preview pixels are under \"'`evidence/before-exact/` and `evidence/candidate-exact/`. `evidence/package-comparison.json` contains full category/value caches and package semantics for both revisions.'\"\\\\n\\\\nThe previews are Quick Look preview-only. LibreOffice/soffice was unavailable, so this evidence does not claim Office rasterization or certification.\\\\n''')\n(root/'ROOT-AUTHORITY.md').write_text('''# Root cause and source authority\\\\n\\\\n## Root boundary\\\\n\\\\n\"'`company_ui/products/visualizer/assets/chart_studio.mjs` is the canonical authoring authority; x-axis `auto` controls scale/domain. Before this fix, `company_ui/products/visualizer/ppt_service.py::_chart_label_layout` guessed label intent from deviations from defaults. That made a supported authored interval of 1 or rotation of 0 indistinguishable from untouched settings. Its automatic-fit decision also ignored authored rotation when estimating horizontal label width. As a result, a rotated chart could retain its angle but still be thinned using unrotated text width.'\"\\\\n\\\\n## Contract implemented\\\\n\\\\nThe optional \"'`axes.x.labelPresentationIntent` object is backward-compatible and has the shape `{\"mode\":\"authored\",\"fields\":[\"interval\",\"rotation\",\"tickCount\"]}` (fields reflect what the author changed). Supported readable-axis presets, explicit interval/rotation/tick-count edits—including setting them to default-valued 1/0/6—record intent. The visible reset-to-automatic command clears intent and resets label interval, rotation and tick count while leaving scale auto independent. Old reports without the marker remain valid and retain the existing automatic path; existing non-default values remain explicit.'\"\\\\n\\\\nThe exporter honors authored layout values exactly and prevents CHG-277 density fallback from replacing an authored interval. Untouched charts retain adaptive thinning. Four-or-fewer categories use bounded geometry/font/wrapping rather than routine identity loss. Fit uses projected rotated width; medium-density untouched labels may get modest automatic rotation before labels are dropped. Category strings, chart family, series/value semantics and y-domain remain in OOXML. An editable text-label overlay is used when the target preview needs visible category identities; semantic categories remain in chart caches.\\\\n\\\\n## Change surface\\\\n\\\\n- \"'`company_ui/products/visualizer/assets/chart_studio.mjs`: provenance recording and reset action.'\"\\\\n- \"'`company_ui/products/visualizer/ppt_service.py`: optional provenance projection, intent-aware fit, rotation-aware footprint, bounded sparse-label behavior and editable label handling.'\"\\\\n- \"'`tests/test_visualizer_chg277_pptx_chart_label_layout.py`, `tests/test_visualizer_chart_studio.py`: deterministic export, backward-compatibility and persistence coverage.'\"\\\\n- \"'`scripts/release_checks/run_chart_studio_acceptance.py`: C104–C109 supported-authoring acceptance.'\"\\\\n- \"'`company_ui/certification/certification_manifest.json`: maintained test count updated to the collected count 1233.'\"\\\\n\\\\nFrozen \"'`ppt_template_adapter.py` was not changed. No report composition, responsive CSS, data, category, series or y-domain semantics were changed.'\"\\\\n''')\n(root/'PACKAGE-INSPECTION.md').write_text('''# Package, visual and semantic inspection\\\\n\\\\nFor A/F/E and both untouched holdouts, \"'`evidence/package-comparison.json` records the source and candidate axis settings, intent marker, chart family, full ordered series names/categories/values, category/value caches, category text shapes, `catAx tickLblSkip`, text rotation, `valAx min/max`, and legend position. Individual full `chart.xml` parts and package facts are in each case directory.'\"\\\\n\\\\nThe semantic comparison asserts exact equality between base and candidate for chart family, ordered series identity, all category/value series data and caches, value-axis bounds and legend position. It passes for A, F and E. Candidate intent changes the presentation only. Candidate PowerPoint import round-trip succeeds for every captured case and retains the optional marker.\\\\n\\\\nRotation geometry is covered by \"'`test_chg285_rotation_aware_footprint_drives_automatic_fit`: identical long labels at 0° and 35° produce different projected horizontal footprints; the required automatic skip is computed from the projected footprint, not the unrotated width. The deterministic unit assertions are retained in the candidate source.'\"\\\\n\\\\nThe A and F candidate package retains every category in chart caches and exposes every authored identity as editable slide text. F's four long destination identities are all present and visible in the Quick Look capture. A's eight quarter identities are all distinct and visible in its Quick Look capture. These are previews only, not Office certification.\\\\n''')\n(root/'GATES.md').write_text('''# Verification and release evidence\\\\n\\\\nSee \"'`evidence/test-and-release-summary.json` for the structured result and `evidence/native-release/` for native release receipts.'\"\\\\n\\\\n- Focused CHG-285 / CHG-254 / CHG-277 / Chart Studio pytest: 20 passed.\\\\n- Full clean pytest: PASS; exact collected count 1233; zero failures/errors.\\\\n- Repository-native GitHub Quality: completed/success, all nine jobs green at candidate head. Run: https://github.com/kimhw8084/visembler/actions/runs/36330158205\\\\n- Maintained native release: \"'`PASS_LOCAL_INTERNAL_PILOT`; checks `PASS`; all required gates passed and no remaining release validation. Managed target status remains PENDING by design. The receipt includes repository contracts, CHG-181 authoring/composition/reuse, CHG-208 remap diagnostics, Chart Studio, lifecycle/history, performance, accessibility/authoring, source stability and frozen connector results.'\"\\\\n- CHG-180 native acceptance: 2/2 cases PASS on candidate. Its headless PPTX rasterizer is marked MISSING because LibreOffice/soffice is unavailable; no Office render claim is made.\\\\n- CHG-209 Visual Director/reuse matrix: base and candidate each PASS all six scenes; candidate includes exercised user controls.\\\\n- CHG-206 visible-text unit tests pass in full pytest. Its original acceptance executable is branch/parent-bound to its historical candidate and requires a trusted LibreOffice+Poppler renderer; it was not bypassed or represented as a CHG-285 run.\\\\n- CHG-207/253 repository regression tests pass in full pytest. Their maintained native acceptance scripts reject execution on a different parent/branch; original branch-bound certification was not bypassed.\\\\n- \"'`python -m company_ui.validate company_ui/products/visualizer --format json`: exact-base and candidate counts are identical (57 errors and 1204 warnings; errors AI004=6 and AI005=51 all in `page.py`). Candidate adds none.'\"\\\\n\\\\nNo browser-responsive UI or frozen adapter files were changed. No main update, PR, managed target certification, or CHG-173 final outcome is part of this FIX.\\\\n''')\n(root/'reader/INDEX.md').parent.mkdir(parents=True,exist_ok=True)\n(root/'reader/INDEX.md').write_text('''# CHG-285 R1 independent review index\\\\n\\\\n1. [Identity and exact candidate/base](../IDENTITY.md)\\\\n2. [Exact-base reproduction and five candidate comparisons](../REPRODUCTION.md)\\\\n3. [Root authority and authored-vs-automatic contract](../ROOT-AUTHORITY.md)\\\\n4. [Package, geometry, cache and visual inspection](../PACKAGE-INSPECTION.md)\\\\n5. [Tests and release gates](../GATES.md)\\\\n6. [Immutable evidence manifest](../evidence-manifest.json)\\\\n\\\\nEvidence files are separated into \"'`evidence/before-exact/` and `evidence/candidate-exact/`; each contains the source and saved model, action/provenance record, chart geometry, source/editor screenshots, PPTX, Quick Look preview pixels, raw chart XML, package facts and semantic round-trip receipt for A/F/E and fresh automatic holdouts.'\"\\\\n''')\n# capture succinct Quality summary from exact CI result (all names/conclusions from GH workflow run)\n(root/'evidence/github-quality.json').write_text(json.dumps({'run_id':'36330158205','url':'https://github.com/kimhw8084/visembler/actions/runs/36330158205','head_sha':'530fcad423c0b64afb77ee73f7c67a64754ba41b','status':'completed','conclusion':'success','jobs_completed':9,'jobs_conclusion':'success'},indent=2)+'\\\\n')\n# immutable checksums for every carrier file; exclude self and sidecar\nfiles=[]\nfor p in sorted(root.rglob('*')):\n if p.is_file() and p.name not in ('evidence-manifest.json','evidence-manifest.json.sha256'):\n  files.append({'path':p.relative_to(root).as_posix(),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})\nmanifest={'schema':'visembler-project-os-evidence-manifest.v1','project':'visembler','project_id':'visembler','request':'CHG-285-r1','operation':'FIX','base_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','base_tree':'59f0a884910c7b26a27ad45b2ac49a5a648e7f88','candidate_sha':'530fcad423c0b64afb77ee73f7c67a64754ba41b','candidate_tree':'6b535f84478f0e8394a06614961e8faa0df54a75','work_branch':'fix/visembler-chg285-pptx-category-label-intent-r1','remote_exact_head':True,'base_is_ancestor':True,'target_main_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','target_main_unchanged':True,'worktree_clean':True,'office_or_libreoffice_render':'unavailable; previews are Quick Look preview-only','managed_target_certification':'PENDING','files':files}\nmp=root/'evidence-manifest.json'; mp.write_text(json.dumps(manifest,indent=2)+'\\\\n')\n(root/'evidence-manifest.json.sha256').write_text(hashlib.sha256(mp.read_bytes()).hexdigest()+'  evidence-manifest.json\\\\n')\nprint('carrier files',len(files),'manifest sha256',hashlib.sha256(mp.read_bytes()).hexdigest())\nprint('full pytest',tests,'failures',failures,'errors',errors)\nprint('semantics unchanged',[(x['case'],x['chart_semantics_identical']) for x in comparison])\nPY\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 79,
+        "output_sha256": "eb6c6844da8a14fe95d0750005d636238fb9cca16ca557b2fcb50d7876eade9f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json, hashlib, xml.etree.ElementTree as ET\nroot=Path('/tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1')\nbase=json.load(open('/tmp/CHG-285-r1-before-exact/manifest.json')); cand=json.load(open('/tmp/CHG-285-r1-candidate-exact/manifest.json'))\nbase_by={x['label']:x for x in base['cases']}; cand_by={x['label']:x for x in cand['cases']}; comparison=[]\nfor label in ['A','F','E','auto-dense','auto-low']:\n b,c=base_by[label],cand_by[label]\n def facts(case):\n  p=case['package']; categories={v for s in p['series'] for v in s.get('categories',[])}\n  matching=[s for s in p.get('editable_slide_text_shapes',[]) if s.get('text') in categories]\n  return {'source_axis':case.get('axis',p.get('source_axis')),'intent':p.get('source_axis',{}).get('labelPresentationIntent'),'chart_family':p.get('chart_family'),'series':p.get('series'),'category_caches':p.get('category_caches'),'value_caches':p.get('value_caches'),'tickLblSkip':p.get('tickLblSkip'),'text_rotation_ooxml':p.get('text_rotation_ooxml'),'valAx_min':p.get('valAx_min'),'valAx_max':p.get('valAx_max'),'legend_position':p.get('legend_position'),'editable_category_label_shapes':matching}\n bf,cf=facts(b),facts(c); semantics=['chart_family','series','category_caches','value_caches','valAx_min','valAx_max','legend_position']\n comparison.append({'case':label,'before':bf,'candidate':cf,'chart_semantics_identical':all(bf[k]==cf[k] for k in semantics)})\n(root/'evidence/package-comparison.json').write_text(json.dumps({'schema':'visembler-chg285-package-comparison.v1','base_commit':'564fe414a149924128c3d0b531205636fb7cf6d5','candidate_commit':'530fcad423c0b64afb77ee73f7c67a64754ba41b','cases':comparison},indent=2,ensure_ascii=False)+'\\\\n')\nxml=ET.parse('/tmp/CHG-285-r1-native-release/full-tests.xml').getroot(); tests=int(xml.attrib.get('tests','0')); failures=int(xml.attrib.get('failures','0')); errors=int(xml.attrib.get('errors','0')); skipped=int(xml.attrib.get('skipped','0'))\nrelease=json.load(open('/tmp/CHG-285-r1-native-release/report.json')); checks=[{'name':x.get('name'),'status':x.get('status')} for x in release['checks']]\nsummary={'focused_pytest':{'command':'pytest -q tests/test_visualizer_chg277_pptx_chart_label_layout.py tests/test_visualizer_chg254_pptx_chart_semantics.py tests/test_visualizer_chart_studio.py','result':'PASS','passed':20},'full_pytest':{'command':'pytest -q','result':'PASS','collected':tests,'failures':failures,'errors':errors,'skipped':skipped},'quality':{'run_id':'36330158205','url':'https://github.com/kimhw8084/visembler/actions/runs/36330158205','head':'530fcad423c0b64afb77ee73f7c67a64754ba41b','status':'completed','conclusion':'success','jobs':9,'all_jobs_success':True},'native_release':{'status':release['release_status'],'checks_status':release['checks_status'],'managed_target_status':release['managed_target_status'],'checks':checks,'remaining_release_validation':release['remaining_release_validation']},'CHG180_native_acceptance':'PASS (2 cases; LibreOffice headless rasterizer unavailable, so PowerPoint pixels remain Quick Look preview-only)','CHG209_visual_director_matrix':{'base':'PASS (6 scenes)','candidate':'PASS (6 scenes; user controls exercised)'},'company_ui_validator_comparison':{'command':'python -m company_ui.validate company_ui/products/visualizer --format json','base_errors':57,'candidate_errors':57,'base_warnings':1204,'candidate_warnings':1204,'added_errors':0,'added_warnings':0,'existing_errors':'AI004=6, AI005=51, all in page.py; identical to exact base'}}\n(root/'evidence/test-and-release-summary.json').write_text(json.dumps(summary,indent=2)+'\\\\n')\n(root/'IDENTITY.md').write_text('''# CHG-285 R1 identity\\\\n\\\\n- Repository / project: \"'`kimhw8084/visembler` / `visembler`'\"\\\\n- Change: CHG-285 — Preserve authored category-label intent in editable PowerPoint exports\\\\n- Request: \"'`CHG-285-r1`; operation: FIX'\"\\\\n- Exact base/main: \"'`564fe414a149924128c3d0b531205636fb7cf6d5`'\"\\\\n- Exact base tree: \"'`59f0a884910c7b26a27ad45b2ac49a5a648e7f88`'\"\\\\n- Candidate/work branch: \"'`fix/visembler-chg285-pptx-category-label-intent-r1`'\"\\\\n- Candidate head/tree: \"'`530fcad423c0b64afb77ee73f7c67a64754ba41b` / `6b535f84478f0e8394a06614961e8faa0df54a75`'\"\\\\n- Candidate is one commit directly on the exact base. Remote branch head matched candidate; remote \"'`main` remained exact base.'\"\\\\n- Worktree was clean after committing and pushing the candidate.\\\\n- Root outcome evidence: CHG-173 R5 / CHG-173-r5 / Fabric job CF-1b812779809c496f05d67a45; immutable carrier \"'`7933936a69f0bdff2c0d177314bc10c7c947098f`.'\"\\\\n- CHG-277 integrated through PR #30.\\\\n- CHG-21 managed/company target certification is separate and remains PENDING.\\\\n- This artifact carrier is for independent review only; it does not integrate to main or claim CHG-173 resolution.\\\\n''')\n(root/'REPRODUCTION.md').write_text('''# Exact-base reproduction and candidate verification\\\\n\\\\nThe exact base was checked out detached in a clean worktree. Each chart was opened in the real integrated Visembler report and edited through visible Chart Studio controls, then saved/reloaded and exported using the report's supported editable-PowerPoint action. The before evidence includes the saved model, visible action/provenance record, geometry, source report screenshot, Chart Studio screenshot, PPTX, chart XML, package inspection and semantic import round-trip. Candidate evidence repeats these captures against the committed candidate.\\\\n\\\\n| Case | Authoring / control | Exact-base export | Candidate export |\\\\n|---|---|---|---|\\\\n| A, executive renewal | 8 ordered quarters; Best readable axes; authored rotation 45°; scale auto remains true | \"'`tickLblSkip=5`; OOXML rotation `-2700000`; Quick Look shows only two labels | interval 1; no `tickLblSkip`; rotation retained; all 8 identities in editable text and visibly present |'\"\\\\n| F, cold-chain destinations | 4 destinations; Best readable axes; explicit interval 1 / rotation 0°; scale auto true | \"'`tickLblSkip=2`; Quick Look shows two labels | no `tickLblSkip`; all four identities visibly present as editable text |'\"\\\\n| E, dense control | 16 categories × 3 series; authored interval 6 / rotation 35° | \"'`tickLblSkip=6` | `tickLblSkip=6`; interval remains exactly 6 |'\"\\\\n| Untouched dense holdout | 16 × 3; no label-intent marker | automatic \"'`tickLblSkip=7` | automatic `tickLblSkip=7` remains |'\"\\\\n| Untouched low-density holdout | 4 categories; no marker | automatic \"'`tickLblSkip=2` | no skip; all four identities visible |'\"\\\\n\\\\nAll chart source models, saved models and action records, geometry, PPTX, XML, package facts, semantic round-trip facts and source/preview pixels are under \"'`evidence/before-exact/` and `evidence/candidate-exact/`. `evidence/package-comparison.json` contains full category/value caches and package semantics for both revisions.'\"\\\\n\\\\nThe previews are Quick Look preview-only. LibreOffice/soffice was unavailable, so this evidence does not claim Office rasterization or certification.\\\\n''')\n(root/'ROOT-AUTHORITY.md').write_text('''# Root cause and source authority\\\\n\\\\n## Root boundary\\\\n\\\\n\"'`company_ui/products/visualizer/assets/chart_studio.mjs` is the canonical authoring authority; x-axis `auto` controls scale/domain. Before this fix, `company_ui/products/visualizer/ppt_service.py::_chart_label_layout` guessed label intent from deviations from defaults. That made a supported authored interval of 1 or rotation of 0 indistinguishable from untouched settings. Its automatic-fit decision also ignored authored rotation when estimating horizontal label width. As a result, a rotated chart could retain its angle but still be thinned using unrotated text width.'\"\\\\n\\\\n## Contract implemented\\\\n\\\\nThe optional \"'`axes.x.labelPresentationIntent` object is backward-compatible and has the shape `{\"mode\":\"authored\",\"fields\":[\"interval\",\"rotation\",\"tickCount\"]}` (fields reflect what the author changed). Supported readable-axis presets, explicit interval/rotation/tick-count edits—including setting them to default-valued 1/0/6—record intent. The visible reset-to-automatic command clears intent and resets label interval, rotation and tick count while leaving scale auto independent. Old reports without the marker remain valid and retain the existing automatic path; existing non-default values remain explicit.'\"\\\\n\\\\nThe exporter honors authored layout values exactly and prevents CHG-277 density fallback from replacing an authored interval. Untouched charts retain adaptive thinning. Four-or-fewer categories use bounded geometry/font/wrapping rather than routine identity loss. Fit uses projected rotated width; medium-density untouched labels may get modest automatic rotation before labels are dropped. Category strings, chart family, series/value semantics and y-domain remain in OOXML. An editable text-label overlay is used when the target preview needs visible category identities; semantic categories remain in chart caches.\\\\n\\\\n## Change surface\\\\n\\\\n- \"'`company_ui/products/visualizer/assets/chart_studio.mjs`: provenance recording and reset action.'\"\\\\n- \"'`company_ui/products/visualizer/ppt_service.py`: optional provenance projection, intent-aware fit, rotation-aware footprint, bounded sparse-label behavior and editable label handling.'\"\\\\n- \"'`tests/test_visualizer_chg277_pptx_chart_label_layout.py`, `tests/test_visualizer_chart_studio.py`: deterministic export, backward-compatibility and persistence coverage.'\"\\\\n- \"'`scripts/release_checks/run_chart_studio_acceptance.py`: C104–C109 supported-authoring acceptance.'\"\\\\n- \"'`company_ui/certification/certification_manifest.json`: maintained test count updated to the collected count 1233.'\"\\\\n\\\\nFrozen \"'`ppt_template_adapter.py` was not changed. No report composition, responsive CSS, data, category, series or y-domain semantics were changed.'\"\\\\n''')\n(root/'PACKAGE-INSPECTION.md').write_text('''# Package, visual and semantic inspection\\\\n\\\\nFor A/F/E and both untouched holdouts, \"'`evidence/package-comparison.json` records the source and candidate axis settings, intent marker, chart family, full ordered series names/categories/values, category/value caches, category text shapes, `catAx tickLblSkip`, text rotation, `valAx min/max`, and legend position. Individual full `chart.xml` parts and package facts are in each case directory.'\"\\\\n\\\\nThe semantic comparison asserts exact equality between base and candidate for chart family, ordered series identity, all category/value series data and caches, value-axis bounds and legend position. It passes for A, F and E. Candidate intent changes the presentation only. Candidate PowerPoint import round-trip succeeds for every captured case and retains the optional marker.\\\\n\\\\nRotation geometry is covered by \"'`test_chg285_rotation_aware_footprint_drives_automatic_fit`: identical long labels at 0° and 35° produce different projected horizontal footprints; the required automatic skip is computed from the projected footprint, not the unrotated width. The deterministic unit assertions are retained in the candidate source.'\"\\\\n\\\\nThe A and F candidate package retains every category in chart caches and exposes every authored identity as editable slide text. F's four long destination identities are all present and visible in the Quick Look capture. A's eight quarter identities are all distinct and visible in its Quick Look capture. These are previews only, not Office certification.\\\\n''')\n(root/'GATES.md').write_text('''# Verification and release evidence\\\\n\\\\nSee \"'`evidence/test-and-release-summary.json` for the structured result and `evidence/native-release/` for native release receipts.'\"\\\\n\\\\n- Focused CHG-285 / CHG-254 / CHG-277 / Chart Studio pytest: 20 passed.\\\\n- Full clean pytest: PASS; exact collected count 1233; zero failures/errors.\\\\n- Repository-native GitHub Quality: completed/success, all nine jobs green at candidate head. Run: https://github.com/kimhw8084/visembler/actions/runs/36330158205\\\\n- Maintained native release: \"'`PASS_LOCAL_INTERNAL_PILOT`; checks `PASS`; all required gates passed and no remaining release validation. Managed target status remains PENDING by design. The receipt includes repository contracts, CHG-181 authoring/composition/reuse, CHG-208 remap diagnostics, Chart Studio, lifecycle/history, performance, accessibility/authoring, source stability and frozen connector results.'\"\\\\n- CHG-180 native acceptance: 2/2 cases PASS on candidate. Its headless PPTX rasterizer is marked MISSING because LibreOffice/soffice is unavailable; no Office render claim is made.\\\\n- CHG-209 Visual Director/reuse matrix: base and candidate each PASS all six scenes; candidate includes exercised user controls.\\\\n- CHG-206 visible-text unit tests pass in full pytest. Its original acceptance executable is branch/parent-bound to its historical candidate and requires a trusted LibreOffice+Poppler renderer; it was not bypassed or represented as a CHG-285 run.\\\\n- CHG-207/253 repository regression tests pass in full pytest. Their maintained native acceptance scripts reject execution on a different parent/branch; original branch-bound certification was not bypassed.\\\\n- \"'`python -m company_ui.validate company_ui/products/visualizer --format json`: exact-base and candidate counts are identical (57 errors and 1204 warnings; errors AI004=6 and AI005=51 all in `page.py`). Candidate adds none.'\"\\\\n\\\\nNo browser-responsive UI or frozen adapter files were changed. No main update, PR, managed target certification, or CHG-173 final outcome is part of this FIX.\\\\n''')\n(root/'reader/INDEX.md').parent.mkdir(parents=True,exist_ok=True)\n(root/'reader/INDEX.md').write_text('''# CHG-285 R1 independent review index\\\\n\\\\n1. [Identity and exact candidate/base](../IDENTITY.md)\\\\n2. [Exact-base reproduction and five candidate comparisons](../REPRODUCTION.md)\\\\n3. [Root authority and authored-vs-automatic contract](../ROOT-AUTHORITY.md)\\\\n4. [Package, geometry, cache and visual inspection](../PACKAGE-INSPECTION.md)\\\\n5. [Tests and release gates](../GATES.md)\\\\n6. [Immutable evidence manifest](../evidence-manifest.json)\\\\n\\\\nEvidence files are separated into \"'`evidence/before-exact/` and `evidence/candidate-exact/`; each contains the source and saved model, action/provenance record, chart geometry, source/editor screenshots, PPTX, Quick Look preview pixels, raw chart XML, package facts and semantic round-trip receipt for A/F/E and fresh automatic holdouts.'\"\\\\n''')\n(root/'evidence/github-quality.json').write_text(json.dumps({'run_id':'36330158205','url':'https://github.com/kimhw8084/visembler/actions/runs/36330158205','head_sha':'530fcad423c0b64afb77ee73f7c67a64754ba41b','status':'completed','conclusion':'success','jobs_completed':9,'jobs_conclusion':'success'},indent=2)+'\\\\n')\nfiles=[]\nfor p in sorted(root.rglob('*')):\n if p.is_file() and p.name not in ('evidence-manifest.json','evidence-manifest.json.sha256'):\n  files.append({'path':p.relative_to(root).as_posix(),'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})\nmanifest={'schema':'visembler-project-os-evidence-manifest.v1','project':'visembler','project_id':'visembler','request':'CHG-285-r1','operation':'FIX','base_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','base_tree':'59f0a884910c7b26a27ad45b2ac49a5a648e7f88','candidate_sha':'530fcad423c0b64afb77ee73f7c67a64754ba41b','candidate_tree':'6b535f84478f0e8394a06614961e8faa0df54a75','work_branch':'fix/visembler-chg285-pptx-category-label-intent-r1','remote_exact_head':True,'base_is_ancestor':True,'target_main_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','target_main_unchanged':True,'worktree_clean':True,'office_or_libreoffice_render':'unavailable; previews are Quick Look preview-only','managed_target_certification':'PENDING','files':files}\nmp=root/'evidence-manifest.json'; mp.write_text(json.dumps(manifest,indent=2)+'\\\\n'); (root/'evidence-manifest.json.sha256').write_text(hashlib.sha256(mp.read_bytes()).hexdigest()+'  evidence-manifest.json\\\\n')\nprint('carrier files',len(files),'manifest sha256',hashlib.sha256(mp.read_bytes()).hexdigest()); print('full pytest',tests,'failures',failures,'errors',errors); print('semantics unchanged',[(x['case'],x['chart_semantics_identical']) for x in comparison])\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 235,
+        "output_sha256": "0600f74be2469fe7182081bc258fd7597096b441fc90871ea4d397cd5bc71fdd",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport xml.etree.ElementTree as ET\nr=ET.parse('/tmp/CHG-285-r1-native-release/full-tests.xml').getroot()\nprint(r.tag,r.attrib)\nfor e in r.iter('testsuite'): print(e.tag,e.attrib)\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rm -f /tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1/evidence/chg209/matrix-receipt.json && rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib,xml.etree.ElementTree as ET\nroot=Path('/tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1')\nxml=ET.parse('/tmp/CHG-285-r1-native-release/full-tests.xml').getroot(); suites=list(xml.iter('testsuite'))\ntests=sum(int(s.attrib.get('tests',0)) for s in suites); failures=sum(int(s.attrib.get('failures',0)) for s in suites); errors=sum(int(s.attrib.get('errors',0)) for s in suites); skipped=sum(int(s.attrib.get('skipped',0)) for s in suites)\np=root/'evidence/test-and-release-summary.json'; d=json.loads(p.read_text()); d['full_pytest'].update({'collected':tests,'failures':failures,'errors':errors,'skipped':skipped}); p.write_text(json.dumps(d,indent=2)+'\\\\n')\nfiles=[]\nfor x in sorted(root.rglob('*')):\n if x.is_file() and x.name not in ('evidence-manifest.json','evidence-manifest.json.sha256'):\n  files.append({'path':x.relative_to(root).as_posix(),'bytes':x.stat().st_size,'sha256':hashlib.sha256(x.read_bytes()).hexdigest()})\nm={'schema':'visembler-project-os-evidence-manifest.v1','project':'visembler','project_id':'visembler','request':'CHG-285-r1','operation':'FIX','base_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','base_tree':'59f0a884910c7b26a27ad45b2ac49a5a648e7f88','candidate_sha':'530fcad423c0b64afb77ee73f7c67a64754ba41b','candidate_tree':'6b535f84478f0e8394a06614961e8faa0df54a75','work_branch':'fix/visembler-chg285-pptx-category-label-intent-r1','remote_exact_head':True,'base_is_ancestor':True,'target_main_sha':'564fe414a149924128c3d0b531205636fb7cf6d5','target_main_unchanged':True,'worktree_clean':True,'office_or_libreoffice_render':'unavailable; previews are Quick Look preview-only','managed_target_certification':'PENDING','files':files}\nmp=root/'evidence-manifest.json'; mp.write_text(json.dumps(m,indent=2)+'\\\\n'); (root/'evidence-manifest.json.sha256').write_text(hashlib.sha256(mp.read_bytes()).hexdigest()+'  evidence-manifest.json\\\\n')\nprint(json.dumps({'files':len(files),'manifest_sha256':hashlib.sha256(mp.read_bytes()).hexdigest(),'tests':tests,'failures':failures,'errors':errors},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 157,
+        "output_sha256": "f173f78b9af5e0ea97fade2a546eb34342226ce3336ad86ce8ab576fb02ac68e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git status --short --branch && rtk proxy git diff --check && rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib\nr=Path('project-os-artifacts/visembler/CHG-285-r1')\nm=json.loads((r/'evidence-manifest.json').read_text())\nfail=[]\nfor x in m['files']:\n p=r/x['path']\n if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()\"'!=x['\"'sha256'] or p.stat().st_size\"'!=x['\"'bytes']: fail.append(x['path'])\nsha=(r/'evidence-manifest.json.sha256').read_text().split()[0]\nassert hashlib.sha256((r/'evidence-manifest.json').read_bytes()).hexdigest()==sha\nprint(json.dumps({'manifest_files':len(m['files']),'verified':len(m['files'])-len(fail),'bad_files':fail,'artifact_parent':__import__('subprocess').check_output(['git','rev-parse','HEAD']).decode().strip(),'artifact_tree_bytes':sum(p.stat().st_size for p in r.rglob('*') if p.is_file())},indent=2))\nPY\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree diff --check && rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib,subprocess\nr=Path('/tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1')\nm=json.loads((r/'evidence-manifest.json').read_text()); bad=[]\nfor x in m['files']:\n p=r/x['path']\n if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()\"'!=x['\"'sha256'] or p.stat().st_size\"'!=x['\"'bytes']: bad.append(x['path'])\nassert hashlib.sha256((r/'evidence-manifest.json').read_bytes()).hexdigest()==(r/'evidence-manifest.json.sha256').read_text().split()[0]\nassert not bad,bad\nprint(json.dumps({'manifest_files':len(m['files']),'verified':True,'artifact_parent':subprocess.check_output(['git','-C','/tmp/CHG-285-r1-artifact-worktree','rev-parse','HEAD']).decode().strip(),'artifact_bytes':sum(p.stat().st_size for p in r.rglob('*') if p.is_file())},indent=2))\nPY\nrtk proxy git -C /tmp/CHG-285-r1-artifact-worktree add project-os-artifacts/visembler/CHG-285-r1 && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree commit -m 'Publish CHG-285 R1 independent review evidence' && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree rev-parse HEAD HEAD\"'^ HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree push origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-285-r1 && rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg285-pptx-category-label-intent-r1 refs/heads/project-os-artifacts/visembler/CHG-285-r1 && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree status --short --branch && rtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl publish-evidence CF-773a781bc138a51ed1cbc791'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help && rtk proxy find /Users/haewonkim/.codex-fabric/jobs/CF-773a781bc138a51ed1cbc791.running -maxdepth 2 -type f -print'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-773a781bc138a51ed1cbc791 && rtk proxy find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 -mindepth 1 -type d -print'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom pathlib import Path\nimport json,hashlib\nroot=Path('/tmp/CHG-285-r1-artifact-worktree/project-os-artifacts/visembler/CHG-285-r1')\np=root/'IDENTITY.md'; s=p.read_text(); s=s.replace('- Request: \"'`CHG-285-r1`; operation: FIX'\"\\\\n','- Request: \"'`CHG-285-r1`; operation: FIX'\"\\\\n- Current Fabric job: \"'`CF-773a781bc138a51ed1cbc791`'\"\\\\n'); p.write_text(s)\np=root/'evidence-manifest.json'; m=json.loads(p.read_text()); m['fabric_job_id']='CF-773a781bc138a51ed1cbc791'; m['files']=[]\nfor f in sorted(root.rglob('*')):\n if f.is_file() and f.name not in ('evidence-manifest.json','evidence-manifest.json.sha256'):\n  m['files'].append({'path':f.relative_to(root).as_posix(),'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()})\np.write_text(json.dumps(m,indent=2)+'\\\\n'); (root/'evidence-manifest.json.sha256').write_text(hashlib.sha256(p.read_bytes()).hexdigest()+'  evidence-manifest.json\\\\n')\nprint('files',len(m['files']),'manifest sha256',hashlib.sha256(p.read_bytes()).hexdigest())\nPY\nrtk proxy git -C /tmp/CHG-285-r1-artifact-worktree add project-os-artifacts/visembler/CHG-285-r1/IDENTITY.md project-os-artifacts/visembler/CHG-285-r1/evidence-manifest.json project-os-artifacts/visembler/CHG-285-r1/evidence-manifest.json.sha256 && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree commit --amend --no-edit && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree rev-parse HEAD HEAD\"'^ && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree push --force-with-lease=refs/heads/project-os-artifacts/visembler/CHG-285-r1:0888e0e4f2fa56a893c4ce0cb40e4c1cd50d5c26 origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-285-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg285-pptx-category-label-intent-r1 refs/heads/project-os-artifacts/visembler/CHG-285-r1 && rtk proxy git status --short --branch && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree rev-parse HEAD HEAD''^ HEAD''^{tree} && rtk proxy git -C /tmp/CHG-285-r1-artifact-worktree status --short --branch && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-773a781bc138a51ed1cbc791 && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl publish-evidence CF-773a781bc138a51ed1cbc791'",
+      "exit_code": 2,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 473,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.86,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 37262976,
+      "fresh_input_tokens": 813883,
+      "input_tokens": 38076859,
+      "non_reasoning_output_tokens": 69869,
+      "output_tokens": 174928,
+      "reasoning_output_tokens": 105059,
+      "total_processed_tokens": 38251787
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "530fcad423c0b64afb77ee73f7c67a64754ba41b",
+      "subject": "CHG-285 preserve authored PowerPoint category labels"
+    }
+  ],
+  "diff": {
+    "additions": 260,
+    "changed_files": 6,
+    "commit_count": 1,
+    "deletions": 48
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "95651cf78ae3bc28a999538a3a3d1b9c52027e6d0fd7b8eafabd1b20afe9121b"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-27T15:59:43Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "564fe414a149924128c3d0b531205636fb7cf6d5",
+    "branch": "fix/visembler-chg285-pptx-category-label-intent-r1",
+    "detached_verify": false,
+    "head_sha": "530fcad423c0b64afb77ee73f7c67a64754ba41b",
+    "remote_exact_head": true,
+    "remote_head_sha": "530fcad423c0b64afb77ee73f7c67a64754ba41b",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "564fe414a149924128c3d0b531205636fb7cf6d5",
+    "work_branch": "fix/visembler-chg285-pptx-category-label-intent-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-773a781bc138a51ed1cbc791",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-285-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-285-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-285-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-27T14:37:00Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 4963,
+    "queue_seconds": 0,
+    "total_seconds": 4963
+  },
+  "transport": {
+    "bytes": 11810,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 11500,
+    "prompt_sha256": "ebaef5886aefe7a5f1bfcbf1f61896201b5e23fcb0e012f1afb9f871f2e9cb65",
+    "sha256": "773a781bc138a51ed1cbc791d279b7659c1c6cacbfbdaf442a0b37345fab38ca"
+  }
+}
