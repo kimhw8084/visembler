@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "project": "visembler",
+  "change": "CHG-277",
+  "substantive_acceptance_request": "CHG-277-r1",
+  "substantive_acceptance": {
+    "status": "GO",
+    "accepted_head": "602552a4b121f0f722542ea5cefe419b1cb292c4",
+    "accepted_tree": "59f0a884910c7b26a27ad45b2ac49a5a648e7f88",
+    "direct_parent": "f1a3cd5c5fa4e6eb5f2d51c38555a34f85f5fee3"
+  },
+  "r1_product_branch": {
+    "ref": "refs/heads/fix/visembler-chg277-pptx-chart-label-layout-r1",
+    "head_sha": "602552a4b121f0f722542ea5cefe419b1cb292c4"
+  },
+  "r1_artifact_carrier": {
+    "ref": "refs/heads/project-os-artifacts/visembler/CHG-277-r1",
+    "commit_sha": "147e70b238b3c183b28e927d91f357ffef996f22",
+    "sole_parent": "602552a4b121f0f722542ea5cefe419b1cb292c4"
+  },
+  "r1_native_evidence": {
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-277-r1",
+    "commit_sha": "35ed3429f9767823eefc05249e4c19711081d7b7",
+    "sole_parent": "602552a4b121f0f722542ea5cefe419b1cb292c4",
+    "audit_path": ".codex-fabric/audit.json",
+    "historical_audit_preserved_unchanged": true,
+    "present_top_level_fields": [
+      "base_sha",
+      "candidate_parent",
+      "candidate_sha",
+      "candidate_tree",
+      "change",
+      "github_quality",
+      "native_release",
+      "request",
+      "scope_status",
+      "target_certification"
+    ],
+    "missing_native_binding_fields": [
+      "project or project_id",
+      "operation",
+      "current Fabric job identity",
+      "top-level git object with base/head/remote/work-branch/target/ancestry/clean-worktree fields"
+    ]
+  },
+  "integration_attempt_1": {
+    "operator_version": "0.2.0-rc3",
+    "outcome": "BLOCKED",
+    "error_code": "EVIDENCE_PROJECT_MISMATCH",
+    "pull_request_created": false,
+    "merged": false,
+    "main_changed": false
+  },
+  "authority_rule": "R1 remains the substantive Product, visual, test, and release acceptance authority; R2 repairs evidence binding only."
+}
