@@ -1,0 +1,1024 @@
+{
+  "description": "Sparse reversible service decision for the route planner and dock lead: test one departure window at Old Harbor with explicit queue and on-time stop conditions.",
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "pier_1",
+            "name": "Pier",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "queue_hours_2",
+            "name": "Queue hours",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mukci0vg-syyah0",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "North Ferry",
+            0.6
+          ],
+          [
+            "River Bend",
+            0.9
+          ],
+          [
+            "Old Harbor",
+            1.1
+          ],
+          [
+            "East Lock",
+            0.8
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T21:43:20.044Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "composition_role": "primary_analysis",
+        "cross": null,
+        "data": [
+          [
+            "Baseline",
+            72
+          ],
+          [
+            "Pilot",
+            78
+          ],
+          [
+            "Validation",
+            84
+          ],
+          [
+            "Release",
+            91
+          ],
+          [
+            "Sustain",
+            94
+          ]
+        ],
+        "dataset_id": "dataset-mukci0vg-syyah0",
+        "drill": null,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c1",
+        "locked": false,
+        "mapping": {
+          "category": "pier_1",
+          "value": "queue_hours_2",
+          "x": "pier_1",
+          "y": "queue_hours_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 3,
+        "revealed": true,
+        "rows": [
+          {
+            "label": "Baseline",
+            "value": 72
+          },
+          {
+            "label": "Pilot",
+            "value": 78
+          },
+          {
+            "label": "Validation",
+            "value": 84
+          },
+          {
+            "label": "Release",
+            "value": 91
+          },
+          {
+            "label": "Sustain",
+            "value": 94
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Queue by pier",
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "body": "Run one Old Harbor morning trial; keep the other piers unchanged.",
+        "composition_role": "report_headline",
+        "element": "Hero Title",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 109.76,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 4,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Run one Old Harbor morning trial; keep the other piers unchanged.",
+        "textAlign": "left",
+        "title": "Hero Title",
+        "type": "text",
+        "w": 520,
+        "weight": 1.1,
+        "x": 548,
+        "y": 14,
+        "z": 2
+      },
+      {
+        "body": "Harbor Reach Ferry · 4 piers · weekday morning departures · refreshed 27 Sep 2026 · owner: Service Planning.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Context",
+        "order": 0,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Harbor Reach Ferry · 4 piers · weekday morning departures · refreshed 27 Sep 2026 · owner: Service Planning.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 1082,
+        "y": 14,
+        "z": 3
+      },
+      {
+        "body": "Observed queue times range from 0.6 to 1.1 hours. Old Harbor is the highest of the four piers but remains below the 1.5-hour stop line. This short window supports a reversible schedule test only; it does not establish a seasonal pattern.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Observed queue times range from 0.6 to 1.1 hours. Old Harbor is the highest of the four piers but remains below the 1.5-hour stop line. This short window supports a reversible schedule test only; it does not establish a seasonal pattern.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 548,
+        "y": 137.76,
+        "z": 4
+      },
+      {
+        "capability_overrides": {
+          "target": 1.5
+        },
+        "composition_role": "hero_metric",
+        "delta": "-0.4 h",
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 152.32000000000002,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "h"
+        },
+        "order": 5,
+        "period": "vs prior period",
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "target": 1.5,
+        "textAlign": "left",
+        "title": "Old Harbor queue",
+        "type": "metric",
+        "unit": "h",
+        "value": 1.1,
+        "w": 520,
+        "weight": 1.15,
+        "x": 1062,
+        "y": 144,
+        "z": 5
+      },
+      {
+        "after": 1.1,
+        "before": 0.6,
+        "composition_role": "supporting_analysis",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "h"
+        },
+        "order": 6,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Pier queue · lowest to highest",
+        "type": "comparison",
+        "unit": "h",
+        "w": 430,
+        "weight": 1.15,
+        "x": 548,
+        "y": 267.76,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Pier",
+            "Queue h",
+            "On time",
+            "Decision"
+          ],
+          "rows": [
+            [
+              "North Ferry",
+              0.6,
+              "97%",
+              "No change"
+            ],
+            [
+              "River Bend",
+              0.9,
+              "95%",
+              "No change"
+            ],
+            [
+              "Old Harbor",
+              1.1,
+              "94%",
+              "Five-day trial"
+            ],
+            [
+              "East Lock",
+              0.8,
+              "96%",
+              "No change"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "h": 259,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 2,
+        "rows": [
+          [
+            "North Ferry",
+            0.6,
+            "97%",
+            "No change"
+          ],
+          [
+            "River Bend",
+            0.9,
+            "95%",
+            "No change"
+          ],
+          [
+            "Old Harbor",
+            1.1,
+            "94%",
+            "Five-day trial"
+          ],
+          [
+            "East Lock",
+            0.8,
+            "96%",
+            "No change"
+          ]
+        ],
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Pier observations",
+        "type": "table",
+        "w": 480,
+        "weight": 1.55,
+        "x": 992,
+        "y": 310.32000000000005,
+        "z": 7
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Stop if queue time exceeds 1.5 hours or on-time service falls below 94%; record passenger counts before extending.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 105.28000000000002,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 8,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "showTitle": false,
+        "statement": "Trial one earlier Old Harbor departure for five weekdays",
+        "status": "Trial",
+        "textAlign": "left",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 448.00000000000006,
+        "weight": 1.15,
+        "x": 14,
+        "y": 348,
+        "z": 8
+      },
+      {
+        "body": "Decision: trial one earlier Old Harbor departure for five weekdays; keep the existing schedule if any queue exceeds 1.5 hours or on-time service falls below 94%.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 96,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Action",
+        "order": 7,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Decision: trial one earlier Old Harbor departure for five weekdays; keep the existing schedule if any queue exceeds 1.5 hours or on-time service falls below 94%.",
+        "textAlign": "left",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 460.2,
+        "weight": 1.1,
+        "x": 476.00000000000006,
+        "y": 431.76,
+        "z": 9
+      }
+    ],
+    "layoutPreset": "executive",
+    "mode": "smart",
+    "nextId": 10,
+    "schema_version": 1
+  },
+  "model_sha256": "0d18829bfefd09aea8daff0b8a6766c3e7794f312bf780cdffe19a630e27549e",
+  "preflight": {
+    "data_issue_count": 0,
+    "geometry": {
+      "bounded": true,
+      "canvas": {
+        "height": 1582,
+        "width": 1600
+      },
+      "chart_data_semantics_unchanged": true,
+      "item_count": 9,
+      "items": [
+        {
+          "compositionLevel": "support",
+          "h": 72,
+          "id": "c3",
+          "level": "support",
+          "order": 0,
+          "pattern": "narrative-evidence-split",
+          "role": "context",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": true,
+          "title": "Body Narrative",
+          "w": 747.8399999999999,
+          "x": 14,
+          "y": 152
+        },
+        {
+          "compositionLevel": "support",
+          "h": 296,
+          "id": "c7",
+          "level": "support",
+          "order": 1,
+          "pattern": "narrative-evidence-split",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": false,
+          "title": "Pier observations",
+          "w": 810.1600000000001,
+          "x": 775.8399999999999,
+          "y": 40
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 134.56,
+          "id": "c4",
+          "level": "feature",
+          "order": 2,
+          "pattern": "narrative-evidence-split",
+          "role": "narrative_interpretation",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": false,
+          "title": "Body Narrative",
+          "w": 1572,
+          "x": 14,
+          "y": 344
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 377.59999999999997,
+          "id": "c1",
+          "level": "feature",
+          "order": 3,
+          "pattern": "analytical-feature",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 3,
+          "sectionHeadingY": 486.55999999999995,
+          "sectionPattern": "analytical-feature",
+          "sectionStart": true,
+          "title": "Queue by pier",
+          "w": 778.0848484848484,
+          "x": 410.9575757575758,
+          "y": 512.56
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 122.93120000000002,
+          "id": "c2",
+          "level": "feature",
+          "order": 4,
+          "pattern": "compact-decision-band",
+          "role": "report_headline",
+          "section": "Decision",
+          "sectionHeadingOrder": 4,
+          "sectionHeadingY": 898.1599999999999,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": true,
+          "title": "Hero Title",
+          "w": 965.96,
+          "x": 14,
+          "y": 924.1599999999999
+        },
+        {
+          "compositionLevel": "support",
+          "h": 113.70240000000003,
+          "id": "c8",
+          "level": "support",
+          "order": 5,
+          "pattern": "compact-decision-band",
+          "role": "decision_risk",
+          "section": "Decision",
+          "sectionHeadingOrder": 4,
+          "sectionHeadingY": 898.1599999999999,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": false,
+          "title": "Risk Callout",
+          "w": 592.04,
+          "x": 993.96,
+          "y": 928.7743999999999
+        },
+        {
+          "compositionLevel": "support",
+          "h": 186,
+          "id": "c5",
+          "level": "support",
+          "order": 6,
+          "pattern": "compact-decision-band",
+          "role": "hero_metric",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": false,
+          "title": "Old Harbor queue",
+          "w": 1572,
+          "x": 14,
+          "y": 1055.0911999999998
+        },
+        {
+          "compositionLevel": "support",
+          "h": 196,
+          "id": "c6",
+          "level": "support",
+          "order": 7,
+          "pattern": "compact-decision-band",
+          "role": "supporting_analysis",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": false,
+          "title": "Pier queue · lowest to highest",
+          "w": 1572,
+          "x": 14,
+          "y": 1256.0911999999998
+        },
+        {
+          "compositionLevel": "support",
+          "h": 100.80000000000001,
+          "id": "c9",
+          "level": "support",
+          "order": 8,
+          "pattern": "compact-decision-band",
+          "role": "conclusion",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": false,
+          "title": "Key Takeaway",
+          "w": 1572,
+          "x": 14,
+          "y": 1467.0911999999998
+        }
+      ],
+      "overlaps": [],
+      "visible_sections": [
+        {
+          "height": 15.064849853515625,
+          "level": "2",
+          "role": "heading",
+          "section": "operating-evidence",
+          "title": "01Operating evidence",
+          "top": 14
+        },
+        {
+          "height": 15.06488037109375,
+          "level": "2",
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis",
+          "top": 486.56
+        },
+        {
+          "height": 15.0648193359375,
+          "level": "2",
+          "role": "heading",
+          "section": "decision",
+          "title": "03Decision",
+          "top": 898.16
+        }
+      ]
+    },
+    "issues": [],
+    "layout_issue_count": 0
+  },
+  "report_id": "report-0e04c6216d0b40be960f991932ba6008",
+  "responsive_initial": {
+    "axis_label_overlaps": [
+      {
+        "chart": "c1",
+        "overlaps": []
+      }
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [
+        {
+          "cardClient": 151,
+          "cardScroll": 151,
+          "comparisonClient": 0,
+          "comparisonScroll": 0,
+          "componentHeight": 180,
+          "copyClient": 89,
+          "copyScroll": 89,
+          "id": "c6"
+        }
+      ],
+      "component_count": 9,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 92,
+          "id": "c3",
+          "order": "1",
+          "position": "relative",
+          "text": "Harbor Reach Ferry · 4 piers · weekday morning departures · refreshed ",
+          "w": 370,
+          "x": 26,
+          "y": 79.59375
+        },
+        {
+          "display": "block",
+          "h": 264,
+          "id": "c7",
+          "order": "3",
+          "position": "relative",
+          "text": "Pier observations\nPIER\tQUEUE H\tON TIME\tDECISION\nNorth Ferry\t0.6\t97%\tNo",
+          "w": 370,
+          "x": 26,
+          "y": 186.59375
+        },
+        {
+          "display": "block",
+          "h": 132,
+          "id": "c4",
+          "order": "5",
+          "position": "relative",
+          "text": "Observed queue times range from 0.6 to 1.1 hours. Old Harbor is the hi",
+          "w": 370,
+          "x": 26,
+          "y": 465.59375
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c1",
+          "order": "7",
+          "position": "relative",
+          "text": "Queue by pier\nNorth Ferry\nRiver Bend\nOld Harbor\nEast Lock\n0.6\n0.8\n1\n1.",
+          "w": 370,
+          "x": 26,
+          "y": 653.59375
+        },
+        {
+          "display": "block",
+          "h": 124,
+          "id": "c2",
+          "order": "9",
+          "position": "relative",
+          "text": "Run one Old Harbor morning trial; keep the other piers unchanged.",
+          "w": 370,
+          "x": 26,
+          "y": 959.59375
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c8",
+          "order": "11",
+          "position": "relative",
+          "text": "!\nTrial one earlier Old Harbor departure for five weekdays\n\nStop if qu",
+          "w": 370,
+          "x": 26,
+          "y": 1098.59375
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c5",
+          "order": "13",
+          "position": "relative",
+          "text": "Old Harbor queue\n1.1 h\nDelta -0.4 h\nTarget 1.5 h",
+          "w": 370,
+          "x": 26,
+          "y": 1285.59375
+        },
+        {
+          "display": "block",
+          "h": 180,
+          "id": "c6",
+          "order": "15",
+          "position": "relative",
+          "text": "Pier queue · lowest to highest\nBefore\n0.6 h\nAfter\n1.1 h\n▲",
+          "w": 370,
+          "x": 26,
+          "y": 1461.390625
+        },
+        {
+          "display": "block",
+          "h": 149.25,
+          "id": "c9",
+          "order": "17",
+          "position": "relative",
+          "text": "✓\nDecision: trial one earlier Old Harbor departure for five weekdays; ",
+          "w": 370,
+          "x": 26,
+          "y": 1656.390625
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 1767.046875,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "Queue by pier\nNorth Ferry\nRiver Bend\nOld Harbor\nEast Lock\n0.6\n0.8\n1\n1.",
+        "w": 370,
+        "x": 26,
+        "y": 38.59375
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flow_diagnostics": [],
+      "process_flows": [],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "operating-evidence",
+          "title": "01Operating evidence"
+        },
+        {
+          "first_component_order": 3,
+          "level": "2",
+          "order": 6,
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis"
+        },
+        {
+          "first_component_order": 4,
+          "level": "2",
+          "order": 8,
+          "role": "heading",
+          "section": "decision",
+          "title": "03Decision"
+        }
+      ],
+      "table_regions": [],
+      "text_components": [
+        {
+          "cardClient": 85,
+          "cardScroll": 85,
+          "clipped": false,
+          "componentHeight": 124,
+          "copyClient": 85,
+          "copyScroll": 85,
+          "deadSpace": 39,
+          "id": "c2"
+        },
+        {
+          "cardClient": 59,
+          "cardScroll": 59,
+          "clipped": false,
+          "componentHeight": 92,
+          "copyClient": 59,
+          "copyScroll": 59,
+          "deadSpace": 33,
+          "id": "c3"
+        },
+        {
+          "cardClient": 98,
+          "cardScroll": 98,
+          "clipped": false,
+          "componentHeight": 132,
+          "copyClient": 98,
+          "copyScroll": 98,
+          "deadSpace": 34,
+          "id": "c4"
+        },
+        {
+          "cardClient": 125,
+          "cardScroll": 125,
+          "clipped": false,
+          "componentHeight": 149,
+          "copyClient": 125,
+          "copyScroll": 125,
+          "deadSpace": 24,
+          "id": "c9"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "preview_chart_geometry": [
+      {
+        "component_height": 408.90643310546875,
+        "component_width": 842.6016845703125,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c1",
+        "plot_width": 805.7821655273438,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 276.78924560546875,
+        "svg_width": 805.7821655273438
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c1",
+        "titles": [
+          "Line Chart",
+          "North Ferry",
+          "River Bend",
+          "Old Harbor",
+          "East Lock",
+          "Queue hours · 4 points · North Ferry 0.6 · River Bend 0.9 · Old Harbor 1.1 · East Lock 0.8",
+          "Queue hours",
+          "Queue hours · North Ferry · 266.308",
+          "Queue hours · North Ferry · 266.308",
+          "Queue hours · River Bend · 129.3232",
+          "Queue hours · River Bend · 129.3232",
+          "Queue hours · Old Harbor · 38",
+          "Queue hours · Old Harbor · 38",
+          "Queue hours · East Lock · 174.9848",
+          "Queue hours · East Lock · 174.9848",
+          "Chart legend",
+          "Toggle Queue hours series",
+          "Queue hours"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Line Chart: 4 rows · X Pier · Y Queue hours · 2 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 216.58538818359375,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 255.43902587890625
+        },
+        "card": {
+          "h": 283.72686767578125,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 188.2975616455078
+        },
+        "id": "c7",
+        "item": {
+          "h": 320.5463562011719,
+          "w": 877.3399658203125,
+          "x": 942.9066162109375,
+          "y": 169.8878173828125
+        },
+        "region": {
+          "h": 209.0048828125,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 263.01953125
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 264.1024475097656
+            },
+            "text": "PIER\tQUEUE H\tON TIME\tDECISION",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 300.3804931640625
+            },
+            "text": "North Ferry\t0.6\t97%\tNo change",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 337.20001220703125
+            },
+            "text": "River Bend\t0.9\t95%\tNo change",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 374.01953125
+            },
+            "text": "Old Harbor\t1.1\t94%\tFive-day trial",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 410.83905029296875
+            },
+            "text": "East Lock\t0.8\t96%\tNo change",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 183.0146484375,
+          "w": 838.3546142578125,
+          "x": 962.3992919921875,
+          "y": 264.1024475097656
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "Pier observations\nPIER\tQUEUE H\tON TIME\tDECISION\nNorth Ferry\t0.6\t97%\tNo change\nRiver Bend\t0.9\t95%\tNo change\nOld Harbor\t1.1\t94%\tFive-day trial\nEast Lock\t0.8\t96%\tNo change"
+    ],
+    "spatial_geometry": []
+  },
+  "revision": 86,
+  "title": "Harbor Reach Ferry · Old Harbor Morning Trial"
+}

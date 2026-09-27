@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "disposition": "No source/product changes were made. Verification stopped after confirming this failure, as directed.",
+      "evidence": [
+        "screenshots/desktop-1440/B.png",
+        "screenshots/narrow-390/B.png",
+        "screenshots/full-captures/semiconductor-rca-preview-desktop.png",
+        "screenshots/full-captures/semiconductor-rca-preview-mobile.png",
+        "benchmark/actions/B-final-adjustment.json"
+      ],
+      "finding_id": "VIS-R6-001",
+      "impact": "The investigation sequence is not reliably readable, weakening the action order in a containment report.",
+      "observed": "In final 1440 desktop and 390 mobile Preview captures, horizontal connector arrows run through node text. The same occurs after supported editing shortened labels to Map wafer cluster, Compare matched lot, Check CF-4 pressure, Confirm containment. At 390px the responsive flow also overlaps text and arrow relationships.",
+      "report": "B · TSV-26-091 Copper Fill Yield Containment Review",
+      "requirement": "Whole-report task success, CHG-180 Process Flow/diagram reading and semantic presentation",
+      "scope": "One concrete report task; no extrapolation to every DiagramEngine layout.",
+      "severity": "P1",
+      "status": "CONFIRMED_STOP",
+      "task": "Yield engineer reads the RCA sequence before containment release.",
+      "title": "Process Flow connectors cross node labels in whole-report Preview"
+    }
+  ],
+  "source_changes": false,
+  "stopped_after_first_material_product_finding": true
+}

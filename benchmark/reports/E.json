@@ -1,0 +1,2017 @@
+{
+  "description": "Dense mixed-evidence operating decision for the water-quality lead: maintain staged membrane recovery only while feed turbidity, chloride and pressure remain inside the release envelope.",
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "stage_1",
+            "name": "Stage",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "flux_recovery_2",
+            "name": "Flux recovery",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          },
+          {
+            "id": "pressure_3",
+            "name": "Pressure",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mukchpuw-5z7954",
+        "metadata": {
+          "header": {
+            "confidence": 0.8333333333333334,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "1 Intake",
+            63.2,
+            1.42
+          ],
+          [
+            "2 Screen",
+            63.8,
+            1.47
+          ],
+          [
+            "3 Carbon",
+            64.1,
+            1.51
+          ],
+          [
+            "4 Softener",
+            64.5,
+            1.57
+          ],
+          [
+            "5 Train",
+            65,
+            1.63
+          ],
+          [
+            "6 Wash",
+            66.1,
+            1.72
+          ],
+          [
+            "7 Polish",
+            67.4,
+            1.81
+          ],
+          [
+            "8 Release",
+            68.4,
+            1.86
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T21:43:05.768Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "sample_point_1",
+            "name": "Sample point",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "chloride_2",
+            "name": "Chloride",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mukchqg8-tum2c4",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Intake",
+            184
+          ],
+          [
+            "Membrane",
+            196
+          ],
+          [
+            "Polishing",
+            207
+          ],
+          [
+            "Release",
+            211
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T21:43:06.536Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "composition_role": "primary_analysis",
+        "cross": null,
+        "data": [
+          [
+            "Baseline",
+            72
+          ],
+          [
+            "Pilot",
+            78
+          ],
+          [
+            "Validation",
+            84
+          ],
+          [
+            "Release",
+            91
+          ],
+          [
+            "Sustain",
+            94
+          ]
+        ],
+        "dataset_id": "dataset-mukchpuw-5z7954",
+        "drill": null,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c1",
+        "locked": false,
+        "mapping": {
+          "category": "stage_1",
+          "value": "flux_recovery_2",
+          "x": "stage_1",
+          "y": "flux_recovery_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 3,
+        "revealed": true,
+        "rows": [
+          {
+            "label": "Baseline",
+            "value": 72
+          },
+          {
+            "label": "Pilot",
+            "value": 78
+          },
+          {
+            "label": "Validation",
+            "value": 84
+          },
+          {
+            "label": "Release",
+            "value": 91
+          },
+          {
+            "label": "Sustain",
+            "value": 94
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Flux recovery by process stage",
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 1,
+              "labelPresentationIntent": {
+                "fields": [
+                  "interval",
+                  "rotation"
+                ],
+                "mode": "authored"
+              },
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 0,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "sample_point_1",
+                "name": "Sample point",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "string"
+              },
+              {
+                "id": "chloride_2",
+                "name": "Chloride",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mukchqg8-tum2c4",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Intake",
+                184
+              ],
+              [
+                "Membrane",
+                196
+              ],
+              [
+                "Polishing",
+                207
+              ],
+              [
+                "Release",
+                211
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T21:43:06.536Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mukchqg8-tum2c4",
+          "engineering": {
+            "L": 3,
+            "h": 320,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "sample_point_1",
+            "value": "chloride_2",
+            "x": "sample_point_1",
+            "y": "chloride_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "sample_point_1",
+                "value": "chloride_2",
+                "x": "sample_point_1",
+                "y": "chloride_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "chloride_2",
+              "id": "series-1",
+              "label": "Chloride",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "supporting_analysis",
+        "cross": null,
+        "data": [
+          [
+            "Intake",
+            184
+          ],
+          [
+            "Membrane",
+            196
+          ],
+          [
+            "Polishing",
+            207
+          ],
+          [
+            "Release",
+            211
+          ]
+        ],
+        "dataset_id": "dataset-mukchqg8-tum2c4",
+        "drill": null,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c2",
+        "locked": false,
+        "mapping": {
+          "category": "sample_point_1",
+          "value": "chloride_2",
+          "x": "sample_point_1",
+          "y": "chloride_2"
+        },
+        "message_role": "Supporting Evidence",
+        "order": 4,
+        "revealed": true,
+        "rows": [
+          {
+            "label": "Intake",
+            "value": 184
+          },
+          {
+            "label": "Membrane",
+            "value": 196
+          },
+          {
+            "label": "Polishing",
+            "value": 207
+          },
+          {
+            "label": "Release",
+            "value": 211
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "textAlign": "left",
+        "title": "Chloride at sampling point",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 548,
+        "y": 14,
+        "z": 2
+      },
+      {
+        "body": "Bayshore membrane recovery is improving; keep the release envelope active.",
+        "composition_role": "report_headline",
+        "element": "Hero Title",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 109.76,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 6,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Bayshore membrane recovery is improving; keep the release envelope active.",
+        "textAlign": "left",
+        "title": "Hero Title",
+        "type": "text",
+        "w": 520,
+        "weight": 1.1,
+        "x": 14,
+        "y": 348,
+        "z": 3
+      },
+      {
+        "body": "Bayshore Reuse Plant · 12 process stages, 4 grab samples · shift review 27 Sep 2026 · owner: Water Quality. · Sensor refresh 06:40 · grab sample 06:15 · lab confirmation pending",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Context",
+        "order": 2,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Bayshore Reuse Plant · 12 process stages, 4 grab samples · shift review 27 Sep 2026 · owner: Water Quality. · Sensor refresh 06:40 · grab sample 06:15 · lab confirmation pending",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 1082,
+        "y": 14,
+        "z": 4
+      },
+      {
+        "body": "Flux recovery rose through the wash and polishing stages, while pressure approached the 2.0 bar watch line at the south header. Chloride remains below the 250 mg/L release criterion. The pressure trace is a prompt to verify the sensor, not proof of membrane damage.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Flux recovery rose through the wash and polishing stages, while pressure approached the 2.0 bar watch line at the south header. Chloride remains below the 250 mg/L release criterion. The pressure trace is a prompt to verify the sensor, not proof of membrane damage.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 1082,
+        "y": 144,
+        "z": 5
+      },
+      {
+        "capability_overrides": {
+          "target": 70
+        },
+        "composition_role": "hero_metric",
+        "delta": "+5.2 pp",
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 152.32000000000002,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 7,
+        "period": "vs prior period",
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "target": 70,
+        "textAlign": "left",
+        "title": "Flux recovery",
+        "type": "metric",
+        "unit": "%",
+        "value": 68.4,
+        "w": 520,
+        "weight": 1.15,
+        "x": 548,
+        "y": 348,
+        "z": 6
+      },
+      {
+        "capability_overrides": {
+          "target": 2
+        },
+        "composition_role": "hero_metric",
+        "delta": "+0.18 bar",
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 152.32000000000002,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "bar"
+        },
+        "order": 8,
+        "period": "vs prior period",
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "target": 2,
+        "textAlign": "left",
+        "title": "South-header pressure",
+        "type": "metric",
+        "unit": "bar",
+        "value": 1.86,
+        "w": 520,
+        "weight": 1.15,
+        "x": 14,
+        "y": 471.76,
+        "z": 7
+      },
+      {
+        "after": 68.4,
+        "before": 63.2,
+        "composition_role": "supporting_analysis",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "%"
+        },
+        "order": 9,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Flux before wash / current",
+        "type": "comparison",
+        "unit": "%",
+        "w": 430,
+        "weight": 1.15,
+        "x": 1082,
+        "y": 274,
+        "z": 8
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Stage",
+            "Flux %",
+            "Pressure bar",
+            "Chloride mg/L",
+            "Status"
+          ],
+          "rows": [
+            [
+              "Raw intake",
+              63.2,
+              1.42,
+              184,
+              "Baseline"
+            ],
+            [
+              "Carbon bed",
+              64.1,
+              1.51,
+              191,
+              "Stable"
+            ],
+            [
+              "Membrane train",
+              65,
+              1.63,
+              198,
+              "Watch"
+            ],
+            [
+              "Wash return",
+              66.1,
+              1.72,
+              202,
+              "Improving"
+            ],
+            [
+              "Polishing pass",
+              67.4,
+              1.81,
+              207,
+              "Stable"
+            ],
+            [
+              "South header",
+              68.4,
+              1.86,
+              211,
+              "Verify sensor"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "h": 259,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 0,
+        "rows": [
+          [
+            "Raw intake",
+            63.2,
+            1.42,
+            184,
+            "Baseline"
+          ],
+          [
+            "Carbon bed",
+            64.1,
+            1.51,
+            191,
+            "Stable"
+          ],
+          [
+            "Membrane train",
+            65,
+            1.63,
+            198,
+            "Watch"
+          ],
+          [
+            "Wash return",
+            66.1,
+            1.72,
+            202,
+            "Improving"
+          ],
+          [
+            "Polishing pass",
+            67.4,
+            1.81,
+            207,
+            "Stable"
+          ],
+          [
+            "South header",
+            68.4,
+            1.86,
+            211,
+            "Verify sensor"
+          ]
+        ],
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Stage evidence",
+        "type": "table",
+        "w": 480,
+        "weight": 1.55,
+        "x": 1082,
+        "y": 438,
+        "z": 9
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Hold distribution if south-header pressure exceeds 2.0 bar, final chloride reaches 250 mg/L, or a sensor check fails.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 105.28000000000002,
+        "id": "c10",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 11,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "showTitle": false,
+        "statement": "Continue staged recovery for one shift",
+        "status": "Conditional",
+        "textAlign": "left",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 448.00000000000006,
+        "weight": 1.15,
+        "x": 548,
+        "y": 514.32,
+        "z": 10
+      },
+      {
+        "composition_role": "causal_evidence",
+        "direction": "right",
+        "edges": [
+          [
+            "Screen feed pressure",
+            "Run membrane wash"
+          ],
+          [
+            "Run membrane wash",
+            "Verify pressure and chloride"
+          ],
+          [
+            "Verify pressure and chloride",
+            "Release distribution"
+          ]
+        ],
+        "element": "Process Flow",
+        "engine": "DiagramEngine",
+        "groupId": null,
+        "h": 220,
+        "id": "c11",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "nodes": [
+          "Screen feed pressure",
+          "Run membrane wash",
+          "Verify pressure and chloride",
+          "Release distribution"
+        ],
+        "order": 5,
+        "section_id": "release-checks",
+        "section_title": "Release checks",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Release sequence",
+        "type": "diagram",
+        "w": 520,
+        "weight": 1.5,
+        "x": 548,
+        "y": 633.6,
+        "z": 11
+      },
+      {
+        "body": "Decision: continue the staged recovery cycle for one shift; release distribution only after the south-header pressure check and the final chloride sample are signed.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 96,
+        "id": "c12",
+        "locked": false,
+        "message_role": "Action",
+        "order": 10,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Decision: continue the staged recovery cycle for one shift; release distribution only after the south-header pressure check and the final chloride sample are signed.",
+        "textAlign": "left",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 460.2,
+        "weight": 1.1,
+        "x": 14,
+        "y": 638.08,
+        "z": 12
+      }
+    ],
+    "layoutPreset": "review",
+    "mode": "smart",
+    "nextId": 13,
+    "schema_version": 1
+  },
+  "model_sha256": "422852046779dfad5d22401868f4e7cbe49de54de55b762bc2f0fe83806aff39",
+  "preflight": {
+    "data_issue_count": 0,
+    "geometry": {
+      "bounded": true,
+      "canvas": {
+        "height": 2102,
+        "width": 1600
+      },
+      "chart_data_semantics_unchanged": true,
+      "item_count": 12,
+      "items": [
+        {
+          "compositionLevel": "support",
+          "h": 116,
+          "id": "c5",
+          "level": "support",
+          "order": 0,
+          "pattern": "narrative-evidence-split",
+          "role": "narrative_interpretation",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": false,
+          "title": "Body Narrative",
+          "w": 747.8399999999999,
+          "x": 14,
+          "y": 218.06
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 472.12,
+          "id": "c9",
+          "level": "feature",
+          "order": 1,
+          "pattern": "narrative-evidence-split",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": true,
+          "title": "Stage evidence",
+          "w": 810.1600000000001,
+          "x": 775.8399999999999,
+          "y": 40
+        },
+        {
+          "compositionLevel": "support",
+          "h": 72,
+          "id": "c4",
+          "level": "support",
+          "order": 2,
+          "pattern": "narrative-evidence-split",
+          "role": "context",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "narrative-evidence-split",
+          "sectionStart": false,
+          "title": "Body Narrative",
+          "w": 1572,
+          "x": 14,
+          "y": 520.12
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 408.28764705882355,
+          "id": "c1",
+          "level": "feature",
+          "order": 3,
+          "pattern": "allocation-evidence-grid",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 3,
+          "sectionHeadingY": 600.12,
+          "sectionPattern": "allocation-evidence-grid",
+          "sectionStart": true,
+          "title": "Flux recovery by process stage",
+          "w": 841.32,
+          "x": 42.64303030303029,
+          "y": 626.12
+        },
+        {
+          "compositionLevel": "support",
+          "h": 320,
+          "id": "c2",
+          "level": "support",
+          "order": 4,
+          "pattern": "allocation-evidence-grid",
+          "role": "supporting_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 3,
+          "sectionHeadingY": 600.12,
+          "sectionPattern": "allocation-evidence-grid",
+          "sectionStart": false,
+          "title": "Chloride at sampling point",
+          "w": 659.3939393939394,
+          "x": 897.9630303030303,
+          "y": 670.2638235294118
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 233,
+          "id": "c11",
+          "level": "feature",
+          "order": 5,
+          "pattern": "causal-flow-feature",
+          "role": "causal_evidence",
+          "section": "Release checks",
+          "sectionHeadingOrder": 5,
+          "sectionHeadingY": 1042.4076470588236,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": true,
+          "title": "Release sequence",
+          "w": 684.4,
+          "x": 457.8,
+          "y": 1068.4076470588236
+        },
+        {
+          "compositionLevel": "support",
+          "h": 195,
+          "id": "c8",
+          "level": "support",
+          "order": 6,
+          "pattern": "allocation-comparison",
+          "role": "supporting_analysis",
+          "section": "Decision",
+          "sectionHeadingOrder": 6,
+          "sectionHeadingY": 1309.4076470588236,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": true,
+          "title": "Flux before wash / current",
+          "w": 888.06,
+          "x": 14,
+          "y": 1335.4076470588236
+        },
+        {
+          "compositionLevel": "support",
+          "h": 186,
+          "id": "c6",
+          "level": "support",
+          "order": 7,
+          "pattern": "allocation-comparison",
+          "role": "hero_metric",
+          "section": "Decision",
+          "sectionHeadingOrder": 6,
+          "sectionHeadingY": 1309.4076470588236,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": false,
+          "title": "Flux recovery",
+          "w": 669.9399999999999,
+          "x": 916.06,
+          "y": 1339.9076470588236
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 109.76,
+          "id": "c3",
+          "level": "feature",
+          "order": 8,
+          "pattern": "allocation-comparison",
+          "role": "report_headline",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": false,
+          "title": "Hero Title",
+          "w": 1572,
+          "x": 14,
+          "y": 1538.4076470588236
+        },
+        {
+          "compositionLevel": "support",
+          "h": 186,
+          "id": "c7",
+          "level": "support",
+          "order": 9,
+          "pattern": "allocation-comparison",
+          "role": "hero_metric",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": false,
+          "title": "South-header pressure",
+          "w": 1572,
+          "x": 14,
+          "y": 1661.1676470588236
+        },
+        {
+          "compositionLevel": "support",
+          "h": 117.91360000000002,
+          "id": "c10",
+          "level": "support",
+          "order": 10,
+          "pattern": "allocation-comparison",
+          "role": "decision_risk",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": false,
+          "title": "Risk Callout",
+          "w": 1572,
+          "x": 14,
+          "y": 1860.1676470588236
+        },
+        {
+          "compositionLevel": "support",
+          "h": 96,
+          "id": "c12",
+          "level": "support",
+          "order": 11,
+          "pattern": "allocation-comparison",
+          "role": "conclusion",
+          "section": "Decision",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "allocation-comparison",
+          "sectionStart": false,
+          "title": "Key Takeaway",
+          "w": 1572,
+          "x": 14,
+          "y": 1991.0812470588237
+        }
+      ],
+      "overlaps": [],
+      "visible_sections": [
+        {
+          "height": 15.064849853515625,
+          "level": "2",
+          "role": "heading",
+          "section": "operating-evidence",
+          "title": "01Operating evidence",
+          "top": 14
+        },
+        {
+          "height": 15.06488037109375,
+          "level": "2",
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis",
+          "top": 600.12
+        },
+        {
+          "height": 15.0648193359375,
+          "level": "2",
+          "role": "heading",
+          "section": "release-checks",
+          "title": "03Release checks",
+          "top": 1042.41
+        },
+        {
+          "height": 15.06488037109375,
+          "level": "2",
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision",
+          "top": 1309.41
+        }
+      ]
+    },
+    "issues": [],
+    "layout_issue_count": 0
+  },
+  "report_id": "report-4bed2e5ce3f54703a0ff5913b811e469",
+  "responsive_initial": {
+    "axis_label_overlaps": [
+      {
+        "chart": "c1",
+        "overlaps": []
+      },
+      {
+        "chart": "c2",
+        "overlaps": []
+      }
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [
+        {
+          "cardClient": 151,
+          "cardScroll": 151,
+          "comparisonClient": 0,
+          "comparisonScroll": 0,
+          "componentHeight": 180,
+          "copyClient": 89,
+          "copyScroll": 89,
+          "id": "c8"
+        }
+      ],
+      "component_count": 12,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 152,
+          "id": "c5",
+          "order": "1",
+          "position": "relative",
+          "text": "Flux recovery rose through the wash and polishing stages, while pressu",
+          "w": 370,
+          "x": 26,
+          "y": 77.59375
+        },
+        {
+          "display": "block",
+          "h": 340,
+          "id": "c9",
+          "order": "3",
+          "position": "relative",
+          "text": "Stage evidence\nSTAGE\tFLUX %\tPRESSURE BAR\tCHLORIDE MG/L\tSTATUS\nRaw inta",
+          "w": 370,
+          "x": 26,
+          "y": 242.59375
+        },
+        {
+          "display": "block",
+          "h": 112,
+          "id": "c4",
+          "order": "5",
+          "position": "relative",
+          "text": "Bayshore Reuse Plant · 12 process stages, 4 grab samples · shift revie",
+          "w": 370,
+          "x": 26,
+          "y": 595.59375
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c1",
+          "order": "7",
+          "position": "relative",
+          "text": "Flux recovery by process stage\n1 Intake\n2 Screen\n4 Softener\n5 Train\n7 ",
+          "w": 370,
+          "x": 26,
+          "y": 759.59375
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c2",
+          "order": "9",
+          "position": "relative",
+          "text": "Chloride at sampling point\nIntake\nMembrane\nPolishing\nRelease\n184\n190\n2",
+          "w": 370,
+          "x": 26,
+          "y": 1022.59375
+        },
+        {
+          "display": "block",
+          "h": 196.796875,
+          "id": "c11",
+          "order": "11",
+          "position": "relative",
+          "text": "Release sequence\nScreen feed pressure\nRun membrane wash\nVerify pressur",
+          "w": 370,
+          "x": 26,
+          "y": 1324.59375
+        },
+        {
+          "display": "block",
+          "h": 180,
+          "id": "c8",
+          "order": "13",
+          "position": "relative",
+          "text": "Flux before wash / current\nBefore\n63.2 %\nAfter\n68.4 %\n▲",
+          "w": 370,
+          "x": 26,
+          "y": 1573.390625
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c6",
+          "order": "15",
+          "position": "relative",
+          "text": "Flux recovery\n68.4%\nDelta +5.2 pp\nTarget 70%",
+          "w": 370,
+          "x": 26,
+          "y": 1766.390625
+        },
+        {
+          "display": "block",
+          "h": 124,
+          "id": "c3",
+          "order": "17",
+          "position": "relative",
+          "text": "Bayshore membrane recovery is improving; keep the release envelope act",
+          "w": 370,
+          "x": 26,
+          "y": 1940.1875
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c7",
+          "order": "19",
+          "position": "relative",
+          "text": "South-header pressure\n1.86 bar\nDelta +0.18 bar\nTarget 2 bar",
+          "w": 370,
+          "x": 26,
+          "y": 2077.1875
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c10",
+          "order": "21",
+          "position": "relative",
+          "text": "!\nContinue staged recovery for one shift\n\nHold distribution if south-h",
+          "w": 370,
+          "x": 26,
+          "y": 2250.984375
+        },
+        {
+          "display": "block",
+          "h": 149.25,
+          "id": "c12",
+          "order": "23",
+          "position": "relative",
+          "text": "✓\nDecision: continue the staged recovery cycle for one shift; release ",
+          "w": 370,
+          "x": 26,
+          "y": 2435.984375
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 2546.640625,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "Flux recovery by process stage\n1 Intake\n2 Screen\n4 Softener\n5 Train\n7 ",
+        "w": 370,
+        "x": 26,
+        "y": 38.59375
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flow_diagnostics": [
+        {
+          "id": "c11",
+          "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 684px; --viz-preferred-height: 233px; left: 457.8px; top: 1068.41px; width: 684.4px; height: 233px; z-index: 21; order: 11;",
+          "metrics": [
+            {
+              "className": "component",
+              "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 684px; --viz-preferred-height: 233px; left: 457.8px; top: 1068.41px; width: 684.4px; height: 233px; z-index: 21; order: 11;",
+              "rect": {
+                "height": 196.796875,
+                "width": 370,
+                "x": 26,
+                "y": 1324.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "196.797px",
+                "maxHeight": "none",
+                "minHeight": "144px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "c-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 196.796875,
+                "width": 370,
+                "x": 26,
+                "y": 1324.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "196.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "integrated-element-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 172.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1336.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "172.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "gallery-card integrated-variant has-title align-left engine-diagramengine variant-process-flow",
+              "inlineStyle": null,
+              "rect": {
+                "height": 172.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1336.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "172.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "ARTICLE"
+            },
+            {
+              "className": "card-body",
+              "inlineStyle": null,
+              "rect": {
+                "height": 110.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1398.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "110.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "diagram-responsive-reading",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1405.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "auto",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1405.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            }
+          ],
+          "mobileHeight": "144px"
+        }
+      ],
+      "process_flows": [
+        {
+          "height": 196.796875,
+          "id": "c11",
+          "svgHeight": 103.796875,
+          "svgWidth": 346
+        }
+      ],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "operating-evidence",
+          "title": "01Operating evidence"
+        },
+        {
+          "first_component_order": 3,
+          "level": "2",
+          "order": 6,
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis"
+        },
+        {
+          "first_component_order": 5,
+          "level": "2",
+          "order": 10,
+          "role": "heading",
+          "section": "release-checks",
+          "title": "03Release checks"
+        },
+        {
+          "first_component_order": 6,
+          "level": "2",
+          "order": 12,
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision"
+        }
+      ],
+      "table_regions": [
+        {
+          "clientWidth": 344,
+          "keyboard_scroll_left": 125,
+          "label": "Scrollable table: Stage evidence",
+          "scrollLeft": 0,
+          "scrollWidth": 469,
+          "tabIndex": 0
+        }
+      ],
+      "text_components": [
+        {
+          "cardClient": 85,
+          "cardScroll": 85,
+          "clipped": false,
+          "componentHeight": 124,
+          "copyClient": 85,
+          "copyScroll": 85,
+          "deadSpace": 39,
+          "id": "c3"
+        },
+        {
+          "cardClient": 78,
+          "cardScroll": 78,
+          "clipped": false,
+          "componentHeight": 112,
+          "copyClient": 78,
+          "copyScroll": 78,
+          "deadSpace": 34,
+          "id": "c4"
+        },
+        {
+          "cardClient": 98,
+          "cardScroll": 98,
+          "clipped": false,
+          "componentHeight": 152,
+          "copyClient": 98,
+          "copyScroll": 98,
+          "deadSpace": 54,
+          "id": "c5"
+        },
+        {
+          "cardClient": 125,
+          "cardScroll": 125,
+          "clipped": false,
+          "componentHeight": 149,
+          "copyClient": 125,
+          "copyScroll": 125,
+          "deadSpace": 24,
+          "id": "c12"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "preview_chart_geometry": [
+      {
+        "component_height": 442.13873291015625,
+        "component_width": 911.0798950195312,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c1",
+        "plot_width": 874.260498046875,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 310.02166748046875,
+        "svg_width": 874.260498046875
+      },
+      {
+        "component_height": 346.53662109375,
+        "component_width": 714.07177734375,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c2",
+        "plot_width": 677.252197265625,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 214.4195556640625,
+        "svg_width": 677.252197265625
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c1",
+        "titles": [
+          "Line Chart",
+          "1 Intake",
+          "2 Screen",
+          "4 Softener",
+          "5 Train",
+          "7 Polish",
+          "8 Release",
+          "Flux recovery · 8 points · 1 Intake 63.2 · 2 Screen 63.8 · 3 Carbon 64.1 · 4 Softener 64.5 · 5 Train 65 · 6 Wash 66.1 · 7 Polish 67.4 · 8 Release 68.4",
+          "Flux recovery",
+          "Flux recovery · 1 Intake · 268.28",
+          "Flux recovery · 1 Intake · 268.28",
+          "Flux recovery · 2 Screen · 241.7092",
+          "Flux recovery · 2 Screen · 241.7092",
+          "Flux recovery · 3 Carbon · 228.4238",
+          "Flux recovery · 3 Carbon · 228.4238",
+          "Flux recovery · 4 Softener · 210.71",
+          "Flux recovery · 4 Softener · 210.71",
+          "Flux recovery · 5 Train · 188.5677",
+          "Flux recovery · 5 Train · 188.5677",
+          "Flux recovery · 6 Wash · 139.8546",
+          "Flux recovery · 6 Wash · 139.8546",
+          "Flux recovery · 7 Polish · 82.2846",
+          "Flux recovery · 7 Polish · 82.2846",
+          "Flux recovery · 8 Release · 38",
+          "Flux recovery · 8 Release · 38",
+          "Chart legend",
+          "Toggle Flux recovery series",
+          "Flux recovery"
+        ]
+      },
+      {
+        "chart": "c2",
+        "titles": [
+          "Line Chart",
+          "Intake",
+          "Membrane",
+          "Polishing",
+          "Release",
+          "Chloride · 4 points · Intake 184 · Membrane 196 · Polishing 207 · Release 211",
+          "Chloride",
+          "Chloride · Intake · 270",
+          "Chloride · Intake · 270",
+          "Chloride · Membrane · 166.8889",
+          "Chloride · Membrane · 166.8889",
+          "Chloride · Polishing · 72.3704",
+          "Chloride · Polishing · 72.3704",
+          "Chloride · Release · 38",
+          "Chloride · Release · 38",
+          "Chart legend",
+          "Toggle Chloride series",
+          "Chloride"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Line Chart: 8 rows · X Stage · Y Flux recovery · 3 fields",
+      "Line Chart: 4 rows · X Sample point · Y Chloride · 2 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 407.2989501953125,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 255.43902587890625
+        },
+        "card": {
+          "h": 474.4404296875,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 188.2975616455078
+        },
+        "id": "c9",
+        "item": {
+          "h": 511.2598876953125,
+          "w": 877.3399658203125,
+          "x": 942.9066162109375,
+          "y": 169.8878173828125
+        },
+        "region": {
+          "h": 399.71844482421875,
+          "w": 840.5204467773438,
+          "x": 961.3163452148438,
+          "y": 263.01953125
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 264.1024475097656
+            },
+            "text": "STAGE\tFLUX %\tPRESSURE BAR\tCHLORIDE MG/L\tSTATUS",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 300.3804931640625
+            },
+            "text": "Raw intake\t63.2\t1.42\t184\tBaseline",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 337.20001220703125
+            },
+            "text": "Carbon bed\t64.1\t1.51\t191\tStable",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 374.01953125
+            },
+            "text": "Membrane train\t65\t1.63\t198\tWatch",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.819488525390625,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 410.83905029296875
+            },
+            "text": "Wash return\t66.1\t1.72\t202\tImproving",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 447.6585388183594
+            },
+            "text": "Polishing pass\t67.4\t1.81\t207\tStable",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 838.3546142578125,
+              "x": 962.3992919921875,
+              "y": 484.4780578613281
+            },
+            "text": "South header\t68.4\t1.86\t211\tVerify sensor",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 256.6536560058594,
+          "w": 838.3546142578125,
+          "x": 962.3992919921875,
+          "y": 264.1024475097656
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "Stage evidence\nSTAGE\tFLUX %\tPRESSURE BAR\tCHLORIDE MG/L\tSTATUS\nRaw intake\t63.2\t1.42\t184\tBaseline\nCarbon bed\t64.1\t1.51\t191\tStable\nMembrane train\t65\t1.63\t198\tWatch\nWash return\t66.1\t1.72\t202\tImproving\nPolishing pass\t67.4\t1.81\t207\tStable\nSouth header\t68.4\t1.86\t211\tVerify sensor"
+    ],
+    "spatial_geometry": []
+  },
+  "revision": 127,
+  "title": "Bayshore Reuse Plant · Membrane Recovery Shift Review"
+}

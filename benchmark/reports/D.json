@@ -1,0 +1,2090 @@
+{
+  "description": "Dense shift-handoff review for the operations lead, maintenance owner and quality engineer; retain supervised release until output stability and the paired quality sample are verified.",
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "shift_index_1",
+            "name": "Shift index",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "cell_output_2",
+            "name": "Cell output",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mukchbf9-sr6fox",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            1,
+            412
+          ],
+          [
+            2,
+            405
+          ],
+          [
+            3,
+            419
+          ],
+          [
+            4,
+            424
+          ],
+          [
+            5,
+            417
+          ],
+          [
+            6,
+            398
+          ],
+          [
+            7,
+            391
+          ],
+          [
+            8,
+            402
+          ],
+          [
+            9,
+            421
+          ],
+          [
+            10,
+            428
+          ],
+          [
+            11,
+            425
+          ],
+          [
+            12,
+            433
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T21:42:47.061Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "sample_1",
+            "name": "Sample",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "identifier"
+          },
+          {
+            "id": "measurement_2",
+            "name": "Measurement",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "lsl_3",
+            "name": "LSL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_low"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "usl_4",
+            "name": "USL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_high"
+            ],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mukchdln-xaqrnl",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "01",
+            412,
+            380,
+            440
+          ],
+          [
+            "02",
+            405,
+            380,
+            440
+          ],
+          [
+            "03",
+            419,
+            380,
+            440
+          ],
+          [
+            "04",
+            424,
+            380,
+            440
+          ],
+          [
+            "05",
+            417,
+            380,
+            440
+          ],
+          [
+            "06",
+            398,
+            380,
+            440
+          ],
+          [
+            "07",
+            391,
+            380,
+            440
+          ],
+          [
+            "08",
+            402,
+            380,
+            440
+          ],
+          [
+            "09",
+            421,
+            380,
+            440
+          ],
+          [
+            "10",
+            428,
+            380,
+            440
+          ],
+          [
+            "11",
+            425,
+            380,
+            440
+          ],
+          [
+            "12",
+            433,
+            380,
+            440
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-09-27T21:42:49.883Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "body": "Cell 3 is recovering; keep the second lane under supervised release.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Cell 3 is recovering; keep the second lane under supervised release.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "Orion Materials · Cell 3 · 12 shifts through 27 Sep 2026 · plan 410 units/hour · maintenance owner: A. Patel.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Orion Materials · Cell 3 · 12 shifts through 27 Sep 2026 · plan 410 units/hour · maintenance owner: A. Patel.",
+        "title": "Report context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 410
+        },
+        "composition_role": "hero_metric",
+        "delta": 23,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "units/h"
+        },
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 410,
+        "title": "Latest shift output",
+        "type": "metric",
+        "unit": "units/h",
+        "value": 433,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "capability_overrides": {
+          "target": 410
+        },
+        "composition_role": "hero_metric",
+        "delta": -19,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "units/h"
+        },
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 410,
+        "title": "Overnight low",
+        "type": "metric",
+        "unit": "units/h",
+        "value": 391,
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 3,
+              "labelPresentationIntent": {
+                "fields": [
+                  "interval",
+                  "rotation"
+                ],
+                "mode": "authored"
+              },
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 20,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "shift_index_1",
+                "name": "Shift index",
+                "nullable": false,
+                "profile": {
+                  "distinct": 12,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              },
+              {
+                "id": "cell_output_2",
+                "name": "Cell output",
+                "nullable": false,
+                "profile": {
+                  "distinct": 12,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "integer",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mukchbf9-sr6fox",
+            "metadata": {
+              "header": {
+                "confidence": 1,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                1,
+                412
+              ],
+              [
+                2,
+                405
+              ],
+              [
+                3,
+                419
+              ],
+              [
+                4,
+                424
+              ],
+              [
+                5,
+                417
+              ],
+              [
+                6,
+                398
+              ],
+              [
+                7,
+                391
+              ],
+              [
+                8,
+                402
+              ],
+              [
+                9,
+                421
+              ],
+              [
+                10,
+                428
+              ],
+              [
+                11,
+                425
+              ],
+              [
+                12,
+                433
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-09-27T21:42:47.061Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mukchbf9-sr6fox",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "shift_index_1",
+            "value": "shift_index_1",
+            "x": "shift_index_1",
+            "y": "cell_output_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "shift_index_1",
+                "value": "shift_index_1",
+                "x": "shift_index_1",
+                "y": "cell_output_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "shift_index_1",
+              "id": "series-1",
+              "label": "Shift index",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            },
+            {
+              "axis": "primary",
+              "color": "#2e8b72",
+              "field": "cell_output_2",
+              "id": "series-2",
+              "label": "Cell output",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            1,
+            412
+          ],
+          [
+            2,
+            405
+          ],
+          [
+            3,
+            419
+          ],
+          [
+            4,
+            424
+          ],
+          [
+            5,
+            417
+          ],
+          [
+            6,
+            398
+          ],
+          [
+            7,
+            391
+          ],
+          [
+            8,
+            402
+          ],
+          [
+            9,
+            421
+          ],
+          [
+            10,
+            428
+          ],
+          [
+            11,
+            425
+          ],
+          [
+            12,
+            433
+          ]
+        ],
+        "dataset_id": "dataset-mukchbf9-sr6fox",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "shift_index_1",
+          "value": "shift_index_1",
+          "x": "shift_index_1",
+          "y": "cell_output_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "rows": [
+          {
+            "label": 1,
+            "value": 412
+          },
+          {
+            "label": 2,
+            "value": 405
+          },
+          {
+            "label": 3,
+            "value": 419
+          },
+          {
+            "label": 4,
+            "value": 424
+          },
+          {
+            "label": 5,
+            "value": 417
+          },
+          {
+            "label": 6,
+            "value": 398
+          },
+          {
+            "label": 7,
+            "value": 391
+          },
+          {
+            "label": 8,
+            "value": 402
+          },
+          {
+            "label": 9,
+            "value": 421
+          },
+          {
+            "label": 10,
+            "value": 428
+          },
+          {
+            "label": 11,
+            "value": 425
+          },
+          {
+            "label": 12,
+            "value": 433
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Cell output by shift",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "composition_role": "primary_analysis",
+        "dataset_id": "dataset-mukchdln-xaqrnl",
+        "element": "SPC Control Chart",
+        "engine": "EngineeringChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "lower_limit": null,
+        "mapping": {
+          "category": "sample_1",
+          "specification_high": "usl_4",
+          "specification_low": "lsl_3",
+          "value": "measurement_2",
+          "x": "measurement_2",
+          "y": "lsl_3"
+        },
+        "message_role": "Primary Evidence",
+        "observations": [
+          {
+            "label": "S01",
+            "value": 412
+          },
+          {
+            "label": "S02",
+            "value": 405
+          },
+          {
+            "label": "S03",
+            "value": 419
+          },
+          {
+            "label": "S04",
+            "value": 424
+          },
+          {
+            "label": "S05",
+            "value": 417
+          },
+          {
+            "label": "S06",
+            "value": 398
+          },
+          {
+            "label": "S07",
+            "value": 391
+          },
+          {
+            "label": "S08",
+            "value": 402
+          },
+          {
+            "label": "S09",
+            "value": 421
+          },
+          {
+            "label": "S10",
+            "value": 428
+          },
+          {
+            "label": "S11",
+            "value": 425
+          },
+          {
+            "label": "S12",
+            "value": 433
+          }
+        ],
+        "order": 5,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "title": "Cell output by shift",
+        "type": "engineering",
+        "upper_limit": null,
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Shift",
+            "Output / h",
+            "Feed drive",
+            "QC sample",
+            "Owner / state"
+          ],
+          "rows": [
+            [
+              "01–03",
+              "405–419",
+              "Stable",
+              "Passed",
+              "Operations · closed"
+            ],
+            [
+              "04–06",
+              "398–424",
+              "Service pending",
+              "Passed",
+              "Maintenance · review"
+            ],
+            [
+              "07–09",
+              "391–421",
+              "Restored",
+              "Paired check due",
+              "Quality · open"
+            ],
+            [
+              "10–12",
+              "425–433",
+              "Stable",
+              "Paired check due",
+              "Operations · watch"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 8,
+        "rows": [
+          [
+            "01–03",
+            "405–419",
+            "Stable",
+            "Passed",
+            "Operations · closed"
+          ],
+          [
+            "04–06",
+            "398–424",
+            "Service pending",
+            "Passed",
+            "Maintenance · review"
+          ],
+          [
+            "07–09",
+            "391–421",
+            "Restored",
+            "Paired check due",
+            "Quality · open"
+          ],
+          [
+            "10–12",
+            "425–433",
+            "Stable",
+            "Paired check due",
+            "Operations · watch"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "showTitle": true,
+        "title": "Evidence and decision checks",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "composition_role": "causal_evidence",
+        "edges": [
+          [
+            "Detect",
+            "Contain"
+          ],
+          [
+            "Contain",
+            "Verify"
+          ],
+          [
+            "Verify",
+            "Release"
+          ]
+        ],
+        "element": "Process Flow",
+        "engine": "DiagramEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "nodes": [
+          "Detect",
+          "Contain",
+          "Verify",
+          "Release"
+        ],
+        "order": 7,
+        "section_id": "evidence",
+        "section_title": "Response workflow",
+        "title": "Process Flow",
+        "type": "diagram",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "detail": "Sample: 30 parts · method: inline metrology · source: shift B inspection.",
+        "element": "Evidence Card",
+        "engine": "EvidenceCompositeEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 9,
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "statement": "Measurement system remains within the qualified reference range.",
+        "status": "Verified",
+        "title": "Evidence Card",
+        "type": "evidence",
+        "weight": 1,
+        "z": 9
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Do not open Lane 2 until torque verification and the paired quality sample close both handoff items.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c10",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 10,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "statement": "Continue supervised release through Shift 13",
+        "status": "Watch",
+        "title": "Risk Callout",
+        "type": "decision",
+        "weight": 1,
+        "z": 10
+      },
+      {
+        "composition_role": "action_status",
+        "detail": "Do not open Lane 2 until torque verification and the paired quality sample close both handoff items.",
+        "element": "Project Card",
+        "engine": "ProjectCompositeEngine",
+        "groupId": null,
+        "id": "c11",
+        "locked": false,
+        "message_role": "Action",
+        "order": 11,
+        "section_id": "delivery",
+        "section_title": "Next steps",
+        "statement": "Continue supervised release through Shift 13",
+        "status": "Watch",
+        "title": "Project Card",
+        "type": "project",
+        "weight": 1,
+        "z": 11
+      },
+      {
+        "body": "Output spans 391–433 units/hour. Two overnight shifts remain below plan after a feed-drive interruption. The process limits shown in SPC are not customer specification limits; continue paired quality checks before capacity release.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c12",
+        "locked": false,
+        "message_role": "Context",
+        "order": 6,
+        "section_id": "analysis",
+        "section_title": "Shift interpretation",
+        "text": "Output spans 391–433 units/hour. Two overnight shifts remain below plan after a feed-drive interruption. The process limits shown in SPC are not customer specification limits; continue paired quality checks before capacity release.",
+        "title": "Body Narrative",
+        "type": "text",
+        "weight": 1,
+        "z": 12
+      }
+    ],
+    "layoutPreset": "technical",
+    "mode": "smart",
+    "nextId": 13,
+    "schema_version": 1
+  },
+  "model_sha256": "11e705a6193a499f0ef4a090d4d578777561f35e07671c8a414356416440aae1",
+  "preflight": {
+    "data_issue_count": 0,
+    "geometry": {
+      "bounded": true,
+      "canvas": {
+        "height": 2245,
+        "width": 1600
+      },
+      "chart_data_semantics_unchanged": true,
+      "item_count": 12,
+      "items": [
+        {
+          "compositionLevel": "feature",
+          "h": 109.76,
+          "id": "c1",
+          "level": "feature",
+          "order": 0,
+          "pattern": "hero-opening-band",
+          "role": "report_headline",
+          "section": "Operating summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": true,
+          "title": "Executive Statement",
+          "w": 1059.44,
+          "x": 14,
+          "y": 40
+        },
+        {
+          "compositionLevel": "support",
+          "h": 72,
+          "id": "c2",
+          "level": "support",
+          "order": 1,
+          "pattern": "hero-opening-band",
+          "role": "context",
+          "section": "Operating summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": false,
+          "title": "Report context",
+          "w": 498.56,
+          "x": 1087.44,
+          "y": 58.88
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 423.40941176470596,
+          "id": "c5",
+          "level": "feature",
+          "order": 2,
+          "pattern": "dense-evidence-grid",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 2,
+          "sectionHeadingY": 157.76,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": true,
+          "title": "Cell output by shift",
+          "w": 872.4800000000001,
+          "x": 14,
+          "y": 183.76
+        },
+        {
+          "compositionLevel": "support",
+          "h": 332.6788235294118,
+          "id": "c6",
+          "level": "support",
+          "order": 3,
+          "pattern": "dense-evidence-grid",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 2,
+          "sectionHeadingY": 157.76,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": false,
+          "title": "Cell output by shift",
+          "w": 685.52,
+          "x": 900.4800000000001,
+          "y": 229.1252941176471
+        },
+        {
+          "compositionLevel": "support",
+          "h": 116,
+          "id": "c12",
+          "level": "support",
+          "order": 4,
+          "pattern": "dense-evidence-grid",
+          "role": "narrative_interpretation",
+          "section": "Shift interpretation",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": false,
+          "title": "Body Narrative",
+          "w": 1572,
+          "x": 14,
+          "y": 615.169411764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 170,
+          "id": "c8",
+          "level": "feature",
+          "order": 5,
+          "pattern": "causal-flow-feature",
+          "role": "causal_evidence",
+          "section": "Response workflow",
+          "sectionHeadingOrder": 5,
+          "sectionHeadingY": 739.169411764706,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": true,
+          "title": "Process Flow",
+          "w": 821.28,
+          "x": 389.36,
+          "y": 765.169411764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 398.2976,
+          "id": "c7",
+          "level": "support",
+          "order": 6,
+          "pattern": "causal-flow-feature",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": false,
+          "title": "Evidence and decision checks",
+          "w": 1572,
+          "x": 14,
+          "y": 943.169411764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 296.032,
+          "id": "c9",
+          "level": "support",
+          "order": 7,
+          "pattern": "causal-flow-feature",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": false,
+          "title": "Evidence Card",
+          "w": 1572,
+          "x": 14,
+          "y": 1353.467011764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 105.28000000000002,
+          "id": "c10",
+          "level": "feature",
+          "order": 8,
+          "pattern": "compact-decision-band",
+          "role": "decision_risk",
+          "section": "Decision",
+          "sectionHeadingOrder": 8,
+          "sectionHeadingY": 1657.499011764706,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": true,
+          "title": "Risk Callout",
+          "w": 1572,
+          "x": 14,
+          "y": 1683.499011764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 168.48000000000002,
+          "id": "c11",
+          "level": "feature",
+          "order": 9,
+          "pattern": "closing-next-step",
+          "role": "action_status",
+          "section": "Next steps",
+          "sectionHeadingOrder": 9,
+          "sectionHeadingY": 1796.779011764706,
+          "sectionPattern": "closing-next-step",
+          "sectionStart": true,
+          "title": "Project Card",
+          "w": 1572,
+          "x": 14,
+          "y": 1822.779011764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 205,
+          "id": "c3",
+          "level": "feature",
+          "order": 10,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 10,
+          "sectionHeadingY": 1999.259011764706,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": true,
+          "title": "Latest shift output",
+          "w": 872.4800000000001,
+          "x": 14,
+          "y": 2025.259011764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 205,
+          "id": "c4",
+          "level": "support",
+          "order": 11,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 10,
+          "sectionHeadingY": 1999.259011764706,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": false,
+          "title": "Overnight low",
+          "w": 685.52,
+          "x": 900.4800000000001,
+          "y": 2025.259011764706
+        }
+      ],
+      "overlaps": [],
+      "visible_sections": [
+        {
+          "height": 14.29998779296875,
+          "level": "2",
+          "role": "heading",
+          "section": "opening",
+          "title": "01Operating summary",
+          "top": 14
+        },
+        {
+          "height": 14.29998779296875,
+          "level": "2",
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis",
+          "top": 157.76
+        },
+        {
+          "height": 14.300048828125,
+          "level": "2",
+          "role": "heading",
+          "section": "evidence",
+          "title": "03Response workflow",
+          "top": 739.169
+        },
+        {
+          "height": 14.2999267578125,
+          "level": "2",
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision",
+          "top": 1657.5
+        },
+        {
+          "height": 14.2999267578125,
+          "level": "2",
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Next steps",
+          "top": 1796.78
+        },
+        {
+          "height": 14.2999267578125,
+          "level": "2",
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance",
+          "top": 1999.26
+        }
+      ]
+    },
+    "issues": [],
+    "layout_issue_count": 0
+  },
+  "report_id": "report-7c06241d3f13436a9a33053844e4f814",
+  "responsive_initial": {
+    "axis_label_overlaps": [
+      {
+        "chart": "c5",
+        "overlaps": []
+      },
+      {
+        "chart": "c6",
+        "overlaps": []
+      }
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [],
+      "component_count": 12,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 124,
+          "id": "c1",
+          "order": "1",
+          "position": "relative",
+          "text": "Cell 3 is recovering; keep the second lane under supervised release.",
+          "w": 370,
+          "x": 26,
+          "y": 76.59375
+        },
+        {
+          "display": "block",
+          "h": 92,
+          "id": "c2",
+          "order": "3",
+          "position": "relative",
+          "text": "Orion Materials · Cell 3 · 12 shifts through 27 Sep 2026 · plan 410 un",
+          "w": 370,
+          "x": 26,
+          "y": 212.59375
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c5",
+          "order": "5",
+          "position": "relative",
+          "text": "Cell output by shift\n1\n5\n10\n12\n391\n400\n420\n433\nValue\nLine Chart: 12 ro",
+          "w": 370,
+          "x": 26,
+          "y": 354.59375
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c6",
+          "order": "7",
+          "position": "relative",
+          "text": "Cell output by shift\nLCL 380\nUCL 380\nLSL 380\nUSL 440\nMeasurement\nCompu",
+          "w": 370,
+          "x": 26,
+          "y": 616.59375
+        },
+        {
+          "display": "block",
+          "h": 132,
+          "id": "c12",
+          "order": "9",
+          "position": "relative",
+          "text": "Output spans 391–433 units/hour. Two overnight shifts remain below pla",
+          "w": 370,
+          "x": 26,
+          "y": 878.59375
+        },
+        {
+          "display": "block",
+          "h": 144,
+          "id": "c8",
+          "order": "11",
+          "position": "relative",
+          "text": "Detect\nContain\nVerify\nRelease",
+          "w": 370,
+          "x": 26,
+          "y": 1060.59375
+        },
+        {
+          "display": "block",
+          "h": 302,
+          "id": "c7",
+          "order": "13",
+          "position": "relative",
+          "text": "Evidence and decision checks\nSHIFT\tOUTPUT / H\tFEED DRIVE\tQC SAMPLE\tOWN",
+          "w": 370,
+          "x": 26,
+          "y": 1216.59375
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c9",
+          "order": "15",
+          "position": "relative",
+          "text": "Measurement system remains within the qualified reference range.\n\nSamp",
+          "w": 370,
+          "x": 26,
+          "y": 1530.59375
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c10",
+          "order": "17",
+          "position": "relative",
+          "text": "!\nContinue supervised release through Shift 13\n\nDo not open Lane 2 unt",
+          "w": 370,
+          "x": 26,
+          "y": 1752.59375
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c11",
+          "order": "19",
+          "position": "relative",
+          "text": "Continue supervised release through Shift 13\nWatch\n\nDo not open Lane 2",
+          "w": 370,
+          "x": 26,
+          "y": 1974.59375
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c3",
+          "order": "21",
+          "position": "relative",
+          "text": "Latest shift output\n433 units/h\nDelta 23\nTarget 410 units/h",
+          "w": 370,
+          "x": 26,
+          "y": 2196.59375
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c4",
+          "order": "23",
+          "position": "relative",
+          "text": "Overnight low\n391 units/h\nDelta -19\nTarget 410 units/h",
+          "w": 370,
+          "x": 26,
+          "y": 2369.390625
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 2491.59375,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "Cell 3 is recovering; keep the second lane under supervised release.\n\n",
+        "w": 370,
+        "x": 26,
+        "y": 38.59375
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flow_diagnostics": [
+        {
+          "id": "c8",
+          "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 821px; --viz-preferred-height: 264px; left: 389.36px; top: 765.169px; width: 821.28px; height: 170px; z-index: 18; order: 11;",
+          "metrics": [
+            {
+              "className": "component",
+              "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 821px; --viz-preferred-height: 264px; left: 389.36px; top: 765.169px; width: 821.28px; height: 170px; z-index: 18; order: 11;",
+              "rect": {
+                "height": 144,
+                "width": 370,
+                "x": 26,
+                "y": 1060.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "144px",
+                "maxHeight": "none",
+                "minHeight": "144px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "c-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 127.796875,
+                "width": 370,
+                "x": 26,
+                "y": 1060.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "127.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "integrated-element-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1072.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "gallery-card integrated-variant title-hidden align-left engine-diagramengine variant-process-flow",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1072.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "ARTICLE"
+            },
+            {
+              "className": "card-body",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1072.59375
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "diagram-responsive-reading",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1072.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "auto",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1072.59375
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            }
+          ],
+          "mobileHeight": "144px"
+        }
+      ],
+      "process_flows": [
+        {
+          "height": 144,
+          "id": "c8",
+          "svgHeight": 103.796875,
+          "svgWidth": 346
+        }
+      ],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "opening",
+          "title": "01Operating summary"
+        },
+        {
+          "first_component_order": 2,
+          "level": "2",
+          "order": 4,
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis"
+        },
+        {
+          "first_component_order": 5,
+          "level": "2",
+          "order": 10,
+          "role": "heading",
+          "section": "evidence",
+          "title": "03Response workflow"
+        },
+        {
+          "first_component_order": 8,
+          "level": "2",
+          "order": 16,
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision"
+        },
+        {
+          "first_component_order": 9,
+          "level": "2",
+          "order": 18,
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Next steps"
+        },
+        {
+          "first_component_order": 10,
+          "level": "2",
+          "order": 20,
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance"
+        }
+      ],
+      "table_regions": [
+        {
+          "clientWidth": 344,
+          "keyboard_scroll_left": 130,
+          "label": "Scrollable table: Evidence and decision checks",
+          "scrollLeft": 0,
+          "scrollWidth": 474,
+          "tabIndex": 0
+        }
+      ],
+      "text_components": [
+        {
+          "cardClient": 86,
+          "cardScroll": 86,
+          "clipped": false,
+          "componentHeight": 124,
+          "copyClient": 86,
+          "copyScroll": 86,
+          "deadSpace": 38,
+          "id": "c1"
+        },
+        {
+          "cardClient": 39,
+          "cardScroll": 39,
+          "clipped": false,
+          "componentHeight": 92,
+          "copyClient": 39,
+          "copyScroll": 39,
+          "deadSpace": 53,
+          "id": "c2"
+        },
+        {
+          "cardClient": 98,
+          "cardScroll": 98,
+          "clipped": false,
+          "componentHeight": 132,
+          "copyClient": 98,
+          "copyScroll": 98,
+          "deadSpace": 34,
+          "id": "c12"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "preview_chart_geometry": [
+      {
+        "component_height": 458.51800537109375,
+        "component_width": 944.81982421875,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c5",
+        "plot_width": 908.0003051757812,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 326.40093994140625,
+        "svg_width": 908.0003051757812
+      },
+      {
+        "component_height": 360.25933837890625,
+        "component_width": 742.36328125,
+        "element": "SPC Control Chart",
+        "engine": "EngineeringChartEngine",
+        "id": "c6",
+        "plot_width": 705.5438232421875,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 228.1422119140625,
+        "svg_width": 705.5438232421875
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c5",
+        "titles": [
+          "Line Chart",
+          "1",
+          "5",
+          "10",
+          "12",
+          "Value · 12 points · 1 412 · 2 405 · 3 419 · 4 424 · 5 417 · 6 398 · 7 391 · 8 402 · 9 421 · 10 428 · 11 425 · 12 433",
+          "Value",
+          "Value · 1 · 146.6059",
+          "Value · 1 · 146.6059",
+          "Value · 2 · 182.8078",
+          "Value · 2 · 182.8078",
+          "Value · 3 · 110.4039",
+          "Value · 3 · 110.4039",
+          "Value · 4 · 84.5454",
+          "Value · 4 · 84.5454",
+          "Value · 5 · 120.7473",
+          "Value · 5 · 120.7473",
+          "Value · 6 · 219.0098",
+          "Value · 6 · 219.0098",
+          "Value · 7 · 255.2117",
+          "Value · 7 · 255.2117",
+          "Value · 8 · 198.3229",
+          "Value · 8 · 198.3229",
+          "Value · 9 · 100.0605",
+          "Value · 9 · 100.0605",
+          "Value · 10 · 63.8585",
+          "Value · 10 · 63.8585",
+          "Value · 11 · 79.3737",
+          "Value · 11 · 79.3737",
+          "Value · 12 · 38",
+          "Value · 12 · 38",
+          "Chart legend",
+          "Toggle Value series",
+          "Value"
+        ]
+      },
+      {
+        "chart": "c6",
+        "titles": [
+          "Observation 1: 380",
+          "Observation 2: 380",
+          "Observation 3: 380",
+          "Observation 4: 380",
+          "Observation 5: 380",
+          "Observation 6: 380",
+          "Observation 7: 380",
+          "Observation 8: 380",
+          "Observation 9: 380",
+          "Observation 10: 380",
+          "Observation 11: 380",
+          "Observation 12: 380"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Line Chart: 12 rows · X Shift index · Y Cell output · 2 fields",
+      "SPC Control Chart: 12 rows · X Measurement · Y LSL · 4 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 327.3653564453125,
+          "w": 1665.54150390625,
+          "x": 108.31219482421875,
+          "y": 1233.4912109375
+        },
+        "card": {
+          "h": 394.5068359375,
+          "w": 1665.54150390625,
+          "x": 108.31219482421875,
+          "y": 1166.3497314453125
+        },
+        "id": "c7",
+        "item": {
+          "h": 431.326416015625,
+          "w": 1702.3609619140625,
+          "x": 89.90243530273438,
+          "y": 1147.93994140625
+        },
+        "region": {
+          "h": 319.784912109375,
+          "w": 1665.54150390625,
+          "x": 108.31219482421875,
+          "y": 1241.0716552734375
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.2779541015625,
+              "w": 1663.3756103515625,
+              "x": 109.39512634277344,
+              "y": 1242.1546630859375
+            },
+            "text": "SHIFT\tOUTPUT / H\tFEED DRIVE\tQC SAMPLE\tOWNER / STATE",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.819580078125,
+              "w": 1663.3756103515625,
+              "x": 109.39512634277344,
+              "y": 1278.4326171875
+            },
+            "text": "01–03\t405–419\tStable\tPassed\tOperations · closed",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.8194580078125,
+              "w": 1663.3756103515625,
+              "x": 109.39512634277344,
+              "y": 1315.252197265625
+            },
+            "text": "04–06\t398–424\tService pending\tPassed\tMaintenance · review",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.819580078125,
+              "w": 1663.3756103515625,
+              "x": 109.39512634277344,
+              "y": 1352.0716552734375
+            },
+            "text": "07–09\t391–421\tRestored\tPaired check due\tQuality · open",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278076171875,
+              "w": 1663.3756103515625,
+              "x": 109.39512634277344,
+              "y": 1388.8912353515625
+            },
+            "text": "10–12\t425–433\tStable\tPaired check due\tOperations · watch",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 183.0146484375,
+          "w": 1663.3756103515625,
+          "x": 109.39512634277344,
+          "y": 1242.1546630859375
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "Evidence and decision checks\nSHIFT\tOUTPUT / H\tFEED DRIVE\tQC SAMPLE\tOWNER / STATE\n01–03\t405–419\tStable\tPassed\tOperations · closed\n04–06\t398–424\tService pending\tPassed\tMaintenance · review\n07–09\t391–421\tRestored\tPaired check due\tQuality · open\n10–12\t425–433\tStable\tPaired check due\tOperations · watch"
+    ],
+    "spatial_geometry": []
+  },
+  "revision": 102,
+  "title": "Cell 3 · Precision Furnace Output and Release Review"
+}
