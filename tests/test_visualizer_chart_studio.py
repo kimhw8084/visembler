@@ -47,6 +47,42 @@ def test_chart_studio_typed_data_and_render_contract() -> None:
     }
 
 
+def test_chart_studio_label_intent_survives_save_reload_copy_and_recipe_reuse() -> None:
+    observed = node(r'''
+      import * as c from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs';
+      const dataset={id:'d1',fields:[{id:'period',name:'Period',type:'categorical'},{id:'value',name:'Value',type:'number'}],rows:[['Q1',1],['Q2',2],['Q3',3],['Q4',4]]};
+      const intent={mode:'authored',fields:['interval','rotation']};
+      const model=c.normalizeChartModel({chart_type:'Line Chart',dataset,dataset_id:'d1',mapping:{x:'period',y:'value'},axes:{x:{auto:true,labelInterval:1,rotation:0,tickCount:6,labelPresentationIntent:intent}}});
+      const entry=c.chartToEntry({id:'c1',type:'chart',engine:'CoreChartEngine',element:'Line Chart',title:'Intent',dataset_id:'d1'},model);
+      const reloaded=c.chartModelFromEntry(entry,dataset);
+      const copied=c.copyChartSetup(model);
+      const recipe=c.saveRecipe(model,'Intent recipe');
+      const reused=c.applyRecipeToModel(c.normalizeChartModel({chart_type:'Line Chart',dataset,dataset_id:'d1',mapping:{x:'period',y:'value'}}),recipe.recipe);
+      const legacy=c.normalizeChartModel({chart_type:'Line Chart',dataset,dataset_id:'d1',mapping:{x:'period',y:'value'}});
+      console.log(JSON.stringify({
+        saved:entry.chart_studio.axes.x.labelPresentationIntent,
+        reloaded:reloaded.axes.x.labelPresentationIntent,
+        copied:copied.axes.x.labelPresentationIntent,
+        recipe:recipe.recipe.axes.x.labelPresentationIntent,
+        reused:reused.axes.x.labelPresentationIntent,
+        legacy:legacy.axes.x.labelPresentationIntent??null,
+        category_count:entry.chart_studio.dataset.rows.length,
+        item_id:entry.id,
+      }));
+    ''')
+    intent = {'mode': 'authored', 'fields': ['interval', 'rotation']}
+    assert observed == {
+        'saved': intent,
+        'reloaded': intent,
+        'copied': intent,
+        'recipe': intent,
+        'reused': intent,
+        'legacy': None,
+        'category_count': 4,
+        'item_id': 'c1',
+    }
+
+
 def test_chart_studio_data_lab_operations_are_bounded_and_typed() -> None:
     observed = node(r'''
       import * as c from './company_ui/products/visualizer/assets/authoring_chart_studio.mjs';
