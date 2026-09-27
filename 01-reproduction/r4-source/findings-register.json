@@ -1,0 +1,51 @@
+{
+  "findings": [
+    {
+      "id": "CHG-173-R4-FIND-01",
+      "severity": "P1",
+      "area": "Report image evidence reader interaction",
+      "summary": "ImageMediaEngine report images render as static, non-focusable images and do not expose zoom, pan, or fit in Preview.",
+      "reproduction": "Fresh B report, created and edited through Report Hub and Inspector; open Preview at 390px. The newly uploaded 81-die detail crop is visibly present.",
+      "observed_facts": {
+        "component_count": 1,
+        "role": "img",
+        "aria_label": "Wafer map detail of the same 81 measured die; a localized group of lower-yield blue cells appears near coordinates X 2–3, Y 0–1.",
+        "tabindex": null,
+        "caption": "Detail crop of the 81 die measurements already shown in the wafer map above; it adds no observations.",
+        "interactive_controls": [],
+        "viewer_before": false,
+        "pointer_events": "none",
+        "viewer_after_click": false
+      },
+      "impact": "The reader cannot inspect image evidence at increased scale or reposition it; this violates the governed image-evidence interaction contract for complete reports.",
+      "primary_evidence": [
+        "benchmark/responsive/diagnostics.json",
+        "benchmark/screenshots/narrow-390/B.png",
+        "benchmark/raw-runs/A-D-supported-authoring/chg181-native-acceptance.json"
+      ],
+      "source_changes": "none"
+    },
+    {
+      "id": "CHG-173-R4-FIND-02",
+      "severity": "P1",
+      "area": "Editable PowerPoint chart visible label layout",
+      "summary": "Dense editable chart output places category and legend labels too close to remain distinct in the available export preview; one RCA box-plot title also collides with its upper axis-label area.",
+      "reproduction": "Review E mixed-resource dispatch and B RCA Quick Look raster previews; the E chart shows adjacent half-hour categories and touching legend labels; B box-plot title approaches/overlaps the top y-axis tick region.",
+      "observed_facts": {
+        "E_preview": "E-fresh-mixed-grid-reserve.pptx.png",
+        "B_preview": "semiconductor-rca.pptx.png",
+        "renderer": "macOS Quick Look only; no LibreOffice/PowerPoint installed",
+        "package_semantics": "The OOXML still preserves chart family, series names, ordered category caches, values, axis bounds and legends; Box Plot remains 23 editable quartile/median/whisker/category primitives and has no false lineChart part.",
+        "impact": "Editable chart semantics survive, but visible chart category/series labels are harder to distinguish than the report decision requires in the exported document."
+      },
+      "primary_evidence": [
+        "benchmark/exports/quicklook/E-fresh-mixed-grid-reserve.pptx.png",
+        "benchmark/exports/quicklook/semiconductor-rca.pptx.png",
+        "benchmark/exports/inspection/package-inspection.json"
+      ],
+      "source_changes": "none"
+    }
+  ],
+  "self_verdict": "NO_GO",
+  "classification_basis": "Concrete task/readability consequences observed in the mandated supported report and export workflows; no taste-only findings."
+}
