@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+import math
 import zipfile
 import xml.etree.ElementTree as ET
 
@@ -10,7 +11,12 @@ from pptx import Presentation
 from pptx.util import Pt
 
 from company_ui.products.visualizer.domain import canonical_model
-from company_ui.products.visualizer.ppt_service import export_pptx, import_visembler_pptx
+from company_ui.products.visualizer.ppt_service import (
+    _chart_label_layout,
+    _rotated_label_footprint,
+    export_pptx,
+    import_visembler_pptx,
+)
 
 
 NS = {
@@ -95,6 +101,11 @@ def _rotation_degrees(root):
 def _tick_interval(root):
     node = root.find('.//c:catAx/c:tickLblSkip', NS)
     return 1 if node is None else int(node.get('val'))
+
+
+def _tick_label_position(root):
+    node = root.find('.//c:catAx/c:tickLblPos', NS)
+    return None if node is None else node.get('val')
 
 
 def _font_size_pt(node):
@@ -256,3 +267,127 @@ def test_chg277_box_plot_bands_separate_title_and_upper_tick_without_changing_st
         for field in ('min', 'q1', 'median', 'q3', 'max'):
             assert categories[category][field] == pytest.approx(statistics[field])
     assert import_visembler_pptx(payload) == source
+
+
+def test_chg285_authored_default_interval_and_rotation_keep_all_eight_categories():
+    categories = [f'Q{quarter} FY{year}' for year in (23, 24) for quarter in range(1, 5)]
+    series = [{'name': 'Renewals', 'values': list(range(42, 50))},
+              {'name': 'Expansion', 'values': list(range(8, 16))}]
+    source = _chart_model(categories=categories, series=series, title='Executive renewal decision',
+                          chart_type='Multi-Line', geometry=(80, 90, 390, 310), x_axis={
+        'auto': True, 'tickCount': 6, 'labelInterval': 1, 'rotation': 45,
+        'labelPresentationIntent': {'mode': 'authored', 'fields': ['interval', 'rotation']},
+    })
+    original = json.loads(json.dumps(source))
+    payload = export_pptx(None, source, layout_geometry=_compact_geometry(source))
+    package, root = _chart_package(payload)
+    assert _tick_interval(root) == 1
+    assert root.find('./c:catAx/c:tickLblSkip', NS) is None
+    assert _rotation_degrees(root) == pytest.approx(45)
+    assert _tick_label_position(root) == 'none'
+    facts = _series_facts(root)
+    assert [item['name'] for item in facts] == [item['name'] for item in series]
+    assert all(item['categories'] == list(enumerate(categories)) for item in facts)
+    assert _line_values(root) == [[f'{float(value):.1f}' for value in item['values']] for item in series]
+    assert [shape.text for shape in Presentation(io.BytesIO(payload)).slides[0].shapes
+            if '::category-label-' in shape.name and getattr(shape, 'has_text_frame', False)] == categories
+    slide_shapes = Presentation(io.BytesIO(payload)).slides[0].shapes
+    cover = next(shape for shape in slide_shapes if shape.name.endswith('::chart-label-band'))
+    first_overlay = next(shape for shape in slide_shapes if shape.name.endswith('::category-label-0'))
+    assert cover.left < first_overlay.left
+    assert source == original
+    assert import_visembler_pptx(payload) == source
+    assert any(name.endswith('.xml') and b'labelPresentationIntent' in package.read(name)
+               for name in package.namelist() if name.startswith('ppt/'))
+
+
+def test_chg285_authored_default_zero_rotation_wraps_all_four_sparse_categories():
+    categories = ['Port of Long Beach', 'Oakland Terminal', 'Seattle Tacoma', 'Vancouver Harbour']
+    source = _chart_model(categories=categories,
+                          series=[{'name': 'Fresh loads', 'values': [127, 142, 139, 151]},
+                                  {'name': 'Held loads', 'values': [8, 11, 9, 6]}],
+                          title='Fresh sparse cold-chain decision', chart_type='Multi-Line',
+                          geometry=(80, 90, 300, 310), x_axis={
+        'auto': True, 'tickCount': 6, 'labelInterval': 1, 'rotation': 0,
+        'labelPresentationIntent': {'mode': 'authored', 'fields': ['interval', 'rotation']},
+    })
+    payload = export_pptx(None, source, layout_geometry=_compact_geometry(source))
+    _, root = _chart_package(payload)
+    slide = Presentation(io.BytesIO(payload)).slides[0]
+    overlays = [shape for shape in slide.shapes if '::category-label-' in shape.name
+                and getattr(shape, 'has_text_frame', False)]
+    assert _tick_interval(root) == 1
+    assert _rotation_degrees(root) == 0
+    assert _tick_label_position(root) == 'none'
+    assert all(item['categories'] == list(enumerate(categories)) for item in _series_facts(root))
+    assert [shape.text for shape in overlays] == categories
+    assert all(shape.text_frame.word_wrap for shape in overlays)
+    assert import_visembler_pptx(payload) == source
+
+
+def test_chg285_authored_dense_interval_six_survives_with_full_category_cache():
+    categories = [f'{hour:02d}:{minute:02d}' for hour in range(8, 16) for minute in (0, 30)]
+    series = [{'name': 'Battery', 'values': list(range(34, 50))},
+              {'name': 'Demand response', 'values': list(range(18, 34))},
+              {'name': 'Firm imports', 'values': list(range(41, 57))}]
+    source = _chart_model(categories=categories, series=series, title='Dense explicit interval control',
+                          chart_type='Multi-Line', geometry=(80, 90, 550, 320), x_axis={
+        'auto': True, 'tickCount': 6, 'labelInterval': 6, 'rotation': 35,
+        'labelPresentationIntent': {'mode': 'authored', 'fields': ['interval', 'rotation']},
+    })
+    payload = export_pptx(None, source, layout_geometry=_compact_geometry(source))
+    _, root = _chart_package(payload)
+    slide = Presentation(io.BytesIO(payload)).slides[0]
+    overlays = [shape for shape in slide.shapes if '::category-label-' in shape.name
+                and getattr(shape, 'has_text_frame', False)]
+    assert _tick_interval(root) == 6
+    assert _rotation_degrees(root) == pytest.approx(35)
+    assert all(item['categories'] == list(enumerate(categories)) for item in _series_facts(root))
+    assert [shape.text for shape in overlays] == categories[::6]
+    assert import_visembler_pptx(payload) == source
+
+
+def test_chg285_automatic_low_density_long_labels_wrap_even_when_scale_auto_is_false():
+    categories = ['Port of Long Beach', 'Oakland Terminal', 'Seattle Tacoma', 'Vancouver Harbour']
+    source = _chart_model(categories=categories,
+                          series=[{'name': 'Fresh loads', 'values': [127, 142, 139, 151]},
+                                  {'name': 'Held loads', 'values': [8, 11, 9, 6]}],
+                          title='Automatic sparse labels', chart_type='Multi-Line',
+                          geometry=(80, 90, 300, 310), x_axis={
+        'auto': False, 'tickCount': 6, 'labelInterval': 1, 'rotation': 0,
+    })
+    payload = export_pptx(None, source, layout_geometry=_compact_geometry(source))
+    _, root = _chart_package(payload)
+    overlays = [shape for shape in Presentation(io.BytesIO(payload)).slides[0].shapes
+                if '::category-label-' in shape.name and getattr(shape, 'has_text_frame', False)]
+    assert _tick_interval(root) == 1
+    assert [shape.text for shape in overlays] == categories
+    assert all(shape.text_frame.word_wrap for shape in overlays)
+    assert import_visembler_pptx(payload) == source
+
+
+def test_chg285_rotation_aware_fit_uses_projected_text_footprint():
+    categories = ['Observation interval alpha', 'Observation interval beta', 'Observation interval gamma',
+                  'Observation interval delta', 'Observation interval epsilon', 'Observation interval zeta']
+    source = _chart_model(categories=categories,
+                          series=[{'name': 'Observed value', 'values': list(range(20, 26))}],
+                          title='Rotation geometry', x_axis={
+        'auto': True, 'tickCount': 6, 'labelInterval': 1, 'rotation': 0,
+    })
+    spec = {
+        'type': 'Multi-Line', 'categories': categories,
+        'series': [{'name': 'Observed value', 'values': list(range(20, 26))}],
+        'legend': {'show': False},
+        'x_axis': source['items'][0]['chart_studio']['axes']['x'],
+    }
+    layout = _chart_label_layout(spec, 'Rotation geometry', 254 * 12700, 320 * 12700)
+    unrotated = _rotated_label_footprint(120, 8, 0)
+    rotated = _rotated_label_footprint(120, 8, 35)
+    pitch = 254 * .78 / len(categories)
+    label_width = max(map(len, categories)) * layout['category_font_pt'] * .62 + 8
+    expected = math.ceil(_rotated_label_footprint(label_width, layout['category_font_pt'], 35) * 1.08 / pitch)
+    unrotated_interval = math.ceil(label_width * 1.08 / pitch)
+    assert rotated < unrotated
+    assert layout['rotation'] == pytest.approx(35)
+    assert layout['interval'] == expected
+    assert layout['interval'] < unrotated_interval

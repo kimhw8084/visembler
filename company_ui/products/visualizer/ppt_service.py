@@ -105,7 +105,7 @@ def _chart_export_spec(entry: Mapping[str, Any], dataset: Mapping[str, Any] | No
     x_axis_src = axis_set.get('x') if isinstance(axis_set.get('x'), Mapping) else {}
     x_axis = {key: x_axis_src.get(key) for key in (
         'auto', 'labelInterval', 'rotation', 'tickCount', 'title', 'format', 'show', 'position',
-        'min', 'max', 'scale', 'precision', 'grid',
+        'min', 'max', 'scale', 'precision', 'grid', 'labelPresentationIntent',
     )}
     default_zero = 'Bar' in chart_type or chart_type == 'Pareto'
     axis = {
@@ -1162,6 +1162,11 @@ def _reorder_replacement_shapes(slide: Any, placeholder: Any, replacements: Sequ
     return replacements[0]
 
 
+def _rotated_label_footprint(width_pt: float, font_pt: float, degrees: float) -> float:
+    radians=math.radians(abs(degrees))
+    return abs(width_pt*math.cos(radians))+abs(font_pt*math.sin(radians))
+
+
 def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height: int) -> dict[str, Any]:
     """Choose export-only chart typography and category tick spacing from the rendered box."""
     x_axis=spec.get('x_axis') if isinstance(spec.get('x_axis'),Mapping) else {}
@@ -1189,8 +1194,8 @@ def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height:
     rotation=0.0
     category_font=10.0
     automatic=False
+    category_label_wrap=False
     if category_axis and category_labels:
-        auto=x_axis.get('auto') is not False
         raw_interval=x_axis.get('labelInterval')
         raw_rotation=x_axis.get('rotation')
         raw_tick_count=x_axis.get('tickCount')
@@ -1200,9 +1205,18 @@ def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height:
                         if isinstance(raw_rotation,(int,float)) and not isinstance(raw_rotation,bool) and math.isfinite(float(raw_rotation)) else 0.0)
         tick_count=(max(1,int(round(float(raw_tick_count))))
                     if isinstance(raw_tick_count,(int,float)) and not isinstance(raw_tick_count,bool) and math.isfinite(float(raw_tick_count)) else None)
-        interval_explicit=not auto or (raw_interval is not None and interval_value!=1)
-        rotation_explicit=not auto or (raw_rotation is not None and rotation_value!=0)
-        tick_count_explicit=not auto or (tick_count is not None and tick_count!=6)
+        intent=x_axis.get('labelPresentationIntent')
+        intent_fields=(set(intent.get('fields') or []) & {'interval','rotation','tickCount'}
+                       if isinstance(intent,Mapping) and intent.get('mode')=='authored' and isinstance(intent.get('fields'),list)
+                       else set())
+        # Rotation authorship protects the current interval too: a rotated label
+        # must not be thinned using the footprint of unrotated text.
+        interval_explicit=('interval' in intent_fields or 'rotation' in intent_fields or
+                           (not intent_fields and raw_interval is not None and interval_value!=1))
+        rotation_explicit=('rotation' in intent_fields or
+                           (not intent_fields and raw_rotation is not None and rotation_value!=0))
+        tick_count_explicit=('tickCount' in intent_fields or
+                             (not intent_fields and tick_count is not None and tick_count!=6))
         count=len(category_labels)
         longest=max((len(value) for value in category_labels),default=1)
         family=str(spec.get('type') or '')
@@ -1218,29 +1232,43 @@ def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height:
         if family=='Horizontal Bar':
             plot_width=max(width_pt*.52,height_pt*.70)
         pitch=max(1.0,plot_width/count)
-        category_font=min(10.0,max(8.0,pitch/max(1.0,longest*.50)))
+        category_font=min(10.0,max(7.5,pitch/max(1.0,longest*.50)))
         if legend_font is not None:
-            category_font=min(category_font,max(8.0,legend_font))
-        # Quick Look's Arial metrics run wider than the Office chart defaults; reserve
-        # explicit side room so the export-only editable labels remain on one line.
+            category_font=min(category_font,max(7.5,legend_font))
+        # Quick Look's Arial metrics run wider than the Office chart defaults.
         label_width=longest*category_font*.62+8.0
-        automatic=auto and not interval_explicit and not tick_count_explicit
+        automatic=not intent_fields and not interval_explicit and not tick_count_explicit and not rotation_explicit
         if interval_explicit:
             interval=interval_value
         elif tick_count_explicit and tick_count is not None:
             interval=max(1,math.ceil(count/tick_count))
         if rotation_explicit:
             rotation=rotation_value
-        elif automatic:
-            rotation=0.0
+        elif automatic and 4<count<=8 and label_width>pitch:
+            # A modest automatic angle can preserve category identities in a
+            # medium-density chart before automatic interval thinning is needed.
+            candidate_width=_rotated_label_footprint(label_width,category_font,35.0)
+            if candidate_width<label_width:
+                rotation=35.0
         if automatic:
-            # Keep a small horizontal safety gap even in renderers that ignore the OOXML rotation hint.
-            interval=max(interval,math.ceil(label_width*1.08/pitch))
-        elif not interval_explicit and not tick_count_explicit:
+            effective_width=_rotated_label_footprint(label_width,category_font,rotation)
+            # Up to four categories, wrap and size their editable labels before
+            # removing category identities from the export.
+            if count<=4:
+                interval=1
+            else:
+                interval=max(interval,math.ceil(effective_width*1.08/pitch))
+        elif not interval_explicit and not tick_count_explicit and not rotation_explicit:
             interval=interval_value
+        category_label_wrap=(interval==1 and label_width>pitch*.90)
+        if category_label_wrap:
+            longest_word=max((len(word) for label in category_labels for word in label.split()),default=1)
+            word_limit=pitch*.90/max(1.0,longest_word*.62)
+            category_font=min(category_font,max(6.0,word_limit))
 
-    overlay_categories=(category_axis and bool(category_labels) and rotation==0 and
-                        (interval>1 or len(category_labels)>=8) and x_axis.get('show') is not False)
+    overlay_categories=(category_axis and bool(category_labels) and
+                        (interval>1 or len(category_labels)>=8 or category_label_wrap or rotation!=0) and
+                        x_axis.get('show') is not False)
     overlay_legend=(legend_visible and legend_position=='bottom' and
                     (overlay_categories or len(legend_names)>=3 or (legend_font is not None and legend_font<9.0)))
     legend_columns=1
@@ -1266,6 +1294,7 @@ def _chart_label_layout(spec: Mapping[str, Any], title: str, width: int, height:
         'overlay_categories':overlay_categories,
         'overlay_legend':overlay_legend,
         'category_font_pt':category_font,
+        'category_label_wrap':category_label_wrap,
         'legend_font_pt':legend_font,
         'title_font_pt':title_font,
         'chart_default_font_pt':max(8.0,min(category_font,legend_font if legend_font is not None else category_font)),
@@ -1316,12 +1345,14 @@ def _add_native_chart_label_overlays(slide: Any, chart_shape: Any, spec: Mapping
     """Draw editable label surfaces where preview renderers ignore chart text layout properties."""
     overlay_categories=layout.get('overlay_categories') is True
     overlay_legend=layout.get('overlay_legend') is True
+    category_label_wrap=layout.get('category_label_wrap') is True
     if not overlay_categories and not overlay_legend:
         return
     left,top,width,height=chart_shape.left,chart_shape.top,chart_shape.width,chart_shape.height
     cover_top=.775 if overlay_categories else .885
-    cover=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,left+int(width*.125),top+int(height*cover_top),
-                                 int(width*.875),max(1,int(height*(1-cover_top))))
+    cover_left_fraction=.02 if overlay_categories else .125
+    cover=slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,left+int(width*cover_left_fraction),top+int(height*cover_top),
+                                 int(width*(1-cover_left_fraction)),max(1,int(height*(1-cover_top))))
     cover.name=f'VIZ::{title}::chart-label-band'
     cover.fill.solid();cover.fill.fore_color.rgb=RGBColor(255,255,255);cover.line.fill.background()
 
@@ -1334,25 +1365,25 @@ def _add_native_chart_label_overlays(slide: Any, chart_shape: Any, spec: Mapping
         line=slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT,plot_left,baseline,plot_right,baseline)
         line.name=f'VIZ::{title}::category-label-axis';line.line.color.rgb=RGBColor(52,62,74);line.line.width=Pt(.7)
         pitch=(plot_right-plot_left)/max(1,len(categories))
-        for index,category in enumerate(categories):
-            if index%interval:
-                continue
+        visible_indices=[index for index in range(len(categories)) if index%interval==0]
+        for visible_position,index in enumerate(visible_indices):
+            category=categories[index]
             center=plot_left+(index+.5)*pitch
-            required_width=len(category)*layout['category_font_pt']*.62+8.0
-            label_width=min(pitch*interval*.90,max(pitch*.90,Pt(required_width)))
-            label_height=Pt(12)
-            if index==0:
-                label_left=plot_left
-                alignment=PP_ALIGN.LEFT
-            elif index==len(categories)-1:
-                label_left=plot_right-label_width
-                alignment=PP_ALIGN.RIGHT
-            else:
-                label_left=center-label_width/2
-                alignment=PP_ALIGN.CENTER
-            label=slide.shapes.add_textbox(int(label_left),top+int(height*.79),int(label_width),int(label_height))
+            previous_center=(plot_left+(visible_indices[visible_position-1]+.5)*pitch
+                             if visible_position else None)
+            next_center=(plot_left+(visible_indices[visible_position+1]+.5)*pitch
+                         if visible_position+1<len(visible_indices) else None)
+            cell_left=plot_left if previous_center is None else (previous_center+center)/2
+            cell_right=plot_right if next_center is None else (center+next_center)/2
+            cell_width=cell_right-cell_left
+            label_width=cell_width*.90
+            label_height=Pt(24 if category_label_wrap else 12)
+            label_left=cell_left+(cell_width-label_width)/2
+            alignment=PP_ALIGN.CENTER
+            label_top=top+int(height*(.77 if category_label_wrap else .79))
+            label=slide.shapes.add_textbox(int(label_left),label_top,int(label_width),int(label_height))
             label.name=f'VIZ::{title}::category-label-{index}'
-            label.text_frame.text=category;label.text_frame.word_wrap=False;label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
+            label.text_frame.text=category;label.text_frame.word_wrap=category_label_wrap;label.text_frame.vertical_anchor=MSO_ANCHOR.MIDDLE
             label.text_frame.margin_left=Pt(0);label.text_frame.margin_right=Pt(0)
             label.text_frame.margin_top=Pt(0);label.text_frame.margin_bottom=Pt(0)
             paragraph=label.text_frame.paragraphs[0];paragraph.alignment=alignment
@@ -1487,7 +1518,11 @@ def _replace_native_chart(slide: Any, placeholder: Any, spec: Mapping[str, Any],
             skip.set('val',str(label_layout['interval']))
         _set_axis_tick_rotation(category_axis,label_layout['rotation'])
         x_axis=spec.get('x_axis') if isinstance(spec.get('x_axis'),Mapping) else {}
-        if x_axis.get('show') is False:
+        if x_axis.get('show') is False or label_layout['overlay_categories']:
+            # Native chart labels vary across Office-compatible renderers. The
+            # editable Company text overlay owns this label band when present,
+            # so suppress native labels to prevent doubled first ticks when a
+            # renderer ignores the chart's rotation or wrapping properties.
             category_axis.tick_label_position=XL_TICK_LABEL_POSITION.NONE
         if x_axis.get('title'):
             category_axis.has_title=True;category_axis.axis_title.text_frame.text=str(x_axis['title'])
