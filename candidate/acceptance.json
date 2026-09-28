@@ -1,0 +1,2507 @@
+{
+  "schema": "visembler-chg293-process-flow-acceptance.v1",
+  "phase": "candidate",
+  "repository": "kimhw8084/visembler",
+  "project": "visembler",
+  "change": "CHG-293",
+  "request": "CHG-293-r1",
+  "operation": "FIX",
+  "candidate_sha": "a095fa229c657a75a136520089194998377c66eb",
+  "candidate_tree": "a6ab746fef9aa124bb1a5cbbcfeaa13849656028",
+  "base_sha": "28d47acbaab8b493044120f6be4c32a225de4143",
+  "base_tree": "6b535f84478f0e8394a06614961e8faa0df54a75",
+  "base_is_ancestor": true,
+  "main_before": {
+    "local_main": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "origin_main": "28d47acbaab8b493044120f6be4c32a225de4143"
+  },
+  "main_unchanged": true,
+  "source_authority": {
+    "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+    "sha256": "48b180c7e8c78904d60ba601358e9a273cb34f2398a54541088b66862bbc3589",
+    "fixture": "tests/fixtures/chg206/whole_report_models.json",
+    "fixture_sha256": "a62189d9d930e6d733040da7de7da69e5c5054012272596344fc9aeae40553cb"
+  },
+  "runtime": {
+    "python": "3.11.7",
+    "nicegui": "3.15.0",
+    "playwright": "1.62.0",
+    "browser": "151.0.7922.34",
+    "native_host": true,
+    "ephemeral_port": 57724
+  },
+  "cases": {
+    "r6-like": {
+      "labels": [
+        "Map wafer cluster",
+        "Compare matched lot",
+        "Check CF-4 pressure",
+        "Confirm containment"
+      ],
+      "screenshots": {
+        "1440": {
+          "path": "screenshots/r6-like-1440-full-page.png",
+          "sha256": "b6bb69abe8dbc8625c0a97c5159015f4ab0efaf2bb980e7db5efbf0dbba3051b",
+          "width": 1440,
+          "bytes": 95121
+        },
+        "520": {
+          "path": "screenshots/r6-like-520-full-page.png",
+          "sha256": "4100f7cd7f8dcf1b086c5fdabb22e19ae83affa74b5d85ce2fa4a36a62879402",
+          "width": 520,
+          "bytes": 202229
+        },
+        "390": {
+          "path": "screenshots/r6-like-390-full-page.png",
+          "sha256": "8d5b42dc5d2a4b2d9582adb1dc5c83d97420f0ac8e4a42867d5ce1e71af7666e",
+          "width": 390,
+          "bytes": 193488
+        },
+        "361": {
+          "path": "screenshots/r6-like-361-full-page.png",
+          "sha256": "50bfca018d09ab805169d1f06997bb54465da73d1c8a4eba132812958e1cd5fe",
+          "width": 361,
+          "bytes": 186599
+        },
+        "360": {
+          "path": "screenshots/r6-like-360-full-page.png",
+          "sha256": "98614815a12cc7150af31a18f717b2ff72c1de025c09e3190cc416efdb123e2c",
+          "width": 360,
+          "bytes": 193830
+        },
+        "320": {
+          "path": "screenshots/r6-like-320-full-page.png",
+          "sha256": "fa6d02dd851a55ef9b1491a594aa7d864a1799e08032ae59aea41f16e485428f",
+          "width": 320,
+          "bytes": 184280
+        }
+      },
+      "geometry": {
+        "1440": {
+          "flowId": "c8",
+          "projection": "wide",
+          "readingColumns": 0,
+          "readingDirection": null,
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 932,
+            "height": 132
+          },
+          "renderedScale": 0.505,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 29,
+            "protectedPaddingY": 29,
+            "markerEnvelope": 12,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.25
+          },
+          "svgRect": {
+            "x": 370.8280029296875,
+            "y": 157.02989196777344,
+            "width": 470.620849609375,
+            "height": 66.64991760253906
+          },
+          "componentRect": {
+            "x": 362.2432861328125,
+            "y": 148.44517517089844,
+            "width": 487.790283203125,
+            "height": 88.97175598144531
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafercluster",
+                  "rect": {
+                    "left": 408.24702971916105,
+                    "top": 179.9110180340298,
+                    "right": 446.5438999740596,
+                    "bottom": 201.01933731306968
+                  }
+                }
+              ],
+              "rect": {
+                "x": 384.9819030761719,
+                "y": 171.16775512695312,
+                "width": 84.82717895507812,
+                "height": 38.37419128417969
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Comparematched lot",
+                  "rect": {
+                    "left": 524.8230510194917,
+                    "top": 179.9110180340298,
+                    "right": 568.2917977648177,
+                    "bottom": 201.01933731306968
+                  }
+                }
+              ],
+              "rect": {
+                "x": 504.14385986328125,
+                "y": 171.16775512695312,
+                "width": 84.82720947265625,
+                "height": 38.37419128417969
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4pressure",
+                  "rect": {
+                    "left": 643.6568826540204,
+                    "top": 179.9110180340298,
+                    "right": 687.7818852213779,
+                    "bottom": 201.01933731306968
+                  }
+                }
+              ],
+              "rect": {
+                "x": 623.3057861328125,
+                "y": 171.16775512695312,
+                "width": 84.82720947265625,
+                "height": 38.37419128417969
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirmcontainment",
+                  "rect": {
+                    "left": 762.0688916787645,
+                    "top": 179.9110180340298,
+                    "right": 807.6939031510382,
+                    "bottom": 201.01933731306968
+                  }
+                }
+              ],
+              "rect": {
+                "x": 742.4677734375,
+                "y": 171.16775512695312,
+                "width": 84.82720947265625,
+                "height": 38.37419128417969
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M232 102 L300 102",
+              "shaft_clearance_px": 20.28,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 20.07,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M468 102 L536 102",
+              "shaft_clearance_px": 19.95,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 19.75,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M704 102 L772 102",
+              "shaft_clearance_px": 19.2,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 19,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "520": {
+          "flowId": "c8",
+          "projection": "medium-2-column",
+          "readingColumns": 2,
+          "readingDirection": "serpentine",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 101
+          },
+          "renderedScale": 1.4875,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 16,
+            "protectedPaddingY": 8,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 1.8,
+            "minimumScale": 0.95
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 662.59375,
+            "width": 476,
+            "height": 150.234375
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 650.59375,
+            "width": 500,
+            "height": 174.234375
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafercluster",
+                  "rect": {
+                    "left": 100.9572337647476,
+                    "top": 675.1990734573343,
+                    "right": 207.09785184116646,
+                    "bottom": 720.0236389824364
+                  }
+                }
+              ],
+              "rect": {
+                "x": 49.904701232910156,
+                "y": 667.05615234375,
+                "width": 208.24569702148438,
+                "height": 65.44866943359375
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Comparematched lot",
+                  "rect": {
+                    "left": 337.542783999207,
+                    "top": 675.1990734573343,
+                    "right": 458.4021644403439,
+                    "bottom": 720.0236389824364
+                  }
+                }
+              ],
+              "rect": {
+                "x": 293.849609375,
+                "y": 667.05615234375,
+                "width": 208.24569702148438,
+                "height": 65.44866943359375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4pressure",
+                  "rect": {
+                    "left": 337.8084067165261,
+                    "top": 751.059988394232,
+                    "right": 458.1365190260481,
+                    "bottom": 795.8845482450901
+                  }
+                }
+              ],
+              "rect": {
+                "x": 293.849609375,
+                "y": 742.9170532226562,
+                "width": 208.24569702148438,
+                "height": 65.44866943359375
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirmcontainment",
+                  "rect": {
+                    "left": 90.21504979381469,
+                    "top": 751.059988394232,
+                    "right": 217.8400358120994,
+                    "bottom": 795.8845482450901
+                  }
+                }
+              ],
+              "rect": {
+                "x": 49.904701232910156,
+                "y": 742.9170532226562,
+                "width": 208.24569702148438,
+                "height": 65.44866943359375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M148 25 L172 25",
+              "shaft_clearance_px": 42.35,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 41.69,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M242 47 L242 54",
+              "shaft_clearance_px": 6.8,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 6.13,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M172 76 L148 76",
+              "shaft_clearance_px": 38.97,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 38.3,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "390": {
+          "flowId": "c8",
+          "projection": "medium-2-column",
+          "readingColumns": 2,
+          "readingDirection": "serpentine",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 101
+          },
+          "renderedScale": 1.0813,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 16,
+            "protectedPaddingY": 8,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 1.8,
+            "minimumScale": 0.95
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 346,
+            "height": 109.203125
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 370,
+            "height": 144
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafercluster",
+                  "rect": {
+                    "left": 83.76973400670701,
+                    "top": 698.9190732565256,
+                    "right": 160.91034849976546,
+                    "bottom": 732.0561417175992
+                  }
+                }
+              ],
+              "rect": {
+                "x": 46.654701232910156,
+                "y": 693.46240234375,
+                "width": 151.37066650390625,
+                "height": 47.57366943359375
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Comparematched lot",
+                  "rect": {
+                    "left": 255.74591487233,
+                    "top": 698.9190732565256,
+                    "right": 343.5740273683378,
+                    "bottom": 732.0561417175992
+                  }
+                }
+              ],
+              "rect": {
+                "x": 223.97462463378906,
+                "y": 693.46240234375,
+                "width": 151.3706817626953,
+                "height": 47.57366943359375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4pressure",
+                  "rect": {
+                    "left": 255.94121930386757,
+                    "top": 754.0612411617052,
+                    "right": 343.3787229368002,
+                    "bottom": 787.1983054982553
+                  }
+                }
+              ],
+              "rect": {
+                "x": 223.97462463378906,
+                "y": 748.6045532226562,
+                "width": 151.3706817626953,
+                "height": 47.57366943359375
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirmcontainment",
+                  "rect": {
+                    "left": 75.96504687967865,
+                    "top": 754.0612411617052,
+                    "right": 168.71503562679382,
+                    "bottom": 787.1983054982553
+                  }
+                }
+              ],
+              "rect": {
+                "x": 46.654701232910156,
+                "y": 748.6045532226562,
+                "width": 151.37066650390625,
+                "height": 47.57366943359375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M148 25 L172 25",
+              "shaft_clearance_px": 30.8,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 30.31,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M242 47 L242 54",
+              "shaft_clearance_px": 4.48,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 4,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M172 76 L148 76",
+              "shaft_clearance_px": 28.34,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 27.85,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "361": {
+          "flowId": "c8",
+          "projection": "medium-2-column",
+          "readingColumns": 2,
+          "readingDirection": "serpentine",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 101
+          },
+          "renderedScale": 0.9906,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 16,
+            "protectedPaddingY": 8,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 1.8,
+            "minimumScale": 0.95
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 317,
+            "height": 100.046875
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 341,
+            "height": 144
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafercluster",
+                  "rect": {
+                    "left": 79.94571090747813,
+                    "top": 698.9318929277729,
+                    "right": 150.60196027956385,
+                    "bottom": 728.7997757236261
+                  }
+                }
+              ],
+              "rect": {
+                "x": 45.93440628051758,
+                "y": 693.1904296875,
+                "width": 138.6788330078125,
+                "height": 43.58477783203125
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Comparematched lot",
+                  "rect": {
+                    "left": 237.49181925660312,
+                    "top": 698.9318929277729,
+                    "right": 317.96057757292647,
+                    "bottom": 728.7997757236261
+                  }
+                }
+              ],
+              "rect": {
+                "x": 208.3867645263672,
+                "y": 693.1904296875,
+                "width": 138.67881774902344,
+                "height": 43.58477783203125
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4pressure",
+                  "rect": {
+                    "left": 237.67150392390712,
+                    "top": 749.4506110425043,
+                    "right": 317.7808929056224,
+                    "bottom": 779.3184938383574
+                  }
+                }
+              ],
+              "rect": {
+                "x": 208.3867645263672,
+                "y": 743.7091674804688,
+                "width": 138.67881774902344,
+                "height": 43.58477783203125
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirmcontainment",
+                  "rect": {
+                    "left": 72.78946069030476,
+                    "top": 749.4506110425043,
+                    "right": 157.7582104967372,
+                    "bottom": 779.3184938383574
+                  }
+                }
+              ],
+              "rect": {
+                "x": 45.93440628051758,
+                "y": 743.7091674804688,
+                "width": 138.6788330078125,
+                "height": 43.58477783203125
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M148 25 L172 25",
+              "shaft_clearance_px": 28.21,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 27.77,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Comparematched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M242 47 L242 54",
+              "shaft_clearance_px": 4.85,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 4.4,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M172 76 L148 76",
+              "shaft_clearance_px": 25.96,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 25.52,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirmcontainment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "360": {
+          "flowId": "c8",
+          "projection": "narrow",
+          "readingColumns": 1,
+          "readingDirection": "down",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 422
+          },
+          "renderedScale": 0.9875,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 18,
+            "protectedPaddingY": 18,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.75
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 704.515625,
+            "width": 316,
+            "height": 416.71875
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 692.515625,
+            "width": 340,
+            "height": 440.71875
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafer cluster",
+                  "rect": {
+                    "left": 120.77342316042191,
+                    "top": 742.419797843384,
+                    "right": 271.23881191608467,
+                    "bottom": 763.4197961171092
+                  }
+                }
+              ],
+              "rect": {
+                "x": 61.7020149230957,
+                "y": 722.2903442382812,
+                "width": 268.595947265625,
+                "height": 61.22412109375
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Compare matched lot",
+                  "rect": {
+                    "left": 105.53123757624513,
+                    "top": 849.0682020842746,
+                    "right": 286.46873228809847,
+                    "bottom": 870.0682003579998
+                  }
+                }
+              ],
+              "rect": {
+                "x": 61.7020149230957,
+                "y": 828.9387817382812,
+                "width": 268.595947265625,
+                "height": 61.22406005859375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4 pressure",
+                  "rect": {
+                    "left": 106.90623717172451,
+                    "top": 955.7166025582083,
+                    "right": 285.0937326926191,
+                    "bottom": 976.7166008319335
+                  }
+                }
+              ],
+              "rect": {
+                "x": 61.7020149230957,
+                "y": 935.587158203125,
+                "width": 268.595947265625,
+                "height": 61.22412109375
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirm containment",
+                  "rect": {
+                    "left": 107.09373369205619,
+                    "top": 1062.3649728964856,
+                    "right": 284.9062211044592,
+                    "bottom": 1083.3649711702108
+                  }
+                }
+              ],
+              "rect": {
+                "x": 61.7020149230957,
+                "y": 1042.235595703125,
+                "width": 268.595947265625,
+                "height": 61.22412109375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M160 80 L160 126",
+              "shaft_clearance_px": 19.21,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Map wafer cluster",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 18.8,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M160 188 L160 234",
+              "shaft_clearance_px": 19.21,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 18.8,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4 pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M160 296 L160 342",
+              "shaft_clearance_px": 19.21,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4 pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 18.8,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirm containment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "320": {
+          "flowId": "c8",
+          "projection": "narrow",
+          "readingColumns": 1,
+          "readingDirection": "down",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 422
+          },
+          "renderedScale": 0.8625,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 18,
+            "protectedPaddingY": 18,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.75
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 735.578125,
+            "width": 276,
+            "height": 363.96875
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 723.578125,
+            "width": 300,
+            "height": 387.96875
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafer cluster",
+                  "rect": {
+                    "left": 110.29687161129232,
+                    "top": 768.5323014536175,
+                    "right": 241.7106430225463,
+                    "bottom": 786.5323022814441
+                  }
+                }
+              ],
+              "rect": {
+                "x": 58.7020149230957,
+                "y": 751.1028442382812,
+                "width": 234.59596252441406,
+                "height": 53.47412109375
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Compare matched lot",
+                  "rect": {
+                    "left": 96.99217949885328,
+                    "top": 861.6807216682705,
+                    "right": 255.00782050114674,
+                    "bottom": 879.6807224960971
+                  }
+                }
+              ],
+              "rect": {
+                "x": 58.7020149230957,
+                "y": 844.2512817382812,
+                "width": 234.59596252441406,
+                "height": 53.47406005859375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4 pressure",
+                  "rect": {
+                    "left": 98.17968247230584,
+                    "top": 954.8291221422041,
+                    "right": 253.82031752769416,
+                    "bottom": 972.8291229700308
+                  }
+                }
+              ],
+              "rect": {
+                "x": 58.7020149230957,
+                "y": 937.399658203125,
+                "width": 234.59596252441406,
+                "height": 53.47406005859375
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirm containment",
+                  "rect": {
+                    "left": 98.35155833558449,
+                    "top": 1047.9775357766175,
+                    "right": 253.64844166441551,
+                    "bottom": 1065.9775366044441
+                  }
+                }
+              ],
+              "rect": {
+                "x": 58.7020149230957,
+                "y": 1030.548095703125,
+                "width": 234.59596252441406,
+                "height": 53.47412109375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M160 80 L160 126",
+              "shaft_clearance_px": 16.65,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched lot",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 16.27,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M160 188 L160 234",
+              "shaft_clearance_px": 16.65,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4 pressure",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 16.27,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4 pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M160 296 L160 342",
+              "shaft_clearance_px": 16.65,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirm containment",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 16.27,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirm containment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        }
+      }
+    },
+    "four-stage-holdout": {
+      "labels": [
+        "Review matched-lot distributions",
+        "Isolate chamber pressure excursion",
+        "Verify sensor calibration with controls",
+        "Authorize release after Quality confirmation"
+      ],
+      "screenshots": {
+        "1440": {
+          "path": "screenshots/four-stage-holdout-1440-full-page.png",
+          "sha256": "df3a413b0c0cad6ab1064357beaf24d58a2e8f78aa8f056a822b18f0968ba929",
+          "width": 1440,
+          "bytes": 98292
+        },
+        "390": {
+          "path": "screenshots/four-stage-holdout-390-full-page.png",
+          "sha256": "0121749f91dd48f3a8cae2af2a9ebfe629c3538a54122b0a227f4c231081e123",
+          "width": 390,
+          "bytes": 202406
+        }
+      },
+      "geometry": {
+        "1440": {
+          "flowId": "c8",
+          "projection": "wide",
+          "readingColumns": 0,
+          "readingDirection": null,
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 932,
+            "height": 132
+          },
+          "renderedScale": 0.505,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 29,
+            "protectedPaddingY": 29,
+            "markerEnvelope": 12,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.25
+          },
+          "svgRect": {
+            "x": 370.8280029296875,
+            "y": 157.02989196777344,
+            "width": 470.620849609375,
+            "height": 66.64991760253906
+          },
+          "componentRect": {
+            "x": 362.2432861328125,
+            "y": 148.44517517089844,
+            "width": 487.790283203125,
+            "height": 88.97175598144531
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Review matched-lot distributions",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Reviewmatched-lotdistributions",
+                  "rect": {
+                    "left": 404.7001526030293,
+                    "top": 174.35686239582185,
+                    "right": 450.0907770901913,
+                    "bottom": 206.5735006558002
+                  }
+                }
+              ],
+              "rect": {
+                "x": 384.9819030761719,
+                "y": 171.16775512695312,
+                "width": 84.82717895507812,
+                "height": 38.37419128417969
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Isolate chamber pressure excursion",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Isolatechamberpressureexcursion",
+                  "rect": {
+                    "left": 529.0652381824767,
+                    "top": 168.802700979222,
+                    "right": 564.0496106018327,
+                    "bottom": 212.1276505156162
+                  }
+                }
+              ],
+              "rect": {
+                "x": 504.14385986328125,
+                "y": 168.80270385742188,
+                "width": 84.82720947265625,
+                "height": 43.324951171875
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Verify sensor calibration with controls",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Verifysensorcalibrationwith controls",
+                  "rect": {
+                    "left": 642.18815411067,
+                    "top": 168.802700979222,
+                    "right": 689.2506445828185,
+                    "bottom": 212.1276505156162
+                  }
+                }
+              ],
+              "rect": {
+                "x": 623.3057861328125,
+                "y": 168.80270385742188,
+                "width": 84.82720947265625,
+                "height": 43.324951171875
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Authorize release after Quality confirmation",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Authorizereleaseafter Qualityconfirmation",
+                  "rect": {
+                    "left": 761.8579418512595,
+                    "top": 168.802700979222,
+                    "right": 807.904822160453,
+                    "bottom": 212.1276505156162
+                  }
+                }
+              ],
+              "rect": {
+                "x": 742.4677734375,
+                "y": 168.80270385742188,
+                "width": 84.82720947265625,
+                "height": 43.324951171875
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M232 102 L300 102",
+              "shaft_clearance_px": 19.31,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Reviewmatched-lotdistributions",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 24.32,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Isolatechamberpressureexcursion",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M468 102 L536 102",
+              "shaft_clearance_px": 18.48,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verifysensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 18.28,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verifysensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M704 102 L772 102",
+              "shaft_clearance_px": 18.48,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verifysensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 18.78,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Authorizereleaseafter Qualityconfirmation",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        },
+        "390": {
+          "flowId": "c8",
+          "projection": "medium-2-column",
+          "readingColumns": 2,
+          "readingDirection": "serpentine",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 157
+          },
+          "renderedScale": 1.0813,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 16,
+            "protectedPaddingY": 8,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 1.8,
+            "minimumScale": 0.95
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 346,
+            "height": 169.75
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 370,
+            "height": 193.75
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Review matched-lot distributions",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Reviewmatched-lotdistributions",
+                  "rect": {
+                    "left": 75.45795547582543,
+                    "top": 698.9188771293421,
+                    "right": 169.2235814355741,
+                    "bottom": 747.1927567029455
+                  }
+                }
+              ],
+              "rect": {
+                "x": 46.65605163574219,
+                "y": 693.46240234375,
+                "width": 151.3694305419922,
+                "height": 62.71014404296875
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Isolate chamber pressure excursion",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Isolatechamberpressureexcursion",
+                  "rect": {
+                    "left": 264.0107939653336,
+                    "top": 698.9188771293421,
+                    "right": 335.3076608742878,
+                    "bottom": 762.3297076270838
+                  }
+                }
+              ],
+              "rect": {
+                "x": 223.97451782226562,
+                "y": 693.46240234375,
+                "width": 151.36944580078125,
+                "height": 77.84710693359375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Verify sensor calibration with controls",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Verify sensorcalibrationwith controls",
+                  "rect": {
+                    "left": 250.9014173617029,
+                    "top": 784.3344708825373,
+                    "right": 348.4170374779185,
+                    "bottom": 832.6083545806301
+                  }
+                }
+              ],
+              "rect": {
+                "x": 223.97451782226562,
+                "y": 778.8779907226562,
+                "width": 151.36944580078125,
+                "height": 62.710205078125
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Authorize release after Quality confirmation",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Authorizerelease afterQualityconfirmation",
+                  "rect": {
+                    "left": 75.23137664187487,
+                    "top": 784.3344708825373,
+                    "right": 169.45012727360816,
+                    "bottom": 847.7452972557894
+                  }
+                }
+              ],
+              "rect": {
+                "x": 46.65605163574219,
+                "y": 778.8779907226562,
+                "width": 151.3694305419922,
+                "height": 77.84710693359375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M148 32 L172 32",
+              "shaft_clearance_px": 27.83,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Reviewmatched-lotdistributions",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 38.58,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Isolatechamberpressureexcursion",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M242 75 L242 82",
+              "shaft_clearance_px": 4.48,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verify sensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 4,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verify sensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M172 111 L148 111",
+              "shaft_clearance_px": 25.95,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Verify sensorcalibrationwith controls",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 27.12,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Authorizerelease afterQualityconfirmation",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        }
+      }
+    },
+    "five-stage-holdout": {
+      "labels": [
+        "Map the affected wafer population",
+        "Compare matched reference lots",
+        "Trace the chamber pressure excursion",
+        "Verify corrective maintenance results",
+        "Release only after Quality review"
+      ],
+      "screenshots": {
+        "390": {
+          "path": "screenshots/five-stage-holdout-390-full-page.png",
+          "sha256": "de64e5b6021c3a48af331b31d89b9dfad17ac65336eb2d645bff314684514075",
+          "width": 390,
+          "bytes": 210123
+        }
+      },
+      "geometry": {
+        "390": {
+          "flowId": "c8",
+          "projection": "medium-1-column",
+          "readingColumns": 1,
+          "readingDirection": "down",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 620
+          },
+          "renderedScale": 1.0813,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 18,
+            "protectedPaddingY": 18,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.75
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 346,
+            "height": 670.375
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 370,
+            "height": 694.375
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map the affected wafer population",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map the affected waferpopulation",
+                  "rect": {
+                    "left": 125.50000281333924,
+                    "top": 733.1737473964691,
+                    "right": 296.50001368522646,
+                    "bottom": 774.9612485408783
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95000076293945,
+                "y": 709.6812744140625,
+                "width": 294.0999755859375,
+                "height": 86.5
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched reference lots",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Compare matched referencelots",
+                  "rect": {
+                    "left": 105.75781500339508,
+                    "top": 869.4112556457519,
+                    "right": 316.2422097444534,
+                    "bottom": 911.1987732887268
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95000076293945,
+                "y": 845.9187622070312,
+                "width": 294.0999755859375,
+                "height": 86.5
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Trace the chamber pressure excursion",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Trace the chamberpressure excursion",
+                  "rect": {
+                    "left": 140.90625619888306,
+                    "top": 1005.648755645752,
+                    "right": 281.09376029968263,
+                    "bottom": 1047.4362567901612
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95000076293945,
+                "y": 982.15625,
+                "width": 294.0999755859375,
+                "height": 86.5
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Verify corrective maintenance results",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Verify correctivemaintenance results",
+                  "rect": {
+                    "left": 136.13281693458558,
+                    "top": 1141.886255645752,
+                    "right": 285.8671995639801,
+                    "bottom": 1183.6737567901612
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95000076293945,
+                "y": 1118.393798828125,
+                "width": 294.0999755859375,
+                "height": 86.5
+              }
+            },
+            {
+              "id": "chg293-node-5",
+              "order": 4,
+              "title": "Step 5: Release only after Quality review",
+              "labels": [
+                {
+                  "id": "chg293-node-5",
+                  "kind": "label",
+                  "text": "Release only afterQuality review",
+                  "rect": {
+                    "left": 144.8750026702881,
+                    "top": 1278.123755645752,
+                    "right": 277.12499732971196,
+                    "bottom": 1319.9111907958986
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95000076293945,
+                "y": 1254.6312255859375,
+                "width": 294.0999755859375,
+                "height": 86.5
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M160 98 L160 144",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Map the affected waferpopulation",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched referencelots",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M160 224 L160 270",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched referencelots",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Trace the chamberpressure excursion",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M160 350 L160 396",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Trace the chamberpressure excursion",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Verify correctivemaintenance results",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-4",
+              "order": 3,
+              "source": "chg293-node-4",
+              "target": "chg293-node-5",
+              "path": "M160 476 L160 522",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Verify correctivemaintenance results",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-5",
+                "text": "Release only afterQuality review",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        }
+      }
+    },
+    "six-stage-holdout": {
+      "labels": [
+        "Detect the localized yield shift",
+        "Map affected die and wafer regions",
+        "Compare matched-lot process signals",
+        "Check the chamber pressure trace",
+        "Verify the sensor against controls",
+        "Confirm containment and release status"
+      ],
+      "screenshots": {
+        "390": {
+          "path": "screenshots/six-stage-holdout-390-full-page.png",
+          "sha256": "e874f6fd5eb01405e42da73eccbbfd8f6d9d911ca4f012d06974e499b1fa660f",
+          "width": 390,
+          "bytes": 214663
+        }
+      },
+      "geometry": {
+        "390": {
+          "flowId": "c8",
+          "projection": "medium-1-column",
+          "readingColumns": 1,
+          "readingDirection": "down",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 746
+          },
+          "renderedScale": 1.0813,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 18,
+            "protectedPaddingY": 18,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.75
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 346,
+            "height": 806.609375
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 370,
+            "height": 830.609375
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Detect the localized yield shift",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Detect the localizedyield shift",
+                  "rect": {
+                    "left": 137.69531712119766,
+                    "top": 733.1735232342984,
+                    "right": 284.30469937730413,
+                    "bottom": 774.9609284784456
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 709.68115234375,
+                "width": 294.098876953125,
+                "height": 86.49969482421875
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Map affected die and wafer regions",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Map affected die andwafer regions",
+                  "rect": {
+                    "left": 133.3828149938072,
+                    "top": 869.4104954192849,
+                    "right": 288.61720150469455,
+                    "bottom": 911.1979171619339
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 845.9181518554688,
+                "width": 294.098876953125,
+                "height": 86.49969482421875
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Compare matched-lot process signals",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Compare matched-lotprocess signals",
+                  "rect": {
+                    "left": 129.98437935912898,
+                    "top": 1005.6474676042715,
+                    "right": 292.01563713937276,
+                    "bottom": 1047.4348728484188
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 982.1551513671875,
+                "width": 294.098876953125,
+                "height": 86.4996337890625
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Check the chamber pressure trace",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Check the chamberpressure trace",
+                  "rect": {
+                    "left": 139.28906414144478,
+                    "top": 1141.884439789258,
+                    "right": 282.71095235705695,
+                    "bottom": 1183.6718450334054
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 1118.39208984375,
+                "width": 294.098876953125,
+                "height": 86.499755859375
+              }
+            },
+            {
+              "id": "chg293-node-5",
+              "order": 4,
+              "title": "Step 5: Verify the sensor against controls",
+              "labels": [
+                {
+                  "id": "chg293-node-5",
+                  "kind": "label",
+                  "text": "Verify the sensor againstcontrols",
+                  "rect": {
+                    "left": 119.22656428702075,
+                    "top": 1278.121411974245,
+                    "right": 302.773452211481,
+                    "bottom": 1319.908817218392
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 1254.629150390625,
+                "width": 294.098876953125,
+                "height": 86.49951171875
+              }
+            },
+            {
+              "id": "chg293-node-6",
+              "order": 5,
+              "title": "Step 6: Confirm containment and release status",
+              "labels": [
+                {
+                  "id": "chg293-node-6",
+                  "kind": "label",
+                  "text": "Confirm containment andrelease status",
+                  "rect": {
+                    "left": 117.34375526678146,
+                    "top": 1414.3583841592313,
+                    "right": 304.6562612317203,
+                    "bottom": 1456.1457894033786
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95056915283203,
+                "y": 1390.865966796875,
+                "width": 294.098876953125,
+                "height": 86.499755859375
+              }
+            }
+          ],
+          "edgeLabels": [],
+          "edgeLabelToNodeTextClearancePx": null,
+          "edgeLabelNearest": null,
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M160 98 L160 144",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Detect the localizedyield shift",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Map affected die andwafer regions",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M160 224 L160 270",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Map affected die andwafer regions",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Compare matched-lotprocess signals",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M160 350 L160 396",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Compare matched-lotprocess signals",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Check the chamberpressure trace",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-4",
+              "order": 3,
+              "source": "chg293-node-4",
+              "target": "chg293-node-5",
+              "path": "M160 476 L160 522",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Check the chamberpressure trace",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-5",
+                "text": "Verify the sensor againstcontrols",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-5",
+              "order": 4,
+              "source": "chg293-node-5",
+              "target": "chg293-node-6",
+              "path": "M160 602 L160 648",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-5",
+                "text": "Verify the sensor againstcontrols",
+                "kind": "label"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-6",
+                "text": "Confirm containment andrelease status",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        }
+      }
+    },
+    "edge-secondary-labels": {
+      "labels": [
+        "Map wafer cluster",
+        "Compare matched lot",
+        "Check CF-4 pressure",
+        "Confirm containment"
+      ],
+      "screenshots": {
+        "390": {
+          "path": "screenshots/edge-secondary-labels-390-full-page.png",
+          "sha256": "7a575181eeb0bb2318cf875e8c0277e66b39e8fd8691b8e5d6858c1e7c05ae33",
+          "width": 390,
+          "bytes": 208375
+        }
+      },
+      "geometry": {
+        "390": {
+          "flowId": "c8",
+          "projection": "medium-1-column",
+          "readingColumns": 1,
+          "readingDirection": "down",
+          "canonicalDirection": "right",
+          "viewBox": {
+            "width": 320,
+            "height": 494
+          },
+          "renderedScale": 1.0813,
+          "clearancePolicy": {
+            "minimumCssPx": 4,
+            "protectedPadding": 18,
+            "protectedPaddingY": 18,
+            "markerEnvelope": 10.8,
+            "markerForwardEnvelope": 0,
+            "minimumScale": 0.75
+          },
+          "svgRect": {
+            "x": 38,
+            "y": 690.21875,
+            "width": 346,
+            "height": 534.125
+          },
+          "componentRect": {
+            "x": 26,
+            "y": 678.21875,
+            "width": 370,
+            "height": 558.125
+          },
+          "nodes": [
+            {
+              "id": "chg293-node-1",
+              "order": 0,
+              "title": "Step 1: Map wafer cluster · Evidence checkpoint 1",
+              "labels": [
+                {
+                  "id": "chg293-node-1",
+                  "kind": "label",
+                  "text": "Map wafer cluster",
+                  "rect": {
+                    "left": 144.85936728759333,
+                    "top": 733.1723915681182,
+                    "right": 277.14062446331684,
+                    "bottom": 751.1723921762305
+                  }
+                },
+                {
+                  "id": "chg293-node-1",
+                  "kind": "secondary",
+                  "text": "Evidence checkpoint 1",
+                  "rect": {
+                    "left": 142.72655687447985,
+                    "top": 758.9593390800692,
+                    "right": 279.2734348764304,
+                    "bottom": 774.9593396206134
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95344161987305,
+                "y": 709.6807861328125,
+                "width": 294.0931396484375,
+                "height": 86.49798583984375
+              }
+            },
+            {
+              "id": "chg293-node-2",
+              "order": 1,
+              "title": "Step 2: Compare matched lot · Evidence checkpoint 2",
+              "labels": [
+                {
+                  "id": "chg293-node-2",
+                  "kind": "label",
+                  "text": "Compare matched lot",
+                  "rect": {
+                    "left": 131.6562453860696,
+                    "top": 869.4067156826436,
+                    "right": 290.3437546139304,
+                    "bottom": 887.4067162907558
+                  }
+                },
+                {
+                  "id": "chg293-node-2",
+                  "kind": "secondary",
+                  "text": "Evidence checkpoint 2",
+                  "rect": {
+                    "left": 141.8203036215624,
+                    "top": 895.1936508209599,
+                    "right": 280.17967988025805,
+                    "bottom": 911.1936513615041
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95344161987305,
+                "y": 845.9151000976562,
+                "width": 294.0931396484375,
+                "height": 86.49798583984375
+              }
+            },
+            {
+              "id": "chg293-node-3",
+              "order": 2,
+              "title": "Step 3: Check CF-4 pressure · Evidence checkpoint 3",
+              "labels": [
+                {
+                  "id": "chg293-node-3",
+                  "kind": "label",
+                  "text": "Check CF-4 pressure",
+                  "rect": {
+                    "left": 132.8359312181048,
+                    "top": 1005.6410439217138,
+                    "right": 289.1640687818952,
+                    "bottom": 1023.6410445298261
+                  }
+                },
+                {
+                  "id": "chg293-node-3",
+                  "kind": "secondary",
+                  "text": "Evidence checkpoint 3",
+                  "rect": {
+                    "left": 141.6640576119365,
+                    "top": 1031.4279625618506,
+                    "right": 280.3359423880635,
+                    "bottom": 1047.4279631023946
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95344161987305,
+                "y": 982.1494140625,
+                "width": 294.0931396484375,
+                "height": 86.498046875
+              }
+            },
+            {
+              "id": "chg293-node-4",
+              "order": 3,
+              "title": "Step 4: Confirm containment · Evidence checkpoint 4",
+              "labels": [
+                {
+                  "id": "chg293-node-4",
+                  "kind": "label",
+                  "text": "Confirm containment",
+                  "rect": {
+                    "left": 132.98436533970388,
+                    "top": 1141.8753556626045,
+                    "right": 289.01561816211654,
+                    "bottom": 1159.8753562707168
+                  }
+                },
+                {
+                  "id": "chg293-node-4",
+                  "kind": "secondary",
+                  "text": "Evidence checkpoint 4",
+                  "rect": {
+                    "left": 141.55468293047144,
+                    "top": 1167.6622743027413,
+                    "right": 280.4453170695285,
+                    "bottom": 1183.6622748432856
+                  }
+                }
+              ],
+              "rect": {
+                "x": 63.95344161987305,
+                "y": 1118.3837890625,
+                "width": 294.0931396484375,
+                "height": 86.4979248046875
+              }
+            }
+          ],
+          "edgeLabels": [
+            {
+              "id": "chg293-edge-2",
+              "text": "CF-4 excursion verified",
+              "rect": {
+                "left": 164.30577979686288,
+                "top": 946.2812537529207,
+                "right": 296.61828452469365,
+                "bottom": 960.2812542258969
+              }
+            }
+          ],
+          "edgeLabelToNodeTextClearancePx": 35.09,
+          "edgeLabelNearest": {
+            "edgeId": "chg293-edge-2",
+            "edgeText": "CF-4 excursion verified",
+            "nodeId": "chg293-node-2",
+            "nodeText": "Evidence checkpoint 2"
+          },
+          "connectors": [
+            {
+              "id": "chg293-edge-1",
+              "order": 0,
+              "source": "chg293-node-1",
+              "target": "chg293-node-2",
+              "path": "M160 98 L160 144",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-1",
+                "text": "Evidence checkpoint 1",
+                "kind": "secondary"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Compare matched lot",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-2",
+              "order": 1,
+              "source": "chg293-node-2",
+              "target": "chg293-node-3",
+              "path": "M160 224 L160 270",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-2",
+                "text": "Evidence checkpoint 2",
+                "kind": "secondary"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Check CF-4 pressure",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            },
+            {
+              "id": "chg293-edge-3",
+              "order": 2,
+              "source": "chg293-node-3",
+              "target": "chg293-node-4",
+              "path": "M160 350 L160 396",
+              "shaft_clearance_px": 20.25,
+              "shaft_nearest": {
+                "nodeId": "chg293-node-3",
+                "text": "Evidence checkpoint 3",
+                "kind": "secondary"
+              },
+              "arrowhead_clearance_px": 22.03,
+              "arrowhead_nearest": {
+                "nodeId": "chg293-node-4",
+                "text": "Confirm containment",
+                "kind": "label"
+              },
+              "text_intersections": 0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "browser_errors": [],
+  "status": "PASS",
+  "main_after": {
+    "local_main": "21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284",
+    "origin_main": "28d47acbaab8b493044120f6be4c32a225de4143"
+  }
+}

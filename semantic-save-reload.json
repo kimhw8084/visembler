@@ -1,0 +1,26 @@
+{
+  "schema": "visembler-chg293-semantic-save-reload.v1",
+  "status": "PASS",
+  "canonical_graph_identity": {
+    "status": "PASS",
+    "evidence": "tests/test_visualizer_chg293_process_flow_clearance.py::test_clearance_policy_adapts_layout_and_preserves_graph_identity",
+    "assertions": [
+      "entry unmodified by reading render",
+      "diagramFromEntry → diagramToEntry → diagramFromEntry preserves node IDs/order/labels/secondary labels, edge IDs/order/source/target/ports/edge labels and direction",
+      "reading projection retains direct-node editing identity and connector titles"
+    ]
+  },
+  "native_repository_save_reload": {
+    "status": "PASS",
+    "evidence": "candidate/acceptance.json and source/scripts/release_checks/run_chg293_process_flow_acceptance.py",
+    "cases": [
+      "r6-like",
+      "four-stage-holdout",
+      "five-stage-holdout",
+      "six-stage-holdout",
+      "edge-secondary-labels"
+    ],
+    "assertion": "After each whole-report browser capture, native ReportRepository.get(report_id).model retains the fixture canonical diagram unchanged."
+  },
+  "visual_identity": "Graph nodes, edges, source/target ports, labels, order, IDs, and canonical layout were not changed by the reading projection."
+}

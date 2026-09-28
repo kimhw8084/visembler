@@ -1,0 +1,45 @@
+{
+  "schema": "visembler-chg293-breakpoint-matrix.v1",
+  "r6_like_expected_projection": {
+    "1440": "wide",
+    "520": "medium two-column when safe",
+    "390": "medium two-column when safe",
+    "361": "medium two-column when safe",
+    "360": "semantic single column",
+    "320": "semantic single column"
+  },
+  "candidate_actual": {
+    "1440": "wide",
+    "520": "medium-2-column",
+    "390": "medium-2-column",
+    "361": "medium-2-column",
+    "360": "narrow",
+    "320": "narrow"
+  },
+  "candidate_clearances_css_px": {
+    "1440": 19,
+    "520": 6.13,
+    "390": 4,
+    "361": 4.4,
+    "360": 18.8,
+    "320": 16.27
+  },
+  "holdouts": {
+    "four-stage-holdout": {
+      "projection": "medium-2-column",
+      "columns": 2
+    },
+    "five-stage-holdout": {
+      "projection": "medium-1-column",
+      "columns": 1
+    },
+    "six-stage-holdout": {
+      "projection": "medium-1-column",
+      "columns": 1
+    },
+    "edge-secondary-labels": {
+      "projection": "medium-1-column",
+      "columns": 1
+    }
+  }
+}
