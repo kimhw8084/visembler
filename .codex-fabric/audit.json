@@ -1,0 +1,427 @@
+{
+  "accepted_at": "2026-09-28T16:04:29Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 49,
+      "deletions": 7,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 407,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg293_process_flow_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 109,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg293_process_flow_clearance.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:reader/INDEX.md && rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:README.md && rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:RELEASE_MANIFEST.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /Users/haewonkim/.codex-fabric/jobs/CF-176447db3cff89714147d460.running/job.json && rtk proxy ls -la /Users/haewonkim/.codex-fabric/results/CF-176447db3cff89714147d460'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git add scripts/release_checks/run_chg293_process_flow_acceptance.py && rtk git commit -m 'Fix CHG-293 acceptance in shallow checkouts' && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^ && rtk git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD:company_ui/products/visualizer/assets/authoring_diagram_studio.mjs && rtk git rev-parse a095fa229c657a75a136520089194998377c66eb:company_ui/products/visualizer/assets/authoring_diagram_studio.mjs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD:company_ui/certification/certification_manifest.json && rtk git rev-parse a095fa229c657a75a136520089194998377c66eb:company_ui/certification/certification_manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse HEAD:tests/test_visualizer_chg293_process_flow_clearance.py && rtk git rev-parse a095fa229c657a75a136520089194998377c66eb:tests/test_visualizer_chg293_process_flow_clearance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff --stat a095fa229c657a75a136520089194998377c66eb..HEAD && rtk git diff --name-only a095fa229c657a75a136520089194998377c66eb..HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg293-ci-hermetic-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mktemp -d /tmp/visembler-chg293-r2-candidate.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /tmp/visembler-chg293-r1-depth1.mPXgIA/checkout/.venv/bin/python scripts/release_checks/run_chg293_process_flow_acceptance.py --output /tmp/visembler-chg293-r2-candidate.paJU0z --phase candidate --candidate-sha fc7917b937b2772b7eadcd4f80f969b8913ec53c --candidate-tree $(rtk git rev-parse HEAD''^{tree})'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push --set-upstream origin HEAD:refs/heads/fix/visembler-chg293-ci-hermetic-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python3.12 --version && rtk proxy uname -a'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg293-ci-hermetic-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy gh run list --repo kimhw8084/visembler --commit fc7917b937b2772b7eadcd4f80f969b8913ec53c --workflow Quality --json databaseId,name,headSha,status,conclusion,event,url,workflowName'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mktemp -d /tmp/visembler-chg293-r2-depth1.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git clone --depth 1 --single-branch --branch fix/visembler-chg293-ci-hermetic-r2 https://github.com/kimhw8084/visembler.git /tmp/visembler-chg293-r2-depth1.u2l60O/checkout'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git cat-file -e '28d47acbaab8b493044120f6be4c32a225de4143\"'^{commit}'\"'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse --verify --quiet refs/heads/main'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git rev-parse --verify --quiet refs/remotes/origin/main'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git rev-parse HEAD && rtk git rev-parse --is-shallow-repository && rtk git for-each-ref --format='%(refname) %(objectname)' refs\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.12 -m venv .venv && rtk proxy .venv/bin/python -m pip install -e '.[test]'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy .venv/bin/python -m pytest tests/test_visualizer_chg293_process_flow_clearance.py -vv --tb=short --junitxml=/tmp/visembler-chg293-r2-depth1.u2l60O/focused-junit.xml --basetemp=/tmp/visembler-chg293-r2-depth1.u2l60O/focused-tmp'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 2
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 955,
+        "output_sha256": "41f3fb8737e11635a6e9644562b67ece9aff92eb46f40670040b125b9f8bfdc9",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy .venv/bin/python -m pytest --tb=short --junitxml=/tmp/visembler-chg293-r2-depth1.u2l60O/full-junit.xml --basetemp=/tmp/visembler-chg293-r2-depth1.u2l60O/full-tmp'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1235,
+          "warnings": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2062,
+        "output_sha256": "f4e0f04579fcbf90c468a6eb95e326bd695d1228515b5b058b72d7c57a37452b",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mktemp -d /tmp/visembler-chg293-r2-maintained-release.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/progress.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.12 -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy gh run view 36449891032 --repo kimhw8084/visembler --json status,conclusion,headSha,url,jobs'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy tail -n 12 /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/logs/full-tests.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy tail -n 12 /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/logs/full-tests.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.12 -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in p])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy gh run view 36449891032 --repo kimhw8084/visembler --json status,conclusion,jobs | rtk proxy jq '{status, conclusion, jobs: [.jobs[]|{name,status,conclusion}]} '\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ls -la /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report && rtk proxy find /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report -maxdepth 2 -type f -name '*.log' -print\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.12 -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{schema,phase,request,candidate_sha,candidate_tree,base_sha,base_tree,base_is_ancestor,main_before,main_unchanged,runtime,cases: [.cases|to_entries[]|{key:.key,widths:(.value.geometry|keys)}],browser_errors,status}' /tmp/visembler-chg293-r2-candidate.paJU0z/acceptance.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.12 -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p[-8:]])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy tail -n 25 /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/logs/chg181-authoring-composition-reuse.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/chg181-authoring-composition-reuse && rtk proxy ls -la /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/logs/chg181-authoring-composition-reuse.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,command | rtk proxy rg 'verify_release.py|run_chg181_authoring_acceptance|company-boundary'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,command | rtk proxy rg 'run_chg181_authoring_acceptance|run_chg208_remap|run_chart_studio|run_report_hub' && rtk proxy find /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/chg181-authoring-composition-reuse -maxdepth 1 -type f -print\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,command | rtk proxy rg 'run_chart_studio_acceptance|run_report_hub_browser_error_gate|run_native_recovery|run_worker_lifecycle|run_operations_drill|run_native_acceptance'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /tmp/visembler-chg293-r2-depth1.u2l60O/checkout/.venv/bin/python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/logs/operations-drill.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/operations-drill'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/operations-drill -maxdepth 2 -type f -print'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{release_status,checks_status,remaining_release_validation,checks:[.checks[]|{name,status,returncode,error,elapsed_seconds}]}' /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy jq '{release_status,checks_status,remaining_release_validation}' /tmp/visembler-chg293-r2-maintained-release.EFQy5w/report/report.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg293-ci-hermetic-r2'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy gh run view 36449891032 --repo kimhw8084/visembler --json status,conclusion,headSha,url | rtk proxy jq'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 227,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.52,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 17475840,
+      "fresh_input_tokens": 261891,
+      "input_tokens": 17737731,
+      "non_reasoning_output_tokens": 16746,
+      "output_tokens": 48643,
+      "reasoning_output_tokens": 31897,
+      "total_processed_tokens": 17786374
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+      "subject": "Fix CHG-293 acceptance in shallow checkouts"
+    },
+    {
+      "sha": "a095fa229c657a75a136520089194998377c66eb",
+      "subject": "Fix Process Flow reading connector clearance"
+    }
+  ],
+  "diff": {
+    "additions": 566,
+    "changed_files": 4,
+    "commit_count": 2,
+    "deletions": 8
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "9e9e71b9b1e97f97aff014cee54f3cbe7f1ff797b888dfc6a2c98ac5652157cd"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-28T16:33:07Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "branch": "fix/visembler-chg293-ci-hermetic-r2",
+    "detached_verify": false,
+    "head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "remote_exact_head": true,
+    "remote_head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "work_branch": "fix/visembler-chg293-ci-hermetic-r2",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-176447db3cff89714147d460",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-293-r2",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-293-r2"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-293-r2",
+  "schema_version": 1,
+  "started_at": "2026-09-28T16:04:29Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1718,
+    "queue_seconds": 0,
+    "total_seconds": 1718
+  },
+  "transport": {
+    "bytes": 10692,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 10397,
+    "prompt_sha256": "a2823f67b64e6d4d963bacefd9ce94313159e5ad0acd0f118770172e7d535fb3",
+    "sha256": "176447db3cff89714147d46022bf110bed37c1161825c3d2a8856c11cd7b08bf"
+  }
+}
