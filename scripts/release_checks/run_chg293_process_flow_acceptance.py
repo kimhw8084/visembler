@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Native browser geometry and whole-report acceptance for CHG-293 R1."""
+"""Native browser geometry and whole-report acceptance for CHG-293 R2."""
 from __future__ import annotations
 
 import argparse
@@ -23,7 +23,7 @@ from native_common import BrowserEvents, browser_kwargs, ready, write_json
 
 BASE_SHA = "28d47acbaab8b493044120f6be4c32a225de4143"
 BASE_TREE = "6b535f84478f0e8394a06614961e8faa0df54a75"
-WORK_BRANCH = "fix/visembler-chg293-process-flow-connector-clearance-r1"
+WORK_BRANCH = "fix/visembler-chg293-ci-hermetic-r2"
 FIXTURE = "tests/fixtures/chg206/whole_report_models.json"
 SOURCE = "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs"
 
@@ -63,6 +63,42 @@ def digest(path: Path) -> str:
 
 def git(*args: str) -> str:
     return subprocess.check_output(["git", *args], cwd=ROOT, text=True).strip()
+
+
+def optional_ref(ref: str) -> str | None:
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", "--quiet", ref],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
+
+
+def base_ancestry(head: str, *, strict: bool) -> bool | None:
+    base_commit = subprocess.run(
+        ["git", "cat-file", "-e", f"{BASE_SHA}^{{commit}}"],
+        cwd=ROOT,
+        capture_output=True,
+        check=False,
+    )
+    if base_commit.returncode != 0:
+        if strict:
+            raise ValueError("Candidate/reproduction qualification requires the exact base commit object.")
+        return None
+    if git("rev-parse", f"{BASE_SHA}^{{tree}}") != BASE_TREE:
+        raise ValueError("The exact CHG-293 base commit has an unexpected tree.")
+    result = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", BASE_SHA, head],
+        cwd=ROOT,
+        check=False,
+    )
+    if result.returncode not in (0, 1):
+        if strict:
+            raise ValueError("Candidate/reproduction base ancestry could not be evaluated.")
+        return None
+    return result.returncode == 0
 
 
 def flow_entry(model: dict) -> dict:
@@ -196,10 +232,20 @@ def run_acceptance(output: Path, *, phase: str = "local", candidate_sha: str = "
         raise ValueError("Acceptance output must be outside the source checkout.")
     if output.exists() and any(output.iterdir()):
         raise ValueError("Acceptance output must be new or empty.")
+    if phase not in ("local", "candidate", "reproduction"):
+        raise ValueError(f"Unsupported acceptance phase: {phase}")
     head, tree = git("rev-parse", "HEAD"), git("rev-parse", "HEAD^{tree}")
-    main_snapshot = {"local_main": git("rev-parse", "refs/heads/main"), "origin_main": git("rev-parse", "refs/remotes/origin/main")}
-    if main_snapshot["origin_main"] != BASE_SHA:
-        raise ValueError("The current origin/main ref has drifted from the exact CHG-293 base.")
+    main_snapshot = {
+        "local_main": optional_ref("refs/heads/main"),
+        "origin_main": optional_ref("refs/remotes/origin/main"),
+    }
+    strict_lineage = phase in ("candidate", "reproduction")
+    if strict_lineage:
+        unavailable = [name for name, value in main_snapshot.items() if value is None]
+        if unavailable:
+            raise ValueError(f"{phase} acceptance requires provisioned main refs: {', '.join(unavailable)}")
+        if main_snapshot["origin_main"] != BASE_SHA:
+            raise ValueError("The provisioned origin/main ref has drifted from the exact CHG-293 base.")
     if phase == "reproduction" and (head != BASE_SHA or tree != BASE_TREE):
         raise ValueError("Pre-fix reproduction must run on the exact CHG-293 base commit and tree.")
     head_source = hashlib.sha256(subprocess.check_output(["git", "show", f"{head}:{SOURCE}"], cwd=ROOT)).hexdigest()
@@ -210,6 +256,9 @@ def run_acceptance(output: Path, *, phase: str = "local", candidate_sha: str = "
             raise ValueError("Candidate acceptance must match its requested SHA and tree.")
         if git("branch", "--show-current") != WORK_BRANCH or git("status", "--porcelain"):
             raise ValueError("Candidate acceptance requires the exact clean CHG-293 work branch.")
+    ancestry = base_ancestry(head, strict=strict_lineage)
+    if strict_lineage and not ancestry:
+        raise ValueError(f"{phase} acceptance requires the exact CHG-293 base to be an ancestor of HEAD.")
     output.mkdir(parents=True, exist_ok=True)
     fixture_path = ROOT / FIXTURE
     fixture = json.loads(fixture_path.read_text(encoding="utf-8"))
@@ -222,20 +271,25 @@ def run_acceptance(output: Path, *, phase: str = "local", candidate_sha: str = "
         "edge-secondary-labels": (R6_LIKE, True, "CF-4 excursion verified"),
     }
     receipt = {
-        "schema": "visembler-chg293-process-flow-acceptance.v1",
+        "schema": "visembler-chg293-process-flow-acceptance.v2",
         "phase": phase,
         "repository": "kimhw8084/visembler",
         "project": "visembler",
         "change": "CHG-293",
-        "request": "CHG-293-r1",
+        "request": "CHG-293-r2",
         "operation": "FIX",
         "candidate_sha": candidate_sha or (head if phase != "reproduction" else ""),
         "candidate_tree": candidate_tree or (tree if phase != "reproduction" else ""),
         "base_sha": BASE_SHA,
         "base_tree": BASE_TREE,
-        "base_is_ancestor": subprocess.run(["git", "merge-base", "--is-ancestor", BASE_SHA, head], cwd=ROOT, check=False).returncode == 0,
+        "base_is_ancestor": ancestry,
         "main_before": main_snapshot,
-        "main_unchanged": False,
+        "main_unchanged": None,
+        "lineage": {
+            "main_refs_before": {name: "available" if value is not None else "unavailable" for name, value in main_snapshot.items()},
+            "main_unchanged": "pending" if all(value is not None for value in main_snapshot.values()) else "not_checked",
+            "base_ancestry": "checked" if ancestry is not None else "not_checked",
+        },
         "source_authority": {"path": SOURCE, "sha256": digest(ROOT / SOURCE), "fixture": FIXTURE, "fixture_sha256": digest(fixture_path)},
         "runtime": {},
         "cases": {},
@@ -308,11 +362,23 @@ def run_acceptance(output: Path, *, phase: str = "local", candidate_sha: str = "
             r6_390 = receipt["cases"]["r6-like"]["geometry"]["390"]
             receipt["reproduced_collision_at_390"] = any(edge["text_intersections"] for edge in r6_390["connectors"])
             assert receipt["reproduced_collision_at_390"], r6_390
-        main_after = {"local_main": git("rev-parse", "refs/heads/main"), "origin_main": git("rev-parse", "refs/remotes/origin/main")}
+        main_after = {
+            "local_main": optional_ref("refs/heads/main"),
+            "origin_main": optional_ref("refs/remotes/origin/main"),
+        }
         receipt["main_after"] = main_after
-        receipt["main_unchanged"] = main_after == main_snapshot
-        assert receipt["main_unchanged"], {"before": main_snapshot, "after": main_after}
-        assert receipt["base_is_ancestor"], {"base": BASE_SHA, "head": head}
+        receipt["lineage"]["main_refs_after"] = {
+            name: "available" if value is not None else "unavailable" for name, value in main_after.items()
+        }
+        if all(value is not None for value in (*main_snapshot.values(), *main_after.values())):
+            receipt["main_unchanged"] = main_after == main_snapshot
+            receipt["lineage"]["main_unchanged"] = "checked"
+        else:
+            receipt["main_unchanged"] = None
+            receipt["lineage"]["main_unchanged"] = "not_checked"
+        if strict_lineage:
+            assert receipt["main_unchanged"], {"before": main_snapshot, "after": main_after}
+            assert receipt["base_is_ancestor"], {"base": BASE_SHA, "head": head}
         receipt["status"] = "PASS"
     except Exception as error:
         receipt["status"] = "FAIL"
