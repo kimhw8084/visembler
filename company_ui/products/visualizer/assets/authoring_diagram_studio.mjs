@@ -278,10 +278,46 @@ function wrappedReadingLines(value,maxChars=28) {
   return lines.length?lines:[''];
 }
 
+function readingTextWidth(value,fontSize) {
+  return Array.from(String(value||'')).reduce((width,char)=>{
+    const factor=/\s/.test(char)?0.32:/[ilI.,'`!:|;]/.test(char)?0.34:/[MW@#%&]/.test(char)?0.9:/[A-Z0-9]/.test(char)?0.64:0.58;
+    return width+factor*fontSize;
+  },0);
+}
+
+function wrappedReadingLinesWithinWidth(value,maxWidth,fontSize) {
+  const words=clean(value).split(/\s+/).filter(Boolean),lines=[];let line='';
+  const pushWord=word=>{
+    if(!line){line=word;return;}
+    if(readingTextWidth(`${line} ${word}`,fontSize)<=maxWidth){line+=` ${word}`;return;}
+    lines.push(line);line=word;
+  };
+  for(const word of words){
+    if(readingTextWidth(word,fontSize)<=maxWidth){pushWord(word);continue;}
+    if(line){lines.push(line);line='';}
+    let part='';
+    for(const character of Array.from(word)){
+      if(part&&readingTextWidth(part+character,fontSize)>maxWidth){lines.push(part);part=character;}
+      else part+=character;
+    }
+    line=part;
+  }
+  if(line)lines.push(line);
+  return lines.length?lines:[''];
+}
+
+function connectorTextPadding(minimumScale=0.75,strokeWidth=1.8) {
+  const markerEnvelope=6*strokeWidth,minimumClearance=4;
+  return Math.ceil(markerEnvelope+strokeWidth/2+minimumClearance/minimumScale);
+}
+
 function renderCompactDiagramReadingSvg(diagram,nodes,edges,options={}) {
-  const width=320,nodeX=8,nodeWidth=144,columnGap=16,lineHeight=16,nodeGap=8,top=5,positions=new Map(),rowHeights=[];
+  const width=320,nodeX=8,nodeWidth=140,columnGap=24,lineHeight=14,nodeGap=7,top=3,minimumScale=0.95,padding=connectorTextPadding(minimumScale),markerEnvelope=6*1.8,markerForwardEnvelope=(8-7)*1.8,verticalPadding=Math.max(8,Math.ceil(markerForwardEnvelope+1.8/2+4/minimumScale)),positions=new Map(),rowHeights=[];
+  const compactEdges=edges.length===nodes.length-1&&edges.every((edge,index)=>edge.source===nodes[index]?.id&&edge.target===nodes[index+1]?.id),hasEdgeLabels=edges.some(edge=>(edge.labels||[]).some(label=>label.text)),availableWidth=Number.isFinite(Number(options.availableWidth))?Number(options.availableWidth):width;
+  if(nodes.length>4||!compactEdges||hasEdgeLabels||availableWidth/width<minimumScale)return renderDiagramReadingSvg(diagram,{...options,layout:'stacked-fallback',className:'diagram-medium-reading'});
+  const textWidth=nodeWidth-2*padding;
   nodes.forEach((node,index)=>{
-    const row=Math.floor(index/2),column=row%2===0?index%2:1-(index%2),labelLines=wrappedReadingLines(node.label,20),secondaryLines=node.secondary?wrappedReadingLines(node.secondary,20):[],height=Math.max(36,(labelLines.length+secondaryLines.length)*lineHeight+8),x=nodeX+column*(nodeWidth+columnGap);
+    const row=Math.floor(index/2),column=row%2===0?index%2:1-(index%2),labelLines=wrappedReadingLinesWithinWidth(node.label,textWidth,14),secondaryLines=node.secondary?wrappedReadingLinesWithinWidth(node.secondary,textWidth,12):[],height=Math.max(36,(labelLines.length+secondaryLines.length)*lineHeight+verticalPadding*2),x=nodeX+column*(nodeWidth+columnGap);
     rowHeights[row]=Math.max(rowHeights[row]||0,height);
     positions.set(node.id,{node,index,row,column,x,width:nodeWidth,height,labelLines,secondaryLines});
   });
@@ -315,7 +351,7 @@ function renderCompactDiagramReadingSvg(diagram,nodes,edges,options={}) {
     return `<g data-diagram-node="${svgEscape(node.id)}" data-node-order="${index}" data-shape="${svgEscape(node.shape)}"><title>Step ${index+1}: ${svgEscape(node.label)}${node.secondary?` · ${svgEscape(node.secondary)}`:''}</title>${shape}<text class="diagram-reading-label" data-direct="diagram-node:${index}" x="${center}" y="${labelStart}" text-anchor="middle">${labelLines}</text>${secondaryLines?`<text class="diagram-node-secondary diagram-reading-secondary" x="${center}" y="${labelStart+labelHeight}" text-anchor="middle">${secondaryLines}</text>`:''}</g>`;
   }).join('');
   const semanticName=options.label||`Process flow, ${nodes.length} steps`,accessibleDescription=[semanticName,...nodes.map((node,index)=>`Step ${index+1}: ${node.label}`),...edges.flatMap(edge=>(edge.labels||[]).map(label=>`Connector ${label.text}`))].join('; ');
-  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection diagram-medium-reading" data-reading-layout="stacked" data-reading-columns="2" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="right" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="serpentine" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
+  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection diagram-medium-reading" data-reading-layout="stacked" data-reading-columns="2" data-reading-clearance-px="4" data-reading-protected-padding="${padding}" data-reading-protected-padding-y="${verticalPadding}" data-reading-marker-envelope="${markerEnvelope}" data-reading-marker-forward-envelope="${markerForwardEnvelope}" data-reading-minimum-scale="${minimumScale}" data-reading-line-height="${lineHeight}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="right" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="serpentine" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
 }
 
 export function renderDiagramReadingSvg(value={},options={}) {
@@ -324,7 +360,7 @@ export function renderDiagramReadingSvg(value={},options={}) {
   if(options.layout==='compact')return renderCompactDiagramReadingSvg(diagram,nodes,edges,options);
   const width=320,nodeX=24,nodeWidth=272,leftRoute=10,rightRoute=width-10,nodeGap=46,lineHeight=22,top=18,center=nodeX+nodeWidth/2,positions=new Map();let cursor=top;
   nodes.forEach((node,index)=>{
-    const labelLines=wrappedReadingLines(node.label,25),secondaryLines=node.secondary?wrappedReadingLines(node.secondary,28):[],height=Math.max(62,(labelLines.length+secondaryLines.length)*lineHeight+26);
+    const labelLines=wrappedReadingLines(node.label,25),secondaryLines=node.secondary?wrappedReadingLines(node.secondary,28):[],height=Math.max(62,(labelLines.length+secondaryLines.length)*lineHeight+36);
     positions.set(node.id,{node,index,y:cursor,height,labelLines,secondaryLines});cursor+=height+nodeGap;
   });
   const height=Math.max(120,cursor-nodeGap+top);
@@ -344,7 +380,7 @@ export function renderDiagramReadingSvg(value={},options={}) {
     return `<g data-diagram-node="${svgEscape(node.id)}" data-node-order="${index}" data-shape="${svgEscape(node.shape)}"><title>Step ${index+1}: ${svgEscape(node.label)}${node.secondary?` · ${svgEscape(node.secondary)}`:''}</title>${shape}<text class="diagram-reading-label" data-direct="diagram-node:${index}" x="${center}" y="${labelStart}" text-anchor="middle">${labels}</text>${secondary?`<text class="diagram-node-secondary diagram-reading-secondary" x="${center}" y="${labelStart+labelHeight}" text-anchor="middle">${secondary}</text>`:''}</g>`;
   }).join('');
   const semanticName=options.label||`Process flow, ${nodes.length} steps`,accessibleDescription=[semanticName,...nodes.map((node,index)=>`Step ${index+1}: ${node.label}`),...edges.flatMap(edge=>(edge.labels||[]).map(label=>`Connector ${label.text}`))].join('; ');
-  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection diagram-narrow-reading" data-reading-layout="stacked" data-reading-columns="1" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="down" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="down" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
+  return `<svg class="diagram-svg flow-svg diagram-studio-static diagram-reading-projection ${svgEscape(options.className||'diagram-narrow-reading')}" data-reading-layout="stacked" data-reading-columns="1" data-reading-clearance-px="4" data-reading-protected-padding="${connectorTextPadding()}" data-reading-marker-envelope="10.8" data-reading-minimum-scale="0.75" data-diagram-nodes="${nodes.length}" data-diagram-edges="${edges.length}" data-direction="down" data-canonical-direction="${svgEscape(diagram.layout.direction)}" data-reading-direction="down" viewBox="0 0 ${width} ${height}" preserveAspectRatio="xMidYMin meet" role="img" aria-label="${svgEscape(accessibleDescription)}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-reading-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${edgeMarkup}${nodeMarkup}</svg>`;
 }
 
 const svgEscape=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -369,10 +405,16 @@ export function diagramRenderBounds(value={}) {
 export function renderDiagramSvg(value={},options={}) {
   const diagram=value?.engine?diagramFromEntry(value):normalizeDiagram(value),visibleLayers=new Set(diagram.layers.filter(layer=>layer.visible!==false).map(layer=>layer.id)),nodes=diagram.nodes.filter(node=>visibleLayers.has(node.layer)),nodeIds=new Set(nodes.map(node=>node.id));
   const {x:minX,y:minY,width,height}=diagramRenderBounds(diagram);
+  const readingProjection=options.className==='diagram-wide-reading',readingStroke=Math.max(1,...diagram.edges.map(edge=>finite(edge.style?.width,2))),readingPadding=connectorTextPadding(.25,readingStroke),readingMarkerEnvelope=6*readingStroke;
   const lanes=diagram.swimlanes.filter(lane=>visibleLayers.has(lane.layer)).map(lane=>`<g class="diagram-static-lane"><rect x="${lane.x}" y="${lane.y}" width="${lane.width}" height="${lane.height}" rx="10"/><text x="${lane.x+14}" y="${lane.y+22}">${svgEscape(lane.label)}</text></g>`).join('');
   const groups=diagram.groups.filter(group=>visibleLayers.has(group.layer)).map(group=>`<g class="diagram-static-group"><rect x="${group.x}" y="${group.y}" width="${group.width}" height="${group.height}" rx="10"/><text x="${group.x+12}" y="${group.y+20}">${svgEscape(group.label)}</text></g>`).join('');
   const edges=diagram.edges.filter(edge=>visibleLayers.has(edge.layer)&&nodeIds.has(edge.source)&&nodeIds.has(edge.target)).map(edge=>{const points=routeEdge(diagram,edge),dash=edge.style.line==='dashed'?' stroke-dasharray="8 5"':edge.style.line==='dotted'?' stroke-dasharray="2 5"':'';const labels=(edge.labels||[]).map((label,index)=>{const fraction=label.position==='source'?.25:label.position==='target'?.75:.5,point=staticPoint(points,fraction);return `<text class="diagram-edge-label" data-edge-label="${svgEscape(label.id||index)}" x="${point.x+finite(label.offset,0)}" y="${point.y-7-index*14}" text-anchor="middle">${svgEscape(label.text)}</text>`;}).join('');return `<g data-diagram-edge="${svgEscape(edge.id)}"><path d="${staticPath(points,edge.routing)}" stroke="${svgEscape(edge.style.color||'currentColor')}" stroke-width="${edge.style.width}" fill="none" marker-end="${edge.endMarker==='none'?'':'url(#diagram-static-arrow)'}"${dash}/>${labels}</g>`;}).join('');
-  const nodeMarkup=nodes.map((node,index)=>{const shape=node.shape==='decision'?`<path d="M${node.x+node.width/2} ${node.y}L${node.x+node.width} ${node.y+node.height/2}L${node.x+node.width/2} ${node.y+node.height}L${node.x} ${node.y+node.height/2}Z"/>`:`<rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${['start','end'].includes(node.shape)?node.height/2:9}"/>`;return `<g data-diagram-node="${svgEscape(node.id)}" data-shape="${svgEscape(node.shape)}">${shape}<text data-direct="diagram-node:${index}" x="${node.x+node.width/2}" y="${node.y+node.height/2+(node.secondary?-6:4)}" text-anchor="middle">${svgEscape(node.label)}</text>${node.secondary?`<text class="diagram-node-secondary" x="${node.x+node.width/2}" y="${node.y+node.height/2+13}" text-anchor="middle">${svgEscape(node.secondary)}</text>`:''}</g>`;}).join('');
+  const nodeMarkup=nodes.map((node,index)=>{
+    const centerX=node.x+node.width/2,centerY=node.y+node.height/2,shape=node.shape==='decision'?`<path d="M${centerX} ${node.y}L${node.x+node.width} ${centerY}L${centerX} ${node.y+node.height}L${node.x} ${centerY}Z"/>`:`<rect x="${node.x}" y="${node.y}" width="${node.width}" height="${node.height}" rx="${['start','end'].includes(node.shape)?node.height/2:9}"/>`;
+    if(!readingProjection)return `<g data-diagram-node="${svgEscape(node.id)}" data-shape="${svgEscape(node.shape)}">${shape}<text data-direct="diagram-node:${index}" x="${centerX}" y="${node.y+node.height/2+(node.secondary?-6:4)}" text-anchor="middle">${svgEscape(node.label)}</text>${node.secondary?`<text class="diagram-node-secondary" x="${centerX}" y="${centerY+13}" text-anchor="middle">${svgEscape(node.secondary)}</text>`:''}</g>`;
+    const textWidth=node.width-2*readingPadding,labelLines=wrappedReadingLinesWithinWidth(node.label,textWidth,16),secondaryLines=node.secondary?wrappedReadingLinesWithinWidth(node.secondary,textWidth,12):[],lineHeight=22,secondaryLineHeight=17,totalHeight=labelLines.length*lineHeight+secondaryLines.length*secondaryLineHeight,labelStart=node.y+(node.height-totalHeight)/2+lineHeight*.78,labelMarkup=labelLines.map((line,lineIndex)=>`<tspan x="${centerX}" dy="${lineIndex?lineHeight:0}">${svgEscape(line)}</tspan>`).join(''),secondaryMarkup=secondaryLines.map((line,lineIndex)=>`<tspan x="${centerX}" dy="${lineIndex?secondaryLineHeight:0}">${svgEscape(line)}</tspan>`).join('');
+    return `<g data-diagram-node="${svgEscape(node.id)}" data-shape="${svgEscape(node.shape)}">${shape}<text data-direct="diagram-node:${index}" x="${centerX}" y="${labelStart}" text-anchor="middle">${labelMarkup}</text>${secondaryMarkup?`<text class="diagram-node-secondary" x="${centerX}" y="${labelStart+labelLines.length*lineHeight}" text-anchor="middle">${secondaryMarkup}</text>`:''}</g>`;
+  }).join('');
   const className=options.className?` ${svgEscape(options.className)}`:'';
-  return `<svg class="diagram-svg flow-svg diagram-studio-static${className}" data-graph-plan="canonical-${nodes.length}-${diagram.edges.length}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${diagram.edges.length}" data-direction="${diagram.layout.direction}" viewBox="${minX} ${minY} ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${svgEscape(options.label||diagramSummary(diagram))}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-static-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${lanes}${groups}${edges}${nodeMarkup}</svg>`;
+  return `<svg class="diagram-svg flow-svg diagram-studio-static${className}"${readingProjection?` data-reading-clearance-px="4" data-reading-protected-padding="${readingPadding}" data-reading-marker-envelope="${readingMarkerEnvelope}" data-reading-minimum-scale="0.25"`:''} data-graph-plan="canonical-${nodes.length}-${diagram.edges.length}" data-diagram-nodes="${nodes.length}" data-diagram-edges="${diagram.edges.length}" data-direction="${diagram.layout.direction}" viewBox="${minX} ${minY} ${width} ${height}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${svgEscape(options.label||diagramSummary(diagram))}" xmlns="http://www.w3.org/2000/svg"><defs><marker id="diagram-static-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z"/></marker></defs>${lanes}${groups}${edges}${nodeMarkup}</svg>`;
 }
