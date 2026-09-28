@@ -1,0 +1,416 @@
+{
+  "accepted_at": "2026-09-28T00:43:32Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 49,
+      "deletions": 7,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 341,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg293_process_flow_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 109,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg293_process_flow_clearance.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '95,160p' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,command | rtk rg 'verify_release|run_data|measure_editor|run_chg|run_chart|native'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /Users/haewonkim/.codex-fabric/jobs/CF-6bb32f2819b696ea58d95c11 -maxdepth 3 -type f'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find .codex-fabric/jobs/CF-6bb32f2819b696ea58d95c11 -maxdepth 3 -type f'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-6bb32f2819b696ea58d95c11'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy find /Users/haewonkim/.codex-fabric -maxdepth 7 -path '*CF-6bb32f2819b696ea58d95c11*' -type f\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/Users/haewonkim/.codex-fabric/jobs/CF-6bb32f2819b696ea58d95c11.running/job.json\\\"); d=json.loads(p.read_text()); print(json.dumps(d,indent=2)[:5000])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /Users/haewonkim/.codex-fabric/results/CF-6bb32f2819b696ea58d95c11 -maxdepth 2 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'def publish_evidence_for_job|evidence-manifest|job-summary.json|remote_exact_head' /Users/haewonkim/.codex-fabric\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2544,2648p' /Users/haewonkim/.codex-fabric/backups/pre-node-runtime-fix-20260918-0840/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -l 'def publish_evidence_for_job' /Users/haewonkim/.codex-fabric/libexec /Users/haewonkim/.codex-fabric/bin\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy file /Users/haewonkim/.codex-fabric/bin/fabricctl'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy cat /Users/haewonkim/.codex-fabric/bin/fabricctl'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'def publish_evidence_for_job|def execute_job|remote_exact_head' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '3860,4040p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/private/tmp/visembler-chg293-maintained-native-release-final/progress.json\\\"); a=json.loads(p.read_text()); print(\\\"steps\\\",len(a)); print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in a[-5:]])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,command | rtk rg 'verify_release|run_chart|run_report|run_native|run_worker|operations'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --stat 28d47acbaab8b493044120f6be4c32a225de4143...HEAD && rtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; a=json.loads(pathlib.Path(\\\"/private/tmp/visembler-chg293-maintained-native-release-final/progress.json\\\").read_text()); print(\\\"steps\\\",len(a)); print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in a[-8:]])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,command | rtk rg 'verify_release|run_report|run_native|run_worker|operations'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,command | rtk rg 'verify_release|run_worker|operations|native_acceptance'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -axo pid,ppid,etime,command | rtk rg 'verify_release|operations|native_acceptance'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy du -sh /private/tmp/visembler-chg293-before /private/tmp/visembler-chg293-candidate-final-r4 /private/tmp/visembler-chg293-maintained-native-release-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python scripts/verify_release.py --host-mode native --output /private/tmp/visembler-chg293-maintained-native-release-final'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy find /private/tmp/visembler-chg293-maintained-native-release-final -maxdepth 2 -type f && rtk proxy ls -lh /private/tmp/visembler-chg293-maintained-native-release-final.zip'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; p=pathlib.Path(\\\"/private/tmp/visembler-chg293-maintained-native-release-final\\\"); print(json.dumps(json.loads((p/\\\"report.json\\\").read_text()),indent=2)[:5000]); print(\\\"artifacts\\\",(p/\\\"artifact-sha256.json\\\").read_text())'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'def push_and_verify|def push_remote_branch' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '2622,2668p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy rg -n 'def push_exact|git push|--force-with-lease' /Users/haewonkim/.codex-fabric/current/fabric.py | head -25\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib,xml.etree.ElementTree as ET; base=pathlib.Path(\\\"/private/tmp/visembler-chg293-before\\\"); cand=pathlib.Path(\\\"/private/tmp/visembler-chg293-candidate-final-r4\\\"); rel=pathlib.Path(\\\"/private/tmp/visembler-chg293-maintained-native-release-final\\\"); q=pathlib.Path(\\\"/private/tmp/visembler-chg293-focused-regressions-final-junit.xml\\\"); f=pathlib.Path(\\\"/private/tmp/visembler-chg293-full-pytest-final-junit.xml\\\"); print(\\\"before\\\",(base/\\\"acceptance.json\\\").exists(),\\\"candidate\\\",(cand/\\\"acceptance.json\\\").exists(),\\\"release\\\",json.loads((rel/\\\"report.json\\\").read_text())[\\\"release_status\\\"]); print(\\\"release_checks\\\",[(x[\\\"name\\\"],x[\\\"status\\\"]) for x in json.loads((rel/\\\"report.json\\\").read_text())[\\\"checks\\\"]]); print(\\\"focused\\\",q.exists(), \\\"full\\\",f.exists()); print(\\\"chg181\\\",pathlib.Path(\\\"/private/tmp/visembler-chg293-chg181-final-r3/chg181-native-acceptance.json\\\").exists()); print(\\\"xml\\\",[(str(x), ET.parse(x).getroot().attrib if x.exists() else None) for x in (q,f,rel/\\\"full-tests.xml\\\")])'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1492,
+        "output_sha256": "501b483081f7b4b4ea11b52fe37b8e9da24a0f6c0ac1e3758167099efce80a08",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nfrom __future__ import annotations\nimport hashlib, json, pathlib, shutil, subprocess, xml.etree.ElementTree as ET\n\nrepo = pathlib.Path('/Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11')\nbase_sha = '28d47acbaab8b493044120f6be4c32a225de4143'\ncandidate_sha = 'a095fa229c657a75a136520089194998377c66eb'\nbase_dir = pathlib.Path('/private/tmp/visembler-chg293-before')\ncandidate_dir = pathlib.Path('/private/tmp/visembler-chg293-candidate-final-r4')\nrelease_dir = pathlib.Path('/private/tmp/visembler-chg293-maintained-native-release-final')\nout = pathlib.Path('/private/tmp/visembler-chg293-carrier-build')\nif out.exists():\n    shutil.rmtree(out)\nout.mkdir(parents=True)\n\ndef copy_file(src: pathlib.Path, dst: pathlib.Path):\n    dst.parent.mkdir(parents=True, exist_ok=True)\n    shutil.copy2(src, dst)\n\ndef copy_tree(src: pathlib.Path, dst: pathlib.Path):\n    shutil.copytree(src, dst, dirs_exist_ok=True)\n\ndef load_json(path: pathlib.Path):\n    return json.loads(path.read_text(encoding='utf-8'))\n\ndef summary(receipt: dict) -> dict:\n    result = {}\n    for case_name, case in receipt['cases'].items():\n        result[case_name] = {}\n        for width, geom in case['geometry'].items():\n            all_clearances = [c for edge in geom['connectors'] for c in (edge.get('shaft_clearance_px'), edge.get('arrowhead_clearance_px')) if c is not None]\n            result[case_name][width] = {\n                'projection': geom['projection'],\n                'reading_columns': geom.get('readingColumns'),\n                'reading_direction': geom.get('readingDirection'),\n                'rendered_scale': geom.get('renderedScale'),\n                'minimum_connector_to_text_clearance_css_px': min(all_clearances) if all_clearances else None,\n                'shaft_minimum_css_px': min((e['shaft_clearance_px'] for e in geom['connectors'] if e.get('shaft_clearance_px') is not None), default=None),\n                'arrowhead_minimum_css_px': min((e['arrowhead_clearance_px'] for e in geom['connectors'] if e.get('arrowhead_clearance_px') is not None), default=None),\n                'connector_text_intersections': sum(e['text_intersections'] for e in geom['connectors']),\n                'connectors': geom['connectors'],\n                'node_text_bounds': [{'node_id': n['id'], 'order': n['order'], 'texts': n['labels']} for n in geom['nodes']],\n                'edge_label_count': len(geom.get('edgeLabels', [])),\n                'edge_label_to_node_text_clearance_css_px': geom.get('edgeLabelToNodeTextClearancePx'),\n            }\n    return result\n\nbefore = load_json(base_dir/'acceptance.json')\nafter = load_json(candidate_dir/'acceptance.json')\ncopy_file(base_dir/'acceptance.json', out/'reproduction/before/acceptance.json')\ncopy_tree(base_dir/'screenshots', out/'reproduction/before/screenshots')\ncopy_file(candidate_dir/'acceptance.json', out/'candidate/acceptance.json')\ncopy_tree(candidate_dir/'screenshots', out/'candidate/screenshots')\n(out/'geometry').mkdir()\n(out/'geometry/clearance-matrix.json').write_text(json.dumps({\n    'schema':'visembler-chg293-geometry-matrix.v1',\n    'minimum_required_css_px':4,\n    'baseline_exact_base':summary(before),\n    'candidate':summary(after),\n}, indent=2, ensure_ascii=False)+'\\\\n',encoding='utf-8')\n(out/'geometry/breakpoint-matrix.json').write_text(json.dumps({\n    'schema':'visembler-chg293-breakpoint-matrix.v1',\n    'r6_like_expected_projection':{'1440':'wide','520':'medium two-column when safe','390':'medium two-column when safe','361':'medium two-column when safe','360':'semantic single column','320':'semantic single column'},\n    'candidate_actual':{width:after['cases']['r6-like']['geometry'][width]['projection'] for width in ('1440','520','390','361','360','320')},\n    'candidate_clearances_css_px':{width:min(e[k] for e in after['cases']['r6-like']['geometry'][width]['connectors'] for k in ('shaft_clearance_px','arrowhead_clearance_px') if e.get(k) is not None) for width in ('1440','520','390','361','360','320')},\n    'holdouts':{name:{'projection':case['geometry']['390']['projection'],'columns':case['geometry']['390'].get('readingColumns')} for name,case in after['cases'].items() if name\"'!='\"'r6-like'},\n},indent=2,ensure_ascii=False)+'\\\\n',encoding='utf-8')\n\nsource_paths = [\n 'company_ui/products/visualizer/assets/authoring_diagram_studio.mjs',\n 'company_ui/products/visualizer/assets/integrated_editor.css',\n 'scripts/release_checks/run_chg293_process_flow_acceptance.py',\n 'tests/test_visualizer_chg293_process_flow_clearance.py',\n 'company_ui/certification/certification_manifest.json',\n]\n(out/'source').mkdir()\nfor rel in source_paths:\n    copy_file(repo/rel, out/'source'/rel)\npatch = subprocess.check_output(['git','diff',f'{base_sha}..{candidate_sha}','--',*source_paths],cwd=repo)\n(out/'source/candidate.patch').write_bytes(patch)\n\ntest_paths = [\n ('focused-regressions.xml',pathlib.Path('/private/tmp/visembler-chg293-focused-regressions-final-junit.xml')),\n ('candidate-full-pytest.xml',pathlib.Path('/private/tmp/visembler-chg293-full-pytest-final-junit.xml')),\n ('maintained-release-full-pytest.xml',release_dir/'full-tests.xml'),\n]\nfor rel, src in test_paths:\n    copy_file(src,out/'regressions'/rel)\ndef junit_stats(path):\n    root=ET.parse(path).getroot()\n    cases=list(root.iter('testcase'))\n    failures=sum(len(c.findall('failure')) for c in cases)\n    errors=sum(len(c.findall('error')) for c in cases)\n    skipped=sum(len(c.findall('skipped')) for c in cases)\n    return {'tests':len(cases),'failures':failures,'errors':errors,'skipped':skipped,'status':'PASS' if failures==0 and errors==0 else 'FAIL'}\n(out/'regressions/pytest-summary.json').write_text(json.dumps({\n    'focused':junit_stats(out/'regressions/focused-regressions.xml'),\n    'full_candidate':junit_stats(out/'regressions/candidate-full-pytest.xml'),\n    'maintained_release_full':junit_stats(out/'regressions/maintained-release-full-pytest.xml'),\n    'focused_modules':['tests/test_visualizer_chg293_process_flow_clearance.py','tests/test_visualizer_chg180_r1.py','tests/test_visualizer_chg206_pptx_visible_text.py','tests/test_visualizer_chg207_narrow_reading.py','tests/test_visualizer_chg209_visual_director.py','tests/test_visualizer_chg253_sparse_reading.py','tests/test_visualizer_chg254_pptx_chart_semantics.py','tests/test_visualizer_chg277_pptx_chart_label_layout.py','tests/test_visualizer_wave2_diagram_editing.py','tests/test_visualizer_diagram_studio.py'],\n},indent=2)+'\\\\n',encoding='utf-8')\n\nnative_dir=out/'quality/maintained-native-release'\nnative_dir.mkdir(parents=True)\nfor name in ('report.json','artifact-sha256.json','release-manifest.json','repository-contracts.json','company-boundary-model.json','company-boundary-browser.json','company-readiness-local.json','company-capacity.json','source-manifest.json','progress.json','delivery-tests.xml','full-tests.xml'):\n    src=release_dir/name\n    if src.exists(): copy_file(src,native_dir/name)\ncopy_file(pathlib.Path('/private/tmp/visembler-chg293-maintained-native-release-final.zip'),native_dir/'maintained-native-release-evidence.zip')\ncopy_file(pathlib.Path('/private/tmp/visembler-chg293-chg181-final-r3/chg181-native-acceptance.json'),out/'quality/chg181-final-native-acceptance.json')\nrelease_report=load_json(native_dir/'report.json')\n(out/'quality/maintained-gate-summary.json').write_text(json.dumps({\n    'release_status':release_report['release_status'],\n    'checks_status':release_report['checks_status'],\n    'required_gate_count':len(release_report['checks']),\n    'all_required_gates_pass':all(c['status']=='PASS' for c in release_report['checks']),\n    'checks':[{'name':c['name'],'status':c['status'],'elapsed_seconds':c.get('elapsed_seconds')} for c in release_report['checks']],\n    'managed_company_target':'PENDING under CHG-21; not exercised or claimed here',\n},indent=2)+'\\\\n',encoding='utf-8')\n\n(out/'semantic-save-reload.json').write_text(json.dumps({\n    'schema':'visembler-chg293-semantic-save-reload.v1',\n    'status':'PASS',\n    'canonical_graph_identity':{\n        'status':'PASS',\n        'evidence':'tests/test_visualizer_chg293_process_flow_clearance.py::test_clearance_policy_adapts_layout_and_preserves_graph_identity',\n        'assertions':['entry unmodified by reading render','diagramFromEntry → diagramToEntry → diagramFromEntry preserves node IDs/order/labels/secondary labels, edge IDs/order/source/target/ports/edge labels and direction','reading projection retains direct-node editing identity and connector titles'],\n    },\n    'native_repository_save_reload':{\n        'status':'PASS',\n        'evidence':'candidate/acceptance.json and source/scripts/release_checks/run_chg293_process_flow_acceptance.py',\n        'cases':list(after['cases']),\n        'assertion':'After each whole-report browser capture, native ReportRepository.get(report_id).model retains the fixture canonical diagram unchanged.',\n    },\n    'visual_identity':'Graph nodes, edges, source/target ports, labels, order, IDs, and canonical layout were not changed by the reading projection.',\n},indent=2,ensure_ascii=False)+'\\\\n',encoding='utf-8')\n\nidentity={\n 'repository':'kimhw8084/visembler','project':'visembler','change':'CHG-293','operation':'FIX','request':'CHG-293-r1',\n 'candidate_work_branch':'fix/visembler-chg293-process-flow-connector-clearance-r1',\n 'base_sha':base_sha,'base_tree':'6b535f84478f0e8394a06614961e8faa0df54a75',\n 'candidate_sha':candidate_sha,'candidate_tree':'a6ab746fef9aa124bb1a5cbbcfeaa13849656028',\n 'origin_main_before_publication':'28d47acbaab8b493044120f6be4c32a225de4143',\n 'local_main_before_publication':'21b4b73aec07a0cc33ccc1e0012d5ead2bb5e284',\n 'base_is_ancestor':True,'main_unchanged':True,\n 'worktree_clean_at_acceptance':subprocess.check_output(['git','status','--porcelain'],cwd=repo,text=True).strip()== '',\n 'candidate_browser_acceptance_status':after['status'],'exact_base_reproduction_status':before['status'],\n 'candidate_tree_assertion':subprocess.check_output(['git','rev-parse','HEAD\"'^{tree}'\"'],cwd=repo,text=True).strip(),\n 'managed_company_certification':'PENDING under CHG-21',\n}\n(out/'identity.json').write_text(json.dumps(identity,indent=2)+'\\\\n',encoding='utf-8')\n\n(out/'reader').mkdir()\nindex='''# CHG-293 R1 independent review carrier\\\\n\\\\nThis carrier records the shared Process Flow report-reading FIX for the CHG-173 R6 connector/readability defect. Candidate \"'`a095fa229c657a75a136520089194998377c66eb` is based on exact `main` commit `28d47acbaab8b493044120f6be4c32a225de4143`.'\"\\\\n\\\\n## Review map\\\\n\\\\n- \"'`identity.json`: request, base/candidate/tree identity and unchanged-main/clean-worktree assertions.'\"\\\\n- \"'`reproduction/before/`: exact-base whole-report browser reproduction and full screenshots.'\"\\\\n- \"'`candidate/`: candidate browser geometry receipt and full-report screenshots.'\"\\\\n- \"'`geometry/`: per-connector shaft/arrowhead clearance and text bounds, intersections, breakpoint decisions, and holdout matrix.'\"\\\\n- \"'`semantic-save-reload.json`: graph identity, direct editing, canonical Diagram Studio round trip, and native repository reload receipt.'\"\\\\n- \"'`source/`: candidate authority snapshots and exact base-to-candidate patch.'\"\\\\n- \"'`regressions/`: focused regression JUnit, full pytest JUnit, and test summary.'\"\\\\n- \"'`quality/`: maintained native release report, gate summary, checks, archive, and CHG-181 acceptance receipt.'\"\\\\n- \"'`MANIFEST.json` and `MANIFEST.sha256`: immutable carrier file inventory and digest sidecar.'\"\\\\n\\\\n## Observed result\\\\n\\\\nThe exact-base reproduction captures six connector/text intersections at 390 CSS px and additional clearance failures at 520 and 361 CSS px. Candidate R6-like geometry has zero text intersections and at least 4 CSS px clearance at 1440, 520, 390, 361, 360, and 320 CSS px. Candidate four-stage holdout also passes at 390; five/six-stage and edge/secondary-label cases deterministically use a safe stacked projection.\\\\n\\\\nThe maintained repository-native release is \"'`PASS_LOCAL_INTERNAL_PILOT`; all required local gates pass. CHG-21 managed target certification remains separate and PENDING. This FIX does not claim CHG-173 final outcome, PPTX A–F re-import completion, a main integration, or Production Gold.'\"\\\\n'''\n(out/'reader/INDEX.md').write_text(index,encoding='utf-8')\n\n# Immutable inventory covers every carrier payload except the manifest and its digest sidecar.\nitems=[]\nfor path in sorted(p for p in out.rglob('*') if p.is_file() and p.name not in {'MANIFEST.json','MANIFEST.sha256'}):\n    data=path.read_bytes()\n    items.append({'path':path.relative_to(out).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest={'schema':'project-os-artifact-manifest.v1','request':'CHG-293-r1','candidate_sha':candidate_sha,'count':len(items),'total_bytes':sum(x['bytes'] for x in items),'items':items}\nmanifest_path=out/'MANIFEST.json'\nmanifest_path.write_text(json.dumps(manifest,indent=2)+'\\\\n',encoding='utf-8')\nsha=hashlib.sha256(manifest_path.read_bytes()).hexdigest()\n(out/'MANIFEST.sha256').write_text(f'{sha}  MANIFEST.json\\\\n',encoding='utf-8')\nprint(json.dumps({'carrier':str(out),'files':len(items)+2,'payload_bytes':manifest['total_bytes'],'manifest_sha256':sha,'pytest':json.loads((out/'regressions/pytest-summary.json').read_text()),'gates':len(release_report['checks'])},indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1233,
+        "output_sha256": "c7a5ab1663905f477e5c04eb6266d0b52e3deb2f1d4fd270d695fb3e5733b290",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json,pathlib; b=json.loads(pathlib.Path(\\\"/private/tmp/visembler-chg293-carrier-build/reproduction/before/acceptance.json\\\").read_text()); c=json.loads(pathlib.Path(\\\"/private/tmp/visembler-chg293-carrier-build/candidate/acceptance.json\\\").read_text()); print(\\\"baseline\\\",b.get(\\\"reproduced_collision_at_390\\\"),{w:(g[\\\"projection\\\"],sum(e[\\\"text_intersections\\\"] for e in g[\\\"connectors\\\"]),min(x for e in g[\\\"connectors\\\"] for x in (e.get(\\\"shaft_clearance_px\\\"),e.get(\\\"arrowhead_clearance_px\\\")) if x is not None)) for w,g in b[\\\"cases\\\"][\\\"r6-like\\\"][\\\"geometry\\\"].items()}); print(\\\"candidate\\\",{w:(g[\\\"projection\\\"],sum(e[\\\"text_intersections\\\"] for e in g[\\\"connectors\\\"]),min(x for e in g[\\\"connectors\\\"] for x in (e.get(\\\"shaft_clearance_px\\\"),e.get(\\\"arrowhead_clearance_px\\\")) if x is not None)) for w,g in c[\\\"cases\\\"][\\\"r6-like\\\"][\\\"geometry\\\"].items()}); print(\\\"holdouts\\\",{n:(g[\\\"geometry\\\"][\\\"390\\\"][\\\"projection\\\"],min(x for e in g[\\\"geometry\\\"][\\\"390\\\"][\\\"connectors\\\"] for x in (e.get(\\\"shaft_clearance_px\\\"),e.get(\\\"arrowhead_clearance_px\\\")) if x is not None),sum(e[\\\"text_intersections\\\"] for e in g[\\\"geometry\\\"][\\\"390\\\"][\\\"connectors\\\"])) for n,g in c[\\\"cases\\\"].items() if n\"'!=\"r6-like\"})'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib,json,pathlib\nroot=pathlib.Path('/private/tmp/visembler-chg293-carrier-build')\np=root/'reader/INDEX.md'\ns=p.read_text()\ns=s.replace('The exact-base reproduction captures six connector/text intersections at 390 CSS px and additional clearance failures at 520 and 361 CSS px. Candidate R6-like geometry has zero text intersections and at least 4 CSS px clearance at 1440, 520, 390, 361, 360, and 320 CSS px.', 'The exact-base reproduction measures 2.32 CSS px clearance at 1440, six connector/text intersections at each of 520, 390, and 361 CSS px, and safe single-column clearance at 360 and 320 CSS px. Candidate R6-like geometry has zero text intersections and at least 4 CSS px clearance at 1440, 520, 390, 361, 360, and 320 CSS px.')\np.write_text(s)\n(root/'root-outcome.json').write_text(json.dumps({\n 'source':'CHG-173 R6 / CHG-173-r6',\n 'decisive_evidence':[\n  'screenshots/narrow-390/B.png',\n  'screenshots/desktop-1440/B.png',\n  'findings/findings-register.json#VIS-R6-001',\n  'benchmark/actions/B-final-adjustment.json',\n  'benchmark/responsive/B.json'\n ],\n 'scope_note':'R6 reuse/remix completed; PPTX re-import/package proof stopped after this first material Product finding and resumes in CHG-173 R7.'\n},indent=2)+'\\\\n')\nfor name in ('MANIFEST.json','MANIFEST.sha256'):\n q=root/name\n if q.exists(): q.unlink()\nitems=[]\nfor f in sorted(x for x in root.rglob('*') if x.is_file()):\n data=f.read_bytes();items.append({'path':f.relative_to(root).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest={'schema':'project-os-artifact-manifest.v1','request':'CHG-293-r1','candidate_sha':'a095fa229c657a75a136520089194998377c66eb','count':len(items),'total_bytes':sum(x['bytes'] for x in items),'items':items}\nmp=root/'MANIFEST.json';mp.write_text(json.dumps(manifest,indent=2)+'\\\\n')\nsha=hashlib.sha256(mp.read_bytes()).hexdigest();(root/'MANIFEST.sha256').write_text(f'{sha}  MANIFEST.json\\\\n')\nprint('manifest',sha,'files',len(items)+2,'bytes',manifest['total_bytes'])\nPY\nrtk proxy python -c 'import hashlib,json,pathlib; r=pathlib.Path(\\\"/private/tmp/visembler-chg293-carrier-build\\\");m=json.loads((r/\\\"MANIFEST.json\\\").read_text()); bad=[];[(bad.append(i[\\\"path\\\"]) if (not (r/i[\\\"path\\\"]).is_file() or (r/i[\\\"path\\\"]).stat().st_size\"'!=i[\"bytes\"] or hashlib.sha256((r/i[\"path\"]).read_bytes()).hexdigest()!=i[\"sha256\"]) else None) for i in m[\"items\"]]; print(\"manifest_entries\",m[\"count\"],\"bad\",bad,\"candidate\",json.loads((r/\"candidate/acceptance.json\").read_text())[\"status\"],\"before_collision\",json.loads((r/\"reproduction/before/acceptance.json\").read_text())[\"reproduced_collision_at_390\"])'\"'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/repos/visembler worktree add -b project-os-artifacts/visembler/CHG-293-r1 /private/tmp/visembler-chg293-carrier-wt a095fa229c657a75a136520089194998377c66eb'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import pathlib; root=pathlib.Path(\\\"/private/tmp/visembler-chg293-carrier-wt\\\"); payload=pathlib.Path(\\\"/private/tmp/visembler-chg293-carrier-build\\\"); names=[p.name for p in payload.iterdir()]; print(\\\"conflicts\\\",[n for n in names if (root/n).exists()]); print(\\\"payload_roots\\\",names)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport pathlib,shutil\nsrc=pathlib.Path('/private/tmp/visembler-chg293-carrier-build')\ndst=pathlib.Path('/private/tmp/visembler-chg293-carrier-wt')\nfor p in src.iterdir():\n target=dst/p.name\n if p.is_dir(): shutil.copytree(p,target)\n else: shutil.copy2(p,target)\nprint('carrier payload copied')\nPY\nrtk proxy git add reader candidate MANIFEST.json MANIFEST.sha256 root-outcome.json semantic-save-reload.json quality source identity.json reproduction regressions geometry\nrtk proxy git commit -m 'Record CHG-293 R1 review evidence'\nrtk proxy git rev-parse HEAD HEAD\"'^{tree}\nrtk proxy git show -s --format=%P HEAD\nrtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport pathlib,shutil\nsrc=pathlib.Path('/private/tmp/visembler-chg293-carrier-build')\ndst=pathlib.Path('/private/tmp/visembler-chg293-carrier-wt')\nfor p in src.iterdir():\n target=dst/p.name\n if p.is_dir(): shutil.copytree(p,target)\n else: shutil.copy2(p,target)\nprint('carrier payload copied')\nPY\nrtk proxy git add reader candidate MANIFEST.json MANIFEST.sha256 root-outcome.json semantic-save-reload.json quality source identity.json reproduction regressions geometry\nrtk proxy git status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git diff --cached --check && rtk proxy git commit -m 'Record CHG-293 R1 review evidence' && rtk proxy git rev-parse HEAD HEAD\"'^{tree} && rtk proxy git show -s --format=%P HEAD && rtk proxy git status --short --branch'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '10,24p' source/candidate.patch && rtk proxy sed -n '65,75p' source/candidate.patch && rtk proxy sed -n '84,94p' source/candidate.patch\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /opt/anaconda3/bin/python -c 'from pathlib import Path; p=Path(\\\"source/candidate.patch\\\"); [(print(i+1,repr(x))) for i,x in enumerate(p.read_text().splitlines()) if x.endswith(\\\" \\\")]'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --check 28d47acbaab8b493044120f6be4c32a225de4143...HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy rg -n 'connectorTextPadding|adaptive.*Reading|function renderCompactDiagramReadingSvg|protectedPadding|markerForward|readingColumns|diagram-narrow-reading|diagram-medium-reading' company_ui/products/visualizer/assets/authoring_diagram_studio.mjs company_ui/products/visualizer/assets/integrated_editor.css\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport hashlib,json,pathlib\nroot=pathlib.Path('/private/tmp/visembler-chg293-carrier-build')\npatch=root/'source/candidate.patch'\nif patch.exists(): patch.unlink()\n(root/'source/authority.md').write_text('''# Source authority\\\\n\\\\nCandidate \"'`a095fa229c657a75a136520089194998377c66eb` adds the shared reading-projection policy in `company_ui/products/visualizer/assets/authoring_diagram_studio.mjs`. The candidate source snapshot is included beside this note.'\"\\\\n\\\\n- \"'`connectorTextPadding` at line 309 derives protected horizontal clearance from stroke, marker width, and required CSS-pixel gap.'\"\\\\n- \"'`renderCompactDiagramReadingSvg` at line 314 sizes the compact projection using the available width, wrapped label heights, node count, edge topology, edge labels, and marker clearance. It deterministically uses the existing stacked projection when two columns cannot satisfy the policy.'\"\\\\n- The compact projection exposes its protected padding, marker envelope, minimum scale, and clearance policy as data attributes for browser measurement.\\\\n- \"'`integrated_editor.css` retains the existing 14px medium-label font contract and responsive medium/narrow route selection; it has no product diff in this candidate.'\"\\\\n- The shared projection remains consumed by the existing report renderer. No report-specific renderer, graph mutation, node/edge identity mutation, or canonical Diagram Studio editing/rendering changes were introduced.\\\\n\\\\nThe exact candidate tree is attached as this carrier commit's sole parent. The source files and tests are included for direct review; repository range is base \"'`28d47acbaab8b493044120f6be4c32a225de4143` to candidate `a095fa229c657a75a136520089194998377c66eb`.'\"\\\\n''',encoding='utf-8')\nfor name in ('MANIFEST.json','MANIFEST.sha256'):\n p=root/name\n if p.exists():p.unlink()\nitems=[]\nfor f in sorted(x for x in root.rglob('*') if x.is_file()):\n data=f.read_bytes();items.append({'path':f.relative_to(root).as_posix(),'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest()})\nmanifest={'schema':'project-os-artifact-manifest.v1','request':'CHG-293-r1','candidate_sha':'a095fa229c657a75a136520089194998377c66eb','count':len(items),'total_bytes':sum(x['bytes'] for x in items),'items':items}\nmp=root/'MANIFEST.json';mp.write_text(json.dumps(manifest,indent=2)+'\\\\n',encoding='utf-8')\nsha=hashlib.sha256(mp.read_bytes()).hexdigest();(root/'MANIFEST.sha256').write_text(f'{sha}  MANIFEST.json\\\\n',encoding='utf-8')\nprint('manifest',sha,'entries',len(items))\nPY\nrtk proxy git rm source/candidate.patch\nrtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport pathlib,shutil\nsrc=pathlib.Path('/private/tmp/visembler-chg293-carrier-build');dst=pathlib.Path('/private/tmp/visembler-chg293-carrier-wt')\nfor name in ('MANIFEST.json','MANIFEST.sha256'):\n shutil.copy2(src/name,dst/name)\nshutil.copy2(src/'source/authority.md',dst/'source/authority.md')\nPY\nrtk proxy git add MANIFEST.json MANIFEST.sha256 source/authority.md\nrtk proxy git diff --cached --check\nrtk proxy git commit -m 'Record CHG-293 R1 review evidence'\nrtk proxy git rev-parse HEAD HEAD\"'^{tree}\nrtk proxy git show -s --format=%P HEAD\nrtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git reset --hard a095fa229c657a75a136520089194998377c66eb\nrtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport pathlib,shutil\nsrc=pathlib.Path('/private/tmp/visembler-chg293-carrier-build');dst=pathlib.Path('/private/tmp/visembler-chg293-carrier-wt')\nfor p in src.iterdir():\n t=dst/p.name\n if p.is_dir():shutil.copytree(p,t)\n else:shutil.copy2(p,t)\nprint('payload recopied')\nPY\nrtk proxy git add MANIFEST.json MANIFEST.sha256 candidate geometry identity.json quality reader regressions reproduction root-outcome.json semantic-save-reload.json source\nrtk proxy git diff --cached --check\nrtk proxy git commit -m 'Record CHG-293 R1 review evidence'\nrtk proxy git rev-parse HEAD HEAD\"'^{tree}\nrtk proxy git show -s --format=%P HEAD\nrtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport hashlib,json,pathlib\nroot=pathlib.Path('.')\nm=json.loads((root/'MANIFEST.json').read_text())\nbad=[]\nfor x in m['items']:\n p=root/x['path']\n if not p.is_file() or p.stat().st_size\"'!=x['\"'bytes'] or hashlib.sha256(p.read_bytes()).hexdigest()\"'!=x['\"'sha256']:\n  bad.append(x['path'])\nprint('manifest_entries',m['count'],'bad',bad,'sidecar_ok',hashlib.sha256((root/'MANIFEST.json').read_bytes()).hexdigest()==(root/'MANIFEST.sha256').read_text().split()[0])\nprint('carrier_acceptance',json.loads((root/'candidate/acceptance.json').read_text())['status'])\nprint('baseline_collision',json.loads((root/'reproduction/before/acceptance.json').read_text())['reproduced_collision_at_390'])\nprint('screenshots',len(list((root/'candidate/screenshots').glob('*.png'))),len(list((root/'reproduction/before/screenshots').glob('*.png'))))\nPY\nrtk proxy git status --short --branch\nrtk proxy git show -s --format='carrier=%H%nparent=%P' HEAD\nrtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11 status --porcelain=v2 --branch\nrtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11 rev-parse HEAD HEAD\"'^{tree}\nrtk proxy git ls-remote --heads origin refs/heads/main refs/heads/fix/visembler-chg293-process-flow-connector-clearance-r1 refs/heads/project-os-artifacts/visembler/CHG-293-r1 refs/heads/codex-fabric/evidence/visembler/CHG-293-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git push --force-with-lease=refs/heads/project-os-artifacts/visembler/CHG-293-r1: origin HEAD:refs/heads/project-os-artifacts/visembler/CHG-293-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git ls-remote --heads origin refs/heads/main refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk proxy git status --short --branch && rtk proxy git rev-parse HEAD HEAD''^{tree} && rtk proxy git show -s --format=%P HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git fetch --no-tags origin refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk proxy /opt/anaconda3/bin/python - <<'PY'\nimport hashlib,json,subprocess\ncommit=subprocess.check_output(['git','rev-parse','FETCH_HEAD'],text=True).strip()\nparents=subprocess.check_output(['git','show','-s','--format=%P','FETCH_HEAD'],text=True).strip().split()\nmanifest=json.loads(subprocess.check_output(['git','show','FETCH_HEAD:MANIFEST.json']))\nbad=[]\nfor item in manifest['items']:\n data=subprocess.check_output(['git','show',f'FETCH_HEAD:{item[\\\"path\\\"]}'])\n if len(data)\"'!=item['\"'bytes'] or hashlib.sha256(data).hexdigest()\"'!=item['\"'sha256']:\n  bad.append(item['path'])\nsidecar=subprocess.check_output(['git','show','FETCH_HEAD:MANIFEST.sha256'],text=True).split()[0]\nmanifest_data=subprocess.check_output(['git','show','FETCH_HEAD:MANIFEST.json'])\nprint(json.dumps({'remote_carrier':commit,'sole_parent':parents,'manifest_sha256_ok':hashlib.sha256(manifest_data).hexdigest()==sidecar,'manifest_files':manifest['count'],'manifest_mismatches':bad,'index_exists':subprocess.run(['git','cat-file','-e','FETCH_HEAD:reader/INDEX.md']).returncode==0},indent=2))\nPY\nrtk proxy git ls-remote --heads origin refs/heads/main refs/heads/project-os-artifacts/visembler/CHG-293-r1\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git -C /Users/haewonkim/.codex-fabric/repos/visembler worktree remove --force /private/tmp/visembler-chg293-carrier-wt\nrtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11 status --short --branch\nrtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11 rev-parse HEAD HEAD''^{tree}\nrtk proxy git -C /Users/haewonkim/.codex-fabric/worktrees/CF-6bb32f2819b696ea58d95c11 merge-base --is-ancestor 28d47acbaab8b493044120f6be4c32a225de4143 HEAD\nrtk proxy git ls-remote --heads origin refs/heads/main refs/heads/project-os-artifacts/visembler/CHG-293-r1 refs/heads/codex-fabric/evidence/visembler/CHG-293-r1 refs/heads/fix/visembler-chg293-process-flow-connector-clearance-r1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-6bb32f2819b696ea58d95c11 && rtk proxy ls -l /Users/haewonkim/.codex-fabric/results/CF-6bb32f2819b696ea58d95c11'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 536,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 98.54,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 52606976,
+      "fresh_input_tokens": 778265,
+      "input_tokens": 53385241,
+      "non_reasoning_output_tokens": 80886,
+      "output_tokens": 210181,
+      "reasoning_output_tokens": 129295,
+      "total_processed_tokens": 53595422
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "a095fa229c657a75a136520089194998377c66eb",
+      "subject": "Fix Process Flow reading connector clearance"
+    }
+  ],
+  "diff": {
+    "additions": 500,
+    "changed_files": 4,
+    "commit_count": 1,
+    "deletions": 8
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "9e9e71b9b1e97f97aff014cee54f3cbe7f1ff797b888dfc6a2c98ac5652157cd"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-28T02:24:06Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "branch": "fix/visembler-chg293-process-flow-connector-clearance-r1",
+    "detached_verify": false,
+    "head_sha": "a095fa229c657a75a136520089194998377c66eb",
+    "remote_exact_head": true,
+    "remote_head_sha": "a095fa229c657a75a136520089194998377c66eb",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "work_branch": "fix/visembler-chg293-process-flow-connector-clearance-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-6bb32f2819b696ea58d95c11",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-293-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-293-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-293-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-28T00:43:33Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 6033,
+    "queue_seconds": 1,
+    "total_seconds": 6034
+  },
+  "transport": {
+    "bytes": 8095,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 7780,
+    "prompt_sha256": "0f6ad2445ac4baad944b541963dc9b9d12ae8e97efbb0657bc7536af8a644dae",
+    "sha256": "6bb32f2819b696ea58d95c111f921f048b5b058a505eacf9f48d95d94e10d1ce"
+  }
+}
