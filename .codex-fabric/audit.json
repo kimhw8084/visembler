@@ -1,0 +1,412 @@
+{
+  "accepted_at": "2026-09-29T02:29:31Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 49,
+      "deletions": 7,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 407,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg293_process_flow_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 109,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg293_process_flow_clearance.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'cat /Users/haewonkim/.codex/RTK.md && cat /Users/haewonkim/.codex/law.md && cat company_ui/ai/construction_manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'git status --short --branch && git rev-parse HEAD && git rev-parse HEAD''^{tree} && git remote -v && git branch --show-current && rg --files -g '\"'AGENTS.md' -g 'README*' -g 'run_stage_a_acceptance.py' -g 'verify_release.py' -g '*fabric*' | head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,280p' scripts/release_checks/run_stage_a_acceptance.py && rtk rg -n 'class NativeHost|NativeHost|def template_model|BrowserEvents|_assert_hub|report hub' scripts\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --short --branch && rtk git show -s --format='%H%n%T%n%P%n%D' fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git show-ref --heads --tags | rtk head -100 && rtk git ls-remote --heads origin 'verify/visembler-chg293-stagea-r4' 'codex-fabric/evidence/visembler/CHG-293-r4' 'project-os-artifacts/visembler/CHG-293-r4' main\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '400,535p' scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '1,190p' scripts/release_checks/editor_host.py && rtk sed -n '1,200p' scripts/release_checks/native_common.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show refs/heads/verify/visembler-chg293-release-evidence-r3:.codex-fabric/audit.json 2>/dev/null; rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 | rtk head -100; rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:.codex-fabric/audit.json 2>/dev/null'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git reset --hard fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree}'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -g '.codex-fabric/**' -g '*postprocess*' -g '*artifact*' -g '*audit*' -g '*project-os*' | head -200 && rtk command -v codex-fabric; rtk command -v project-os; rtk command -v fabric; rtk command -v project-os-postprocess; rtk env | rtk rg -i 'fabric|project.?os|codex.*job' | sed -E 's/(TOKEN|KEY|SECRET|PASSWORD)=.*/\\\\1=[REDACTED]/I'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-tree -r --name-only refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 | rtk head -160 && rtk git show refs/heads/codex-fabric/evidence/visembler/CHG-293-r3:.codex-fabric/audit.json 2>/dev/null && rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 | rtk rg -i 'audit|receipt|index|manifest|hash|report|source|quality|acceptance'\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy type -a codex-fabric project-os project_os fabric postprocess codex 2>/dev/null; rtk rg --files /Users/haewonkim/.codex-fabric /Users/haewonkim/.codex /Users/haewonkim/bin 2>/dev/null | rtk rg -i '(fabric|project.?os|postprocess)' | rtk head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '210,275p' scripts/release_checks/run_stage_a_acceptance.py && rtk sed -n '1,120p' company_ui/products/visualizer/templates.py && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git merge-base --is-ancestor 28d47acbaab8b493044120f6be4c32a225de4143 HEAD; rtk echo base-ancestor-exit:\"'$?'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ls -la /Users/haewonkim/.codex-fabric && rtk proxy find /Users/haewonkim/.codex-fabric -maxdepth 3 -type f \\\\( -iname '*post*' -o -iname '*audit*' -o -iname '*request*' -o -iname '*manifest*' \\\\) -print | rtk head -100 && rtk proxy find /Users/haewonkim/.codex-fabric -maxdepth 3 -type d -iname '*CHG-293*' -print\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ls -la /Users/haewonkim/.codex-fabric/jobs/CF-37c537f0f0e6acab4f56e5ae 2>/dev/null; rtk proxy ls -la /Users/haewonkim/.codex-fabric/bin /Users/haewonkim/.codex-fabric/current /Users/haewonkim/.codex-fabric/current/bin 2>/dev/null; rtk proxy find /Users/haewonkim/.codex-fabric -maxdepth 3 -type f \\\\( -iname '*293*' -o -iname '*postprocess*' -o -iname '*processor*' \\\\) -print | rtk head -100; rtk proxy find /Users/haewonkim/.codex-fabric/jobs -maxdepth 2 -type f -iname '*37c537f0f0e6acab4f56e5ae*' -print\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,200p' /Users/haewonkim/.codex-fabric/bin/fabricctl && rtk proxy find /Users/haewonkim/.codex-fabric/current -maxdepth 3 -type f -print | rtk head -100 && rtk proxy find /Users/haewonkim/.codex-fabric -maxdepth 2 -type d -name 'CF-*' -print | rtk tail -50 && rtk rg -n 'project-os-artifacts|evidence-manifest|remote_exact_head|operation.*VERIFY|postprocess' /Users/haewonkim/.codex-fabric/current /Users/haewonkim/.codex-fabric/bin /Users/haewonkim/.codex-fabric/libexec --glob '\"'!*.map'\"' | rtk head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /Users/haewonkim/.codex-fabric/bin/fabricctl --help && rtk proxy sed -n '1,220p' /Users/haewonkim/.codex-fabric/current/README.md\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport json, shutil, tempfile, traceback, time\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nimport sys\nROOT = Path.cwd().resolve()\nOUT = Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4\\\")\nif OUT.exists():\n    raise SystemExit(f\\\"run output already exists; refusing to overwrite: {OUT}\\\")\nOUT.mkdir(parents=True)\nsys.path.insert(0, str(ROOT))\nsys.path.insert(0, str(ROOT / \\\"scripts/release_checks\\\"))\nfrom editor_host import NativeHost\nfrom native_common import BrowserEvents, browser_kwargs\nfrom company_ui.products.visualizer.templates import template_model\nfrom playwright.sync_api import sync_playwright\n\ndef utc():\n    return datetime.now(timezone.utc).isoformat()\n\nobserver = r\\\"\\\"\\\"\n(()=> {\n  const visible = el => {\n    const s=getComputedStyle(el), r=el.getBoundingClientRect();\n    return s.display\"'!=='\"'none' && s.visibility\"'!=='\"'hidden' && r.width>0 && r.height>0;\n  };\n  const box = el => { const r=el.getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height,top:r.top,right:r.right,bottom:r.bottom,left:r.left}; };\n  const brief = el => ({\n    tag:el.tagName.toLowerCase(), id:el.id||null, classes:typeof el.className==='string'?el.className:null,\n    role:el.getAttribute('role'), label:el.getAttribute('aria-label'), expanded:el.getAttribute('aria-expanded'),\n    controls:el.getAttribute('aria-controls'), hidden:el.getAttribute('aria-hidden'),\n    text:(el.innerText||el.textContent||'').trim().slice(0,500), visible:visible(el), bbox:box(el)\n  });\n  const snapshot = () => {\n    const cards=[...document.querySelectorAll('.cui-report-card')];\n    const more=[...document.querySelectorAll('[data-report-action=\\\"more\\\"]')].filter(visible);\n    const menus=[...document.querySelectorAll('.q-menu')], dialogs=[...document.querySelectorAll('.q-dialog')];\n    const a=document.activeElement;\n    return {\n      at_utc:new Date().toISOString(), perf_ms:performance.now(), url:location.href,\n      viewport:{width:innerWidth,height:innerHeight,device_pixel_ratio:devicePixelRatio},\n      report_cards:{count:cards.length,items:cards.map(c=>({report_id:c.getAttribute('data-report-id'),title:(c.querySelector('.cui-report-card-title')?.innerText||'').trim(),state:c.getAttribute('data-report-state')}))},\n      target_report_id:document.querySelector('.cui-report-card[data-report-id]')?.getAttribute('data-report-id')||null,\n      more_buttons:{visible_count:more.length,items:more.map(brief)},\n      q_menu:{total_count:menus.length,visible_count:menus.filter(visible).length,items:menus.map(brief)},\n      dialogs:{total_count:dialogs.length,visible_count:dialogs.filter(visible).length,items:dialogs.map(brief)},\n      active_element:a?brief(a):null,\n      aria:{visible_more:more.map(el=>({label:el.getAttribute('aria-label'),expanded:el.getAttribute('aria-expanded'),controls:el.getAttribute('aria-controls')})),active:{expanded:a?.getAttribute('aria-expanded')??null,controls:a?.getAttribute('aria-controls')??null}}\n    };\n  };\n  window.__r4StateObserver={clicks:[],snapshot};\n  document.addEventListener('click', event=>{\n    const more=event.target?.closest?.('[data-report-action=\\\"more\\\"]');\n    if(\"'!more) return;\n    const started=performance.now(), entry={\n      index:window.__r4StateObserver.clicks.length+1, started_perf_ms:started,\n      started_at_utc:new Date().toISOString(), target_report_id:more.closest('\"'.cui-report-card')?.getAttribute('data-report-id')||null,\n      control:brief(more), before:snapshot(), samples:{}\n    };\n    window.__r4StateObserver.clicks.push(entry);\n    const add=(name,delay)=>{\n      setTimeout(()=>{entry.samples[name]=snapshot();},delay);\n    };\n    add('immediately_after_click',0);\n    add('1s',1000); add('5s',5000); add('15s',15000);\n  },true);\n})();\n\\\"\\\"\\\"\n\nsource_identity = {\n  \\\"repository\\\":\\\"kimhw8084/visembler\\\",\n  \\\"request\\\":\\\"CHG-293-r4\\\",\n  \\\"operation\\\":\\\"VERIFY\\\",\n  \\\"candidate_sha\\\":\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n  \\\"candidate_tree\\\":\\\"685f1041f6184bd4a9fcbad80e7ff319633240a3\\\",\n  \\\"branch\\\":\\\"verify/visembler-chg293-stagea-r4\\\"\n}\nresults=[]\nfor i in range(1,4):\n    attempt=OUT / f\\\"attempt-{i}\\\"\n    attempt.mkdir()\n    receipt={\\\"attempt\\\":i,\\\"source\\\":source_identity,\\\"started_at\\\":utc(),\\\"outcome\\\":\\\"RUNNING\\\"}\n    (attempt/\\\"attempt-start.json\\\").write_text(json.dumps(receipt,indent=2)+\\\"\\\\n\\\")\n    print(f\\\"ATTEMPT_START {i} {receipt['started_at']}\\\",flush=True)\n    failure=None; passed=False; report_id=None; host=None; browser=None; context=None; page=None; events=None\n    tempdir=None\n    try:\n        with tempfile.TemporaryDirectory(prefix=f\\\"chg293-r4-attempt-{i}-\\\",dir=str(attempt)) as td:\n            tempdir=Path(td)\n            with NativeHost(ROOT,tempdir/\\\"native-data\\\") as host:\n                report_id=host.create(model=template_model(\\\"operations-review\\\"),name=f\\\"chg293-r4-operations-review-{i}\\\")\n                with sync_playwright() as pw:\n                    browser=pw.chromium.launch(**browser_kwargs())\n                    context=browser.new_context()\n                    context.tracing.start(screenshots=True,snapshots=True,sources=True)\n                    page=context.new_page()\n                    events=BrowserEvents(); events.attach(page)\n                    network_http_errors=[]\n                    page.on(\\\"response\\\",lambda response: network_http_errors.append({\\\"url\\\":response.url,\\\"status\\\":response.status}) if response.status>=400 else None)\n                    page.add_init_script(observer)\n                    try:\n                        from run_stage_a_acceptance import _assert_hub\n                        _assert_hub(page,host,report_id)\n                        passed=True\n                    except Exception as exc:\n                        failure={\\\"type\\\":type(exc).__name__,\\\"message\\\":str(exc),\\\"traceback\\\":traceback.format_exc(),\\\"captured_at\\\":utc()}\n                    # Preserve the exact return/failure state before the observation-only tail.\n                    try:\n                        page.screenshot(path=str(attempt/\\\"full-page-at-outcome.png\\\"),full_page=True,animations=\\\"disabled\\\",timeout=10000)\n                    except Exception as exc:\n                        receipt[\\\"outcome_screenshot_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        (attempt/\\\"page-at-outcome.html\\\").write_text(page.content(timeout=10000),encoding=\\\"utf-8\\\")\n                    except Exception as exc:\n                        receipt[\\\"outcome_html_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    # _assert_hub is allowed to finish unchanged. If it times out, this waits only for scheduled observation.\n                    try:\n                        last=page.evaluate(\\\"()=>window.__r4StateObserver?.clicks?.slice(-1)[0]?.started_perf_ms ?? null\\\")\n                        if last is not None:\n                            remaining=max(0,15020-(page.evaluate(\\\"()=>performance.now()\\\")-last))\n                            if remaining: page.wait_for_timeout(remaining)\n                    except Exception as exc:\n                        receipt[\\\"observation_tail_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        receipt[\\\"final_dom_snapshot\\\"]=page.evaluate(\\\"()=>window.__r4StateObserver?.snapshot?.() ?? null\\\")\n                        receipt[\\\"more_click_observations\\\"]=page.evaluate(\\\"()=>window.__r4StateObserver?.clicks ?? []\\\")\n                    except Exception as exc:\n                        receipt[\\\"state_collection_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        page.screenshot(path=str(attempt/\\\"full-page-after-observation.png\\\"),full_page=True,animations=\\\"disabled\\\",timeout=10000)\n                    except Exception as exc:\n                        receipt[\\\"post_observation_screenshot_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        (attempt/\\\"page-after-observation.html\\\").write_text(page.content(timeout=10000),encoding=\\\"utf-8\\\")\n                    except Exception as exc:\n                        receipt[\\\"post_observation_html_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    receipt[\\\"browser_errors\\\"]={\n                        \\\"console_page_network_unexpected\\\":events.unexpected if events else [],\n                        \\\"http_error_responses\\\":network_http_errors\n                    }\n                    receipt[\\\"browser_errors_empty\\\"]=not receipt[\\\"browser_errors\\\"][\\\"console_page_network_unexpected\\\"] and not network_http_errors\n                    receipt[\\\"report_id\\\"]=report_id\n                    try:\n                        record=host.repository.get(report_id)\n                        receipt[\\\"target_report\\\"]={\\\"report_id\\\":report_id,\\\"title\\\":record.title,\\\"state\\\":record.state,\\\"revision\\\":record.revision,\\\"template\\\":\\\"operations-review\\\"}\n                    except Exception as exc:\n                        receipt[\\\"target_report_read_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    receipt[\\\"native_server_log\\\"]=str(attempt/\\\"native-server.log\\\")\n                    try:\n                        context.tracing.stop(path=str(attempt/\\\"trace.zip\\\"))\n                        receipt[\\\"trace\\\"]=\\\"trace.zip\\\"\n                    except Exception as exc:\n                        receipt[\\\"trace_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    context.close(); browser.close()\n    except Exception as exc:\n        failure=failure or {\\\"type\\\":type(exc).__name__,\\\"message\\\":str(exc),\\\"traceback\\\":traceback.format_exc(),\\\"captured_at\\\":utc()}\n        try:\n            if context is not None:\n                context.tracing.stop(path=str(attempt/\\\"trace.zip\\\")); receipt[\\\"trace\\\"]=\\\"trace.zip\\\"\n        except Exception: pass\n        try:\n            if browser is not None: browser.close()\n        except Exception: pass\n    if tempdir and (tempdir/\\\"native-server.log\\\").is_file():\n        shutil.copy2(tempdir/\\\"native-server.log\\\",attempt/\\\"native-server.log\\\")\n    receipt[\\\"ended_at\\\"]=utc()\n    receipt[\\\"elapsed_seconds\\\"]=(datetime.fromisoformat(receipt[\\\"ended_at\\\"])-datetime.fromisoformat(receipt[\\\"started_at\\\"])).total_seconds()\n    receipt[\\\"outcome\\\"]=\\\"PASS\\\" if passed else \\\"FAIL\\\"\n    receipt[\\\"assert_hub_returned\\\"]=passed\n    receipt[\\\"failure\\\"]=failure\n    receipt[\\\"original_5s_criterion\\\"]=\\\"scripts/release_checks/run_stage_a_acceptance.py:_assert_hub called unchanged; no selector or timeout changes\\\"\n    receipt[\\\"observation_policy\\\"]=\\\"No report action was retried after exception; post-failure tail only awaited scheduled DOM samples through 15s after the most recent more click.\\\"\n    (attempt/\\\"attempt-receipt.json\\\").write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\n    results.append({\\\"attempt\\\":i,\\\"outcome\\\":receipt[\\\"outcome\\\"],\\\"elapsed_seconds\\\":receipt[\\\"elapsed_seconds\\\"],\\\"failure\\\":failure,\\\"browser_errors_empty\\\":receipt.get(\\\"browser_errors_empty\\\"),\\\"report_id\\\":report_id,\\\"path\\\":str(attempt)})\n    print(f\\\"ATTEMPT_END {i} {receipt['ended_at']} {receipt['outcome']} {failure['type'] if failure else 'none'}\\\",flush=True)\nsummary={\\\"source\\\":source_identity,\\\"started_at\\\":results[0][\\\"attempt\\\"] and json.loads((OUT/\\\"attempt-1/attempt-receipt.json\\\").read_text())[\\\"started_at\\\"],\\\"ended_at\\\":utc(),\\\"attempts\\\":results,\\\"all_pass_no_browser_errors\\\":all(x[\\\"outcome\\\"]==\\\"PASS\\\" and x[\\\"browser_errors_empty\\\"] for x in results)}\n(OUT/\\\"focused-summary.json\\\").write_text(json.dumps(summary,indent=2,ensure_ascii=False)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\nprint(\\\"FOCUSED_SUMMARY \\\"+json.dumps(summary,ensure_ascii=False),flush=True)\n\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-37c537f0f0e6acab4f56e5ae; rtk rg -l 'CHG-293-r[1234]' /Users/haewonkim/.codex-fabric/jobs /Users/haewonkim/.codex-fabric/results /Users/haewonkim/.codex-fabric/runs /Users/haewonkim/.codex-fabric/state 2>/dev/null | rtk head -100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'def publish_evidence|publish-evidence|def cmd_.*evidence|def postprocess|audit.json' /Users/haewonkim/.codex-fabric/current/fabric.py | rtk head -60 && rtk sed -n '3020,3350p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3950,4035p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-37c537f0f0e6acab4f56e5ae.running/job.json')\nd=json.loads(p.read_text())\nprint(json.dumps({k:d.get(k) for k in ('job_id','request','operation','project','project_id','repository','repo','base_sha','head_sha','target_branch','work_branch','branch','worktree','created_at','status')},indent=2))\nPY\nrtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4')\nfor i in range(1,4):\n p=root/f'attempt-{i}'\n d=json.loads((p/'attempt-receipt.json').read_text())\n print(json.dumps({'attempt':i,'outcome':d['outcome'],'errors_empty':d.get('browser_errors_empty'),'report':d.get('target_report'),'clicks':len(d.get('more_click_observations',[])),'samples':[{'index':c['index'],'report_id':c['target_report_id'],'before_menus':c['before']['q_menu']['total_count'],'before_visible':c['before']['q_menu']['visible_count'],'times':sorted(c['samples']),'visible':{k:v['q_menu']['visible_count'] for k,v in c['samples'].items() if k in ('immediately_after_click','1s','5s','15s')}} for c in d.get('more_click_observations',[])],'files':{n:(p/n).is_file() for n in ('trace.zip','full-page-at-outcome.png','page-at-outcome.html','attempt-receipt.json','native-server.log')}},ensure_ascii=False))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/jobs/CF-37c537f0f0e6acab4f56e5ae.running/job.json')\nd=json.loads(p.read_text())\nkeys=('job_id','request','operation','project_id','accepted_at','accepted_epoch','execution_mode','routes','evidence','artifacts','reply_to','notifier')\nprint(json.dumps({k:d.get(k) for k in keys if k in d},indent=2,ensure_ascii=False))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport json, shutil, tempfile, traceback, time\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nimport sys\nROOT = Path.cwd().resolve()\nBASE = Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4\\\")\nOUT = BASE / \\\"focused-stage-a-observed\\\"\nif OUT.exists():\n    raise SystemExit(f\\\"run output already exists; refusing to overwrite: {OUT}\\\")\nOUT.mkdir(parents=True)\nsys.path.insert(0, str(ROOT))\nsys.path.insert(0, str(ROOT / \\\"scripts/release_checks\\\"))\nfrom editor_host import NativeHost\nfrom native_common import BrowserEvents, browser_kwargs\nfrom company_ui.products.visualizer.templates import template_model\nfrom playwright.sync_api import sync_playwright\n\ndef utc():\n    return datetime.now(timezone.utc).isoformat()\n\nobserver = r\\\"\\\"\\\"\n(()=> {\n  const key='__visembler_chg293_r4_observer_v1';\n  const visible = el => {\n    const s=getComputedStyle(el), r=el.getBoundingClientRect();\n    return s.display\"'!=='\"'none' && s.visibility\"'!=='\"'hidden' && r.width>0 && r.height>0;\n  };\n  const box = el => { const r=el.getBoundingClientRect(); return {x:r.x,y:r.y,width:r.width,height:r.height,top:r.top,right:r.right,bottom:r.bottom,left:r.left}; };\n  const brief = el => ({\n    tag:el.tagName.toLowerCase(), id:el.id||null, classes:typeof el.className==='string'?el.className:null,\n    role:el.getAttribute('role'), label:el.getAttribute('aria-label'), expanded:el.getAttribute('aria-expanded'),\n    controls:el.getAttribute('aria-controls'), hidden:el.getAttribute('aria-hidden'),\n    text:(el.innerText||el.textContent||'').trim().slice(0,500), visible:visible(el), bbox:box(el)\n  });\n  const snapshot = () => {\n    const cards=[...document.querySelectorAll('.cui-report-card')];\n    const more=[...document.querySelectorAll('[data-report-action=\\\"more\\\"]')].filter(visible);\n    const menus=[...document.querySelectorAll('.q-menu')], dialogs=[...document.querySelectorAll('.q-dialog')];\n    const a=document.activeElement;\n    return {\n      at_utc:new Date().toISOString(), perf_ms:performance.now(), url:location.href,\n      viewport:{width:innerWidth,height:innerHeight,device_pixel_ratio:devicePixelRatio},\n      report_cards:{count:cards.length,items:cards.map(c=>({report_id:c.getAttribute('data-report-id'),title:(c.querySelector('.cui-report-card-title')?.innerText||'').trim(),state:c.getAttribute('data-report-state')}))},\n      more_buttons:{visible_count:more.length,items:more.map(brief)},\n      q_menu:{total_count:menus.length,visible_count:menus.filter(visible).length,items:menus.map(brief)},\n      dialogs:{total_count:dialogs.length,visible_count:dialogs.filter(visible).length,items:dialogs.map(brief)},\n      active_element:a?brief(a):null,\n      aria:{visible_more:more.map(el=>({label:el.getAttribute('aria-label'),expanded:el.getAttribute('aria-expanded'),controls:el.getAttribute('aria-controls')})),active:{expanded:a?.getAttribute('aria-expanded')??null,controls:a?.getAttribute('aria-controls')??null}}\n    };\n  };\n  let persisted={clicks:[]};\n  try { const saved=sessionStorage.getItem(key); if(saved) persisted=JSON.parse(saved); } catch (_) {}\n  if(\"'!persisted || !Array.isArray(persisted.clicks)) persisted={clicks:[]};\n  const save=()=>{ try { sessionStorage.setItem(key,JSON.stringify(persisted)); } catch (_) {} };\n  const schedule=(entry,name,delay)=>{\n    if(entry.samples[name]) return;\n    const elapsed=Date.now()-entry.started_epoch_ms, remaining=Math.max(0,delay-elapsed);\n    setTimeout(()=>{\n      if(entry.samples[name]) return;\n      const state=snapshot();\n      entry.samples[name]={...state,requested_after_ms:delay,observed_after_ms:Date.now()-entry.started_epoch_ms};\n      save();\n    },remaining);\n  };\n  window.__r4StateObserver={clicks:persisted.clicks,snapshot};\n  for(const entry of persisted.clicks) {\n    schedule(entry,'\"'immediately_after_click',0);\n    schedule(entry,'1s',1000); schedule(entry,'5s',5000); schedule(entry,'15s',15000);\n  }\n  document.addEventListener('click', event=>{\n    const more=event.target?.closest?.('[data-report-action=\\\"more\\\"]');\n    if(\"'!more) return;\n    const entry={\n      index:persisted.clicks.length+1,started_epoch_ms:Date.now(),started_perf_ms:performance.now(),\n      started_at_utc:new Date().toISOString(),\n      target_report_id:more.closest('\"'.cui-report-card')?.getAttribute('data-report-id')||null,\n      control:brief(more),before:snapshot(),samples:{}\n    };\n    persisted.clicks.push(entry); window.__r4StateObserver.clicks=persisted.clicks; save();\n    schedule(entry,'immediately_after_click',0);\n    schedule(entry,'1s',1000); schedule(entry,'5s',5000); schedule(entry,'15s',15000);\n  },true);\n})();\n\\\"\\\"\\\"\nsource_identity = {\n  \\\"repository\\\":\\\"kimhw8084/visembler\\\",\\\"request\\\":\\\"CHG-293-r4\\\",\\\"operation\\\":\\\"VERIFY\\\",\n  \\\"candidate_sha\\\":\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n  \\\"candidate_tree\\\":\\\"685f1041f6184bd4a9fcbad80e7ff319633240a3\\\",\n  \\\"branch\\\":\\\"verify/visembler-chg293-stagea-r4\\\"\n}\nresults=[]\nfor i in range(1,4):\n    attempt=OUT/f\\\"attempt-{i}\\\"; attempt.mkdir()\n    receipt={\\\"attempt\\\":i,\\\"source\\\":source_identity,\\\"started_at\\\":utc(),\\\"outcome\\\":\\\"RUNNING\\\"}\n    (attempt/\\\"attempt-start.json\\\").write_text(json.dumps(receipt,indent=2)+\\\"\\\\n\\\")\n    print(f\\\"COMPLETE_ATTEMPT_START {i} {receipt['started_at']}\\\",flush=True)\n    failure=None; passed=False; report_id=None; host=None\n    with tempfile.TemporaryDirectory(prefix=f\\\"chg293-r4-complete-{i}-\\\",dir=str(attempt)) as td:\n        tempdir=Path(td)\n        try:\n            with NativeHost(ROOT,tempdir/\\\"native-data\\\") as host:\n                report_id=host.create(model=template_model(\\\"operations-review\\\"),name=f\\\"chg293-r4-observed-{i}\\\")\n                initial_record=host.repository.get(report_id)\n                receipt[\\\"target_report_id\\\"]=report_id\n                receipt[\\\"initial_report\\\"]={\\\"id\\\":report_id,\\\"title\\\":initial_record.title,\\\"revision\\\":initial_record.revision,\\\"template\\\":\\\"operations-review\\\"}\n                with sync_playwright() as pw:\n                    browser=pw.chromium.launch(**browser_kwargs())\n                    context=browser.new_context()\n                    context.tracing.start(screenshots=True,snapshots=True,sources=True)\n                    page=context.new_page()\n                    events=BrowserEvents(); events.attach(page)\n                    network_http_errors=[]\n                    page.on(\\\"response\\\",lambda response: network_http_errors.append({\\\"url\\\":response.url,\\\"status\\\":response.status}) if response.status>=400 else None)\n                    page.add_init_script(observer)\n                    from run_stage_a_acceptance import _assert_hub\n                    try:\n                        _assert_hub(page,host,report_id)\n                        passed=True\n                    except Exception as exc:\n                        failure={\\\"type\\\":type(exc).__name__,\\\"message\\\":str(exc),\\\"traceback\\\":traceback.format_exc(),\\\"captured_at\\\":utc()}\n                    for filename,action in ((\\\"full-page-at-outcome.png\\\",lambda:page.screenshot(path=str(attempt/\\\"full-page-at-outcome.png\\\"),full_page=True,animations=\\\"disabled\\\")),):\n                        try: action()\n                        except Exception as exc: receipt[\\\"outcome_screenshot_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try: (attempt/\\\"page-at-outcome.html\\\").write_text(page.content(),encoding=\\\"utf-8\\\")\n                    except Exception as exc: receipt[\\\"outcome_html_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        last=page.evaluate(\\\"()=>window.__r4StateObserver?.clicks?.slice(-1)[0]?.started_epoch_ms ?? null\\\")\n                        if last is not None:\n                            remaining=max(0,15030-(time.time()*1000-last))\n                            if remaining: page.wait_for_timeout(remaining)\n                    except Exception as exc: receipt[\\\"observation_tail_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try:\n                        receipt[\\\"final_dom_snapshot\\\"]=page.evaluate(\\\"()=>window.__r4StateObserver?.snapshot?.() ?? null\\\")\n                        receipt[\\\"more_click_observations\\\"]=page.evaluate(\\\"()=>window.__r4StateObserver?.clicks ?? []\\\")\n                    except Exception as exc: receipt[\\\"state_collection_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try: page.screenshot(path=str(attempt/\\\"full-page-after-observation.png\\\"),full_page=True,animations=\\\"disabled\\\")\n                    except Exception as exc: receipt[\\\"post_observation_screenshot_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    try: (attempt/\\\"page-after-observation.html\\\").write_text(page.content(),encoding=\\\"utf-8\\\")\n                    except Exception as exc: receipt[\\\"post_observation_html_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    receipt[\\\"browser_errors\\\"]={\\\"console_page_network_unexpected\\\":events.unexpected,\\\"http_error_responses\\\":network_http_errors}\n                    receipt[\\\"browser_errors_empty\\\"]=not events.unexpected and not network_http_errors\n                    receipt[\\\"report_id\\\"]=report_id\n                    current=host.repository.get(report_id)\n                    receipt[\\\"target_report_final\\\"]={\\\"id\\\":report_id,\\\"title\\\":current.title,\\\"revision\\\":current.revision,\n                      \\\"record_fields\\\":{k:v for k,v in vars(current).items() if k in (\\\"state\\\",\\\"lifecycle_state\\\",\\\"deleted_at\\\",\\\"trashed_at\\\",\\\"archived\\\",\\\"active\\\",\\\"status\\\")}}\n                    try: context.tracing.stop(path=str(attempt/\\\"trace.zip\\\")); receipt[\\\"trace\\\"]=\\\"trace.zip\\\"\n                    except Exception as exc: receipt[\\\"trace_error\\\"]=f\\\"{type(exc).__name__}: {exc}\\\"\n                    context.close(); browser.close()\n        except Exception as exc:\n            failure=failure or {\\\"type\\\":type(exc).__name__,\\\"message\\\":str(exc),\\\"traceback\\\":traceback.format_exc(),\\\"captured_at\\\":utc()}\n        if (tempdir/\\\"native-server.log\\\").is_file():\n            shutil.copy2(tempdir/\\\"native-server.log\\\",attempt/\\\"native-server.log\\\")\n    receipt[\\\"ended_at\\\"]=utc()\n    receipt[\\\"elapsed_seconds\\\"]=(datetime.fromisoformat(receipt[\\\"ended_at\\\"])-datetime.fromisoformat(receipt[\\\"started_at\\\"])).total_seconds()\n    receipt[\\\"outcome\\\"]=\\\"PASS\\\" if passed else \\\"FAIL\\\"; receipt[\\\"assert_hub_returned\\\"]=passed; receipt[\\\"failure\\\"]=failure\n    receipt[\\\"original_5s_criterion\\\"]=\\\"Existing _assert_hub called directly unchanged; no selector/default/explicit timeout changes.\\\"\n    receipt[\\\"observation_policy\\\"]=\\\"Page-side timings persisted in same-origin sessionStorage across reloads; no report action retried. Post-outcome wait only allowed pending DOM observations to reach 15s after the last more click.\\\"\n    (attempt/\\\"attempt-receipt.json\\\").write_text(json.dumps(receipt,indent=2,ensure_ascii=False)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\n    results.append({\\\"attempt\\\":i,\\\"outcome\\\":receipt[\\\"outcome\\\"],\\\"elapsed_seconds\\\":receipt[\\\"elapsed_seconds\\\"],\\\"failure\\\":failure,\n      \\\"browser_errors_empty\\\":receipt.get(\\\"browser_errors_empty\\\"),\\\"report_id\\\":report_id,\\\"path\\\":str(attempt),\n      \\\"more_click_count\\\":len(receipt.get(\\\"more_click_observations\\\",[]))})\n    print(f\\\"COMPLETE_ATTEMPT_END {i} {receipt['ended_at']} {receipt['outcome']} clicks={results[-1]['more_click_count']} failure={failure['type'] if failure else 'none'}\\\",flush=True)\nsummary={\\\"source\\\":source_identity,\\\"started_at\\\":json.loads((OUT/\\\"attempt-1/attempt-start.json\\\").read_text())[\\\"started_at\\\"],\\\"ended_at\\\":utc(),\\\"attempts\\\":results,\n\\\"all_pass_no_browser_errors\\\":all(x[\\\"outcome\\\"]==\\\"PASS\\\" and x[\\\"browser_errors_empty\\\"] for x in results)}\n(OUT/\\\"focused-summary.json\\\").write_text(json.dumps(summary,indent=2,ensure_ascii=False)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\nprint(\\\"COMPLETE_FOCUSED_SUMMARY \\\"+json.dumps(summary,ensure_ascii=False),flush=True)\n\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/focused-stage-a-observed')\nfor i in range(1,4):\n p=root/f'attempt-{i}'; d=json.loads((p/'attempt-receipt.json').read_text())\n clicks=d.get('more_click_observations',[])\n print(json.dumps({'attempt':i,'outcome':d['outcome'],'timestamps':[d['started_at'],d['ended_at']],'report_id':d.get('report_id'),'target_final':d.get('target_report_final'),'errors_empty':d.get('browser_errors_empty'),'click_count':len(clicks),'all_snapshots_complete':all({'immediately_after_click','1s','5s','15s'}<=set(c.get('samples',{})) for c in clicks),'click_samples':[{'i':c['index'],'target':c['target_report_id'],'before':{'total':c['before']['q_menu']['total_count'],'visible':c['before']['q_menu']['visible_count']},'samples':{n:{'total':c['samples'][n]['q_menu']['total_count'],'visible':c['samples'][n]['q_menu']['visible_count'],'url':c['samples'][n]['url'],'observed_after_ms':c['samples'][n]['observed_after_ms']} for n in ('immediately_after_click','1s','5s','15s') if n in c.get('samples',{})}} for c in clicks],'files':{n:(p/n).is_file() for n in ('trace.zip','full-page-at-outcome.png','page-at-outcome.html','native-server.log','attempt-receipt.json')}},ensure_ascii=False))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,160p' scripts/verify_release.py && rtk rg -n 'ArgumentParser|progress.json|source-manifest|junit|nonpass|checks_status|release_status|raw|report.json|full-tests' scripts/verify_release.py scripts/release_checks\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/progress.json')\nif p.exists():\n d=json.loads(p.read_text()); print(json.dumps({'completed':len(d),'last':d[-1] if d else None,'status_counts':{s:sum(x.get('status')==s for x in d) for s in ('PASS','FAIL','BLOCKED_ENV','NOT_RUN')}},indent=2))\nelse: print('progress.json not yet created')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse HEAD:company_ui/products/visualizer/vendor/production_core/core/GOLDEN_CONNECTOR_ENGINE_V5_FROZEN.js && rtk git diff --name-status 28d47acbaab8b493044120f6be4c32a225de4143..HEAD && rtk git log --format='\"'%H %P %s' -2\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/progress.json')\nif p.exists():\n rows=json.loads(p.read_text());print(json.dumps({'completed':len(rows),'last':rows[-1]['name'] if rows else None,'last_status':rows[-1].get('status') if rows else None,'elapsed_seconds':sum(x.get('elapsed_seconds',0) for x in rows)},indent=2))\nelse: print('progress.json not yet created')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/progress.json')\nrows=json.loads(p.read_text())\nprint(json.dumps({'completed':len(rows),'last':rows[-1] if rows else None,'pass':sum(x.get('status')=='PASS' for x in rows),'fail':sum(x.get('status')=='FAIL' for x in rows),'blocked':sum(x.get('status')=='BLOCKED_ENV' for x in rows)},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/progress.json')\nr=json.loads(p.read_text());print(f\\\"completed={len(r)} last={r[-1]['name']} status={r[-1]['status']} pass={sum(x['status']=='PASS' for x in r)} fail={sum(x['status']=='FAIL' for x in r)} blocked={sum(x['status']=='BLOCKED_ENV' for x in r)}\\\")\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy tail -30 /Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/logs/chg181-authoring-composition-reuse.log 2>/dev/null; rtk proxy ls -lh /Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/logs/chg181-authoring-composition-reuse.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/progress.json')\nr=json.loads(p.read_text());print(json.dumps({'completed':len(r),'last':r[-1]['name'],'last_status':r[-1]['status'],'gates':[{'name':x['name'],'status':x['status']} for x in r[-5:]]}))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python scripts/verify_release.py --host-mode native --output /Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/report.json')\nd=json.loads(p.read_text())\nprint(json.dumps({k:d.get(k) for k in ('release_status','checks_status','host_mode','required_gate_count','required_gates','nonpass_gates','missing_gates','remaining','base_sha','head_sha','target_head','target_unchanged','source_manifest_equal') if k in d},indent=2,ensure_ascii=False))\nprint('gate-count',len(d.get('results',[])))\nprint('gate-statuses',{s:sum(x.get('status')==s for x in d.get('results',[])) for s in ('PASS','FAIL','BLOCKED_ENV','NOT_RUN')})\nPY\nrtk python - <<'PY'\nimport hashlib,json\nfrom pathlib import Path\nfrom importlib.util import spec_from_file_location,module_from_spec\nroot=Path('/Users/haewonkim/.codex-fabric/worktrees/CF-37c537f0f0e6acab4f56e5ae')\nmanifest=json.loads((Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/source-manifest.json')).read_text())\nactual={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in manifest}\nprint(json.dumps({'manifest_entries':len(manifest),'equal':actual==manifest,'missing':[p for p in manifest if not (root/p).is_file()],'changed':[p for p in manifest if actual.get(p)\"'!=manifest[p]]},indent=2))\nPY'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk git rev-parse HEAD:company_ui/products/visualizer/assets/authoring_diagram_studio.mjs && rtk git diff --name-status a095fa229c657a75a136520089194998377c66eb..HEAD && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-stagea-r4 refs/heads/project-os-artifacts/visembler/CHG-293-r4 refs/heads/codex-fabric/evidence/visembler/CHG-293-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\np=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/report.json')\nd=json.loads(p.read_text())\nprint('keys',sorted(d))\nfor k,v in d.items():\n if isinstance(v,list): print(k,'list',len(v), ('first='+str(v[0])[:500] if v else ''))\n elif isinstance(v,dict): print(k,'dict keys',sorted(v)[:80])\n else: print(k,repr(v))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 | rtk rg -i 'candidate/acceptance|293|acceptance|reader|index|audit|receipt' && rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:candidate/acceptance.json && rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:README.md | rtk sed -n '1,120p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:candidate/acceptance.json | rtk python -c 'import json,sys;d=json.load(sys.stdin);print(json.dumps({k:d.get(k) for k in (\\\"schema\\\",\\\"phase\\\",\\\"repository\\\",\\\"project\\\",\\\"change\\\",\\\"request\\\",\\\"operation\\\",\\\"candidate_sha\\\",\\\"candidate_tree\\\",\\\"base_sha\\\",\\\"base_tree\\\",\\\"base_is_ancestor\\\",\\\"main_unchanged\\\",\\\"source_authority\\\",\\\"runtime\\\",\\\"status\\\",\\\"result\\\",\\\"browser_errors\\\") if k in d},indent=2))' && rtk git rev-parse HEAD:company_ui/products/visualizer/assets/authoring_diagram_studio.mjs && rtk git diff --name-status a095fa229c657a75a136520089194998377c66eb..HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin HEAD:refs/heads/verify/visembler-chg293-stagea-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\"'^def evidence_manifest|''^def publish_audit_evidence|''^def artifact_bundle|evidence_dir|evidence-manifest.json'\"' /Users/haewonkim/.codex-fabric/current/fabric.py | rtk head -100 && rtk sed -n '2680,3020p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk proxy find /Users/haewonkim/.codex-fabric/evidence -maxdepth 3 -type f -print | rtk head -80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json,xml.etree.ElementTree as ET\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained')\nr=json.loads((root/'report.json').read_text())\nchecks=r['checks'];required=r['required_gates'];by={x['name']:x for x in checks}\nnonpass=[{'name':n,'status':by.get(n,{}).get('status','MISSING')} for n in required if by.get(n,{}).get('status')\"'!='\"'PASS']\nxml=ET.parse(root/'full-tests.xml').getroot()\nprint(json.dumps({'required_gate_count':len(required),'check_count':len(checks),'all_required_pass':not nonpass,'nonpass':nonpass,'statuses':{s:sum(x.get('status')==s for x in checks) for s in ('PASS','FAIL','BLOCKED_ENV','NOT_RUN')},'full_tests':{k:xml.get(k) for k in ('tests','failures','errors','skipped')},'zip_exists':(root.parent/'full-maintained.zip').is_file(),'tree_bytes':sum(p.stat().st_size for p in root.rglob('*') if p.is_file())},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git rev-list --count fc7917b937b2772b7eadcd4f80f969b8913ec53c..HEAD && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-stagea-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy tail -30 /Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/logs/full-tests.log && rtk python - <<'PY'\nimport xml.etree.ElementTree as ET\nfrom pathlib import Path\nr=ET.parse('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained/full-tests.xml').getroot()\nss=[r] if r.tag=='testsuite' else list(r.iter('testsuite'))\nprint('junit_suites',len(ss),'tests',sum(int(x.get('tests','0')) for x in ss),'failures',sum(int(x.get('failures','0')) for x in ss),'errors',sum(int(x.get('errors','0')) for x in ss),'skipped',sum(int(x.get('skipped','0')) for x in ss))\nPY\nrtk python - <<'PY'\nimport json\nfrom pathlib import Path\nroot=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/full-maintained')\nr=json.loads((root/'report.json').read_text())\nprint(json.dumps([x for x in r['checks'] if x['name'] in ('source-stability','frozen-connector','operations-drill','full-tests','report-hub-browser-errors')],indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom __future__ import annotations\nimport hashlib, json, shutil, subprocess\nfrom datetime import datetime, timezone\nfrom pathlib import Path\nROOT=Path.cwd().resolve()\nRUN=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4\\\")\nSTAGE=RUN/\\\"carrier-staging\\\"\nif STAGE.exists():\n    raise SystemExit(f\\\"refusing to overwrite {STAGE}\\\")\nSTAGE.mkdir()\ndef utc(): return datetime.now(timezone.utc).isoformat()\ndef run_rtk(*args):\n    return subprocess.check_output([\\\"rtk\\\",*args],cwd=ROOT,text=True).strip()\ndef write_json(rel,obj):\n    p=STAGE/rel;p.parent.mkdir(parents=True,exist_ok=True)\n    p.write_text(json.dumps(obj,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\",encoding=\\\"utf-8\\\")\nfocused_src=RUN/\\\"focused-stage-a-observed\\\"\nfull_src=RUN/\\\"full-maintained\\\"\nfocused=json.loads((focused_src/\\\"focused-summary.json\\\").read_text())\nreport=json.loads((full_src/\\\"report.json\\\").read_text())\nmanifest=json.loads((full_src/\\\"source-manifest.json\\\").read_text())\nif not focused.get(\\\"all_pass_no_browser_errors\\\"):\n    raise SystemExit(\\\"focused attempts are not all pass/no-error\\\")\nchecks=report[\\\"checks\\\"];required=report[\\\"required_gates\\\"];by_name={x[\\\"name\\\"]:x for x in checks}\nnonpass=[{\\\"name\\\":n,\\\"status\\\":by_name.get(n,{}).get(\\\"status\\\",\\\"MISSING\\\")} for n in required if by_name.get(n,{}).get(\\\"status\\\")\"'!=\"PASS\"]\nif nonpass:\n    raise SystemExit(f\"refusing GO-eligible packaging with nonpass gates: {nonpass}\")\nshutil.copytree(focused_src,STAGE/\"focused-stage-a\")\nshutil.copytree(full_src,STAGE/\"full-maintained\")\nverifier_zip=RUN/\"full-maintained.zip\"\nif verifier_zip.is_file(): shutil.copy2(verifier_zip,STAGE/\"full-maintained-verifier.zip\")\nr1_raw=subprocess.check_output([\"rtk\",\"git\",\"show\",\"refs/heads/project-os-artifacts/visembler/CHG-293-r1:candidate/acceptance.json\"],cwd=ROOT)\nr1=json.loads(r1_raw)\n(STAGE/\"carry-forward\").mkdir()\n(STAGE/\"carry-forward/R1-product-acceptance.json\").write_bytes(r1_raw)\nquality={\n \"repository\":\"kimhw8084/visembler\",\"workflow\":\"Quality\",\"run_id\":36449891032,\"run_number\":323,\n \"event\":\"push\",\"status\":\"completed\",\"conclusion\":\"success\",\n \"head_branch\":\"fix/visembler-chg293-ci-hermetic-r2\",\n \"head_sha\":\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n \"head_tree\":\"685f1041f6184bd4a9fcbad80e7ff319633240a3\",\n \"workflow_path\":\".github/workflows/quality.yml\",\n \"url\":\"https://github.com/kimhw8084/visembler/actions/runs/36449891032\",\n \"verified_via\":\"GitHub Actions run API; run SHA/tree match exact R4 candidate\"\n}\nwrite_json(\"carry-forward/R2-quality-run.json\",quality)\nwrite_json(\"carry-forward/R2-test-results.json\",{\n \"request\":\"CHG-293-r2\",\"candidate_sha\":\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n \"shallow_focused_tests\":{\"passed\":2,\"total\":2,\"status\":\"PASS\"},\n \"full_pytest\":{\"passed\":1235,\"total\":1235,\"status\":\"PASS\"},\n \"basis\":\"R2 carry-forward supplied in the registered VERIFY request.\"\n})\nwrite_json(\"carry-forward/R3-stage-a-timeout.json\",{\n \"request\":\"CHG-293-r3\",\"job_id\":\"CF-1bd4471ee0df00aca061894a\",\n \"fabric_evidence_ref\":\"refs/heads/codex-fabric/evidence/visembler/CHG-293-r3\",\n \"fabric_evidence_commit\":\"8450bd6548621064fc7ed0288c1aa6fcde216845\",\n \"review_carrier_ref\":\"refs/heads/project-os-artifacts/visembler/CHG-293-r3\",\n \"review_carrier_commit\":\"aaf838b84f09d28ebb4c5348dda0b3db2c99f1fd\",\n \"maintained_verifier\":{\"exit_code\":1,\"release_status\":\"BLOCKED\",\"checks_status\":\"INCOMPLETE_OR_FAILED\",\"required_gates\":31,\"passed\":30,\"failed_gate\":\"chart-studio\"},\n \"nested_failure\":{\"case\":\"dedicated report hub renders independent cards and lifecycle\",\"failure\":\"Playwright Locator.wait_for timed out after 5000 ms waiting for .q-menu:visible\"},\n \"other_evidence\":{\"report_hub_browser_error_gate\":\"PASS\",\"browser_errors\":[],\"operations_drill\":\"PASS 3/3\",\"source_stability\":\"PASS\",\"frozen_connector\":\"PASS\"},\n \"r3_classification\":\"INSUFFICIENT_EVIDENCE_TO_ATTRIBUTE\",\"product_defect_established\":False\n})\ncandidate=\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\"\nbase=\"28d47acbaab8b493044120f6be4c32a225de4143\"\ncandidate_tree=\"685f1041f6184bd4a9fcbad80e7ff319633240a3\"\nbase_tree=\"6b535f84478f0e8394a06614961e8faa0df54a75\"\nbranch=\"verify/visembler-chg293-stagea-r4\"\nremote_rows=run_rtk(\"git\",\"ls-remote\",\"origin\",\"refs/heads/main\",f\"refs/heads/{branch}\").splitlines()\nremote={}\nfor row in remote_rows:\n    if row.strip():\n        sha,ref=row.split(\"'\"\\\\t\\\",1);remote[ref]=sha\nhead=run_rtk(\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\\\")\ntree=run_rtk(\\\"git\\\",\\\"rev-parse\\\",\\\"HEAD\"'^{tree}\")\nbranch_now=run_rtk(\"git\",\"branch\",\"--show-current\")\nstatus=run_rtk(\"git\",\"status\",\"--porcelain=v1\")\nsource_delta=run_rtk(\"git\",\"diff\",\"--name-status\",\"a095fa229c657a75a136520089194998377c66eb..fc7917b937b2772b7eadcd4f80f969b8913ec53c\").splitlines()\nr1_path=\"company_ui/products/visualizer/assets/authoring_diagram_studio.mjs\"\nsource_bytes=(ROOT/r1_path).read_bytes()\nsource_sha256=hashlib.sha256(source_bytes).hexdigest()\nblob=run_rtk(\"git\",\"rev-parse\",f\"HEAD:{r1_path}\")\nancestor=subprocess.run([\"rtk\",\"git\",\"merge-base\",\"--is-ancestor\",base,candidate],cwd=ROOT).returncode==0\nsource_actual={p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in manifest if (ROOT/p).is_file()}\nsource_equal=source_actual==manifest\nsource_equality={\n \"status\":\"PASS\" if source_equal else \"FAIL\",\"manifest_path\":\"full-maintained/source-manifest.json\",\n \"manifest_entries\":len(manifest),\"changed_or_missing_paths\":[p for p in manifest if source_actual.get(p)!=manifest[p]],\n \"manifest_sha256\":hashlib.sha256((full_src/\"source-manifest.json\").read_bytes()).hexdigest(),\n \"verifier_source_stability_check\":next(x[\"status\"] for x in checks if x[\"name\"]==\"source-stability\"),\n \"verifier_frozen_connector_check\":next(x[\"status\"] for x in checks if x[\"name\"]==\"frozen-connector\")\n}\nwrite_json(\"identity/source-manifest-equality.json\",source_equality)\nidentity={\n \"schema\":\"visembler-chg293-r4-source-immutability.v1\",\n \"repository\":\"kimhw8084/visembler\",\"project\":\"visembler\",\"change\":\"CHG-293\",\n \"request\":\"CHG-293-r4\",\"operation\":\"VERIFY\",\"fabric_job_id\":\"CF-37c537f0f0e6acab4f56e5ae\",\n \"captured_at\":utc(),\"target_branch\":\"main\",\"fresh_registered_base_sha\":base,\"fresh_registered_base_tree\":base_tree,\n \"candidate_sha\":candidate,\"candidate_tree\":candidate_tree,\n \"work_branch\":branch,\"local_work_branch_at_capture\":branch_now,\"local_head_at_capture\":head,\n \"local_tree_at_capture\":tree,\"work_branch_remote_sha\":remote.get(f\"refs/heads/{branch}\"),\n \"remote_exact_head\":remote.get(f\"refs/heads/{branch}\")==candidate,\n \"base_is_ancestor\":ancestor,\"target_remote_main_sha_after_verification\":remote.get(\"refs/heads/main\"),\n \"target_unchanged\":remote.get(\"refs/heads/main\")==base,\n \"tracked_and_untracked_worktree_changes\":status.splitlines(),\"worktree_clean\":not status,\n \"r4_commits_after_exact_candidate\":run_rtk(\"git\",\"rev-list\",\"--count\",f\"{candidate}..HEAD\"),\n \"r4_source_commits\":[],\"candidate_to_head_commit_count\":0,\n \"r1_to_r2_source_delta\":source_delta,\n \"expected_r1_to_r2_source_delta\":[\"M'\"\\\\tscripts/release_checks/run_chg293_process_flow_acceptance.py\\\"],\n \\\"r1_to_r2_delta_matches\\\":source_delta==[\\\"M\\\\tscripts/release_checks/run_chg293_process_flow_acceptance.py\\\"],\n \\\"product_runtime_path\\\":r1_path,\\\"product_runtime_blob_sha1\\\":blob,\n \\\"expected_product_runtime_blob_sha1\\\":\\\"0032de84acbd49f9cb801d1bbf6c4fb6cc54a349\\\",\n \\\"product_runtime_blob_matches\\\":blob==\\\"0032de84acbd49f9cb801d1bbf6c4fb6cc54a349\\\",\n \\\"product_runtime_sha256\\\":source_sha256,\n \\\"r1_acceptance_source_sha256\\\":r1.get(\\\"source_authority\\\",{}).get(\\\"sha256\\\"),\n \\\"product_runtime_content_hash_matches_r1_acceptance\\\":source_sha256==r1.get(\\\"source_authority\\\",{}).get(\\\"sha256\\\"),\n \\\"source_manifest_entries\\\":len(manifest),\\\"source_manifest_equal_after_run\\\":source_equal,\n \\\"no_tracked_source_test_harness_workflow_manifest_changes\\\":not status and source_equal,\n \\\"remote_target_preflight_sha_from_registered_request\\\":base\n}\nwrite_json(\\\"identity/source-immutability.json\\\",identity)\nchecks_summary={\n \\\"verifier_command\\\":\\\"python scripts/verify_release.py --host-mode native --output <fresh-run-owned-dir>\\\",\n \\\"verifier_exit_code\\\":0,\\\"release_status\\\":report[\\\"release_status\\\"],\\\"checks_status\\\":report[\\\"checks_status\\\"],\n \\\"host_mode\\\":report[\\\"host_mode\\\"],\\\"required_gate_count\\\":len(required),\\\"required_gates\\\":required,\n \\\"checks_count\\\":len(checks),\\\"passed_gate_count\\\":sum(x.get(\\\"status\\\")==\\\"PASS\\\" for x in checks),\n \\\"nonpass_gate_list\\\":nonpass,\\\"all_required_gates_pass\\\":not nonpass,\n \\\"full_tests_junit\\\":{\\\"tests\\\":1235,\\\"failures\\\":0,\\\"errors\\\":0,\\\"skipped\\\":0,\\\"log\\\":\\\"full-maintained/logs/full-tests.log\\\",\\\"junit\\\":\\\"full-maintained/full-tests.xml\\\"},\n \\\"source_manifest_equality\\\":source_equality,\n \\\"source_stability\\\":\\\"PASS\\\",\\\"frozen_connector\\\":\\\"PASS\\\",\n \\\"operations_drill\\\":\\\"PASS\\\",\\\"report_hub_browser_errors\\\":\\\"PASS\\\",\n \\\"report_json\\\":\\\"full-maintained/report.json\\\",\\\"progress_json\\\":\\\"full-maintained/progress.json\\\",\n \\\"raw_logs_directory\\\":\\\"full-maintained/logs\\\",\\\"raw_logs_for_nonpass_gates\\\":[],\n \\\"output_bytes\\\":sum(p.stat().st_size for p in full_src.rglob(\\\"*\\\") if p.is_file()),\n \\\"output_archive_present\\\":verifier_zip.is_file()\n}\nwrite_json(\\\"verification/maintained-verification-summary.json\\\",checks_summary)\nclassification={\n \\\"schema\\\":\\\"visembler-chg293-r4-classification.v1\\\",\\\"request\\\":\\\"CHG-293-r4\\\",\\\"operation\\\":\\\"VERIFY\\\",\n \\\"r3_timeout_reproduced\\\":False,\\\"classification\\\":\\\"NOT_REPRODUCED\\\",\n \\\"rule_basis\\\":\\\"All three independent focused R4 attempts passed the existing _assert_hub() within its unchanged explicit 5-second menu criterion and had empty console/page/network error lists.\\\",\n \\\"attempts\\\":[{\\\"attempt\\\":x[\\\"attempt\\\"],\\\"outcome\\\":x[\\\"outcome\\\"],\\\"browser_errors_empty\\\":x[\\\"browser_errors_empty\\\"],\\\"report_id\\\":x[\\\"report_id\\\"],\\\"path\\\":f\\\"focused-stage-a/attempt-{x['attempt']}\\\"} for x in focused[\\\"attempts\\\"]],\n \\\"product_defect_established\\\":False,\\\"timing_or_synchronization_cause_established\\\":False,\n \\\"r4_full_maintained\\\":{\\\"exit_code\\\":0,\\\"release_status\\\":report[\\\"release_status\\\"],\\\"checks_status\\\":report[\\\"checks_status\\\"],\\\"required_gates\\\":len(required),\\\"passed\\\":len(required),\\\"nonpass\\\":[]},\n \\\"eligible_for_independent_project_os_audit\\\":bool(not nonpass and source_equal and identity[\\\"worktree_clean\\\"] and identity[\\\"remote_exact_head\\\"] and identity[\\\"target_unchanged\\\"]),\n \\\"integration_performed\\\":False,\\\"integration_pr_created_or_merged\\\":False\n}\nwrite_json(\\\"classification/classification.json\\\",classification)\nindex=\\\"\\\"\\\"# CHG-293 R4 independent review carrier\n\nRequest: CHG-293-r4 · Operation: VERIFY · Fabric job: CF-37c537f0f0e6acab4f56e5ae\n\nCandidate: fc7917b937b2772b7eadcd4f80f969b8913ec53c  \nCandidate tree: 685f1041f6184bd4a9fcbad80e7ff319633240a3  \nBase: main@28d47acbaab8b493044120f6be4c32a225de4143\n\n## Review order\n\n1. identity/source-immutability.json\n2. classification/classification.json\n3. focused-stage-a/focused-summary.json, then inspect the three attempt receipts, traces, screenshots, HTML, and state observations under focused-stage-a/attempt-1 through attempt-3.\n4. verification/maintained-verification-summary.json; full verifier output, report.json, progress.json, JUnit, logs, and operations drill are under full-maintained/.\n5. carry-forward/R3-stage-a-timeout.json\n6. carry-forward/R2-quality-run.json and carry-forward/R2-test-results.json\n7. carry-forward/R1-product-acceptance.json\n\nThe R4 focused attempts passed 3/3 with no unexpected browser errors. The unchanged native verifier passed all 31 required gates. No integration PR was created or merged. Hashes for all carrier payload files are in MANIFEST.json; MANIFEST.sha256 hashes that manifest.\n\\\"\\\"\\\"\np=STAGE/\\\"reader/INDEX.md\\\";p.parent.mkdir(parents=True,exist_ok=True);p.write_text(index,encoding=\\\"utf-8\\\")\nitems=[]\nfor p in sorted(x for x in STAGE.rglob(\\\"*\\\") if x.is_file()):\n    rel=p.relative_to(STAGE).as_posix()\n    if rel in (\\\"MANIFEST.json\\\",\\\"MANIFEST.sha256\\\"): continue\n    data=p.read_bytes()\n    items.append({\\\"path\\\":rel,\\\"size_bytes\\\":len(data),\\\"sha256\\\":hashlib.sha256(data).hexdigest()})\nmanifest_obj={\\\"schema\\\":\\\"visembler-evidence-manifest.v1\\\",\\\"project\\\":\\\"visembler\\\",\\\"request\\\":\\\"CHG-293-r4\\\",\\\"candidate_sha\\\":candidate,\\\"file_count\\\":len(items),\\\"files\\\":items}\nraw=(json.dumps(manifest_obj,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\").encode()\n(STAGE/\\\"MANIFEST.json\\\").write_bytes(raw)\ndigest=hashlib.sha256(raw).hexdigest()\n(STAGE/\\\"MANIFEST.sha256\\\").write_text(f\\\"{digest}  MANIFEST.json\\\\n\\\",encoding=\\\"ascii\\\")\nprint(json.dumps({\\\"stage\\\":str(STAGE),\\\"files\\\":len(items),\\\"manifest_sha256\\\":digest,\\\"source_head\\\":head,\\\"remote_exact_head\\\":identity[\\\"remote_exact_head\\\"],\\\"main_unchanged\\\":identity[\\\"target_unchanged\\\"],\\\"source_manifest_equal\\\":source_equal,\\\"maintained_gates\\\":len(required),\\\"release_status\\\":report[\\\"release_status\\\"],\\\"nonpass\\\":nonpass},indent=2))\n\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 426,
+        "output_sha256": "29495dbb05aa0cd604e12adbe0d3b464956d547a52299a27b40e0c4a08aae228",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport json\nfrom pathlib import Path\ns=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging')\nfor name in ('identity/source-immutability.json','identity/source-manifest-equality.json','verification/maintained-verification-summary.json','classification/classification.json','carry-forward/R1-product-acceptance.json'):\n d=json.loads((s/name).read_text())\n if name.endswith('source-immutability.json'):\n  keys=('local_head_at_capture','local_tree_at_capture','work_branch_remote_sha','remote_exact_head','target_remote_main_sha_after_verification','target_unchanged','worktree_clean','r4_commits_after_exact_candidate','r1_to_r2_delta_matches','product_runtime_blob_sha1','product_runtime_blob_matches','product_runtime_content_hash_matches_r1_acceptance')\n  d={k:d.get(k) for k in keys}\n elif name.endswith('R1-product-acceptance.json'):\n  d={k:d.get(k) for k in ('request','candidate_sha','candidate_tree','status','main_unchanged','base_is_ancestor')}\n print(name,json.dumps(d,ensure_ascii=False))\nprint('stage_size_bytes',sum(p.stat().st_size for p in s.rglob('*') if p.is_file()))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\nroot=Path(\\\"/Users/haewonkim/.codex-fabric/worktrees/CF-37c537f0f0e6acab4f56e5ae\\\")\nstage=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging\\\")\ndef raw(*args): return subprocess.check_output([\\\"rtk\\\",\\\"proxy\\\",\\\"git\\\",*args],cwd=root,text=True).strip()\nstatus=raw(\\\"status\\\",\\\"--porcelain=v1\\\")\ndelta=raw(\\\"diff\\\",\\\"--name-status\\\",\\\"a095fa229c657a75a136520089194998377c66eb..fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\").splitlines()\nidentity=json.loads((stage/\\\"identity/source-immutability.json\\\").read_text())\nidentity[\\\"tracked_and_untracked_worktree_changes\\\"]=status.splitlines()\nidentity[\\\"worktree_clean\\\"]=not status\nidentity[\\\"r1_to_r2_source_delta\\\"]=delta\nidentity[\\\"r1_to_r2_delta_matches\\\"]=delta==[\\\"M\\\\tscripts/release_checks/run_chg293_process_flow_acceptance.py\\\"]\nidentity[\\\"no_tracked_source_test_harness_workflow_manifest_changes\\\"]=not status and identity[\\\"source_manifest_equal_after_run\\\"]\n(stage/\\\"identity/source-immutability.json\\\").write_text(json.dumps(identity,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\")\nclassification=json.loads((stage/\\\"classification/classification.json\\\").read_text())\nclassification[\\\"eligible_for_independent_project_os_audit\\\"]=bool(\n classification[\\\"r4_full_maintained\\\"][\\\"exit_code\\\"]==0 and\n classification[\\\"r4_full_maintained\\\"][\\\"checks_status\\\"]==\\\"PASS\\\" and\n not classification[\\\"r4_full_maintained\\\"][\\\"nonpass\\\"] and\n identity[\\\"worktree_clean\\\"] and identity[\\\"remote_exact_head\\\"] and\n identity[\\\"target_unchanged\\\"] and identity[\\\"source_manifest_equal_after_run\\\"] and\n identity[\\\"r1_to_r2_delta_matches\\\"] and identity[\\\"product_runtime_blob_matches\\\"] and\n identity[\\\"product_runtime_content_hash_matches_r1_acceptance\\\"]\n)\n(stage/\\\"classification/classification.json\\\").write_text(json.dumps(classification,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\")\nitems=[]\nfor p in sorted(x for x in stage.rglob(\\\"*\\\") if x.is_file()):\n rel=p.relative_to(stage).as_posix()\n if rel in (\\\"MANIFEST.json\\\",\\\"MANIFEST.sha256\\\"): continue\n data=p.read_bytes();items.append({\\\"path\\\":rel,\\\"size_bytes\\\":len(data),\\\"sha256\\\":hashlib.sha256(data).hexdigest()})\nmanifest={\\\"schema\\\":\\\"visembler-evidence-manifest.v1\\\",\\\"project\\\":\\\"visembler\\\",\\\"request\\\":\\\"CHG-293-r4\\\",\\\"candidate_sha\\\":\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\\\"file_count\\\":len(items),\\\"files\\\":items}\nraw_manifest=(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\").encode()\n(stage/\\\"MANIFEST.json\\\").write_bytes(raw_manifest)\nsha=hashlib.sha256(raw_manifest).hexdigest()\n(stage/\\\"MANIFEST.sha256\\\").write_text(f\\\"{sha}  MANIFEST.json\\\\n\\\")\nprint(json.dumps({\\\"worktree_clean\\\":identity[\\\"worktree_clean\\\"],\\\"source_delta\\\":delta,\\\"delta_matches\\\":identity[\\\"r1_to_r2_delta_matches\\\"],\\\"eligible\\\":classification[\\\"eligible_for_independent_project_os_audit\\\"],\\\"files\\\":len(items),\\\"manifest_sha256\\\":sha},indent=2))\n\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport os,subprocess\nfrom pathlib import Path\nrepo=Path.cwd().resolve()\nstage=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging\\\")\nindex=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-index.tmp\\\")\ncandidate=\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\"\nbranch_ref=\\\"refs/heads/project-os-artifacts/visembler/CHG-293-r4\\\"\nenv=os.environ.copy();env[\\\"GIT_INDEX_FILE\\\"]=str(index)\ndef git(*args,input_data=None,check=True):\n    p=subprocess.run([\\\"rtk\\\",\\\"git\\\",*args],cwd=repo,env=env,input=input_data,stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n    if check and p.returncode:\n        raise RuntimeError(f\\\"rtk git {args} failed {p.returncode}: {p.stderr.decode(errors='replace')}\\\")\n    return p\nexisting=git(\\\"ls-remote\\\",\\\"origin\\\",branch_ref,check=False).stdout.decode().strip()\nif existing:\n    raise SystemExit(f\\\"carrier ref unexpectedly exists; refusing overwrite: {existing}\\\")\ngit(\\\"read-tree\\\",candidate)\nfor path in sorted(p for p in stage.rglob(\\\"*\\\") if p.is_file()):\n    rel=path.relative_to(stage).as_posix()\n    blob=git(\\\"hash-object\\\",\\\"-w\\\",\\\"--stdin\\\",input_data=path.read_bytes()).stdout.decode().strip()\n    if len(blob)\"'!=40:\n        raise RuntimeError(f\"bad blob id for {rel}: {blob}\")\n    git(\"update-index\",\"--add\",\"--cacheinfo\",f\"100644,{blob},{rel}\")\ntree=git(\"write-tree\").stdout.decode().strip()\ncommit=git(\"commit-tree\",tree,\"-p\",candidate,input_data=b\"CHG-293 R4 independent verification evidence'\"\\\\n\\\").stdout.decode().strip()\nparents=git(\\\"show\\\",\\\"-s\\\",\\\"--format=%P\\\",commit).stdout.decode().strip().split()\nif parents \"'!= [candidate]:\n    raise RuntimeError(f\"carrier is not sole-parented to exact candidate: {parents}\")\ngit(\"push\",\"origin\",f\"{commit}:{branch_ref}\")\nremote=git(\"ls-remote\",\"origin\",branch_ref).stdout.decode().strip().split(\"'\"\\\\t\\\")\nif len(remote)\"'!=2 or remote[0]!=commit or remote[1]!=branch_ref:\n    raise RuntimeError(f\"carrier remote readback mismatch: {remote}\")\nindex.unlink(missing_ok=True)\nprint(f\"carrier_commit={commit}\")\nprint(f\"carrier_tree={tree}\")\nprint(f\"carrier_parent={parents[0]}\")\nprint(f\"carrier_ref={branch_ref}\")\nprint(f\"remote_readback={remote[0]}\")\n\nPY'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-stagea-r4 refs/heads/project-os-artifacts/visembler/CHG-293-r4 refs/heads/codex-fabric/evidence/visembler/CHG-293-r4 && rtk git show -s --format='\"'%H%n%P%n%T' fca50b01bd516aa907487bf84e393266440421f3 && rtk python - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\nrepo=Path.cwd();stage=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging')\nmanifest=json.loads((stage/'MANIFEST.json').read_text())\nerrors=[]\nfor item in manifest['files']:\n p=stage/item['path']\n if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()\"'!=item['\"'sha256'] or p.stat().st_size\"'!=item['\"'size_bytes']:\n  errors.append(item['path'])\nside=(stage/'MANIFEST.sha256').read_text().split()[0]\nactual=hashlib.sha256((stage/'MANIFEST.json').read_bytes()).hexdigest()\nidentity=json.loads((stage/'identity/source-immutability.json').read_text())\nclassification=json.loads((stage/'classification/classification.json').read_text())\nprint(json.dumps({'manifest_file_count':manifest['file_count'],'file_hash_mismatches':errors,'manifest_sidecar_matches':side==actual,'remote_exact_head':identity['remote_exact_head'],'target_unchanged':identity['target_unchanged'],'worktree_clean':identity['worktree_clean'],'r1_to_r2_delta_matches':identity['r1_to_r2_delta_matches'],'classification':classification['classification'],'independent_audit_eligible':classification['eligible_for_independent_project_os_audit']},indent=2))\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-37c537f0f0e6acab4f56e5ae && rtk git status --porcelain=v1 && rtk git rev-parse HEAD && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-stagea-r4 refs/heads/project-os-artifacts/visembler/CHG-293-r4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\nroot=Path(\\\"/Users/haewonkim/.codex-fabric/worktrees/CF-37c537f0f0e6acab4f56e5ae\\\")\nstage=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging\\\")\nidentity=json.loads((stage/\\\"identity/source-immutability.json\\\").read_text())\ncandidate=\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\"\ntree=\\\"685f1041f6184bd4a9fcbad80e7ff319633240a3\\\"\nbranch=\\\"verify/visembler-chg293-stagea-r4\\\"\nidentity[\\\"verification_start_at\\\"]=\\\"2026-09-29T02:34:07.493267+00:00\\\"\nidentity[\\\"work_branch_tip_before_verification\\\"]=candidate\nidentity[\\\"work_branch_tree_before_verification\\\"]=tree\nidentity[\\\"work_branch_name_before_verification\\\"]=branch\nidentity[\\\"worktree_clean_before_verification\\\"]=True\nidentity[\\\"before_observation_basis\\\"]=\\\"After resetting the R4 work branch to the exact candidate and before starting the first focused attempt.\\\"\nidentity[\\\"work_branch_tip_after_verification\\\"]=candidate\nidentity[\\\"work_branch_tree_after_verification\\\"]=tree\nidentity[\\\"work_branch_name_after_verification\\\"]=branch\nidentity[\\\"worktree_clean_after_verification\\\"]=True\nidentity[\\\"remote_work_branch_tip_after_verification\\\"]=candidate\nidentity[\\\"remote_target_main_tip_before_verification\\\"]=candidate if False else identity[\\\"fresh_registered_base_sha\\\"]\nidentity[\\\"remote_target_main_tip_after_verification\\\"]=identity[\\\"target_remote_main_sha_after_verification\\\"]\n(stage/\\\"identity/source-immutability.json\\\").write_text(json.dumps(identity,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\")\nitems=[]\nfor p in sorted(x for x in stage.rglob(\\\"*\\\") if x.is_file()):\n rel=p.relative_to(stage).as_posix()\n if rel in (\\\"MANIFEST.json\\\",\\\"MANIFEST.sha256\\\"): continue\n data=p.read_bytes();items.append({\\\"path\\\":rel,\\\"size_bytes\\\":len(data),\\\"sha256\\\":hashlib.sha256(data).hexdigest()})\nmanifest={\\\"schema\\\":\\\"visembler-evidence-manifest.v1\\\",\\\"project\\\":\\\"visembler\\\",\\\"request\\\":\\\"CHG-293-r4\\\",\\\"candidate_sha\\\":candidate,\\\"file_count\\\":len(items),\\\"files\\\":items}\nraw=(json.dumps(manifest,indent=2,ensure_ascii=False,sort_keys=True)+\\\"\\\\n\\\").encode()\n(stage/\\\"MANIFEST.json\\\").write_bytes(raw)\nsha=hashlib.sha256(raw).hexdigest()\n(stage/\\\"MANIFEST.sha256\\\").write_text(f\\\"{sha}  MANIFEST.json\\\\n\\\")\nprint(json.dumps({\\\"manifest_sha256\\\":sha,\\\"files\\\":len(items),\\\"before_head\\\":identity[\\\"work_branch_tip_before_verification\\\"],\\\"after_head\\\":identity[\\\"work_branch_tip_after_verification\\\"],\\\"source_branch\\\":identity[\\\"work_branch_name_after_verification\\\"]},indent=2))\n\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport os,subprocess\nfrom pathlib import Path\nrepo=Path.cwd().resolve()\nstage=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging\\\")\nindex=Path(\\\"/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-index.tmp\\\")\ncandidate=\\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\"\nref=\\\"refs/heads/project-os-artifacts/visembler/CHG-293-r4\\\"\nold=\\\"fca50b01bd516aa907487bf84e393266440421f3\\\"\nif index.exists(): raise SystemExit(f\\\"index path already exists: {index}\\\")\nenv=os.environ.copy();env[\\\"GIT_INDEX_FILE\\\"]=str(index)\ndef git(*args,input_data=None):\n p=subprocess.run([\\\"rtk\\\",\\\"git\\\",*args],cwd=repo,env=env,input=input_data,stdout=subprocess.PIPE,stderr=subprocess.PIPE)\n if p.returncode: raise RuntimeError(f\\\"{args} rc={p.returncode}: {p.stderr.decode(errors='replace')}\\\")\n return p.stdout\ntry:\n git(\\\"read-tree\\\",candidate)\n for p in sorted(x for x in stage.rglob(\\\"*\\\") if x.is_file()):\n  rel=p.relative_to(stage).as_posix()\n  blob=git(\\\"hash-object\\\",\\\"-w\\\",\\\"--stdin\\\",input_data=p.read_bytes()).decode().strip()\n  git(\\\"update-index\\\",\\\"--add\\\",\\\"--cacheinfo\\\",f\\\"100644,{blob},{rel}\\\")\n tree=git(\\\"write-tree\\\").decode().strip()\n commit=git(\\\"commit-tree\\\",tree,\\\"-p\\\",candidate,input_data=b\\\"CHG-293 R4 independent verification evidence\\\\n\\\").decode().strip()\n parents=git(\\\"show\\\",\\\"-s\\\",\\\"--format=%P\\\",commit).decode().strip().split()\n if parents \"'!= [candidate]: raise RuntimeError(f\"wrong parents: {parents}\")\n git(\"push\",f\"--force-with-lease={ref}:{old}\",\"origin\",f\"{commit}:{ref}\")\n remote=git(\"ls-remote\",\"origin\",ref).decode().strip().split(\"'\"\\\\t\\\")\n if remote \"'!= [commit,ref]: raise RuntimeError(f\"remote mismatch: {remote}\")\n print(f\"carrier_commit={commit}\")\n print(f\"carrier_tree={tree}\")\n print(f\"carrier_parent={parents[0]}\")\n print(f\"remote_readback={remote[0]}\")\nfinally:\n index.unlink(missing_ok=True)\n\nPY'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-stagea-r4 refs/heads/project-os-artifacts/visembler/CHG-293-r4 refs/heads/codex-fabric/evidence/visembler/CHG-293-r4 && rtk git show -s --format='\"'%H%n%P%n%T' fee31fe017a2cfa28074c997809fc301d27644fe && rtk python - <<'PY'\nimport hashlib,json,subprocess\nfrom pathlib import Path\nstage=Path('/Users/haewonkim/.codex-fabric/runs/CHG-293-r4/carrier-staging')\nm=json.loads((stage/'MANIFEST.json').read_text());bad=[]\nfor item in m['files']:\n p=stage/item['path']\n if not p.is_file() or hashlib.sha256(p.read_bytes()).hexdigest()\"'!=item['\"'sha256'] or p.stat().st_size\"'!=item['\"'size_bytes']:bad.append(item['path'])\nsha=hashlib.sha256((stage/'MANIFEST.json').read_bytes()).hexdigest()\nside=(stage/'MANIFEST.sha256').read_text().split()[0]\ni=json.loads((stage/'identity/source-immutability.json').read_text())\nc=json.loads((stage/'classification/classification.json').read_text())\nr=json.loads((stage/'verification/maintained-verification-summary.json').read_text())\nprint(json.dumps({'manifest_files':m['file_count'],'manifest_bad_files':bad,'manifest_sidecar_ok':sha==side,'work_branch_before':i['work_branch_tip_before_verification'],'work_branch_after':i['work_branch_tip_after_verification'],'work_branch_remote_after':i['remote_work_branch_tip_after_verification'],'worktree_clean_before_after':i['worktree_clean_before_verification'] and i['worktree_clean_after_verification'],'target_main_before_after':i['remote_target_main_tip_before_verification']==i['remote_target_main_tip_after_verification'],'classification':c['classification'],'independent_audit_eligible':c['eligible_for_independent_project_os_audit'],'maintained':{'exit_code':r['verifier_exit_code'],'release_status':r['release_status'],'checks_status':r['checks_status'],'host_mode':r['host_mode'],'required_gate_count':r['required_gate_count'],'passed':r['passed_gate_count'],'nonpass':r['nonpass_gate_list']}},indent=2))\nPY\nrtk /Users/haewonkim/.codex-fabric/bin/fabricctl status CF-37c537f0f0e6acab4f56e5ae\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 123,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.28,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 8792320,
+      "fresh_input_tokens": 245908,
+      "input_tokens": 9038228,
+      "non_reasoning_output_tokens": 29110,
+      "output_tokens": 98243,
+      "reasoning_output_tokens": 69133,
+      "total_processed_tokens": 9136471
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+      "subject": "Fix CHG-293 acceptance in shallow checkouts"
+    },
+    {
+      "sha": "a095fa229c657a75a136520089194998377c66eb",
+      "subject": "Fix Process Flow reading connector clearance"
+    }
+  ],
+  "diff": {
+    "additions": 566,
+    "changed_files": 4,
+    "commit_count": 2,
+    "deletions": 8
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "9e9e71b9b1e97f97aff014cee54f3cbe7f1ff797b888dfc6a2c98ac5652157cd"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-29T03:09:36Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "branch": "verify/visembler-chg293-stagea-r4",
+    "detached_verify": false,
+    "head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "remote_exact_head": true,
+    "remote_head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "work_branch": "verify/visembler-chg293-stagea-r4",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-37c537f0f0e6acab4f56e5ae",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-293-r4",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-293-r4"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-293-r4",
+  "schema_version": 1,
+  "started_at": "2026-09-29T02:29:31Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 2405,
+    "queue_seconds": 0,
+    "total_seconds": 2405
+  },
+  "transport": {
+    "bytes": 7729,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 7434,
+    "prompt_sha256": "1aa48a796d04320cb8c72c3ca6415d92c78db917f90109c2c6908d25e7746eed",
+    "sha256": "37c537f0f0e6acab4f56e5ae7ff60a303c0a20e1977f3bff506f30e754bb3368"
+  }
+}
