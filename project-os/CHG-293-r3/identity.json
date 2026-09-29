@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "project": "visembler",
+  "project_id": "visembler",
+  "change": "CHG-293 \u2014 Keep Process Flow connectors clear of node labels in report reading",
+  "request": "CHG-293-r3",
+  "operation": "VERIFY",
+  "fabric_job": "CF-1bd4471ee0df00aca061894a",
+  "target_branch": "main",
+  "target_sha_before": "28d47acbaab8b493044120f6be4c32a225de4143",
+  "target_sha_after": "28d47acbaab8b493044120f6be4c32a225de4143",
+  "target_drifted": false,
+  "work_branch": "verify/visembler-chg293-release-evidence-r3",
+  "work_branch_sha_before": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "work_branch_sha_after": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "candidate_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "candidate_tree": "685f1041f6184bd4a9fcbad80e7ff319633240a3",
+  "predecessor_request": "CHG-293-r2",
+  "predecessor_job": "CF-176447db3cff89714147d460",
+  "predecessor_candidate": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "verifier": {
+    "command": "python scripts/verify_release.py --host-mode native --output /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output",
+    "python": "Python 3.11.7",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "started_at": "2026-09-29T01:09:32Z",
+    "finished_at": "2026-09-29T01:18:51Z",
+    "exit_code": 1,
+    "host_mode": "native",
+    "release_status": "BLOCKED",
+    "checks_status": "INCOMPLETE_OR_FAILED",
+    "required_gate_count": 31,
+    "required_nonpass_gates": [
+      {
+        "name": "chart-studio",
+        "status": "FAIL",
+        "returncode": 1
+      }
+    ],
+    "native_reason": "One or more required bounded-release gates are incomplete or failed.",
+    "git_status_at_start": [],
+    "native_source_stability": [
+      {
+        "name": "source-stability",
+        "status": "PASS"
+      },
+      {
+        "name": "frozen-connector",
+        "status": "PASS"
+      }
+    ]
+  }
+}

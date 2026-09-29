@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "work_branch": "verify/visembler-chg293-release-evidence-r3",
+  "candidate_sha_before": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "candidate_sha_after": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "candidate_tree_before": "685f1041f6184bd4a9fcbad80e7ff319633240a3",
+  "candidate_tree_after": "685f1041f6184bd4a9fcbad80e7ff319633240a3",
+  "worktree_clean_before": true,
+  "worktree_clean_after": true,
+  "changed_files_during_verify": [],
+  "source_changed": false,
+  "product_source_changed": false,
+  "source_manifest_file": "quality/CHG-293-r3/maintained-release/source-manifest.json",
+  "source_manifest_sha256": "30570a7f296667f16ac774dd6ad9764c33cf66895dd9fcdab144103e63272d86",
+  "source_manifest_entry_count": 645,
+  "source_manifest_equal": true,
+  "maintained_native_field": {
+    "name": "source-stability",
+    "status": "PASS"
+  },
+  "maintained_frozen_connector_field": {
+    "name": "frozen-connector",
+    "status": "PASS"
+  },
+  "candidate_product_runtime_blob": {
+    "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+    "blob": "0032de84acbd49f9cb801d1bbf6c4fb6cc54a349"
+  },
+  "candidate_certification_manifest_blob": {
+    "path": "company_ui/certification/certification_manifest.json",
+    "blob": "821a0486db147788439a9bedd5cbc9436b2471a0"
+  },
+  "candidate_focused_test_blob": {
+    "path": "tests/test_visualizer_chg293_process_flow_clearance.py",
+    "blob": "de967973d9e5cdd815fb59f529d17a5877b19149"
+  },
+  "r1_to_r2_source_delta": [
+    "scripts/release_checks/run_chg293_process_flow_acceptance.py"
+  ],
+  "r1_product_candidate": "a095fa229c657a75a136520089194998377c66eb",
+  "r2_candidate": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+  "evidence_basis": "Maintained source-stability PASS plus exact source-manifest comparison after execution."
+}

@@ -1,0 +1,381 @@
+[
+  {
+    "name": "repository-contracts",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_repository_contracts.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/repository-contracts.json"
+    ],
+    "log": "logs/repository-contracts.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 4.776
+  },
+  {
+    "name": "company-boundary-model",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_user_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/company-boundary-model.json"
+    ],
+    "log": "logs/company-boundary-model.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.338
+  },
+  {
+    "name": "company-boundary-browser",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_boundary_browser_gate.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/company-boundary-browser.json"
+    ],
+    "log": "logs/company-boundary-browser.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 8.211
+  },
+  {
+    "name": "company-readiness-local",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_production_readiness.py",
+      "--data-dir",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/company-readiness-data",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/company-readiness-local.json"
+    ],
+    "log": "logs/company-readiness-local.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.438
+  },
+  {
+    "name": "company-capacity",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_company_capacity.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/company-capacity.json"
+    ],
+    "log": "logs/company-capacity.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 24.963
+  },
+  {
+    "name": "element-coverage",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/verify_element_coverage.py",
+      "--json"
+    ],
+    "log": "logs/element-coverage.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.072
+  },
+  {
+    "name": "delivery-tests",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "-m",
+      "pytest",
+      "tests/test_visualizer_completion_delivery.py",
+      "tests/test_visualizer_production_closeout.py",
+      "--tb=short",
+      "--junitxml=/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/delivery-tests.xml"
+    ],
+    "log": "logs/delivery-tests.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.773
+  },
+  {
+    "name": "full-tests",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "-m",
+      "pytest",
+      "--tb=short",
+      "--junitxml=/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/full-tests.xml"
+    ],
+    "log": "logs/full-tests.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 140.514
+  },
+  {
+    "name": "syntax-integrated_editor.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/integrated_editor.mjs"
+    ],
+    "log": "logs/syntax-integrated_editor.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.041
+  },
+  {
+    "name": "syntax-element_renderer.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/element_renderer.mjs"
+    ],
+    "log": "logs/syntax-element_renderer.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.04
+  },
+  {
+    "name": "syntax-authoring_dataset_refresh.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/authoring_dataset_refresh.mjs"
+    ],
+    "log": "logs/syntax-authoring_dataset_refresh.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.038
+  },
+  {
+    "name": "syntax-authoring_portability.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/authoring_portability.mjs"
+    ],
+    "log": "logs/syntax-authoring_portability.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.037
+  },
+  {
+    "name": "syntax-authoring_intake_client.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/authoring_intake_client.mjs"
+    ],
+    "log": "logs/syntax-authoring_intake_client.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.04
+  },
+  {
+    "name": "syntax-authoring_composition.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/authoring_composition.mjs"
+    ],
+    "log": "logs/syntax-authoring_composition.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.041
+  },
+  {
+    "name": "syntax-authoring_reuse_contract.mjs",
+    "command": [
+      "node",
+      "--check",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a/company_ui/products/visualizer/assets/authoring_reuse_contract.mjs"
+    ],
+    "log": "logs/syntax-authoring_reuse_contract.mjs.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.04
+  },
+  {
+    "name": "persistence-source-probe",
+    "command": [
+      "node",
+      "scripts/release_checks/probe_persistence.mjs",
+      "--repo",
+      "/Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/persistence-source.json"
+    ],
+    "log": "logs/persistence-source-probe.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.122
+  },
+  {
+    "name": "git-diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "log": "logs/git-diff-check.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 0.021
+  },
+  {
+    "name": "elements",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_editor_workflows.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/elements",
+      "--native"
+    ],
+    "log": "logs/elements.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 71.486
+  },
+  {
+    "name": "data",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_data_workflows.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/data",
+      "--native"
+    ],
+    "log": "logs/data.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 25.766
+  },
+  {
+    "name": "performance",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/measure_editor.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/performance",
+      "--native"
+    ],
+    "log": "logs/performance.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 4.57
+  },
+  {
+    "name": "report-lifecycle-integrity",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chg178_report_lifecycle_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/report-lifecycle-integrity"
+    ],
+    "log": "logs/report-lifecycle-integrity.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 11.457
+  },
+  {
+    "name": "chg181-authoring-composition-reuse",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chg181_authoring_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chg181-authoring-composition-reuse"
+    ],
+    "log": "logs/chg181-authoring-composition-reuse.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 129.832
+  },
+  {
+    "name": "chg208-remap-diagnostics",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chg208_remap_diagnostics_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chg208-remap-diagnostics"
+    ],
+    "log": "logs/chg208-remap-diagnostics.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 10.12
+  },
+  {
+    "name": "chart-studio",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_chart_studio_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio"
+    ],
+    "log": "logs/chart-studio.log",
+    "returncode": 1,
+    "status": "FAIL",
+    "elapsed_seconds": 60.539
+  },
+  {
+    "name": "report-hub-browser-errors",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_report_hub_browser_error_gate.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/report-hub-browser-errors"
+    ],
+    "log": "logs/report-hub-browser-errors.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 15.162
+  },
+  {
+    "name": "native-recovery",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_native_recovery.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/native-recovery"
+    ],
+    "log": "logs/native-recovery.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 12.395
+  },
+  {
+    "name": "worker-lifecycle",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_worker_lifecycle.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/worker-lifecycle"
+    ],
+    "log": "logs/worker-lifecycle.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 19.035
+  },
+  {
+    "name": "operations-drill",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_operations_drill.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/operations-drill"
+    ],
+    "log": "logs/operations-drill.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 9.956
+  },
+  {
+    "name": "native-acceptance",
+    "command": [
+      "/opt/anaconda3/bin/python",
+      "scripts/release_checks/run_native_acceptance.py",
+      "--output",
+      "/private/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/native-acceptance"
+    ],
+    "log": "logs/native-acceptance.log",
+    "returncode": 0,
+    "status": "PASS",
+    "elapsed_seconds": 6.712
+  }
+]
