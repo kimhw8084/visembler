@@ -1,0 +1,44 @@
+{
+  "attempts": [
+    {
+      "attempt": 1,
+      "browser_errors_empty": true,
+      "outcome": "PASS",
+      "path": "focused-stage-a/attempt-1",
+      "report_id": "chg293-r4-observed-1"
+    },
+    {
+      "attempt": 2,
+      "browser_errors_empty": true,
+      "outcome": "PASS",
+      "path": "focused-stage-a/attempt-2",
+      "report_id": "chg293-r4-observed-2"
+    },
+    {
+      "attempt": 3,
+      "browser_errors_empty": true,
+      "outcome": "PASS",
+      "path": "focused-stage-a/attempt-3",
+      "report_id": "chg293-r4-observed-3"
+    }
+  ],
+  "classification": "NOT_REPRODUCED",
+  "eligible_for_independent_project_os_audit": true,
+  "integration_performed": false,
+  "integration_pr_created_or_merged": false,
+  "operation": "VERIFY",
+  "product_defect_established": false,
+  "r3_timeout_reproduced": false,
+  "r4_full_maintained": {
+    "checks_status": "PASS",
+    "exit_code": 0,
+    "nonpass": [],
+    "passed": 31,
+    "release_status": "PASS_LOCAL_INTERNAL_PILOT",
+    "required_gates": 31
+  },
+  "request": "CHG-293-r4",
+  "rule_basis": "All three independent focused R4 attempts passed the existing _assert_hub() within its unchanged explicit 5-second menu criterion and had empty console/page/network error lists.",
+  "schema": "visembler-chg293-r4-classification.v1",
+  "timing_or_synchronization_cause_established": false
+}
