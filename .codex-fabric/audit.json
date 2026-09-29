@@ -1,0 +1,436 @@
+{
+  "accepted_at": "2026-09-29T01:00:56Z",
+  "changed_files": [
+    {
+      "additions": 1,
+      "deletions": 1,
+      "path": "company_ui/certification/certification_manifest.json",
+      "status": "M"
+    },
+    {
+      "additions": 49,
+      "deletions": 7,
+      "path": "company_ui/products/visualizer/assets/authoring_diagram_studio.mjs",
+      "status": "M"
+    },
+    {
+      "additions": 407,
+      "deletions": 0,
+      "path": "scripts/release_checks/run_chg293_process_flow_acceptance.py",
+      "status": "A"
+    },
+    {
+      "additions": 109,
+      "deletions": 0,
+      "path": "tests/test_visualizer_chg293_process_flow_clearance.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'pwd && cat /Users/haewonkim/.codex/RTK.md && cat /Users/haewonkim/.codex/law.md && git status --short --branch && git remote -v && git log -1 --oneline --decorate'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git status --porcelain=v2 --branch && rtk git branch -avv && rtk git show-ref | rg 'CHG-293|verify/visembler-chg293' && rtk ls-files | rg '(\"'^|/)(AGENTS'\"\\\\.md|construction_manifest\\\\.json)\"'$|verify_release|codex-fabric|postprocess|project-os'\"'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -g 'AGENTS.md' -g 'construction_manifest.json' -g 'verify_release.py' -g '*postprocess*' -g '*fabric*' -g '*manifest.json' -g 'pyproject.toml' -g 'requirements*.txt' && rtk git cat-file -t fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git show -s --format='%H%n%T%n%P%n%ci%n%s' fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git diff-tree --no-commit-id --name-only -r 97052d9a6dedb458ab471369901622d56481d071 fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git ls-tree fc7917b937b2772b7eadcd4f80f969b8913ec53c certification_manifest.json\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk command -v codex-fabric && rtk command -v fabric && rtk rg --files -uu .codex-fabric'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat AGENTS.md && rtk cat company_ui/ai/construction_manifest.json && rtk cat scripts/verify_release.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg293-ci-hermetic-r2 refs/heads/verify/visembler-chg293-release-evidence-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/project-os-artifacts/visembler/CHG-293-r3 && rtk git status --porcelain=v1 && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse fc7917b937b2772b7eadcd4f80f969b8913ec53c''^{tree} && rtk git merge-base --is-ancestor 28d47acbaab8b493044120f6be4c32a225de4143 fc7917b937b2772b7eadcd4f80f969b8913ec53c'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-remote origin refs/heads/main refs/heads/fix/visembler-chg293-ci-hermetic-r2 refs/heads/verify/visembler-chg293-release-evidence-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/project-os-artifacts/visembler/CHG-293-r3 && rtk git status --porcelain=v1 && rtk git rev-parse HEAD''^{tree} && rtk git rev-parse fc7917b937b2772b7eadcd4f80f969b8913ec53c''^{tree} && rtk git merge-base --is-ancestor 28d47acbaab8b493044120f6be4c32a225de4143 fc7917b937b2772b7eadcd4f80f969b8913ec53c'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files -uu .codex-fabric && rtk rg --files -g '*manifest*' -g '*release*' -g 'scripts/*' | rtk rg 'manifest|release|post|fabric|verify'\"",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --name-status a095fa229c657a75a136520089194998377c66eb fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git ls-tree -r fc7917b937b2772b7eadcd4f80f969b8913ec53c | rtk rg 'authoring_diagram_studio\\\\.mjs|certification_manifest\\\\.json|test.*chg293|chg293.*test' && rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:.codex-fabric/audit.json && rtk git show refs/remotes/origin/codex-fabric/evidence/visembler/CHG-293-r2:.codex-fabric/audit.json\"",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-tree -r refs/remotes/origin/codex-fabric/evidence/visembler/CHG-293-r2 && rtk git show -s --format='%H%n%T%n%P%n%s' refs/remotes/origin/codex-fabric/evidence/visembler/CHG-293-r2 && rtk git ls-tree -r refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk git show -s --format='%H%n%T%n%P%n%s' refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk ls -la .. && rtk proxy which codex-fabric && rtk proxy which fabric\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'report\\\\.json|progress\\\\.json|source_manifest|release_status|checks_status|host_mode|operations|pytest|JUnit|junit|manifest|gate|changed_files|product_source_changed|output' scripts/verify_release.py\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 4640,
+        "output_sha256": "4f493f21c2f4ab5d9b848f305b5740b290c99878a49cc8022c7bff42b758ca23",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show refs/remotes/origin/codex-fabric/evidence/visembler/CHG-293-r2:.codex-fabric/audit.json && rtk git ls-tree --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 && rtk git ls-tree -r --name-only refs/heads/project-os-artifacts/visembler/CHG-293-r1 | rtk rg 'CHG-293|README|evidence|manifest|audit' && rtk ls -la /Users/haewonkim/.codex-fabric && rtk ls -la /Users/haewonkim/.codex-fabric/worktrees/CF-1bd4471ee0df00aca061894a\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk ls -la /Users/haewonkim/.codex-fabric/jobs | rtk rg '1bd4471|293-r3' && rtk ls -la /Users/haewonkim/.codex-fabric/results | rtk rg '1bd4471|293-r3' && rtk ls -la /Users/haewonkim/.codex-fabric/bin && rtk rg --files -uu /Users/haewonkim/.codex-fabric/libexec /Users/haewonkim/.codex-fabric/bin | rtk rg 'post|audit|evidence|publish|artifact' && rtk rg --files -uu /Users/haewonkim/.codex-fabric/jobs/CF-1bd4471ee0df00aca061894a.running\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-1bd4471ee0df00aca061894a.running && rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-1bd4471ee0df00aca061894a.running/job.json && rtk cat /Users/haewonkim/.codex-fabric/bin/fabricctl && rtk proxy /Users/haewonkim/.codex-fabric/bin/fabricctl --help'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'publish-evidence|project-os-artifacts|codex-fabric/evidence|audit\\\\.json|evidence' /Users/haewonkim/.codex-fabric/current/fabric.py | head -n 120 && rtk rg -n 'publish-evidence|project-os-artifacts|artifact.carrier|artifact-carrier|integrate-stdin' /Users/haewonkim/.codex-fabric/current\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2722,2855p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '2952,3035p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk cat /Users/haewonkim/.codex-fabric/bin/projectos-integrate-stdin && rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-1bd4471ee0df00aca061894a\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python3.11 -c 'import json,subprocess; s=subprocess.check_output([\\\"git\\\",\\\"show\\\",\\\"refs/remotes/origin/codex-fabric/evidence/visembler/CHG-293-r2:.codex-fabric/audit.json\\\"],text=True); d=json.loads(s); print(json.dumps(d[\\\"git\\\"],indent=2)); print(json.dumps({k:d.get(k) for k in (\\\"job_id\\\",\\\"project_id\\\",\\\"operation\\\",\\\"request\\\",\\\"status\\\",\\\"failure_class\\\",\\\"error_code\\\")},indent=2))' && rtk rg -n 'remote_head_sha|remote_exact_head|base_is_ancestor|worktree_clean|head_sha|target_branch' /Users/haewonkim/.codex-fabric/current/fabric.py | tail -n 90 && rtk rg -n 'project-os-artifacts|artifact.*carrier|carrier.*artifact' /Users/haewonkim/.codex-fabric/libexec/projectos_integrate.py\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' scripts/verify_release.py && rtk sed -n '3100,3220p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3800,3890p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git reset --hard fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git merge-base --is-ancestor 28d47acbaab8b493044120f6be4c32a225de4143 HEAD && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-release-evidence-r3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mktemp -d /tmp/visembler-chg293-r3-maintained.XXXXXX'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy ls -la /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json && rtk proxy tail -n 12 /tmp/visembler-chg293-r3-maintained.hDr8iK/console.log'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy tail -n 12 /tmp/visembler-chg293-r3-maintained.hDr8iK/console.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy ls -lh /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/logs/full-tests.log && rtk proxy ps -Ao pid,etime,command | rtk rg 'verify_release|pytest'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2782,
+        "output_sha256": "969e41f0f859be8987eb7f4d4d115013b56d6cad06a690b233a1052e8248db12",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy tail -n 5 /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/logs/full-tests.log && rtk proxy ps -Ao pid,etime,command | rtk rg '/opt/anaconda3/bin/python -m pytest --tb=short'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1317,
+        "output_sha256": "c10c4be9c7ffada4ded78a45395e2d82ee7871d3445357225455aad49897f59a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy tail -n 8 /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/logs/full-tests.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy ps -Ao pid,etime,command | rtk rg 'run_editor_workflows|verify_release|chrom|playwright' | head -n 20\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy ps -Ao pid,etime,command | rtk rg 'verify_release|run_editor_workflows.py|run_data_workflows.py|measure_editor.py' && rtk rg --files -uu /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/elements | head -n 30\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy tail -n 8 /tmp/visembler-chg293-r3-maintained.hDr8iK/console.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy ps -Ao pid,etime,command | rtk rg 'run_chg181_authoring|run_chg208|verify_release.py' | head -n 10\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,command | rtk rg 'run_chg181_authoring_acceptance|run_chg208_remap|verify_release.py' | head -n 8 && rtk rg --files -uu /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chg181-authoring-composition-reuse | head -n 20 && rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"]) for x in p[-5:]])'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy ps -Ao pid,etime,command | rtk rg 'run_chg181_authoring_acceptance|verify_release.py' | head -n 6 && rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p[-5:]])' && rtk proxy ls -lh /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chg181-authoring-composition-reuse\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p])' && rtk proxy ps -Ao pid,etime,command | rtk rg 'run_chart_studio_acceptance|run_report_hub_browser_error_gate|verify_release.py' | head -n 8 && rtk proxy ls -la /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=json.load(open(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/progress.json\\\")); print([(x[\\\"name\\\"],x[\\\"status\\\"],x.get(\\\"elapsed_seconds\\\")) for x in p[-6:]])' && rtk proxy tail -n 8 /tmp/visembler-chg293-r3-maintained.hDr8iK/console.log\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy tail -n 100 /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/logs/chart-studio.log && rtk rg --files -uu /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio | rtk rg '\\\\.json\"'$|'\"\\\\.log\"'$'\"' | head -n 50 && rtk proxy python -c 'import json,pathlib; root=pathlib.Path(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio\\\");\nfor p in root.rglob(\\\"*.json\\\"):\n try:\n  d=json.load(open(p));\n  if isinstance(d,dict): print(p.relative_to(root), {k:v for k,v in d.items() if any(s in k.lower() for s in (\\\"status\\\",\\\"error\\\",\\\"reason\\\",\\\"fail\\\",\\\"pass\\\",\\\"exception\\\",\\\"result\\\"))})\n except Exception: pass'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python -c 'import json; p=\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio/run_stage_a_acceptance/stage-a-acceptance.json\\\"; d=json.load(open(p)); print(json.dumps(d,indent=2))' | rtk rg -n -C 5 'FAIL|failed|error|reason|status|name|check|pass'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy /bin/zsh -c 'set +e\nRUNROOT=/tmp/visembler-chg293-r3-maintained.hDr8iK\nOUT=\\\"\"'$RUNROOT/verifier-output\"\nPY_VERSION=$(python --version 2>&1)\nPLATFORM=$(python -c \"import platform; print(platform.platform())\")\nprintf \"%s'\"\\\\n\\\" \\\"python scripts/verify_release.py --host-mode native --output \"'$OUT\" > \"$RUNROOT/command.txt\"\nprintf \"%s'\"\\\\n\\\" \\\"\"'$PY_VERSION\" > \"$RUNROOT/python-version.txt\"\nprintf \"%s'\"\\\\n\\\" \\\"\"'$PLATFORM\" > \"$RUNROOT/platform.txt\"\nSTART=$(date -u +%Y-%m-%dT%H:%M:%SZ)\nprintf \"%s'\"\\\\n\\\" \\\"\"'$START\" > \"$RUNROOT/start-utc.txt\"\npython scripts/verify_release.py --host-mode native --output \"$OUT\" > \"$RUNROOT/console.log\" 2>&1\nRC=$?\nprintf \"%s'\"\\\\n\\\" \\\"\"'$RC\" > \"$RUNROOT/exit-code.txt\"\nEND=$(date -u +%Y-%m-%dT%H:%M:%SZ)\nprintf \"%s'\"\\\\n\\\" \\\"\"'$END\" > \"$RUNROOT/end-utc.txt\"\nexit \"$RC\"'\"'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/command.txt && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/python-version.txt && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/platform.txt && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/start-utc.txt && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/end-utc.txt && rtk proxy cat /tmp/visembler-chg293-r3-maintained.hDr8iK/exit-code.txt && rtk proxy python -c 'import json,pathlib; r=pathlib.Path(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output\\\"); d=json.load(open(r/\\\"report.json\\\")); p=json.load(open(r/\\\"progress.json\\\")); print(json.dumps({\\\"release_status\\\":d.get(\\\"release_status\\\"),\\\"checks_status\\\":d.get(\\\"checks_status\\\"),\\\"host_mode\\\":d.get(\\\"host_mode\\\"),\\\"python\\\":d.get(\\\"python\\\"),\\\"platform\\\":d.get(\\\"platform\\\"),\\\"reason\\\":d.get(\\\"reason\\\"),\\\"required_gate_count\\\":len(d.get(\\\"required_gates\\\",[])),\\\"required_gates\\\":d.get(\\\"required_gates\\\"),\\\"remaining_release_validation\\\":d.get(\\\"remaining_release_validation\\\"),\\\"progress\\\":[{k:x.get(k) for k in (\\\"name\\\",\\\"status\\\",\\\"returncode\\\",\\\"elapsed_seconds\\\",\\\"log\\\")} for x in p],\\\"source_stability\\\":[x for x in d.get(\\\"checks\\\",[]) if x.get(\\\"name\\\") in (\\\"source-stability\\\",\\\"frozen-connector\\\")],\\\"git_status_at_start\\\":d.get(\\\"git_status_at_start\\\")},indent=2))' && rtk cat /tmp/visembler-chg293-r3-maintained.hDr8iK/console.log | rtk tail -n 30 && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD\"'^{tree} && rtk git status --porcelain=v1 && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-release-evidence-r3'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show refs/heads/project-os-artifacts/visembler/CHG-293-r1:reader/INDEX.md && rtk proxy ls -lh /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output.zip && rtk rg --files -uu /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/operations-drill /tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/chart-studio/run_stage_a_acceptance | rtk rg '\\\\.json\"'$|'\"\\\\.log\"'$|'\"\\\\.png\"'$'\"' | head -n 60 && rtk proxy python -c 'import json,pathlib; from scripts.verify_release import source_manifest; p=pathlib.Path(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK/verifier-output/source-manifest.json\\\"); before=json.load(open(p)); after=source_manifest(); print(json.dumps({\\\"equal\\\":before==after,\\\"manifest_file_sha256\\\":__import__(\\\"hashlib\\\").sha256(p.read_bytes()).hexdigest(),\\\"source_entry_count\\\":len(before),\\\"report_source_stability\\\":[x for x in json.load(open(p.parent/\\\"report.json\\\"))[\\\"checks\\\"] if x[\\\"name\\\"]==\\\"source-stability\\\"]},indent=2))'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy python - <<'PY'\nimport hashlib\nimport json\nimport shutil\nfrom pathlib import Path\n\nrun = Path(\\\"/tmp/visembler-chg293-r3-maintained.hDr8iK\\\")\nout = run / \\\"verifier-output\\\"\ncarrier = run / \\\"carrier\\\"\nif carrier.exists():\n    raise SystemExit(f\\\"refusing to reuse carrier directory: {carrier}\\\")\n\nquality = carrier / \\\"quality\\\" / \\\"CHG-293-r3\\\" / \\\"maintained-release\\\"\nquality.mkdir(parents=True)\nfor name in (\n    \\\"report.json\\\",\n    \\\"progress.json\\\",\n    \\\"source-manifest.json\\\",\n    \\\"release-manifest.json\\\",\n    \\\"artifact-sha256.json\\\",\n    \\\"delivery-tests.xml\\\",\n    \\\"full-tests.xml\\\",\n):\n    shutil.copy2(out / name, quality / name)\nfor name in (\\\"console.log\\\", \\\"command.txt\\\", \\\"python-version.txt\\\", \\\"platform.txt\\\"):\n    shutil.copy2(run / name, quality / name)\nshutil.copytree(out / \\\"logs\\\", quality / \\\"logs\\\")\nshutil.copy2(run / \\\"verifier-output.zip\\\", quality / \\\"verifier-output.zip\\\")\n\nfailure_detail = quality / \\\"failure-detail\\\"\nfailure_detail.mkdir()\nchart = out / \\\"chart-studio\\\"\nshutil.copy2(chart / \\\"chart-studio-acceptance.json\\\", failure_detail / \\\"chart-studio-acceptance.json\\\")\nstage_a = chart / \\\"run_stage_a_acceptance\\\"\nshutil.copytree(stage_a, failure_detail / \\\"stage-a\\\")\ndiagram = chart / \\\"run_diagram_studio_acceptance\\\" / \\\"diagram-studio-acceptance.json\\\"\nshutil.copy2(diagram, failure_detail / \\\"diagram-studio-acceptance.json\\\")\n\noperations = out / \\\"operations-drill\\\"\noperations_dest = quality / \\\"operations-drill\\\"\noperations_dest.mkdir()\nshutil.copy2(operations / \\\"operations-drill.json\\\", operations_dest / \\\"operations-drill.json\\\")\nshutil.copytree(operations / \\\"logs\\\", operations_dest / \\\"logs\\\")\nreport_hub = out / \\\"report-hub-browser-errors\\\"\nif report_hub.is_dir():\n    shutil.copytree(report_hub, quality / \\\"report-hub-browser-errors\\\")\nelif report_hub.is_file():\n    shutil.copy2(report_hub, quality / \\\"report-hub-browser-errors.json\\\")\n\nreport = json.loads((out / \\\"report.json\\\").read_text())\nprogress = json.loads((out / \\\"progress.json\\\").read_text())\nsource_before = json.loads((out / \\\"source-manifest.json\\\").read_text())\nfrom scripts.verify_release import source_manifest\nsource_after = source_manifest()\nsource_manifest_equal = source_before == source_after\nif not source_manifest_equal:\n    raise SystemExit(\\\"source manifest changed during packaging; refusing evidence publication\\\")\n\nstage_report = json.loads((stage_a / \\\"stage-a-acceptance.json\\\").read_text())\nfailures = [case for case in stage_report.get(\\\"cases\\\", []) if case.get(\\\"status\\\") \"'!= \"PASS\"]\nif len(failures) != 1:\n    raise SystemExit(f\"expected exactly one Stage A non-PASS case; found {len(failures)}\")\n\nidentity = {\n    \"schema_version\": 1,\n    \"project\": \"visembler\",\n    \"project_id\": \"visembler\",\n    \"change\": \"CHG-293 — Keep Process Flow connectors clear of node labels in report reading\",\n    \"request\": \"CHG-293-r3\",\n    \"operation\": \"VERIFY\",\n    \"fabric_job\": \"CF-1bd4471ee0df00aca061894a\",\n    \"target_branch\": \"main\",\n    \"target_sha_before\": \"28d47acbaab8b493044120f6be4c32a225de4143\",\n    \"target_sha_after\": \"28d47acbaab8b493044120f6be4c32a225de4143\",\n    \"target_drifted\": False,\n    \"work_branch\": \"verify/visembler-chg293-release-evidence-r3\",\n    \"work_branch_sha_before\": \"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n    \"work_branch_sha_after\": \"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n    \"candidate_sha\": \"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n    \"candidate_tree\": \"685f1041f6184bd4a9fcbad80e7ff319633240a3\",\n    \"predecessor_request\": \"CHG-293-r2\",\n    \"predecessor_job\": \"CF-176447db3cff89714147d460\",\n    \"predecessor_candidate\": \"fc7917b937b2772b7eadcd4f80f969b8913ec53c\",\n    \"verifier\": {\n        \"command\": (run / \"command.txt\").read_text().strip(),\n        \"python\": (run / \"python-version.txt\").read_text().strip(),\n        \"platform\": (run / \"platform.txt\").read_text().strip(),\n        \"started_at\": (run / \"start-utc.txt\").read_text().strip(),\n        \"finished_at\": (run / \"end-utc.txt\").read_text().strip(),\n        \"exit_code\": int((run / \"exit-code.txt\").read_text().strip()),\n        \"host_mode\": report.get(\"host_mode\"),\n        \"release_status\": report.get(\"release_status\"),\n        \"checks_status\": report.get(\"checks_status\"),\n        \"required_gate_count\": len(report.get(\"required_gates\", [])),\n        \"required_nonpass_gates\": [\n            {\"name\": row.get(\"name\"), \"status\": row.get(\"status\"), \"returncode\": row.get(\"returncode\")}\n            for row in progress\n            if row.get(\"name\") in set(report.get(\"required_gates\", []))\n            and row.get(\"status\") != \"PASS\"\n        ],\n        \"native_reason\": report.get(\"reason\"),\n        \"git_status_at_start\": report.get(\"git_status_at_start\"),\n        \"native_source_stability\": [\n            row for row in report.get(\"checks\", [])\n            if row.get(\"name\") in {\"source-stability\", \"frozen-connector\"}\n        ],\n    },\n}\ncarrier.mkdir(exist_ok=True)\n(carrier / \"identity.json\").write_text(json.dumps(identity, indent=2) + \"'\"\\\\n\\\")\n\nsource_receipt = {\n    \\\"schema_version\\\": 1,\n    \\\"work_branch\\\": identity[\\\"work_branch\\\"],\n    \\\"candidate_sha_before\\\": identity[\\\"candidate_sha\\\"],\n    \\\"candidate_sha_after\\\": identity[\\\"candidate_sha\\\"],\n    \\\"candidate_tree_before\\\": identity[\\\"candidate_tree\\\"],\n    \\\"candidate_tree_after\\\": identity[\\\"candidate_tree\\\"],\n    \\\"worktree_clean_before\\\": True,\n    \\\"worktree_clean_after\\\": True,\n    \\\"changed_files_during_verify\\\": [],\n    \\\"source_changed\\\": False,\n    \\\"product_source_changed\\\": False,\n    \\\"source_manifest_file\\\": \\\"quality/CHG-293-r3/maintained-release/source-manifest.json\\\",\n    \\\"source_manifest_sha256\\\": hashlib.sha256((quality / \\\"source-manifest.json\\\").read_bytes()).hexdigest(),\n    \\\"source_manifest_entry_count\\\": len(source_before),\n    \\\"source_manifest_equal\\\": source_manifest_equal,\n    \\\"maintained_native_field\\\": {\\\"name\\\": \\\"source-stability\\\", \\\"status\\\": \\\"PASS\\\"},\n    \\\"maintained_frozen_connector_field\\\": {\\\"name\\\": \\\"frozen-connector\\\", \\\"status\\\": \\\"PASS\\\"},\n    \\\"candidate_product_runtime_blob\\\": {\n        \\\"path\\\": \\\"company_ui/products/visualizer/assets/authoring_diagram_studio.mjs\\\",\n        \\\"blob\\\": \\\"0032de84acbd49f9cb801d1bbf6c4fb6cc54a349\\\",\n    },\n    \\\"candidate_certification_manifest_blob\\\": {\n        \\\"path\\\": \\\"company_ui/certification/certification_manifest.json\\\",\n        \\\"blob\\\": \\\"821a0486db147788439a9bedd5cbc9436b2471a0\\\",\n    },\n    \\\"candidate_focused_test_blob\\\": {\n        \\\"path\\\": \\\"tests/test_visualizer_chg293_process_flow_clearance.py\\\",\n        \\\"blob\\\": \\\"de967973d9e5cdd815fb59f529d17a5877b19149\\\",\n    },\n    \\\"r1_to_r2_source_delta\\\": [\\\"scripts/release_checks/run_chg293_process_flow_acceptance.py\\\"],\n    \\\"r1_product_candidate\\\": \\\"a095fa229c657a75a136520089194998377c66eb\\\",\n    \\\"r2_candidate\\\": \\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n    \\\"evidence_basis\\\": \\\"Maintained source-stability PASS plus exact source-manifest comparison after execution.\\\",\n}\n(carrier / \\\"source-immutability.json\\\").write_text(json.dumps(source_receipt, indent=2) + \\\"\\\\n\\\")\n\nquality_receipt = {\n    \\\"source\\\": \\\"GitHub Actions API\\\",\n    \\\"repository\\\": \\\"kimhw8084/visembler\\\",\n    \\\"run_id\\\": 36449891032,\n    \\\"workflow\\\": \\\"Quality\\\",\n    \\\"run_number\\\": 323,\n    \\\"status\\\": \\\"completed\\\",\n    \\\"conclusion\\\": \\\"success\\\",\n    \\\"event\\\": \\\"push\\\",\n    \\\"head_branch\\\": \\\"fix/visembler-chg293-ci-hermetic-r2\\\",\n    \\\"head_sha\\\": \\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n    \\\"head_tree\\\": \\\"685f1041f6184bd4a9fcbad80e7ff319633240a3\\\",\n    \\\"url\\\": \\\"https://github.com/kimhw8084/visembler/actions/runs/36449891032\\\",\n    \\\"jobs_observed\\\": 9,\n    \\\"all_jobs_completed_success\\\": True,\n}\n(carrier / \\\"r2-quality.json\\\").write_text(json.dumps(quality_receipt, indent=2) + \\\"\\\\n\\\")\n\ncarry = {\n    \\\"source\\\": \\\"CHG-293 R2 exact-candidate acceptance carried forward per request\\\",\n    \\\"candidate_sha\\\": \\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n    \\\"shallow_checkout_focused_module\\\": {\n        \\\"path\\\": \\\"tests/test_visualizer_chg293_process_flow_clearance.py\\\",\n        \\\"passed\\\": 2,\n        \\\"total\\\": 2,\n        \\\"status\\\": \\\"PASS\\\",\n    },\n    \\\"shallow_checkout_full_pytest\\\": {\\\"passed\\\": 1235, \\\"total\\\": 1235, \\\"status\\\": \\\"PASS\\\"},\n    \\\"r1_substantive_product_evidence\\\": \\\"Remains authoritative; no visual campaign was recaptured in R3.\\\",\n    \\\"r1_to_r2_source_delta\\\": [\\\"scripts/release_checks/run_chg293_process_flow_acceptance.py\\\"],\n}\n(carrier / \\\"r2-acceptance-carry-forward.json\\\").write_text(json.dumps(carry, indent=2) + \\\"\\\\n\\\")\n\nfailed_case = failures[0]\ntop_chart = json.loads((chart / \\\"chart-studio-acceptance.json\\\").read_text())\nfailure_receipt = {\n    \\\"maintained_gate\\\": \\\"chart-studio\\\",\n    \\\"status\\\": \\\"FAIL\\\",\n    \\\"returncode\\\": 1,\n    \\\"nested_report\\\": \\\"quality/CHG-293-r3/maintained-release/failure-detail/stage-a/stage-a-acceptance.json\\\",\n    \\\"failed_case\\\": failed_case,\n    \\\"top_level_chart_studio\\\": {\n        \\\"path\\\": \\\"quality/CHG-293-r3/maintained-release/failure-detail/chart-studio-acceptance.json\\\",\n        \\\"passed\\\": top_chart.get(\\\"pass\\\"),\n        \\\"applicable\\\": top_chart.get(\\\"applicable\\\"),\n        \\\"unexpected_errors\\\": top_chart.get(\\\"unexpected_errors\\\"),\n    },\n    \\\"report_hub_browser_errors_gate\\\": \\\"PASS\\\",\n    \\\"failure_classification\\\": \\\"INSUFFICIENT_EVIDENCE_TO_ATTRIBUTE\\\",\n    \\\"classification_basis\\\": [\n        \\\"One observed 5-second Playwright wait timeout for .q-menu:visible in a report-hub lifecycle case.\\\",\n        \\\"The nested and top-level chart-studio reports show no unexpected browser console/page/network errors.\\\",\n        \\\"No independent rerun or corroborating failure evidence was collected in this VERIFY run.\\\",\n        \\\"The evidence does not distinguish missing product behavior from timing or test synchronization/interference.\\\",\n    ],\n    \\\"product_defect_established\\\": False,\n    \\\"next_scope_recommendation\\\": \\\"On the unchanged candidate, rerun only the failing maintained Stage A report-hub case in a fresh run-owned output while preserving browser trace and state at the menu action/timeout. If it reproduces, investigate that report-hub menu lifecycle; if it does not, rerun the full maintained verifier before considering PASS.\\\",\n}\n(carrier / \\\"failure-classification.json\\\").write_text(json.dumps(failure_receipt, indent=2) + \\\"\\\\n\\\")\n\nreader = \\\"\\\"\\\"# CHG-293 R3 verification carrier\n\n## Outcome\n\nThe exact R2 candidate was verified in native mode. The maintained verifier exited 1 with release_status=BLOCKED and checks_status=INCOMPLETE_OR_FAILED. It observed 31 required gates; 30 passed and chart-studio failed. This is a blocked verification result, not a Product fix disposition.\n\n## Read in this order\n\n1. identity.json — exact request, Fabric job, target/candidate/tree, command, timestamps, runtime, gate outcome.\n2. quality/CHG-293-r3/maintained-release/report.json and progress.json — actual maintained verifier output.\n3. quality/CHG-293-r3/maintained-release/failure-detail/chart-studio-acceptance.json and failure-detail/stage-a/stage-a-acceptance.json — top-level and nested failure receipts, including the exact locator timeout.\n4. quality/CHG-293-r3/maintained-release/logs/chart-studio.log — raw required non-PASS gate log. logs/ contains raw logs for all gates.\n5. quality/CHG-293-r3/maintained-release/full-tests.xml — raw JUnit receipt for 1,235 passing tests. The full-test raw log is beside it.\n6. quality/CHG-293-r3/maintained-release/operations-drill.json and operations-drill/ — operations drill passed; its report and raw logs are retained.\n7. source-immutability.json and quality/CHG-293-r3/maintained-release/source-manifest.json — source-stability PASS and equal 645-entry manifest.\n8. r2-quality.json — GitHub Quality run 36449891032 / #323 completed successfully on the exact candidate.\n9. r2-acceptance-carry-forward.json — R2 focused 2/2 and full pytest 1,235/1,235 PASS; R1 substantive product evidence remains authoritative.\n10. quality/CHG-293-r3/maintained-release/verifier-output.zip and artifact-sha256.json — complete actual verifier output bundle and its native artifact hashes.\n\n## Gate failure classification\n\nThe only required non-PASS is a single 5-second wait for .q-menu:visible in the nested report-hub lifecycle case. The browser-error gate passed and the reports contain no unexpected console/page/network errors. One run does not establish whether this is product behavior or timing/test synchronization. No source or harness changes were made. See failure-classification.json for the narrow next scope.\n\\\"\\\"\\\"\n(carrier / \\\"reader\\\" / \\\"CHG-293-r3-INDEX.md\\\").parent.mkdir(parents=True, exist_ok=True)\n(carrier / \\\"reader\\\" / \\\"CHG-293-r3-INDEX.md\\\").write_text(reader)\n\nreview = \\\"\\\"\\\"# CHG-293 R3 — maintained-release verification\n\nRequest CHG-293-r3; operation VERIFY; Fabric job CF-1bd4471ee0df00aca061894a.\n\nThe exact unchanged R2 candidate fc7917b937b2772b7eadcd4f80f969b8913ec53c (tree 685f1041f6184bd4a9fcbad80e7ff319633240a3) was checked with the maintained native release verifier. It exited 1: 30/31 required gates passed, with chart-studio as the only required non-PASS. The generated report says release_status=BLOCKED and checks_status=INCOMPLETE_OR_FAILED. Actual reports and receipts are under quality/CHG-293-r3/maintained-release/; use reader/CHG-293-r3-INDEX.md as the compact map.\n\nThis run made no source, test, harness, config, workflow, or manifest changes. The generated source-stability check passed and the 645-entry source manifest is byte-for-byte equal after verification. CHG-293 R1 visual/product evidence and R2 shallow-checkout acceptance remain carried forward unchanged. The one chart-studio timeout is insufficient to classify as a Product defect or transient. Stop for independent Project OS audit; do not integrate.\n\\\"\\\"\\\"\n(carrier / \\\"CHG-293-R3-REVIEW.md\\\").write_text(review)\n\nfiles = []\nfor path in sorted(p for p in carrier.rglob(\\\"*\\\") if p.is_file()):\n    data = path.read_bytes()\n    files.append({\n        \\\"path\\\": path.relative_to(carrier).as_posix(),\n        \\\"bytes\\\": len(data),\n        \\\"sha256\\\": hashlib.sha256(data).hexdigest(),\n    })\nmanifest = {\n    \\\"schema_version\\\": 1,\n    \\\"project_id\\\": \\\"visembler\\\",\n    \\\"request\\\": \\\"CHG-293-r3\\\",\n    \\\"operation\\\": \\\"VERIFY\\\",\n    \\\"candidate_sha\\\": \\\"fc7917b937b2772b7eadcd4f80f969b8913ec53c\\\",\n    \\\"candidate_tree\\\": \\\"685f1041f6184bd4a9fcbad80e7ff319633240a3\\\",\n    \\\"file_count_excluding_manifest_sidecars\\\": len(files),\n    \\\"files\\\": files,\n}\n(carrier / \\\"MANIFEST.json\\\").write_text(json.dumps(manifest, indent=2, sort_keys=True) + \\\"\\\\n\\\")\nmanifest_hash = hashlib.sha256((carrier / \\\"MANIFEST.json\\\").read_bytes()).hexdigest()\n(carrier / \\\"MANIFEST.sha256\\\").write_text(f\\\"{manifest_hash}  MANIFEST.json\\\\n\\\")\nsum_lines = []\nfor path in sorted(p for p in carrier.rglob(\\\"*\\\") if p.is_file() and p.name \"'!= \"SHA256SUMS.txt\"):\n    sum_lines.append(f\"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(carrier).as_posix()}\")\n(carrier / \"SHA256SUMS.txt\").write_text(\"'\"\\\\n\\\".join(sum_lines) + \\\"\\\\n\\\")\nprint(json.dumps({\n    \\\"carrier_root\\\": str(carrier),\n    \\\"files_before_hash_sidecars\\\": len(files),\n    \\\"source_manifest_equal\\\": source_manifest_equal,\n    \\\"source_manifest_sha256\\\": source_receipt[\\\"source_manifest_sha256\\\"],\n    \\\"required_nonpass_gates\\\": identity[\\\"verifier\\\"][\\\"required_nonpass_gates\\\"],\n    \\\"carrier_bytes\\\": sum(p.stat().st_size for p in carrier.rglob(\\\"*\\\") if p.is_file()),\n}, indent=2))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 392,
+        "output_sha256": "52c7a690dced2993f0994d904df25910cb69cf45cc4dc0e2eea0fed95254e019",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy shasum -a 256 -c MANIFEST.sha256 && rtk proxy shasum -a 256 -c SHA256SUMS.txt && rtk git ls-tree fc7917b937b2772b7eadcd4f80f969b8913ec53c reader identity.json MANIFEST.json MANIFEST.sha256 SHA256SUMS.txt project-os && rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-293-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/verify/visembler-chg293-release-evidence-r3'",
+      "exit_code": 128,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git ls-tree fc7917b937b2772b7eadcd4f80f969b8913ec53c reader identity.json MANIFEST.json MANIFEST.sha256 SHA256SUMS.txt project-os && rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-293-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/verify/visembler-chg293-release-evidence-r3 && rtk git status --porcelain=v1 && rtk git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree add --detach /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk proxy mkdir -p /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree/project-os/CHG-293-r3 && rtk proxy cp -R /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier/. /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree/project-os/CHG-293-r3/ && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree add project-os/CHG-293-r3 && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree diff --cached --stat && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree diff --cached --check && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree status --short'",
+      "exit_code": 2,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree commit -m 'Publish CHG-293 R3 independent review evidence' && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree show -s --format='%H%n%T%n%P%n%s' HEAD && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree diff-tree --no-commit-id --name-only -r HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git push origin aaf838b84f09d28ebb4c5348dda0b3db2c99f1fd:refs/heads/project-os-artifacts/visembler/CHG-293-r3 && rtk git ls-remote origin refs/heads/project-os-artifacts/visembler/CHG-293-r3 refs/heads/main refs/heads/verify/visembler-chg293-release-evidence-r3 && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git status --porcelain=v1'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'def push_and_verify|def push.*verify|def push_completed' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '2390,2545p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree show -s --format='%H%n%T%n%P%n%s' HEAD && rtk git -C /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree status --short\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '2600,2675p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk rg -n 'def publish_evidence_for_job|def final|publish_audit_evidence\\\\(meta' /Users/haewonkim/.codex-fabric/current/fabric.py | tail -n 20 && rtk sed -n '3048,3075p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git worktree remove --force /tmp/visembler-chg293-r3-maintained.hDr8iK/carrier-worktree && rtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse HEAD''^{tree} && rtk git status --porcelain=v1 && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-release-evidence-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/project-os-artifacts/visembler/CHG-293-r3 && rtk git cat-file -p aaf838b84f09d28ebb4c5348dda0b3db2c99f1fd | rtk head -n 5'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'def build_job_summary|changed_files.*=.*|commits.*=.*|git_changed_files\\\\(' /Users/haewonkim/.codex-fabric/current/fabric.py | head -n 80 && rtk sed -n '2570,2630p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3430,3480p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3850,3895p' /Users/haewonkim/.codex-fabric/current/fabric.py && rtk sed -n '3970,4005p' /Users/haewonkim/.codex-fabric/current/fabric.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --name-status 28d47acbaab8b493044120f6be4c32a225de4143 fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git log --format='%H %s' 28d47acbaab8b493044120f6be4c32a225de4143..fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git rev-list --count 28d47acbaab8b493044120f6be4c32a225de4143..fc7917b937b2772b7eadcd4f80f969b8913ec53c && rtk git ls-remote origin refs/heads/main refs/heads/verify/visembler-chg293-release-evidence-r3 refs/heads/codex-fabric/evidence/visembler/CHG-293-r3 refs/heads/project-os-artifacts/visembler/CHG-293-r3\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.157.0",
+    "configured_model": "gpt-6-luna",
+    "event_count": 124,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 96.94,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 6839552,
+      "fresh_input_tokens": 215699,
+      "input_tokens": 7055251,
+      "non_reasoning_output_tokens": 21716,
+      "output_tokens": 74514,
+      "reasoning_output_tokens": 52798,
+      "total_processed_tokens": 7129765
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+      "subject": "Fix CHG-293 acceptance in shallow checkouts"
+    },
+    {
+      "sha": "a095fa229c657a75a136520089194998377c66eb",
+      "subject": "Fix Process Flow reading connector clearance"
+    }
+  ],
+  "diff": {
+    "additions": 566,
+    "changed_files": 4,
+    "commit_count": 2,
+    "deletions": 8
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 177205,
+        "path": "company_ui/certification/certification_manifest.json",
+        "sha256": "9e9e71b9b1e97f97aff014cee54f3cbe7f1ff797b888dfc6a2c98ac5652157cd"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": false,
+    "paths_before": 0,
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-29T01:35:41Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "branch": "verify/visembler-chg293-release-evidence-r3",
+    "detached_verify": false,
+    "head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "remote_exact_head": true,
+    "remote_head_sha": "fc7917b937b2772b7eadcd4f80f969b8913ec53c",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "28d47acbaab8b493044120f6be4c32a225de4143",
+    "work_branch": "verify/visembler-chg293-release-evidence-r3",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-1bd4471ee0df00aca061894a",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/CHG-293-r3",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/CHG-293-r3"
+  },
+  "operation": "VERIFY",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "CHG-293-r3",
+  "schema_version": 1,
+  "started_at": "2026-09-29T01:00:56Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 2085,
+    "queue_seconds": 0,
+    "total_seconds": 2085
+  },
+  "transport": {
+    "bytes": 7159,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 6854,
+    "prompt_sha256": "ad9c0516dde382ddbc94e7560ddda7293465bb81e2d4df721f55d5d2dbb7ea7e",
+    "sha256": "1bd4471ee0df00aca061894a3749a3c4708d432ba62d06d6ff38e847a5edf6f7"
+  }
+}
