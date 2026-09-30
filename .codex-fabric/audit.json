@@ -1,0 +1,415 @@
+{
+  "accepted_at": "2026-09-30T23:06:59Z",
+  "changed_files": [
+    {
+      "additions": 13,
+      "deletions": 7,
+      "path": "README.md",
+      "status": "M"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/project-os-artifacts/visembler/CHG-293-r4'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/jobs | rtk tail -n 30 && rtk ls -la /Users/haewonkim/.codex-fabric/results | rtk tail -n 30'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/jobs -maxdepth 1 -type d -name 'CF-356d376f851730de813a8a61*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/results -maxdepth 1 -type d -name 'CF-356d376f851730de813a8a61*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk find /Users/haewonkim/.codex-fabric/jobs/CF-356d376f851730de813a8a61.running /Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61 -maxdepth 4 -type f'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/jobs/CF-356d376f851730de813a8a61.running'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/project-os-artifacts -maxdepth 5 -iname '*293*'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-356d376f851730de813a8a61.running/job.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk find /Users/haewonkim/.codex-fabric/project-os-artifacts -maxdepth 7 -iname '*293*' -o -iname '*r4*' | rtk head -n 40\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/jobs/CF-356d376f851730de813a8a61.running/prompt.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files /Users/haewonkim/.codex-fabric/results | rtk rg '/evidence-manifest\\\\.json\"'$'\"' | rtk head -n 8\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-22d3ecf055f4c1d8b040aff4'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/results/CF-22d3ecf055f4c1d8b040aff4/evidence-manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show --format='%H%n%s' --name-only fee31fe | rtk head -n 100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git ls-tree -r --name-only fee31fe | rtk rg -i 'chg.?293|r4|receipt|verification-summary' | rtk head -n 100\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git grep -n 'fc7917b937b2772b7eadcd4f80f969b8913ec53c' fee31fe -- ':\"'!*.png'\"' ':\"'!*.webp'\"' ':\"'!*.svg'\"' | rtk head -n 80\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk nl -ba README.md | rtk sed -n '10,34p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/results/CF-22d3ecf055f4c1d8b040aff4/result.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/results/CF-22d3ecf055f4c1d8b040aff4/job-summary.json | rtk head -c 1200'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'evidence-manifest\\\\.json|results/.+evidence|candidate-audit' /Users/haewonkim/.codex-fabric/libexec /Users/haewonkim/.codex-fabric/bin /Users/haewonkim/.codex-fabric/config --glob '\"'!*.log'\"'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git diff -- README.md && rtk git status --short'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat pyproject.toml'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg --files tests scripts/release_checks | rtk rg -i 'startup|smoke|readiness|source_stability|unit|company.*acceptance'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat app.py && rtk cat run_visembler.sh'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -V && rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' scripts/release_checks/run_p0_smoke.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,220p' scripts/release_checks/run_p1_smoke.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '1,240p' company_ui/products/visualizer/cli.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'app\\\\.py|startup|run_p0_smoke|runtime-smoke|uvicorn|COMPANY_UI_PORT' scripts/release_checks tests docs README.md --glob '*.py' --glob '*.md'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat tests/test_ci_quality_gate.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk rg --files .github/workflows'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n 'Visembler startup smoke|Production import smoke|company_ui\\\\.products\\\\.visualizer\\\\.cli|HealthCheck|/health|healthz' .github scripts tests --glob '*.yml' --glob '*.yaml' --glob '*.py'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk sed -n '20,76p' .github/workflows/quality.yml\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git show HEAD:README.md > /tmp/visembler-chg301-readme-base.md && rtk python - <<'PY'\nfrom pathlib import Path\nimport re\nbase = Path('/tmp/visembler-chg301-readme-base.md').read_text()\ncurrent = Path('README.md').read_text()\nheading = '## Release status\\\\n'\nrun_heading = '## Run Visembler\\\\n'\nassert heading in base and heading in current\nassert base.split(heading, 1)[0] == current.split(heading, 1)[0], 'framework-alpha/current-boundary context changed'\nassert base.split(run_heading, 1)[1] == current.split(run_heading, 1)[1], 'install/run instructions or following README content changed'\nbase_release = base.split(heading, 1)[1].split(run_heading, 1)[0]\nrelease = current.split(heading, 1)[1].split(run_heading, 1)[0]\nassert '1026/1026 PASS' in base_release\nassert '1026/1026 PASS' not in release and '1235' not in release\nassert 'candidate-bound' in release and 'fresh,' in release and 'exact candidate under review' in release\nassert 'fc7917b937b2772b7eadcd4f80f969b8913ec53c' in release\nassert 'fee31fe017a2cfa28074c997809fc301d27644fe' in release and '\"'`MANIFEST.json`'\"' in release\nassert '[\"'`docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md`](docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md)'\"' in release\nfor token in ('managed identity', 'proxy', 'durable-storage', 'session', 'recovery', 'not inferred'):\n    assert token in release, f'missing boundary term: {token}'\nassert 'no new \"'`PASS_LOCAL_INTERNAL_PILOT`'\"' in release and 'company-target certification result' in release\nmissing = []\nfor target in re.findall(r'\\\\[[\"'^'\"\\\\]]+\\\\]\\\\(([\"'^)]+)'\"\\\\)', current):\n    if target.startswith(('http://', 'https://', 'mailto:', '#')):\n        continue\n    local = target.split('#', 1)[0].split('?', 1)[0]\n    if local and not (Path('README.md').parent / local).exists():\n        missing.append(target)\nassert not missing, f'unresolved relative links: {missing}'\nprint('README documentation correction and relative links: PASS')\nprint('Preserved framework-alpha prefix and Run Visembler suffix: PASS')\nPY\nrtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nimport os\nimport tempfile\nfrom company_ui.products.visualizer.cli import build_application\nwith tempfile.TemporaryDirectory(prefix='visembler-chg301-startup-') as data_dir:\n    env = {\n        'COMPANY_UI_ENVIRONMENT': 'test',\n        'COMPANY_UI_VISUALIZER_DATA_DIR': data_dir,\n        'COMPANY_UI_STORAGE_SECRET': 'ci-visembler-storage-secret-0123456789',\n        'COMPANY_UI_HOST': '127.0.0.1',\n        'COMPANY_UI_PORT': '8123',\n    }\n    _, environment, repository = build_application(env)\n    assert repository.list()\n    assert environment['COMPANY_UI_ENVIRONMENT'] == 'test'\n    print('Visembler startup smoke: PASS')\nPY\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport re\nbase = Path('/tmp/visembler-chg301-readme-base.md').read_text()\ncurrent = Path('README.md').read_text()\nheading = '## Release status\\\\n'\nrun_heading = '## Run Visembler\\\\n'\nassert heading in base and heading in current\nassert base.split(heading, 1)[0] == current.split(heading, 1)[0], 'framework-alpha/current-boundary context changed'\nassert base.split(run_heading, 1)[1] == current.split(run_heading, 1)[1], 'install/run instructions or following README content changed'\nbase_release = base.split(heading, 1)[1].split(run_heading, 1)[0]\nrelease = current.split(heading, 1)[1].split(run_heading, 1)[0]\nflat = ' '.join(release.split())\nassert '1026/1026 PASS' in base_release\nassert '1026/1026 PASS' not in release and '1235' not in release\nassert 'candidate-bound' in flat and 'fresh,' in flat and 'exact candidate under review' in flat\nassert 'fc7917b937b2772b7eadcd4f80f969b8913ec53c' in release\nassert 'fee31fe017a2cfa28074c997809fc301d27644fe' in release and '\"'`MANIFEST.json`'\"' in release\nassert '[\"'`docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md`](docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md)'\"' in release\nfor token in ('managed identity', 'proxy', 'durable-storage', 'session', 'recovery', 'not inferred'):\n    assert token in flat, f'missing boundary term: {token}'\nassert 'no new \"'`PASS_LOCAL_INTERNAL_PILOT`'\"' in flat and 'company-target certification result' in flat\nmissing = []\nfor target in re.findall(r'\\\\[[\"'^'\"\\\\]]+\\\\]\\\\(([\"'^)]+)'\"\\\\)', current):\n    if target.startswith(('http://', 'https://', 'mailto:', '#')):\n        continue\n    local = target.split('#', 1)[0].split('?', 1)[0]\n    if local and not (Path('README.md').parent / local).exists():\n        missing.append(target)\nassert not missing, f'unresolved relative links: {missing}'\nprint('README documentation correction and relative links: PASS')\nprint('Preserved framework-alpha prefix and Run Visembler suffix: PASS')\nPY\nrtk git diff --check\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m pytest'",
+      "exit_code": 0,
+      "test_result": {
+        "counts": {
+          "passed": 1235,
+          "warnings": 1
+        },
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1905,
+        "output_sha256": "2f50f0f5847db4d49757baa9c0e7ec5546630abc75aba10a325f222c997ac6f5",
+        "summary_detected": true
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show fee31fe017a2cfa28074c997809fc301d27644fe:MANIFEST.sha256'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show fee31fe017a2cfa28074c997809fc301d27644fe:MANIFEST.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk rg -n '\\\"count\\\": [1-9]|\\\"items\\\": \\\\[' /Users/haewonkim/.codex-fabric/results --glob 'evidence-manifest.json'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk shasum -a 256 README.md && rtk git diff --binary HEAD -- README.md | rtk shasum -a 256 && rtk git hash-object README.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61 && rtk git status --short --branch && rtk git diff --stat HEAD && rtk git diff --name-only HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk ls -la /Users/haewonkim/.codex-fabric/results/CF-d80bf1108d6294541563c217'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk cat /Users/haewonkim/.codex-fabric/results/CF-d80bf1108d6294541563c217/evidence-manifest.json'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk git show fee31fe017a2cfa28074c997809fc301d27644fe:MANIFEST.json | rtk shasum -a 256'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk git diff --quiet HEAD -- app.py run_visembler.sh company_ui scripts tests docs AGENTS.md AI_CONSTRUCTION_MANIFEST.json && rtk echo 'Behavioral sources and instructions unchanged'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk mkdir -p /Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61/verification && rtk git diff --binary HEAD -- README.md > /Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61/candidate.patch && rtk git diff --name-only HEAD > /tmp/visembler-chg301-changed-files.txt && rtk git rev-parse HEAD > /tmp/visembler-chg301-head.txt && rtk git rev-parse origin/main > /tmp/visembler-chg301-origin-main.txt && rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib\nimport json\n\nrepo = Path.cwd()\nresult_root = Path('/Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61')\nbase = Path('/tmp/visembler-chg301-readme-base.md').read_text()\ncurrent = (repo / 'README.md').read_text()\nhead = Path('/tmp/visembler-chg301-head.txt').read_text().strip()\norigin_main = Path('/tmp/visembler-chg301-origin-main.txt').read_text().strip()\nchanged_paths = [line for line in Path('/tmp/visembler-chg301-changed-files.txt').read_text().splitlines() if line]\nassert head == '5144788ccfaea8ec4d936eb5bd405a7da6558022'\nassert origin_main == head\nassert changed_paths == ['README.md'], changed_paths\nrelease_heading = '## Release status\\\\n'\nrun_heading = '## Run Visembler\\\\n'\nold_release = base.split(release_heading, 1)[1].split(run_heading, 1)[0]\nnew_release = current.split(release_heading, 1)[1].split(run_heading, 1)[0]\nold_claim = 'Python 3.11.7 / NiceGUI 3.15.0 runtime, with the full current regression estate\\\\nat **1026/1026 PASS**.'\nassert old_claim in old_release\nassert '1026/1026 PASS' not in new_release and '1235' not in new_release\nassert base.split(release_heading, 1)[0] == current.split(release_heading, 1)[0]\nassert base.split(run_heading, 1)[1] == current.split(run_heading, 1)[1]\nreadme_bytes = (repo / 'README.md').read_bytes()\npatch_bytes = (result_root / 'candidate.patch').read_bytes()\nreadme_sha256 = hashlib.sha256(readme_bytes).hexdigest()\npatch_sha256 = hashlib.sha256(patch_bytes).hexdigest()\nfingerprint_payload = '\\\\0'.join((head, 'README.md', readme_sha256, patch_sha256)).encode()\nfingerprint = hashlib.sha256(fingerprint_payload).hexdigest()\naudit = {\n    'schema': 'visembler-chg301-readme-candidate-audit.v1',\n    'project': 'visembler',\n    'request': 'CHG-301',\n    'fabric_job_id': 'CF-356d376f851730de813a8a61',\n    'operation': 'FIX',\n    'prompt_sha256': '3c6a80209dbae587e11bf27dab2b8cc696e5f9d6f60ae02bb290ea9ea90f18c2',\n    'base_commit': head,\n    'target_ref_commit': origin_main,\n    'candidate_kind': 'working-tree documentation patch pending independent audit; no commit created',\n    'candidate_fingerprint_sha256': fingerprint,\n    'candidate_artifact': {\n        'path': 'candidate.patch',\n        'sha256': patch_sha256,\n        'changed_tracked_paths': changed_paths,\n        'readme_sha256': readme_sha256,\n    },\n    'claim_change': {\n        'before': 'full current regression estate at **1026/1026 PASS** (asserted for the current candidate)',\n        'after': 'PASS and readiness are exact-candidate and fresh-receipt bound; CHG-293 R4 is historical evidence for fc7917b937b2772b7eadcd4f80f969b8913ec53c only, with no current regression count.',\n        'historical_receipt': {\n            'candidate_sha': 'fc7917b937b2772b7eadcd4f80f969b8913ec53c',\n            'evidence_commit': 'fee31fe017a2cfa28074c997809fc301d27644fe',\n            'manifest_path': 'MANIFEST.json',\n            'manifest_sha256': 'bcf708044dc7770e50f1f3fe088a1ebfa9e2643821234a8f0f5009a96940090c',\n            'status': 'historical_only; does not certify later candidates',\n        },\n    },\n    'preserved_documentation': {\n        'current_product_status_authority': 'docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md',\n        'framework_alpha_context_unchanged': True,\n        'run_and_install_instructions_unchanged': True,\n        'relative_links_resolve': True,\n    },\n    'unchanged_behavioral_sources': {\n        'paths': ['app.py', 'run_visembler.sh', 'company_ui/**', 'scripts/**', 'tests/**', 'docs/**', 'AGENTS.md', 'AI_CONSTRUCTION_MANIFEST.json'],\n        'verified_by': 'rtk git diff --quiet HEAD -- app.py run_visembler.sh company_ui scripts tests docs AGENTS.md AI_CONSTRUCTION_MANIFEST.json',\n        'result': 'PASS; none changed',\n    },\n    'checks': [\n        {'command': 'rtk python -m company_ui.validate .', 'result': 'PASS: 284 files, 0 errors, 146 warnings'},\n        {'command': 'rtk python -m pytest', 'result': 'PASS: 1235 passed, 1 warning in 132.85s; warning was zipfile duplicate fixture entry ppt/presentation.xml'},\n        {'command': 'CI-equivalent inline Python startup smoke calling build_application with COMPANY_UI_ENVIRONMENT=test and a temporary data directory', 'result': 'PASS: repository.list() non-empty and resolved environment=test'},\n        {'command': 'inline Python README assertions against HEAD:README.md plus relative-link resolution; rtk git diff --check', 'result': 'PASS: stale claim removed, exact candidate/historical receipt and boundary language present, product-status link resolves, alpha prefix and Run Visembler suffix unchanged, diff clean'},\n        {'command': 'rtk git diff --quiet HEAD -- app.py run_visembler.sh company_ui scripts tests docs AGENTS.md AI_CONSTRUCTION_MANIFEST.json', 'result': 'PASS: behavioral, product, framework, runtime, test and instruction sources unchanged'},\n    ],\n    'scope_assessments': {\n        'prompt_compiler': 'v2 applies; scope constraints honored',\n        'golden_ui': 'v3 assessed; this documentation-only slice makes no rendered UI claim',\n    },\n    'release_decision': {\n        'state': 'prepared for independent Project OS audit',\n        'documentation_only_go_is_new_pass_local_internal_pilot': False,\n        'company_target_certification_claimed': False,\n        'target_branch_integration_performed': False,\n        'external_boundary': 'managed identity, proxy, storage, session and backup/recovery remain external requirements and are not inferred from this checkout',\n    },\n}\naudit_path = result_root / 'verification' / 'CHG-301-readme-audit.json'\naudit_path.write_text(json.dumps(audit, indent=2, sort_keys=True) + '\\\\n', encoding='utf-8')\n\nitems = []\nfor path in ('candidate.patch', 'verification/CHG-301-readme-audit.json'):\n    data = (result_root / path).read_bytes()\n    items.append({'bytes': len(data), 'path': path, 'sha256': hashlib.sha256(data).hexdigest()})\nmanifest = {'count': len(items), 'items': items, 'version': 1}\n(result_root / 'evidence-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\\\\n', encoding='utf-8')\nprint(json.dumps({'audit_path': str(audit_path), 'candidate_fingerprint_sha256': fingerprint, 'candidate_patch_sha256': patch_sha256, 'evidence_manifest': str(result_root / 'evidence-manifest.json'), 'evidence_items': len(items)}, indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 116,
+        "output_sha256": "03c1ed39e58d59f4a60f49fea3da697ad7cbe8f4ecb7207638ea973cbbaf624f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy git diff --name-only HEAD > /tmp/visembler-chg301-changed-files.txt && rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib\nimport json\n\nrepo = Path.cwd()\nresult_root = Path('/Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61')\nbase = Path('/tmp/visembler-chg301-readme-base.md').read_text()\ncurrent = (repo / 'README.md').read_text()\nhead = Path('/tmp/visembler-chg301-head.txt').read_text().strip()\norigin_main = Path('/tmp/visembler-chg301-origin-main.txt').read_text().strip()\nchanged_paths = [line for line in Path('/tmp/visembler-chg301-changed-files.txt').read_text().splitlines() if line]\nassert head == '5144788ccfaea8ec4d936eb5bd405a7da6558022'\nassert origin_main == head\nassert changed_paths == ['README.md'], changed_paths\nrelease_heading = '## Release status\\\\n'\nrun_heading = '## Run Visembler\\\\n'\nold_release = base.split(release_heading, 1)[1].split(run_heading, 1)[0]\nnew_release = current.split(release_heading, 1)[1].split(run_heading, 1)[0]\nold_claim = 'Python 3.11.7 / NiceGUI 3.15.0 runtime, with the full current regression estate\\\\nat **1026/1026 PASS**.'\nassert old_claim in old_release\nassert '1026/1026 PASS' not in new_release and '1235' not in new_release\nassert base.split(release_heading, 1)[0] == current.split(release_heading, 1)[0]\nassert base.split(run_heading, 1)[1] == current.split(run_heading, 1)[1]\nreadme_bytes = (repo / 'README.md').read_bytes()\npatch_bytes = (result_root / 'candidate.patch').read_bytes()\nreadme_sha256 = hashlib.sha256(readme_bytes).hexdigest()\npatch_sha256 = hashlib.sha256(patch_bytes).hexdigest()\nfingerprint_payload = '\\\\0'.join((head, 'README.md', readme_sha256, patch_sha256)).encode()\nfingerprint = hashlib.sha256(fingerprint_payload).hexdigest()\naudit = {\n    'schema': 'visembler-chg301-readme-candidate-audit.v1',\n    'project': 'visembler', 'request': 'CHG-301', 'fabric_job_id': 'CF-356d376f851730de813a8a61', 'operation': 'FIX',\n    'prompt_sha256': '3c6a80209dbae587e11bf27dab2b8cc696e5f9d6f60ae02bb290ea9ea90f18c2',\n    'base_commit': head, 'target_ref_commit': origin_main,\n    'candidate_kind': 'working-tree documentation patch pending independent audit; no commit created',\n    'candidate_fingerprint_sha256': fingerprint,\n    'candidate_artifact': {'path': 'candidate.patch', 'sha256': patch_sha256, 'changed_tracked_paths': changed_paths, 'readme_sha256': readme_sha256},\n    'claim_change': {\n        'before': 'full current regression estate at **1026/1026 PASS** (asserted for the current candidate)',\n        'after': 'PASS and readiness are exact-candidate and fresh-receipt bound; CHG-293 R4 is historical evidence for fc7917b937b2772b7eadcd4f80f969b8913ec53c only, with no current regression count.',\n        'historical_receipt': {'candidate_sha': 'fc7917b937b2772b7eadcd4f80f969b8913ec53c', 'evidence_commit': 'fee31fe017a2cfa28074c997809fc301d27644fe', 'manifest_path': 'MANIFEST.json', 'manifest_sha256': 'bcf708044dc7770e50f1f3fe088a1ebfa9e2643821234a8f0f5009a96940090c', 'status': 'historical_only; does not certify later candidates'},\n    },\n    'preserved_documentation': {'current_product_status_authority': 'docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md', 'framework_alpha_context_unchanged': True, 'run_and_install_instructions_unchanged': True, 'relative_links_resolve': True},\n    'unchanged_behavioral_sources': {'paths': ['app.py', 'run_visembler.sh', 'company_ui/**', 'scripts/**', 'tests/**', 'docs/**', 'AGENTS.md', 'AI_CONSTRUCTION_MANIFEST.json'], 'verified_by': 'rtk git diff --quiet HEAD -- app.py run_visembler.sh company_ui scripts tests docs AGENTS.md AI_CONSTRUCTION_MANIFEST.json', 'result': 'PASS; none changed'},\n    'checks': [\n        {'command': 'rtk python -m company_ui.validate .', 'result': 'PASS: 284 files, 0 errors, 146 warnings'},\n        {'command': 'rtk python -m pytest', 'result': 'PASS: 1235 passed, 1 warning in 132.85s; warning was zipfile duplicate fixture entry ppt/presentation.xml'},\n        {'command': 'CI-equivalent inline Python startup smoke calling build_application with COMPANY_UI_ENVIRONMENT=test and a temporary data directory', 'result': 'PASS: repository.list() non-empty and resolved environment=test'},\n        {'command': 'inline Python README assertions against HEAD:README.md plus relative-link resolution; rtk git diff --check', 'result': 'PASS: stale claim removed, exact candidate/historical receipt and boundary language present, product-status link resolves, alpha prefix and Run Visembler suffix unchanged, diff clean'},\n        {'command': 'rtk git diff --quiet HEAD -- app.py run_visembler.sh company_ui scripts tests docs AGENTS.md AI_CONSTRUCTION_MANIFEST.json', 'result': 'PASS: behavioral, product, framework, runtime, test and instruction sources unchanged'},\n    ],\n    'scope_assessments': {'prompt_compiler': 'v2 applies; scope constraints honored', 'golden_ui': 'v3 assessed; this documentation-only slice makes no rendered UI claim'},\n    'release_decision': {'state': 'prepared for independent Project OS audit', 'documentation_only_go_is_new_pass_local_internal_pilot': False, 'company_target_certification_claimed': False, 'target_branch_integration_performed': False, 'external_boundary': 'managed identity, proxy, storage, session and backup/recovery remain external requirements and are not inferred from this checkout'},\n}\naudit_path = result_root / 'verification' / 'CHG-301-readme-audit.json'\naudit_path.write_text(json.dumps(audit, indent=2, sort_keys=True) + '\\\\n', encoding='utf-8')\nitems = []\nfor path in ('candidate.patch', 'verification/CHG-301-readme-audit.json'):\n    data = (result_root / path).read_bytes()\n    items.append({'bytes': len(data), 'path': path, 'sha256': hashlib.sha256(data).hexdigest()})\nmanifest = {'count': len(items), 'items': items, 'version': 1}\n(result_root / 'evidence-manifest.json').write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\\\\n', encoding='utf-8')\nprint(json.dumps({'audit_path': str(audit_path), 'candidate_fingerprint_sha256': fingerprint, 'candidate_patch_sha256': patch_sha256, 'evidence_manifest': str(result_root / 'evidence-manifest.json'), 'evidence_items': len(items)}, indent=2, sort_keys=True))\nPY\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 465,
+        "output_sha256": "9b04093e30c23c31f5a0c3609f551df8508735bdeed2f67323118069c3d5f754",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk python - <<'PY'\nfrom pathlib import Path\nimport hashlib, json\nroot = Path('/Users/haewonkim/.codex-fabric/results/CF-356d376f851730de813a8a61')\nmanifest = json.loads((root / 'evidence-manifest.json').read_text())\nassert manifest['version'] == 1 and manifest['count'] == len(manifest['items']) == 2\nfor item in manifest['items']:\n    data = (root / item['path']).read_bytes()\n    assert len(data) == item['bytes']\n    assert hashlib.sha256(data).hexdigest() == item['sha256']\naudit = json.loads((root / 'verification/CHG-301-readme-audit.json').read_text())\nassert audit['base_commit'] == '5144788ccfaea8ec4d936eb5bd405a7da6558022'\nassert audit['candidate_artifact']['changed_tracked_paths'] == ['README.md']\nassert all('PASS' in row['result'] for row in audit['checks'])\nassert audit['release_decision']['company_target_certification_claimed'] is False\nprint('Fabric evidence manifest and candidate audit integrity: PASS')\nPY\nrtk git status --short --branch && rtk git rev-parse HEAD && rtk git rev-parse origin/main && rtk git diff --check && rtk git diff --stat HEAD && rtk git diff --name-only HEAD\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.159.2",
+    "configured_model": "gpt-6-luna",
+    "event_count": 148,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 92.09,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 2764288,
+      "fresh_input_tokens": 237330,
+      "input_tokens": 3001618,
+      "non_reasoning_output_tokens": 12268,
+      "output_tokens": 36691,
+      "reasoning_output_tokens": 24423,
+      "total_processed_tokens": 3038309
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "bf20685e9381eb6da24a3b2885f9db6a53d8028d",
+      "subject": "fabric: capture completed model changes [CF-356d376f851730de813a8a61]"
+    }
+  ],
+  "diff": {
+    "additions": 13,
+    "changed_files": 1,
+    "commit_count": 1,
+    "deletions": 7
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 7380,
+        "path": "README.md",
+        "sha256": "831fdfbc1a8ff0473ffd83ad8703b1a63104cad02cb76597d694a5c031d1f8ed"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-356d376f851730de813a8a61]",
+    "commit_sha": "bf20685e9381eb6da24a3b2885f9db6a53d8028d",
+    "paths_before": 1,
+    "status_before": [
+      " M README.md"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-09-30T23:21:07Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5144788ccfaea8ec4d936eb5bd405a7da6558022",
+    "branch": "fix/visembler-e2e-readme-20260930-r1",
+    "detached_verify": false,
+    "head_sha": "bf20685e9381eb6da24a3b2885f9db6a53d8028d",
+    "remote_exact_head": true,
+    "remote_head_sha": "bf20685e9381eb6da24a3b2885f9db6a53d8028d",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5144788ccfaea8ec4d936eb5bd405a7da6558022",
+    "work_branch": "fix/visembler-e2e-readme-20260930-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-356d376f851730de813a8a61",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/VIS-E2E-README-20260930-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/VIS-E2E-README-20260930-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "VIS-E2E-README-20260930-r1",
+  "schema_version": 1,
+  "started_at": "2026-09-30T23:06:59Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 848,
+    "queue_seconds": 0,
+    "total_seconds": 848
+  },
+  "transport": {
+    "bytes": 2585,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 2274,
+    "prompt_sha256": "3c6a80209dbae587e11bf27dab2b8cc696e5f9d6f60ae02bb290ea9ea90f18c2",
+    "sha256": "356d376f851730de813a8a612d2094e3d55cd07e71c592aba9a60c9deed451f0"
+  }
+}
