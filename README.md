@@ -16,13 +16,19 @@ Company UI is a Company-owned NiceGUI application platform for internal engineer
 ## Release status
 
 `3.0.0a1` remains the Company UI framework compatibility line. The current
-Visembler candidate has a native local verification receipt for the installed
-Python 3.11.7 / NiceGUI 3.15.0 runtime, with the full current regression estate
-at **1026/1026 PASS**. Its local single-instance status is
-`PASS_LOCAL_INTERNAL_PILOT`; the company boundary is
-`READY_FOR_COMPANY_TARGET_CERTIFICATION` only after the fresh local company
-gates pass. Actual managed identity, proxy, durable-storage, session and
-recovery evidence remains external and is not inferred from this checkout.
+Visembler verification is candidate-bound: a PASS applies only to the exact
+candidate SHA and gates recorded in its receipt. Readiness requires fresh,
+applicable receipts for the exact candidate under review. The latest
+independently accepted CHG-293 R4 receipt is historical evidence for candidate
+`fc7917b937b2772b7eadcd4f80f969b8913ec53c`; its durable evidence bundle is
+preserved in commit `fee31fe017a2cfa28074c997809fc301d27644fe` at
+`MANIFEST.json`. It does not certify later candidates or state a current
+regression count. Current Visembler product status is governed by
+[`docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md`](docs/VISSEMBLER_CURRENT_PRODUCT_STATUS.md).
+This documentation-only correction records no new `PASS_LOCAL_INTERNAL_PILOT`
+or company-target certification result. Actual managed identity, proxy,
+durable-storage, session and recovery evidence remains external and is not
+inferred from this checkout.
 
 ## Run Visembler
 
