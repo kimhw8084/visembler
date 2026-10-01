@@ -1,0 +1,521 @@
+{
+  "accepted_at": "2026-10-01T01:47:26Z",
+  "changed_files": [
+    {
+      "additions": 2,
+      "deletions": 0,
+      "path": ".github/workflows/quality.yml",
+      "status": "M"
+    },
+    {
+      "additions": 13,
+      "deletions": 7,
+      "path": "README.md",
+      "status": "M"
+    },
+    {
+      "additions": 291,
+      "deletions": 22,
+      "path": "scripts/release_checks/run_company_user_browser_acceptance.py",
+      "status": "M"
+    },
+    {
+      "additions": 401,
+      "deletions": 0,
+      "path": "tests/run_visualizer_company_user_browser_diagnostics_regression.py",
+      "status": "A"
+    }
+  ],
+  "checks": [
+    {
+      "command": "/bin/zsh -lc \"rg --files tests | rg '(company.*browser|browser.*accept|boundary)'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '200,440p' scripts/release_checks/run_company_user_browser_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '440,520p' scripts/release_checks/run_company_user_browser_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '285,500p' scripts/release_checks/run_company_user_browser_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rg -n \\\"visit\\\\(\\\" scripts/release_checks/run_company_user_browser_acceptance.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m py_compile scripts/release_checks/run_company_user_browser_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --check && rtk proxy git diff --stat'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk pytest -q tests/test_visualizer_company_user_browser_diagnostics.py'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 102,
+        "output_sha256": "041cf3bb353399faddb297386ef52dc112b34650e78f9bff76a271a78497c26e",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_company_user_browser_diagnostics.py; rtk proxy git status --short'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "failing_test_ids": [
+          "tests/test_visualizer_company_user_browser_diagnostics.py::test_positive_replay_preserves_all_checks_roles_clicks_and_timeout_budgets"
+        ],
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1674,
+        "output_sha256": "81e97ba6b92cdc74707fa7827193be19f0cbb15c92bd6dd4f7501cb3b887c800",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy cat '/private/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/com.apple.shortcuts.mac-helper/pytest-of-haewonkim/pytest-4/test_positive_replay_preserves0/receipt.json'\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 4833,
+        "output_sha256": "b1588d23e41f5376f138f29836ad124b40b9ac88ae806cb56e6058aff6ee2c0f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy sed -n '30,75p' tests/test_visualizer_company_user_browser_diagnostics.py && rtk proxy pytest -q tests/test_visualizer_company_user_browser_diagnostics.py\"",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 2273,
+        "output_sha256": "9340f27cd4dffe8e953c1325c491795459632f2b57666878832279a1e2be070a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_company_user_browser_diagnostics.py'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "cf426ab35f3b06fccef8290fde5325d90af130a79da1d1752031518df77c4236",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy env COMPANY_UI_ENVIRONMENT=test COMPANY_UI_VISUALIZER_DATA_DIR=/tmp/visembler-chg302-startup COMPANY_UI_STORAGE_SECRET=ci-visembler-storage-secret-0123456789 COMPANY_UI_HOST=127.0.0.1 COMPANY_UI_PORT=8123 python -c \\\"import os; from company_ui.products.visualizer.cli import build_application; _, environment, repository = build_application(os.environ); assert repository.list(); assert environment['COMPANY_UI_ENVIRONMENT'] == 'test'; print('Visembler startup smoke: PASS')\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "failing_test_ids": [
+          "tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout"
+        ],
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 3489,
+        "output_sha256": "0ce773bbe769295dea1c55fa517ba06669ad5a155f0a9e2de418516f1f7435fa",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,80p' tests/test_visualizer_release_closure.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"sed -n '1,260p' scripts/release_checks/run_repository_contracts.py\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy cat '/private/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/com.apple.shortcuts.mac-helper/pytest-7/test_repository_contract_recei0/repository-contracts.json'\"",
+      "exit_code": 1,
+      "test_result": {
+        "exit_code": 1,
+        "framework": "pytest",
+        "outcome": "test_failures",
+        "output_bytes": 187,
+        "output_sha256": "7692ecc462c27e90df21ec0c8693e459a212d7b6e85ae2f68be7a1e215e2bb69",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rg -n \"managed_target_status|PENDING|repository-contract\" tests scripts/release_checks docs .github'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy mv tests/test_visualizer_company_user_browser_diagnostics.py tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest --collect-only -q | tail -3'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 100,
+        "output_sha256": "b054dc5db5c5a30a2c9a52238250329ff37dfe2c385013d22468ed4b2cb7cec2",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest --collect-only | tail -5'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 334,
+        "output_sha256": "c655539423c5688a08370986dbb82da26ad0d21e29203049e55ad1f493587f0a",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 80,
+        "output_sha256": "423b1d0e014eb1eab96f4420f7b344c2615be505dd574b756ac884826ca74f2d",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1861,
+        "output_sha256": "628e8bbb8dd0abc090c84c9e1ea84f5fd250059c578ac123aa7e1608612c4a3f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git hash-object README.md && rtk proxy git rev-parse bf20685e9381eb6da24a3b2885f9db6a53d8028d:README.md'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --stat bf20685e9381eb6da24a3b2885f9db6a53d8028d && rtk proxy git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --name-only bf20685e9381eb6da24a3b2885f9db6a53d8028d && rtk proxy git merge-base --is-ancestor bf20685e9381eb6da24a3b2885f9db6a53d8028d HEAD && rtk proxy git merge-base --is-ancestor 5144788ccfaea8ec4d936eb5bd405a7da6558022 HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1861,
+        "output_sha256": "628e8bbb8dd0abc090c84c9e1ea84f5fd250059c578ac123aa7e1608612c4a3f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy cat '/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/com.apple.shortcuts.mac-helper/visembler-browser-diagnostic-zcmdciw0/receipt.json'\"",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 1,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff bf20685e9381eb6da24a3b2885f9db6a53d8028d -- .github/workflows/quality.yml'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --stat bf20685e9381eb6da24a3b2885f9db6a53d8028d && rtk proxy git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch && rtk proxy git diff --name-only bf20685e9381eb6da24a3b2885f9db6a53d8028d && rtk proxy git rev-parse HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git hash-object README.md && rtk proxy git rev-parse bf20685e9381eb6da24a3b2885f9db6a53d8028d:README.md && rtk proxy git merge-base --is-ancestor bf20685e9381eb6da24a3b2885f9db6a53d8028d HEAD && rtk proxy git merge-base --is-ancestor 5144788ccfaea8ec4d936eb5bd405a7da6558022 HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --unified=2 bf20685e9381eb6da24a3b2885f9db6a53d8028d -- scripts/release_checks/run_company_user_browser_acceptance.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy wc -l tests/run_visualizer_company_user_browser_diagnostics_regression.py && rtk proxy nl -ba scripts/release_checks/run_company_user_browser_acceptance.py | rg -n \\\"_BROWSER_STRUCTURE_SCRIPT|class _BrowserDiagnosticObserver|def _capture_failure_diagnostics|def _open_report_menu|def run\\\\(|failure_diagnostics|def main\\\" && rtk proxy nl -ba tests/run_visualizer_company_user_browser_diagnostics_regression.py | rg -n \\\"\"'^ *[0-9]+'\"\\\\s+def test_|\"'^ *[0-9]+'\"\\\\s+def main\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m py_compile scripts/release_checks/run_company_user_browser_acceptance.py tests/run_visualizer_company_user_browser_diagnostics_regression.py && rtk proxy git diff --check'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy python tests/run_visualizer_company_user_browser_diagnostics_regression.py'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk python -m company_ui.validate .'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy env COMPANY_UI_ENVIRONMENT=test COMPANY_UI_VISUALIZER_DATA_DIR=/tmp/visembler-chg302-startup-final COMPANY_UI_STORAGE_SECRET=ci-visembler-storage-secret-0123456789 COMPANY_UI_HOST=127.0.0.1 COMPANY_UI_PORT=8123 python -c \\\"import os; from company_ui.products.visualizer.cli import build_application; _, environment, repository = build_application(os.environ); assert repository.list(); assert environment['COMPANY_UI_ENVIRONMENT'] == 'test'; print('Visembler startup smoke: PASS')\\\"\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy pytest -q'",
+      "exit_code": 0,
+      "test_result": {
+        "exit_code": 0,
+        "framework": "pytest",
+        "outcome": "passed",
+        "output_bytes": 1861,
+        "output_sha256": "628e8bbb8dd0abc090c84c9e1ea84f5fd250059c578ac123aa7e1608612c4a3f",
+        "summary_detected": false
+      },
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc \"rtk proxy nl -ba scripts/release_checks/run_company_user_browser_acceptance.py | rg -n \\\"_BROWSER_STRUCTURE_SCRIPT|class _BrowserDiagnosticObserver|def _capture_failure_diagnostics|def _capture_before_browser_close|def _open_report_menu|def run\\\\(|failure_diagnostics|def main\\\" && rtk proxy nl -ba tests/run_visualizer_company_user_browser_diagnostics_regression.py | rg -n \\\"def test_menu_failure|def test_diagnostic_provider|def test_positive_replay|def main\\\" && rtk proxy nl -ba .github/workflows/quality.yml | sed -n '65,82p'\"",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git diff --check && rtk proxy git diff --stat bf20685e9381eb6da24a3b2885f9db6a53d8028d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git status --short --branch && rtk proxy git diff --name-only bf20685e9381eb6da24a3b2885f9db6a53d8028d'",
+      "exit_code": 0,
+      "type": "command_execution"
+    },
+    {
+      "command": "/bin/zsh -lc 'rtk proxy git rev-parse HEAD && rtk proxy git hash-object README.md && rtk proxy git rev-parse bf20685e9381eb6da24a3b2885f9db6a53d8028d:README.md && rtk proxy git merge-base --is-ancestor bf20685e9381eb6da24a3b2885f9db6a53d8028d HEAD && rtk proxy git merge-base --is-ancestor 5144788ccfaea8ec4d936eb5bd405a7da6558022 HEAD'",
+      "exit_code": 0,
+      "type": "command_execution"
+    }
+  ],
+  "codex": {
+    "cli_version": "codex-cli 0.159.2",
+    "configured_model": "gpt-6-luna",
+    "event_count": 193,
+    "provider_reported_model": null,
+    "reasoning_effort": "xhigh",
+    "terminal_type": "turn.completed",
+    "usage": {
+      "cache_hit_percent": 97.63,
+      "cache_write_input_tokens": 0,
+      "cached_input_tokens": 7171072,
+      "fresh_input_tokens": 173925,
+      "input_tokens": 7344997,
+      "non_reasoning_output_tokens": 27100,
+      "output_tokens": 71829,
+      "reasoning_output_tokens": 44729,
+      "total_processed_tokens": 7416826
+    },
+    "warnings": []
+  },
+  "commits": [
+    {
+      "sha": "b3987133374764e5b1ed7a1c38558240860d199c",
+      "subject": "fabric: capture completed model changes [CF-88df05732f2b15e2dc42cd70]"
+    },
+    {
+      "sha": "bf20685e9381eb6da24a3b2885f9db6a53d8028d",
+      "subject": "fabric: capture completed model changes [CF-356d376f851730de813a8a61]"
+    }
+  ],
+  "diff": {
+    "additions": 707,
+    "changed_files": 4,
+    "commit_count": 2,
+    "deletions": 29
+  },
+  "error_code": null,
+  "evidence_manifest": {
+    "count": 1,
+    "items": [
+      {
+        "bytes": 7380,
+        "path": "README.md",
+        "sha256": "831fdfbc1a8ff0473ffd83ad8703b1a63104cad02cb76597d694a5c031d1f8ed"
+      }
+    ],
+    "version": 1
+  },
+  "evidence_publisher_release": "1.2.5-dashboard-controls-candidate",
+  "fabric_capture": {
+    "applied": true,
+    "commit_message": "fabric: capture completed model changes [CF-88df05732f2b15e2dc42cd70]",
+    "commit_sha": "b3987133374764e5b1ed7a1c38558240860d199c",
+    "paths_before": 3,
+    "status_before": [
+      " M .github/workflows/quality.yml",
+      " M scripts/release_checks/run_company_user_browser_acceptance.py",
+      "?? tests/run_visualizer_company_user_browser_diagnostics_regression.py"
+    ],
+    "transient_untracked_removed": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "fabric_release": "1.2.5-dashboard-controls-candidate",
+  "failure_class": null,
+  "finished_at": "2026-10-01T02:20:22Z",
+  "git": {
+    "base_is_ancestor": true,
+    "base_sha": "5144788ccfaea8ec4d936eb5bd405a7da6558022",
+    "branch": "fix/visembler-menu-ci-diagnostics-20261001-r1",
+    "detached_verify": false,
+    "head_sha": "b3987133374764e5b1ed7a1c38558240860d199c",
+    "remote_exact_head": true,
+    "remote_head_sha": "b3987133374764e5b1ed7a1c38558240860d199c",
+    "target_branch": "main",
+    "target_drifted_since_acceptance": false,
+    "target_head_observed_after_execution": "5144788ccfaea8ec4d936eb5bd405a7da6558022",
+    "work_branch": "fix/visembler-menu-ci-diagnostics-20261001-r1",
+    "worktree_clean": true
+  },
+  "instructions": {
+    "files": [
+      {
+        "bytes": 14137,
+        "path": "AGENTS.md",
+        "sha256": "ab36c0b91c3647ecac4d699092e02126add2d9e5246f1aa1f1beecbdff395a82"
+      }
+    ],
+    "total_bytes": 14137,
+    "warning": null
+  },
+  "job_id": "CF-88df05732f2b15e2dc42cd70",
+  "kind": "codex-fabric-audit-evidence",
+  "locator": {
+    "branch": "codex-fabric/evidence/visembler/VIS-MENU-CI-DIAGNOSTICS-20261001-r1",
+    "path": ".codex-fabric/audit.json",
+    "ref": "refs/heads/codex-fabric/evidence/visembler/VIS-MENU-CI-DIAGNOSTICS-20261001-r1"
+  },
+  "operation": "FIX",
+  "policy": {
+    "environment_policy_sha256": "e077daca74297b3c30bee8989f00f8ca5338f7610b4d016a6c48db524205d064",
+    "fabric_release": "1.2.5-dashboard-controls-candidate",
+    "policy_sha256": "123615bf2f6e57dcac197e49ca98ceac59ada86a55e2c84445ea5d00812c0833",
+    "registry_sha256": "af81b8552f9d6a33847310e3c6bcd2d48401782b963a58efd2993e93570cb4aa"
+  },
+  "project_id": "visembler",
+  "recovery": {
+    "model_rerun_safe": false,
+    "recovery_required": false,
+    "retry_safe": false,
+    "retry_scope": null,
+    "worktree_retained": true
+  },
+  "request": "VIS-MENU-CI-DIAGNOSTICS-20261001-r1",
+  "schema_version": 1,
+  "started_at": "2026-10-01T01:47:27Z",
+  "status": "EXECUTED_CHANGE",
+  "timing": {
+    "execution_seconds": 1975,
+    "queue_seconds": 1,
+    "total_seconds": 1976
+  },
+  "transport": {
+    "bytes": 3983,
+    "envelope": "FABRIC/2",
+    "prompt_bytes": 3654,
+    "prompt_sha256": "4728fc96bcf32235b9a8c494de892d93392513dc60f437ae04d0694f1d30069c",
+    "sha256": "88df05732f2b15e2dc42cd70699a159fd51036bb2df7803db07b475a4fa1da35"
+  }
+}
