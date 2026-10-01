@@ -1,0 +1,37 @@
+........................................................................ [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 17%]
+........................................................................ [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 34%]
+........................................................................ [ 40%]
+........................................................................ [ 46%]
+........................................................................ [ 52%]
+........................................................................ [ 58%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+........................................................................ [ 75%]
+..................................................................F..... [ 81%]
+........................................................................ [ 87%]
+........................................................................ [ 93%]
+........................................................................ [ 98%]
+..............                                                           [100%]
+=================================== FAILURES ===================================
+___________ test_repository_contract_receipt_proves_current_checkout ___________
+tests/test_visualizer_release_closure.py:25: in test_repository_contract_receipt_proves_current_checkout
+    assert module.run(output) == 0
+E   AssertionError: assert 2 == 0
+E    +  where 2 = <function run at 0x16cbf00e0>(PosixPath('/private/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/pytest-of-haewonkim/pytest-27/test_repository_contract_recei0/repository-contracts.json'))
+E    +    where <function run at 0x16cbf00e0> = <module 'visualizer_repository_contracts' from '/private/tmp/visembler-boxplot-axis-direct/source/scripts/release_checks/run_repository_contracts.py'>.run
+----------------------------- Captured stdout call -----------------------------
+{"managed_target_status": "PENDING", "output": "/private/var/folders/nz/6q2p_ldx3txdbw_gttbpnwjr0000gn/T/pytest-of-haewonkim/pytest-27/test_repository_contract_recei0/repository-contracts.json", "status": "FAIL"}
+=============================== warnings summary ===============================
+tests/test_visualizer_application_hardening.py::test_pptx_duplicate_path_and_compression_bomb_rejected
+  /opt/anaconda3/lib/python3.11/zipfile.py:1550: UserWarning: Duplicate name: 'ppt/presentation.xml'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /private/tmp/visembler-boxplot-axis-direct/evidence/native-release/full-tests.xml -
+=========================== short test summary info ============================
+FAILED tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout
+1 failed, 1237 passed, 1 warning in 136.48s (0:02:16)

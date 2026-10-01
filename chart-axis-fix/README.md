@@ -1,0 +1,11 @@
+# Visembler Box Plot group-axis repair - direct review evidence
+
+Candidate `aad60377e8ce9247d4b872e2cacbeddd5c778668`, primary Codex direct FIX, [PR #35](https://github.com/kimhw8084/visembler/pull/35), [CHG-303](https://app.notion.com/p/3ecc564c8d04819ba10ed5049e4bc01a).
+
+Start with the actual [native Chart Studio](chart-studio-axis/B-studio.png), [full Studio viewport](chart-studio-axis/B-studio-viewport.png), and [state-coincident final-candidate receipt](chart-studio-axis/receipt.json). Reference/Affected group labels sit at the ordinal quartile centers; numeric ticks remain only on the observation Y axis. The [whole native report probe](native-chart/B-preview-1440-viewport.png) and [narrow preview](native-chart/B-preview-320-viewport.png) retain surrounding composition. Twenty chart/editor/export probes ran on the renderer/test predecessor; [exact metadata-only equivalence](source-equivalence.json) retains that original identity rather than relabeling it.
+
+[Verification summary](verification-summary.json): 31/31 maintained native gates; 1,238 tests with zero failures/skips; 31 focused chart/PPTX tests; 20 native chart checks plus 2 final-candidate native Chart Studio checks, zero browser errors; all 9 exact-current PR CI jobs succeeded. Actual [editable PPTX](native-chart/B.pptx) and [SVG export](native-chart/B.report.svg) retain canonical semantics and unchanged report models. Regression intentionally fails all 3 cases on the old source.
+
+The initial count consistency failure is retained in `attempt1-count-mismatch/`. The manifest is corrected from 1,235 to 1,238 collected tests without weakening the contract or modifying historical claims. Original maintained receipts remain unmodified.
+
+The app validator still has 57 inherited errors/1,204 warnings, identical to main. This is not a clean-validator pass, independent external audit, whole-report GO, Fabric job/audit, Notion-staged Artifact Run, qualified bridge, supported direct-run Codash binding or main integration. The integration operator's direct-candidate eligibility remains unsupported. No canonical Fabric audit is manufactured. Runtime stores and the duplicate native ZIP are omitted; the deterministic inventory covers the retained evidence.

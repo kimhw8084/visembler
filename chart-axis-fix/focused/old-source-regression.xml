@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="3" skipped="0" tests="3" time="0.314" timestamp="2026-10-01T09:21:23.113468-05:00" hostname="HaeBook-Pro-M3.local"><testcase classname="tests.test_visualizer_box_plot_group_axis" name="test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x[groups0]" time="0.170"><failure message="AssertionError: assert ['94', '95', ... '98', '98.6'] == ['Reference', 'Affected']&#10;  &#10;  At index 0 diff: '94' != 'Reference'&#10;  Left contains 4 more items, first extra item: '96'&#10;  Use -v to get more diff">tests/test_visualizer_box_plot_group_axis.py:29: in test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x
+    assert facts['labels'] == [str(group) for group in groups]
+E   AssertionError: assert ['94', '95', ... '98', '98.6'] == ['Reference', 'Affected']
+E     
+E     At index 0 diff: '94' != 'Reference'
+E     Left contains 4 more items, first extra item: '96'
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_visualizer_box_plot_group_axis" name="test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x[groups1]" time="0.060"><failure message="AssertionError: assert ['93.8', '94'...94.4', '94.6'] == ['Only cohort']&#10;  &#10;  At index 0 diff: '93.8' != 'Only cohort'&#10;  Left contains 4 more items, first extra item: '94'&#10;  Use -v to get more diff">tests/test_visualizer_box_plot_group_axis.py:29: in test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x
+    assert facts['labels'] == [str(group) for group in groups]
+E   AssertionError: assert ['93.8', '94'...94.4', '94.6'] == ['Only cohort']
+E     
+E     At index 0 diff: '93.8' != 'Only cohort'
+E     Left contains 4 more items, first extra item: '94'
+E     Use -v to get more diff</failure></testcase><testcase classname="tests.test_visualizer_box_plot_group_axis" name="test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x[groups2]" time="0.057"><failure message="AssertionError: assert ['94', '95', ... '98', '98.6'] == ['0', '7']&#10;  &#10;  At index 0 diff: '94' != '0'&#10;  Left contains 4 more items, first extra item: '96'&#10;  Use -v to get more diff">tests/test_visualizer_box_plot_group_axis.py:29: in test_box_plot_uses_one_ordinal_axis_for_groups_even_with_legacy_numeric_x
+    assert facts['labels'] == [str(group) for group in groups]
+E   AssertionError: assert ['94', '95', ... '98', '98.6'] == ['0', '7']
+E     
+E     At index 0 diff: '94' != '0'
+E     Left contains 4 more items, first extra item: '96'
+E     Use -v to get more diff</failure></testcase></testsuite></testsuites>
