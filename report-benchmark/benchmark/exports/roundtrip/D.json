@@ -1,0 +1,1135 @@
+{
+  "canonical_import": "company_ui.products.visualizer.ppt_service.import_visembler_pptx",
+  "exact_model_match": true,
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "shift_1",
+            "name": "Shift",
+            "nullable": false,
+            "profile": {
+              "distinct": 18,
+              "missing": 0,
+              "type_override": true
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "yield_2",
+            "name": "Yield",
+            "nullable": false,
+            "profile": {
+              "distinct": 18,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-muplaba0-8kufil",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 7,
+        "rows": [
+          [
+            "Shift 01",
+            94.1
+          ],
+          [
+            "Shift 02",
+            94.153
+          ],
+          [
+            "Shift 03",
+            94.206
+          ],
+          [
+            "Shift 04",
+            94.259
+          ],
+          [
+            "Shift 05",
+            94.312
+          ],
+          [
+            "Shift 06",
+            94.365
+          ],
+          [
+            "Shift 07",
+            94.418
+          ],
+          [
+            "Shift 08",
+            94.471
+          ],
+          [
+            "Shift 09",
+            94.524
+          ],
+          [
+            "Shift 10",
+            94.576
+          ],
+          [
+            "Shift 11",
+            94.629
+          ],
+          [
+            "Shift 12",
+            94.682
+          ],
+          [
+            "Shift 13",
+            94.735
+          ],
+          [
+            "Shift 14",
+            94.788
+          ],
+          [
+            "Shift 15",
+            94.841
+          ],
+          [
+            "Shift 16",
+            94.894
+          ],
+          [
+            "Shift 17",
+            94.947
+          ],
+          [
+            "Shift 18",
+            95
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T14:04:11.475Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "time_1",
+            "name": "Time",
+            "nullable": false,
+            "profile": {
+              "distinct": 5,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "time"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "measurement_2",
+            "name": "Measurement",
+            "nullable": false,
+            "profile": {
+              "distinct": 5,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number",
+            "unit": ""
+          },
+          {
+            "id": "lsl_3",
+            "name": "LSL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_low"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "usl_4",
+            "name": "USL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_high"
+            ],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mupladez-6146hs",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            1,
+            94.1,
+            92,
+            97
+          ],
+          [
+            2,
+            94.6,
+            92,
+            97
+          ],
+          [
+            3,
+            95,
+            92,
+            97
+          ],
+          [
+            4,
+            94.8,
+            92,
+            97
+          ],
+          [
+            5,
+            95.2,
+            92,
+            97
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T13:48:10.475Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": [
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 2
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 3
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 4
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 5
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 6
+          }
+        ]
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "body": "Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "Line 4 · shifts A–C · chamber A controls · capacity release review.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Line 4 · shifts A–C · chamber A controls · capacity release review.",
+        "title": "Report context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 96
+        },
+        "composition_role": "hero_metric",
+        "delta": 0.9,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 96,
+        "title": "First pass yield",
+        "type": "metric",
+        "unit": "%",
+        "value": 95,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "capability_overrides": {
+          "target": 6
+        },
+        "composition_role": "hero_metric",
+        "delta": -1.7,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 6,
+        "title": "Unplanned downtime",
+        "type": "metric",
+        "unit": "h",
+        "value": 8.3,
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 3,
+              "labelPresentationIntent": {
+                "fields": [
+                  "interval",
+                  "rotation"
+                ],
+                "mode": "authored"
+              },
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 20,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "shift_1",
+                "name": "Shift",
+                "nullable": false,
+                "profile": {
+                  "distinct": 18,
+                  "missing": 0,
+                  "type_override": true
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "yield_2",
+                "name": "Yield",
+                "nullable": false,
+                "profile": {
+                  "distinct": 18,
+                  "missing": 0
+                },
+                "semantic_tags": [
+                  "value"
+                ],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-muplaba0-8kufil",
+            "metadata": {
+              "header": {
+                "confidence": 1,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 7,
+            "rows": [
+              [
+                "Shift 01",
+                94.1
+              ],
+              [
+                "Shift 02",
+                94.153
+              ],
+              [
+                "Shift 03",
+                94.206
+              ],
+              [
+                "Shift 04",
+                94.259
+              ],
+              [
+                "Shift 05",
+                94.312
+              ],
+              [
+                "Shift 06",
+                94.365
+              ],
+              [
+                "Shift 07",
+                94.418
+              ],
+              [
+                "Shift 08",
+                94.471
+              ],
+              [
+                "Shift 09",
+                94.524
+              ],
+              [
+                "Shift 10",
+                94.576
+              ],
+              [
+                "Shift 11",
+                94.629
+              ],
+              [
+                "Shift 12",
+                94.682
+              ],
+              [
+                "Shift 13",
+                94.735
+              ],
+              [
+                "Shift 14",
+                94.788
+              ],
+              [
+                "Shift 15",
+                94.841
+              ],
+              [
+                "Shift 16",
+                94.894
+              ],
+              [
+                "Shift 17",
+                94.947
+              ],
+              [
+                "Shift 18",
+                95
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-10-01T14:04:11.475Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-muplaba0-8kufil",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "shift_1",
+            "value": "yield_2",
+            "x": "shift_1",
+            "y": "yield_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "yield_2",
+              "id": "series-1",
+              "label": "Yield",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            "Shift 01",
+            94.1
+          ],
+          [
+            "Shift 02",
+            94.153
+          ],
+          [
+            "Shift 03",
+            94.206
+          ],
+          [
+            "Shift 04",
+            94.259
+          ],
+          [
+            "Shift 05",
+            94.312
+          ],
+          [
+            "Shift 06",
+            94.365
+          ],
+          [
+            "Shift 07",
+            94.418
+          ],
+          [
+            "Shift 08",
+            94.471
+          ],
+          [
+            "Shift 09",
+            94.524
+          ],
+          [
+            "Shift 10",
+            94.576
+          ],
+          [
+            "Shift 11",
+            94.629
+          ],
+          [
+            "Shift 12",
+            94.682
+          ],
+          [
+            "Shift 13",
+            94.735
+          ],
+          [
+            "Shift 14",
+            94.788
+          ],
+          [
+            "Shift 15",
+            94.841
+          ],
+          [
+            "Shift 16",
+            94.894
+          ],
+          [
+            "Shift 17",
+            94.947
+          ],
+          [
+            "Shift 18",
+            95
+          ]
+        ],
+        "dataset_id": "dataset-muplaba0-8kufil",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "shift_1",
+          "value": "yield_2",
+          "x": "shift_1",
+          "y": "yield_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "rows": [
+          {
+            "label": "Shift 01",
+            "value": 94.1
+          },
+          {
+            "label": "Shift 02",
+            "value": 94.153
+          },
+          {
+            "label": "Shift 03",
+            "value": 94.206
+          },
+          {
+            "label": "Shift 04",
+            "value": 94.259
+          },
+          {
+            "label": "Shift 05",
+            "value": 94.312
+          },
+          {
+            "label": "Shift 06",
+            "value": 94.365
+          },
+          {
+            "label": "Shift 07",
+            "value": 94.418
+          },
+          {
+            "label": "Shift 08",
+            "value": 94.471
+          },
+          {
+            "label": "Shift 09",
+            "value": 94.524
+          },
+          {
+            "label": "Shift 10",
+            "value": 94.576
+          },
+          {
+            "label": "Shift 11",
+            "value": 94.629
+          },
+          {
+            "label": "Shift 12",
+            "value": 94.682
+          },
+          {
+            "label": "Shift 13",
+            "value": 94.735
+          },
+          {
+            "label": "Shift 14",
+            "value": 94.788
+          },
+          {
+            "label": "Shift 15",
+            "value": 94.841
+          },
+          {
+            "label": "Shift 16",
+            "value": 94.894
+          },
+          {
+            "label": "Shift 17",
+            "value": 94.947
+          },
+          {
+            "label": "Shift 18",
+            "value": 95
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Yield by shift",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "composition_role": "primary_analysis",
+        "dataset_id": "dataset-mupladez-6146hs",
+        "element": "SPC Control Chart",
+        "engine": "EngineeringChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "lower_limit": null,
+        "mapping": {
+          "specification_high": "usl_4",
+          "specification_low": "lsl_3",
+          "time": "time_1",
+          "value": "measurement_2",
+          "x": "time_1",
+          "y": "measurement_2"
+        },
+        "message_role": "Primary Evidence",
+        "observations": [],
+        "order": 5,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "title": "Critical measurement trend",
+        "type": "engineering",
+        "upper_limit": null,
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Tool",
+            "Chamber",
+            "Measure",
+            "Owner",
+            "Status"
+          ],
+          "rows": [
+            [
+              "ETCH-08",
+              "A",
+              "Pressure",
+              "Equipment Eng.",
+              "Open"
+            ],
+            [
+              "ETCH-07",
+              "C",
+              "Flow",
+              "Process Eng.",
+              "Stable"
+            ],
+            [
+              "MET-02",
+              "B",
+              "Yield",
+              "Quality",
+              "Verified"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 8,
+        "rows": [
+          [
+            "ETCH-08",
+            "A",
+            "Pressure",
+            "Equipment Eng.",
+            "Open"
+          ],
+          [
+            "ETCH-07",
+            "C",
+            "Flow",
+            "Process Eng.",
+            "Stable"
+          ],
+          [
+            "MET-02",
+            "B",
+            "Yield",
+            "Quality",
+            "Verified"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "title": "Clean Table",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "composition_role": "causal_evidence",
+        "edges": [
+          [
+            "Detect",
+            "Contain"
+          ],
+          [
+            "Contain",
+            "Verify"
+          ],
+          [
+            "Verify",
+            "Release"
+          ]
+        ],
+        "element": "Process Flow",
+        "engine": "DiagramEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "nodes": [
+          "Detect",
+          "Contain",
+          "Verify",
+          "Release"
+        ],
+        "order": 7,
+        "section_id": "evidence",
+        "section_title": "Response workflow",
+        "title": "Process Flow",
+        "type": "diagram",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "detail": "Sample: 30 parts · method: inline metrology · source: shift B inspection.",
+        "element": "Evidence Card",
+        "engine": "EvidenceCompositeEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 9,
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "statement": "Measurement system remains within the qualified reference range.",
+        "status": "Verified",
+        "title": "Evidence Card",
+        "type": "evidence",
+        "weight": 1,
+        "z": 9
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Keep the recipe locked and attach the next-shift control evidence.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c10",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 10,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "statement": "Hold added capacity until the paired-lot check closes",
+        "status": "Review",
+        "title": "Risk Callout",
+        "type": "decision",
+        "weight": 1,
+        "z": 10
+      },
+      {
+        "composition_role": "action_status",
+        "detail": "Owner: Equipment Engineering · due next shift · evidence: paired control lot.",
+        "element": "Project Card",
+        "engine": "ProjectCompositeEngine",
+        "groupId": null,
+        "id": "c11",
+        "locked": false,
+        "message_role": "Action",
+        "order": 11,
+        "section_id": "delivery",
+        "section_title": "Next steps",
+        "statement": "Complete chamber verification and update the runbook.",
+        "status": "Active",
+        "title": "Project Card",
+        "type": "project",
+        "weight": 1,
+        "z": 11
+      },
+      {
+        "body": "Yield rises from 94.1% to 95.0% across eighteen observed shifts. SPC and specification limits answer different questions. Keep the recipe locked until the paired-lot check and the two open handoff items close.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c12",
+        "locked": false,
+        "message_role": "Context",
+        "order": 6,
+        "section_id": "analysis",
+        "section_title": "Shift interpretation",
+        "text": "Yield rises from 94.1% to 95.0% across eighteen observed shifts. SPC and specification limits answer different questions. Keep the recipe locked until the paired-lot check and the two open handoff items close.",
+        "title": "Body Narrative",
+        "type": "text",
+        "weight": 1,
+        "z": 12
+      }
+    ],
+    "layoutPreset": "technical",
+    "mode": "smart",
+    "nextId": 13,
+    "schema_version": 1
+  },
+  "source_report_id": "report-3089681bf06141b080534e6e717ce638"
+}

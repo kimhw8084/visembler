@@ -1,0 +1,98 @@
+{
+  "chart1": "Checkpoint\tFormulation\tRetention\n01 · cycle 010\tUntreated reference\t99.40\n01 · cycle 010\tFiltered candidate\t99.64\n01 · cycle 010\tLow-salt alternative\t99.56\n02 · cycle 020\tUntreated reference\t98.80\n02 · cycle 020\tFiltered candidate\t99.29\n02 · cycle 020\tLow-salt alternative\t99.12\n03 · cycle 030\tUntreated reference\t98.20\n03 · cycle 030\tFiltered candidate\t98.93\n03 · cycle 030\tLow-salt alternative\t98.68\n04 · cycle 040\tUntreated reference\t97.60\n04 · cycle 040\tFiltered candidate\t98.58\n04 · cycle 040\tLow-salt alternative\t98.24\n05 · cycle 050\tUntreated reference\t97.00\n05 · cycle 050\tFiltered candidate\t98.22\n05 · cycle 050\tLow-salt alternative\t97.81\n06 · cycle 060\tUntreated reference\t96.40\n06 · cycle 060\tFiltered candidate\t97.87\n06 · cycle 060\tLow-salt alternative\t97.37\n07 · cycle 070\tUntreated reference\t95.80\n07 · cycle 070\tFiltered candidate\t97.51\n07 · cycle 070\tLow-salt alternative\t96.93\n08 · cycle 080\tUntreated reference\t95.20\n08 · cycle 080\tFiltered candidate\t97.16\n08 · cycle 080\tLow-salt alternative\t96.49\n09 · cycle 090\tUntreated reference\t94.60\n09 · cycle 090\tFiltered candidate\t96.80\n09 · cycle 090\tLow-salt alternative\t96.05\n10 · cycle 100\tUntreated reference\t94.00\n10 · cycle 100\tFiltered candidate\t96.44\n10 · cycle 100\tLow-salt alternative\t95.61\n11 · cycle 110\tUntreated reference\t93.40\n11 · cycle 110\tFiltered candidate\t96.09\n11 · cycle 110\tLow-salt alternative\t95.17\n12 · cycle 120\tUntreated reference\t92.80\n12 · cycle 120\tFiltered candidate\t95.73\n12 · cycle 120\tLow-salt alternative\t94.73\n13 · cycle 130\tUntreated reference\t92.20\n13 · cycle 130\tFiltered candidate\t95.38\n13 · cycle 130\tLow-salt alternative\t94.29\n14 · cycle 140\tUntreated reference\t91.60\n14 · cycle 140\tFiltered candidate\t95.02\n14 · cycle 140\tLow-salt alternative\t93.86\n15 · cycle 150\tUntreated reference\t91.00\n15 · cycle 150\tFiltered candidate\t94.67\n15 · cycle 150\tLow-salt alternative\t93.42\n16 · cycle 160\tUntreated reference\t90.40\n16 · cycle 160\tFiltered candidate\t94.31\n16 · cycle 160\tLow-salt alternative\t92.98\n17 · cycle 170\tUntreated reference\t89.80\n17 · cycle 170\tFiltered candidate\t93.96\n17 · cycle 170\tLow-salt alternative\t92.54\n18 · cycle 180\tUntreated reference\t89.20\n18 · cycle 180\tFiltered candidate\t93.60\n18 · cycle 180\tLow-salt alternative\t92.10\n",
+  "chart2": "Assay batch\tMoisture ppm\nLAB-1001\t17.6\nLAB-1002\t18.2\nLAB-1003\t19.1\nLAB-1004\t18.4\nLAB-1005\t18.9\nLAB-1006\t18.7\n",
+  "chart_titles": [
+    "Capacity retention across cycling checkpoints",
+    "Moisture by assay batch"
+  ],
+  "comparison": {
+    "after": "93.6",
+    "before": "89.2",
+    "title": "Reference versus filtered retention",
+    "unit": "%"
+  },
+  "conclusion": "Decision: release 20 pilot cells only after the moisture repeat and trace-metal duplicate pass. Keep the untreated reference running through 200 cycles and review thermal behavior before expanding.",
+  "context": "Cedar Ionics · EL-2609-C · 18 cycling checkpoints · assay lots LAB-1001 to LAB-1006 · Reliability owner · reviewed 1 October 2026.",
+  "decision": [
+    "Release 20 pilot cells after duplicate assays pass",
+    "Stop release if moisture exceeds 20 ppm or copper exceeds 0.10 ppm. The assay repeat is pending; improved retention alone does not authorize shipment.",
+    "Conditional"
+  ],
+  "description": "Dense reliability review for a battery materials team. Evaluate cycling retention and impurity checks before releasing electrolyte EL-2609-C to a customer pilot.",
+  "flow": [
+    "Verify moisture duplicate\nConfirm copper result\nApprove pilot batch\nShip twenty cells\nReview extended cycling",
+    "Verify moisture duplicate -> Confirm copper result\nConfirm copper result -> Approve pilot batch\nApprove pilot batch -> Ship twenty cells\nShip twenty cells -> Review extended cycling"
+  ],
+  "freshness": "Assay 08:20 · cycling 07:55 · duplicate result pending",
+  "headline": "Retention improved after filtration; the customer pilot remains conditional.",
+  "interpretation": "Filtered samples retain 93.6% capacity at the final checkpoint versus 89.2% in the untreated reference. The third formulation reaches 92.1%. These samples support a limited pilot, but differences in initial conditioning and unresolved moisture results prevent a causal attribution to filtration alone.",
+  "metric1": {
+    "delta": "+4.4 pp",
+    "target": "94.0",
+    "title": "Filtered final retention",
+    "unit": "%",
+    "value": "93.6"
+  },
+  "metric2": {
+    "delta": "-1.3 ppm",
+    "target": "20.0",
+    "title": "Moisture duplicate · latest",
+    "unit": "ppm",
+    "value": "18.7"
+  },
+  "table": [
+    [
+      "Evidence ID",
+      "Measurement",
+      "Criterion",
+      "Owner",
+      "Disposition"
+    ],
+    [
+      [
+        "REL-EL-2609-C-018",
+        "Retention 93.6%",
+        "94.0% target",
+        "Reliability",
+        "Pilot only"
+      ],
+      [
+        "LAB-1006-MOISTURE",
+        "18.7 ppm",
+        "20.0 ppm max",
+        "Analytical",
+        "Duplicate pending"
+      ],
+      [
+        "LAB-1006-COPPER",
+        "0.08 ppm",
+        "0.10 ppm max",
+        "Analytical",
+        "Verify duplicate"
+      ],
+      [
+        "THERM-EL-2609-C",
+        "34.2 C rise",
+        "35.0 C watch",
+        "Safety",
+        "Repeat at 200 cycles"
+      ],
+      [
+        "REF-EL-2609-R",
+        "89.2% retention",
+        "Matched conditioning",
+        "Reliability",
+        "Continue reference"
+      ],
+      [
+        "SHIP-PILOT-0020",
+        "20 cells proposed",
+        "All release checks",
+        "Operations",
+        "Hold for signatures"
+      ]
+    ]
+  ],
+  "table_title": "Release evidence and unresolved checks",
+  "title": "Cedar Ionics · Electrolyte Qualification Release 2026-10"
+}

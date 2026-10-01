@@ -1,0 +1,241 @@
+{
+  "c11": {
+    "canonicalDirection": "right",
+    "clearancePolicy": {
+      "markerEnvelope": 10.8,
+      "markerForwardEnvelope": 0,
+      "minimumCssPx": 4,
+      "minimumScale": 0.75,
+      "protectedPadding": 18,
+      "protectedPaddingY": 18
+    },
+    "componentRect": {
+      "height": 666.0625,
+      "width": 370,
+      "x": 26,
+      "y": 1344.59375
+    },
+    "connectors": [
+      {
+        "arrowhead_clearance_px": 24.2,
+        "arrowhead_nearest": {
+          "kind": "label",
+          "nodeId": "node-2",
+          "text": "Confirm copper result"
+        },
+        "id": "edge-1",
+        "order": 0,
+        "path": "M160 80 L160 126",
+        "shaft_clearance_px": 22.41,
+        "shaft_nearest": {
+          "kind": "label",
+          "nodeId": "node-1",
+          "text": "Verify moisture duplicate"
+        },
+        "source": "node-1",
+        "target": "node-2",
+        "text_intersections": 0
+      },
+      {
+        "arrowhead_clearance_px": 24.2,
+        "arrowhead_nearest": {
+          "kind": "label",
+          "nodeId": "node-3",
+          "text": "Approve pilot batch"
+        },
+        "id": "edge-2",
+        "order": 1,
+        "path": "M160 188 L160 234",
+        "shaft_clearance_px": 22.41,
+        "shaft_nearest": {
+          "kind": "label",
+          "nodeId": "node-2",
+          "text": "Confirm copper result"
+        },
+        "source": "node-2",
+        "target": "node-3",
+        "text_intersections": 0
+      },
+      {
+        "arrowhead_clearance_px": 24.2,
+        "arrowhead_nearest": {
+          "kind": "label",
+          "nodeId": "node-4",
+          "text": "Ship twenty cells"
+        },
+        "id": "edge-3",
+        "order": 2,
+        "path": "M160 296 L160 342",
+        "shaft_clearance_px": 22.41,
+        "shaft_nearest": {
+          "kind": "label",
+          "nodeId": "node-3",
+          "text": "Approve pilot batch"
+        },
+        "source": "node-3",
+        "target": "node-4",
+        "text_intersections": 0
+      },
+      {
+        "arrowhead_clearance_px": 24.2,
+        "arrowhead_nearest": {
+          "kind": "label",
+          "nodeId": "node-5",
+          "text": "Review extended cycling"
+        },
+        "id": "edge-4",
+        "order": 3,
+        "path": "M160 404 L160 450",
+        "shaft_clearance_px": 22.41,
+        "shaft_nearest": {
+          "kind": "label",
+          "nodeId": "node-4",
+          "text": "Ship twenty cells"
+        },
+        "source": "node-4",
+        "target": "node-5",
+        "text_intersections": 0
+      }
+    ],
+    "edgeLabelNearest": null,
+    "edgeLabelToNodeTextClearancePx": null,
+    "edgeLabels": [],
+    "flowId": "c11",
+    "nodes": [
+      {
+        "id": "node-1",
+        "labels": [
+          {
+            "id": "node-1",
+            "kind": "label",
+            "rect": {
+              "bottom": 1488.7112485408784,
+              "left": 118.35156202316284,
+              "right": 303.64843797683716,
+              "top": 1470.7112473964692
+            },
+            "text": "Verify moisture duplicate"
+          }
+        ],
+        "order": 0,
+        "rect": {
+          "height": 67.0374755859375,
+          "width": 294.0999755859375,
+          "x": 63.95000076293945,
+          "y": 1445.0562744140625
+        },
+        "title": "Step 1: Verify moisture duplicate"
+      },
+      {
+        "id": "node-2",
+        "labels": [
+          {
+            "id": "node-2",
+            "kind": "label",
+            "rect": {
+              "bottom": 1605.4862567901612,
+              "left": 130.14844069480898,
+              "right": 291.85157580375676,
+              "top": 1587.486255645752
+            },
+            "text": "Confirm copper result"
+          }
+        ],
+        "order": 1,
+        "rect": {
+          "height": 67.0374755859375,
+          "width": 294.0999755859375,
+          "x": 63.95000076293945,
+          "y": 1561.831298828125
+        },
+        "title": "Step 2: Confirm copper result"
+      },
+      {
+        "id": "node-3",
+        "labels": [
+          {
+            "id": "node-3",
+            "kind": "label",
+            "rect": {
+              "bottom": 1722.261256790161,
+              "left": 138.78125743865968,
+              "right": 283.218759059906,
+              "top": 1704.261255645752
+            },
+            "text": "Approve pilot batch"
+          }
+        ],
+        "order": 2,
+        "rect": {
+          "height": 67.03759765625,
+          "width": 294.0999755859375,
+          "x": 63.95000076293945,
+          "y": 1678.606201171875
+        },
+        "title": "Step 3: Approve pilot batch"
+      },
+      {
+        "id": "node-4",
+        "labels": [
+          {
+            "id": "node-4",
+            "kind": "label",
+            "rect": {
+              "bottom": 1839.0362567901611,
+              "left": 148.2343828678131,
+              "right": 273.76564188003545,
+              "top": 1821.036255645752
+            },
+            "text": "Ship twenty cells"
+          }
+        ],
+        "order": 3,
+        "rect": {
+          "height": 67.0374755859375,
+          "width": 294.0999755859375,
+          "x": 63.95000076293945,
+          "y": 1795.3812255859375
+        },
+        "title": "Step 4: Ship twenty cells"
+      },
+      {
+        "id": "node-5",
+        "labels": [
+          {
+            "id": "node-5",
+            "kind": "label",
+            "rect": {
+              "bottom": 1955.8112567901612,
+              "left": 120.10156488418579,
+              "right": 301.8984516143799,
+              "top": 1937.811255645752
+            },
+            "text": "Review extended cycling"
+          }
+        ],
+        "order": 4,
+        "rect": {
+          "height": 67.0374755859375,
+          "width": 294.0999755859375,
+          "x": 63.95000076293945,
+          "y": 1912.15625
+        },
+        "title": "Step 5: Review extended cycling"
+      }
+    ],
+    "projection": "medium-1-column",
+    "readingColumns": 1,
+    "readingDirection": "down",
+    "renderedScale": 1.0813,
+    "svgRect": {
+      "height": 573.0625,
+      "width": 346,
+      "x": 38,
+      "y": 1425.59375
+    },
+    "viewBox": {
+      "height": 530,
+      "width": 320
+    }
+  }
+}

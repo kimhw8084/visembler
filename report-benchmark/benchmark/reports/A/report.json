@@ -1,0 +1,1285 @@
+{
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "quarter_1",
+            "name": "Quarter",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "retention_2",
+            "name": "Retention",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mupl9lzd-zckmmd",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            "Q1",
+            91.8
+          ],
+          [
+            "Q2",
+            93.2
+          ],
+          [
+            "Q3",
+            94.1
+          ],
+          [
+            "Q4",
+            94.6
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T13:47:34.921Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "body": "Revenue grew across all three regions. Retention improved in the West, while the South remains below the 95 percent target.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Executive summary",
+        "text": "Revenue grew across all three regions. Retention improved in the West, while the South remains below the 95 percent target.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "Quarterly business review · Q1–Q4 · three regions · revenue and retention.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Executive summary",
+        "text": "Quarterly business review · Q1–Q4 · three regions · revenue and retention.",
+        "title": "Quarterly context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 95
+        },
+        "composition_role": "hero_metric",
+        "delta": 2.8,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 95,
+        "title": "Retention",
+        "type": "metric",
+        "unit": "%",
+        "value": 94.6,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "composition_role": "hero_metric",
+        "delta": null,
+        "element": "Hero KPI",
+        "emphasis": "prominent",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": ""
+        },
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": null,
+        "title": "Regional revenue",
+        "type": "metric",
+        "unit": "",
+        "value": 551,
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "after": 94.6,
+        "before": 91.8,
+        "composition_role": "hero_metric",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 4,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "title": "Quarterly retention",
+        "type": "comparison",
+        "unit": "%",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 1,
+              "labelPresentationIntent": {
+                "fields": [
+                  "interval",
+                  "rotation"
+                ],
+                "mode": "authored"
+              },
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 35,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "quarter_1",
+                "name": "Quarter",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "string"
+              },
+              {
+                "id": "retention_2",
+                "name": "Retention",
+                "nullable": false,
+                "profile": {
+                  "distinct": 4,
+                  "missing": 0
+                },
+                "semantic_tags": [],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-mupl9lzd-zckmmd",
+            "metadata": {
+              "header": {
+                "confidence": 0.75,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 1,
+            "rows": [
+              [
+                "Q1",
+                91.8
+              ],
+              [
+                "Q2",
+                93.2
+              ],
+              [
+                "Q3",
+                94.1
+              ],
+              [
+                "Q4",
+                94.6
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-10-01T13:47:34.921Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-mupl9lzd-zckmmd",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "quarter_1",
+            "value": "retention_2",
+            "x": "quarter_1",
+            "y": "retention_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "quarter_1",
+                "value": "retention_2",
+                "x": "quarter_1",
+                "y": "retention_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "retention_2",
+              "id": "series-1",
+              "label": "Retention",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            "Q1",
+            91.8
+          ],
+          [
+            "Q2",
+            93.2
+          ],
+          [
+            "Q3",
+            94.1
+          ],
+          [
+            "Q4",
+            94.6
+          ]
+        ],
+        "dataset_id": "dataset-mupl9lzd-zckmmd",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "mapping": {
+          "category": "quarter_1",
+          "value": "retention_2",
+          "x": "quarter_1",
+          "y": "retention_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 5,
+        "rows": [
+          {
+            "label": "Q1",
+            "value": 91.8
+          },
+          {
+            "label": "Q2",
+            "value": 93.2
+          },
+          {
+            "label": "Q3",
+            "value": 94.1
+          },
+          {
+            "label": "Q4",
+            "value": 94.6
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Quarterly retention",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Region",
+            "Revenue",
+            "Retention",
+            "Status"
+          ],
+          "rows": [
+            [
+              "North",
+              184,
+              "94.1%",
+              "Watch"
+            ],
+            [
+              "South",
+              156,
+              "92.8%",
+              "Below target"
+            ],
+            [
+              "West",
+              211,
+              "95.0%",
+              "On plan"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 6,
+        "rows": [
+          [
+            "North",
+            184,
+            "94.1%",
+            "Watch"
+          ],
+          [
+            "South",
+            156,
+            "92.8%",
+            "Below target"
+          ],
+          [
+            "West",
+            211,
+            "95.0%",
+            "On plan"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Regional evidence",
+        "title": "Clean Table",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Close the South retention gap before the next review.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 7,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "statement": "Proceed with monitored revenue recovery",
+        "status": "Review",
+        "title": "Risk Callout",
+        "type": "decision",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "body": "Next step: close the South retention gap before the next quarterly review.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Action",
+        "order": 8,
+        "section_id": "delivery",
+        "section_title": "Decision and next step",
+        "text": "Next step: close the South retention gap before the next quarterly review.",
+        "title": "Key Takeaway",
+        "type": "text",
+        "weight": 1,
+        "z": 9
+      }
+    ],
+    "layoutPreset": "executive",
+    "mode": "smart",
+    "nextId": 10,
+    "schema_version": 1
+  },
+  "preflight": {
+    "data_issue_count": 0,
+    "geometry": {
+      "bounded": true,
+      "canvas": {
+        "height": 1583,
+        "width": 1600
+      },
+      "chart_data_semantics_unchanged": true,
+      "item_count": 9,
+      "items": [
+        {
+          "compositionLevel": "feature",
+          "h": 122.93120000000002,
+          "id": "c1",
+          "level": "feature",
+          "order": 0,
+          "pattern": "hero-opening-band",
+          "role": "report_headline",
+          "section": "Executive summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": true,
+          "title": "Executive Statement",
+          "w": 1059.44,
+          "x": 14,
+          "y": 40
+        },
+        {
+          "compositionLevel": "support",
+          "h": 72,
+          "id": "c2",
+          "level": "support",
+          "order": 1,
+          "pattern": "hero-opening-band",
+          "role": "context",
+          "section": "Executive summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": false,
+          "title": "Quarterly context",
+          "w": 498.56,
+          "x": 1087.44,
+          "y": 65.46560000000001
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 375.55,
+          "id": "c7",
+          "level": "feature",
+          "order": 2,
+          "pattern": "evidence-detail-grid",
+          "role": "detailed_evidence",
+          "section": "Regional evidence",
+          "sectionHeadingOrder": 2,
+          "sectionHeadingY": 170.93120000000002,
+          "sectionPattern": "evidence-detail-grid",
+          "sectionStart": true,
+          "title": "Clean Table",
+          "w": 1572,
+          "x": 14,
+          "y": 196.93120000000002
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 432,
+          "id": "c6",
+          "level": "feature",
+          "order": 3,
+          "pattern": "analytical-feature",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 3,
+          "sectionHeadingY": 580.4812000000001,
+          "sectionPattern": "analytical-feature",
+          "sectionStart": true,
+          "title": "Quarterly retention",
+          "w": 890.1818181818181,
+          "x": 354.90909090909093,
+          "y": 606.4812000000001
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 131.976,
+          "id": "c8",
+          "level": "feature",
+          "order": 4,
+          "pattern": "compact-decision-band",
+          "role": "decision_risk",
+          "section": "Decision",
+          "sectionHeadingOrder": 4,
+          "sectionHeadingY": 1046.4812000000002,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": true,
+          "title": "Risk Callout",
+          "w": 1572,
+          "x": 14,
+          "y": 1072.4812000000002
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 100.80000000000001,
+          "id": "c9",
+          "level": "feature",
+          "order": 5,
+          "pattern": "closing-next-step",
+          "role": "conclusion",
+          "section": "Decision and next step",
+          "sectionHeadingOrder": 5,
+          "sectionHeadingY": 1212.4572000000003,
+          "sectionPattern": "closing-next-step",
+          "sectionStart": true,
+          "title": "Key Takeaway",
+          "w": 1572,
+          "x": 14,
+          "y": 1238.4572000000003
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 180,
+          "id": "c4",
+          "level": "feature",
+          "order": 6,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 6,
+          "sectionHeadingY": 1347.2572000000002,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": true,
+          "title": "Regional revenue",
+          "w": 648.48,
+          "x": 14,
+          "y": 1373.2572000000002
+        },
+        {
+          "compositionLevel": "support",
+          "h": 186,
+          "id": "c3",
+          "level": "support",
+          "order": 7,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 6,
+          "sectionHeadingY": 1347.2572000000002,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": false,
+          "title": "Retention",
+          "w": 447.76,
+          "x": 676.48,
+          "y": 1377.7572000000002
+        },
+        {
+          "compositionLevel": "support",
+          "h": 195,
+          "id": "c5",
+          "level": "support",
+          "order": 8,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 6,
+          "sectionHeadingY": 1347.2572000000002,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": false,
+          "title": "Quarterly retention",
+          "w": 447.76,
+          "x": 1138.24,
+          "y": 1373.2572000000002
+        }
+      ],
+      "overlaps": [],
+      "visible_sections": [
+        {
+          "height": 10.720306396484375,
+          "level": "2",
+          "role": "heading",
+          "section": "opening",
+          "title": "01Executive summary",
+          "top": 14
+        },
+        {
+          "height": 10.72027587890625,
+          "level": "2",
+          "role": "heading",
+          "section": "evidence",
+          "title": "02Regional evidence",
+          "top": 170.931
+        },
+        {
+          "height": 10.720245361328125,
+          "level": "2",
+          "role": "heading",
+          "section": "analysis",
+          "title": "03Analysis",
+          "top": 580.481
+        },
+        {
+          "height": 10.72021484375,
+          "level": "2",
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision",
+          "top": 1046.48
+        },
+        {
+          "height": 10.72027587890625,
+          "level": "2",
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Decision and next step",
+          "top": 1212.46
+        },
+        {
+          "height": 10.72027587890625,
+          "level": "2",
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance",
+          "top": 1347.26
+        }
+      ]
+    },
+    "issues": [],
+    "layout_issue_count": 0
+  },
+  "report_id": "report-d241bb745e33471c8f88808216af37c6",
+  "responsive": {
+    "axis_label_overlaps": [
+      {
+        "chart": "c6",
+        "overlaps": []
+      }
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [
+        {
+          "cardClient": 151,
+          "cardScroll": 151,
+          "comparisonClient": 0,
+          "comparisonScroll": 0,
+          "componentHeight": 180,
+          "copyClient": 89,
+          "copyScroll": 89,
+          "id": "c5"
+        }
+      ],
+      "component_count": 9,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 161.53125,
+          "id": "c1",
+          "order": "1",
+          "position": "relative",
+          "text": "Revenue grew across all three regions. Retention improved in the West,",
+          "w": 370,
+          "x": 26,
+          "y": 387.59375
+        },
+        {
+          "display": "block",
+          "h": 76,
+          "id": "c2",
+          "order": "3",
+          "position": "relative",
+          "text": "Quarterly business review · Q1–Q4 · three regions · revenue and retent",
+          "w": 370,
+          "x": 26,
+          "y": 564.125
+        },
+        {
+          "display": "block",
+          "h": 190,
+          "id": "c7",
+          "order": "5",
+          "position": "relative",
+          "text": "REGION\tREVENUE\tRETENTION\tSTATUS\nNorth\t184\t94.1%\tWatch\nSouth\t156\t92.8%\t",
+          "w": 370,
+          "x": 26,
+          "y": 696.125
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c6",
+          "order": "7",
+          "position": "relative",
+          "text": "Quarterly retention\nQ1\nQ2\nQ3\nQ4\n92\n93\n94\n94.6\nRetention\nLine Chart: 4 ",
+          "w": 370,
+          "x": 26,
+          "y": 942.125
+        },
+        {
+          "display": "block",
+          "h": 152,
+          "id": "c8",
+          "order": "9",
+          "position": "relative",
+          "text": "!\nProceed with monitored revenue recovery\n\nClose the South retention g",
+          "w": 370,
+          "x": 26,
+          "y": 1248.125
+        },
+        {
+          "display": "block",
+          "h": 112,
+          "id": "c9",
+          "order": "11",
+          "position": "relative",
+          "text": "✓\nNext step: close the South retention gap before the next quarterly r",
+          "w": 370,
+          "x": 26,
+          "y": 1456.125
+        },
+        {
+          "display": "block",
+          "h": 158.890625,
+          "id": "c4",
+          "order": "13",
+          "position": "relative",
+          "text": "Regional revenue\n551\nDelta —\nCurrent performance",
+          "w": 370,
+          "x": 26,
+          "y": 1624.125
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c3",
+          "order": "15",
+          "position": "relative",
+          "text": "Retention\n94.6%\nDelta 2.8\nTarget 95%",
+          "w": 370,
+          "x": 26,
+          "y": 1798.015625
+        },
+        {
+          "display": "block",
+          "h": 180,
+          "id": "c5",
+          "order": "17",
+          "position": "relative",
+          "text": "Quarterly retention\nBefore\n91.8 %\nAfter\n94.6 %\n▲",
+          "w": 370,
+          "x": 26,
+          "y": 1973.8125
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 1807.21875,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "Revenue grew across all three regions. Retention improved in the West,",
+        "w": 370,
+        "x": 26,
+        "y": 346.59375
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flow_diagnostics": [],
+      "process_flows": [],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "opening",
+          "title": "01Executive summary"
+        },
+        {
+          "first_component_order": 2,
+          "level": "2",
+          "order": 4,
+          "role": "heading",
+          "section": "evidence",
+          "title": "02Regional evidence"
+        },
+        {
+          "first_component_order": 3,
+          "level": "2",
+          "order": 6,
+          "role": "heading",
+          "section": "analysis",
+          "title": "03Analysis"
+        },
+        {
+          "first_component_order": 4,
+          "level": "2",
+          "order": 8,
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision"
+        },
+        {
+          "first_component_order": 5,
+          "level": "2",
+          "order": 10,
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Decision and next step"
+        },
+        {
+          "first_component_order": 6,
+          "level": "2",
+          "order": 12,
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance"
+        }
+      ],
+      "table_regions": [],
+      "text_components": [
+        {
+          "cardClient": 138,
+          "cardScroll": 138,
+          "clipped": false,
+          "componentHeight": 162,
+          "copyClient": 138,
+          "copyScroll": 138,
+          "deadSpace": 24,
+          "id": "c1"
+        },
+        {
+          "cardClient": 39,
+          "cardScroll": 39,
+          "clipped": false,
+          "componentHeight": 76,
+          "copyClient": 39,
+          "copyScroll": 39,
+          "deadSpace": 37,
+          "id": "c2"
+        },
+        {
+          "cardClient": 65,
+          "cardScroll": 65,
+          "clipped": false,
+          "componentHeight": 112,
+          "copyClient": 65,
+          "copyScroll": 65,
+          "deadSpace": 47,
+          "id": "c9"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "preview_chart_geometry": [
+      {
+        "component_height": 467.824462890625,
+        "component_width": 963.9910888671875,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c6",
+        "plot_width": 927.1715087890625,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 335.707275390625,
+        "svg_width": 927.1715087890625
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c6",
+        "titles": [
+          "Line Chart",
+          "Q1",
+          "Q2",
+          "Q3",
+          "Q4",
+          "Retention · 4 points · Q1 91.8 · Q2 93.2 · Q3 94.1 · Q4 94.6",
+          "Retention",
+          "Retention · Q1 · 251.9699",
+          "Retention · Q1 · 251.9699",
+          "Retention · Q2 · 144.985",
+          "Retention · Q2 · 144.985",
+          "Retention · Q3 · 76.2089",
+          "Retention · Q3 · 76.2089",
+          "Retention · Q4 · 38",
+          "Retention · Q4 · 38",
+          "Chart legend",
+          "Toggle Retention series",
+          "Retention"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Line Chart: 4 rows · X Quarter · Y Retention · 2 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 369.87030029296875,
+          "w": 1665.54150390625,
+          "x": 114.31219482421875,
+          "y": 358.23248291015625
+        },
+        "card": {
+          "h": 369.87030029296875,
+          "w": 1665.54150390625,
+          "x": 114.31219482421875,
+          "y": 358.23248291015625
+        },
+        "id": "c7",
+        "item": {
+          "h": 406.6897888183594,
+          "w": 1702.3609619140625,
+          "x": 95.90243530273438,
+          "y": 339.8227233886719
+        },
+        "region": {
+          "h": 369.87030029296875,
+          "w": 1665.54150390625,
+          "x": 114.31219482421875,
+          "y": 358.23248291015625
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 1663.3756103515625,
+              "x": 115.39512634277344,
+              "y": 359.3153991699219
+            },
+            "text": "REGION\tREVENUE\tRETENTION\tSTATUS",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 1663.3756103515625,
+              "x": 115.39512634277344,
+              "y": 395.59344482421875
+            },
+            "text": "North\t184\t94.1%\tWatch",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.81951904296875,
+              "w": 1663.3756103515625,
+              "x": 115.39512634277344,
+              "y": 432.4129638671875
+            },
+            "text": "South\t156\t92.8%\tBelow target",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278045654296875,
+              "w": 1663.3756103515625,
+              "x": 115.39512634277344,
+              "y": 469.23248291015625
+            },
+            "text": "West\t211\t95.0%\tOn plan",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 146.19512939453125,
+          "w": 1663.3756103515625,
+          "x": 115.39512634277344,
+          "y": 359.3153991699219
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "REGION\tREVENUE\tRETENTION\tSTATUS\nNorth\t184\t94.1%\tWatch\nSouth\t156\t92.8%\tBelow target\nWest\t211\t95.0%\tOn plan"
+    ],
+    "spatial_geometry": []
+  },
+  "revision": 39,
+  "title": "Executive Business Review"
+}

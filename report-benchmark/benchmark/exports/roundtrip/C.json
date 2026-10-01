@@ -1,0 +1,519 @@
+{
+  "canonical_import": "company_ui.products.visualizer.ppt_service.import_visembler_pptx",
+  "exact_model_match": true,
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "week_1",
+            "name": "Week",
+            "nullable": false,
+            "profile": {
+              "distinct": 12,
+              "missing": 0,
+              "type_override": true
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "cohort_2",
+            "name": "Cohort",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "cohort",
+              "status"
+            ],
+            "type": "categorical"
+          },
+          {
+            "id": "conversion_3",
+            "name": "Conversion",
+            "nullable": false,
+            "profile": {
+              "distinct": 24,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mupla2eu-oldmd5",
+        "metadata": {
+          "header": {
+            "confidence": 0.8333333333333334,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 9,
+        "rows": [
+          [
+            "Week 01",
+            "Control",
+            8
+          ],
+          [
+            "Week 01",
+            "Treatment",
+            8.2
+          ],
+          [
+            "Week 02",
+            "Control",
+            8.045
+          ],
+          [
+            "Week 02",
+            "Treatment",
+            8.345
+          ],
+          [
+            "Week 03",
+            "Control",
+            8.091
+          ],
+          [
+            "Week 03",
+            "Treatment",
+            8.491
+          ],
+          [
+            "Week 04",
+            "Control",
+            8.136
+          ],
+          [
+            "Week 04",
+            "Treatment",
+            8.636
+          ],
+          [
+            "Week 05",
+            "Control",
+            8.182
+          ],
+          [
+            "Week 05",
+            "Treatment",
+            8.782
+          ],
+          [
+            "Week 06",
+            "Control",
+            8.227
+          ],
+          [
+            "Week 06",
+            "Treatment",
+            8.927
+          ],
+          [
+            "Week 07",
+            "Control",
+            8.273
+          ],
+          [
+            "Week 07",
+            "Treatment",
+            9.073
+          ],
+          [
+            "Week 08",
+            "Control",
+            8.318
+          ],
+          [
+            "Week 08",
+            "Treatment",
+            9.218
+          ],
+          [
+            "Week 09",
+            "Control",
+            8.364
+          ],
+          [
+            "Week 09",
+            "Treatment",
+            9.364
+          ],
+          [
+            "Week 10",
+            "Control",
+            8.409
+          ],
+          [
+            "Week 10",
+            "Treatment",
+            9.509
+          ],
+          [
+            "Week 11",
+            "Control",
+            8.455
+          ],
+          [
+            "Week 11",
+            "Treatment",
+            9.655
+          ],
+          [
+            "Week 12",
+            "Control",
+            8.5
+          ],
+          [
+            "Week 12",
+            "Treatment",
+            9.8
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T14:04:07.055Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "cohort_1",
+            "name": "Cohort",
+            "nullable": false,
+            "profile": {
+              "distinct": 2,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "cohort",
+              "status"
+            ],
+            "type": "categorical"
+          },
+          {
+            "id": "conversion_2",
+            "name": "Conversion",
+            "nullable": false,
+            "profile": {
+              "distinct": 8,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mupla4jy-z0zz0t",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 5,
+        "rows": [
+          [
+            "Control",
+            8
+          ],
+          [
+            "Control",
+            8.1
+          ],
+          [
+            "Control",
+            8.4
+          ],
+          [
+            "Control",
+            8.5
+          ],
+          [
+            "Treatment",
+            8.2
+          ],
+          [
+            "Treatment",
+            8.7
+          ],
+          [
+            "Treatment",
+            9.4
+          ],
+          [
+            "Treatment",
+            9.8
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T13:47:58.990Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "body": "The treatment cohort improved conversion across four weeks. The quality guardrail remained inside its agreed range; the sample does not establish long-term retention.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Experiment summary",
+        "text": "The treatment cohort improved conversion across four weeks. The quality guardrail remained inside its agreed range; the sample does not establish long-term retention.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "Eligible new-account cohorts · W1–W4 · randomized control and treatment · conversion and quality guardrail.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Experiment design",
+        "text": "Eligible new-account cohorts · W1–W4 · randomized control and treatment · conversion and quality guardrail.",
+        "title": "Hypothesis and context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 10
+        },
+        "composition_role": "hero_metric",
+        "delta": 1.6,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 10,
+        "title": "Treatment conversion",
+        "type": "metric",
+        "unit": "%",
+        "value": 9.8,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "after": 9.8,
+        "before": 8.2,
+        "composition_role": "hero_metric",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "title": "Treatment conversion · Week 1 to 4",
+        "type": "comparison",
+        "unit": "%",
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "composition_role": "supporting_analysis",
+        "data": [],
+        "dataset_id": "dataset-mupla4jy-z0zz0t",
+        "element": "Box Plot",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "cohort_1",
+          "cohort": "cohort_1",
+          "status": "cohort_1",
+          "value": "conversion_2",
+          "x": "conversion_2"
+        },
+        "message_role": "Supporting Evidence",
+        "order": 5,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "title": "Outcome distribution by cohort",
+        "type": "chart",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "composition_role": "primary_analysis",
+        "data": [],
+        "dataset_id": "dataset-mupla2eu-oldmd5",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "mapping": {
+          "category": "cohort_2",
+          "cohort": "cohort_2",
+          "series": "cohort_2",
+          "status": "cohort_2",
+          "value": "conversion_3",
+          "x": "week_1",
+          "y": "conversion_3"
+        },
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "title": "Conversion by week",
+        "type": "chart",
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Cohort",
+            "Eligible",
+            "Conversion",
+            "Quality guardrail"
+          ],
+          "rows": [
+            [
+              "Control",
+              1198,
+              "8.25%",
+              "Within quality guardrail"
+            ],
+            [
+              "Treatment",
+              1204,
+              "9.03%",
+              "Within quality guardrail"
+            ],
+            [
+              "Holdout",
+              412,
+              "8.45%",
+              "Monitor mix"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 7,
+        "rows": [
+          [
+            "Control",
+            1198,
+            "8.25%",
+            "Within quality guardrail"
+          ],
+          [
+            "Treatment",
+            1204,
+            "9.03%",
+            "Within quality guardrail"
+          ],
+          [
+            "Holdout",
+            412,
+            "8.45%",
+            "Monitor mix"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Experiment evidence",
+        "showTitle": true,
+        "title": "Cohort evidence",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "body": "Treatment conversion reaches 9.8% across twelve weekly cohorts; control reaches 8.5%. These observed cohorts support a limited rollout with the quality guardrail retained. They do not establish a long-term retention benefit.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Context",
+        "order": 6,
+        "section_id": "analysis",
+        "section_title": "Interpretation",
+        "text": "Treatment conversion reaches 9.8% across twelve weekly cohorts; control reaches 8.5%. These observed cohorts support a limited rollout with the quality guardrail retained. They do not establish a long-term retention benefit.",
+        "title": "Interpretation",
+        "type": "text",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Pause expansion if the quality guardrail moves outside its agreed range.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 8,
+        "section_id": "decision",
+        "section_title": "Recommendation",
+        "statement": "Stage a limited treatment rollout",
+        "status": "Review",
+        "title": "Recommendation",
+        "type": "decision",
+        "weight": 1,
+        "z": 9
+      }
+    ],
+    "layoutPreset": "comparison",
+    "mode": "smart",
+    "nextId": 10,
+    "schema_version": 1
+  },
+  "source_report_id": "report-fdac83c7d3514b88a3cfc8f61999cd71"
+}

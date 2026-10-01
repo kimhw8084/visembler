@@ -1,0 +1,2074 @@
+{
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "shift_1",
+            "name": "Shift",
+            "nullable": false,
+            "profile": {
+              "distinct": 18,
+              "missing": 0,
+              "type_override": true
+            },
+            "semantic_tags": [],
+            "type": "categorical"
+          },
+          {
+            "id": "yield_2",
+            "name": "Yield",
+            "nullable": false,
+            "profile": {
+              "distinct": 18,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-muplaba0-8kufil",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 7,
+        "rows": [
+          [
+            "Shift 01",
+            94.1
+          ],
+          [
+            "Shift 02",
+            94.153
+          ],
+          [
+            "Shift 03",
+            94.206
+          ],
+          [
+            "Shift 04",
+            94.259
+          ],
+          [
+            "Shift 05",
+            94.312
+          ],
+          [
+            "Shift 06",
+            94.365
+          ],
+          [
+            "Shift 07",
+            94.418
+          ],
+          [
+            "Shift 08",
+            94.471
+          ],
+          [
+            "Shift 09",
+            94.524
+          ],
+          [
+            "Shift 10",
+            94.576
+          ],
+          [
+            "Shift 11",
+            94.629
+          ],
+          [
+            "Shift 12",
+            94.682
+          ],
+          [
+            "Shift 13",
+            94.735
+          ],
+          [
+            "Shift 14",
+            94.788
+          ],
+          [
+            "Shift 15",
+            94.841
+          ],
+          [
+            "Shift 16",
+            94.894
+          ],
+          [
+            "Shift 17",
+            94.947
+          ],
+          [
+            "Shift 18",
+            95
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T14:04:11.475Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      },
+      {
+        "fields": [
+          {
+            "id": "time_1",
+            "name": "Time",
+            "nullable": false,
+            "profile": {
+              "distinct": 5,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "time"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "measurement_2",
+            "name": "Measurement",
+            "nullable": false,
+            "profile": {
+              "distinct": 5,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "value"
+            ],
+            "type": "number",
+            "unit": ""
+          },
+          {
+            "id": "lsl_3",
+            "name": "LSL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_low"
+            ],
+            "type": "integer",
+            "unit": ""
+          },
+          {
+            "id": "usl_4",
+            "name": "USL",
+            "nullable": false,
+            "profile": {
+              "distinct": 1,
+              "missing": 0
+            },
+            "semantic_tags": [
+              "specification_high"
+            ],
+            "type": "integer",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-mupladez-6146hs",
+        "metadata": {
+          "header": {
+            "confidence": 1,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 1,
+        "rows": [
+          [
+            1,
+            94.1,
+            92,
+            97
+          ],
+          [
+            2,
+            94.6,
+            92,
+            97
+          ],
+          [
+            3,
+            95,
+            92,
+            97
+          ],
+          [
+            4,
+            94.8,
+            92,
+            97
+          ],
+          [
+            5,
+            95.2,
+            92,
+            97
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T13:48:10.475Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": [
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 2
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 3
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 4
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 5
+          },
+          {
+            "code": "invalid_date",
+            "field": "time_1",
+            "message": "Time contains an invalid date; the original text was retained.",
+            "row": 6
+          }
+        ]
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "body": "Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering.",
+        "composition_role": "report_headline",
+        "element": "Executive Statement",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c1",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 0,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Shift B recovered yield after chamber maintenance. Keep the recipe locked through the next paired-lot check and hand off the evidence to Quality and Equipment Engineering.",
+        "title": "Executive Statement",
+        "type": "text",
+        "weight": 1,
+        "z": 1
+      },
+      {
+        "body": "Line 4 · shifts A–C · chamber A controls · capacity release review.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "opening",
+        "section_title": "Operating summary",
+        "text": "Line 4 · shifts A–C · chamber A controls · capacity release review.",
+        "title": "Report context",
+        "type": "text",
+        "weight": 1,
+        "z": 2
+      },
+      {
+        "capability_overrides": {
+          "target": 96
+        },
+        "composition_role": "hero_metric",
+        "delta": 0.9,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 2,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 96,
+        "title": "First pass yield",
+        "type": "metric",
+        "unit": "%",
+        "value": 95,
+        "weight": 1,
+        "z": 3
+      },
+      {
+        "capability_overrides": {
+          "target": 6
+        },
+        "composition_role": "hero_metric",
+        "delta": -1.7,
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "order": 3,
+        "section_id": "performance",
+        "section_title": "Performance",
+        "showTitle": true,
+        "target": 6,
+        "title": "Unplanned downtime",
+        "type": "metric",
+        "unit": "h",
+        "value": 8.3,
+        "weight": 1,
+        "z": 4
+      },
+      {
+        "chart_studio": {
+          "adapter": {
+            "authority": "Visembler canonical chart renderer",
+            "name": "Visembler SVG Chart Adapter",
+            "offline": true,
+            "renderer": "svg",
+            "version": 2
+          },
+          "analysis_error": null,
+          "analysis_kind": null,
+          "analysis_semantics": null,
+          "annotations": [],
+          "authoritative_analysis": null,
+          "axes": {
+            "secondaryY": {
+              "auto": true,
+              "enabled": false,
+              "format": "auto",
+              "max": null,
+              "min": null,
+              "precision": null,
+              "prefix": "",
+              "series": [],
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": ""
+            },
+            "x": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": 3,
+              "labelPresentationIntent": {
+                "fields": [
+                  "interval",
+                  "rotation"
+                ],
+                "mode": "authored"
+              },
+              "max": null,
+              "min": null,
+              "position": "bottom",
+              "precision": null,
+              "rotation": 20,
+              "scale": "auto",
+              "show": true,
+              "tickCount": 6,
+              "title": "",
+              "zeroBaseline": false
+            },
+            "y": {
+              "auto": true,
+              "format": "auto",
+              "grid": true,
+              "labelInterval": null,
+              "max": null,
+              "min": null,
+              "position": "left",
+              "precision": null,
+              "prefix": "",
+              "rotation": 0,
+              "scale": "linear",
+              "show": true,
+              "suffix": "",
+              "tickCount": 5,
+              "title": "",
+              "unit": "",
+              "zeroBaseline": false
+            }
+          },
+          "chart_type": "Line Chart",
+          "dataset": {
+            "fields": [
+              {
+                "id": "shift_1",
+                "name": "Shift",
+                "nullable": false,
+                "profile": {
+                  "distinct": 18,
+                  "missing": 0,
+                  "type_override": true
+                },
+                "semantic_tags": [],
+                "type": "categorical"
+              },
+              {
+                "id": "yield_2",
+                "name": "Yield",
+                "nullable": false,
+                "profile": {
+                  "distinct": 18,
+                  "missing": 0
+                },
+                "semantic_tags": [
+                  "value"
+                ],
+                "type": "number",
+                "unit": ""
+              }
+            ],
+            "id": "dataset-muplaba0-8kufil",
+            "metadata": {
+              "header": {
+                "confidence": 1,
+                "present": true,
+                "source_row": 0
+              }
+            },
+            "name": "Pasted data",
+            "revision": 7,
+            "rows": [
+              [
+                "Shift 01",
+                94.1
+              ],
+              [
+                "Shift 02",
+                94.153
+              ],
+              [
+                "Shift 03",
+                94.206
+              ],
+              [
+                "Shift 04",
+                94.259
+              ],
+              [
+                "Shift 05",
+                94.312
+              ],
+              [
+                "Shift 06",
+                94.365
+              ],
+              [
+                "Shift 07",
+                94.418
+              ],
+              [
+                "Shift 08",
+                94.471
+              ],
+              [
+                "Shift 09",
+                94.524
+              ],
+              [
+                "Shift 10",
+                94.576
+              ],
+              [
+                "Shift 11",
+                94.629
+              ],
+              [
+                "Shift 12",
+                94.682
+              ],
+              [
+                "Shift 13",
+                94.735
+              ],
+              [
+                "Shift 14",
+                94.788
+              ],
+              [
+                "Shift 15",
+                94.841
+              ],
+              [
+                "Shift 16",
+                94.894
+              ],
+              [
+                "Shift 17",
+                94.947
+              ],
+              [
+                "Shift 18",
+                95
+              ]
+            ],
+            "source": {
+              "imported_at": "2026-10-01T14:04:11.475Z",
+              "kind": "clipboard",
+              "label": "TSV"
+            },
+            "warnings": []
+          },
+          "dataset_id": "dataset-muplaba0-8kufil",
+          "engineering": {
+            "L": 3,
+            "h": 5,
+            "k": 0.5,
+            "lambda": 0.2,
+            "lsl": null,
+            "sigma": null,
+            "target": null,
+            "usl": null
+          },
+          "fab": {
+            "aggregation": "mean"
+          },
+          "interaction": {
+            "brush": false,
+            "crossFilter": false,
+            "crosshair": false,
+            "legendFilter": true,
+            "pan": true,
+            "rangeSelector": false,
+            "resetZoom": true,
+            "tooltip": true,
+            "transientSelection": [],
+            "zoom": true
+          },
+          "legend": {
+            "interactive": true,
+            "order": "input",
+            "orientation": "horizontal",
+            "position": "bottom",
+            "scroll": true,
+            "show": true
+          },
+          "mapping": {
+            "category": "shift_1",
+            "value": "yield_2",
+            "x": "shift_1",
+            "y": "yield_2"
+          },
+          "recipe": null,
+          "recommendations": [
+            {
+              "confidence": 0.93,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A horizontal field and numeric measure are available.",
+              "type": "Line Chart"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A shared axis can compare multiple runs when a series field is available.",
+              "type": "Multi-Line"
+            },
+            {
+              "confidence": 0.9,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A category and measured value are available.",
+              "type": "Vertical Bar"
+            },
+            {
+              "confidence": 0.87,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "The same trend mapping can show accumulated movement.",
+              "type": "Area Chart"
+            },
+            {
+              "confidence": 0.82,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "A horizontal ranking keeps category labels readable.",
+              "type": "Horizontal Bar"
+            },
+            {
+              "confidence": 0.8,
+              "mapping": {
+                "category": "shift_1",
+                "value": "yield_2",
+                "x": "shift_1",
+                "y": "yield_2"
+              },
+              "reason": "Categorical contribution can be ranked with cumulative share.",
+              "type": "Pareto"
+            }
+          ],
+          "reference_bands": [],
+          "reference_lines": [],
+          "schema": "visembler.chart.studio",
+          "series": [
+            {
+              "axis": "primary",
+              "color": "#1769d1",
+              "field": "yield_2",
+              "id": "series-1",
+              "label": "Yield",
+              "legend": true,
+              "lineDash": null,
+              "lineWidth": null,
+              "markers": true,
+              "smoothing": false,
+              "type": "line",
+              "visible": true
+            }
+          ],
+          "statistical_result": null,
+          "transforms": {
+            "steps": []
+          },
+          "version": 1,
+          "visual": {
+            "areaOpacity": 0.25,
+            "barMode": "grouped",
+            "barWidth": 0.62,
+            "bins": null,
+            "dataLabels": false,
+            "gap": 0.2,
+            "labelPosition": "top",
+            "lineDash": "solid",
+            "lineWidth": 2.5,
+            "markers": true,
+            "missingPolicy": "gap",
+            "palette": "report",
+            "smoothing": false,
+            "theme": "system"
+          },
+          "wafer": {
+            "clamp": true,
+            "colorMode": "continuous",
+            "differenceScaleMaximum": null,
+            "differenceScaleMode": "automatic",
+            "filters": {
+              "bin": "",
+              "chamber": "",
+              "lot": "",
+              "route": "",
+              "tool": "",
+              "wafer": ""
+            },
+            "identityRoles": [
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber",
+              "recipe",
+              "process",
+              "route",
+              "product"
+            ],
+            "max": null,
+            "min": null,
+            "missingColor": "#c7d0dc",
+            "notch": "top",
+            "selected": [],
+            "specHigh": null,
+            "specLow": null,
+            "tooltipRoles": [
+              "die_x",
+              "die_y",
+              "value",
+              "lot_id",
+              "wafer_id",
+              "tool",
+              "chamber"
+            ]
+          },
+          "why": "A horizontal field and numeric measure are available."
+        },
+        "composition_role": "primary_analysis",
+        "data": [
+          [
+            "Shift 01",
+            94.1
+          ],
+          [
+            "Shift 02",
+            94.153
+          ],
+          [
+            "Shift 03",
+            94.206
+          ],
+          [
+            "Shift 04",
+            94.259
+          ],
+          [
+            "Shift 05",
+            94.312
+          ],
+          [
+            "Shift 06",
+            94.365
+          ],
+          [
+            "Shift 07",
+            94.418
+          ],
+          [
+            "Shift 08",
+            94.471
+          ],
+          [
+            "Shift 09",
+            94.524
+          ],
+          [
+            "Shift 10",
+            94.576
+          ],
+          [
+            "Shift 11",
+            94.629
+          ],
+          [
+            "Shift 12",
+            94.682
+          ],
+          [
+            "Shift 13",
+            94.735
+          ],
+          [
+            "Shift 14",
+            94.788
+          ],
+          [
+            "Shift 15",
+            94.841
+          ],
+          [
+            "Shift 16",
+            94.894
+          ],
+          [
+            "Shift 17",
+            94.947
+          ],
+          [
+            "Shift 18",
+            95
+          ]
+        ],
+        "dataset_id": "dataset-muplaba0-8kufil",
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "id": "c5",
+        "locked": false,
+        "mapping": {
+          "category": "shift_1",
+          "value": "yield_2",
+          "x": "shift_1",
+          "y": "yield_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 4,
+        "rows": [
+          {
+            "label": "Shift 01",
+            "value": 94.1
+          },
+          {
+            "label": "Shift 02",
+            "value": 94.153
+          },
+          {
+            "label": "Shift 03",
+            "value": 94.206
+          },
+          {
+            "label": "Shift 04",
+            "value": 94.259
+          },
+          {
+            "label": "Shift 05",
+            "value": 94.312
+          },
+          {
+            "label": "Shift 06",
+            "value": 94.365
+          },
+          {
+            "label": "Shift 07",
+            "value": 94.418
+          },
+          {
+            "label": "Shift 08",
+            "value": 94.471
+          },
+          {
+            "label": "Shift 09",
+            "value": 94.524
+          },
+          {
+            "label": "Shift 10",
+            "value": 94.576
+          },
+          {
+            "label": "Shift 11",
+            "value": 94.629
+          },
+          {
+            "label": "Shift 12",
+            "value": 94.682
+          },
+          {
+            "label": "Shift 13",
+            "value": 94.735
+          },
+          {
+            "label": "Shift 14",
+            "value": 94.788
+          },
+          {
+            "label": "Shift 15",
+            "value": 94.841
+          },
+          {
+            "label": "Shift 16",
+            "value": 94.894
+          },
+          {
+            "label": "Shift 17",
+            "value": 94.947
+          },
+          {
+            "label": "Shift 18",
+            "value": 95
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "statistical_result": null,
+        "title": "Yield by shift",
+        "transform_recipe": {
+          "steps": []
+        },
+        "type": "chart",
+        "weight": 1,
+        "z": 5
+      },
+      {
+        "composition_role": "primary_analysis",
+        "dataset_id": "dataset-mupladez-6146hs",
+        "element": "SPC Control Chart",
+        "engine": "EngineeringChartEngine",
+        "groupId": null,
+        "id": "c6",
+        "locked": false,
+        "lower_limit": null,
+        "mapping": {
+          "specification_high": "usl_4",
+          "specification_low": "lsl_3",
+          "time": "time_1",
+          "value": "measurement_2",
+          "x": "time_1",
+          "y": "measurement_2"
+        },
+        "message_role": "Primary Evidence",
+        "observations": [],
+        "order": 5,
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "title": "Critical measurement trend",
+        "type": "engineering",
+        "upper_limit": null,
+        "weight": 1,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Tool",
+            "Chamber",
+            "Measure",
+            "Owner",
+            "Status"
+          ],
+          "rows": [
+            [
+              "ETCH-08",
+              "A",
+              "Pressure",
+              "Equipment Eng.",
+              "Open"
+            ],
+            [
+              "ETCH-07",
+              "C",
+              "Flow",
+              "Process Eng.",
+              "Stable"
+            ],
+            [
+              "MET-02",
+              "B",
+              "Yield",
+              "Quality",
+              "Verified"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 8,
+        "rows": [
+          [
+            "ETCH-08",
+            "A",
+            "Pressure",
+            "Equipment Eng.",
+            "Open"
+          ],
+          [
+            "ETCH-07",
+            "C",
+            "Flow",
+            "Process Eng.",
+            "Stable"
+          ],
+          [
+            "MET-02",
+            "B",
+            "Yield",
+            "Quality",
+            "Verified"
+          ]
+        ],
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "title": "Clean Table",
+        "type": "table",
+        "weight": 1,
+        "z": 7
+      },
+      {
+        "composition_role": "causal_evidence",
+        "edges": [
+          [
+            "Detect",
+            "Contain"
+          ],
+          [
+            "Contain",
+            "Verify"
+          ],
+          [
+            "Verify",
+            "Release"
+          ]
+        ],
+        "element": "Process Flow",
+        "engine": "DiagramEngine",
+        "groupId": null,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "nodes": [
+          "Detect",
+          "Contain",
+          "Verify",
+          "Release"
+        ],
+        "order": 7,
+        "section_id": "evidence",
+        "section_title": "Response workflow",
+        "title": "Process Flow",
+        "type": "diagram",
+        "weight": 1,
+        "z": 8
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "detail": "Sample: 30 parts · method: inline metrology · source: shift B inspection.",
+        "element": "Evidence Card",
+        "engine": "EvidenceCompositeEngine",
+        "groupId": null,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 9,
+        "section_id": "evidence",
+        "section_title": "Operating evidence",
+        "statement": "Measurement system remains within the qualified reference range.",
+        "status": "Verified",
+        "title": "Evidence Card",
+        "type": "evidence",
+        "weight": 1,
+        "z": 9
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Keep the recipe locked and attach the next-shift control evidence.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "id": "c10",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 10,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "statement": "Hold added capacity until the paired-lot check closes",
+        "status": "Review",
+        "title": "Risk Callout",
+        "type": "decision",
+        "weight": 1,
+        "z": 10
+      },
+      {
+        "composition_role": "action_status",
+        "detail": "Owner: Equipment Engineering · due next shift · evidence: paired control lot.",
+        "element": "Project Card",
+        "engine": "ProjectCompositeEngine",
+        "groupId": null,
+        "id": "c11",
+        "locked": false,
+        "message_role": "Action",
+        "order": 11,
+        "section_id": "delivery",
+        "section_title": "Next steps",
+        "statement": "Complete chamber verification and update the runbook.",
+        "status": "Active",
+        "title": "Project Card",
+        "type": "project",
+        "weight": 1,
+        "z": 11
+      },
+      {
+        "body": "Yield rises from 94.1% to 95.0% across eighteen observed shifts. SPC and specification limits answer different questions. Keep the recipe locked until the paired-lot check and the two open handoff items close.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "id": "c12",
+        "locked": false,
+        "message_role": "Context",
+        "order": 6,
+        "section_id": "analysis",
+        "section_title": "Shift interpretation",
+        "text": "Yield rises from 94.1% to 95.0% across eighteen observed shifts. SPC and specification limits answer different questions. Keep the recipe locked until the paired-lot check and the two open handoff items close.",
+        "title": "Body Narrative",
+        "type": "text",
+        "weight": 1,
+        "z": 12
+      }
+    ],
+    "layoutPreset": "technical",
+    "mode": "smart",
+    "nextId": 13,
+    "schema_version": 1
+  },
+  "preflight": {
+    "data_issue_count": 0,
+    "geometry": {
+      "bounded": true,
+      "canvas": {
+        "height": 2186,
+        "width": 1600
+      },
+      "chart_data_semantics_unchanged": true,
+      "item_count": 12,
+      "items": [
+        {
+          "compositionLevel": "feature",
+          "h": 120.96000000000001,
+          "id": "c1",
+          "level": "feature",
+          "order": 0,
+          "pattern": "hero-opening-band",
+          "role": "report_headline",
+          "section": "Operating summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": true,
+          "title": "Executive Statement",
+          "w": 1059.44,
+          "x": 14,
+          "y": 40
+        },
+        {
+          "compositionLevel": "support",
+          "h": 72,
+          "id": "c2",
+          "level": "support",
+          "order": 1,
+          "pattern": "hero-opening-band",
+          "role": "context",
+          "section": "Operating summary",
+          "sectionHeadingOrder": 0,
+          "sectionHeadingY": 14,
+          "sectionPattern": "hero-opening-band",
+          "sectionStart": false,
+          "title": "Report context",
+          "w": 498.56,
+          "x": 1087.44,
+          "y": 64.48
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 423.40941176470596,
+          "id": "c5",
+          "level": "feature",
+          "order": 2,
+          "pattern": "dense-evidence-grid",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 2,
+          "sectionHeadingY": 168.96,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": true,
+          "title": "Yield by shift",
+          "w": 872.4800000000001,
+          "x": 14,
+          "y": 194.96
+        },
+        {
+          "compositionLevel": "support",
+          "h": 332.6788235294118,
+          "id": "c6",
+          "level": "support",
+          "order": 3,
+          "pattern": "dense-evidence-grid",
+          "role": "primary_analysis",
+          "section": "Analysis",
+          "sectionHeadingOrder": 2,
+          "sectionHeadingY": 168.96,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": false,
+          "title": "Critical measurement trend",
+          "w": 685.52,
+          "x": 900.4800000000001,
+          "y": 240.3252941176471
+        },
+        {
+          "compositionLevel": "support",
+          "h": 116,
+          "id": "c12",
+          "level": "support",
+          "order": 4,
+          "pattern": "dense-evidence-grid",
+          "role": "narrative_interpretation",
+          "section": "Shift interpretation",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "dense-evidence-grid",
+          "sectionStart": false,
+          "title": "Body Narrative",
+          "w": 1572,
+          "x": 14,
+          "y": 626.369411764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 170,
+          "id": "c8",
+          "level": "feature",
+          "order": 5,
+          "pattern": "causal-flow-feature",
+          "role": "causal_evidence",
+          "section": "Response workflow",
+          "sectionHeadingOrder": 5,
+          "sectionHeadingY": 750.369411764706,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": true,
+          "title": "Process Flow",
+          "w": 821.28,
+          "x": 389.36,
+          "y": 776.369411764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 348.5104,
+          "id": "c7",
+          "level": "support",
+          "order": 6,
+          "pattern": "causal-flow-feature",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": false,
+          "title": "Clean Table",
+          "w": 1572,
+          "x": 14,
+          "y": 954.369411764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 296.032,
+          "id": "c9",
+          "level": "support",
+          "order": 7,
+          "pattern": "causal-flow-feature",
+          "role": "detailed_evidence",
+          "section": "Operating evidence",
+          "sectionHeadingOrder": null,
+          "sectionHeadingY": null,
+          "sectionPattern": "causal-flow-feature",
+          "sectionStart": false,
+          "title": "Evidence Card",
+          "w": 1572,
+          "x": 14,
+          "y": 1314.8798117647061
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 105.28000000000002,
+          "id": "c10",
+          "level": "feature",
+          "order": 8,
+          "pattern": "compact-decision-band",
+          "role": "decision_risk",
+          "section": "Decision",
+          "sectionHeadingOrder": 8,
+          "sectionHeadingY": 1618.911811764706,
+          "sectionPattern": "compact-decision-band",
+          "sectionStart": true,
+          "title": "Risk Callout",
+          "w": 1572,
+          "x": 14,
+          "y": 1644.911811764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 168.48000000000002,
+          "id": "c11",
+          "level": "feature",
+          "order": 9,
+          "pattern": "closing-next-step",
+          "role": "action_status",
+          "section": "Next steps",
+          "sectionHeadingOrder": 9,
+          "sectionHeadingY": 1758.191811764706,
+          "sectionPattern": "closing-next-step",
+          "sectionStart": true,
+          "title": "Project Card",
+          "w": 1572,
+          "x": 14,
+          "y": 1784.191811764706
+        },
+        {
+          "compositionLevel": "feature",
+          "h": 185,
+          "id": "c3",
+          "level": "feature",
+          "order": 10,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 10,
+          "sectionHeadingY": 1960.671811764706,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": true,
+          "title": "First pass yield",
+          "w": 872.4800000000001,
+          "x": 14,
+          "y": 1986.671811764706
+        },
+        {
+          "compositionLevel": "support",
+          "h": 185,
+          "id": "c4",
+          "level": "support",
+          "order": 11,
+          "pattern": "compact-kpi-strip",
+          "role": "hero_metric",
+          "section": "Performance",
+          "sectionHeadingOrder": 10,
+          "sectionHeadingY": 1960.671811764706,
+          "sectionPattern": "compact-kpi-strip",
+          "sectionStart": false,
+          "title": "Unplanned downtime",
+          "w": 685.52,
+          "x": 900.4800000000001,
+          "y": 1986.671811764706
+        }
+      ],
+      "overlaps": [],
+      "visible_sections": [
+        {
+          "height": 7.142486572265625,
+          "level": "2",
+          "role": "heading",
+          "section": "opening",
+          "title": "01Operating summary",
+          "top": 14
+        },
+        {
+          "height": 7.142486572265625,
+          "level": "2",
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis",
+          "top": 168.96
+        },
+        {
+          "height": 7.1424560546875,
+          "level": "2",
+          "role": "heading",
+          "section": "evidence",
+          "title": "03Response workflow",
+          "top": 750.369
+        },
+        {
+          "height": 7.1424560546875,
+          "level": "2",
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision",
+          "top": 1618.91
+        },
+        {
+          "height": 7.1424560546875,
+          "level": "2",
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Next steps",
+          "top": 1758.19
+        },
+        {
+          "height": 7.1424560546875,
+          "level": "2",
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance",
+          "top": 1960.67
+        }
+      ]
+    },
+    "issues": [],
+    "layout_issue_count": 0
+  },
+  "report_id": "report-3089681bf06141b080534e6e717ce638",
+  "responsive": {
+    "axis_label_overlaps": [
+      {
+        "chart": "c5",
+        "overlaps": []
+      },
+      {
+        "chart": "c6",
+        "overlaps": []
+      }
+    ],
+    "editor_horizontal_overflow_px": 0,
+    "mobile_preview_overflow_px": 0,
+    "mobile_reading": {
+      "comparison_metrics": [],
+      "component_count": 12,
+      "first_font_px": 13,
+      "hull_width": 370,
+      "items": [
+        {
+          "display": "block",
+          "h": 187.4375,
+          "id": "c1",
+          "order": "1",
+          "position": "relative",
+          "text": "Shift B recovered yield after chamber maintenance. Keep the recipe loc",
+          "w": 370,
+          "x": 26,
+          "y": 384.59375
+        },
+        {
+          "display": "block",
+          "h": 76,
+          "id": "c2",
+          "order": "3",
+          "position": "relative",
+          "text": "Line 4 · shifts A–C · chamber A controls · capacity release review.",
+          "w": 370,
+          "x": 26,
+          "y": 584.03125
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c5",
+          "order": "5",
+          "position": "relative",
+          "text": "Yield by shift\nShift 01\nShift 04\nShift 08\nShift 11\nShift 15\nShift 18\n9",
+          "w": 370,
+          "x": 26,
+          "y": 710.03125
+        },
+        {
+          "display": "block",
+          "h": 250,
+          "id": "c6",
+          "order": "7",
+          "position": "relative",
+          "text": "LCL 93.474\nUCL 96.006\nLSL 92\nUSL 97\nMeasurement\nComputed control limit",
+          "w": 370,
+          "x": 26,
+          "y": 972.03125
+        },
+        {
+          "display": "block",
+          "h": 132,
+          "id": "c12",
+          "order": "9",
+          "position": "relative",
+          "text": "Yield rises from 94.1% to 95.0% across eighteen observed shifts. SPC a",
+          "w": 370,
+          "x": 26,
+          "y": 1234.03125
+        },
+        {
+          "display": "block",
+          "h": 144,
+          "id": "c8",
+          "order": "11",
+          "position": "relative",
+          "text": "Detect\nContain\nVerify\nRelease",
+          "w": 370,
+          "x": 26,
+          "y": 1416.03125
+        },
+        {
+          "display": "block",
+          "h": 199,
+          "id": "c7",
+          "order": "13",
+          "position": "relative",
+          "text": "TOOL\tCHAMBER\tMEASURE\tOWNER\tSTATUS\nETCH-08\tA\tPressure\tEquipment Eng.\tOp",
+          "w": 370,
+          "x": 26,
+          "y": 1572.03125
+        },
+        {
+          "display": "block",
+          "h": 172,
+          "id": "c9",
+          "order": "15",
+          "position": "relative",
+          "text": "Measurement system remains within the qualified reference range.\n\nSamp",
+          "w": 370,
+          "x": 26,
+          "y": 1783.03125
+        },
+        {
+          "display": "block",
+          "h": 152,
+          "id": "c10",
+          "order": "17",
+          "position": "relative",
+          "text": "!\nHold added capacity until the paired-lot check closes\n\nKeep the reci",
+          "w": 370,
+          "x": 26,
+          "y": 2005.03125
+        },
+        {
+          "display": "block",
+          "h": 152,
+          "id": "c11",
+          "order": "19",
+          "position": "relative",
+          "text": "Complete chamber verification and update the runbook.\nActive\n\nOwner: E",
+          "w": 370,
+          "x": 26,
+          "y": 2207.03125
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c3",
+          "order": "21",
+          "position": "relative",
+          "text": "First pass yield\n95%\nDelta 0.9\nTarget 96%",
+          "w": 370,
+          "x": 26,
+          "y": 2409.03125
+        },
+        {
+          "display": "block",
+          "h": 160.796875,
+          "id": "c4",
+          "order": "23",
+          "position": "relative",
+          "text": "Unplanned downtime\n8.3 h\nDelta -1.7\nTarget 6 h",
+          "w": 370,
+          "x": 26,
+          "y": 2581.828125
+        }
+      ],
+      "layer": {
+        "display": "flex",
+        "flexDirection": "column",
+        "h": 2396.03125,
+        "id": null,
+        "order": "0",
+        "position": "relative",
+        "text": "Shift B recovered yield after chamber maintenance. Keep the recipe loc",
+        "w": 370,
+        "x": 26,
+        "y": 346.59375
+      },
+      "ordered_flow": true,
+      "preview": true,
+      "process_flow_diagnostics": [
+        {
+          "id": "c8",
+          "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 821px; --viz-preferred-height: 264px; left: 389.36px; top: 776.369px; width: 821.28px; height: 170px; z-index: 18; order: 11;",
+          "metrics": [
+            {
+              "className": "component",
+              "inlineStyle": "--viz-mobile-reader-height: 144px; --viz-preferred-width: 821px; --viz-preferred-height: 264px; left: 389.36px; top: 776.369px; width: 821.28px; height: 170px; z-index: 18; order: 11;",
+              "rect": {
+                "height": 144,
+                "width": 370,
+                "x": 26,
+                "y": 1416.03125
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "144px",
+                "maxHeight": "none",
+                "minHeight": "144px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "c-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 127.796875,
+                "width": 370,
+                "x": 26,
+                "y": 1416.03125
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "127.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "370px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "integrated-element-content",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1428.03125
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "gallery-card integrated-variant title-hidden align-left engine-diagramengine variant-process-flow",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1428.03125
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "ARTICLE"
+            },
+            {
+              "className": "card-body",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1428.03125
+              },
+              "style": {
+                "display": "flex",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "diagram-responsive-reading",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1428.03125
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "auto",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "DIV"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 103.796875,
+                "width": 346,
+                "x": 38,
+                "y": 1428.03125
+              },
+              "style": {
+                "display": "block",
+                "flex": "0 1 auto",
+                "height": "103.797px",
+                "maxHeight": "none",
+                "minHeight": "0px",
+                "overflow": "visible",
+                "width": "346px"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            },
+            {
+              "className": "[object SVGAnimatedString]",
+              "inlineStyle": null,
+              "rect": {
+                "height": 0,
+                "width": 0,
+                "x": 0,
+                "y": 0
+              },
+              "style": {
+                "display": "none",
+                "flex": "0 1 auto",
+                "height": "100%",
+                "maxHeight": "none",
+                "minHeight": "120px",
+                "overflow": "visible",
+                "width": "100%"
+              },
+              "tag": "svg"
+            }
+          ],
+          "mobileHeight": "144px"
+        }
+      ],
+      "process_flows": [
+        {
+          "height": 144,
+          "id": "c8",
+          "svgHeight": 103.796875,
+          "svgWidth": 346
+        }
+      ],
+      "reading_order": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19,
+        21,
+        23
+      ],
+      "sections": [
+        {
+          "first_component_order": 0,
+          "level": "2",
+          "order": 0,
+          "role": "heading",
+          "section": "opening",
+          "title": "01Operating summary"
+        },
+        {
+          "first_component_order": 2,
+          "level": "2",
+          "order": 4,
+          "role": "heading",
+          "section": "analysis",
+          "title": "02Analysis"
+        },
+        {
+          "first_component_order": 5,
+          "level": "2",
+          "order": 10,
+          "role": "heading",
+          "section": "evidence",
+          "title": "03Response workflow"
+        },
+        {
+          "first_component_order": 8,
+          "level": "2",
+          "order": 16,
+          "role": "heading",
+          "section": "decision",
+          "title": "04Decision"
+        },
+        {
+          "first_component_order": 9,
+          "level": "2",
+          "order": 18,
+          "role": "heading",
+          "section": "delivery",
+          "title": "05Next steps"
+        },
+        {
+          "first_component_order": 10,
+          "level": "2",
+          "order": 20,
+          "role": "heading",
+          "section": "performance",
+          "title": "06Performance"
+        }
+      ],
+      "table_regions": [
+        {
+          "clientWidth": 344,
+          "keyboard_scroll_left": 36,
+          "label": "Scrollable table: Clean Table",
+          "scrollLeft": 0,
+          "scrollWidth": 380,
+          "tabIndex": 0
+        }
+      ],
+      "text_components": [
+        {
+          "cardClient": 163,
+          "cardScroll": 163,
+          "clipped": false,
+          "componentHeight": 187,
+          "copyClient": 163,
+          "copyScroll": 163,
+          "deadSpace": 24,
+          "id": "c1"
+        },
+        {
+          "cardClient": 39,
+          "cardScroll": 39,
+          "clipped": false,
+          "componentHeight": 76,
+          "copyClient": 39,
+          "copyScroll": 39,
+          "deadSpace": 37,
+          "id": "c2"
+        },
+        {
+          "cardClient": 78,
+          "cardScroll": 78,
+          "clipped": false,
+          "componentHeight": 132,
+          "copyClient": 78,
+          "copyScroll": 78,
+          "deadSpace": 54,
+          "id": "c12"
+        }
+      ],
+      "viewport_width": 390
+    },
+    "preview_chart_geometry": [
+      {
+        "component_height": 458.5180358886719,
+        "component_width": 944.81982421875,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "id": "c5",
+        "plot_width": 908.0003051757812,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 326.4009094238281,
+        "svg_width": 908.0003051757812
+      },
+      {
+        "component_height": 360.25933837890625,
+        "component_width": 742.36328125,
+        "element": "SPC Control Chart",
+        "engine": "EngineeringChartEngine",
+        "id": "c6",
+        "plot_width": 705.5438232421875,
+        "preserve_aspect": "xMidYMid meet",
+        "renderer_aspect": 2.0606060606060606,
+        "svg_height": 302.8642272949219,
+        "svg_width": 705.5438232421875
+      }
+    ],
+    "preview_chart_mark_titles": [
+      {
+        "chart": "c5",
+        "titles": [
+          "Line Chart",
+          "Shift 01",
+          "Shift 04",
+          "Shift 08",
+          "Shift 11",
+          "Shift 15",
+          "Shift 18",
+          "Yield · 18 points · Shift 01 94.1 · Shift 02 94.153 · Shift 03 94.206 · Shift 04 94.259 · Shift 05 94.312 · Shift 06 94.365 · Shift 13 94.735 · Shift 14 94.788 · Shift 15 94.841 · Shift 16 94.894 · Shift 17 94.947 · Shift 18 95 · 6 additional points omitted",
+          "Yield",
+          "Yield · Shift 01 · 244.1303",
+          "Yield · Shift 01 · 244.1303",
+          "Yield · Shift 02 · 231.9915",
+          "Yield · Shift 02 · 231.9915",
+          "Yield · Shift 03 · 219.8527",
+          "Yield · Shift 03 · 219.8527",
+          "Yield · Shift 04 · 207.7139",
+          "Yield · Shift 04 · 207.7139",
+          "Yield · Shift 05 · 195.5751",
+          "Yield · Shift 05 · 195.5751",
+          "Yield · Shift 06 · 183.4364",
+          "Yield · Shift 06 · 183.4364",
+          "Yield · Shift 07 · 171.2976",
+          "Yield · Shift 07 · 171.2976",
+          "Yield · Shift 08 · 159.1588",
+          "Yield · Shift 08 · 159.1588",
+          "Yield · Shift 09 · 147.02",
+          "Yield · Shift 09 · 147.02",
+          "Yield · Shift 10 · 135.1103",
+          "Yield · Shift 10 · 135.1103",
+          "Yield · Shift 11 · 122.9715",
+          "Yield · Shift 11 · 122.9715",
+          "Yield · Shift 12 · 110.8327",
+          "Yield · Shift 12 · 110.8327",
+          "Yield · Shift 13 · 98.6939",
+          "Yield · Shift 13 · 98.6939",
+          "Yield · Shift 14 · 86.5551",
+          "Yield · Shift 14 · 86.5551",
+          "Yield · Shift 15 · 74.4163",
+          "Yield · Shift 15 · 74.4163",
+          "Yield · Shift 16 · 62.2776",
+          "Yield · Shift 16 · 62.2776",
+          "Yield · Shift 17 · 50.1388",
+          "Yield · Shift 17 · 50.1388",
+          "Yield · Shift 18 · 38",
+          "Yield · Shift 18 · 38",
+          "Chart legend",
+          "Toggle Yield series",
+          "Yield"
+        ]
+      },
+      {
+        "chart": "c6",
+        "titles": [
+          "Observation 1: 94.1",
+          "Observation 2: 94.6",
+          "Observation 3: 95",
+          "Observation 4: 94.8",
+          "Observation 5: 95.2"
+        ]
+      }
+    ],
+    "preview_chart_summaries": [
+      "Line Chart: 18 rows · X Shift · Y Yield · 2 fields",
+      "SPC Control Chart: 5 rows · X Time · Y Measurement · 4 fields"
+    ],
+    "preview_table_geometry": [
+      {
+        "body": {
+          "h": 340.5804443359375,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 1178.48193359375
+        },
+        "card": {
+          "h": 340.5804443359375,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 1178.48193359375
+        },
+        "id": "c7",
+        "item": {
+          "h": 377.4000244140625,
+          "w": 1702.3609619140625,
+          "x": 117.90243530273438,
+          "y": 1160.0721435546875
+        },
+        "region": {
+          "h": 340.5804443359375,
+          "w": 1665.54150390625,
+          "x": 136.31219482421875,
+          "y": 1178.48193359375
+        },
+        "rows": [
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278076171875,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1179.5648193359375
+            },
+            "text": "TOOL\tCHAMBER\tMEASURE\tOWNER\tSTATUS",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.8194580078125,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1215.8428955078125
+            },
+            "text": "ETCH-08\tA\tPressure\tEquipment Eng.\tOpen",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.819580078125,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1252.662353515625
+            },
+            "text": "ETCH-07\tC\tFlow\tProcess Eng.\tStable",
+            "visibility": "visible"
+          },
+          {
+            "color": "rgb(29, 29, 31)",
+            "display": "table-row",
+            "rect": {
+              "h": 36.278076171875,
+              "w": 1663.3756103515625,
+              "x": 137.39512634277344,
+              "y": 1289.48193359375
+            },
+            "text": "MET-02\tB\tYield\tQuality\tVerified",
+            "visibility": "visible"
+          }
+        ],
+        "table": {
+          "h": 146.1951904296875,
+          "w": 1663.3756103515625,
+          "x": 137.39512634277344,
+          "y": 1179.5648193359375
+        }
+      }
+    ],
+    "preview_table_summaries": [
+      "TOOL\tCHAMBER\tMEASURE\tOWNER\tSTATUS\nETCH-08\tA\tPressure\tEquipment Eng.\tOpen\nETCH-07\tC\tFlow\tProcess Eng.\tStable\nMET-02\tB\tYield\tQuality\tVerified"
+    ],
+    "spatial_geometry": []
+  },
+  "revision": 47,
+  "title": "Technical Status Review"
+}

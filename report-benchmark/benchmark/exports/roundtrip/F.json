@@ -1,0 +1,449 @@
+{
+  "canonical_import": "company_ui.products.visualizer.ppt_service.import_visembler_pptx",
+  "exact_model_match": true,
+  "model": {
+    "authoring_schema": "authoring-p0-v1",
+    "canvas": {
+      "height": 900,
+      "width": 1600
+    },
+    "crossFilter": null,
+    "crossFilters": [],
+    "datasets": [
+      {
+        "fields": [
+          {
+            "id": "collection_store_1",
+            "name": "Collection store",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "string"
+          },
+          {
+            "id": "relative_humidity_2",
+            "name": "Relative humidity",
+            "nullable": false,
+            "profile": {
+              "distinct": 4,
+              "missing": 0
+            },
+            "semantic_tags": [],
+            "type": "number",
+            "unit": ""
+          }
+        ],
+        "id": "dataset-muplrex0-w7mvaa",
+        "metadata": {
+          "header": {
+            "confidence": 0.75,
+            "present": true,
+            "source_row": 0
+          }
+        },
+        "name": "Pasted data",
+        "revision": 3,
+        "rows": [
+          [
+            "North paper store",
+            44.8
+          ],
+          [
+            "East textile store",
+            47.3
+          ],
+          [
+            "South mixed store",
+            51.2
+          ],
+          [
+            "West photography store",
+            46.1
+          ]
+        ],
+        "source": {
+          "imported_at": "2026-10-01T14:01:25.572Z",
+          "kind": "clipboard",
+          "label": "TSV"
+        },
+        "warnings": []
+      }
+    ],
+    "groups": {},
+    "items": [
+      {
+        "brush": [
+          0,
+          4
+        ],
+        "composition_role": "primary_analysis",
+        "cross": null,
+        "data": [
+          [
+            "Baseline",
+            72
+          ],
+          [
+            "Pilot",
+            78
+          ],
+          [
+            "Validation",
+            84
+          ],
+          [
+            "Release",
+            91
+          ],
+          [
+            "Sustain",
+            94
+          ]
+        ],
+        "dataset_id": "dataset-muplrex0-w7mvaa",
+        "drill": null,
+        "element": "Line Chart",
+        "engine": "CoreChartEngine",
+        "groupId": null,
+        "h": 320,
+        "id": "c1",
+        "locked": false,
+        "mapping": {
+          "category": "collection_store_1",
+          "value": "relative_humidity_2",
+          "x": "collection_store_1",
+          "y": "relative_humidity_2"
+        },
+        "message_role": "Primary Evidence",
+        "order": 3,
+        "revealed": true,
+        "rows": [
+          {
+            "label": "Baseline",
+            "value": 72
+          },
+          {
+            "label": "Pilot",
+            "value": 78
+          },
+          {
+            "label": "Validation",
+            "value": 84
+          },
+          {
+            "label": "Release",
+            "value": 91
+          },
+          {
+            "label": "Sustain",
+            "value": 94
+          }
+        ],
+        "section_id": "analysis",
+        "section_title": "Analysis",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Humidity by collection store",
+        "type": "chart",
+        "variant": "line",
+        "w": 520,
+        "weight": 1.8,
+        "x": 14,
+        "y": 14,
+        "z": 1
+      },
+      {
+        "body": "Trial the south-store schedule for one week, with daily conservation checks.",
+        "composition_role": "report_headline",
+        "element": "Hero Title",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 109.76,
+        "id": "c2",
+        "locked": false,
+        "message_role": "Headline",
+        "order": 4,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Trial the south-store schedule for one week, with daily conservation checks.",
+        "textAlign": "left",
+        "title": "Hero Title",
+        "type": "text",
+        "w": 520,
+        "weight": 1.1,
+        "x": 548,
+        "y": 14,
+        "z": 2
+      },
+      {
+        "body": "Northlight Archive · four collection stores · 1 October 2026 · owner: Conservation · seven-day reversible pilot.",
+        "composition_role": "context",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c3",
+        "locked": false,
+        "message_role": "Context",
+        "order": 0,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Northlight Archive · four collection stores · 1 October 2026 · owner: Conservation · seven-day reversible pilot.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 1082,
+        "y": 14,
+        "z": 3
+      },
+      {
+        "body": "Relative humidity spans 44.8% to 51.2% across four stores. The south store is above the 50.0% operating target and below the 55.0% stop limit. A one-day observation supports a reversible trial; it does not establish seasonal drift or material damage.",
+        "composition_role": "narrative_interpretation",
+        "element": "Body Narrative",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 116,
+        "id": "c4",
+        "locked": false,
+        "message_role": "Context",
+        "order": 1,
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": false,
+        "text": "Relative humidity spans 44.8% to 51.2% across four stores. The south store is above the 50.0% operating target and below the 55.0% stop limit. A one-day observation supports a reversible trial; it does not establish seasonal drift or material damage.",
+        "textAlign": "left",
+        "title": "Body Narrative",
+        "type": "text",
+        "w": 500,
+        "weight": 1.1,
+        "x": 548,
+        "y": 137.76,
+        "z": 4
+      },
+      {
+        "capability_overrides": {
+          "target": 50
+        },
+        "composition_role": "hero_metric",
+        "delta": "+1.2 pp",
+        "element": "Hero KPI",
+        "engine": "MetricEngine",
+        "groupId": null,
+        "h": 152.32000000000002,
+        "id": "c5",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "% RH"
+        },
+        "order": 5,
+        "period": "vs prior period",
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "target": 50,
+        "textAlign": "left",
+        "title": "South-store humidity",
+        "type": "metric",
+        "unit": "% RH",
+        "value": 51.2,
+        "w": 520,
+        "weight": 1.15,
+        "x": 1062,
+        "y": 144,
+        "z": 5
+      },
+      {
+        "after": 51.2,
+        "before": 44.8,
+        "composition_role": "supporting_analysis",
+        "element": "Before/After KPI",
+        "engine": "ComparisonEngine",
+        "groupId": null,
+        "h": 150,
+        "id": "c6",
+        "locked": false,
+        "message_role": "Supporting Evidence",
+        "metric_format": {
+          "compact_divisor": null,
+          "compact_unit": "",
+          "kind": "auto",
+          "null_display": "—",
+          "percent_scale": "points",
+          "precision": null,
+          "prefix": "",
+          "signDisplay": "auto",
+          "suffix": "% RH"
+        },
+        "order": 6,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Lowest versus south-store humidity",
+        "type": "comparison",
+        "unit": "% RH",
+        "w": 430,
+        "weight": 1.15,
+        "x": 548,
+        "y": 267.76,
+        "z": 6
+      },
+      {
+        "composition_role": "detailed_evidence",
+        "customTable": {
+          "headers": [
+            "Collection store",
+            "Humidity",
+            "Inspection",
+            "Action"
+          ],
+          "rows": [
+            [
+              "North paper store",
+              "44.8%",
+              "No change",
+              "Maintain"
+            ],
+            [
+              "East textile store",
+              "47.3%",
+              "No change",
+              "Maintain"
+            ],
+            [
+              "South mixed store",
+              "51.2%",
+              "Review daily",
+              "Seven-day trial"
+            ],
+            [
+              "West photography store",
+              "46.1%",
+              "No change",
+              "Maintain"
+            ]
+          ]
+        },
+        "element": "Clean Table",
+        "engine": "TableEngine",
+        "groupId": null,
+        "h": 259,
+        "id": "c7",
+        "locked": false,
+        "message_role": "Primary Evidence",
+        "order": 2,
+        "rows": [
+          [
+            "North paper store",
+            "44.8%",
+            "No change",
+            "Maintain"
+          ],
+          [
+            "East textile store",
+            "47.3%",
+            "No change",
+            "Maintain"
+          ],
+          [
+            "South mixed store",
+            "51.2%",
+            "Review daily",
+            "Seven-day trial"
+          ],
+          [
+            "West photography store",
+            "46.1%",
+            "No change",
+            "Maintain"
+          ]
+        ],
+        "section_id": "operating-evidence",
+        "section_title": "Operating evidence",
+        "showTitle": true,
+        "textAlign": "left",
+        "title": "Store observation and action",
+        "type": "table",
+        "w": 480,
+        "weight": 1.55,
+        "x": 992,
+        "y": 310.32000000000005,
+        "z": 7
+      },
+      {
+        "composition_role": "decision_risk",
+        "detail": "Restore the prior schedule at 55.0% humidity or any new artifact surface change. Record daily readings and conservation observations before extending the trial.",
+        "element": "Risk Callout",
+        "engine": "DecisionCompositeEngine",
+        "groupId": null,
+        "h": 105.28000000000002,
+        "id": "c8",
+        "locked": false,
+        "message_role": "Risk",
+        "order": 8,
+        "section_id": "decision",
+        "section_title": "Decision",
+        "showTitle": false,
+        "statement": "Trial the south-store schedule for seven days",
+        "status": "Trial",
+        "textAlign": "left",
+        "title": "Risk Callout",
+        "type": "decision",
+        "w": 448.00000000000006,
+        "weight": 1.15,
+        "x": 14,
+        "y": 348,
+        "z": 8
+      },
+      {
+        "body": "Decision: run the south-store schedule for seven days. Restore the previous schedule if humidity reaches 55.0% or daily conservation inspection finds any new surface change.",
+        "composition_role": "conclusion",
+        "element": "Key Takeaway",
+        "engine": "TextEngine",
+        "groupId": null,
+        "h": 96,
+        "id": "c9",
+        "locked": false,
+        "message_role": "Action",
+        "order": 7,
+        "section_id": "decision",
+        "section_order": 4,
+        "section_title": "Decision",
+        "showTitle": false,
+        "text": "Decision: run the south-store schedule for seven days. Restore the previous schedule if humidity reaches 55.0% or daily conservation inspection finds any new surface change.",
+        "textAlign": "left",
+        "title": "Key Takeaway",
+        "type": "text",
+        "w": 460.2,
+        "weight": 1.1,
+        "x": 476.00000000000006,
+        "y": 431.76,
+        "z": 9
+      }
+    ],
+    "layoutPreset": "executive",
+    "mode": "smart",
+    "nextId": 10,
+    "schema_version": 1
+  },
+  "source_report_id": "report-4f2429b4f357434ea3e4ee7cd43a5831"
+}

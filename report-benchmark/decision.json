@@ -1,0 +1,27 @@
+{
+  "run": "CHG-173-r7-direct-20261001",
+  "producer": "primary-codex-direct",
+  "fabric_job": null,
+  "source_sha": "1d3186b8b15fb662aeec56ce276a24c80f092c19",
+  "tree_sha": "970c0f525aa03c2addce498aafba449c97080660",
+  "verdict": "NO_GO",
+  "source_changed": false,
+  "native_baseline": {"required_gates": 31, "passed": 31, "tests": 1235, "failures": 0, "skips": 0},
+  "fresh_benchmark": {"reports": 6, "fresh_holdouts": 2, "canonical_pptx_roundtrips": 6, "native_ui_only": true, "source_data_review_corrections": "Assay, week and shift identifiers required explicit categorical typing; Encodings-tab mapping was verified."},
+  "finding": {
+    "id": "VIS-R7-001",
+    "severity": "P1",
+    "owner": "Product canonical chart renderer",
+    "defect": "Box Plot native reading adds a numeric observation X scale to ordinal population boxes. Native Reference/Affected grouping disagrees with editable PPTX category semantics.",
+    "decisive_pixels": "benchmark/diagnostics/B-box-plot-native.png",
+    "state_coincident_facts": "benchmark/diagnostics/B-box-plot-native-axis.json",
+    "repair_change": "https://app.notion.com/p/3ecc564c8d04819ba10ed5049e4bc01a"
+  },
+  "proof_limits": [
+    "Full final whole-report acceptance stopped on the proven P1; the remaining semantic XML and reader checks are not all claimed complete.",
+    "Quick Look rendered actual export thumbnails and the complete E preview; these are not PowerPoint/LibreOffice certification.",
+    "Initial failed authoring/measurement attempts remain retained. Five-step flows were measured for actual containment and connector clearance rather than the unrelated four-step height budget.",
+    "Per-report final-proof logs are retained; complete original authoring action counts were not all retained. Reuse/blank comparison action counts are retained separately.",
+    "No blind human preference audit, company-managed target certification, canonical Fabric audit or supported Codash direct-run binding was executed."
+  ]
+}

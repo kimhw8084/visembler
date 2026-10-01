@@ -1,0 +1,24 @@
+{
+  "error": "Chart axis labels must remain legible without collisions: [{\"chart\": \"c1\", \"overlaps\": []}, {\"chart\": \"c2\", \"overlaps\": [{\"left\": \"17.617.6\", \"right\": \"17.6\"}]}]",
+  "product_attribution": "unassessed",
+  "reports": {
+    "A": {
+      "genre": "executive-business-review",
+      "report_id": "report-d241bb745e33471c8f88808216af37c6"
+    },
+    "B": {
+      "genre": "semiconductor-rca",
+      "report_id": "report-19f7bff61b1542aba39e225b52606043"
+    },
+    "C": {
+      "genre": "experiment-decision",
+      "report_id": "report-fdac83c7d3514b88a3cfc8f61999cd71"
+    },
+    "D": {
+      "genre": "technical-status-review",
+      "report_id": "report-3089681bf06141b080534e6e717ce638"
+    }
+  },
+  "stage": "author holdout E",
+  "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/visembler-chg173-r7-direct/r7_benchmark.py\", line 51, in main\n    rid,m,pptx,svg,_=build_blank_report(page,host,key,actions)\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/visembler-chg173-r7-direct/r7_benchmark.py\", line 180, in build_blank_report\n    shots=r.capture_report(page,OUT/'raw',key,actions)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/private/tmp/visembler-chg173-r7-direct/source/scripts/release_checks/run_chg181_authoring_acceptance.py\", line 676, in capture_report\n    raise AssertionError(f\"Chart axis labels must remain legible without collisions: {json.dumps(axis_label_overlaps,ensure_ascii=False)}\")\nAssertionError: Chart axis labels must remain legible without collisions: [{\"chart\": \"c1\", \"overlaps\": []}, {\"chart\": \"c2\", \"overlaps\": [{\"left\": \"17.617.6\", \"right\": \"17.6\"}]}]\n"
+}
