@@ -1141,7 +1141,14 @@ def register_visualizer(
             share_group_state={'checked':False}
             share_group=Checkbox('This identifier represents a group')
             # Native checked state is the event payload, never a truthy DOM object.
-            share_group.control.on('change',lambda event:share_group_state.update(checked=event.args is True),js_handler='e => emit(e.target.checked)')
+            def change_share_group(event: Any) -> None:
+                checked=event.args is True
+                share_group_state['checked']=checked
+                # The dialog remounts its native input on reopen. Retain the
+                # selected value in the rendered props as well as the callback.
+                if checked: share_group.control.props('checked')
+                else: share_group.control.props(remove='checked')
+            share_group.control.on('change',change_share_group,js_handler='e => emit(e.target.checked)')
             with ui.element('div').classes('cui-history-actions'):
                 Button('Grant access',intent=ButtonIntent.PRIMARY,on_click=apply_share)
                 Button('Remove access',intent=ButtonIntent.DANGER,on_click=revoke_share)
