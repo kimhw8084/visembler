@@ -253,7 +253,7 @@ def main() -> int:
 
                     def empty_search() -> dict:
                         _open(page, f"{host.url}/visualizer/reports?report={quote(ids['history'])}")
-                        search = page.get_by_label("Search reports")
+                        search = page.get_by_role("textbox", name="Search reports", exact=True)
                         search.fill("no-report-matches-this-query")
                         empty = page.get_by_text("No active reports match this search.", exact=True)
                         empty.wait_for(state='visible', timeout=5_000)

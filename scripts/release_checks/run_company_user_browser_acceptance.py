@@ -399,7 +399,7 @@ def run(base_url: str, data_dir: Path, output: Path, headed: bool = False) -> in
             _safe_stage(diagnostics, 'CB006', 'alice', 'owner', 'wait_for_share_dialog_visible', alice_hub, 'alice_report_hub', shared_id, 'completed')
             share_dialog.wait_for(state='visible', timeout=5000)
             _safe_stage(diagnostics, 'CB006', 'alice', 'owner', 'fill_grantee', alice_hub, 'alice_report_hub', shared_id, 'completed')
-            alice_hub.get_by_label('Person or group').fill('bob')
+            alice_hub.get_by_role("textbox", name='Person or group', exact=True).fill('bob')
             _safe_stage(diagnostics, 'CB006', 'alice', 'owner', 'submit_viewer_grant', alice_hub, 'alice_report_hub', shared_id, 'completed')
             alice_hub.get_by_role('button', name='Grant access', exact=True).click()
             _safe_stage(diagnostics, 'CB006', 'alice', 'owner', 'wait_for_share_dialog_hidden', alice_hub, 'alice_report_hub', shared_id, 'completed')

@@ -145,7 +145,7 @@ def edit_field(page, selector, value):
 
 def open_new_report(page, metrics, template):
     primary_click(page, metrics, 'button:has-text("New report")')
-    card = page.locator(".q-dialog:visible .cui-report-template").filter(has_text=template).first
+    card = page.locator('[data-cui-overlay="dialog"]:visible').get_by_role("button", name=template, exact=True)
     card.wait_for(state="visible", timeout=10000)
     primary_locator_click(metrics, card)
     page.wait_for_function(
@@ -468,7 +468,7 @@ def task_d(page, metrics, out, image_path):
     page.locator("#genericModal.show").wait_for(state="hidden", timeout=10000)
     primary_locator_click(metrics, page.locator('.cui-visualizer-reportbar button').filter(has_text="Duplicate"))
     settled(page)
-    duplicate_title = page.get_by_label("Report title")
+    duplicate_title = page.get_by_role("textbox", name="Report title", exact=True)
     duplicate_title.fill("Operations Review Copy")
     duplicate_title.press("Tab")
     settled(page)
