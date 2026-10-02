@@ -12,30 +12,31 @@ def page_text() -> str:
 
 def test_wave4_main_report_strip_is_reduced_to_primary_actions() -> None:
     page = page_text()
-    marker = "with ui.element('section').classes('cui-visualizer-reportbar w-full')"
+    marker = "with ui.element('section').classes('cui-visualizer-reportbar')"
     start = page.index(marker)
     end = page.index("host=ui.element('div').classes('cui-visualizer-host", start)
     strip = page[start:end]
 
-    assert "label='Reports'" in strip
-    assert "use-input input-debounce=0" in strip
-    assert "ui.button('New report'" in strip
-    assert "ui.button('Duplicate'" in strip
-    assert "ui.button('Manage'" in strip
+    assert "Select('Reports'" in strip and 'searchable=True' in strip
+    assert "Button('New report'" in strip
+    assert "Button('Duplicate'" in strip
+    assert "Button('Manage'" in strip
+    assert 'Tooltip(' in strip and '.attach(manage_button.element)' in strip
+    assert 'ui.button' not in strip and 'ui.input' not in strip and 'ui.select' not in strip
 
     # Secondary / destructive actions belong in the manager, not the persistent
     # authoring strip.
     assert "Clean up empty reports" not in strip
-    assert "ui.button('Trash'" not in strip
-    assert "ui.button('Restore…'" not in strip
-    assert "ui.button('Import…'" not in strip
+    assert "Button('Trash'" not in strip
+    assert "Button('Restore…'" not in strip
+    assert "Button('Import…'" not in strip
     assert "report_filter=" not in strip
 
 
 def test_wave4_report_manager_contains_secondary_lifecycle_actions() -> None:
     page = page_text()
-    assert "manage_dialog=ui.dialog()" in page
-    assert "ui.label('Manage reports')" in page
+    assert "manage_dialog=FormDialog('Manage reports'" in page
+    assert "manage_dialog=ui.dialog()" not in page
     assert "Duplicate current report" in page
     assert "Report history" in page
     assert "Import…" in page

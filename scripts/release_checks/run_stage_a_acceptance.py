@@ -441,7 +441,7 @@ def _assert_hub(page, host, report_id):
     new_title = f'{old_title} Stage A'
     card.locator('[data-report-action="more"]').click()
     page.locator('.q-menu:visible').get_by_role('button', name='Edit details', exact=True).click()
-    page.get_by_label('Report name').fill(new_title)
+    page.get_by_role("textbox", name='Report name', exact=True).fill(new_title)
     page.get_by_role('button', name='Save details', exact=True).click()
     _wait_repo_title(host, old_title, new_title)
     page.reload(wait_until='domcontentloaded')

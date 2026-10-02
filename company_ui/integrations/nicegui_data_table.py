@@ -371,7 +371,7 @@ class TableSelectionBar:
                 for action in self.actions:
                     async def run(e=None, a=action):
                         rows=await table.selected_rows(); await _invoke(a.on_action, rows)
-                    btn=ui.button(on_click=run).props('flat dense no-caps').classes(f'cui-button cui-button--{action.intent} cui-control--small')
+                    btn=ui.button(color=None, on_click=run).props('flat dense no-caps').classes(f'cui-button cui-button--{action.intent} cui-control--small')
                     with btn:
                         if action.icon: _icon(ui,action.icon,size='xs')
                         ui.label(action.label)

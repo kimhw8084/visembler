@@ -16,10 +16,13 @@ from urllib.parse import parse_qs, quote
 
 from fastapi import HTTPException, Request
 
-from company_ui import ActionMenu, Button, ButtonIntent, Card, DetailDrawer, DangerConfirmDialog, FormDialog, IconButton, Icons, MenuItemSpec, OverlaySize, StatusBadge, StatusIntent
-from company_ui.integrations.nicegui_components import FileUpload
-from company_ui.integrations.nicegui_layout import AppShell
-from company_ui.integrations.nicegui_state import NiceGUIStateServices
+from company_ui import (
+    ActionMenu, AppShell, Button, ButtonCluster, ButtonIntent, Card, Checkbox,
+    ContentWidth, DetailDrawer, DangerConfirmDialog, FileUpload, FormDialog,
+    FormStack, IconButton, Icons, MenuItemSpec, NiceGUIStateServices,
+    OverlaySize, Page, PageHeader, SearchInput, Select, Stack, StatusBadge,
+    StatusIntent, TextArea, TextInput, Tooltip,
+)
 from company_ui.layouts.models import SidebarMode
 from company_ui.navigation import NavItem, NavigationModel, NavSection
 from company_ui.data_engine import DataQuery, DataSession, Dataset, FilterClause, FilterOperation, SortClause
@@ -29,6 +32,7 @@ from .files import PPT_MAX_BYTES, validate_image_bytes, validate_pptx_bytes
 from .governance import REPORT_EDIT, REPORT_EXPORT, REPORT_READ, REPORT_SHARE, ReportAccessCatalog, ReportRole, ScopedReportRepository
 from .dataset_resources import DatasetResourceStore, ScopedDatasetRepository
 from .ppt_service import export_pptx, import_visembler_pptx
+from .presentation import ReportCopy
 from .repository import ReportRepository
 from .runtime import NiceGUIRuntimeAdapter
 from .statistical_analysis import analyze_statistical_items, require_valid_statistical_results
@@ -620,7 +624,8 @@ def register_visualizer(
         module_url=f'{STATIC_ROUTE}/assets/diagram_studio.mjs?v={build}'
         ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Diagram Studio',owner='Visembler'):
-            with ui.column().classes('cui-page cui-page--full cui-diagram-studio-page w-full'):
+            with Page(ContentWidth.FULL) as studio_page:
+                studio_page.element.classes('cui-diagram-studio-page')
                 host=ui.element('div').classes('cui-diagram-studio-host w-full').props('aria-label="Visembler Diagram Studio"')
                 host.on('visualizer_bridge',handle_studio_event,args=['detail'])
                 with host: ui.html((ASSETS/'diagram_studio.html').read_text(encoding='utf-8'),sanitize=False)
@@ -687,7 +692,8 @@ def register_visualizer(
         module_url=f'{STATIC_ROUTE}/assets/chart_studio.mjs?v={build}'
         ui.add_head_html(f'<link rel="stylesheet" href="{token_url}"><link rel="stylesheet" href="{css_url}">')
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Chart Studio',owner='Visembler'):
-            with ui.column().classes('cui-page cui-page--full cui-chart-studio-page w-full'):
+            with Page(ContentWidth.FULL) as studio_page:
+                studio_page.element.classes('cui-chart-studio-page')
                 host=ui.element('div').classes('cui-chart-studio-host w-full').props('aria-label="Visembler Chart Studio"')
                 host.on('visualizer_bridge',handle_chart_event,args=['detail'])
                 with host: ui.html((ASSETS/'chart_studio.html').read_text(encoding='utf-8'),sanitize=False)
@@ -779,7 +785,7 @@ def register_visualizer(
             return results
 
         ui.add_head_html('''<style>
-          .cui-report-hub{padding:var(--cui-space-8) var(--cui-space-8) var(--cui-space-16);display:grid;gap:var(--cui-space-5);min-width:0}
+          .cui-report-copy{margin:0;overflow-wrap:anywhere}.cui-report-hub{display:grid;min-width:0}
           .cui-report-hub-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--cui-space-4);flex-wrap:wrap}.cui-report-hub-head h1{margin:0;font-size:var(--cui-font-size-32);letter-spacing:-.04em}.cui-report-hub-head p{margin:var(--cui-space-1) 0 0;color:var(--cui-text-secondary)}
           .cui-report-hub-head-actions{display:flex;align-items:center;gap:var(--cui-space-2);flex-wrap:wrap}.cui-report-hub-toolbar{display:grid;grid-template-columns:minmax(14rem,2fr) repeat(4,minmax(8rem,1fr));gap:var(--cui-space-2);align-items:end;padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface)}.cui-report-hub-toolbar>*{min-width:0}
           .cui-report-hub-toolbar .cui-report-search{min-width:0}.cui-report-hub-toolbar .cui-report-create{min-width:0}.cui-report-view-toggle{display:flex;gap:var(--cui-space-1);align-items:center;min-height:var(--cui-control-height-medium)}
@@ -788,10 +794,10 @@ def register_visualizer(
           .cui-report-card,.cui-template-card{display:grid;gap:var(--cui-space-3);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface);box-shadow:var(--cui-shadow-1);min-width:0}.cui-report-card-body{display:grid;gap:var(--cui-space-2);min-width:0}.cui-report-card-identity{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--cui-space-2);min-width:0}.cui-report-card-identity>:last-child{white-space:nowrap;flex:0 0 auto}.cui-report-card-copy{min-width:0}.cui-report-card-title{display:block;font-size:var(--cui-font-size-16);font-weight:var(--cui-font-weight-700);line-height:var(--cui-line-height-ratio-1_2);overflow-wrap:anywhere}.cui-report-card-description{display:block;margin-top:var(--cui-space-1);color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-report-card-meta{display:flex;flex-wrap:wrap;gap:var(--cui-space-1) var(--cui-space-3);color:var(--cui-text-secondary);font-size:var(--cui-font-size-12);line-height:var(--cui-line-height-ratio-1_35)}.cui-report-card-meta span{overflow-wrap:anywhere}.cui-report-card-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--cui-space-2);padding-top:var(--cui-space-2);border-top:1px solid var(--cui-border-subtle)}.cui-report-card-primary{min-width:7.5rem}.cui-report-card-more{flex:0 0 auto}
           .cui-report-thumb{height:8.25rem;position:relative;overflow:hidden;border-radius:var(--cui-radius-control);background:linear-gradient(135deg,var(--cui-surface-secondary),var(--cui-surface-hover));border:1px solid var(--cui-border-default)}.cui-report-thumb svg{width:100%;height:100%;display:block}.thumb-page{fill:var(--cui-surface-secondary);stroke:var(--cui-border-default)}.thumb-card{fill:var(--cui-surface-elevated);stroke:var(--cui-border-default)}.thumb-chart-line{fill:none;stroke:var(--cui-accent);stroke-width:2}.thumb-axis,.thumb-edge,.thumb-rule,.thumb-copy-line{fill:none;stroke:var(--cui-text-tertiary);stroke-width:1}.thumb-wafer{fill:var(--cui-surface-selected);stroke:var(--cui-info)}.thumb-die{fill:var(--cui-accent);stroke:var(--cui-text-inverse);stroke-width:.5}.thumb-node{fill:var(--cui-info-soft);stroke:var(--cui-info)}.thumb-metric{font-size:var(--cui-font-size-18);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-copy{font-size:var(--cui-font-size-10);font-weight:var(--cui-font-weight-700);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}.thumb-media{fill:var(--cui-info)}.thumb-media-mark{fill:none;stroke:var(--cui-text-inverse);stroke-width:2}.thumb-blank-mark{stroke:var(--cui-text-tertiary);stroke-width:2}.cui-report-thumb text{font-size:var(--cui-font-size-10);font-family:system-ui;color:var(--cui-text-primary);fill:var(--cui-text-primary)}
           .cui-report-hub-section{display:grid;gap:var(--cui-space-2);min-width:0}.cui-report-hub-section>h2{margin:0;font-size:var(--cui-font-size-18)}.cui-report-hub-empty{padding:var(--cui-space-6);border:1px dashed var(--cui-border-default);border-radius:var(--cui-radius-control);color:var(--cui-text-secondary);background:var(--cui-surface-secondary)}
-          .cui-template-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:var(--cui-space-3)}.cui-template-card{gap:var(--cui-space-2)}.cui-template-card .cui-report-thumb{height:7rem}.cui-template-title{font-weight:var(--cui-font-weight-700)}.cui-template-description{color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-template-card .cui-button{width:100%}
+          .cui-template-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(15rem,100%),1fr));gap:var(--cui-space-3)}.cui-template-card{gap:var(--cui-space-2)}.cui-template-card .cui-report-thumb{height:7rem}.cui-template-title{font-weight:var(--cui-font-weight-700)}.cui-template-description{color:var(--cui-text-secondary);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-template-card .cui-button{width:100%}
           .cui-history-panel{display:grid;gap:var(--cui-space-3);padding:var(--cui-space-1);min-width:0}.cui-history-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--cui-space-3);flex-wrap:wrap}.cui-history-context{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface-secondary)}.cui-history-context h3{margin:0;font-size:var(--cui-font-size-16)}.cui-history-context-copy{display:grid;gap:var(--cui-space-1);min-width:0}.cui-history-context-copy p{margin:0;color:var(--cui-text-secondary);overflow-wrap:anywhere}.cui-history-compare{display:grid;grid-template-columns:1fr 1fr;gap:var(--cui-space-2)}.cui-history-compare .cui-report-thumb{height:7rem}.cui-history-preview-label{font-size:var(--cui-font-size-12);color:var(--cui-text-secondary);text-align:center}.cui-history-list{display:grid;gap:var(--cui-space-2)}.cui-history-card{display:grid;gap:var(--cui-space-2);padding:var(--cui-space-3);border:1px solid var(--cui-border-default);border-radius:var(--cui-radius-surface);background:var(--cui-surface)}.cui-history-card.is-selected{border-color:var(--cui-accent);box-shadow:0 0 0 1px var(--cui-accent)}.cui-history-card-copy{display:grid;gap:var(--cui-space-1);min-width:0}.cui-history-card-title{font-weight:var(--cui-font-weight-700);overflow-wrap:anywhere}.cui-history-card-meta{color:var(--cui-text-secondary);font-size:var(--cui-font-size-12);line-height:var(--cui-line-height-ratio-1_35);overflow-wrap:anywhere}.cui-history-actions{display:flex;gap:var(--cui-space-2);flex-wrap:wrap;padding-top:var(--cui-space-2)}.cui-history-actions .cui-button{min-width:0}
-          @media(max-width:1024px){.cui-report-hub{padding-inline:var(--cui-space-5)}.cui-report-hub-toolbar{grid-template-columns:minmax(0,2fr) repeat(3,minmax(7rem,1fr))}.cui-report-view-toggle{grid-column:span 2}.cui-report-create{grid-column:span 2}}
-          @media(max-width:720px){.cui-report-hub{padding:var(--cui-space-5) var(--cui-space-3) var(--cui-space-16)}.cui-report-hub-toolbar{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}.cui-report-search{grid-column:1 / -1}.cui-report-view-toggle,.cui-report-create{grid-column:auto}.cui-report-grid{grid-template-columns:1fr}.cui-report-list .cui-report-card{grid-template-columns:1fr}.cui-report-list .cui-report-thumb{height:8.25rem}.cui-history-compare{grid-template-columns:1fr}.cui-history-compare .cui-report-thumb{height:8.25rem}.cui-report-hub-head-actions{width:100%}.cui-report-hub-head-actions .cui-button{flex:1 1 auto}}
+          @media(max-width:1024px){.cui-report-hub-toolbar{grid-template-columns:minmax(0,2fr) repeat(3,minmax(7rem,1fr))}.cui-report-view-toggle{grid-column:span 2}.cui-report-create{grid-column:span 2}}
+          @media(max-width:720px){.cui-report-hub-toolbar{grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch}.cui-report-search{grid-column:1 / -1}.cui-report-view-toggle,.cui-report-create{grid-column:auto}.cui-report-grid{grid-template-columns:1fr}.cui-report-list .cui-report-card{grid-template-columns:1fr}.cui-report-list .cui-report-thumb{height:8.25rem}.cui-history-compare{grid-template-columns:1fr}.cui-history-compare .cui-report-thumb{height:8.25rem}.cui-report-hub-head-actions{width:100%}.cui-report-hub-head-actions .cui-button{flex:1 1 auto}}
           @media(max-width:420px){.cui-report-hub-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.cui-report-search,.cui-report-view-toggle,.cui-report-create{grid-column:1 / -1}.cui-report-card-footer{align-items:stretch}.cui-report-card-primary{flex:1 1 auto}.cui-report-hub-head-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.cui-report-hub-head-actions .cui-button{width:auto;min-width:0}.cui-report-hub-head-actions .cui-button:first-child{grid-column:1 / -1}}
         </style>''')
 
@@ -965,7 +971,7 @@ def register_visualizer(
             if not report_id or not subject:
                 notifications.warning('Enter a person or group before sharing'); return
             try:
-                access.grant(report_id,repository.principal,subject,role,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access updated'); render_cards.refresh()
+                access.grant(report_id,repository.principal,subject,role,group=share_group_state['checked']); share_dialog.close(); notifications.success('Report access updated'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Share rejected: {exc}')
 
         async def revoke_share() -> None:
@@ -973,7 +979,7 @@ def register_visualizer(
             if not report_id or not subject:
                 notifications.warning('Enter the person or group to remove'); return
             try:
-                access.revoke(report_id,repository.principal,subject,group=bool(share_group.value)); share_dialog.close(); notifications.success('Report access revoked'); render_cards.refresh()
+                access.revoke(report_id,repository.principal,subject,group=share_group_state['checked']); share_dialog.close(); notifications.success('Report access revoked'); render_cards.refresh()
             except Exception as exc: notifications.error(f'Revoke rejected: {exc}')
 
         def report_menu_items(record: Any, projection: Any, *, trashed: bool = False) -> tuple[MenuItemSpec, ...]:
@@ -997,13 +1003,13 @@ def register_visualizer(
                 with ui.element('div').classes('cui-report-card-body'):
                     with ui.element('div').classes('cui-report-card-identity'):
                         with ui.element('div').classes('cui-report-card-copy'):
-                            ui.label(record.title).classes('cui-report-card-title')
-                            ui.label(str(record.metadata.get('description') or '') or ('Moved to Trash; restore to continue editing.' if trashed else 'No purpose described yet.')).classes('cui-report-card-description')
+                            ReportCopy(record.title).classes('cui-report-card-title')
+                            ReportCopy(str(record.metadata.get('description') or '') or ('Moved to Trash; restore to continue editing.' if trashed else 'No purpose described yet.')).classes('cui-report-card-description')
                         StatusBadge('In trash' if trashed else 'Active',intent=StatusIntent.WARNING if trashed else StatusIntent.SUCCESS)
                     with ui.element('div').classes('cui-report-card-meta'):
-                        ui.label(f"{('Owner' if projection.role in {'owner','admin'} else 'Shared')} · {projection.role or 'read-only'}").classes('cui-report-card-meta-item')
-                        ui.label(f"Revision {record.revision} · {len(record.model.get('items',[]))} content blocks").classes('cui-report-card-meta-item')
-                        ui.label(f"Updated {record.updated_at}").classes('cui-report-card-meta-item')
+                        ReportCopy(f"{('Owner' if projection.role in {'owner','admin'} else 'Shared')} · {projection.role or 'read-only'}").classes('cui-report-card-meta-item')
+                        ReportCopy(f"Revision {record.revision} · {len(record.model.get('items',[]))} content blocks").classes('cui-report-card-meta-item')
+                        ReportCopy(f"Updated {record.updated_at}").classes('cui-report-card-meta-item')
                     with ui.element('div').classes('cui-report-card-footer'):
                         if trashed:
                             if projection.can_restore:
@@ -1033,17 +1039,17 @@ def register_visualizer(
                     try: visible.append(repository.get(str(summary['report_id'])))
                     except Exception: continue
                 with ui.element('section').classes('cui-report-hub-section'):
-                    ui.label(f'Active reports · {len(visible_summaries)}').classes('text-h6')
-                    if not visible: ui.label('No active reports match this search.').classes('cui-report-hub-empty')
+                    ReportCopy(f'Active reports · {len(visible_summaries)}',tag='h2')
+                    if not visible: ReportCopy('No active reports match this search.').classes('cui-report-hub-empty')
                     else:
                         with ui.element('div').classes(f'cui-report-grid cui-report-{hub_layout}'):
                             for record in visible: render_report_card(record)
-                        if len(visible_summaries)>len(visible): ui.label(f'Showing the first {len(visible)} reports. Search to narrow the collection.').classes('text-caption')
+                        if len(visible_summaries)>len(visible): ReportCopy(f'Showing the first {len(visible)} reports. Search to narrow the collection.').classes('cui-field-description')
             if view in {'trash','all'}:
                 visible=[record for record in trash if matches(record)]
                 with ui.element('section').classes('cui-report-hub-section'):
-                    ui.label(f'Trash · {len(visible)}').classes('text-h6')
-                    if not visible: ui.label('Trash is empty.').classes('cui-report-hub-empty')
+                    ReportCopy(f'Trash · {len(visible)}',tag='h2')
+                    if not visible: ReportCopy('Trash is empty.').classes('cui-report-hub-empty')
                     else:
                         with ui.element('div').classes('cui-report-grid'):
                             for record in visible: render_report_card(record,trashed=True)
@@ -1052,33 +1058,33 @@ def register_visualizer(
         def render_history() -> None:
             nonlocal selected_history_id
             if not history_report_id:
-                ui.label('Choose Review history from a report’s More actions menu.').classes('cui-report-hub-empty')
+                ReportCopy('Choose Review history from a report’s More actions menu.').classes('cui-report-hub-empty')
                 return
             try: record=repository.get(history_report_id); entries=repository.list_history(history_report_id)
             except Exception: entries=[]; record=None
             if not record:
-                ui.label('The selected report is no longer available.').classes('cui-report-hub-empty'); return
+                ReportCopy('The selected report is no longer available.').classes('cui-report-hub-empty'); return
             projection=repository.capabilities(record.report_id)
             if entries and selected_history_id not in {str(entry['history_id']) for entry in entries}: selected_history_id=str(entries[0]['history_id'])
             with ui.element('section').classes('cui-history-panel').props(f'data-testid="report-history" data-report-id="{record.report_id}"'):
                 with ui.element('div').classes('cui-history-head'):
                     with ui.element('div'):
-                        ui.label(f'History · {record.title}').classes('cui-dialog-title')
-                        ui.label('Review one saved revision against the current report. Restore always creates a new governed revision; prior history stays available.').classes('cui-field-description')
+                        ReportCopy(f'History · {record.title}').classes('cui-dialog-title')
+                        ReportCopy('Review one saved revision against the current report. Restore always creates a new governed revision; prior history stays available.').classes('cui-field-description')
                     Button('Back to reports',intent=ButtonIntent.GHOST,on_click=history_drawer.close)
                 with ui.element('div').classes('cui-history-context').props('data-testid="history-current-context"'):
                     StatusBadge(f'Current r{record.revision}',intent=StatusIntent.SUCCESS)
-                    ui.label(f'Last updated {record.updated_at} · {len(record.model.get("items",[]))} content blocks').classes('cui-history-card-meta')
+                    ReportCopy(f'Last updated {record.updated_at} · {len(record.model.get("items",[]))} content blocks').classes('cui-history-card-meta')
                     ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False)
                 if projection.can_restore_history:
                     with ui.element('div').classes('cui-report-history-checkpoint'):
-                        checkpoint=ui.input(label='Name a checkpoint',placeholder='Before review').props('outlined dense hide-bottom-space').classes('w-full')
+                        checkpoint=TextInput('Name a checkpoint',placeholder='Before review').element
                         checkpoint_button=Button('Save checkpoint',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,rid=record.report_id,field=checkpoint:save_hub_checkpoint(rid,field))
                         checkpoint.on_value_change(lambda event,button=checkpoint_button.element:button.enable() if str(event.value or '').strip() else button.disable())
                         checkpoint_button.element.disable()
                 else:
-                    ui.label('Read-only history. Restore, checkpoints, and duplication are unavailable for this access level.').classes('cui-field-description')
-                if not entries: ui.label('No saved revisions yet.').classes('cui-report-hub-empty')
+                    ReportCopy('Read-only history. Restore, checkpoints, and duplication are unavailable for this access level.').classes('cui-field-description')
+                if not entries: ReportCopy('No saved revisions yet.').classes('cui-report-hub-empty')
                 else:
                     with ui.element('div').classes('cui-history-list'):
                         for entry in entries[:80]:
@@ -1089,11 +1095,11 @@ def register_visualizer(
                                 history_card.element.classes(add='cui-history-card' + (' is-selected' if is_selected else '')).props(f'data-history-id="{history_id}" data-selected="{str(is_selected).lower()}"')
                                 with ui.element('div').classes('cui-history-compare'):
                                     with ui.element('div'):
-                                        ui.html(_report_thumbnail_markup(historical,f'{record.title} selected revision {entry["revision"]}',hub_statistical_results(historical,report_id=record.report_id)),sanitize=False); ui.label(f'Selected r{entry["revision"]}').classes('cui-history-preview-label')
+                                        ui.html(_report_thumbnail_markup(historical,f'{record.title} selected revision {entry["revision"]}',hub_statistical_results(historical,report_id=record.report_id)),sanitize=False); ReportCopy(f'Selected r{entry["revision"]}').classes('cui-history-preview-label')
                                     with ui.element('div'):
-                                        ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False); ui.label(f'Current r{record.revision}').classes('cui-history-preview-label')
+                                        ui.html(_report_thumbnail_markup(record.model,f'{record.title} current',hub_statistical_results(record)),sanitize=False); ReportCopy(f'Current r{record.revision}').classes('cui-history-preview-label')
                                 with ui.element('div').classes('cui-history-card-copy'):
-                                    ui.label('Selected revision' if is_selected else 'Saved revision').classes('cui-history-card-title'); ui.label(summary).classes('cui-history-card-meta'); ui.label(f'Changes from selected revision: {_history_diff_summary(historical,record.model)}').classes('cui-history-card-meta'); ui.label(f'Checkpoint metadata · {"named" if entry.get("checkpoint") else "automatic save"} · saved by {entry.get("actor_subject") or "account owner"}').classes('cui-history-card-meta')
+                                    ReportCopy('Selected revision' if is_selected else 'Saved revision').classes('cui-history-card-title'); ReportCopy(summary).classes('cui-history-card-meta'); ReportCopy(f'Changes from selected revision: {_history_diff_summary(historical,record.model)}').classes('cui-history-card-meta'); ReportCopy(f'Checkpoint metadata · {"named" if entry.get("checkpoint") else "automatic save"} · saved by {entry.get("actor_subject") or "account owner"}').classes('cui-history-card-meta')
                                     with ui.element('div').classes('cui-history-actions'):
                                         Button('View this revision',intent=ButtonIntent.SECONDARY,on_click=lambda _event=None,hid=history_id:select_history_revision(hid)).element.props(f'data-history-action="select" aria-pressed="{str(is_selected).lower()}"')
                                         if is_selected and projection.can_restore_history: Button('Restore as new revision',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,rid=record.report_id,hid=history_id,s=summary,rev=record.revision:begin_history_restore(rid,hid,s,rev)).element.props('data-history-action="restore"')
@@ -1107,8 +1113,8 @@ def register_visualizer(
                     with Card() as template_card:
                         template_card.element.classes(add='cui-template-card').props(f'data-testid="report-template-card" data-template-id="{template_id}"')
                         ui.html(_report_thumbnail_markup(template_model(template_id),str(spec['name'])),sanitize=False)
-                        ui.label(str(spec['name'])).classes('cui-template-title')
-                        ui.label(str(spec['description'])).classes('cui-template-description')
+                        ReportCopy(str(spec['name'])).classes('cui-template-title')
+                        ReportCopy(str(spec['description'])).classes('cui-template-description')
                         Button('Create from this blueprint',intent=ButtonIntent.PRIMARY,on_click=lambda _event=None,tid=template_id:create_hub_report(tid))
 
         import_hub_dialog=FormDialog('Import a report',description='Import a canonical Visembler JSON file. Imported content keeps its report model and creates a new governed report.',secondary_label='Done')
@@ -1117,32 +1123,43 @@ def register_visualizer(
 
         edit_dialog=FormDialog('Edit report details',description='Changes to the name or purpose are saved as governed report revisions.',primary_label='Save details',secondary_label='Cancel',close_on_primary=False,on_primary=save_edit_report)
         with edit_dialog.body:
-            edit_title=ui.input(label='Report name',placeholder='Give this report a recognizable name').props('outlined dense hide-bottom-space').classes('w-full')
-            edit_description=ui.textarea(label='Purpose',placeholder='What should someone understand or resume here?').props('outlined dense hide-bottom-space rows=3').classes('w-full')
-            with ui.column().classes('w-full') as edit_conflict_panel:
-                edit_conflict_summary=ui.label('').classes('cui-field-description')
-                with ui.row().classes('items-center gap-2'):
+            edit_title=TextInput('Report name',placeholder='Give this report a recognizable name').element
+            edit_description=TextArea('Purpose',placeholder='What should someone understand or resume here?',rows=3).element
+            with Stack() as edit_conflict_stack:
+                edit_conflict_panel=edit_conflict_stack.element
+                edit_conflict_summary=ReportCopy('').classes('cui-field-description')
+                with ButtonCluster():
                     Button('Save retained draft as new revision',intent=ButtonIntent.PRIMARY,on_click=resolve_edit_conflict)
                     Button('Reload latest and discard draft',intent=ButtonIntent.SECONDARY,on_click=reload_edit_conflict)
             edit_conflict_panel.set_visibility(False)
 
         share_dialog=FormDialog('Manage report access',description='Choose a person or group and the access they should have. Existing stable identity and group semantics are preserved.',secondary_label='Close')
         with share_dialog.body:
-            share_summary=ui.label('').classes('cui-field-description')
-            share_subject=ui.input(label='Person or group',placeholder='Name, email, or stable group ID').props('outlined dense hide-bottom-space').classes('w-full')
-            share_role=ui.select(label='Permission',options={'viewer':'Can view and export','editor':'Can edit and review history'},value='viewer').props('outlined dense hide-bottom-space').classes('w-full')
-            share_group=ui.checkbox('This identifier represents a group')
+            share_summary=ReportCopy('').classes('cui-field-description')
+            share_subject=TextInput('Person or group',placeholder='Name, email, or stable group ID').element
+            share_role=Select('Permission',options={'viewer':'Can view and export','editor':'Can edit and review history'},value='viewer',clearable=False).element
+            share_group_state={'checked':False}
+            share_group=Checkbox('This identifier represents a group')
+            # Native checked state is the event payload, never a truthy DOM object.
+            def change_share_group(event: Any) -> None:
+                checked=event.args is True
+                share_group_state['checked']=checked
+                # The dialog remounts its native input on reopen. Retain the
+                # selected value in the rendered props as well as the callback.
+                if checked: share_group.control.props('checked')
+                else: share_group.control.props(remove='checked')
+            share_group.control.on('change',change_share_group,js_handler='e => emit(e.target.checked)')
             with ui.element('div').classes('cui-history-actions'):
                 Button('Grant access',intent=ButtonIntent.PRIMARY,on_click=apply_share)
                 Button('Remove access',intent=ButtonIntent.DANGER,on_click=revoke_share)
 
         delete_dialog=DangerConfirmDialog('Move report to trash?',description='The report leaves Active and becomes unavailable for editing. Its report ID, history, and content remain recoverable from Trash.',primary_label='Move to trash',secondary_label='Cancel',on_confirm=confirm_trash)
         with delete_dialog.body:
-            delete_summary=ui.label('Select a report to move to trash.').classes('cui-dialog__body-copy')
+            delete_summary=ReportCopy('Select a report to move to trash.').classes('cui-dialog__body-copy')
 
         history_restore_dialog=FormDialog('Restore a saved revision',description='The current report remains in history. Restoring creates a new governed revision and keeps prior history available.',primary_label='Restore as new revision',secondary_label='Cancel',close_on_primary=False,on_primary=confirm_history_restore)
         with history_restore_dialog.body:
-            history_restore_summary=ui.label('Choose a saved revision to restore.').classes('cui-dialog__body-copy')
+            history_restore_summary=ReportCopy('Choose a saved revision to restore.').classes('cui-dialog__body-copy')
 
         history_drawer=DetailDrawer('Report history',subtitle='Contextual revision review',size=OverlaySize.LARGE)
         history_drawer.element.props('data-testid="report-history-drawer"')
@@ -1150,10 +1167,10 @@ def register_visualizer(
             render_history()
 
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer/reports',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Report hub',owner='Visembler'):
-            with ui.column().classes('cui-report-hub w-full').props('data-testid="report-hub"'):
+            with Page(ContentWidth.FULL) as hub_page:
+                hub_page.element.classes('cui-report-hub').props('data-testid="report-hub"')
                 with ui.element('header').classes('cui-report-hub-head'):
-                    with ui.column().classes('gap-0'):
-                        ui.label('Reports').classes('text-h3'); ui.label('Recognize the report, resume the work, and keep management close at hand.').classes('text-body1')
+                    PageHeader('Reports','Recognize the report, resume the work, and keep management close at hand.')
                     with ui.element('div').classes('cui-report-hub-head-actions'):
                         Button('Open editor',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(hub_url(editor_report_id) if editor_report_id else '/visualizer'))
                         Button('Dataset library',intent=ButtonIntent.GHOST,on_click=lambda _event=None:ui.navigate.to(f'{hub_url(editor_report_id)}&panel=datasets' if editor_report_id else '/visualizer?panel=datasets'))
@@ -1162,9 +1179,10 @@ def register_visualizer(
                         if can_create:
                             Button('Import…',intent=ButtonIntent.GHOST,on_click=import_hub_dialog.open)
                 with ui.element('section').classes('cui-report-hub-toolbar'):
-                    search=ui.input(label='Search reports',placeholder='Title, purpose, or report ID',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space').classes('cui-report-search')
-                    sort_select=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
-                    view_filter=ui.select(label='View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',on_change=lambda _event:render_cards.refresh()).props('outlined dense hide-bottom-space')
+                    search=SearchInput('Search reports',placeholder='Title, purpose, or report ID',on_change=lambda _event:render_cards.refresh()).element
+                    search.parent_slot.parent.classes('cui-report-search')
+                    sort_select=Select('Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',clearable=False,on_change=lambda _event:render_cards.refresh()).element
+                    view_filter=Select('View',options={'active':'Active','all':'Active + trash','trash':'Trash'},value='active',clearable=False,on_change=lambda _event:render_cards.refresh()).element
                     with ui.element('div').classes('cui-report-view-toggle'):
                         grid_button=Button('Grid',intent=ButtonIntent.GHOST,on_click=lambda _event=None:set_hub_layout('grid')); grid_button.element.props('data-testid="report-grid-view"')
                         list_button=Button('List',intent=ButtonIntent.GHOST,on_click=lambda _event=None:set_hub_layout('list')); list_button.element.props('data-testid="report-list-view"')
@@ -1193,7 +1211,7 @@ def register_visualizer(
             try:
                 records=[repository.create(f'report-{uuid.uuid4().hex}',title='Untitled report',model=template_model('blank'),metadata={'template_id':'blank'})]
             except PermissionError:
-                ui.notify('No reports are available for this account. Ask an owner to share one.',type='warning')
+                notifications.warning('No reports are available for this account. Ask an owner to share one.')
                 return
         query_report=str(request.query_params.get('report') or '')
         preferred=query_report or str(page_state.get('visualizer.current_report') or '')
@@ -1880,150 +1898,77 @@ def register_visualizer(
         report_title=None; report_description=None; report_meta=None
         can_create='report.create' in runtime.authorization.effective_permissions(repository.principal) or 'administration' in runtime.authorization.effective_permissions(repository.principal)
         with AppShell('Visembler',NAVIGATION,active_route='/visualizer',sidebar=SidebarMode.COMPACT,environment=None,subtitle='Visual report authoring',owner='Visembler'):
-            # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
-            new_dialog=ui.dialog()
-            with new_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('New report').classes('cui-dialog-title')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Start with a genuinely blank canvas or a governed editable template.').classes('cui-field-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    with ui.button(on_click=lambda: create_report('blank')).props('flat no-caps').classes('cui-report-template'):
-                        # company-ui: allow-ai005 — template-card label inside the compatibility host.
-                        ui.label('Blank canvas').classes('cui-report-template-title')
-                        # company-ui: allow-ai005 — template-card description inside the compatibility host.
-                        ui.label('Start with an empty, editable report.').classes('cui-report-template-description')
+            new_dialog=FormDialog('New report',description='Start with a blank canvas or a governed editable template.',secondary_label='Cancel')
+            with new_dialog.body:
+                with FormStack():
+                    Button('Blank canvas',intent=ButtonIntent.SECONDARY,on_click=lambda: create_report('blank'))
+                    ReportCopy('Start with an empty, editable report.').classes('cui-field-description')
                     for template_id,spec in REPORT_TEMPLATES.items():
                         async def _choose(_event=None, template_id=template_id): await create_report(template_id)
-                        # company-ui: allow-ai005 — see dialog compatibility host above.
-                        with ui.button(on_click=_choose).props('flat no-caps').classes('w-full cui-report-template'):
-                            # company-ui: allow-ai005 — see dialog compatibility host above.
-                            ui.label(str(spec['name'])).classes('cui-report-template-title'); ui.label(str(spec['description'])).classes('cui-report-template-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Cancel',on_click=new_dialog.close).props('flat no-caps')
-            # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
-            delete_dialog=ui.dialog()
-            with delete_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Move report to trash?').classes('cui-dialog-title'); ui.label('The report can be restored until its trash entry is removed from storage.').classes('cui-field-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Move to trash',on_click=delete_current).props('unelevated no-caps color=negative'); ui.button('Cancel',on_click=delete_dialog.close).props('flat no-caps')
-            # company-ui: allow-ai005 — dialog remains inside the isolated report-authoring compatibility host.
-            restore_dialog=ui.dialog()
-            with restore_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Restore report').classes('cui-dialog-title'); ui.label('Recently trashed reports').classes('cui-field-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    restore_select=ui.select(label='Trashed reports',options={}).props('outlined dense hide-bottom-space')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Restore report',on_click=restore_selected).props('unelevated no-caps'); ui.button('Cancel',on_click=restore_dialog.close).props('flat no-caps')
-            # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
-            clean_dialog=ui.dialog()
-            with clean_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Clean up empty reports?').classes('cui-dialog-title'); ui.label('Remove other genuinely blank Untitled reports. The current report is always preserved.').classes('cui-field-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Clean up empty reports',on_click=clean_empty).props('unelevated no-caps'); ui.button('Cancel',on_click=clean_dialog.close).props('flat no-caps')
-            # company-ui: allow-ai005 — dialog remains inside the isolated report-authoring compatibility host.
-            history_dialog=ui.dialog()
-            with history_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Report history').classes('cui-dialog-title'); ui.label('Restore creates a new revision; saved history remains intact.').classes('cui-field-description')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    history_select=ui.select(label='Revision',options={}).props('outlined dense hide-bottom-space')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    checkpoint_name=ui.input(label='Checkpoint name',placeholder='Before review',value='Review checkpoint').props('outlined dense hide-bottom-space')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    checkpoint_button=ui.button('Save checkpoint',on_click=create_checkpoint).props('flat no-caps')
+                        Button(str(spec['name']),intent=ButtonIntent.SECONDARY,on_click=_choose)
+                        ReportCopy(str(spec['description'])).classes('cui-field-description')
+
+            delete_dialog=DangerConfirmDialog('Move report to trash?',description='The report can be restored until its trash entry is removed from storage.',primary_label='Move to trash',on_confirm=delete_current)
+            restore_dialog=FormDialog('Restore report',description='Recently trashed reports',primary_label='Restore report',on_primary=restore_selected,close_on_primary=False)
+            with restore_dialog.body:
+                restore_select=Select('Trashed reports',options={},clearable=False).element
+            clean_dialog=DangerConfirmDialog('Clean up empty reports?',description='Remove other genuinely blank Untitled reports. The current report is always preserved.',primary_label='Clean up empty reports',on_confirm=clean_empty)
+            history_dialog=FormDialog('Report history',description='Restore creates a new revision; saved history remains intact.',secondary_label='Close')
+            with history_dialog.body:
+                with FormStack():
+                    history_select=Select('Revision',options={},clearable=False).element
+                    checkpoint_name=TextInput('Checkpoint name',placeholder='Before review',value='Review checkpoint').element
+                    with ButtonCluster():
+                        checkpoint_button=Button('Save checkpoint',intent=ButtonIntent.SECONDARY,on_click=create_checkpoint).element
+                        Button('Restore revision',intent=ButtonIntent.PRIMARY,on_click=restore_history_selected)
+                        Button('Duplicate revision',intent=ButtonIntent.SECONDARY,on_click=duplicate_history_selected)
                     checkpoint_name.on_value_change(lambda event,button=checkpoint_button:button.enable() if str(event.value or '').strip() else button.disable())
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Restore revision',on_click=restore_history_selected).props('unelevated no-caps')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Duplicate revision',on_click=duplicate_history_selected).props('flat no-caps')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Close',on_click=history_dialog.close).props('flat no-caps')
             report_conflict_dialog=FormDialog('Report changed elsewhere',description='The save was rejected because this session edited an older revision. Your field draft remains available until you choose how to resolve it.',primary_label='Save retained draft as new revision',secondary_label='Reload latest and discard draft',close_on_primary=False,close_on_secondary=False,on_primary=resolve_inline_report_conflict,on_secondary=reload_inline_report_conflict)
             report_conflict_dialog.element.props('data-testid="report-edit-conflict"')
             with report_conflict_dialog.body:
-                report_conflict_summary=ui.label('Your draft is retained.').classes('cui-dialog__body-copy')
-            # company-ui: allow-ai005 — dialogs are isolated compatibility hosts for the report-authoring module.
-            import_dialog=ui.dialog()
-            with import_dialog:
-                # company-ui: allow-ai005 — see dialog compatibility host above.
-                with ui.card().classes('cui-dialog-card cui-visualizer-import-card'):
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Import').classes('cui-dialog-title')
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.label('Import a Visembler report from its canonical JSON file.').classes('cui-field-description')
-                    # company-ui: allow-ai004 — upload controls require an isolated layout host for both validated upload adapters.
-                    with ui.column().classes('w-full gap-3'):
-                        FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_report)
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    # company-ui: allow-ai005 — see dialog compatibility host above.
-                    ui.button('Done',on_click=import_dialog.close).props('flat no-caps')
+                report_conflict_summary=ReportCopy('Your draft is retained.').classes('cui-dialog__body-copy')
+            import_dialog=FormDialog('Import',description='Import a Visembler report from its canonical JSON file.',secondary_label='Done')
+            with import_dialog.body:
+                FileUpload(label='Visembler report JSON',accept=('.json',),max_file_size_mb=2,on_upload=upload_report)
 
-            # company-ui: allow-ai005 — report lifecycle manager remains inside the isolated authoring host.
-            manage_dialog=ui.dialog()
-            with manage_dialog:
-                # company-ui: allow-ai005 — see isolated authoring host above.
-                with ui.card().classes('cui-dialog-card'):
-                    # company-ui: allow-ai005 — see isolated authoring host above.
-                    ui.label('Manage reports').classes('cui-dialog-title')
-                    # company-ui: allow-ai005 — dynamic report identity in the isolated compatibility host.
-                    manage_current=ui.label('').classes('cui-field-description')
-                    # company-ui: allow-ai005 — dynamic report counts in the isolated compatibility host.
-                    manage_counts=ui.label('').classes('cui-field-description')
-                    manage_search=ui.input(label='Search active reports',on_change=refresh_manage).props('outlined dense hide-bottom-space').classes('w-full')
-                    manage_sort=ui.select(label='Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',on_change=refresh_manage).props('outlined dense hide-bottom-space').classes('w-full')
-                    manage_results=ui.label('').classes('cui-field-description')
-                    # company-ui: allow-ai005 — primary reuse action.
-                    ui.button('Duplicate current report',on_click=manage_duplicate).props('unelevated no-caps')
-                    ui.button('Export current JSON',on_click=export_current_json).props('flat no-caps')
-                    # company-ui: allow-ai005 — existing history workflow.
-                    ui.button('Report history',on_click=manage_history).props('flat no-caps')
-                    # company-ui: allow-ai005 — existing canonical JSON import workflow.
-                    ui.button('Import…',on_click=manage_import).props('flat no-caps')
-                    # company-ui: allow-ai005 — restore remains reversible.
-                    ui.button('Restore trashed report…',on_click=manage_restore).props('flat no-caps')
-                    # company-ui: allow-ai005 — cleanup only removes empty legacy Untitled reports.
-                    ui.button('Clean up empty reports',on_click=manage_cleanup).props('flat no-caps')
-                    # company-ui: allow-ai005 — destructive action remains confirmation-gated.
-                    ui.button('Move current to trash…',on_click=manage_trash).props('outline no-caps color=negative')
-                    # company-ui: allow-ai005 — dismiss manager.
-                    ui.button('Close',on_click=manage_dialog.close).props('flat no-caps')
+            manage_dialog=FormDialog('Manage reports',secondary_label='Close')
+            with manage_dialog.body:
+                with FormStack():
+                    manage_current=ReportCopy('').classes('cui-field-description')
+                    manage_counts=ReportCopy('').classes('cui-field-description')
+                    manage_search=SearchInput('Search active reports',on_change=refresh_manage).element
+                    manage_sort=Select('Sort',options={'modified':'Recently modified','created':'Recently created','title':'Title'},value='modified',clearable=False,on_change=refresh_manage).element
+                    manage_results=ReportCopy('').classes('cui-field-description')
+                    with ButtonCluster():
+                        Button('Duplicate current report',intent=ButtonIntent.PRIMARY,on_click=manage_duplicate)
+                        Button('Export current JSON',intent=ButtonIntent.SECONDARY,on_click=export_current_json)
+                        Button('Report history',intent=ButtonIntent.SECONDARY,on_click=manage_history)
+                        Button('Import…',intent=ButtonIntent.SECONDARY,on_click=manage_import)
+                        Button('Restore trashed report…',intent=ButtonIntent.SECONDARY,on_click=manage_restore)
+                        Button('Clean up empty reports',intent=ButtonIntent.SECONDARY,on_click=manage_cleanup)
+                        Button('Move current to trash…',intent=ButtonIntent.DANGER,on_click=manage_trash)
 
-            # company-ui: allow-ai004 — the editor is an isolated application-owned canvas host.
-            with ui.column().classes('cui-page cui-page--full cui-visualizer-workspace w-full').props(f'data-report-read-only="{str(current_capabilities.read_only).lower()}"'):
-                # company-ui: allow-ai005 — the report-control strip is part of the isolated editor host.
-                with ui.element('section').classes('cui-visualizer-reportbar w-full').props('aria-label="Report controls"'):
-                    # company-ui: allow-ai005 — report title is the primary identity control.
+            with Page(ContentWidth.FULL) as editor_page:
+                editor_page.element.classes('cui-visualizer-workspace').props(f'data-report-read-only="{str(current_capabilities.read_only).lower()}"')
+                with ui.element('section').classes('cui-visualizer-reportbar').props('aria-label="Report controls"'):
                     if current_capabilities.read_only:
-                        ui.label(current.title).classes('cui-visualizer-report-title cui-report-read-only-title')
-                        ui.label('Read-only').classes('cui-report-read-only-indicator')
-                        ui.label(str(current.metadata.get('description') or '')).classes('cui-visualizer-report-description cui-report-read-only-description')
+                        ReportCopy(current.title).classes('cui-visualizer-report-title cui-report-read-only-title')
+                        StatusBadge('Read-only',intent=StatusIntent.NEUTRAL)
+                        ReportCopy(str(current.metadata.get('description') or '')).classes('cui-visualizer-report-description cui-report-read-only-description')
                     else:
-                        report_title=ui.input(label='Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-title')
-                        report_description=ui.input(label='Description',value=str(current.metadata.get('description') or ''),on_change=update_report_description,placeholder='What this report is for').props('outlined dense hide-bottom-space').classes('cui-visualizer-report-description')
-                    report_meta=ui.label(f'Created {current.created_at} · Modified {current.updated_at} · revision {current.revision}').classes('cui-visualizer-report-meta')
-                    # company-ui: allow-ai005 — searchable report switcher replaces a separate filter field.
-                    report_select=ui.select(label='Reports',options=_report_options(repository),value=current.report_id,on_change=select_report).props('outlined dense options-dense hide-bottom-space use-input input-debounce=0').classes('cui-visualizer-report-select')
-                    # company-ui: allow-ai005 — frequent creation remains one click away.
-                    if can_create: ui.button('New report',on_click=new_dialog.open).props('unelevated no-caps')
-                    # company-ui: allow-ai005 — report reuse remains a primary action.
-                    if current_capabilities.can_duplicate: ui.button('Duplicate',on_click=duplicate_current).props('flat no-caps')
-                    # Report lifecycle is a separate route so it never obscures the active canvas.
-                    ui.button('Manage',on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}')).props('flat no-caps data-testid="manage-reports"').tooltip('Open the dedicated report hub')
-                # company-ui: allow-ai005 — the editor mount point is an isolated application-owned canvas host.
+                        report_title=TextInput('Report title',value=current.title,on_change=rename_report,placeholder='Untitled report').element
+                        report_title.parent_slot.parent.classes('cui-visualizer-report-title')
+                        report_description=TextInput('Description',value=str(current.metadata.get('description') or ''),on_change=update_report_description,placeholder='What this report is for').element
+                        report_description.parent_slot.parent.classes('cui-visualizer-report-description')
+                    report_meta=ReportCopy(f'Created {current.created_at} · Modified {current.updated_at} · revision {current.revision}').classes('cui-visualizer-report-meta')
+                    report_select=Select('Reports',options=_report_options(repository),value=current.report_id,clearable=False,searchable=True,on_change=select_report).element
+                    report_select.parent_slot.parent.classes('cui-visualizer-report-select')
+                    if can_create: Button('New report',intent=ButtonIntent.PRIMARY,on_click=new_dialog.open)
+                    if current_capabilities.can_duplicate: Button('Duplicate',intent=ButtonIntent.SECONDARY,on_click=duplicate_current)
+                    manage_button=Button('Manage',intent=ButtonIntent.GHOST,on_click=lambda:ui.navigate.to(f'/visualizer/reports?report={quote(current.report_id,safe="")}'))
+                    manage_button.element.props('data-testid="manage-reports"')
+                    Tooltip('Open the dedicated report hub').attach(manage_button.element)
+                # Application-owned report canvas; persistence stays at the semantic bridge.
                 host=ui.element('div').classes('cui-visualizer-host w-full').props('aria-label="Visembler report editor"')
                 host.on('visualizer_bridge',handle_semantic,args=['detail'])
                 with host: ui.html((ASSETS/'integrated_editor.html').read_text(encoding='utf-8'),sanitize=False)

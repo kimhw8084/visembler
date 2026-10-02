@@ -209,7 +209,7 @@ class ChartDataView:
                                             with ui.element('td'): ui.label(str(value))
                 with ui.element('div').classes('cui-dialog__footer'):
                     ui.element('div').classes('cui-dialog__footer-spacer')
-                    ui.button('Close', on_click=dialog.close).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
+                    ui.button('Close', color=None, on_click=dialog.close).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
         dialog.open()
         return dialog
 

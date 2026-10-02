@@ -461,7 +461,7 @@ class AppInfoDialog:
                 with close: _icon(ui, 'close', label='Close')
             with ui.element('div').classes('cui-dialog__footer'):
                 ui.element('div').classes('cui-dialog__footer-spacer')
-                ui.button('Close', on_click=self.close).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
+                ui.button('Close', color=None, on_click=self.close).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
     def open(self) -> None:
         self.dialog.open()
         _ui().run_javascript("window.__companyUiTooltip?.hide?.();document.dispatchEvent(new CustomEvent('cui:overlay-open',{detail:{kind:'dialog'}}));")
@@ -477,7 +477,7 @@ class SegmentedControl:
 
 class BackNavigation:
     def __init__(self, label: str = 'Back', *, on_click: Callable[[], None] | None = None):
-        ui = _ui(); self.element = ui.button(on_click=on_click or ui.navigate.back).props('flat no-caps').classes('cui-back-navigation cui-button cui-button--ghost cui-control--medium')
+        ui = _ui(); self.element = ui.button(color=None, on_click=on_click or ui.navigate.back).props('flat no-caps').classes('cui-back-navigation cui-button cui-button--ghost cui-control--medium')
         with self.element: _icon(ui, 'arrow-left', size='xs'); ui.label(label)
 
 
@@ -487,11 +487,11 @@ class PageNavigation:
         ui = _ui()
         with ui.element('nav').classes('cui-page-navigation').props('aria-label="Page navigation"'):
             if previous:
-                b = ui.button(on_click=previous[1]).props('flat no-caps').classes('cui-button cui-button--ghost cui-control--medium')
+                b = ui.button(color=None, on_click=previous[1]).props('flat no-caps').classes('cui-button cui-button--ghost cui-control--medium')
                 with b: _icon(ui, 'arrow-left', size='xs'); ui.label(previous[0])
             else: ui.element('span')
             if next:
-                b = ui.button(on_click=next[1]).props('flat no-caps').classes('cui-button cui-button--ghost cui-control--medium')
+                b = ui.button(color=None, on_click=next[1]).props('flat no-caps').classes('cui-button cui-button--ghost cui-control--medium')
                 with b: ui.label(next[0]); _icon(ui, 'arrow-right', size='xs')
 
 

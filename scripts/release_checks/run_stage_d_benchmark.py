@@ -94,7 +94,7 @@ def task_2(page, metrics, out, image_path):
     settled(page)
     primary_locator_click(metrics, page.locator('.cui-visualizer-reportbar button').filter(has_text="Duplicate"))
     settled(page)
-    title = page.get_by_label("Report title")
+    title = page.get_by_role("textbox", name="Report title", exact=True)
     title.fill("Operations Review Week 2")
     title.press("Tab")
     settled(page)
