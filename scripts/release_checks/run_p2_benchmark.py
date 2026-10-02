@@ -145,7 +145,7 @@ def edit_field(page, selector, value):
 
 def open_new_report(page, metrics, template):
     primary_click(page, metrics, 'button:has-text("New report")')
-    card = page.locator(".q-dialog:visible .cui-report-template").filter(has_text=template).first
+    card = page.locator('[data-cui-overlay="dialog"]:visible').get_by_role("button", name=template, exact=True)
     card.wait_for(state="visible", timeout=10000)
     primary_locator_click(metrics, card)
     page.wait_for_function(

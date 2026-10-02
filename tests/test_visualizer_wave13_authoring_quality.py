@@ -45,8 +45,10 @@ def test_wave13_command_rows_and_report_templates_have_semantic_hierarchy() -> N
     page = (ROOT / "company_ui" / "products" / "visualizer" / "page.py").read_text(encoding="utf-8")
     assert 'class="cmd-copy"' in editor and 'class="cmd-label"' in editor and 'class="cmd-description"' in editor
     assert ".cmd-copy" in css and ".cmd-shortcut" in css
-    assert "cui-report-template-title" in page and "cui-report-template-description" in page
-    assert ".cui-report-template" in css
+    templates=page.split("new_dialog=FormDialog('New report'",1)[1].split("delete_dialog=DangerConfirmDialog",1)[0]
+    assert "with FormStack():" in templates
+    assert "Button(str(spec['name'])" in templates
+    assert "ReportCopy(str(spec['description'])).classes('cui-field-description')" in templates
 
 
 def test_wave13_context_toolbar_keeps_only_immediate_actions() -> None:

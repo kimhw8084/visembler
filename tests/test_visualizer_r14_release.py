@@ -66,10 +66,10 @@ def test_r14_authoring_ui_removes_persistent_shortcuts_and_preset_name_form():
 
 def test_r14_report_chrome_is_explicit_and_destructive_action_is_named():
     page=(PRODUCT/'page.py').read_text()
-    assert "label='Report title'" in page and "label='Reports'" in page
-    assert "ui.button('New report'" in page
-    assert "ui.button('Import…'" in page
-    assert "ui.button('Move to trash'" in page and 'color=negative' in page
+    assert "TextInput('Report title'" in page and "Select('Reports'" in page
+    assert "Button('New report'" in page
+    assert "Button('Import…'" in page
+    assert "DangerConfirmDialog('Move report to trash?'" in page and "primary_label='Move to trash'" in page
     assert "Clean up empty reports" in page
 
 

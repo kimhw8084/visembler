@@ -843,6 +843,10 @@ body > .cui-visualizer-root { height:100dvh; min-height:0; border-radius:0; }
   box-shadow:var(--cui-shadow-1);
 }
 .cui-report-copy { margin:0; overflow-wrap:anywhere; }
+/* Retain the established accessible Company color binding for the runtime's
+   primary color utility; geometry remains owned by the Company controls. */
+.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }
+.cui-visualizer-reportbar .q-btn.bg-primary .q-btn__content { color:var(--cui-text-inverse)!important; -webkit-text-fill-color:var(--cui-text-inverse)!important; }
 .cui-visualizer-reportbar .q-field { min-width:0; }
 .cui-visualizer-report-title { flex:1 1 260px; max-width:440px; }
 .cui-visualizer-report-description { flex:1 1 220px; max-width:360px; }

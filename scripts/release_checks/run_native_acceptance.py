@@ -61,7 +61,7 @@ def main()->int:
                         elif vp=='desktop-1440' and theme=='dark':
                             # Host chrome/dialog dark surface regression.
                             bar=page.locator('.cui-visualizer-reportbar');bg=bar.evaluate('(n)=>getComputedStyle(n).backgroundColor');assert bg not in ('rgb(255, 255, 255)','rgba(255, 255, 255, 1)'),bg
-                            page.get_by_role('button',name=re.compile(r'^New report$',re.I)).click();card=page.locator('.q-dialog .cui-dialog-card').last;card.wait_for(state='visible');card_bg=card.evaluate('(n)=>getComputedStyle(n).backgroundColor');assert card_bg not in ('rgb(255, 255, 255)','rgba(255, 255, 255, 1)'),card_bg
+                            page.get_by_role('button',name=re.compile(r'^New report$',re.I)).click();card=page.locator('[data-cui-overlay="dialog"]:visible').filter(has_text='New report');card.wait_for(state='visible');card_bg=card.evaluate('(n)=>getComputedStyle(n).backgroundColor');assert card_bg not in ('rgb(255, 255, 255)','rgba(255, 255, 255, 1)'),card_bg
                             case['checks'].append('dark host reportbar/dialog surfaces');page.screenshot(path=str(shots/'desktop-1440-dark-dialog.png'));page.keyboard.press('Escape')
 
                         page.screenshot(path=str(shots/f'{vp}-{theme}.png'));case['status']='PASS'
