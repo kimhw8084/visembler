@@ -1,0 +1,4474 @@
+{
+  "candidate_sha": "299a13c1ce143c6f57ce8c6f339b65a378584068",
+  "working_tree_dirty": false,
+  "source_files": {
+    "company_ui/integrations/nicegui_components.py": "6b7f15e80f1decbf2e2b17eadd86f2257fa50941fa1571b9fd86f20ae08ce980",
+    "company_ui/integrations/nicegui_interactions.py": "81dbf8b979b6ce7978d2abccebe2caeea9159fb32deb9d71698f32e9339fc3e0",
+    "company_ui/integrations/nicegui_layout.py": "5bda5e1c2347355f0c310a6cce557bb7a0e2b078ef716bd3e86801fde222a6a9",
+    "company_ui/integrations/nicegui_visualization.py": "7d52221888e5f4d86d1e91110b83d2f9b627ebb23596032568d211ef21ad1b64",
+    "company_ui/integrations/nicegui_data_table.py": "48a9bd158628cb1593b7ce028007a4901bf73a4976b5bcd90114de14f0dd8144",
+    "company_ui/design/hardening_css.py": "1e141188e37d360536ad2ab690ad800758170651eced9a253824d15438d65cde",
+    "scripts/release_checks/run_chg305_button_intent_acceptance.py": "1fb3c7dce0a92efe46726c4197f1b6837b476d1f3268039d84c233a07dc22fe3"
+  },
+  "status": "PASS",
+  "cases": [
+    {
+      "name": "five live intents light",
+      "status": "PASS",
+      "facts": [
+        {
+          "name": "Primary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 297,
+            "right": 369.140625,
+            "top": 362,
+            "bottom": 400,
+            "width": 72.140625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        },
+        {
+          "name": "Secondary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(29, 29, 31)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "color": [
+              29,
+              29,
+              31,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 379.140625,
+            "right": 468.4375,
+            "top": 362,
+            "bottom": 400,
+            "width": 89.296875,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Tertiary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--tertiary cui-control--medium",
+          "background": "color(srgb 0.89 0.938745 0.987922)",
+          "color": "rgb(0, 113, 227)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              227,
+              239,
+              252,
+              255
+            ],
+            "color": [
+              0,
+              113,
+              227,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 478.4375,
+            "right": 550.375,
+            "top": 362,
+            "bottom": 400,
+            "width": 71.9375,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Ghost",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 560.375,
+            "right": 621.515625,
+            "top": 362,
+            "bottom": 400,
+            "width": 61.140625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Danger",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.729412 0.206275 0.166588), rgb(180, 35, 24))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                186,
+                53,
+                42,
+                255
+              ],
+              [
+                180,
+                35,
+                24,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 631.515625,
+            "right": 700.34375,
+            "top": 362,
+            "bottom": 400,
+            "width": 68.828125,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            5.784334680473913,
+            6.57428861557707
+          ]
+        }
+      ],
+      "failures": []
+    },
+    {
+      "name": "hover/focus contrast light",
+      "status": "PASS",
+      "facts": [
+        {
+          "state": "hover",
+          "facts": {
+            "name": "Primary",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+            "background": "rgb(0, 100, 200)",
+            "color": "rgb(255, 255, 255)",
+            "image": "none",
+            "filter": "brightness(1.035)",
+            "tokens": {
+              "accent": "rgb(0, 113, 227)",
+              "accentHover": "rgb(0, 100, 200)",
+              "surface": "rgb(255, 255, 255)",
+              "danger": "rgb(180, 35, 24)",
+              "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+              "text": "rgb(29, 29, 31)",
+              "muted": "rgb(82, 82, 86)",
+              "inverse": "rgb(255, 255, 255)",
+              "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+            },
+            "rgba": {
+              "background": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "color": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "stops": [],
+              "tokens": {
+                "accent": [
+                  0,
+                  113,
+                  227,
+                  255
+                ],
+                "accentHover": [
+                  0,
+                  100,
+                  200,
+                  255
+                ],
+                "surface": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "danger": [
+                  180,
+                  35,
+                  24,
+                  255
+                ],
+                "dangerHover": [
+                  158,
+                  31,
+                  21,
+                  255
+                ],
+                "text": [
+                  29,
+                  29,
+                  31,
+                  255
+                ],
+                "muted": [
+                  82,
+                  82,
+                  86,
+                  255
+                ],
+                "inverse": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "tertiary": [
+                  227,
+                  239,
+                  252,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 297,
+              "right": 369.140625,
+              "top": 362,
+              "bottom": 400,
+              "width": 72.140625,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              5.467186793239564
+            ]
+          }
+        },
+        {
+          "state": "focus",
+          "facts": {
+            "name": "Primary",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+            "background": "rgba(0, 100, 200, 0.745)",
+            "color": "rgb(255, 255, 255)",
+            "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+            "filter": "none",
+            "tokens": {
+              "accent": "rgb(0, 113, 227)",
+              "accentHover": "rgb(0, 100, 200)",
+              "surface": "rgb(255, 255, 255)",
+              "danger": "rgb(180, 35, 24)",
+              "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+              "text": "rgb(29, 29, 31)",
+              "muted": "rgb(82, 82, 86)",
+              "inverse": "rgb(255, 255, 255)",
+              "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+            },
+            "rgba": {
+              "background": [
+                0,
+                101,
+                200,
+                190
+              ],
+              "color": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "stops": [
+                [
+                  5,
+                  116,
+                  228,
+                  255
+                ],
+                [
+                  0,
+                  113,
+                  227,
+                  255
+                ]
+              ],
+              "tokens": {
+                "accent": [
+                  0,
+                  113,
+                  227,
+                  255
+                ],
+                "accentHover": [
+                  0,
+                  100,
+                  200,
+                  255
+                ],
+                "surface": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "danger": [
+                  180,
+                  35,
+                  24,
+                  255
+                ],
+                "dangerHover": [
+                  158,
+                  31,
+                  21,
+                  255
+                ],
+                "text": [
+                  29,
+                  29,
+                  31,
+                  255
+                ],
+                "muted": [
+                  82,
+                  82,
+                  86,
+                  255
+                ],
+                "inverse": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "tertiary": [
+                  227,
+                  239,
+                  252,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 297,
+              "right": 369.140625,
+              "top": 362,
+              "bottom": 400,
+              "width": 72.140625,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              4.540641928106993,
+              4.69666146009005
+            ]
+          }
+        },
+        {
+          "state": "hover",
+          "facts": {
+            "name": "Danger",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+            "background": "color(srgb 0.621176 0.120784 0.0828235)",
+            "color": "rgb(255, 255, 255)",
+            "image": "none",
+            "filter": "brightness(0.94)",
+            "tokens": {
+              "accent": "rgb(0, 113, 227)",
+              "accentHover": "rgb(0, 100, 200)",
+              "surface": "rgb(255, 255, 255)",
+              "danger": "rgb(180, 35, 24)",
+              "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+              "text": "rgb(29, 29, 31)",
+              "muted": "rgb(82, 82, 86)",
+              "inverse": "rgb(255, 255, 255)",
+              "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+            },
+            "rgba": {
+              "background": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "color": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "stops": [],
+              "tokens": {
+                "accent": [
+                  0,
+                  113,
+                  227,
+                  255
+                ],
+                "accentHover": [
+                  0,
+                  100,
+                  200,
+                  255
+                ],
+                "surface": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "danger": [
+                  180,
+                  35,
+                  24,
+                  255
+                ],
+                "dangerHover": [
+                  158,
+                  31,
+                  21,
+                  255
+                ],
+                "text": [
+                  29,
+                  29,
+                  31,
+                  255
+                ],
+                "muted": [
+                  82,
+                  82,
+                  86,
+                  255
+                ],
+                "inverse": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "tertiary": [
+                  227,
+                  239,
+                  252,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 631.515625,
+              "right": 700.34375,
+              "top": 362,
+              "bottom": 400,
+              "width": 68.828125,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              7.479359193590647
+            ]
+          }
+        },
+        {
+          "state": "focus",
+          "facts": {
+            "name": "Danger",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+            "background": "oklab(0.456335 0.143358 0.0809596 / 0.783352)",
+            "color": "rgb(255, 255, 255)",
+            "image": "linear-gradient(color(srgb 0.729412 0.206275 0.166588), rgb(180, 35, 24))",
+            "filter": "none",
+            "tokens": {
+              "accent": "rgb(0, 113, 227)",
+              "accentHover": "rgb(0, 100, 200)",
+              "surface": "rgb(255, 255, 255)",
+              "danger": "rgb(180, 35, 24)",
+              "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+              "text": "rgb(29, 29, 31)",
+              "muted": "rgb(82, 82, 86)",
+              "inverse": "rgb(255, 255, 255)",
+              "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+            },
+            "rgba": {
+              "background": [
+                158,
+                31,
+                20,
+                200
+              ],
+              "color": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "stops": [
+                [
+                  186,
+                  53,
+                  42,
+                  255
+                ],
+                [
+                  180,
+                  35,
+                  24,
+                  255
+                ]
+              ],
+              "tokens": {
+                "accent": [
+                  0,
+                  113,
+                  227,
+                  255
+                ],
+                "accentHover": [
+                  0,
+                  100,
+                  200,
+                  255
+                ],
+                "surface": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "danger": [
+                  180,
+                  35,
+                  24,
+                  255
+                ],
+                "dangerHover": [
+                  158,
+                  31,
+                  21,
+                  255
+                ],
+                "text": [
+                  29,
+                  29,
+                  31,
+                  255
+                ],
+                "muted": [
+                  82,
+                  82,
+                  86,
+                  255
+                ],
+                "inverse": [
+                  255,
+                  255,
+                  255,
+                  255
+                ],
+                "tertiary": [
+                  227,
+                  239,
+                  252,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 631.515625,
+              "right": 700.34375,
+              "top": 362,
+              "bottom": 400,
+              "width": 68.828125,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              5.784334680473913,
+              6.57428861557707
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "five live intents dark",
+      "status": "PASS",
+      "facts": [
+        {
+          "name": "Primary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(15, 15, 17)",
+          "image": "linear-gradient(color(srgb 0.381255 0.657961 1), rgb(94, 166, 255))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              15,
+              15,
+              17,
+              255
+            ],
+            "stops": [
+              [
+                97,
+                168,
+                255,
+                255
+              ],
+              [
+                94,
+                166,
+                255,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 297,
+            "right": 369.140625,
+            "top": 362,
+            "bottom": 400,
+            "width": 72.140625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            7.7989008378685245,
+            7.63577472963534
+          ]
+        },
+        {
+          "name": "Secondary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(24, 24, 27)",
+          "color": "rgb(245, 245, 247)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              24,
+              24,
+              27,
+              255
+            ],
+            "color": [
+              245,
+              245,
+              247,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 379.140625,
+            "right": 468.4375,
+            "top": 362,
+            "bottom": 400,
+            "width": 89.296875,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Tertiary",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--tertiary cui-control--medium",
+          "background": "color(srgb 0.124314 0.155373 0.204235)",
+          "color": "rgb(94, 166, 255)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              32,
+              40,
+              52,
+              255
+            ],
+            "color": [
+              94,
+              166,
+              255,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 478.4375,
+            "right": 550.375,
+            "top": 362,
+            "bottom": 400,
+            "width": 71.9375,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Ghost",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(199, 199, 204)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              199,
+              199,
+              204,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 560.375,
+            "right": 621.515625,
+            "top": 362,
+            "bottom": 400,
+            "width": 61.140625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Danger",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(15, 15, 17)",
+          "image": "linear-gradient(color(srgb 1 0.545412 0.520157), rgb(255, 129, 122))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              15,
+              15,
+              17,
+              255
+            ],
+            "stops": [
+              [
+                255,
+                139,
+                133,
+                255
+              ],
+              [
+                255,
+                129,
+                122,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 631.515625,
+            "right": 700.34375,
+            "top": 362,
+            "bottom": 400,
+            "width": 68.828125,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            8.464885080788259,
+            7.908134840640792
+          ]
+        }
+      ],
+      "failures": []
+    },
+    {
+      "name": "hover/focus contrast dark",
+      "status": "PASS",
+      "facts": [
+        {
+          "state": "hover",
+          "facts": {
+            "name": "Primary",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+            "background": "rgb(121, 182, 255)",
+            "color": "rgb(15, 15, 17)",
+            "image": "none",
+            "filter": "brightness(1.035)",
+            "tokens": {
+              "accent": "rgb(94, 166, 255)",
+              "accentHover": "rgb(121, 182, 255)",
+              "surface": "rgb(24, 24, 27)",
+              "danger": "rgb(255, 129, 122)",
+              "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+              "text": "rgb(245, 245, 247)",
+              "muted": "rgb(199, 199, 204)",
+              "inverse": "rgb(15, 15, 17)",
+              "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+            },
+            "rgba": {
+              "background": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "color": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "stops": [],
+              "tokens": {
+                "accent": [
+                  94,
+                  166,
+                  255,
+                  255
+                ],
+                "accentHover": [
+                  121,
+                  182,
+                  255,
+                  255
+                ],
+                "surface": [
+                  24,
+                  24,
+                  27,
+                  255
+                ],
+                "danger": [
+                  255,
+                  129,
+                  122,
+                  255
+                ],
+                "dangerHover": [
+                  224,
+                  114,
+                  107,
+                  255
+                ],
+                "text": [
+                  245,
+                  245,
+                  247,
+                  255
+                ],
+                "muted": [
+                  199,
+                  199,
+                  204,
+                  255
+                ],
+                "inverse": [
+                  15,
+                  15,
+                  17,
+                  255
+                ],
+                "tertiary": [
+                  32,
+                  40,
+                  52,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 297,
+              "right": 369.140625,
+              "top": 362,
+              "bottom": 400,
+              "width": 72.140625,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              9.511672427894176
+            ]
+          }
+        },
+        {
+          "state": "focus",
+          "facts": {
+            "name": "Primary",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+            "background": "rgb(121, 182, 255)",
+            "color": "rgb(15, 15, 17)",
+            "image": "linear-gradient(color(srgb 0.381255 0.657961 1), rgb(94, 166, 255))",
+            "filter": "none",
+            "tokens": {
+              "accent": "rgb(94, 166, 255)",
+              "accentHover": "rgb(121, 182, 255)",
+              "surface": "rgb(24, 24, 27)",
+              "danger": "rgb(255, 129, 122)",
+              "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+              "text": "rgb(245, 245, 247)",
+              "muted": "rgb(199, 199, 204)",
+              "inverse": "rgb(15, 15, 17)",
+              "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+            },
+            "rgba": {
+              "background": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "color": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "stops": [
+                [
+                  97,
+                  168,
+                  255,
+                  255
+                ],
+                [
+                  94,
+                  166,
+                  255,
+                  255
+                ]
+              ],
+              "tokens": {
+                "accent": [
+                  94,
+                  166,
+                  255,
+                  255
+                ],
+                "accentHover": [
+                  121,
+                  182,
+                  255,
+                  255
+                ],
+                "surface": [
+                  24,
+                  24,
+                  27,
+                  255
+                ],
+                "danger": [
+                  255,
+                  129,
+                  122,
+                  255
+                ],
+                "dangerHover": [
+                  224,
+                  114,
+                  107,
+                  255
+                ],
+                "text": [
+                  245,
+                  245,
+                  247,
+                  255
+                ],
+                "muted": [
+                  199,
+                  199,
+                  204,
+                  255
+                ],
+                "inverse": [
+                  15,
+                  15,
+                  17,
+                  255
+                ],
+                "tertiary": [
+                  32,
+                  40,
+                  52,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 297,
+              "right": 369.140625,
+              "top": 362,
+              "bottom": 400,
+              "width": 72.140625,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              7.7989008378685245,
+              7.63577472963534
+            ]
+          }
+        },
+        {
+          "state": "hover",
+          "facts": {
+            "name": "Danger",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+            "background": "color(srgb 0.88 0.445177 0.42102)",
+            "color": "rgb(15, 15, 17)",
+            "image": "none",
+            "filter": "brightness(0.94)",
+            "tokens": {
+              "accent": "rgb(94, 166, 255)",
+              "accentHover": "rgb(121, 182, 255)",
+              "surface": "rgb(24, 24, 27)",
+              "danger": "rgb(255, 129, 122)",
+              "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+              "text": "rgb(245, 245, 247)",
+              "muted": "rgb(199, 199, 204)",
+              "inverse": "rgb(15, 15, 17)",
+              "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+            },
+            "rgba": {
+              "background": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "color": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "stops": [],
+              "tokens": {
+                "accent": [
+                  94,
+                  166,
+                  255,
+                  255
+                ],
+                "accentHover": [
+                  121,
+                  182,
+                  255,
+                  255
+                ],
+                "surface": [
+                  24,
+                  24,
+                  27,
+                  255
+                ],
+                "danger": [
+                  255,
+                  129,
+                  122,
+                  255
+                ],
+                "dangerHover": [
+                  224,
+                  114,
+                  107,
+                  255
+                ],
+                "text": [
+                  245,
+                  245,
+                  247,
+                  255
+                ],
+                "muted": [
+                  199,
+                  199,
+                  204,
+                  255
+                ],
+                "inverse": [
+                  15,
+                  15,
+                  17,
+                  255
+                ],
+                "tertiary": [
+                  32,
+                  40,
+                  52,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 631.515625,
+              "right": 700.34375,
+              "top": 362,
+              "bottom": 400,
+              "width": 68.828125,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              5.5656018849429385
+            ]
+          }
+        },
+        {
+          "state": "focus",
+          "facts": {
+            "name": "Danger",
+            "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+            "background": "oklab(0.677476 0.126609 0.0582534 / 0.771856)",
+            "color": "rgb(15, 15, 17)",
+            "image": "linear-gradient(color(srgb 1 0.545412 0.520157), rgb(255, 129, 122))",
+            "filter": "none",
+            "tokens": {
+              "accent": "rgb(94, 166, 255)",
+              "accentHover": "rgb(121, 182, 255)",
+              "surface": "rgb(24, 24, 27)",
+              "danger": "rgb(255, 129, 122)",
+              "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+              "text": "rgb(245, 245, 247)",
+              "muted": "rgb(199, 199, 204)",
+              "inverse": "rgb(15, 15, 17)",
+              "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+            },
+            "rgba": {
+              "background": [
+                224,
+                114,
+                107,
+                197
+              ],
+              "color": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "stops": [
+                [
+                  255,
+                  139,
+                  133,
+                  255
+                ],
+                [
+                  255,
+                  129,
+                  122,
+                  255
+                ]
+              ],
+              "tokens": {
+                "accent": [
+                  94,
+                  166,
+                  255,
+                  255
+                ],
+                "accentHover": [
+                  121,
+                  182,
+                  255,
+                  255
+                ],
+                "surface": [
+                  24,
+                  24,
+                  27,
+                  255
+                ],
+                "danger": [
+                  255,
+                  129,
+                  122,
+                  255
+                ],
+                "dangerHover": [
+                  224,
+                  114,
+                  107,
+                  255
+                ],
+                "text": [
+                  245,
+                  245,
+                  247,
+                  255
+                ],
+                "muted": [
+                  199,
+                  199,
+                  204,
+                  255
+                ],
+                "inverse": [
+                  15,
+                  15,
+                  17,
+                  255
+                ],
+                "tertiary": [
+                  32,
+                  40,
+                  52,
+                  255
+                ]
+              }
+            },
+            "rect": {
+              "left": 631.515625,
+              "right": 700.34375,
+              "top": 362,
+              "bottom": 400,
+              "width": 68.828125,
+              "height": 38
+            },
+            "viewport": {
+              "width": 1440,
+              "height": 900
+            },
+            "contrast_ratios": [
+              8.464885080788259,
+              7.908134840640792
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "disabled and loading retain native behavior",
+      "status": "PASS"
+    },
+    {
+      "name": "danger intent, typed enable, cancel and Escape",
+      "status": "PASS",
+      "facts": [
+        {
+          "name": "Delete",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle disabled q-btn--no-uppercase cui-button cui-button--danger cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(15, 15, 17)",
+          "image": "linear-gradient(color(srgb 1 0.545412 0.520157), rgb(255, 129, 122))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              15,
+              15,
+              17,
+              255
+            ],
+            "stops": [
+              [
+                255,
+                139,
+                133,
+                255
+              ],
+              [
+                255,
+                129,
+                122,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 874.78125,
+            "right": 939,
+            "top": 527.5,
+            "bottom": 565.5,
+            "width": 64.21875,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            8.464885080788259,
+            7.908134840640792
+          ]
+        },
+        {
+          "name": "Cancel",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(24, 24, 27)",
+          "color": "rgb(245, 245, 247)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(94, 166, 255)",
+            "accentHover": "rgb(121, 182, 255)",
+            "surface": "rgb(24, 24, 27)",
+            "danger": "rgb(255, 129, 122)",
+            "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+            "text": "rgb(245, 245, 247)",
+            "muted": "rgb(199, 199, 204)",
+            "inverse": "rgb(15, 15, 17)",
+            "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+          },
+          "rgba": {
+            "background": [
+              24,
+              24,
+              27,
+              255
+            ],
+            "color": [
+              245,
+              245,
+              247,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                94,
+                166,
+                255,
+                255
+              ],
+              "accentHover": [
+                121,
+                182,
+                255,
+                255
+              ],
+              "surface": [
+                24,
+                24,
+                27,
+                255
+              ],
+              "danger": [
+                255,
+                129,
+                122,
+                255
+              ],
+              "dangerHover": [
+                224,
+                114,
+                107,
+                255
+              ],
+              "text": [
+                245,
+                245,
+                247,
+                255
+              ],
+              "muted": [
+                199,
+                199,
+                204,
+                255
+              ],
+              "inverse": [
+                15,
+                15,
+                17,
+                255
+              ],
+              "tertiary": [
+                32,
+                40,
+                52,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 800.296875,
+            "right": 866.78125,
+            "top": 527.5,
+            "bottom": 565.5,
+            "width": 66.484375,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ]
+    },
+    {
+      "name": "native editor/Hub intent 1440",
+      "status": "PASS",
+      "editor": [
+        {
+          "name": "New report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 1144.25,
+            "right": 1236.203125,
+            "top": 118,
+            "bottom": 156,
+            "width": 91.953125,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        },
+        {
+          "name": "Duplicate",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(29, 29, 31)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "color": [
+              29,
+              29,
+              31,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 1244.203125,
+            "right": 1326.359375,
+            "top": 118,
+            "bottom": 156,
+            "width": 82.15625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Manage",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium cui-tooltip-target cui-tooltip-target-18",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 1334.359375,
+            "right": 1407,
+            "top": 118,
+            "bottom": 156,
+            "width": 72.640625,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        }
+      ],
+      "hub": [
+        {
+          "name": "Grid",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 977.234375,
+            "right": 1028.265625,
+            "top": 265,
+            "bottom": 303,
+            "width": 51.03125,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "List",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 1028.03125,
+            "right": 1075.703125,
+            "top": 265,
+            "bottom": 303,
+            "width": 47.671875,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "name": "Create report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium cui-report-create",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 1194,
+            "right": 1407,
+            "top": 265,
+            "bottom": 303,
+            "width": 213,
+            "height": 38
+          },
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        }
+      ]
+    },
+    {
+      "name": "native editor/Hub intent 390",
+      "status": "PASS",
+      "editor": [
+        {
+          "name": "New report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 134.328125,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.328125,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        },
+        {
+          "name": "Duplicate",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(29, 29, 31)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "color": [
+              29,
+              29,
+              31,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 142.328125,
+            "right": 247.65625,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.328125,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        },
+        {
+          "name": "Manage",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium cui-tooltip-target cui-tooltip-target-38",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 255.65625,
+            "right": 361,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.34375,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "hub": [
+        {
+          "name": "Grid",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 80.03125,
+            "top": 518,
+            "bottom": 562,
+            "width": 51.03125,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        },
+        {
+          "name": "List",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 84.03125,
+            "right": 131.703125,
+            "top": 518,
+            "bottom": 562,
+            "width": 47.671875,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        },
+        {
+          "name": "Create report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium cui-report-create",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 361,
+            "top": 570,
+            "bottom": 614,
+            "width": 332,
+            "height": 44
+          },
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        }
+      ]
+    },
+    {
+      "name": "native editor/Hub intent 320",
+      "status": "PASS",
+      "editor": [
+        {
+          "name": "New report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 111,
+            "top": 296,
+            "bottom": 340,
+            "width": 82,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        },
+        {
+          "name": "Duplicate",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--secondary cui-control--medium",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(29, 29, 31)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "color": [
+              29,
+              29,
+              31,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 119,
+            "right": 201,
+            "top": 296,
+            "bottom": 340,
+            "width": 82,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          }
+        },
+        {
+          "name": "Manage",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium cui-tooltip-target cui-tooltip-target-58",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 209,
+            "right": 291,
+            "top": 296,
+            "bottom": 340,
+            "width": 82,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          }
+        }
+      ],
+      "hub": [
+        {
+          "name": "Grid",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 80.03125,
+            "top": 518,
+            "bottom": 562,
+            "width": 51.03125,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          }
+        },
+        {
+          "name": "List",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(82, 82, 86)",
+          "image": "none",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              82,
+              82,
+              86,
+              255
+            ],
+            "stops": [],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 84.03125,
+            "right": 131.703125,
+            "top": 518,
+            "bottom": 562,
+            "width": 47.671875,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          }
+        },
+        {
+          "name": "Create report",
+          "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium cui-report-create",
+          "background": "rgba(0, 0, 0, 0)",
+          "color": "rgb(255, 255, 255)",
+          "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+          "filter": "none",
+          "tokens": {
+            "accent": "rgb(0, 113, 227)",
+            "accentHover": "rgb(0, 100, 200)",
+            "surface": "rgb(255, 255, 255)",
+            "danger": "rgb(180, 35, 24)",
+            "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+            "text": "rgb(29, 29, 31)",
+            "muted": "rgb(82, 82, 86)",
+            "inverse": "rgb(255, 255, 255)",
+            "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+          },
+          "rgba": {
+            "background": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "color": [
+              255,
+              255,
+              255,
+              255
+            ],
+            "stops": [
+              [
+                5,
+                116,
+                228,
+                255
+              ],
+              [
+                0,
+                113,
+                227,
+                255
+              ]
+            ],
+            "tokens": {
+              "accent": [
+                0,
+                113,
+                227,
+                255
+              ],
+              "accentHover": [
+                0,
+                100,
+                200,
+                255
+              ],
+              "surface": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "danger": [
+                180,
+                35,
+                24,
+                255
+              ],
+              "dangerHover": [
+                158,
+                31,
+                21,
+                255
+              ],
+              "text": [
+                29,
+                29,
+                31,
+                255
+              ],
+              "muted": [
+                82,
+                82,
+                86,
+                255
+              ],
+              "inverse": [
+                255,
+                255,
+                255,
+                255
+              ],
+              "tertiary": [
+                227,
+                239,
+                252,
+                255
+              ]
+            }
+          },
+          "rect": {
+            "left": 29,
+            "right": 291,
+            "top": 570,
+            "bottom": 614,
+            "width": 262,
+            "height": 44
+          },
+          "viewport": {
+            "width": 320,
+            "height": 844
+          },
+          "contrast_ratios": [
+            4.540641928106993,
+            4.69666146009005
+          ]
+        }
+      ]
+    }
+  ],
+  "claim": "bounded native intent probes; not screenshot-baseline or production certification",
+  "current_observation": {
+    "intent": "primary",
+    "hover": false,
+    "facts": {
+      "name": "Create report",
+      "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--primary cui-control--medium cui-report-create",
+      "background": "rgba(0, 0, 0, 0)",
+      "color": "rgb(255, 255, 255)",
+      "image": "linear-gradient(color(srgb 0.02 0.454275 0.892392), rgb(0, 113, 227))",
+      "filter": "none",
+      "tokens": {
+        "accent": "rgb(0, 113, 227)",
+        "accentHover": "rgb(0, 100, 200)",
+        "surface": "rgb(255, 255, 255)",
+        "danger": "rgb(180, 35, 24)",
+        "dangerHover": "color(srgb 0.621176 0.120784 0.0828235)",
+        "text": "rgb(29, 29, 31)",
+        "muted": "rgb(82, 82, 86)",
+        "inverse": "rgb(255, 255, 255)",
+        "tertiary": "color(srgb 0.89 0.938745 0.987922)"
+      },
+      "rgba": {
+        "background": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "stops": [
+          [
+            5,
+            116,
+            228,
+            255
+          ],
+          [
+            0,
+            113,
+            227,
+            255
+          ]
+        ],
+        "tokens": {
+          "accent": [
+            0,
+            113,
+            227,
+            255
+          ],
+          "accentHover": [
+            0,
+            100,
+            200,
+            255
+          ],
+          "surface": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "danger": [
+            180,
+            35,
+            24,
+            255
+          ],
+          "dangerHover": [
+            158,
+            31,
+            21,
+            255
+          ],
+          "text": [
+            29,
+            29,
+            31,
+            255
+          ],
+          "muted": [
+            82,
+            82,
+            86,
+            255
+          ],
+          "inverse": [
+            255,
+            255,
+            255,
+            255
+          ],
+          "tertiary": [
+            227,
+            239,
+            252,
+            255
+          ]
+        }
+      },
+      "rect": {
+        "left": 29,
+        "right": 291,
+        "top": 570,
+        "bottom": 614,
+        "width": 262,
+        "height": 44
+      },
+      "viewport": {
+        "width": 320,
+        "height": 844
+      },
+      "contrast_ratios": [
+        4.540641928106993,
+        4.69666146009005
+      ]
+    }
+  },
+  "negative_control": {
+    "detected": true,
+    "reason": "ghost must have a transparent background",
+    "facts": {
+      "name": "Ghost",
+      "classes": "q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium",
+      "background": "rgb(94, 166, 255)",
+      "color": "rgb(255, 255, 255)",
+      "image": "none",
+      "filter": "none",
+      "tokens": {
+        "accent": "rgb(94, 166, 255)",
+        "accentHover": "rgb(121, 182, 255)",
+        "surface": "rgb(24, 24, 27)",
+        "danger": "rgb(255, 129, 122)",
+        "dangerHover": "color(srgb 0.88 0.445177 0.42102)",
+        "text": "rgb(245, 245, 247)",
+        "muted": "rgb(199, 199, 204)",
+        "inverse": "rgb(15, 15, 17)",
+        "tertiary": "color(srgb 0.124314 0.155373 0.204235)"
+      },
+      "rgba": {
+        "background": [
+          94,
+          166,
+          255,
+          255
+        ],
+        "color": [
+          255,
+          255,
+          255,
+          255
+        ],
+        "stops": [],
+        "tokens": {
+          "accent": [
+            94,
+            166,
+            255,
+            255
+          ],
+          "accentHover": [
+            121,
+            182,
+            255,
+            255
+          ],
+          "surface": [
+            24,
+            24,
+            27,
+            255
+          ],
+          "danger": [
+            255,
+            129,
+            122,
+            255
+          ],
+          "dangerHover": [
+            224,
+            114,
+            107,
+            255
+          ],
+          "text": [
+            245,
+            245,
+            247,
+            255
+          ],
+          "muted": [
+            199,
+            199,
+            204,
+            255
+          ],
+          "inverse": [
+            15,
+            15,
+            17,
+            255
+          ],
+          "tertiary": [
+            32,
+            40,
+            52,
+            255
+          ]
+        }
+      },
+      "rect": {
+        "left": 560.375,
+        "right": 621.515625,
+        "top": 362,
+        "bottom": 400,
+        "width": 61.140625,
+        "height": 38
+      },
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      }
+    }
+  },
+  "unexpected_browser_events": []
+}

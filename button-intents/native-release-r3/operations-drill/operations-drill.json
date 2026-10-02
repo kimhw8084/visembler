@@ -1,0 +1,33 @@
+{
+  "scope": "local/internal-pilot operations drill",
+  "cases": [
+    {
+      "name": "native-source-before-backup",
+      "status": "PASS",
+      "history_entries": 2
+    },
+    {
+      "name": "complete-data-directory-backup-and-restore",
+      "status": "PASS",
+      "files": 8,
+      "history_entries": 2,
+      "image_assets": 1
+    },
+    {
+      "name": "fresh-application-venv-install-and-start",
+      "status": "PASS",
+      "dependency_mode": "system-site-packages inherited, exact versions checked",
+      "versions": {
+        "nicegui": "3.15.0",
+        "Pillow": "12.3.0",
+        "python-pptx": "1.0.2"
+      }
+    }
+  ],
+  "limitations": [
+    "Fresh venv inherits the verified pinned third-party runtime; dependency acquisition from the company package index is outside this offline-safe drill."
+  ],
+  "passed": 3,
+  "total": 3,
+  "status": "PASS"
+}

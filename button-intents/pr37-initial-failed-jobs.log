@@ -1,0 +1,82 @@
+Python regression suite	Run python -m pytest	﻿2026-10-02T02:34:18.8703232Z ##[group]Run python -m pytest
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8703581Z ^[[36;1mpython -m pytest^[[0m
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8768084Z shell: /usr/bin/bash -e {0}
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8768357Z env:
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8768580Z   PIP_DISABLE_PIP_VERSION_CHECK: 1
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8768900Z   PYTHONDONTWRITEBYTECODE: 1
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8769255Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8769742Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8770212Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8770630Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8771049Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8771476Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python regression suite	Run python -m pytest	2026-10-02T02:34:18.8771830Z ##[endgroup]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:24.8370829Z ........................................................................ [  5%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:25.7413483Z ........................................................................ [ 11%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:26.7853778Z ........................................................................ [ 17%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:30.1919725Z ........................................................................ [ 22%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:30.6470738Z ........................................................................ [ 28%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:33.7731843Z ............................................F........................... [ 34%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:35.0465608Z ........................................................................ [ 40%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:35.0911841Z ........................................................................ [ 45%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:35.2093924Z ........................................................................ [ 51%]
+Python regression suite	Run python -m pytest	2026-10-02T02:34:38.2780446Z ........................................................................ [ 57%]
+Python regression suite	Run python -m pytest	2026-10-02T02:35:47.4677844Z ........................................................................ [ 63%]
+Python regression suite	Run python -m pytest	2026-10-02T02:36:12.0452433Z ........................................................................ [ 68%]
+Python regression suite	Run python -m pytest	2026-10-02T02:36:32.1381860Z ........................................................................ [ 74%]
+Python regression suite	Run python -m pytest	2026-10-02T02:36:44.1017716Z ........................................................................ [ 80%]
+Python regression suite	Run python -m pytest	2026-10-02T02:37:48.5259823Z .........F.............................................................. [ 86%]
+Python regression suite	Run python -m pytest	2026-10-02T02:39:03.4561065Z ........................................................................ [ 91%]
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.0655380Z ........................................................................ [ 97%]
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6329319Z .............................                                            [100%]
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6330245Z =================================== FAILURES ===================================
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6331215Z __ test_v2_packaged_certification_manifest_is_regenerated_from_current_source __
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6331935Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6332439Z     def test_v2_packaged_certification_manifest_is_regenerated_from_current_source():
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6333240Z         import json
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6333749Z         from company_ui.certification.engine import combined_css
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6334249Z     
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6335389Z         manifest = json.loads((ROOT / 'company_ui/certification/certification_manifest.json').read_text(encoding='utf-8'))
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6337020Z         assert manifest['framework_version'] == FRAMEWORK_VERSION
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6337747Z         assert manifest['phase'] >= 35
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6338611Z         assert manifest['phase_35_v2_source_completion']['single_layout_density_token_authority'] is True
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6339677Z >       assert manifest['combined_css_bytes'] == len(combined_css().encode('utf-8'))
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6340374Z E       AssertionError: assert 259922 == 259960
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6342111Z E        +  where 259960 = len(b':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n')
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6345771Z E        +    where b':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n' = <built-in method encode of str object at 0x555a40472cc0>('utf-8')
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6349414Z E        +      where <built-in method encode of str object at 0x555a40472cc0> = ':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-4...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n'.encode
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6352713Z E        +        where ':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-4...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n' = <function combined_css at 0x7f482326f4c0>()
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6354825Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6355129Z tests/test_phase35_v200_single_token_authority.py:73: AssertionError
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6355885Z ___________ test_repository_contract_receipt_proves_current_checkout ___________
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6356376Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6356974Z tmp_path = PosixPath('/tmp/pytest-of-runner/pytest-0/test_repository_contract_recei0')
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6357519Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6357873Z     def test_repository_contract_receipt_proves_current_checkout(tmp_path: Path):
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6358522Z         module = _contracts_module()
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6358986Z         output = tmp_path / 'repository-contracts.json'
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6359561Z >       assert module.run(output) == 0
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6360000Z E       AssertionError: assert 2 == 0
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6361025Z E        +  where 2 = <function run at 0x7f481739e840>(PosixPath('/tmp/pytest-of-runner/pytest-0/test_repository_contract_recei0/repository-contracts.json'))
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6362937Z E        +    where <function run at 0x7f481739e840> = <module 'visualizer_repository_contracts' from '/home/runner/work/visembler/visembler/scripts/release_checks/run_repository_contracts.py'>.run
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6364069Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6364325Z tests/test_visualizer_release_closure.py:25: AssertionError
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6364973Z ----------------------------- Captured stdout call -----------------------------
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6366218Z {"managed_target_status": "PENDING", "output": "/tmp/pytest-of-runner/pytest-0/test_repository_contract_recei0/repository-contracts.json", "status": "FAIL"}
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6367538Z =============================== warnings summary ===============================
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6368509Z tests/test_visualizer_application_hardening.py::test_pptx_duplicate_path_and_compression_bomb_rejected
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6369767Z   /opt/hostedtoolcache/Python/3.12.14/x64/lib/python3.12/zipfile/__init__.py:1625: UserWarning: Duplicate name: 'ppt/presentation.xml'
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6370799Z     return self._open_to_write(zinfo, force_zip64=force_zip64)
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6371181Z 
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6371505Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6372163Z =========================== short test summary info ============================
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6373443Z FAILED tests/test_phase35_v200_single_token_authority.py::test_v2_packaged_certification_manifest_is_regenerated_from_current_source - AssertionError: assert 259922 == 259960
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6375825Z  +  where 259960 = len(b':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n')
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6379605Z  +    where b':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n' = <built-in method encode of str object at 0x555a40472cc0>('utf-8')
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6382917Z  +      where <built-in method encode of str object at 0x555a40472cc0> = ':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-4...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n'.encode
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6386095Z  +        where ':root {\n  --cui-space-0: 0px;\n  --cui-space-1: 4px;\n  --cui-space-2: 8px;\n  --cui-space-3: 12px;\n  --cui-space-4...erlay-backdrop,.cui-tooltip--company,.cui-progress.is-indeterminate .cui-progress__bar{animation:none!important;}\n}\n' = <function combined_css at 0x7f482326f4c0>()
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6388597Z FAILED tests/test_visualizer_release_closure.py::test_repository_contract_receipt_proves_current_checkout - AssertionError: assert 2 == 0
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6390318Z  +  where 2 = <function run at 0x7f481739e840>(PosixPath('/tmp/pytest-of-runner/pytest-0/test_repository_contract_recei0/repository-contracts.json'))
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6392078Z  +    where <function run at 0x7f481739e840> = <module 'visualizer_repository_contracts' from '/home/runner/work/visembler/visembler/scripts/release_checks/run_repository_contracts.py'>.run
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.6393321Z 2 failed, 1251 passed, 1 warning in 284.76s (0:04:44)
+Python regression suite	Run python -m pytest	2026-10-02T02:39:04.8863649Z ##[error]Process completed with exit code 1.

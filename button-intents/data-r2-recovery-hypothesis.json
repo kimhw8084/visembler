@@ -1,0 +1,11 @@
+{
+  "candidate": "299a13c1ce143c6f57ce8c6f339b65a378584068",
+  "original_receipt": "native-release-r2/data/data-workflows.json",
+  "original_returncode": 1,
+  "failed_case": "displayed-table-refresh-undo",
+  "failure": "Unchanged 7000ms Playwright click completed the action but timed out waiting for scheduled navigation; nine remaining data cases passed and no unexpected browser events were recorded.",
+  "hypothesis": "Intermittent browser/navigation wait during the first refresh action. Product and harness cause remain unestablished; this is not evidence that data refresh is repaired or that the failure is waived.",
+  "bounded_recovery": "Run the entire unchanged native data workflow group once on the same clean candidate with explicit candidate PYTHONPATH. Preserve the original failure. If replay fails, investigate attribution before any further repetition; if it passes, run one fresh full verifier to establish a complete terminal receipt.",
+  "oracle_change": false,
+  "source_change": false
+}
