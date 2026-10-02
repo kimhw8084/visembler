@@ -468,7 +468,7 @@ def task_d(page, metrics, out, image_path):
     page.locator("#genericModal.show").wait_for(state="hidden", timeout=10000)
     primary_locator_click(metrics, page.locator('.cui-visualizer-reportbar button').filter(has_text="Duplicate"))
     settled(page)
-    duplicate_title = page.get_by_label("Report title")
+    duplicate_title = page.get_by_role("textbox", name="Report title", exact=True)
     duplicate_title.fill("Operations Review Copy")
     duplicate_title.press("Tab")
     settled(page)

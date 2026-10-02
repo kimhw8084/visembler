@@ -127,15 +127,15 @@ def main() -> int:
 
                     attempted_a = 'CHG-178 title from session A'
                     attempted_b = 'CHG-178 retained title from session B'
-                    editor_a.get_by_label('Report title').fill(attempted_a)
-                    editor_a.get_by_label('Report title').press('Tab')
+                    editor_a.get_by_role("textbox", name='Report title', exact=True).fill(attempted_a)
+                    editor_a.get_by_role("textbox", name='Report title', exact=True).press('Tab')
                     saved_a = _record(host.repository, report_id, lambda value: value.title == attempted_a)
-                    editor_b.get_by_label('Report title').fill(attempted_b)
-                    editor_b.get_by_label('Report title').press('Tab')
+                    editor_b.get_by_role("textbox", name='Report title', exact=True).fill(attempted_b)
+                    editor_b.get_by_role("textbox", name='Report title', exact=True).press('Tab')
                     conflict_b = editor_b.locator('[data-testid="report-edit-conflict"]:visible')
                     conflict_b.wait_for(timeout=10_000)
                     assert 'changed after revision' in conflict_b.inner_text().casefold()
-                    assert editor_b.get_by_label('Report title').input_value() == attempted_b
+                    assert editor_b.get_by_role("textbox", name='Report title', exact=True).input_value() == attempted_b
                     assert host.repository.get(report_id).title == attempted_a
                     editor_b.screenshot(path=str(screenshots / 'stale-editor-title-conflict.png'), full_page=True)
                     case('isolated sessions reject stale title and preserve draft', {
@@ -157,14 +157,14 @@ def main() -> int:
                     assert editor_b.evaluate('()=>CompanyUIVisualizerBridge.state().revision') == same_revision == resolved_title.revision
                     attempted_purpose_a = 'Purpose saved by session A'
                     attempted_purpose_b = 'Purpose retained from stale session B'
-                    editor_a.get_by_label('Description').fill(attempted_purpose_a)
-                    editor_a.get_by_label('Description').press('Tab')
+                    editor_a.get_by_role("textbox", name='Description', exact=True).fill(attempted_purpose_a)
+                    editor_a.get_by_role("textbox", name='Description', exact=True).press('Tab')
                     saved_purpose_a = _record(host.repository, report_id, lambda value: value.metadata.get('description') == attempted_purpose_a)
-                    editor_b.get_by_label('Description').fill(attempted_purpose_b)
-                    editor_b.get_by_label('Description').press('Tab')
+                    editor_b.get_by_role("textbox", name='Description', exact=True).fill(attempted_purpose_b)
+                    editor_b.get_by_role("textbox", name='Description', exact=True).press('Tab')
                     purpose_conflict = editor_b.locator('[data-testid="report-edit-conflict"]:visible')
                     purpose_conflict.wait_for(timeout=10_000)
-                    assert editor_b.get_by_label('Description').input_value() == attempted_purpose_b
+                    assert editor_b.get_by_role("textbox", name='Description', exact=True).input_value() == attempted_purpose_b
                     assert host.repository.get(report_id).metadata['description'] == attempted_purpose_a
                     editor_b.screenshot(path=str(screenshots / 'stale-editor-purpose-conflict.png'), full_page=True)
                     editor_b.get_by_role('button', name='Save retained draft as new revision', exact=True).click()
@@ -185,11 +185,11 @@ def main() -> int:
                         _hub(page, host, report_id)
                     detail_revision_a = host.repository.get(report_id).revision
                     details_b = _edit_details(hub_b, report_id)
-                    details_b.get_by_label('Report name').fill('CHG-178 Hub draft from session B')
-                    details_b.get_by_label('Purpose').fill('Hub purpose draft from session B')
+                    details_b.get_by_role("textbox", name='Report name', exact=True).fill('CHG-178 Hub draft from session B')
+                    details_b.get_by_role("textbox", name='Purpose', exact=True).fill('Hub purpose draft from session B')
                     details_a = _edit_details(hub_a, report_id)
-                    details_a.get_by_label('Report name').fill('CHG-178 Hub title from session A')
-                    details_a.get_by_label('Purpose').fill('Hub purpose from session A')
+                    details_a.get_by_role("textbox", name='Report name', exact=True).fill('CHG-178 Hub title from session A')
+                    details_a.get_by_role("textbox", name='Purpose', exact=True).fill('Hub purpose from session A')
                     details_a.get_by_role('button', name='Save details', exact=True).click()
                     saved_details_a = _record(
                         host.repository, report_id,
@@ -198,8 +198,8 @@ def main() -> int:
                     )
                     details_b.get_by_role('button', name='Save details', exact=True).click()
                     details_b.get_by_text('Your entered details are still here.', exact=False).wait_for(timeout=10_000)
-                    assert details_b.get_by_label('Report name').input_value() == 'CHG-178 Hub draft from session B'
-                    assert details_b.get_by_label('Purpose').input_value() == 'Hub purpose draft from session B'
+                    assert details_b.get_by_role("textbox", name='Report name', exact=True).input_value() == 'CHG-178 Hub draft from session B'
+                    assert details_b.get_by_role("textbox", name='Purpose', exact=True).input_value() == 'Hub purpose draft from session B'
                     canonical_before_details_resolution = host.repository.get(report_id)
                     assert canonical_before_details_resolution.title == 'CHG-178 Hub title from session A'
                     assert canonical_before_details_resolution.metadata['description'] == 'Hub purpose from session A'
@@ -218,8 +218,8 @@ def main() -> int:
                     assert card_b.locator('.cui-report-card-description').inner_text() == 'Hub purpose draft from session B'
                     editor_b.reload(wait_until='domcontentloaded')
                     ready(editor_b, require_settled=True)
-                    assert editor_b.get_by_label('Report title').input_value() == 'CHG-178 Hub draft from session B'
-                    assert editor_b.get_by_label('Description').input_value() == 'Hub purpose draft from session B'
+                    assert editor_b.get_by_role("textbox", name='Report title', exact=True).input_value() == 'CHG-178 Hub draft from session B'
+                    assert editor_b.get_by_role("textbox", name='Description', exact=True).input_value() == 'Hub purpose draft from session B'
                     case('Report Hub details conflict resolution and reload persistence', {
                         'starting_revision': detail_revision_a,
                         'revision_after_session_a': saved_details_a.revision,
@@ -228,7 +228,7 @@ def main() -> int:
                         'revision_after_explicit_resolution': final_details.revision,
                         'hub_reload_title': card_b.locator('.cui-report-card-title').inner_text(),
                         'hub_reload_purpose': card_b.locator('.cui-report-card-description').inner_text(),
-                        'editor_reload_purpose': editor_b.get_by_label('Description').input_value(),
+                        'editor_reload_purpose': editor_b.get_by_role("textbox", name='Description', exact=True).input_value(),
                     })
 
                     _editor(editor_a, host, report_id)
@@ -277,7 +277,7 @@ def main() -> int:
                     history_page.locator('.q-menu:visible').get_by_role('button', name='Review history', exact=True).click()
                     history = history_page.locator('[data-testid="report-history"]:visible')
                     history.wait_for(timeout=10_000)
-                    history_page.get_by_label('Name a checkpoint').fill('CHG-178 pre-restore checkpoint')
+                    history_page.get_by_role("textbox", name='Name a checkpoint', exact=True).fill('CHG-178 pre-restore checkpoint')
                     history.get_by_role('button', name='Save checkpoint', exact=True).click()
                     _record(
                         host.repository, report_id,
@@ -333,8 +333,8 @@ def main() -> int:
                         assert {key: loaded_item.get(key) for key in ('id', 'engine', 'element', 'title', 'text', 'body')} == {
                             key: source_item.get(key) for key in ('id', 'engine', 'element', 'title', 'text', 'body')
                         }
-                    assert editor_b.get_by_label('Report title').input_value() == restored.title
-                    assert editor_b.get_by_label('Description').input_value() == restored.metadata['description']
+                    assert editor_b.get_by_role("textbox", name='Report title', exact=True).input_value() == restored.title
+                    assert editor_b.get_by_role("textbox", name='Description', exact=True).input_value() == restored.metadata['description']
                     events.unexpected.extend(events.expected_fault)
                     receipt['unexpected_browser_events'] = events.unexpected
                     context_a.close()
