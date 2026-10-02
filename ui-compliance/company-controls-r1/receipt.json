@@ -1,0 +1,164 @@
+{
+  "status": "FAIL",
+  "cases": [
+    {
+      "name": "editor actions and accessible field 1440",
+      "status": "PASS",
+      "state": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "overflow": false,
+        "actions": [
+          {
+            "name": "New report",
+            "left": 1144.25,
+            "right": 1236.203125,
+            "top": 118,
+            "bottom": 156,
+            "width": 91.953125,
+            "height": 38,
+            "radius": "10px"
+          },
+          {
+            "name": "Duplicate",
+            "left": 1244.203125,
+            "right": 1326.359375,
+            "top": 118,
+            "bottom": 156,
+            "width": 82.15625,
+            "height": 38,
+            "radius": "10px"
+          },
+          {
+            "name": "Manage",
+            "left": 1334.359375,
+            "right": 1407,
+            "top": 118,
+            "bottom": 156,
+            "width": 72.640625,
+            "height": 38,
+            "radius": "10px"
+          }
+        ]
+      },
+      "field_relationship": {
+        "groupRole": "group",
+        "label": "Report title",
+        "inputLabel": "Report title"
+      }
+    },
+    {
+      "name": "hub actions and overlay close/Escape 1440",
+      "status": "PASS",
+      "state": {
+        "viewport": {
+          "width": 1440,
+          "height": 900
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "overflow": false,
+        "actions": [
+          {
+            "name": "Grid",
+            "left": 1037,
+            "right": 1088.03125,
+            "top": 265,
+            "bottom": 303,
+            "width": 51.03125,
+            "height": 38,
+            "radius": "10px"
+          },
+          {
+            "name": "List",
+            "left": 1092.03125,
+            "right": 1139.703125,
+            "top": 265,
+            "bottom": 303,
+            "width": 47.671875,
+            "height": 38,
+            "radius": "10px"
+          },
+          {
+            "name": "Create report",
+            "left": 1226,
+            "right": 1407,
+            "top": 265,
+            "bottom": 303,
+            "width": 181,
+            "height": 38,
+            "radius": "10px"
+          }
+        ]
+      }
+    },
+    {
+      "name": "editor actions and accessible field 390",
+      "status": "PASS",
+      "state": {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "scroll": {
+          "x": 0,
+          "y": 0
+        },
+        "overflow": false,
+        "actions": [
+          {
+            "name": "New report",
+            "left": 29,
+            "right": 134.328125,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.328125,
+            "height": 44,
+            "radius": "10px"
+          },
+          {
+            "name": "Duplicate",
+            "left": 142.328125,
+            "right": 247.65625,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.328125,
+            "height": 44,
+            "radius": "10px"
+          },
+          {
+            "name": "Manage",
+            "left": 255.65625,
+            "right": 361,
+            "top": 281,
+            "bottom": 325,
+            "width": 105.34375,
+            "height": 44,
+            "radius": "10px"
+          }
+        ]
+      },
+      "field_relationship": {
+        "groupRole": "group",
+        "label": "Report title",
+        "inputLabel": "Report title"
+      }
+    }
+  ],
+  "source_files": {
+    "company_ui/products/visualizer/page.py": "e86e95de55ed391a8782fb454aae3c2bf51f2431298ac9ef7645ec1cc7892dc0",
+    "company_ui/products/visualizer/presentation.py": "b0c5f392670e084a6e129a3abc13c7b9e0ef035066acaa785b41088cac0bc389",
+    "company_ui/products/visualizer/assets/integrated_editor.css": "ca11d7ad23f4010e3e7b14010ba77f09b08ffe2e48288c48e23a83b3b4ed1858"
+  },
+  "error": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-reportbar\").get_by_role(\"button\", name=\"Manage\", exact=True)\n    - locator resolved to <button id=\"c275\" tabindex=\"0\" type=\"button\" data-cui-tooltip-bound=\"1\" data-testid=\"manage-reports\" class=\"q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle bg-primary text-white q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium cui-tooltip-target cui-tooltip-target-38\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 \u00d7 waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n",
+  "traceback": "Traceback (most recent call last):\n  File \"/private/tmp/visembler-ui-compliance-direct/verify_controls.py\", line 71, in <module>\n    bar.get_by_role('button',name='Manage',exact=True).click()\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/sync_api/_generated.py\", line 17876, in click\n    self._sync(\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_sync_base.py\", line 115, in _sync\n    return task.result()\n           ^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_locator.py\", line 165, in click\n    return await self._frame._click(self._selector, strict=True, **params)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_frame.py\", line 593, in _click\n    await self._channel.send(\"click\", self._timeout, locals_to_params(locals()))\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 76, in send\n    return await self._connection.wrap_api_call(\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/opt/anaconda3/lib/python3.11/site-packages/playwright/_impl/_connection.py\", line 632, in wrap_api_call\n    raise rewrite_error(error, f\"{parsed_st['apiName']}: {error}\") from None\nplaywright._impl._errors.TimeoutError: Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\".cui-visualizer-reportbar\").get_by_role(\"button\", name=\"Manage\", exact=True)\n    - locator resolved to <button id=\"c275\" tabindex=\"0\" type=\"button\" data-cui-tooltip-bound=\"1\" data-testid=\"manage-reports\" class=\"q-btn q-btn-item non-selectable no-outline q-btn--unelevated q-btn--rectangle bg-primary text-white q-btn--actionable q-focusable q-hoverable q-btn--no-uppercase cui-button cui-button--ghost cui-control--medium cui-tooltip-target cui-tooltip-target-38\">\u2026</button>\n  - attempting click action\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n    - retrying click action\n    - waiting 20ms\n    2 \u00d7 waiting for element to be visible, enabled and stable\n      - element is visible, enabled and stable\n      - scrolling into view if needed\n      - done scrolling\n      - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n    - retrying click action\n      - waiting 100ms\n    58 \u00d7 waiting for element to be visible, enabled and stable\n       - element is visible, enabled and stable\n       - scrolling into view if needed\n       - done scrolling\n       - <div id=\"c86\" class=\"cui-form-stack\">\u2026</div> from <div id=\"q-portal--dialog--2\">\u2026</div> subtree intercepts pointer events\n     - retrying click action\n       - waiting 500ms\n\n",
+  "unexpected_browser_events": []
+}

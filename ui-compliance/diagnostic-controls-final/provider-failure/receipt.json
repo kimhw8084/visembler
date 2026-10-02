@@ -1,0 +1,298 @@
+{
+  "base_url": "http://replay.invalid",
+  "browser_console_errors": [],
+  "browser_mode": "playwright",
+  "candidate_sha": "49145dbbd67970cd9c1ab07aafcea0d651aea8fc",
+  "checks": [
+    {
+      "id": "CB000",
+      "status": "PASS"
+    },
+    {
+      "id": "CB001",
+      "status": "PASS"
+    },
+    {
+      "id": "CB013",
+      "status": "PASS"
+    },
+    {
+      "id": "CB002",
+      "status": "PASS"
+    },
+    {
+      "id": "CB003",
+      "status": "PASS"
+    },
+    {
+      "id": "CB004",
+      "status": "PASS"
+    },
+    {
+      "id": "CB005",
+      "status": "PASS"
+    },
+    {
+      "id": "CB006",
+      "status": "PASS"
+    },
+    {
+      "id": "CB007",
+      "status": "PASS"
+    },
+    {
+      "id": "CB008",
+      "status": "PASS"
+    },
+    {
+      "id": "CB009",
+      "status": "PASS"
+    },
+    {
+      "id": "CB015",
+      "status": "PASS"
+    },
+    {
+      "id": "CB010",
+      "status": "PASS"
+    },
+    {
+      "detail": "TimeoutError: intentional menu failure",
+      "id": "CB999",
+      "status": "FAIL"
+    },
+    {
+      "id": "CB012",
+      "status": "PASS"
+    }
+  ],
+  "cleaned": 2,
+  "created": 2,
+  "created_at": "2026-10-02T02:04:28.259919+00:00",
+  "failure_diagnostics": {
+    "capture_error_type": "RuntimeError",
+    "capture_status": "failed",
+    "check_id": "CB016",
+    "event_order": [
+      {
+        "elapsed_ms": 7,
+        "event": "stage:assert_read_only_marker",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:assert_title_not_editable",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:assert_mutation_commands_hidden",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:assert_read_only_indicator",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:navigation.goto",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "navigation.domcontentloaded",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:navigation.wait_for_socket_handshake",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "nicegui.socket_handshake_ready",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.locate_card",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.wait_for_card_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.count_card",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.locate_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.wait_for_trigger_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.count_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.wait_for_existing_menu_hidden",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.click_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.wait_for_action_menu_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.count_action_menu",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:assert_viewer_menu_permissions",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.press_escape",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 7,
+        "event": "stage:report_menu.wait_hidden_after_escape",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:navigation.goto",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "navigation.domcontentloaded",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:navigation.wait_for_socket_handshake",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "nicegui.socket_handshake_ready",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:assert_editor_not_read_only",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:assert_title_editable",
+        "page": "bob_editor_report"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:navigation.goto",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "navigation.domcontentloaded",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:navigation.wait_for_socket_handshake",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "nicegui.socket_handshake_ready",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.locate_card",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.wait_for_card_visible",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.count_card",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.locate_trigger",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.wait_for_trigger_visible",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.count_trigger",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.wait_for_existing_menu_hidden",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.click_trigger",
+        "page": "bob_editor_report_hub"
+      },
+      {
+        "elapsed_ms": 8,
+        "event": "stage:report_menu.wait_for_action_menu_visible",
+        "page": "bob_editor_report_hub"
+      }
+    ],
+    "fixture": {
+      "card_test_id": "report-card",
+      "report_id": "company-browser-shared-0796a444cd68",
+      "trigger_action": "more"
+    },
+    "interaction": {
+      "kind": "report-action-menu",
+      "trigger_click_state": "completed"
+    },
+    "observer_only": true,
+    "page": "bob_editor_report_hub",
+    "principal": {
+      "role": "editor",
+      "subject": "bob"
+    },
+    "stage": "report_menu.wait_for_action_menu_visible"
+  },
+  "remaining": [],
+  "schema_version": 1,
+  "status": "FAIL"
+}

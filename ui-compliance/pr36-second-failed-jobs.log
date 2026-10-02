@@ -1,0 +1,25 @@
+Python regression suite	Browser acceptance diagnostic controls	﻿2026-10-02T01:54:13.6593594Z ##[group]Run python tests/run_visualizer_company_user_browser_diagnostics_regression.py
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6594307Z ^[[36;1mpython tests/run_visualizer_company_user_browser_diagnostics_regression.py^[[0m
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6657688Z shell: /usr/bin/bash -e {0}
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6657969Z env:
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6658189Z   PIP_DISABLE_PIP_VERSION_CHECK: 1
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6658488Z   PYTHONDONTWRITEBYTECODE: 1
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6658833Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6659315Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6659774Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6660183Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6660611Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6661051Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:13.6661405Z ##[endgroup]
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0169190Z Traceback (most recent call last):
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0176551Z   File "/home/runner/work/visembler/visembler/tests/run_visualizer_company_user_browser_diagnostics_regression.py", line 401, in <module>
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0178038Z {"failed": 1, "output": "/tmp/visembler-browser-diagnostic-qg106utk/receipt.json", "passed": 8, "remaining": [], "status": "FAIL"}
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0179168Z     raise SystemExit(main())
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0179537Z                      ^^^^^^
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0180415Z   File "/home/runner/work/visembler/visembler/tests/run_visualizer_company_user_browser_diagnostics_regression.py", line 392, in main
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0181330Z     control(Path(root), monkeypatch)
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0183237Z   File "/home/runner/work/visembler/visembler/tests/run_visualizer_company_user_browser_diagnostics_regression.py", line 294, in test_menu_failure_receipt_has_bounded_observer_diagnostics_and_keeps_primary_failure
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0184807Z     assert receipt['checks'][failure_index]['detail'] == 'TimeoutError: intentional menu failure'
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0185367Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.0185723Z AssertionError
+Python regression suite	Browser acceptance diagnostic controls	2026-10-02T01:54:15.1068148Z ##[error]Process completed with exit code 1.

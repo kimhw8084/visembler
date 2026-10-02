@@ -1,0 +1,312 @@
+{
+  "base_url": "http://127.0.0.1:8124",
+  "browser_console_errors": [],
+  "browser_mode": "playwright",
+  "candidate_sha": "4d15c263019c34bf87e0c4b615e78ce957b1a133",
+  "checks": [
+    {
+      "id": "CB000",
+      "status": "PASS"
+    },
+    {
+      "id": "CB001",
+      "status": "PASS"
+    },
+    {
+      "id": "CB013",
+      "status": "PASS"
+    },
+    {
+      "id": "CB002",
+      "status": "PASS"
+    },
+    {
+      "id": "CB003",
+      "status": "PASS"
+    },
+    {
+      "id": "CB004",
+      "status": "PASS"
+    },
+    {
+      "id": "CB005",
+      "status": "PASS"
+    },
+    {
+      "id": "CB006",
+      "status": "PASS"
+    },
+    {
+      "id": "CB007",
+      "status": "PASS"
+    },
+    {
+      "id": "CB008",
+      "status": "PASS"
+    },
+    {
+      "id": "CB009",
+      "status": "PASS"
+    },
+    {
+      "detail": "TimeoutError: Locator.wait_for: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator(\".q-menu:visible\") to be visible\n",
+      "id": "CB999",
+      "status": "FAIL"
+    },
+    {
+      "id": "CB012",
+      "status": "PASS"
+    }
+  ],
+  "cleaned": 2,
+  "created": 2,
+  "created_at": "2026-10-02T02:08:59.733237+00:00",
+  "failure_diagnostics": {
+    "browser_state": {
+      "state": {
+        "active_element": {
+          "inside_target_card": true,
+          "inside_visible_menu": false,
+          "report_action": "more",
+          "role": null,
+          "tag": "button"
+        },
+        "document_ready_state": "complete",
+        "handshake_complete": true,
+        "socket_connected": true,
+        "target_card_count": 1,
+        "target_card_visible_count": 1,
+        "target_trigger_aria_expanded": null,
+        "target_trigger_aria_haspopup": null,
+        "target_trigger_count": 1,
+        "target_trigger_focused_count": 1,
+        "target_trigger_visible_count": 1,
+        "visible_menu_count": 0,
+        "visible_menus": []
+      },
+      "status": "captured"
+    },
+    "check_id": "CB015",
+    "event_order": [
+      {
+        "elapsed_ms": 5501,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5501,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5571,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5572,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5579,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5580,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5580,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5580,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 5614,
+        "event": "navigation.domcontentloaded",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5614,
+        "event": "stage:navigation.wait_for_socket_handshake",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5640,
+        "event": "websocket_opened",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5657,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5657,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5658,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5661,
+        "event": "nicegui.socket_handshake_ready",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5661,
+        "event": "stage:report_menu.locate_card",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5661,
+        "event": "stage:report_menu.wait_for_card_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5697,
+        "event": "stage:report_menu.count_card",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5699,
+        "event": "stage:report_menu.locate_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5700,
+        "event": "stage:report_menu.wait_for_trigger_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5706,
+        "event": "stage:report_menu.count_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5708,
+        "event": "stage:report_menu.wait_for_existing_menu_hidden",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5712,
+        "event": "stage:report_menu.click_trigger",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5737,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5737,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5737,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5738,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 5772,
+        "event": "stage:report_menu.wait_for_action_menu_visible",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 6033,
+        "event": "websocket_frame_received",
+        "page": "alice_report_hub"
+      },
+      {
+        "elapsed_ms": 6033,
+        "event": "websocket_frame_sent",
+        "page": "alice_report_hub"
+      },
+      {
+        "elapsed_ms": 7630,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 8493,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 8704,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 8704,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report"
+      },
+      {
+        "elapsed_ms": 9301,
+        "event": "websocket_frame_received",
+        "page": "alice_report"
+      },
+      {
+        "elapsed_ms": 9302,
+        "event": "websocket_frame_sent",
+        "page": "alice_report"
+      },
+      {
+        "elapsed_ms": 9606,
+        "event": "websocket_frame_received",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 9606,
+        "event": "websocket_frame_sent",
+        "page": "bob_viewer_report_hub"
+      },
+      {
+        "elapsed_ms": 10034,
+        "event": "websocket_frame_received",
+        "page": "alice_report_hub"
+      },
+      {
+        "elapsed_ms": 10034,
+        "event": "websocket_frame_sent",
+        "page": "alice_report_hub"
+      }
+    ],
+    "fixture": {
+      "card_test_id": "report-card",
+      "report_id": "company-browser-shared-d724eae8bccc",
+      "trigger_action": "more"
+    },
+    "interaction": {
+      "kind": "report-action-menu",
+      "trigger_click_state": "completed"
+    },
+    "observer_only": true,
+    "page": "bob_viewer_report_hub",
+    "principal": {
+      "role": "viewer",
+      "subject": "bob"
+    },
+    "stage": "report_menu.wait_for_action_menu_visible"
+  },
+  "remaining": [],
+  "schema_version": 1,
+  "status": "FAIL"
+}

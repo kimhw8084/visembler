@@ -1,0 +1,48 @@
+........................................................................ [  5%]
+........................................................................ [ 11%]
+........................................................................ [ 17%]
+........................................................................ [ 23%]
+........................................................................ [ 29%]
+........................................................................ [ 34%]
+........................................................................ [ 40%]
+........................................................................ [ 46%]
+........................................................................ [ 52%]
+........................................................................ [ 58%]
+........................................................................ [ 63%]
+........................................................................ [ 69%]
+........................................................................ [ 75%]
+........................FF............F................................. [ 81%]
+........................................................................ [ 87%]
+.........................F.............................................. [ 92%]
+........................................................................ [ 98%]
+.................                                                        [100%]
+=================================== FAILURES ===================================
+___________________________ test_v4_polish_contracts ___________________________
+tests/test_visualizer_product_polish_v4.py:15: in test_v4_polish_contracts
+    assert '[data-theme="dark"] .cui-visualizer-reportbar' in css and '[data-theme="dark"] .cui-dialog-card' in css
+E   assert ('[data-theme="dark"] .cui-visualizer-reportbar' in '.cui-visualizer-root {\n  color-scheme: light;\n  /* One editor-only elevation contract. Content remains below author... 12px -4px; }\n  .cui-visualizer-root.preview-mode .composition-section-surface-layer { display:none!important; }\n}\n')
+_______ test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes _______
+tests/test_visualizer_product_polish_v4.py:28: in test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes
+    assert '.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }' in css
+E   AssertionError: assert '.cui-visualizer-reportbar { --q-primary:var(--cui-accent); }' in '.cui-visualizer-root {\n  color-scheme: light;\n  /* One editor-only elevation contract. Content remains below author... 12px -4px; }\n  .cui-visualizer-root.preview-mode .composition-section-surface-layer { display:none!important; }\n}\n'
+______ test_r14_report_chrome_is_explicit_and_destructive_action_is_named ______
+tests/test_visualizer_r14_release.py:69: in test_r14_report_chrome_is_explicit_and_destructive_action_is_named
+    assert "label='Report title'" in page and "label='Reports'" in page
+E   assert ("label='Report title'" in 'from __future__ import annotations\n\nimport base64\nimport csv\nimport hashlib\nimport inspect\nimport io\nimport js...}),\n        }\n        _bootstrap_editor(ui,bootstrap,build,module_url,capabilities=current_capabilities.to_dict())\n')
+____ test_wave13_command_rows_and_report_templates_have_semantic_hierarchy _____
+tests/test_visualizer_wave13_authoring_quality.py:48: in test_wave13_command_rows_and_report_templates_have_semantic_hierarchy
+    assert "cui-report-template-title" in page and "cui-report-template-description" in page
+E   AssertionError: assert ('cui-report-template-title' in 'from __future__ import annotations\n\nimport base64\nimport csv\nimport hashlib\nimport inspect\nimport io\nimport js...}),\n        }\n        _bootstrap_editor(ui,bootstrap,build,module_url,capabilities=current_capabilities.to_dict())\n')
+=============================== warnings summary ===============================
+tests/test_visualizer_application_hardening.py::test_pptx_duplicate_path_and_compression_bomb_rejected
+  /opt/anaconda3/lib/python3.11/zipfile.py:1550: UserWarning: Duplicate name: 'ppt/presentation.xml'
+    return self._open_to_write(zinfo, force_zip64=force_zip64)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /private/tmp/visembler-ui-compliance-direct/evidence/native-release-r1/full-tests.xml -
+=========================== short test summary info ============================
+FAILED tests/test_visualizer_product_polish_v4.py::test_v4_polish_contracts
+FAILED tests/test_visualizer_product_polish_v4.py::test_chg70_r1_contrast_authorities_have_aa_margin_in_both_themes
+FAILED tests/test_visualizer_r14_release.py::test_r14_report_chrome_is_explicit_and_destructive_action_is_named
+FAILED tests/test_visualizer_wave13_authoring_quality.py::test_wave13_command_rows_and_report_templates_have_semantic_hierarchy
+4 failed, 1237 passed, 1 warning in 181.15s (0:03:01)
