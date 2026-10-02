@@ -107,7 +107,7 @@ class ReplayLocator:
             self.page.dialog_open = False
 
     def fill(self, value: str):
-        assert self.kind == 'label' and self.name == 'Person or group'
+        assert self.kind == 'role' and self.name == 'Person or group'
         assert value == 'bob'
 
 
@@ -158,7 +158,8 @@ class ReplayPage:
         return ReplayLocator(self, selector)
 
     def get_by_role(self, role: str, name: str, exact: bool):
-        assert role == 'button' and exact is True
+        assert exact is True
+        assert role == 'button' or (role == 'textbox' and name == 'Person or group')
         return ReplayLocator(self, 'role', kind='role', name=name)
 
     def get_by_label(self, label: str):
