@@ -43,12 +43,12 @@ class Button:
         self.spec = ButtonSpec(label, intent=intent, size=size, icon=icon, disabled=disabled, full_width=full_width)
         ui = _ui()
         if icon:
-            self.element = ui.button(on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
+            self.element = ui.button(color=None, on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
             with self.element:
                 ui.html(render_icon_svg(icon, size='sm'), sanitize=False).classes('cui-svg-icon-host')
                 ui.label(label)
         else:
-            self.element = ui.button(label, on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
+            self.element = ui.button(label, color=None, on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
         if disabled:
             self.element.disable()
 
@@ -64,7 +64,7 @@ class ActionButton(Button):
                                              success_message=success_message, error_message=error_message)
         self.spec = self.action_spec
         ui = _ui()
-        self.element = ui.button(on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
+        self.element = ui.button(color=None, on_click=on_click).props('no-caps unelevated').classes(self.spec.classes)
         with self.element:
             if loading:
                 ui.element('span').classes('cui-button__spinner').props('aria-hidden="true"')

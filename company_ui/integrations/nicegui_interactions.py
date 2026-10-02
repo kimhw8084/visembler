@@ -237,13 +237,13 @@ class FormActions:
         ui = _ui(); classes = f'cui-form-actions cui-form-actions--{align}' + (' is-sticky' if sticky else '')
         with ui.element('div').classes(classes) as self.element:
             if destructive_label:
-                ui.button(destructive_label, on_click=on_destructive).props('flat no-caps').classes('cui-button cui-button--danger cui-control--medium')
+                ui.button(destructive_label, color=None, on_click=on_destructive).props('flat no-caps').classes('cui-button cui-button--danger cui-control--medium')
             ui.element('div').classes('cui-form-actions__spacer')
-            ui.button(secondary_label, on_click=on_secondary).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
+            ui.button(secondary_label, color=None, on_click=on_secondary).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
             async def primary(e=None):
                 if form is not None: await form.submit(on_primary,e)
                 else: await _invoke(on_primary,e)
-            ui.button(primary_label, on_click=primary).props('unelevated no-caps').classes('cui-button cui-button--primary cui-control--medium')
+            ui.button(primary_label, color=None, on_click=primary).props('unelevated no-caps').classes('cui-button cui-button--primary cui-control--medium')
 
 
 class DirtyStateGuard:
@@ -474,10 +474,10 @@ class Dialog(AbstractContextManager):
         with ui.element('div').classes('cui-dialog__footer'):
             ui.element('div').classes('cui-dialog__footer-spacer')
             if self.spec.secondary_label:
-                ui.button(self.spec.secondary_label, on_click=self._secondary).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
+                ui.button(self.spec.secondary_label, color=None, on_click=self._secondary).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
             if self.spec.primary_label:
                 intent = 'danger' if self.spec.destructive else 'primary'
-                self.primary_button = ui.button(self.spec.primary_label, on_click=self._primary).props('unelevated no-caps').classes(f'cui-button cui-button--{intent} cui-control--medium')
+                self.primary_button = ui.button(self.spec.primary_label, color=None, on_click=self._primary).props('unelevated no-caps').classes(f'cui-button cui-button--{intent} cui-control--medium')
                 if self.spec.typed_confirmation: self.primary_button.disable()
 
     def __exit__(self, exc_type, exc, tb):
@@ -766,7 +766,7 @@ class AsyncContent:
                         _icon(ui, 'warning', label='Refresh warning', size='xs')
                         ui.label(self.error_message or 'Refresh failed. Showing the last successfully loaded content.').classes('cui-field-description')
                     if self.on_retry is not None:
-                        ui.button(self.spec.retry_label, on_click=self.on_retry).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--small')
+                        ui.button(self.spec.retry_label, color=None, on_click=self.on_retry).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--small')
             return result
 
 
@@ -789,9 +789,9 @@ class StateView:
             if spec.action_label or spec.secondary_action_label:
                 with ui.element('div').classes('cui-state-view__actions'):
                     if spec.secondary_action_label:
-                        ui.button(spec.secondary_action_label, on_click=on_secondary_action).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
+                        ui.button(spec.secondary_action_label, color=None, on_click=on_secondary_action).props('flat no-caps').classes('cui-button cui-button--secondary cui-control--medium')
                     if spec.action_label:
-                        ui.button(spec.action_label, on_click=on_action).props('unelevated no-caps').classes('cui-button cui-button--primary cui-control--medium')
+                        ui.button(spec.action_label, color=None, on_click=on_action).props('unelevated no-caps').classes('cui-button cui-button--primary cui-control--medium')
 
 
 class EmptyState(StateView):
